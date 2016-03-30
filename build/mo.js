@@ -1287,16 +1287,53 @@
 	      /* childOptions PROPERTIES ARE -
 	        `Swirl` DEFAULTS + `Tween` DEFAULTS.
 	        ONLY `isSwirl` option is `false` by default. */
-
-	      // add options intersection hash - map that holds the property
-	      // names that could be on both parent module and child ones,
-	      // so setting one of those on parent, affect parent only
-	      // this._optionsIntersection = {
-	      //   radius: 1, radiusX: 1, radiusY: 1,
-	      //   angle:  1, scale:   1, opacity: 1,
-	      // }
 	      // exclude unitTimeline object from deltas parsing
 	      this._skipPropsDelta.unitTimeline = 1;
+	    }
+	    /*
+	      Method to create a then record for the module.
+	      @public
+	      overrides @ Thenable
+	      @param    {Object} Options for the next animation.
+	      @returns  {Object} this.
+	    */
+
+	  }, {
+	    key: 'then',
+	    value: function then(o) {
+	      // next burst module
+	      var masterBurst = new Burst({ count: 0 });
+
+	      for (var i = 0; i < this._swirls.length; i++) {
+	        var option = this._getThenOption(o, i);
+	        // set parent of new swirls to master burst
+	        option.parent = masterBurst.el;
+	        this._swirls[i].then(option);
+	      }
+
+	      this._modules.push(masterBurst);
+	      this.timeline._recalcTotalDuration();
+
+	      return this;
+	    }
+	    /*
+	      Method to get childOption for then call.
+	      @private
+	      @param   {Object} Object to look in.
+	      @param   {Number} Index of the current Swirl.
+	      @returns {Object} Options for the current swirl.
+	    */
+
+	  }, {
+	    key: '_getThenOption',
+	    value: function _getThenOption(obj, i) {
+	      var options = {};
+
+	      for (var key in obj.childOptions) {
+	        options[key] = this._getPropByMod(key, i, obj.childOptions);
+	      }
+
+	      return options;
 	    }
 	    /*
 	      Method to copy _o options to _props with fallback to _defaults.
@@ -1384,7 +1421,7 @@
 	      options.left = '50%';
 	      options.top = '50%';
 	      options.parent = this.el;
-	      options.isTimelineLess = true;
+	      // options.isTimelineLess = true;
 	      // option.callbacksContext = this;  ?
 
 	      var p = this._props,
@@ -1609,24 +1646,22 @@
 	      @private
 	      @override @ Tunable
 	    */
+	    // _tuneSubModules () {
+	    //   // call _tuneSubModules on Tunable
+	    //   super._tuneSubModules();
+	    //   // tune swirls including their tweens
+	    //   for (var index = 0; index < this._swirls.length; index++) {
+	    //     var swirl   = this._swirls[index],
+	    //         options = this._getOption( index );
 
-	  }, {
-	    key: '_tuneSubModules',
-	    value: function _tuneSubModules() {
-	      // call _tuneSubModules on Tunable
-	      (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_tuneSubModules', this).call(this);
-	      // tune swirls including their tweens
-	      for (var index = 0; index < this._swirls.length; index++) {
-	        var swirl = this._swirls[index],
-	            options = this._getOption(index);
+	    //     swirl._tuneNewOptions( options );
+	    //     this._resetTween( swirl.tween, options );
+	    //   }
 
-	        swirl._tuneNewOptions(options);
-	        this._resetTween(swirl.tween, options);
-	      }
+	    //   this._o.timeline && this.timeline._setProp(this._o.timeline);
+	    //   this.timeline._recalcTotalDuration();
+	    // }
 
-	      this._o.timeline && this.timeline._setProp(this._o.timeline);
-	      this.timeline._recalcTotalDuration();
-	    }
 	    /*
 	      Method to reset some flags on merged options object.
 	      @private
@@ -1663,20 +1698,19 @@
 	      @param {Object} End options for the merge.
 	      @returns {Object} Merged options.
 	    */
+	    // _mergeThenOptions ( start, end ) {
+	    //   var startChild  = start.childOptions || {},
+	    //       endChild    = end.childOptions   || {},
+	    //       mergedChild = super._mergeThenOptions( startChild, endChild, false ),
+	    //       merged      = super._mergeThenOptions( start, end, false );
 
-	  }, {
-	    key: '_mergeThenOptions',
-	    value: function _mergeThenOptions(start, end) {
-	      var startChild = start.childOptions || {},
-	          endChild = end.childOptions || {},
-	          mergedChild = (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_mergeThenOptions', this).call(this, startChild, endChild, false),
-	          merged = (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_mergeThenOptions', this).call(this, start, end, false);
+	    //   merged.childOptions = mergedChild;
 
-	      merged.childOptions = mergedChild;
-	      this._history.push(merged);
+	    //   this._history.push( merged );
 
-	      return merged;
-	    }
+	    //   return merged;
+	    // }
+
 	  }]);
 	  return Burst;
 	}(_swirl2.default);
@@ -3760,6 +3794,13 @@
 	      var endKeys = (0, _keys2.default)(end);
 
 	      for (var key in end) {
+
+	        /* !COVER! */
+	        if (key == 'parent') {
+	          o[key] = end[key];
+	          continue;
+	        };
+
 	        // get key/value of the end object
 	        // endKey - name of the property, endValue - value of the property
 	        var endValue = end[key],
@@ -3967,6 +4008,7 @@
 
 	    /*
 	      Method to transform history rewrite new options object chain on run.
+	      @private
 	      @param {Object} New options to tune for.
 	    */
 
@@ -3979,6 +4021,9 @@
 	        var optionsKey = optionsKeys[i],
 	            optionsValue = o[optionsKey];
 
+	        if (optionsKey === 'childOptions') {
+	          continue;
+	        }
 	        this._transformHistoryFor(optionsKey, optionsValue);
 	      }
 	    }
@@ -4005,22 +4050,23 @@
 	      @param {Number} Index of the history record to transform.
 	      @param {String} Property name to transform.
 	      @param {Any} Property value to transform to.
+	      @param {Object} Optional the current history record.
+	      @param {Object} Optional the next history record.
 	      @returns {Boolean} Returns true if no further
 	                         history modifications is needed.
 	    */
 
 	  }, {
 	    key: '_transformHistoryRecord',
-	    value: function _transformHistoryRecord(index, key, newValue) {
+	    value: function _transformHistoryRecord(index, key, newValue, currRecord, nextRecord) {
 	      if (newValue == null) {
 	        return null;
 	      }
 
-	      var currRecord = this._history[index],
-	          prevRecord = this._history[index - 1],
-	          nextRecord = this._history[index + 1],
-	          oldValue = currRecord[key];
+	      currRecord = currRecord == null ? this._history[index] : currRecord;
+	      nextRecord = nextRecord == null ? this._history[index + 1] : nextRecord;
 
+	      var oldValue = currRecord[key];
 	      // if index is 0 - always save the newValue
 	      // and return non-delta for subsequent modifications
 	      if (index === 0) {
@@ -4062,8 +4108,7 @@
 	    key: '_tuneSubModules',
 	    value: function _tuneSubModules() {
 	      for (var i = 1; i < this._modules.length; i++) {
-	        var module = this._modules[i];
-	        module._tuneNewOptions(this._history[i]);
+	        this._modules[i]._tuneNewOptions(this._history[i]);
 	      }
 	    }
 	    /*
@@ -7765,7 +7810,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.208.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.208.2', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7774,6 +7819,7 @@
 	// TODO:
 	/*
 	  burst fix the tune for `then` chains
+	  cover in thenable
 	  randoms in then chains for transit and swirl.
 	  module names
 	  perf optimizations.
@@ -7782,48 +7828,27 @@
 	  percentage for radius
 	*/
 
-	// var sw = new mojs.Burst({
-	//   isShowStart:  1,
-	//   isShowEnd:    1,
-	//   left:         '50%',  top: '50%',
-	//   childOptions: {
-	//     duration:     3500,
-	//     // easing:       'ease.out',
-	//     isSwirl:      1,
-	//     fill:         ['cyan', 'yellow'],
-	//     radius:       { 5 : .5 },
-	//     // stroke: 'cyan',
-	//     strokeWidth: 2
-	//   }
-	// })
-	//   .then({ radius: 10, childOptions: {
-	//     // easing: 'cubic.in',
-	//     // duration: 400,
-	//     radius: 15 , isSwirl: 0
-	//   }})
-	//   // .then({
-	//   //   radius: 100, angle: 0,
-	//   //   childOptions: {
-	//   //     easing: 'cubic.out',
-	//   //     duration: 350, radius: 0, shape: 'cross', stroke: {'cyan': 'cyan'}, strokeWidth: 2 }
-	//   // });
+	var sw = new mojs.Burst({
+	  count: 5,
+	  left: '50%', top: '50%',
+	  isShowEnd: 1,
+	  childOptions: {
+	    fill: 'cyan',
+	    duration: 2000
+	  }
+	}).then({
+	  childOptions: { radius: 10 }
+	});
 
-	// console.log(sw._history);
-
-	// var playEl = document.querySelector('#js-play'),
-	//     rangeSliderEl = document.querySelector('#js-range-slider');
-	// document.body.addEventListener('click', function (e) {
-	//   // console.log('REPLAy')
-	//   sw
-	//     // .generate()
-	//     .tune({
-	//       left:   e.pageX,
-	//       top:    e.pageY,
-	//       angle:  { 0: -20 },
-	//       childOptions: { fill: 'orange' }
-	//     })
-	//     .replay();
-	// });
+	var playEl = document.querySelector('#js-play'),
+	    rangeSliderEl = document.querySelector('#js-range-slider');
+	document.body.addEventListener('click', function (e) {
+	  sw
+	  // .tune({
+	  //   fill: 'white', duration: 1000
+	  // })
+	  .replay();
+	});
 
 	// rangeSliderEl.addEventListener('input', function () {
 	//   tr.setProgress( rangeSliderEl.value/1000 );

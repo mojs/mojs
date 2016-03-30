@@ -138,7 +138,7 @@
         expect(tr._history[0].delay).toBe(500);
         return expect(result).toBe(null);
       });
-      return it('should immediately return null if new value is null ', function() {
+      it('should immediately return null if new value is null ', function() {
         var result, tr;
         tr = new Tunable({
           duration: 2000
@@ -151,9 +151,30 @@
         expect(tr._history[0].delay).toBe(void 0);
         return expect(result).toBe(null);
       });
+      return it('should receive current and next history records', function() {
+        var curr, next, result, tr;
+        tr = new Tunable({
+          duration: 2000
+        }).then({
+          radius: 20
+        }).then({
+          radius: 30
+        });
+        curr = {
+          fill: 'red'
+        };
+        next = {
+          fill: 'green'
+        };
+        result = tr._transformHistoryRecord(1, 'fill', 'green', curr, next);
+        expect(curr).toEqual({
+          fill: 'green'
+        });
+        return expect(result).toBe(null);
+      });
     });
     describe('_transformHistory method ->', function() {
-      return it('should call _transformHistoryFor for every new property ->', function() {
+      it('should call _transformHistoryFor for every new property ->', function() {
         var tr;
         tr = new Tunable({}).then({
           radius: 0
@@ -166,6 +187,20 @@
         });
         expect(tr._transformHistoryFor).toHaveBeenCalledWith('x', 20);
         return expect(tr._transformHistoryFor.calls.count()).toBe(1);
+      });
+      return it('should call skip childOptions ->', function() {
+        var tr;
+        tr = new Tunable({}).then({
+          radius: 0
+        }).then({
+          radius: 50
+        });
+        spyOn(tr, '_transformHistoryFor');
+        tr._transformHistory({
+          childOptions: {}
+        });
+        expect(tr._transformHistoryFor).not.toHaveBeenCalledWith('childOptions', {});
+        return expect(tr._transformHistoryFor.calls.count()).toBe(0);
       });
     });
     describe('_transformHistoryFor method ->', function() {

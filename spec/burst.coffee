@@ -82,14 +82,15 @@ describe 'Burst ->', ->
       expect(b._swirls[2]._o.index).toBe 2
       expect(b._swirls[3]._o.index).toBe 3
       expect(b._swirls[4]._o.index).toBe 4
-    it 'should pass isTimelineLess option to the swirls', ->
-      b = new Burst
-      b._createBit()
-      expect(b._swirls[0]._o.isTimelineLess).toBe true
-      expect(b._swirls[1]._o.isTimelineLess).toBe true
-      expect(b._swirls[2]._o.isTimelineLess).toBe true
-      expect(b._swirls[3]._o.isTimelineLess).toBe true
-      expect(b._swirls[4]._o.isTimelineLess).toBe true
+    # probably not
+    # it 'should pass isTimelineLess option to the swirls', ->
+    #   b = new Burst
+    #   b._createBit()
+    #   expect(b._swirls[0]._o.isTimelineLess).toBe true
+    #   expect(b._swirls[1]._o.isTimelineLess).toBe true
+    #   expect(b._swirls[2]._o.isTimelineLess).toBe true
+    #   expect(b._swirls[3]._o.isTimelineLess).toBe true
+    #   expect(b._swirls[4]._o.isTimelineLess).toBe true
     it 'should pass options to swirls', ->
       b = new Burst
       b._createBit()
@@ -359,13 +360,14 @@ describe 'Burst ->', ->
       obj = {}
       result = burst._addOptionalProperties obj, 0
       expect(result).toBe obj
-    it 'should add parent, index and isTimelineLess', ->
+    it 'should add parent, index', ->
+    # it 'should add parent, index and isTimelineLess', ->
       burst = new Burst
       obj = {}
       result = burst._addOptionalProperties obj, 0
       expect(result.index).toBe 0
       expect(result.parent).toBe burst.el
-      expect(result.isTimelineLess).toBe true
+      # expect(result.isTimelineLess).toBe true
 
     it 'should hard rewrite `left` and `top` properties to 50%', ->
       burst = new Burst
@@ -484,54 +486,54 @@ describe 'Burst ->', ->
       b._extendDefaults()
       expect(b._calcSize).toHaveBeenCalled()
 
-  describe '_tuneSubModules method ->', ->
-    it 'should call super', ->
-      b = new Burst
-      spyOn Tunable.prototype, '_tuneSubModules'
-      b._tuneSubModules()
-      expect(Tunable.prototype._tuneSubModules)
-        .toHaveBeenCalled()
-    it 'should call _tuneNewOptions on each swirl', ->
-      b = new Burst count: 2
-      spyOn b._swirls[0], '_tuneNewOptions'
-      spyOn b._swirls[1], '_tuneNewOptions'
-      spyOn b, '_resetTween'
-      b._tuneSubModules()
-      expect(b._swirls[0]._tuneNewOptions.calls.first().args[0])
-        .toEqual b._getOption(0)
-      expect(b._swirls[1]._tuneNewOptions.calls.first().args[0])
-        .toEqual b._getOption(1)
+  # describe '_tuneSubModules method ->', ->
+  #   it 'should call super', ->
+  #     b = new Burst
+  #     spyOn Tunable.prototype, '_tuneSubModules'
+  #     b._tuneSubModules()
+  #     expect(Tunable.prototype._tuneSubModules)
+  #       .toHaveBeenCalled()
+  #   it 'should call _tuneNewOptions on each swirl', ->
+  #     b = new Burst count: 2
+  #     spyOn b._swirls[0], '_tuneNewOptions'
+  #     spyOn b._swirls[1], '_tuneNewOptions'
+  #     spyOn b, '_resetTween'
+  #     b._tuneSubModules()
+  #     expect(b._swirls[0]._tuneNewOptions.calls.first().args[0])
+  #       .toEqual b._getOption(0)
+  #     expect(b._swirls[1]._tuneNewOptions.calls.first().args[0])
+  #       .toEqual b._getOption(1)
 
-      expect(b._resetTween.calls.argsFor(0)[0]).toBe b._swirls[0].tween
-      expect(b._resetTween.calls.argsFor(0)[1]).toEqual b._getOption(0)
+  #     expect(b._resetTween.calls.argsFor(0)[0]).toBe b._swirls[0].tween
+  #     expect(b._resetTween.calls.argsFor(0)[1]).toEqual b._getOption(0)
 
-      expect(b._resetTween.calls.argsFor(1)[0]).toBe b._swirls[1].tween
-      expect(b._resetTween.calls.argsFor(1)[1]).toEqual b._getOption(1)
+  #     expect(b._resetTween.calls.argsFor(1)[0]).toBe b._swirls[1].tween
+  #     expect(b._resetTween.calls.argsFor(1)[1]).toEqual b._getOption(1)
 
-      expect(b._resetTween.calls.count()).toBe 2
+  #     expect(b._resetTween.calls.count()).toBe 2
 
-    it 'should set prop on timeline', ->
-      isCalled = null
-      b = new Burst count: 2
-      timelineOpts = { onComplete: null }
-      b._o.timeline = timelineOpts
-      spyOn b.timeline, '_setProp'
-      b._tuneSubModules()
-      expect(b.timeline._setProp).toHaveBeenCalledWith timelineOpts
+  #   it 'should set prop on timeline', ->
+  #     isCalled = null
+  #     b = new Burst count: 2
+  #     timelineOpts = { onComplete: null }
+  #     b._o.timeline = timelineOpts
+  #     spyOn b.timeline, '_setProp'
+  #     b._tuneSubModules()
+  #     expect(b.timeline._setProp).toHaveBeenCalledWith timelineOpts
 
-    it 'should not set prop on timeline if no object', ->
-      isCalled = null
-      b = new Burst count: 2
-      timelineOpts = { onComplete: null }
-      spyOn b.timeline, '_setProp'
-      b._tuneSubModules()
-      expect(b.timeline._setProp).not.toHaveBeenCalled()
+  #   it 'should not set prop on timeline if no object', ->
+  #     isCalled = null
+  #     b = new Burst count: 2
+  #     timelineOpts = { onComplete: null }
+  #     spyOn b.timeline, '_setProp'
+  #     b._tuneSubModules()
+  #     expect(b.timeline._setProp).not.toHaveBeenCalled()
 
-    it 'should call _recalcTotalDuration on timeline', ->
-      b = new Burst count: 2
-      spyOn b.timeline, '_recalcTotalDuration'
-      b._tuneSubModules()
-      expect(b.timeline._recalcTotalDuration.calls.count()).toBe 1
+  #   it 'should call _recalcTotalDuration on timeline', ->
+  #     b = new Burst count: 2
+  #     spyOn b.timeline, '_recalcTotalDuration'
+  #     b._tuneSubModules()
+  #     expect(b.timeline._recalcTotalDuration.calls.count()).toBe 1
 
   describe '_resetMergedFlags method', ->
     it 'should call the super method', ->
@@ -561,74 +563,135 @@ describe 'Burst ->', ->
       expect(b._resetMergedFlags(obj).wasTimelineLess).toBe true
       expect(b._resetMergedFlags(obj).isTimelineLess).toBe false
 
-  describe '_mergeThenOptions method ->', ->
-    it 'should call super', ->
-      b = new Burst count: 2
+  # describe '_mergeThenOptions method ->', ->
+  #   it 'should call super', ->
+  #     b = new Burst count: 2
 
-      spyOn(Thenable.prototype, '_mergeThenOptions')
-        .and.callThrough()
-      startObj = { fill: 'cyan', childOptions: { fill: 'yellow' } }
-      endObj   = { fill: 'purple', childOptions: { fill: 'black' } }
-      b._mergeThenOptions( startObj, endObj )
-      expect(Thenable.prototype._mergeThenOptions)
-        .toHaveBeenCalledWith startObj, endObj, false
+  #     spyOn(Thenable.prototype, '_mergeThenOptions')
+  #       .and.callThrough()
+  #     startObj = { fill: 'cyan', childOptions: { fill: 'yellow' } }
+  #     endObj   = { fill: 'purple', childOptions: { fill: 'black' } }
+  #     b._mergeThenOptions( startObj, endObj )
+  #     expect(Thenable.prototype._mergeThenOptions)
+  #       .toHaveBeenCalledWith startObj, endObj, false
 
-    it 'should call super with childOptions', ->
-      b = new Burst count: 2
+  #   it 'should call super with childOptions', ->
+  #     b = new Burst count: 2
 
-      spyOn(Thenable.prototype, '_mergeThenOptions')
-        .and.callThrough()
-      startChildObj = { fill: 'yellow' }
-      endChildObj   = { fill: 'black' }
-      startObj = { fill: 'cyan', childOptions: startChildObj }
-      endObj   = { fill: 'purple', childOptions: endChildObj }
-      b._mergeThenOptions( startObj, endObj )
-      expect(Thenable.prototype._mergeThenOptions)
-        .toHaveBeenCalledWith startChildObj, endChildObj, false
+  #     spyOn(Thenable.prototype, '_mergeThenOptions')
+  #       .and.callThrough()
+  #     startChildObj = { fill: 'yellow' }
+  #     endChildObj   = { fill: 'black' }
+  #     startObj = { fill: 'cyan', childOptions: startChildObj }
+  #     endObj   = { fill: 'purple', childOptions: endChildObj }
+  #     b._mergeThenOptions( startObj, endObj )
+  #     expect(Thenable.prototype._mergeThenOptions)
+  #       .toHaveBeenCalledWith startChildObj, endChildObj, false
 
-    it 'should fallback to {} for childOptions', ->
-      b = new Burst count: 2
+  #   it 'should fallback to {} for childOptions', ->
+  #     b = new Burst count: 2
 
-      spyOn(Thenable.prototype, '_mergeThenOptions')
-        .and.callThrough()
-      startChildObj = null
-      endChildObj   = null
-      startObj = { fill: 'cyan', childOptions: startChildObj }
-      endObj   = { fill: 'purple', childOptions: endChildObj }
-      b._mergeThenOptions( startObj, endObj )
-      expect(Thenable.prototype._mergeThenOptions)
-        .toHaveBeenCalledWith {}, {}, false
+  #     spyOn(Thenable.prototype, '_mergeThenOptions')
+  #       .and.callThrough()
+  #     startChildObj = null
+  #     endChildObj   = null
+  #     startObj = { fill: 'cyan', childOptions: startChildObj }
+  #     endObj   = { fill: 'purple', childOptions: endChildObj }
+  #     b._mergeThenOptions( startObj, endObj )
+  #     expect(Thenable.prototype._mergeThenOptions)
+  #       .toHaveBeenCalledWith {}, {}, false
 
-    it 'should set merged children to parent', ->
-      b = new Burst count: 2
+  #   it 'should set merged children to parent', ->
+  #     b = new Burst count: 2
 
-      startChildObj = { fill: 'yellow' }
-      endChildObj   = { fill: 'black' }
-      startObj = { fill: 'cyan', childOptions: startChildObj }
-      endObj   = { fill: 'purple', childOptions: endChildObj }
+  #     startChildObj = { fill: 'yellow' }
+  #     endChildObj   = { fill: 'black' }
+  #     startObj = { fill: 'cyan', childOptions: startChildObj }
+  #     endObj   = { fill: 'purple', childOptions: endChildObj }
       
-      childResult  = Thenable.prototype
-        ._mergeThenOptions.call(b, startChildObj, endChildObj )
-      parentResult = Thenable.prototype
-        ._mergeThenOptions.call(b, startObj, endObj )
+  #     childResult  = Thenable.prototype
+  #       ._mergeThenOptions.call(b, startChildObj, endChildObj )
+  #     parentResult = Thenable.prototype
+  #       ._mergeThenOptions.call(b, startObj, endObj )
 
-      result = b._mergeThenOptions( startObj, endObj )
+  #     result = b._mergeThenOptions( startObj, endObj )
 
-      parentResult.childOptions = childResult
+  #     parentResult.childOptions = childResult
 
-      expect(result).toEqual parentResult
+  #     expect(result).toEqual parentResult
 
-    it 'should push merged object to history', ->
-      b = new Burst count: 2
+  #   it 'should push merged object to history', ->
+  #     b = new Burst count: 2
 
-      startChildObj = { fill: 'yellow' }
-      endChildObj   = { fill: 'black' }
-      startObj = { fill: 'cyan', childOptions: startChildObj }
-      endObj   = { fill: 'purple', childOptions: endChildObj }
+  #     startChildObj = { fill: 'yellow' }
+  #     endChildObj   = { fill: 'black' }
+  #     startObj = { fill: 'cyan', childOptions: startChildObj }
+  #     endObj   = { fill: 'purple', childOptions: endChildObj }
       
-      result = b._mergeThenOptions( startObj, endObj )
+  #     result = b._mergeThenOptions( startObj, endObj )
 
-      expect(b._history[1]).toBe result
+  #     expect(b._history[1]).toBe result
+
+  describe '_getThenOption method ->', ->
+    it 'should get options from childOptions', ->
+      b = new Burst count: 2
+      o = { childOptions: { fill: [ 'yellow', 'cyan', 'blue' ] } }
+      result = b._getThenOption( o, 1 )
+      expect(result.fill).toBe 'cyan'
+
+    it 'should not throw if there is no childOptions', ->
+      b = new Burst count: 2
+      o = { }
+      result = b._getThenOption( o, 1 )
+      expect(result).toEqual {}
+
+
+  describe 'then method ->', ->
+    it 'should return this', ->
+      b = new Burst count: 2
+      expect( b.then({}) ).toBe b
+
+    it 'should pass options to swirls', ->
+      b = new Burst count: 2
+      
+      spyOn b._swirls[0], 'then'
+      spyOn b._swirls[1], 'then'
+
+      b.then({ childOptions: { radius: [ 10, 20 ] } })
+
+      expect(b._swirls[0].then).toHaveBeenCalledWith { radius: 10, parent: b._modules[1].el }
+      expect(b._swirls[1].then).toHaveBeenCalledWith { radius: 20, parent: b._modules[1].el }
+
+    it 'should call _recalcTotalDuration method', ->
+      b = new Burst count: 2
+  
+      spyOn b.timeline, '_recalcTotalDuration'      
+      b.then({ childOptions: { radius: [ 10, 20 ] } })
+
+      expect(b.timeline._recalcTotalDuration).toHaveBeenCalled()
+
+    it 'should create swirless master Burst', ->
+      b = new Burst count: 2
+  
+      b.then({ childOptions: { radius: [ 10, 20 ] } })
+
+      expect(b._modules[1] instanceof Burst).toBe true
+      expect(b._modules[1]._o.count).toBe 0
+
+    it 'should pass the swirlLess Burst to swirls', ->
+      b = new Burst count: 2
+  
+      b.then({ childOptions: { radius: [ 10, 20 ] } })
+
+      expect(b._swirls[1]._modules[1]._o.parent).toBe b._modules[1].el
+
+
+
+
+
+
+
+
 
 
 

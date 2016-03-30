@@ -26,16 +26,47 @@ class Burst extends Swirl {
     /* childOptions PROPERTIES ARE -
       `Swirl` DEFAULTS + `Tween` DEFAULTS.
       ONLY `isSwirl` option is `false` by default. */
-
-    // add options intersection hash - map that holds the property
-    // names that could be on both parent module and child ones,
-    // so setting one of those on parent, affect parent only
-    // this._optionsIntersection = {
-    //   radius: 1, radiusX: 1, radiusY: 1,
-    //   angle:  1, scale:   1, opacity: 1,
-    // }
     // exclude unitTimeline object from deltas parsing
     this._skipPropsDelta.unitTimeline = 1;
+  }
+  /*
+    Method to create a then record for the module.
+    @public
+    overrides @ Thenable
+    @param    {Object} Options for the next animation.
+    @returns  {Object} this.
+  */
+  then ( o ) {
+    // next burst module
+    var masterBurst = new Burst({ count: 0 });
+
+    for (var i = 0; i < this._swirls.length; i++) {
+      var option = this._getThenOption( o, i );
+      // set parent of new swirls to master burst
+      option.parent = masterBurst.el;
+      this._swirls[i].then( option );
+    }
+
+    this._modules.push( masterBurst );
+    this.timeline._recalcTotalDuration();
+
+    return this;
+  }
+  /*
+    Method to get childOption for then call.
+    @private
+    @param   {Object} Object to look in.
+    @param   {Number} Index of the current Swirl.
+    @returns {Object} Options for the current swirl.
+  */
+  _getThenOption (obj, i) {
+    var options = {};
+
+    for ( var key in obj.childOptions ) {
+      options[key] = this._getPropByMod( key, i, obj.childOptions);
+    }
+
+    return options;
   }
   /*
     Method to copy _o options to _props with fallback to _defaults.
@@ -105,7 +136,7 @@ class Burst extends Swirl {
     options.left           = '50%';
     options.top            = '50%';
     options.parent         = this.el;
-    options.isTimelineLess = true;
+    // options.isTimelineLess = true;
     // option.callbacksContext = this;  ?
 
     var p          = this._props,
@@ -283,21 +314,22 @@ class Burst extends Swirl {
     @private
     @override @ Tunable
   */
-  _tuneSubModules () {
-    // call _tuneSubModules on Tunable
-    super._tuneSubModules();
-    // tune swirls including their tweens
-    for (var index = 0; index < this._swirls.length; index++) {
-      var swirl   = this._swirls[index],
-          options = this._getOption( index );
+  // _tuneSubModules () {
+  //   // call _tuneSubModules on Tunable
+  //   super._tuneSubModules();
+  //   // tune swirls including their tweens
+  //   for (var index = 0; index < this._swirls.length; index++) {
+  //     var swirl   = this._swirls[index],
+  //         options = this._getOption( index );
 
-      swirl._tuneNewOptions( options );
-      this._resetTween( swirl.tween, options );
-    }
+  //     swirl._tuneNewOptions( options );
+  //     this._resetTween( swirl.tween, options );
+  //   }
     
-    this._o.timeline && this.timeline._setProp(this._o.timeline);
-    this.timeline._recalcTotalDuration();
-  }
+  //   this._o.timeline && this.timeline._setProp(this._o.timeline);
+  //   this.timeline._recalcTotalDuration();
+  // }
+  
   /*
     Method to reset some flags on merged options object.
     @private
@@ -328,18 +360,18 @@ class Burst extends Swirl {
     @param {Object} End options for the merge.
     @returns {Object} Merged options.
   */
-  _mergeThenOptions ( start, end ) {
-    var startChild  = start.childOptions || {},
-        endChild    = end.childOptions   || {},
-        mergedChild = super._mergeThenOptions( startChild, endChild, false ),
-        merged      = super._mergeThenOptions( start, end, false );
+  // _mergeThenOptions ( start, end ) {
+  //   var startChild  = start.childOptions || {},
+  //       endChild    = end.childOptions   || {},
+  //       mergedChild = super._mergeThenOptions( startChild, endChild, false ),
+  //       merged      = super._mergeThenOptions( start, end, false );
 
-    merged.childOptions = mergedChild;
-    this._history.push( merged );
+  //   merged.childOptions = mergedChild;
 
-    return merged;
-  }
+  //   this._history.push( merged );
 
+  //   return merged;
+  // }
 
 }
 

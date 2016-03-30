@@ -110,6 +110,13 @@ class Thenable extends Tweenable {
     var endKeys = Object.keys(end);
 
     for (var key in end) {
+
+      /* !COVER! */
+      if ( key == 'parent' ) {
+        o[key] = end[key];
+        continue;
+      };
+
       // get key/value of the end object
       // endKey - name of the property, endValue - value of the property
       var endValue   = end[key],

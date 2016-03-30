@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.208.1', isDebug: true, helpers: h,
+  revision:   '0.208.2', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -26,6 +26,7 @@ window.mojs = {
 // TODO:
 /*
   burst fix the tune for `then` chains
+  cover in thenable
   randoms in then chains for transit and swirl.
   module names
   perf optimizations.
@@ -34,48 +35,27 @@ window.mojs = {
   percentage for radius
 */
 
-// var sw = new mojs.Burst({
-//   isShowStart:  1,
-//   isShowEnd:    1,
-//   left:         '50%',  top: '50%',
-//   childOptions: {
-//     duration:     3500,
-//     // easing:       'ease.out',
-//     isSwirl:      1,
-//     fill:         ['cyan', 'yellow'],
-//     radius:       { 5 : .5 },
-//     // stroke: 'cyan',
-//     strokeWidth: 2
-//   }
-// })
-//   .then({ radius: 10, childOptions: {
-//     // easing: 'cubic.in',
-//     // duration: 400,
-//     radius: 15 , isSwirl: 0
-//   }})
-//   // .then({
-//   //   radius: 100, angle: 0,
-//   //   childOptions: {
-//   //     easing: 'cubic.out',
-//   //     duration: 350, radius: 0, shape: 'cross', stroke: {'cyan': 'cyan'}, strokeWidth: 2 }
-//   // });
+let sw = new mojs.Burst({
+  count: 5,
+  left: '50%', top: '50%',
+  isShowEnd: 1,
+  childOptions: {
+    fill: 'cyan',
+    duration: 2000
+  }
+}).then({
+  childOptions: { radius: 10 }
+});
 
-// console.log(sw._history);
-
-// var playEl = document.querySelector('#js-play'),
-//     rangeSliderEl = document.querySelector('#js-range-slider');
-// document.body.addEventListener('click', function (e) {
-//   // console.log('REPLAy')
-//   sw
-//     // .generate()
-//     .tune({
-//       left:   e.pageX,
-//       top:    e.pageY,
-//       angle:  { 0: -20 },
-//       childOptions: { fill: 'orange' }
-//     })
-//     .replay();
-// });
+var playEl = document.querySelector('#js-play'),
+    rangeSliderEl = document.querySelector('#js-range-slider');
+document.body.addEventListener('click', function (e) {
+  sw
+    // .tune({
+    //   fill: 'white', duration: 1000
+    // })
+    .replay();
+});
 
 // rangeSliderEl.addEventListener('input', function () {
 //   tr.setProgress( rangeSliderEl.value/1000 );

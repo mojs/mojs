@@ -104,16 +104,6 @@
         expect(b._swirls[3]._o.index).toBe(3);
         return expect(b._swirls[4]._o.index).toBe(4);
       });
-      it('should pass isTimelineLess option to the swirls', function() {
-        var b;
-        b = new Burst;
-        b._createBit();
-        expect(b._swirls[0]._o.isTimelineLess).toBe(true);
-        expect(b._swirls[1]._o.isTimelineLess).toBe(true);
-        expect(b._swirls[2]._o.isTimelineLess).toBe(true);
-        expect(b._swirls[3]._o.isTimelineLess).toBe(true);
-        return expect(b._swirls[4]._o.isTimelineLess).toBe(true);
-      });
       return it('should pass options to swirls', function() {
         var b, key, options0, options1, options2, _results;
         b = new Burst;
@@ -490,14 +480,13 @@
         result = burst._addOptionalProperties(obj, 0);
         return expect(result).toBe(obj);
       });
-      it('should add parent, index and isTimelineLess', function() {
+      it('should add parent, index', function() {
         var burst, obj, result;
         burst = new Burst;
         obj = {};
         result = burst._addOptionalProperties(obj, 0);
         expect(result.index).toBe(0);
-        expect(result.parent).toBe(burst.el);
-        return expect(result.isTimelineLess).toBe(true);
+        return expect(result.parent).toBe(burst.el);
       });
       it('should hard rewrite `left` and `top` properties to 50%', function() {
         var burst, obj, result;
@@ -667,68 +656,6 @@
         return expect(b._calcSize).toHaveBeenCalled();
       });
     });
-    describe('_tuneSubModules method ->', function() {
-      it('should call super', function() {
-        var b;
-        b = new Burst;
-        spyOn(Tunable.prototype, '_tuneSubModules');
-        b._tuneSubModules();
-        return expect(Tunable.prototype._tuneSubModules).toHaveBeenCalled();
-      });
-      it('should call _tuneNewOptions on each swirl', function() {
-        var b;
-        b = new Burst({
-          count: 2
-        });
-        spyOn(b._swirls[0], '_tuneNewOptions');
-        spyOn(b._swirls[1], '_tuneNewOptions');
-        spyOn(b, '_resetTween');
-        b._tuneSubModules();
-        expect(b._swirls[0]._tuneNewOptions.calls.first().args[0]).toEqual(b._getOption(0));
-        expect(b._swirls[1]._tuneNewOptions.calls.first().args[0]).toEqual(b._getOption(1));
-        expect(b._resetTween.calls.argsFor(0)[0]).toBe(b._swirls[0].tween);
-        expect(b._resetTween.calls.argsFor(0)[1]).toEqual(b._getOption(0));
-        expect(b._resetTween.calls.argsFor(1)[0]).toBe(b._swirls[1].tween);
-        expect(b._resetTween.calls.argsFor(1)[1]).toEqual(b._getOption(1));
-        return expect(b._resetTween.calls.count()).toBe(2);
-      });
-      it('should set prop on timeline', function() {
-        var b, isCalled, timelineOpts;
-        isCalled = null;
-        b = new Burst({
-          count: 2
-        });
-        timelineOpts = {
-          onComplete: null
-        };
-        b._o.timeline = timelineOpts;
-        spyOn(b.timeline, '_setProp');
-        b._tuneSubModules();
-        return expect(b.timeline._setProp).toHaveBeenCalledWith(timelineOpts);
-      });
-      it('should not set prop on timeline if no object', function() {
-        var b, isCalled, timelineOpts;
-        isCalled = null;
-        b = new Burst({
-          count: 2
-        });
-        timelineOpts = {
-          onComplete: null
-        };
-        spyOn(b.timeline, '_setProp');
-        b._tuneSubModules();
-        return expect(b.timeline._setProp).not.toHaveBeenCalled();
-      });
-      return it('should call _recalcTotalDuration on timeline', function() {
-        var b;
-        b = new Burst({
-          count: 2
-        });
-        spyOn(b.timeline, '_recalcTotalDuration');
-        b._tuneSubModules();
-        return expect(b.timeline._recalcTotalDuration.calls.count()).toBe(1);
-      });
-    });
     describe('_resetMergedFlags method', function() {
       it('should call the super method', function() {
         var b, obj;
@@ -766,116 +693,96 @@
         return expect(b._resetMergedFlags(obj).isTimelineLess).toBe(false);
       });
     });
-    return describe('_mergeThenOptions method ->', function() {
-      it('should call super', function() {
-        var b, endObj, startObj;
+    describe('_getThenOption method ->', function() {
+      it('should get options from childOptions', function() {
+        var b, o, result;
         b = new Burst({
           count: 2
         });
-        spyOn(Thenable.prototype, '_mergeThenOptions').and.callThrough();
-        startObj = {
-          fill: 'cyan',
+        o = {
           childOptions: {
-            fill: 'yellow'
+            fill: ['yellow', 'cyan', 'blue']
           }
         };
-        endObj = {
-          fill: 'purple',
+        result = b._getThenOption(o, 1);
+        return expect(result.fill).toBe('cyan');
+      });
+      return it('should not throw if there is no childOptions', function() {
+        var b, o, result;
+        b = new Burst({
+          count: 2
+        });
+        o = {};
+        result = b._getThenOption(o, 1);
+        return expect(result).toEqual({});
+      });
+    });
+    return describe('then method ->', function() {
+      it('should return this', function() {
+        var b;
+        b = new Burst({
+          count: 2
+        });
+        return expect(b.then({})).toBe(b);
+      });
+      it('should pass options to swirls', function() {
+        var b;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b._swirls[0], 'then');
+        spyOn(b._swirls[1], 'then');
+        b.then({
           childOptions: {
-            fill: 'black'
+            radius: [10, 20]
           }
-        };
-        b._mergeThenOptions(startObj, endObj);
-        return expect(Thenable.prototype._mergeThenOptions).toHaveBeenCalledWith(startObj, endObj, false);
+        });
+        expect(b._swirls[0].then).toHaveBeenCalledWith({
+          radius: 10,
+          parent: b._modules[1].el
+        });
+        return expect(b._swirls[1].then).toHaveBeenCalledWith({
+          radius: 20,
+          parent: b._modules[1].el
+        });
       });
-      it('should call super with childOptions', function() {
-        var b, endChildObj, endObj, startChildObj, startObj;
+      it('should call _recalcTotalDuration method', function() {
+        var b;
         b = new Burst({
           count: 2
         });
-        spyOn(Thenable.prototype, '_mergeThenOptions').and.callThrough();
-        startChildObj = {
-          fill: 'yellow'
-        };
-        endChildObj = {
-          fill: 'black'
-        };
-        startObj = {
-          fill: 'cyan',
-          childOptions: startChildObj
-        };
-        endObj = {
-          fill: 'purple',
-          childOptions: endChildObj
-        };
-        b._mergeThenOptions(startObj, endObj);
-        return expect(Thenable.prototype._mergeThenOptions).toHaveBeenCalledWith(startChildObj, endChildObj, false);
+        spyOn(b.timeline, '_recalcTotalDuration');
+        b.then({
+          childOptions: {
+            radius: [10, 20]
+          }
+        });
+        return expect(b.timeline._recalcTotalDuration).toHaveBeenCalled();
       });
-      it('should fallback to {} for childOptions', function() {
-        var b, endChildObj, endObj, startChildObj, startObj;
+      it('should create swirless master Burst', function() {
+        var b;
         b = new Burst({
           count: 2
         });
-        spyOn(Thenable.prototype, '_mergeThenOptions').and.callThrough();
-        startChildObj = null;
-        endChildObj = null;
-        startObj = {
-          fill: 'cyan',
-          childOptions: startChildObj
-        };
-        endObj = {
-          fill: 'purple',
-          childOptions: endChildObj
-        };
-        b._mergeThenOptions(startObj, endObj);
-        return expect(Thenable.prototype._mergeThenOptions).toHaveBeenCalledWith({}, {}, false);
+        b.then({
+          childOptions: {
+            radius: [10, 20]
+          }
+        });
+        expect(b._modules[1] instanceof Burst).toBe(true);
+        return expect(b._modules[1]._o.count).toBe(0);
       });
-      it('should set merged children to parent', function() {
-        var b, childResult, endChildObj, endObj, parentResult, result, startChildObj, startObj;
+      return it('should pass the swirlLess Burst to swirls', function() {
+        var b;
         b = new Burst({
           count: 2
         });
-        startChildObj = {
-          fill: 'yellow'
-        };
-        endChildObj = {
-          fill: 'black'
-        };
-        startObj = {
-          fill: 'cyan',
-          childOptions: startChildObj
-        };
-        endObj = {
-          fill: 'purple',
-          childOptions: endChildObj
-        };
-        childResult = Thenable.prototype._mergeThenOptions.call(b, startChildObj, endChildObj);
-        parentResult = Thenable.prototype._mergeThenOptions.call(b, startObj, endObj);
-        result = b._mergeThenOptions(startObj, endObj);
-        parentResult.childOptions = childResult;
-        return expect(result).toEqual(parentResult);
-      });
-      return it('should push merged object to history', function() {
-        var b, endChildObj, endObj, result, startChildObj, startObj;
-        b = new Burst({
-          count: 2
+        b.then({
+          childOptions: {
+            radius: [10, 20]
+          }
         });
-        startChildObj = {
-          fill: 'yellow'
-        };
-        endChildObj = {
-          fill: 'black'
-        };
-        startObj = {
-          fill: 'cyan',
-          childOptions: startChildObj
-        };
-        endObj = {
-          fill: 'purple',
-          childOptions: endChildObj
-        };
-        result = b._mergeThenOptions(startObj, endObj);
-        return expect(b._history[1]).toBe(result);
+        return expect(b._swirls[1]._modules[1]._o.parent).toBe(b._modules[1].el);
       });
     });
   });

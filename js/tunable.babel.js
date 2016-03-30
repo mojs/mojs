@@ -34,6 +34,7 @@ class Tuneable extends Thenable {
 
   /*
     Method to transform history rewrite new options object chain on run.
+    @private
     @param {Object} New options to tune for.
   */
   _transformHistory ( o ) {
@@ -43,6 +44,7 @@ class Tuneable extends Thenable {
       var optionsKey   = optionsKeys[i],
           optionsValue = o[optionsKey];
 
+      if ( optionsKey === 'childOptions' ) { continue; }
       this._transformHistoryFor( optionsKey, optionsValue );
     }
   }
@@ -64,17 +66,18 @@ class Tuneable extends Thenable {
     @param {Number} Index of the history record to transform.
     @param {String} Property name to transform.
     @param {Any} Property value to transform to.
+    @param {Object} Optional the current history record.
+    @param {Object} Optional the next history record.
     @returns {Boolean} Returns true if no further
                        history modifications is needed.
   */
-  _transformHistoryRecord ( index, key, newValue ) {
+  _transformHistoryRecord ( index, key, newValue, currRecord, nextRecord ) {
     if (newValue == null ) { return null; }
 
-    var currRecord = this._history[index],
-        prevRecord = this._history[index-1],
-        nextRecord = this._history[index+1],
-        oldValue   = currRecord[key];
-
+    currRecord = (currRecord == null) ? this._history[index]   : currRecord;
+    nextRecord = (nextRecord == null) ? this._history[index+1] : nextRecord;
+    
+    var oldValue = currRecord[key];
     // if index is 0 - always save the newValue
     // and return non-delta for subsequent modifications
     if ( index === 0 ) {
@@ -104,7 +107,6 @@ class Tuneable extends Thenable {
           ? newValue : null;
       }
     }
-
   }
   /*
     Method to tune new history options to all the submodules.
@@ -112,8 +114,7 @@ class Tuneable extends Thenable {
   */
   _tuneSubModules () {
     for ( var i = 1; i < this._modules.length; i++ ) {
-      var module = this._modules[i];
-      module._tuneNewOptions( this._history[i] );
+      this._modules[i]._tuneNewOptions( this._history[i] );
     }
   }
   /*

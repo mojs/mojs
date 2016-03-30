@@ -113,6 +113,18 @@ describe 'Tunable ->', ->
       expect(tr._history[0].delay).toBe undefined
       expect(result).toBe null
 
+    it 'should receive current and next history records', ->
+      tr = new Tunable({ duration: 2000 })
+        .then radius: 20
+        .then radius: 30
+
+      curr = { fill: 'red' }
+      next = { fill: 'green' }
+      
+      result = tr._transformHistoryRecord 1, 'fill', 'green', curr, next
+      expect(curr).toEqual { fill: 'green' }
+      expect(result).toBe null
+
   describe '_transformHistory method ->', ->
     it 'should call _transformHistoryFor for every new property ->', ->
       tr = new Tunable({}).then({ radius: 0 }).then({ radius: 50 })
@@ -121,6 +133,14 @@ describe 'Tunable ->', ->
       expect(tr._transformHistoryFor)
         .toHaveBeenCalledWith 'x', 20
       expect(tr._transformHistoryFor.calls.count()).toBe 1
+
+    it 'should call skip childOptions ->', ->
+      tr = new Tunable({}).then({ radius: 0 }).then({ radius: 50 })
+      spyOn tr, '_transformHistoryFor'
+      tr._transformHistory childOptions: {}
+      expect(tr._transformHistoryFor)
+        .not.toHaveBeenCalledWith 'childOptions', {}
+      expect(tr._transformHistoryFor.calls.count()).toBe 0
 
   describe '_transformHistoryFor method ->', ->
     it 'should call _transformHistoryRecord for every history record', ->
