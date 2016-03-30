@@ -502,7 +502,7 @@
         return expect(radiusY).toBe(20);
       });
     });
-    return describe('_getDeltaFromPoints method ->', function() {
+    describe('_getDeltaFromPoints method ->', function() {
       it('should return the delta', function() {
         var burst, delta;
         burst = new Burst;
@@ -526,6 +526,73 @@
           y: 40
         });
         return expect(delta).toBe(10);
+      });
+    });
+    return describe('then method ->', function() {
+      it('should return this', function() {
+        var b;
+        b = new Burst({
+          count: 2
+        });
+        return expect(b.then({})).toBe(b);
+      });
+      it('should pass options to swirls', function() {
+        var b, o, option0, option1, pack;
+        b = new Burst({
+          count: 2
+        });
+        pack = b._swirls[0];
+        spyOn(pack[0], 'then');
+        spyOn(pack[1], 'then');
+        o = {
+          childOptions: {
+            radius: [10, 20]
+          }
+        };
+        b.then(o);
+        option0 = b._getChildOption(o, 0);
+        option0.parent = b._masterSwirls[1].el;
+        expect(pack[0].then).toHaveBeenCalledWith(option0);
+        option1 = b._getChildOption(o, 1);
+        option1.parent = b._masterSwirls[1].el;
+        return expect(pack[1].then).toHaveBeenCalledWith(option1);
+      });
+      it('should save new swirls to _swirls', function() {
+        var b, o;
+        b = new Burst({
+          count: 2
+        });
+        o = {
+          childOptions: {
+            radius: [10, 20]
+          }
+        };
+        b.then(o);
+        expect(b._swirls[1].length).toBe(2);
+        expect(b._swirls[1][0] instanceof Swirl).toBe(true);
+        return expect(b._swirls[1][1] instanceof Swirl).toBe(true);
+      });
+      it('should pass options to masterSwirl', function() {
+        var b, o;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b.masterSwirl, 'then');
+        o = {
+          opacity: .5
+        };
+        b.then(o);
+        return expect(b.masterSwirl.then).toHaveBeenCalledWith(o);
+      });
+      return it('should pass save the new master swirl', function() {
+        var b;
+        b = new Burst({
+          count: 2
+        });
+        b.then({
+          opacity: .5
+        });
+        return expect(b._masterSwirls.length).toBe(2);
       });
     });
   });

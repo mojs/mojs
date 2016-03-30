@@ -1287,6 +1287,44 @@
 	      };
 	    }
 	    /*
+	      Method to create a then record for the module.
+	      @public
+	      overrides @ Thenable
+	      @param    {Object} Options for the next animation.
+	      @returns  {Object} this.
+	    */
+
+	  }, {
+	    key: 'then',
+	    value: function then(o) {
+
+	      // master swirl
+	      this.masterSwirl.then(o);
+
+	      var modules = this.masterSwirl._modules,
+	          newMasterSwirl = modules[modules.length - 1];
+
+	      this._masterSwirls.push(newMasterSwirl);
+
+	      // swirls
+	      var pack = this._swirls[0],
+	          newPack = [];
+
+	      for (var i = 0; i < pack.length; i++) {
+	        var options = this._getChildOption(o, i);
+	        options.parent = newMasterSwirl.el;
+	        pack[i].then(options);
+
+	        var modules = pack[i]._modules;
+	        newPack.push(modules[modules.length - 1]);
+	      }
+
+	      this._swirls[this._masterSwirls.length - 1] = newPack;
+
+	      this.timeline._recalcTotalDuration();
+	      return this;
+	    }
+	    /*
 	      Method for initial render of the module.
 	    */
 
@@ -1297,7 +1335,7 @@
 	      this._o.radius = 0;
 
 	      this.masterSwirl = new _swirl2.default(this._o);
-	      this._masterSwirls = { 0: this.masterSwirl };
+	      this._masterSwirls = [this.masterSwirl];
 
 	      this._renderSwirls();
 	    }
@@ -1317,6 +1355,7 @@
 	        this._addOptionalProperties(option, i);
 	        pack.push(new _swirl2.default(option));
 	      }
+
 	      this._swirls = { 0: pack };
 	    }
 
@@ -1519,46 +1558,6 @@
 	  }, {
 	    key: '_makeTween',
 	    value: function _makeTween() {} /* don't create any tween */
-
-	    // /*
-	    //   Method to create a then record for the module.
-	    //   @public
-	    //   overrides @ Thenable
-	    //   @param    {Object} Options for the next animation.
-	    //   @returns  {Object} this.
-	    // */
-	    // then ( o ) {
-	    //   // next burst module
-	    //   // merge then options with the current ones
-	    //   var prevRecord = this._history[ this._history.length - 1 ],
-	    //       merged     = this._mergeThenOptions( prevRecord, o );
-
-	    //   merged.count = 0;
-
-	    //   var masterBurst = new Burst( merged );
-	    //   this._modules.push( masterBurst );
-
-	    //   var swirls = [],
-	    //       maxDuration = 0;
-	    //   for (var i = 0; i < this._swirls.length; i++) {
-	    //     var option = this._getThenOption( o, i );
-	    //     // set parent of new swirls to master burst
-	    //     option.parent = masterBurst.el;
-	    //     this._swirls[i].then( option );
-	    //     var mods     = this._swirls[i]._modules,
-	    //         newSwirl = mods[mods.length-1];
-
-	    //     swirls.push( newSwirl );
-	    //     maxDuration = newSwirl.timeline._props.repeatTime;
-	    //   }
-
-	    //   masterBurst.timeline._setProp('duration', maxDuration);
-	    //   // this.timeline.add( masterBurst );
-
-	    //   this.timeline._recalcTotalDuration();
-
-	    //   return this;
-	    // }
 	    // /*
 	    //   Method to get childOption for then call.
 	    //   @private
@@ -7850,19 +7849,23 @@
 	*/
 
 	var sw = new mojs.Burst({
-	  count: 2,
+	  count: 5,
 	  left: '50%', top: '50%',
 	  isShowEnd: 1,
+	  radius: { 0: 100 },
+	  x: { 0: 200 },
 	  childOptions: {
 	    shape: 'line',
-	    stroke: 'cyan',
+	    duration: 2000,
+	    isSwirl: 1,
+	    stroke: ['cyan', 'yellow', 'white'],
 	    // duration: 2000,
 	    angle: { 0: 180 }
 	  }
+	}).then({
+	  x: 0,
+	  childOptions: { radius: 10 }
 	});
-	// .then({
-	//   childOptions: { radius: 10 }
-	// });
 
 	var playEl = document.querySelector('#js-play'),
 	    rangeSliderEl = document.querySelector('#js-range-slider');

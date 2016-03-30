@@ -36,19 +36,23 @@ window.mojs = {
 */
 
 let sw = new mojs.Burst({
-  count: 2,
+  count: 5,
   left: '50%', top: '50%',
   isShowEnd: 1,
+  radius: { 0: 100 },
+  x: {0: 200},
   childOptions: {
     shape: 'line',
-    stroke: 'cyan',
+    duration: 2000,
+    isSwirl: 1,
+    stroke: ['cyan', 'yellow', 'white'],
     // duration: 2000,
     angle: { 0: 180 }
   }
-})
-// .then({
-//   childOptions: { radius: 10 }
-// });
+}).then({
+  x: 0,
+  childOptions: { radius: 10 }
+});
 
 var playEl = document.querySelector('#js-play'),
     rangeSliderEl = document.querySelector('#js-range-slider');

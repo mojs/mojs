@@ -778,21 +778,56 @@ describe 'Burst ->', ->
   #     expect(result).toEqual {}
 
 
-  # describe 'then method ->', ->
-  #   it 'should return this', ->
-  #     b = new Burst count: 2
-  #     expect( b.then({}) ).toBe b
+  describe 'then method ->', ->
+    it 'should return this', ->
+      b = new Burst count: 2
+      expect( b.then({}) ).toBe b
 
-  #   it 'should pass options to swirls', ->
-  #     b = new Burst count: 2
-      
-  #     spyOn b._swirls[0], 'then'
-  #     spyOn b._swirls[1], 'then'
+    it 'should pass options to swirls', ->
+      b = new Burst count: 2
+        
+      pack = b._swirls[0] 
+      spyOn pack[0], 'then'
+      spyOn pack[1], 'then'
 
-  #     b.then({ childOptions: { radius: [ 10, 20 ] } })
+      o = { childOptions: { radius: [ 10, 20 ] } }
+      b.then(o)
 
-  #     expect(b._swirls[0].then).toHaveBeenCalledWith { radius: 10, parent: b._modules[1].el }
-  #     expect(b._swirls[1].then).toHaveBeenCalledWith { radius: 20, parent: b._modules[1].el }
+      option0 = b._getChildOption( o, 0 )
+      option0.parent = b._masterSwirls[1].el
+      expect(pack[0].then).toHaveBeenCalledWith option0
+
+      option1 = b._getChildOption( o, 1 )
+      option1.parent = b._masterSwirls[1].el
+      expect(pack[1].then).toHaveBeenCalledWith option1
+
+    it 'should save new swirls to _swirls', ->
+      b = new Burst count: 2
+        
+      o = { childOptions: { radius: [ 10, 20 ] } }
+      b.then(o)
+
+      expect(b._swirls[1].length).toBe 2
+      expect(b._swirls[1][0] instanceof Swirl).toBe true
+      expect(b._swirls[1][1] instanceof Swirl).toBe true
+
+    it 'should pass options to masterSwirl', ->
+      b = new Burst count: 2
+        
+      spyOn b.masterSwirl, 'then'
+
+      o = { opacity: .5 }
+      b.then(o)
+
+      expect( b.masterSwirl.then ).toHaveBeenCalledWith o
+
+    it 'should pass save the new master swirl', ->
+      b = new Burst count: 2
+        
+      b.then( { opacity: .5 } )
+      expect( b._masterSwirls.length ).toBe 2
+
+
 
   #   it 'should call _recalcTotalDuration method', ->
   #     b = new Burst count: 2
