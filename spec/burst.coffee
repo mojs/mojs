@@ -685,6 +685,22 @@ describe 'Burst ->', ->
 
       expect(b._swirls[1]._modules[1]._o.parent).toBe b._modules[1].el
 
+    it 'should pass merged options to the master busrt', ->
+      b = new Burst(count: 2, opacity: { 0: 1 } )
+        
+        .then({ opacity: 0, childOptions: { radius: [ 10, 20 ] } })
+
+      expect(b._modules[1]._o.opacity[1]).toBe 0
+
+    it 'should set duration prop on master Burst', ->
+      b = new Burst(count: 2, opacity: { 0: 1 } )
+        .then({
+          opacity: 0,
+          childOptions: { duration: 'stagger(100, 200)', radius: [ 10, 20 ] }
+        })
+
+      expect(b._modules[1].timeline._props.duration).toBe 300
+
 
 
 

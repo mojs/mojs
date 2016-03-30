@@ -38,16 +38,32 @@ class Burst extends Swirl {
   */
   then ( o ) {
     // next burst module
-    var masterBurst = new Burst({ count: 0 });
+    // merge then options with the current ones
+    var prevRecord = this._history[ this._history.length - 1 ],
+        merged     = this._mergeThenOptions( prevRecord, o );
 
+    merged.count = 0;
+
+    var masterBurst = new Burst( merged );
+    this._modules.push( masterBurst );
+
+    var swirls = [],
+        maxDuration = 0;
     for (var i = 0; i < this._swirls.length; i++) {
       var option = this._getThenOption( o, i );
       // set parent of new swirls to master burst
       option.parent = masterBurst.el;
       this._swirls[i].then( option );
+      var mods     = this._swirls[i]._modules,
+          newSwirl = mods[mods.length-1];
+      
+      swirls.push( newSwirl );
+      maxDuration = newSwirl.timeline._props.repeatTime;
     }
 
-    this._modules.push( masterBurst );
+    masterBurst.timeline._setProp('duration', maxDuration);
+    // this.timeline.add( masterBurst );
+
     this.timeline._recalcTotalDuration();
 
     return this;

@@ -772,7 +772,7 @@
         expect(b._modules[1] instanceof Burst).toBe(true);
         return expect(b._modules[1]._o.count).toBe(0);
       });
-      return it('should pass the swirlLess Burst to swirls', function() {
+      it('should pass the swirlLess Burst to swirls', function() {
         var b;
         b = new Burst({
           count: 2
@@ -783,6 +783,37 @@
           }
         });
         return expect(b._swirls[1]._modules[1]._o.parent).toBe(b._modules[1].el);
+      });
+      it('should pass merged options to the master busrt', function() {
+        var b;
+        b = new Burst({
+          count: 2,
+          opacity: {
+            0: 1
+          }
+        }).then({
+          opacity: 0,
+          childOptions: {
+            radius: [10, 20]
+          }
+        });
+        return expect(b._modules[1]._o.opacity[1]).toBe(0);
+      });
+      return it('should set duration prop on master Burst', function() {
+        var b;
+        b = new Burst({
+          count: 2,
+          opacity: {
+            0: 1
+          }
+        }).then({
+          opacity: 0,
+          childOptions: {
+            duration: 'stagger(100, 200)',
+            radius: [10, 20]
+          }
+        });
+        return expect(b._modules[1].timeline._props.duration).toBe(300);
       });
     });
   });
