@@ -942,6 +942,6 @@ describe 'Helpers ->', ->
       expect(result).toBeGreaterThan     30
       expect(result).not.toBeGreaterThan 50
 
-
+    
 
 

@@ -33,16 +33,34 @@ class Burst extends Tunable {
     @returns  {Object} this.
   */
   then ( o ) {
+    var newMaster = this._masterThen( o ),
+        newSwirls = this._childThen( o, newMaster );
 
-    // master swirl
+    this._setSwirlDuration( newMaster, this._calcPackTime(newSwirls) );
+
+    this.timeline._recalcTotalDuration();
+    return this;
+  }
+  /*
+    Method to call then on masterSwirl.
+    @param {Object} Then options.
+    @returns {Object} New master swirl.
+  */
+  _masterThen (o) {
     this.masterSwirl.then(o);
-
-    var modules        = this.masterSwirl._modules,
-        newMasterSwirl = modules[modules.length-1];
-
+    // get the latest master swirl in then chain
+    var newMasterSwirl = this._getLastItem(this.masterSwirl._modules);
+    // save to masterSwirls
     this._masterSwirls.push(newMasterSwirl);
-
-    // swirls
+    return newMasterSwirl;
+  }
+  /*
+    Method to call then on child swilrs.
+    @param {Object} Then options.
+    @param {Object} Current master Swirl.
+    @return {Array} Array of new Swirls.
+  */
+  _childThen (o, newMasterSwirl) {
     var pack    = this._swirls[0],
         newPack = [];
 
@@ -50,16 +68,29 @@ class Burst extends Tunable {
       var options = this._getChildOption( o, i );
       options.parent = newMasterSwirl.el;
       pack[i].then( options );
-
-      var modules = pack[i]._modules;
-      newPack.push( modules[modules.length-1] );
+      newPack.push( this._getLastItem(pack[i]._modules) );
     }
 
     this._swirls[this._masterSwirls.length-1] = newPack;
-
-    this.timeline._recalcTotalDuration();
-    return this;
+    return newPack;
   }
+  /*
+    Method to initialize properties.
+    @private
+    @overrides @ Thenable
+  */
+  _vars () {
+    super._vars();
+    // just buffer timeline for calculations
+    this._bufferTimeline = new Timeline;
+  }
+  /*
+    Method to get the last item of array.
+    @private
+    @param {Array} Array to get the last item in.
+    @returns {Any} The last item of array.
+  */
+  _getLastItem (arr) { return arr[arr.length-1]; }
   /*
     Method for initial render of the module.
   */
@@ -82,13 +113,37 @@ class Burst extends Tunable {
 
     for ( var i = 0; i < p.count; i++ ) {
       var option = this._getChildOption( this._o, i );
-      this._addOptionalProperties( option, i );
-      pack.push( new Swirl( option ) );
+      pack.push( new Swirl( this._addOptionalProps( option, i ) ));
     }
-
     this._swirls = { 0: pack };
+    this._setSwirlDuration( this.masterSwirl, this._calcPackTime(pack) );
   }
+  /*
+    Method to calculate total time of array of
+    concurrent tweens.
+    @param   {Array}  Pack to calculate the total time for.
+    @returns {Number} Total pack duration.
+  */
+  _calcPackTime ( pack ) {
+    var maxTime = 0;
+    for (var i = 0; i < pack.length; i++) {
+      var tween = pack[i].tween,
+          p     = tween._props;
 
+      maxTime = Math.max( p.repeatTime/p.speed, maxTime );
+    }
+    return maxTime;
+  }
+  /*
+    Method to set duration for Swirl.
+    @param {Object} Swirl instance to set the duration to.
+    @param {Number} Duration to set.
+  */
+  _setSwirlDuration ( swirl, duration ) {
+    swirl.tween._setProp( 'duration', duration );
+    var isRecalc = swirl.timeline && swirl.timeline._recalcTotalDuration;
+    isRecalc && swirl.timeline._recalcTotalDuration();
+  }
   /*
     Method to get childOption form object call by modulus.
     @private
@@ -121,7 +176,7 @@ class Burst extends Tunable {
     @param {Object} Object to add the properties to.
     @param {Number} Index of the property.
   */
-  _addOptionalProperties (options, index) {
+  _addOptionalProps (options, index) {
     options.index   = index;
     options.left    = '50%';
     options.top     = '50%';
@@ -239,7 +294,6 @@ class Burst extends Tunable {
   */
   _makeTimeline () {
     super._makeTimeline();
-
     this.timeline.add( this.masterSwirl, this._swirls[0] );
   }
   /*
@@ -319,7 +373,7 @@ class Burst extends Tunable {
   //     option[key] = h.parseStringOption(prop, i);
   //   }
 
-  //   return this._addOptionalProperties( option, i );
+  //   return this._addOptionalProps( option, i );
   // }
   // /*
   //   Method to draw self DIV element.

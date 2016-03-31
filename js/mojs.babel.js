@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.208.2', isDebug: true, helpers: h,
+  revision:   '0.209.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -27,7 +27,7 @@ window.mojs = {
 /*
   burst fix the tune for `then` chains
   cover in thenable
-  randoms in then chains for transit and swirl.
+  randoms/swirls in then chains for transit and swirl.
   module names
   perf optimizations.
   --
@@ -35,38 +35,47 @@ window.mojs = {
   percentage for radius
 */
 
-let sw = new mojs.Burst({
-  count: 5,
-  left: '50%', top: '50%',
-  isShowEnd: 1,
-  radius: { 0: 100 },
-  x: {0: 200},
-  childOptions: {
-    shape: 'line',
-    duration: 2000,
-    isSwirl: 1,
-    stroke: ['cyan', 'yellow', 'white'],
-    // duration: 2000,
-    angle: { 0: 180 }
-  }
-}).then({
-  x: 0,
-  childOptions: { radius: 10 }
-});
-
-var playEl = document.querySelector('#js-play'),
-    rangeSliderEl = document.querySelector('#js-range-slider');
-document.body.addEventListener('click', function (e) {
-  sw
-    // .tune({
-    //   fill: 'white', duration: 1000
-    // })
-    .replay();
-});
-
-// rangeSliderEl.addEventListener('input', function () {
-//   tr.setProgress( rangeSliderEl.value/1000 );
+// let sw = new mojs.Burst({
+//   count: 5,
+//   left: '50%', top: '50%',
+//   isShowEnd: 1,
+//   isShowStart: 1,
+//   isSwirl: false,
+//   radius: { 0: 100 },
+//   x: {0: 200},
+//   y: 0,
+//   angle: 90,
+//   childOptions: {
+//     shape: 'line',
+//     duration: 2000,
+//     isSwirl: 0,
+//     radius: { 7: 4 },
+//     stroke: ['cyan', 'yellow', 'white'],
+//     angle: { 0: 180 }
+//   }
+// }).then({
+//   x: 0,
+//   angle: 0,
+//   childOptions: { radius: 20 }
+// }).then({
+//   angle: 180,
+//   x: 200, y: -200,
+//   childOptions: { radius: 0 }
 // });
+
+// var playEl = document.querySelector('#js-play'),
+//     rangeSliderEl = document.querySelector('#js-range-slider');
+// document.body.addEventListener('click', function (e) {
+//   sw
+//     // .tune({
+//     //   fill: 'white', duration: 1000
+//     // })
+//     .replay();
+// });
+
+// // rangeSliderEl.addEventListener('input', function () {
+// //   tr.setProgress( rangeSliderEl.value/1000 );
+// // });
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;

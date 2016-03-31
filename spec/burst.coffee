@@ -24,7 +24,7 @@ describe 'Burst ->', ->
       expect(burst._defaults.radiusY).toEqual null
       expect(burst._defaults.isSwirl).toEqual false
 
-  describe '_render method', ->
+  describe '_render method ->', ->
     it 'should create master swirl', ->
       burst = new Burst
       burst.masterSwirl = undefined
@@ -64,10 +64,20 @@ describe 'Burst ->', ->
 
     it 'should add optional properties to option', ->
       burst = new Burst
-      spyOn burst, '_addOptionalProperties'
+      spyOn burst, '_addOptionalProps'
       burst._renderSwirls()
       
-      expect(burst._addOptionalProperties.calls.count()).toBe 5
+      expect(burst._addOptionalProps.calls.count()).toBe 5
+
+    it 'should set time on tween of masterSwirl', ->
+      burst = new Burst
+        childOptions:
+          duration: 'stagger(500, 1000)'
+          repeat: 2
+      burst.masterSwirl.tween._props.duration = null
+      burst._renderSwirls()
+      expect(burst.masterSwirl.tween._props.duration)
+        .toBe burst._calcPackTime burst._swirls[0]
 
   describe '_renderSwirls method', ->
     it 'should create _swirls object', ->
@@ -192,34 +202,34 @@ describe 'Burst ->', ->
       expect(bs.timeline._timelines[4]).toBe bs._swirls[0][3].timeline
       expect(bs.timeline._timelines[5]).toBe bs._swirls[0][4].timeline
 
-  describe '_addOptionalProperties method ->', ->
+  describe '_addOptionalProps method ->', ->
     it 'should return the passed object', ->
       burst = new Burst
       obj = {}
-      result = burst._addOptionalProperties obj, 0
+      result = burst._addOptionalProps obj, 0
       expect(result).toBe obj
 
     it 'should add parent, index', ->
       burst = new Burst
       obj = {}
-      result = burst._addOptionalProperties obj, 0
+      result = burst._addOptionalProps obj, 0
       expect(result.index).toBe 0
       expect(result.parent).toBe burst.masterSwirl.el
 
     it 'should set isSiwrl to false by default', ->
       burst = new Burst
       obj = { }
-      result = burst._addOptionalProperties obj, 0
+      result = burst._addOptionalProps obj, 0
       expect(result.isSwirl).toBe false
 
       obj = { isSwirl: true }
-      result = burst._addOptionalProperties obj, 0
+      result = burst._addOptionalProps obj, 0
       expect(result.isSwirl).toBe true
 
     it 'should hard rewrite `left` and `top` properties to 50%', ->
       burst = new Burst
       obj = {}
-      result = burst._addOptionalProperties obj, 0
+      result = burst._addOptionalProps obj, 0
       expect(result.left).toBe '50%'
       expect(result.top).toBe '50%'
 
@@ -232,8 +242,8 @@ describe 'Burst ->', ->
 
       obj0 = {}
       obj1 = {}
-      result0 = burst._addOptionalProperties obj0, 0
-      result1 = burst._addOptionalProperties obj1, 1
+      result0 = burst._addOptionalProps obj0, 0
+      result1 = burst._addOptionalProps obj1, 1
 
       expect(obj0.x[0]).toBeCloseTo 0, 5
       expect(obj0.y[0]).toBeCloseTo -100, 5
@@ -248,8 +258,8 @@ describe 'Burst ->', ->
 
       obj0 = { angle: 0 }
       obj1 = { angle: 0 }
-      result0 = burst._addOptionalProperties obj0, 0
-      result1 = burst._addOptionalProperties obj1, 1
+      result0 = burst._addOptionalProps obj0, 0
+      result1 = burst._addOptionalProps obj1, 1
 
       expect(obj0.angle).toBe 90
       expect(obj1.angle).toBe 270
@@ -342,6 +352,18 @@ describe 'Burst ->', ->
       burst = new Burst
       delta  = burst._getDeltaFromPoints('x', {x: 10, y: 20}, {x: 10, y: 40})
       expect(delta).toBe 10
+
+  describe '_vars method ->', ->
+    it 'should call super', ->
+      burst = new Burst
+      spyOn mojs.Thenable::, '_vars'
+      burst._vars()
+      expect(mojs.Thenable::_vars).toHaveBeenCalled()
+    it 'should create _bufferTimeline', ->
+      burst = new Burst
+      burst._bufferTimeline = null
+      burst._vars()
+      expect(burst._bufferTimeline instanceof mojs.Timeline).toBe true
 
   # describe 'initialization ->', ->
   #   it 'should have _defaults', ->
@@ -777,12 +799,30 @@ describe 'Burst ->', ->
   #     result = b._getThenOption( o, 1 )
   #     expect(result).toEqual {}
 
-
-  describe 'then method ->', ->
-    it 'should return this', ->
+  describe '_masterThen method ->', ->
+    it 'should pass options to masterSwirl', ->
       b = new Burst count: 2
-      expect( b.then({}) ).toBe b
+        
+      spyOn b.masterSwirl, 'then'
 
+      o = { opacity: .5 }
+      b._masterThen(o)
+
+      expect( b.masterSwirl.then ).toHaveBeenCalledWith o
+
+    it 'should save the new master swirl', ->
+      b = new Burst count: 2
+        
+      b._masterThen( { opacity: .5 } )
+      expect( b._masterSwirls.length ).toBe 2
+
+    it 'should return the new swirl', ->
+      b = new Burst count: 2
+        
+      result = b._masterThen( { opacity: .5 } )
+      expect( result ).toBe b._masterSwirls[b._masterSwirls.length-1]
+
+  describe '_childThen method ->', ->
     it 'should pass options to swirls', ->
       b = new Burst count: 2
         
@@ -791,7 +831,7 @@ describe 'Burst ->', ->
       spyOn pack[1], 'then'
 
       o = { childOptions: { radius: [ 10, 20 ] } }
-      b.then(o)
+      b._childThen(o, b._masterThen(o))
 
       option0 = b._getChildOption( o, 0 )
       option0.parent = b._masterSwirls[1].el
@@ -805,37 +845,117 @@ describe 'Burst ->', ->
       b = new Burst count: 2
         
       o = { childOptions: { radius: [ 10, 20 ] } }
-      b.then(o)
+
+      b._childThen(o, b._masterThen(o))
 
       expect(b._swirls[1].length).toBe 2
       expect(b._swirls[1][0] instanceof Swirl).toBe true
       expect(b._swirls[1][1] instanceof Swirl).toBe true
 
-    it 'should pass options to masterSwirl', ->
+    it 'should return the new pack', ->
       b = new Burst count: 2
         
-      spyOn b.masterSwirl, 'then'
+      o = { childOptions: { radius: [ 10, 20 ] } }
 
-      o = { opacity: .5 }
-      b.then(o)
+      result = b._childThen(o, b._masterThen(o))
 
-      expect( b.masterSwirl.then ).toHaveBeenCalledWith o
+      expect(result).toBe b._swirls[1]
 
-    it 'should pass save the new master swirl', ->
+  describe 'then method ->', ->
+    it 'should call _masterThen method', ->
       b = new Burst count: 2
-        
-      b.then( { opacity: .5 } )
-      expect( b._masterSwirls.length ).toBe 2
+      spyOn(b, '_masterThen').and.callThrough()
+      options = {}
+      b.then options
+      expect( b._masterThen ).toHaveBeenCalledWith options
 
+    it 'should call _childThen method', ->
+      b = new Burst count: 2
+      spyOn(b, '_childThen').and.callThrough()
+      options = {}
+      b.then options
 
+      expect( b._childThen )
+        .toHaveBeenCalledWith options, b._getLastItem b._masterSwirls
 
-  #   it 'should call _recalcTotalDuration method', ->
-  #     b = new Burst count: 2
+    it 'should set duration on new msater swirl', ->
+      b = new Burst count: 2
+      spyOn(b, '_setSwirlDuration').and.callThrough()
+      b.then({ childOptions: { duration: 50 } })
+      time = b._calcPackTime( b._swirls[1] )
+      expect(b._setSwirlDuration)
+        .toHaveBeenCalledWith b._masterSwirls[1], time
+
+    it 'should return this', ->
+      b = new Burst count: 2
+      expect( b.then({}) ).toBe b
+
+    it 'should call _recalcTotalDuration method', ->
+      b = new Burst count: 2
   
-  #     spyOn b.timeline, '_recalcTotalDuration'      
-  #     b.then({ childOptions: { radius: [ 10, 20 ] } })
+      spyOn b.timeline, '_recalcTotalDuration'      
+      b.then({ childOptions: { radius: [ 10, 20 ] } })
 
-  #     expect(b.timeline._recalcTotalDuration).toHaveBeenCalled()
+      expect(b.timeline._recalcTotalDuration).toHaveBeenCalled()
+
+
+  describe '_getLastItem method ->', ->
+    it 'should get the last item of array', ->
+      b = new Burst count: 2
+
+      expect(b._getLastItem([1,2,3,4])).toBe 4
+      expect(b._getLastItem([1,2,3,7])).toBe 7
+      expect(b._getLastItem([1,2,3])).toBe 3
+      expect(b._getLastItem([1,2])).toBe 2
+      expect(b._getLastItem([1])).toBe 1
+
+  describe '_calcPackTime method ->', ->
+    it 'should calculate time of swirls array', ->
+      # should not include shift time
+      sw = new Swirl
+      sw.timeline._props.shiftTime = 200000
+
+      pack = [
+        sw,
+        new Swirl( duration: 2000 ),
+        new Swirl( duration: 1800, delay: 400 ),
+        new Swirl( duration: 4000, speed: 3 )
+      ]
+
+      b = new Burst
+      tm = new mojs.Timeline
+
+      maxTime = 0
+      for swirl, i in pack
+        tween = swirl.tween; p = tween._props
+        maxTime = Math.max( p.repeatTime/p.speed, maxTime )
+
+      expect( b._calcPackTime pack ).toBe maxTime
+
+  describe '_setSwirlDuration method ->', ->
+    it 'should set tweens time', ->
+      b = new Burst
+      sw = new Swirl
+
+      spyOn sw.tween,    '_setProp'
+      spyOn sw.timeline, '_recalcTotalDuration'
+
+      duration = 10
+      b._setSwirlDuration sw, duration
+
+      expect(sw.tween._setProp).toHaveBeenCalledWith 'duration', duration
+      expect(sw.timeline._recalcTotalDuration).toHaveBeenCalled()
+
+    it 'should not throw if Swirl has no timeline', ->
+      b = new Burst
+      sw = new Swirl
+
+      sw.timeline = sw.tween
+
+      set = -> b._setSwirlDuration sw, 10
+
+      expect(set).not.toThrow()
+
 
   #   it 'should create swirless master Burst', ->
   #     b = new Burst count: 2

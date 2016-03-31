@@ -40,7 +40,7 @@
         return expect(burst._defaults.isSwirl).toEqual(false);
       });
     });
-    describe('_render method', function() {
+    describe('_render method ->', function() {
       it('should create master swirl', function() {
         var burst;
         burst = new Burst;
@@ -83,12 +83,24 @@
         expect(typeof burst._masterSwirls).toBe('object');
         return expect(burst._masterSwirls).toBe(burst._masterSwirls);
       });
-      return it('should add optional properties to option', function() {
+      it('should add optional properties to option', function() {
         var burst;
         burst = new Burst;
-        spyOn(burst, '_addOptionalProperties');
+        spyOn(burst, '_addOptionalProps');
         burst._renderSwirls();
-        return expect(burst._addOptionalProperties.calls.count()).toBe(5);
+        return expect(burst._addOptionalProps.calls.count()).toBe(5);
+      });
+      return it('should set time on tween of masterSwirl', function() {
+        var burst;
+        burst = new Burst({
+          childOptions: {
+            duration: 'stagger(500, 1000)',
+            repeat: 2
+          }
+        });
+        burst.masterSwirl.tween._props.duration = null;
+        burst._renderSwirls();
+        return expect(burst.masterSwirl.tween._props.duration).toBe(burst._calcPackTime(burst._swirls[0]));
       });
     });
     describe('_renderSwirls method', function() {
@@ -267,19 +279,19 @@
         return expect(bs.timeline._timelines[5]).toBe(bs._swirls[0][4].timeline);
       });
     });
-    describe('_addOptionalProperties method ->', function() {
+    describe('_addOptionalProps method ->', function() {
       it('should return the passed object', function() {
         var burst, obj, result;
         burst = new Burst;
         obj = {};
-        result = burst._addOptionalProperties(obj, 0);
+        result = burst._addOptionalProps(obj, 0);
         return expect(result).toBe(obj);
       });
       it('should add parent, index', function() {
         var burst, obj, result;
         burst = new Burst;
         obj = {};
-        result = burst._addOptionalProperties(obj, 0);
+        result = burst._addOptionalProps(obj, 0);
         expect(result.index).toBe(0);
         return expect(result.parent).toBe(burst.masterSwirl.el);
       });
@@ -287,19 +299,19 @@
         var burst, obj, result;
         burst = new Burst;
         obj = {};
-        result = burst._addOptionalProperties(obj, 0);
+        result = burst._addOptionalProps(obj, 0);
         expect(result.isSwirl).toBe(false);
         obj = {
           isSwirl: true
         };
-        result = burst._addOptionalProperties(obj, 0);
+        result = burst._addOptionalProps(obj, 0);
         return expect(result.isSwirl).toBe(true);
       });
       it('should hard rewrite `left` and `top` properties to 50%', function() {
         var burst, obj, result;
         burst = new Burst;
         obj = {};
-        result = burst._addOptionalProperties(obj, 0);
+        result = burst._addOptionalProps(obj, 0);
         expect(result.left).toBe('50%');
         return expect(result.top).toBe('50%');
       });
@@ -315,8 +327,8 @@
         });
         obj0 = {};
         obj1 = {};
-        result0 = burst._addOptionalProperties(obj0, 0);
-        result1 = burst._addOptionalProperties(obj1, 1);
+        result0 = burst._addOptionalProps(obj0, 0);
+        result1 = burst._addOptionalProps(obj1, 1);
         expect(obj0.x[0]).toBeCloseTo(0, 5);
         expect(obj0.y[0]).toBeCloseTo(-100, 5);
         expect(obj1.x[0]).toBeCloseTo(0, 5);
@@ -336,8 +348,8 @@
         obj1 = {
           angle: 0
         };
-        result0 = burst._addOptionalProperties(obj0, 0);
-        result1 = burst._addOptionalProperties(obj1, 1);
+        result0 = burst._addOptionalProps(obj0, 0);
+        result1 = burst._addOptionalProps(obj1, 1);
         expect(obj0.angle).toBe(90);
         return expect(obj1.angle).toBe(270);
       });
@@ -528,14 +540,57 @@
         return expect(delta).toBe(10);
       });
     });
-    return describe('then method ->', function() {
-      it('should return this', function() {
+    describe('_vars method ->', function() {
+      it('should call super', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(mojs.Thenable.prototype, '_vars');
+        burst._vars();
+        return expect(mojs.Thenable.prototype._vars).toHaveBeenCalled();
+      });
+      return it('should create _bufferTimeline', function() {
+        var burst;
+        burst = new Burst;
+        burst._bufferTimeline = null;
+        burst._vars();
+        return expect(burst._bufferTimeline instanceof mojs.Timeline).toBe(true);
+      });
+    });
+    describe('_masterThen method ->', function() {
+      it('should pass options to masterSwirl', function() {
+        var b, o;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b.masterSwirl, 'then');
+        o = {
+          opacity: .5
+        };
+        b._masterThen(o);
+        return expect(b.masterSwirl.then).toHaveBeenCalledWith(o);
+      });
+      it('should save the new master swirl', function() {
         var b;
         b = new Burst({
           count: 2
         });
-        return expect(b.then({})).toBe(b);
+        b._masterThen({
+          opacity: .5
+        });
+        return expect(b._masterSwirls.length).toBe(2);
       });
+      return it('should return the new swirl', function() {
+        var b, result;
+        b = new Burst({
+          count: 2
+        });
+        result = b._masterThen({
+          opacity: .5
+        });
+        return expect(result).toBe(b._masterSwirls[b._masterSwirls.length - 1]);
+      });
+    });
+    describe('_childThen method ->', function() {
       it('should pass options to swirls', function() {
         var b, o, option0, option1, pack;
         b = new Burst({
@@ -549,7 +604,7 @@
             radius: [10, 20]
           }
         };
-        b.then(o);
+        b._childThen(o, b._masterThen(o));
         option0 = b._getChildOption(o, 0);
         option0.parent = b._masterSwirls[1].el;
         expect(pack[0].then).toHaveBeenCalledWith(option0);
@@ -567,32 +622,143 @@
             radius: [10, 20]
           }
         };
-        b.then(o);
+        b._childThen(o, b._masterThen(o));
         expect(b._swirls[1].length).toBe(2);
         expect(b._swirls[1][0] instanceof Swirl).toBe(true);
         return expect(b._swirls[1][1] instanceof Swirl).toBe(true);
       });
-      it('should pass options to masterSwirl', function() {
-        var b, o;
+      return it('should return the new pack', function() {
+        var b, o, result;
         b = new Burst({
           count: 2
         });
-        spyOn(b.masterSwirl, 'then');
         o = {
-          opacity: .5
+          childOptions: {
+            radius: [10, 20]
+          }
         };
-        b.then(o);
-        return expect(b.masterSwirl.then).toHaveBeenCalledWith(o);
+        result = b._childThen(o, b._masterThen(o));
+        return expect(result).toBe(b._swirls[1]);
       });
-      return it('should pass save the new master swirl', function() {
+    });
+    describe('then method ->', function() {
+      it('should call _masterThen method', function() {
+        var b, options;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b, '_masterThen').and.callThrough();
+        options = {};
+        b.then(options);
+        return expect(b._masterThen).toHaveBeenCalledWith(options);
+      });
+      it('should call _childThen method', function() {
+        var b, options;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b, '_childThen').and.callThrough();
+        options = {};
+        b.then(options);
+        return expect(b._childThen).toHaveBeenCalledWith(options, b._getLastItem(b._masterSwirls));
+      });
+      it('should set duration on new msater swirl', function() {
+        var b, time;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b, '_setSwirlDuration').and.callThrough();
+        b.then({
+          childOptions: {
+            duration: 50
+          }
+        });
+        time = b._calcPackTime(b._swirls[1]);
+        return expect(b._setSwirlDuration).toHaveBeenCalledWith(b._masterSwirls[1], time);
+      });
+      it('should return this', function() {
         var b;
         b = new Burst({
           count: 2
         });
-        b.then({
-          opacity: .5
+        return expect(b.then({})).toBe(b);
+      });
+      return it('should call _recalcTotalDuration method', function() {
+        var b;
+        b = new Burst({
+          count: 2
         });
-        return expect(b._masterSwirls.length).toBe(2);
+        spyOn(b.timeline, '_recalcTotalDuration');
+        b.then({
+          childOptions: {
+            radius: [10, 20]
+          }
+        });
+        return expect(b.timeline._recalcTotalDuration).toHaveBeenCalled();
+      });
+    });
+    describe('_getLastItem method ->', function() {
+      return it('should get the last item of array', function() {
+        var b;
+        b = new Burst({
+          count: 2
+        });
+        expect(b._getLastItem([1, 2, 3, 4])).toBe(4);
+        expect(b._getLastItem([1, 2, 3, 7])).toBe(7);
+        expect(b._getLastItem([1, 2, 3])).toBe(3);
+        expect(b._getLastItem([1, 2])).toBe(2);
+        return expect(b._getLastItem([1])).toBe(1);
+      });
+    });
+    describe('_calcPackTime method ->', function() {
+      return it('should calculate time of swirls array', function() {
+        var b, i, maxTime, p, pack, sw, swirl, tm, tween, _i, _len;
+        sw = new Swirl;
+        sw.timeline._props.shiftTime = 200000;
+        pack = [
+          sw, new Swirl({
+            duration: 2000
+          }), new Swirl({
+            duration: 1800,
+            delay: 400
+          }), new Swirl({
+            duration: 4000,
+            speed: 3
+          })
+        ];
+        b = new Burst;
+        tm = new mojs.Timeline;
+        maxTime = 0;
+        for (i = _i = 0, _len = pack.length; _i < _len; i = ++_i) {
+          swirl = pack[i];
+          tween = swirl.tween;
+          p = tween._props;
+          maxTime = Math.max(p.repeatTime / p.speed, maxTime);
+        }
+        return expect(b._calcPackTime(pack)).toBe(maxTime);
+      });
+    });
+    return describe('_setSwirlDuration method ->', function() {
+      it('should set tweens time', function() {
+        var b, duration, sw;
+        b = new Burst;
+        sw = new Swirl;
+        spyOn(sw.tween, '_setProp');
+        spyOn(sw.timeline, '_recalcTotalDuration');
+        duration = 10;
+        b._setSwirlDuration(sw, duration);
+        expect(sw.tween._setProp).toHaveBeenCalledWith('duration', duration);
+        return expect(sw.timeline._recalcTotalDuration).toHaveBeenCalled();
+      });
+      return it('should not throw if Swirl has no timeline', function() {
+        var b, set, sw;
+        b = new Burst;
+        sw = new Swirl;
+        sw.timeline = sw.tween;
+        set = function() {
+          return b._setSwirlDuration(sw, 10);
+        };
+        return expect(set).not.toThrow();
       });
     });
   });
