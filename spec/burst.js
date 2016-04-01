@@ -90,7 +90,7 @@
         burst._renderSwirls();
         return expect(burst._addOptionalProps.calls.count()).toBe(5);
       });
-      return it('should set time on tween of masterSwirl', function() {
+      it('should set time on tween of masterSwirl', function() {
         var burst;
         burst = new Burst({
           childOptions: {
@@ -101,6 +101,27 @@
         burst.masterSwirl.tween._props.duration = null;
         burst._renderSwirls();
         return expect(burst.masterSwirl.tween._props.duration).toBe(burst._calcPackTime(burst._swirls[0]));
+      });
+      it('should set isSwirl to false by default', function() {
+        var burst;
+        burst = new Burst({
+          childOptions: {
+            duration: 'stagger(500, 1000)',
+            repeat: 2
+          }
+        });
+        return expect(burst.masterSwirl._props.isSwirl).toBe(false);
+      });
+      return it('should work with isSwirl option', function() {
+        var burst;
+        burst = new Burst({
+          isSwirl: true,
+          childOptions: {
+            duration: 'stagger(500, 1000)',
+            repeat: 2
+          }
+        });
+        return expect(burst.masterSwirl._props.isSwirl).toBe(true);
       });
     });
     describe('_renderSwirls method', function() {

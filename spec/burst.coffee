@@ -79,6 +79,23 @@ describe 'Burst ->', ->
       expect(burst.masterSwirl.tween._props.duration)
         .toBe burst._calcPackTime burst._swirls[0]
 
+    it 'should set isSwirl to false by default', ->
+      burst = new Burst
+        childOptions:
+          duration: 'stagger(500, 1000)'
+          repeat: 2
+
+      expect(burst.masterSwirl._props.isSwirl).toBe false
+
+    it 'should work with isSwirl option', ->
+      burst = new Burst
+        isSwirl: true
+        childOptions:
+          duration: 'stagger(500, 1000)'
+          repeat: 2
+
+      expect(burst.masterSwirl._props.isSwirl).toBe true
+
   describe '_renderSwirls method', ->
     it 'should create _swirls object', ->
       burst = new Burst

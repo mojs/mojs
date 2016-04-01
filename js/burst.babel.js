@@ -12,17 +12,17 @@ class Burst extends Tunable {
   _declareDefaults () {
     this._defaults = {
       /* [number > 0] :: Quantity of Burst particles. */
-      count: 5,
+      count:    5,
       /* [0 < number < 360] :: Degree of the Burst. */
-      degree: 360,
+      degree:   360,
       /* ∆ :: [number > 0] :: Radius of the Burst. */
-      radius: { 0: 50 },
+      radius:   { 0: 50 },
       /* ∆ :: [number > 0] :: X radius of the Burst. */
-      radiusX: null,
+      radiusX:  null,
       /* ∆ :: [number > 0] :: Y radius of the Burst. */
-      radiusY: null,
+      radiusY:  null,
       /* [boolean] :: If Burst itself should follow sinusoidal path. */
-      isSwirl: false
+      isSwirl:  false
     }
   }
   /*
@@ -41,6 +41,11 @@ class Burst extends Tunable {
     this.timeline._recalcTotalDuration();
     return this;
   }
+
+
+  // ^ PUBLIC  METHODS ^
+  // v PRIVATE METHODS v
+
   /*
     Method to call then on masterSwirl.
     @param {Object} Then options.
@@ -65,12 +70,15 @@ class Burst extends Tunable {
         newPack = [];
 
     for (var i = 0; i < pack.length; i++) {
+      // get option by modulus
       var options = this._getChildOption( o, i );
+      // add new Master Swirl as parent of new childswirl
       options.parent = newMasterSwirl.el;
       pack[i].then( options );
+      // save the new item in `then` chain
       newPack.push( this._getLastItem(pack[i]._modules) );
     }
-
+    // save the pack to _swirls object
     this._swirls[this._masterSwirls.length-1] = newPack;
     return newPack;
   }
@@ -96,6 +104,7 @@ class Burst extends Tunable {
   */
   _render () {
     this._o.isWithShape = false;
+    this._o.isSwirl     = this._props.isSwirl;
     this._o.radius      = 0;
     
     this.masterSwirl    = new Swirl( this._o );
