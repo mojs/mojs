@@ -2,7 +2,7 @@ t        = window.mojs.tweener
 Tween    = window.mojs.Tween
 Timeline = window.mojs.Timeline
 
-describe 'Twenner ->', ->
+describe 'Tweener ->', ->
   afterEach  -> t._stopLoop(); t.removeAll()
   beforeEach -> t._stopLoop(); t.removeAll()
   it 'have tweens array', ->

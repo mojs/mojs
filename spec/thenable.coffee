@@ -13,13 +13,26 @@ describe 'thenable ->', ->
       th._vars()
       expect(h.isArray(th._history)).toBe true
       expect(th._history.length).toBe 1
-    it 'should clone _o object and save it as the first history record', ->
-      options = { a: 2, b: 3 }
-      th = new Thenable options
+    it 'should clone _prop object and save it as the first history record', ->
+      options = { fill: 'hotpink', x: 200  }
+      th = new Thenable {}
+      th._props = options
       th._vars()
-      expect(th._history[0]).not.toBe options
-      expect(th._history[0].a).toBe options.a
-      expect(th._history[0].b).toBe options.b
+      # th._history[0].strokeDasharray  = th._props.strokeDasharray
+      # th._history[0].strokeDahsoffset = th._props.strokeDahsoffset
+      expect(th._history[0]).toEqual th._props
+
+    it 'should save string _arrayPropertyMap values', ->
+      options = {
+        strokeDasharray: '50% 50%',
+        strokeDashoffset: '200 100'
+      }
+      th = new Thenable options
+      th._props = { strokeDasharray: [], strokeDashoffset: [] }
+      th._vars()
+      expect(th._history[0].strokeDasharray).toEqual options.strokeDasharray
+      expect(th._history[0].strokeDashoffset).toEqual options.strokeDashoffset
+
     it 'should create _modules object', ->
       th = new Thenable
       th._vars()
@@ -42,35 +55,57 @@ describe 'thenable ->', ->
         duration: 10,
         fill: '#ff00ff',
         strokeWidth: { 10: 20 }
+        left: { 0: '200px' }
+        strokeDasharray: '50%'
       end =
-        radius: 20,
+        radius:   20,
         duration: 500,
-        opacity: { 2: 1 }
+        opacity:  { 2: 1 }
+        left:     100
+        strokeDasharray: '150%'
 
       byte._defaults = {}
       byte._vars()
       mergedOpton = byte._mergeThenOptions start, end
+        
       expect(mergedOpton.radius[10]).toBe 20
       expect(mergedOpton.duration).toBe 500
       expect(mergedOpton.fill).toBe '#ff00ff'
       expect(mergedOpton.strokeWidth).toBe 20
       expect(mergedOpton.opacity[2]).toBe 1
+      expect(mergedOpton.left['200px']).toBe '100px'
+      expect(mergedOpton.strokeDasharray['50%']).toBe '150%'
+
     it 'should merge 2 objects if the first was an object', ->
       byte = new Byte
       start = radius: {10: 0}
       end   = radius: 20
+
       byte._defaults = {}
       byte._vars()
       mergedOpton = byte._mergeThenOptions start, end
       expect(mergedOpton.radius[0]).toBe 20
     it 'should use the second value if it is an object', ->
       byte = new Byte
-      start = radius: 10
-      end   = radius: {20: 0}
+      start =
+        radius: 10
+        left: '200px'
+      end =
+          radius: {20: 0}
+          left:   {'stagger(100, 0)' : 'stagger(150, -25)'}
       byte._defaults = {}
       byte._vars()
       mergedOpton = byte._mergeThenOptions start, end
       expect(mergedOpton.radius[20]).toBe 0
+      expect(mergedOpton.left['100px']).toBe '150px'
+    it 'should not parse delta on end array props object', ->
+      byte = new Byte
+      start = strokeDasharray: '200px'
+      end = strokeDasharray: {'1200px' : 0 }
+      byte._defaults = {}
+      byte._vars()
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.strokeDasharray['1200px']).toBe 0
     it 'should save the old tween values', ->
       byte = new Byte
       start = duration: 10
@@ -132,6 +167,7 @@ describe 'thenable ->', ->
       expect(mergedOpton.delay)   .toBe 200
       expect(mergedOpton.repeat)  .toBe 2
       expect(mergedOpton.easing)  .toBe 'elastic.in'
+
     it 'should fallback to radius for radiusX/radiusY props', ->
       byte = new Byte
       start = radius: 10
@@ -173,58 +209,67 @@ describe 'thenable ->', ->
       mergedOpton = byte._mergeThenOptions start, end
       expect(byte._history[1]).toBe mergedOpton
 
-    it 'should not push merged options to the history if !isPush', ->
+    it 'should parse end option when making delta from two statics', ->
       byte = new Byte
-      start = radius: 10, duration: 1000, fill: 'orange', points: 5
-      end   =
-        radius: 20, duration: null, points: undefined
-        fill: null, stroke: '#ff00ff'
-      byte._defaults = {}
-      byte._vars()
-      mergedOpton = byte._mergeThenOptions start, end, false
-      expect(byte._history[1]).not.toBe mergedOpton
-
-    it 'should merge if first is array', ->
-      byte = new Byte
-      start = radius: [10, 30]
-      end   = radius: 20
+      start = left: '10px'
+      end   = left: 'stagger(100, 25)'
       byte._defaults = {}
       byte._vars()
       mergedOpton = byte._mergeThenOptions start, end
-      expect(mergedOpton.radius[0]).toEqual { 10: 20 }
-      expect(mergedOpton.radius[1]).toEqual { 30: 20 }
-
-    it 'should merge if last is array', ->
-      byte = new Byte
-      start = radius: 10
-      end   = radius: [20, 40]
-      byte._defaults = {}
-      byte._vars()
-      mergedOpton = byte._mergeThenOptions start, end
-      expect(mergedOpton.radius[0]).toEqual { 10: 20 }
-      expect(mergedOpton.radius[1]).toEqual { 10: 40 }
-
-    it 'should merge if both are arrays and first is larger', ->
-      byte = new Byte
-      start = radius: [10, 50, 100]
-      end   = radius: [20, 40]
-      byte._defaults = {}
-      byte._vars()
-      mergedOpton = byte._mergeThenOptions start, end
-      expect(mergedOpton.radius[0]).toEqual { 10:  20 }
-      expect(mergedOpton.radius[1]).toEqual { 50:  40 }
-      expect(mergedOpton.radius[2]).toEqual { 100: 20 }
-
-    it 'should merge if both are arrays and last is larger', ->
-      byte = new Byte
-      start = radius: [ 10, 50 ]
-      end   = radius: [ 20, 40, 70 ]
-      byte._defaults = {}
-      byte._vars()
-      mergedOpton = byte._mergeThenOptions start, end
-      expect(mergedOpton.radius[0]).toEqual { 10:  20 }
-      expect(mergedOpton.radius[1]).toEqual { 50:  40 }
-      expect(mergedOpton.radius[2]).toEqual { 10:  70 }
+      expect(mergedOpton.left['10px']).toBe '100px'
+    # nope
+    # it 'should not push merged options to the history if !isPush', ->
+    #   byte = new Byte
+    #   start = radius: 10, duration: 1000, fill: 'orange', points: 5
+    #   end   =
+    #     radius: 20, duration: null, points: undefined
+    #     fill: null, stroke: '#ff00ff'
+    #   byte._defaults = {}
+    #   byte._vars()
+    #   mergedOpton = byte._mergeThenOptions start, end, false
+    #   expect(byte._history[1]).not.toBe mergedOpton
+    # nope
+    # it 'should merge if first is array', ->
+    #   byte = new Byte
+    #   start = radius: [10, 30]
+    #   end   = radius: 20
+    #   byte._defaults = {}
+    #   byte._vars()
+    #   mergedOpton = byte._mergeThenOptions start, end
+    #   expect(mergedOpton.radius[0]).toEqual { 10: 20 }
+    #   expect(mergedOpton.radius[1]).toEqual { 30: 20 }
+    # nope
+    # it 'should merge if last is array', ->
+    #   byte = new Byte
+    #   start = radius: 10
+    #   end   = radius: [20, 40]
+    #   byte._defaults = {}
+    #   byte._vars()
+    #   mergedOpton = byte._mergeThenOptions start, end
+    #   expect(mergedOpton.radius[0]).toEqual { 10: 20 }
+    #   expect(mergedOpton.radius[1]).toEqual { 10: 40 }
+    # nope
+    # it 'should merge if both are arrays and first is larger', ->
+    #   byte = new Byte
+    #   start = radius: [10, 50, 100]
+    #   end   = radius: [20, 40]
+    #   byte._defaults = {}
+    #   byte._vars()
+    #   mergedOpton = byte._mergeThenOptions start, end
+    #   expect(mergedOpton.radius[0]).toEqual { 10:  20 }
+    #   expect(mergedOpton.radius[1]).toEqual { 50:  40 }
+    #   expect(mergedOpton.radius[2]).toEqual { 100: 20 }
+    # nope
+    # it 'should merge if both are arrays and last is larger', ->
+    #   byte = new Byte
+    #   start = radius: [ 10, 50 ]
+    #   end   = radius: [ 20, 40, 70 ]
+    #   byte._defaults = {}
+    #   byte._vars()
+    #   mergedOpton = byte._mergeThenOptions start, end
+    #   expect(mergedOpton.radius[0]).toEqual { 10:  20 }
+    #   expect(mergedOpton.radius[1]).toEqual { 50:  40 }
+    #   expect(mergedOpton.radius[2]).toEqual { 10:  70 }
 
   describe '_isDelta method ->', ->
     it 'should detect if value is not a delta value', ->
@@ -247,18 +292,24 @@ describe 'thenable ->', ->
       expect(th.then({ fill: 'cyan' })).toBe th
     it 'should merge then options and add them to the history', ->
       th = new Thenable radius: 20, duration: 1000, delay: 10
+
       th._defaults = {}
+      th._props = { radius: 20, duration: 1000, delay: 10 }
       th._vars()
       th.then radius: 5, yoyo: true, delay: 100
       expect(th._history.length)       .toBe 2
+      
       expect(th._history[1].radius[20]).toBe 5
       expect(th._history[1].duration).toBe 1000
       expect(th._history[1].delay)   .toBe 100
       expect(th._history[1].yoyo)    .toBe true
+
+
     it 'should always merge then options with the last history item', ->
       th = new Thenable radius: 20, duration: 1000, delay: 10
       
       th._defaults = { stroke: 'transparent' }
+      th._props = { radius: 20, duration: 1000, delay: 10 } 
 
       th._vars()
       th.then radius: 5, yoyo: true, delay: 100
@@ -274,6 +325,9 @@ describe 'thenable ->', ->
       onUpdate = ->
       onStart  = ->
       th = new Thenable
+        radius: 20, duration: 1000, delay: 200
+        onUpdate:  onUpdate, onStart: onStart
+      th._props =
         radius: 20, duration: 1000, delay: 200
         onUpdate:  onUpdate, onStart: onStart
       th._defaults = {}
@@ -384,5 +438,7 @@ describe 'thenable ->', ->
       expect(th._getArrayLength( {} )).toBe -1
       expect(th._getArrayLength( 'some string' )).toBe -1
       expect(th._getArrayLength( true )).toBe -1
+
+  
 
 

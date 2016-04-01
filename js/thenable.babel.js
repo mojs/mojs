@@ -20,6 +20,8 @@ class Thenable extends Tweenable {
         prevModule = this._modules[ this._modules.length - 1 ],
         merged     = this._mergeThenOptions( prevRecord, o );
 
+    // console.log(merged)
+
     this._resetMergedFlags( merged );
     // reset isShowEnd flag on prev module
     prevModule._setProp && prevModule._setProp('isShowEnd', false);
@@ -58,7 +60,12 @@ class Thenable extends Tweenable {
     super._vars();
     // we are expect that the _o object
     // have been already extended by defaults
-    this._history = [ h.cloneObj(this._o) ];
+    var initialRecord = h.cloneObj(this._props);
+    for (var key in this._arrayPropertyMap) {
+      if (this._o[key]) { initialRecord[key] = this._o[key]; }
+    }
+    
+    this._history = [ initialRecord ];
     // the array holds all modules in the then chain
     this._modules = [ this ];
     // the props that to exclude from then merge
@@ -69,14 +76,13 @@ class Thenable extends Tweenable {
     @private
     @param {Object} Start options for the merge.
     @param {Object} End options for the merge.
-    @param {Boolean} If should push to _history.
     @returns {Object} Merged options.
   */
-  _mergeThenOptions ( start, end, isPush = true ) {
+  _mergeThenOptions ( start, end) {
     var o = {};
     this._mergeStartLoop( o, start );
     this._mergeEndLoop( o, start, end );
-    isPush && this._history.push(o);
+    this._history.push(o);
     return o;
   }
   /*
@@ -93,8 +99,9 @@ class Thenable extends Tweenable {
       // copy all values from start if not tween prop or duration
       if ( !h.isTweenProp(key) || key === 'duration' ) {
         // if delta - copy only the end value
-        if ( this._isDelta(value) ) { o[key] = h.getDeltaEnd(value); }
-        else { o[key] = value; }
+        if ( this._isDelta(value) ) {
+          o[key] = h.getDeltaEnd(value);
+        } else { o[key] = value; }
       }
     }
 
@@ -122,6 +129,7 @@ class Thenable extends Tweenable {
       var endValue   = end[key],
           startValue = ( start[key] != null )
             ? start[key] : this._defaults[key];
+
       if ( endValue == null ) { continue };
       // make ∆ of start -> end
       // if key name is radiusX/radiusY and
@@ -130,41 +138,42 @@ class Thenable extends Tweenable {
       if ( isSubRadius && startValue == null ) {
         startValue = start.radius;
       }
-      // if one of the properties is array - merge
-      // with array, - else merge two plain properties
-      if ( h.isArray( startValue ) || h.isArray( endValue ) ) {
-        o[key] = this._mergeThenArrays( key, startValue, endValue );
-      } else {
-        o[key] = this._mergeThenProperty( key, startValue, endValue );
-      }
 
+      o[key] = this._mergeThenProperty( key, startValue, endValue );
+      // // if one of the properties is array - merge
+      // // with array, - else merge two plain properties
+      // if ( h.isArray( startValue ) || h.isArray( endValue ) ) {
+      //   o[key] = this._mergeThenArrays( key, startValue, endValue );
+      // } else {
+      //   o[key] = this._mergeThenProperty( key, startValue, endValue );
+      // }
     }
   }
-  /*
-    Method to merge two arrays for then chain.
-    @private
-    @param {String} Property name.
-    @param {Array} Start array.
-    @param {Array} End array.
-    @returns the merged array.
-  */
-  _mergeThenArrays( key, arr1, arr2 ) {
-    var arr = [],
-        // get maximum length for 2 arrays
-        max = Math.max(
-          this._getArrayLength(arr1),
-          this._getArrayLength(arr2)
-        );
-    // loop thru the max length of the 2 arrays
-    for (var i = 0; i < max; i++ ) {
-      // if property is array - get the current property
-      // in it ( by mod ) else take the property itself
-      var startVal = ( h.isArray( arr1 ) ? arr1[i % arr1.length] : arr1 ),
-          endVal   = ( h.isArray( arr2 ) ? arr2[i % arr2.length] : arr2 );
-      arr.push( this._mergeThenProperty( key, startVal, endVal ) );
-    }
-    return arr;
-  }
+  // /*
+  //   Method to merge two arrays for then chain.
+  //   @private
+  //   @param {String} Property name.
+  //   @param {Array} Start array.
+  //   @param {Array} End array.
+  //   @returns the merged array.
+  // */
+  // _mergeThenArrays( key, arr1, arr2 ) {
+  //   var arr = [],
+  //       // get maximum length for 2 arrays
+  //       max = Math.max(
+  //         this._getArrayLength(arr1),
+  //         this._getArrayLength(arr2)
+  //       );
+  //   // loop thru the max length of the 2 arrays
+  //   for (var i = 0; i < max; i++ ) {
+  //     // if property is array - get the current property
+  //     // in it ( by mod ) else take the property itself
+  //     var startVal = ( h.isArray( arr1 ) ? arr1[i % arr1.length] : arr1 ),
+  //         endVal   = ( h.isArray( arr2 ) ? arr2[i % arr2.length] : arr2 );
+  //     arr.push( this._mergeThenProperty( key, startVal, endVal ) );
+  //   }
+  //   return arr;
+  // }
   /*
     Method to merge `start` and `end` for a property in then record.
     @private
@@ -176,15 +185,17 @@ class Thenable extends Tweenable {
     // if isnt tween property
     if ( !h.isTweenProp(key) && !this._nonMergeProps[key] ) {
       // if end value is delta - just save it
-      if ( this._isDelta(endValue) ) { return endValue; }
-      else {
+      if ( this._isDelta(endValue) ) {
+        return this._parseDeltaValues(key, endValue);
+      } else {
+        var parsedEndValue = this._parsePreArrayProperty(key, endValue);
         // if end value is not delta - merge with start value
         if ( this._isDelta(startValue) ) {
           // if start value is delta - take the end value
           // as start value of the new delta
-          return { [ h.getDeltaEnd(startValue) ] : endValue };
-        // if start value is not delta - make delta
-        } else { return { [ startValue ] : endValue }; }
+          return { [ h.getDeltaEnd(startValue) ] : parsedEndValue };
+        // if both start and end value are not ∆ - make ∆
+        } else { return { [ startValue ] : parsedEndValue }; }
       }
     // copy the tween values unattended
     } else { return endValue; }

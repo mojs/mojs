@@ -72,12 +72,16 @@ class Tuneable extends Thenable {
                        history modifications is needed.
   */
   _transformHistoryRecord ( index, key, newValue, currRecord, nextRecord ) {
+    // console.log(key, newValue)
+    // newValue = this._parseProperty( key, newValue );
     if (newValue == null ) { return null; }
 
     currRecord = (currRecord == null) ? this._history[index]   : currRecord;
     nextRecord = (nextRecord == null) ? this._history[index+1] : nextRecord;
     
     var oldValue = currRecord[key];
+
+
     // if index is 0 - always save the newValue
     // and return non-delta for subsequent modifications
     if ( index === 0 ) {

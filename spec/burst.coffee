@@ -71,11 +71,13 @@ describe 'Burst ->', ->
 
     it 'should set time on tween of masterSwirl', ->
       burst = new Burst
+        # isIt: 1
         childOptions:
           duration: 'stagger(500, 1000)'
           repeat: 2
       burst.masterSwirl.tween._props.duration = null
       burst._renderSwirls()
+      # console.log burst.masterSwirl.tween._props.duration
       expect(burst.masterSwirl.tween._props.duration)
         .toBe burst._calcPackTime burst._swirls[0]
 
@@ -252,7 +254,6 @@ describe 'Burst ->', ->
 
     it 'should add x/y ->', ->
       burst = new Burst
-        isIt: 1,
         radius: { 0: 100 }
         count:  2,
         size: 0,
@@ -879,6 +880,10 @@ describe 'Burst ->', ->
       expect(result).toBe b._swirls[1]
 
   describe 'then method ->', ->
+    it 'should return this', ->
+      b = new Burst count: 2
+      expect( b.then({}) ).toBe b
+
     it 'should call _masterThen method', ->
       b = new Burst count: 2
       spyOn(b, '_masterThen').and.callThrough()
@@ -902,10 +907,6 @@ describe 'Burst ->', ->
       time = b._calcPackTime( b._swirls[1] )
       expect(b._setSwirlDuration)
         .toHaveBeenCalledWith b._masterSwirls[1], time
-
-    it 'should return this', ->
-      b = new Burst count: 2
-      expect( b.then({}) ).toBe b
 
     it 'should call _recalcTotalDuration method', ->
       b = new Burst count: 2
@@ -972,6 +973,37 @@ describe 'Burst ->', ->
       set = -> b._setSwirlDuration sw, 10
 
       expect(set).not.toThrow()
+
+  describe 'tune method ->', ->
+    it 'should return `this`', ->
+      b = new Burst
+      expect(b.tune({ x: 200 })).toBe b
+
+    it 'should call tune on masterSwirl', ->
+      b = new Burst
+      spyOn b.masterSwirl, 'tune'
+      options = { x: 200 }
+      b.tune(options)
+      expect(b.masterSwirl.tune).toHaveBeenCalledWith options
+
+    it 'should call tune 0 pack swirls', ->
+      b = new Burst
+
+      pack0 = b._swirls[0]
+      spyOn pack0[0], 'tune'
+      spyOn pack0[1], 'tune'
+      spyOn pack0[2], 'tune'
+      spyOn pack0[3], 'tune'
+      spyOn pack0[4], 'tune'
+
+      childOptions = { x: 200, fill: ['cyan', 'yellow'] }
+      b.tune({ childOptions: childOptions })
+
+      expect(pack0[0].tune).toHaveBeenCalledWith b._getChildOption childOptions, 0
+      expect(pack0[1].tune).toHaveBeenCalledWith b._getChildOption childOptions, 1
+      expect(pack0[2].tune).toHaveBeenCalledWith b._getChildOption childOptions, 2
+      expect(pack0[3].tune).toHaveBeenCalledWith b._getChildOption childOptions, 3
+      expect(pack0[4].tune).toHaveBeenCalledWith b._getChildOption childOptions, 4
 
 
   #   it 'should create swirless master Burst', ->

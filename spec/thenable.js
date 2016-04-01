@@ -24,17 +24,31 @@
         expect(h.isArray(th._history)).toBe(true);
         return expect(th._history.length).toBe(1);
       });
-      it('should clone _o object and save it as the first history record', function() {
+      it('should clone _prop object and save it as the first history record', function() {
         var options, th;
         options = {
-          a: 2,
-          b: 3
+          fill: 'hotpink',
+          x: 200
+        };
+        th = new Thenable({});
+        th._props = options;
+        th._vars();
+        return expect(th._history[0]).toEqual(th._props);
+      });
+      it('should save string _arrayPropertyMap values', function() {
+        var options, th;
+        options = {
+          strokeDasharray: '50% 50%',
+          strokeDashoffset: '200 100'
         };
         th = new Thenable(options);
+        th._props = {
+          strokeDasharray: [],
+          strokeDashoffset: []
+        };
         th._vars();
-        expect(th._history[0]).not.toBe(options);
-        expect(th._history[0].a).toBe(options.a);
-        return expect(th._history[0].b).toBe(options.b);
+        expect(th._history[0].strokeDasharray).toEqual(options.strokeDasharray);
+        return expect(th._history[0].strokeDashoffset).toEqual(options.strokeDashoffset);
       });
       it('should create _modules object', function() {
         var th;
@@ -64,14 +78,20 @@
           fill: '#ff00ff',
           strokeWidth: {
             10: 20
-          }
+          },
+          left: {
+            0: '200px'
+          },
+          strokeDasharray: '50%'
         };
         end = {
           radius: 20,
           duration: 500,
           opacity: {
             2: 1
-          }
+          },
+          left: 100,
+          strokeDasharray: '150%'
         };
         byte._defaults = {};
         byte._vars();
@@ -80,7 +100,9 @@
         expect(mergedOpton.duration).toBe(500);
         expect(mergedOpton.fill).toBe('#ff00ff');
         expect(mergedOpton.strokeWidth).toBe(20);
-        return expect(mergedOpton.opacity[2]).toBe(1);
+        expect(mergedOpton.opacity[2]).toBe(1);
+        expect(mergedOpton.left['200px']).toBe('100px');
+        return expect(mergedOpton.strokeDasharray['50%']).toBe('150%');
       });
       it('should merge 2 objects if the first was an object', function() {
         var byte, end, mergedOpton, start;
@@ -102,17 +124,38 @@
         var byte, end, mergedOpton, start;
         byte = new Byte;
         start = {
-          radius: 10
+          radius: 10,
+          left: '200px'
         };
         end = {
           radius: {
             20: 0
+          },
+          left: {
+            'stagger(100, 0)': 'stagger(150, -25)'
           }
         };
         byte._defaults = {};
         byte._vars();
         mergedOpton = byte._mergeThenOptions(start, end);
-        return expect(mergedOpton.radius[20]).toBe(0);
+        expect(mergedOpton.radius[20]).toBe(0);
+        return expect(mergedOpton.left['100px']).toBe('150px');
+      });
+      it('should not parse delta on end array props object', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          strokeDasharray: '200px'
+        };
+        end = {
+          strokeDasharray: {
+            '1200px': 0
+          }
+        };
+        byte._defaults = {};
+        byte._vars();
+        mergedOpton = byte._mergeThenOptions(start, end);
+        return expect(mergedOpton.strokeDasharray['1200px']).toBe(0);
       });
       it('should save the old tween values', function() {
         var byte, end, mergedOpton, start;
@@ -310,108 +353,19 @@
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(byte._history[1]).toBe(mergedOpton);
       });
-      it('should not push merged options to the history if !isPush', function() {
+      return it('should parse end option when making delta from two statics', function() {
         var byte, end, mergedOpton, start;
         byte = new Byte;
         start = {
-          radius: 10,
-          duration: 1000,
-          fill: 'orange',
-          points: 5
+          left: '10px'
         };
         end = {
-          radius: 20,
-          duration: null,
-          points: void 0,
-          fill: null,
-          stroke: '#ff00ff'
-        };
-        byte._defaults = {};
-        byte._vars();
-        mergedOpton = byte._mergeThenOptions(start, end, false);
-        return expect(byte._history[1]).not.toBe(mergedOpton);
-      });
-      it('should merge if first is array', function() {
-        var byte, end, mergedOpton, start;
-        byte = new Byte;
-        start = {
-          radius: [10, 30]
-        };
-        end = {
-          radius: 20
+          left: 'stagger(100, 25)'
         };
         byte._defaults = {};
         byte._vars();
         mergedOpton = byte._mergeThenOptions(start, end);
-        expect(mergedOpton.radius[0]).toEqual({
-          10: 20
-        });
-        return expect(mergedOpton.radius[1]).toEqual({
-          30: 20
-        });
-      });
-      it('should merge if last is array', function() {
-        var byte, end, mergedOpton, start;
-        byte = new Byte;
-        start = {
-          radius: 10
-        };
-        end = {
-          radius: [20, 40]
-        };
-        byte._defaults = {};
-        byte._vars();
-        mergedOpton = byte._mergeThenOptions(start, end);
-        expect(mergedOpton.radius[0]).toEqual({
-          10: 20
-        });
-        return expect(mergedOpton.radius[1]).toEqual({
-          10: 40
-        });
-      });
-      it('should merge if both are arrays and first is larger', function() {
-        var byte, end, mergedOpton, start;
-        byte = new Byte;
-        start = {
-          radius: [10, 50, 100]
-        };
-        end = {
-          radius: [20, 40]
-        };
-        byte._defaults = {};
-        byte._vars();
-        mergedOpton = byte._mergeThenOptions(start, end);
-        expect(mergedOpton.radius[0]).toEqual({
-          10: 20
-        });
-        expect(mergedOpton.radius[1]).toEqual({
-          50: 40
-        });
-        return expect(mergedOpton.radius[2]).toEqual({
-          100: 20
-        });
-      });
-      return it('should merge if both are arrays and last is larger', function() {
-        var byte, end, mergedOpton, start;
-        byte = new Byte;
-        start = {
-          radius: [10, 50]
-        };
-        end = {
-          radius: [20, 40, 70]
-        };
-        byte._defaults = {};
-        byte._vars();
-        mergedOpton = byte._mergeThenOptions(start, end);
-        expect(mergedOpton.radius[0]).toEqual({
-          10: 20
-        });
-        expect(mergedOpton.radius[1]).toEqual({
-          50: 40
-        });
-        return expect(mergedOpton.radius[2]).toEqual({
-          10: 70
-        });
+        return expect(mergedOpton.left['10px']).toBe('100px');
       });
     });
     describe('_isDelta method ->', function() {
@@ -458,6 +412,11 @@
           delay: 10
         });
         th._defaults = {};
+        th._props = {
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        };
         th._vars();
         th.then({
           radius: 5,
@@ -479,6 +438,11 @@
         });
         th._defaults = {
           stroke: 'transparent'
+        };
+        th._props = {
+          radius: 20,
+          duration: 1000,
+          delay: 10
         };
         th._vars();
         th.then({
@@ -511,6 +475,13 @@
           onUpdate: onUpdate,
           onStart: onStart
         });
+        th._props = {
+          radius: 20,
+          duration: 1000,
+          delay: 200,
+          onUpdate: onUpdate,
+          onStart: onStart
+        };
         th._defaults = {};
         th._vars();
         th.then({

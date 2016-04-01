@@ -339,7 +339,6 @@
       it('should add x/y ->', function() {
         var burst, obj0, obj1, result0, result1;
         burst = new Burst({
-          isIt: 1,
           radius: {
             0: 100
           },
@@ -663,6 +662,13 @@
       });
     });
     describe('then method ->', function() {
+      it('should return this', function() {
+        var b;
+        b = new Burst({
+          count: 2
+        });
+        return expect(b.then({})).toBe(b);
+      });
       it('should call _masterThen method', function() {
         var b, options;
         b = new Burst({
@@ -696,13 +702,6 @@
         });
         time = b._calcPackTime(b._swirls[1]);
         return expect(b._setSwirlDuration).toHaveBeenCalledWith(b._masterSwirls[1], time);
-      });
-      it('should return this', function() {
-        var b;
-        b = new Burst({
-          count: 2
-        });
-        return expect(b.then({})).toBe(b);
       });
       return it('should call _recalcTotalDuration method', function() {
         var b;
@@ -759,7 +758,7 @@
         return expect(b._calcPackTime(pack)).toBe(maxTime);
       });
     });
-    return describe('_setSwirlDuration method ->', function() {
+    describe('_setSwirlDuration method ->', function() {
       it('should set tweens time', function() {
         var b, duration, sw;
         b = new Burst;
@@ -780,6 +779,47 @@
           return b._setSwirlDuration(sw, 10);
         };
         return expect(set).not.toThrow();
+      });
+    });
+    return describe('tune method ->', function() {
+      it('should return `this`', function() {
+        var b;
+        b = new Burst;
+        return expect(b.tune({
+          x: 200
+        })).toBe(b);
+      });
+      it('should call tune on masterSwirl', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b.masterSwirl, 'tune');
+        options = {
+          x: 200
+        };
+        b.tune(options);
+        return expect(b.masterSwirl.tune).toHaveBeenCalledWith(options);
+      });
+      return it('should call tune 0 pack swirls', function() {
+        var b, childOptions, pack0;
+        b = new Burst;
+        pack0 = b._swirls[0];
+        spyOn(pack0[0], 'tune');
+        spyOn(pack0[1], 'tune');
+        spyOn(pack0[2], 'tune');
+        spyOn(pack0[3], 'tune');
+        spyOn(pack0[4], 'tune');
+        childOptions = {
+          x: 200,
+          fill: ['cyan', 'yellow']
+        };
+        b.tune({
+          childOptions: childOptions
+        });
+        expect(pack0[0].tune).toHaveBeenCalledWith(b._getChildOption(childOptions, 0));
+        expect(pack0[1].tune).toHaveBeenCalledWith(b._getChildOption(childOptions, 1));
+        expect(pack0[2].tune).toHaveBeenCalledWith(b._getChildOption(childOptions, 2));
+        expect(pack0[3].tune).toHaveBeenCalledWith(b._getChildOption(childOptions, 3));
+        return expect(pack0[4].tune).toHaveBeenCalledWith(b._getChildOption(childOptions, 4));
       });
     });
   });

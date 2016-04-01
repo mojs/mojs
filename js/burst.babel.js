@@ -41,6 +41,27 @@ class Burst extends Tunable {
     this.timeline._recalcTotalDuration();
     return this;
   }
+  /*
+    Method to start the animation with optional new options.
+    @public
+    @param {Object} New options to set on the run.
+    @returns {Object} this.
+  */
+  tune (o) {
+    this.masterSwirl.tune( o );
+
+    var pack0 = this._swirls[0];
+    for (var i = 0; i < pack0.length; i++ ) {
+      var swirl = pack0[i];
+      swirl.tune( this._getChildOption( o.childOptions || {}, i ) )
+    }
+
+    // RECALC CONCURRENT TWEEN DURATIONS
+    // if options object was passed
+    // if (o && Object.keys(o).length) {
+    // }
+    return this;
+  }
 
 
   // ^ PUBLIC  METHODS ^

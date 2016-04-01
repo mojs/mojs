@@ -7,6 +7,13 @@ class Module {
   constructor ( o = {} ) {
     this._o     = o;
     this._index = this._o.index || 0;
+    // map of props that should be
+    // parsed to arrays of values
+    this._arrayPropertyMap = {
+      strokeDasharray:  1,
+      strokeDashoffset: 1
+    }
+
     this._declareDefaults();
     this._extendDefaults();
     this._vars();
@@ -95,30 +102,32 @@ class Module {
   /*
     Method to parse postion option.
     @param {String} Property name.
+    @param {Any} Property Value.
     @returns {String} Parsed options value.
   */
-  _parsePositionOption (key) {
-    var value = this._props[key];
+  _parsePositionOption (key, value) {
+    // var value = this._props[key];
     if (h.unitOptionMap[key]) { value = h.parseUnit(value).string; }
+    // this._o.isIt && console.log(value);
     return value;
   }
   /*
     Method to parse strokeDash.. option.
     @param {String} Property name.
+    @param {Any}    Property value.
     @returns {String} Parsed options value.
   */
-  _parseStrokeDashOption (key) {
-    var value  = this._props[key],
-        result = value;
+  _parseStrokeDashOption (key, value) {
+    var result = value;
     // parse numeric/percent values for strokeDash.. properties
-    if ( (key === 'strokeDasharray') || (key === 'strokeDashoffset') ) {
+    if ( this._arrayPropertyMap[key] ) {
       var result = [];
       switch (typeof value) {
         case 'number':
           result.push(h.parseUnit(value));
           break;
         case 'string':
-          var array = this._props[key].split(' ');
+          var array = value.split(' ');
           for (var i = 0; i < array.length; i++ ) {
             result.push(h.parseUnit(array[i]));
           }
@@ -158,8 +167,13 @@ class Module {
     delta = h.parseDelta(key, optionsValue, this._index);
     // if successfully parsed - save it
     if (delta.type != null) { this._deltas[key] = delta; }
-    // set props to start value of the delta
-    this._props[key] = delta.start;
+
+    var deltaEnd = ( typeof delta.end === 'object' )
+      ? (delta.end.value === 0) ? 0 : delta.end.string
+      : delta.end;
+    // set props to end value of the delta
+    // 0 should be 0 regardless units
+    this._props[key] = deltaEnd;
   }
   /*
     Method to copy `_o` options to `_props` object
@@ -208,12 +222,33 @@ class Module {
     if ( this._isDelta( value ) && name !== 'callbacksContext' ) {
       this._getDelta( name, value ); return;
     }
+
+    this._assignProp( name, this._parseProperty( name, value ) );
+  }
+  /*
+    Method to parse postion and string props.
+    @private
+    @param {String} Property name.
+    @param {Any}    Property value.
+    @returns {Any}  Parsed property value.
+  */
+  _parsePreArrayProperty ( name, value ) {
     // parse stagger and rand values
-    this._assignProp( name, this._parseOptionString(value) );
+    value = this._parseOptionString(value);
     // parse units for position properties
-    this._assignProp( name, this._parsePositionOption(name) );
+    return this._parsePositionOption(name, value);
+  }
+  /*
+    Method to parse property value.
+    @private
+    @param {String} Property name.
+    @param {Any}    Property value.
+    @returns {Any}  Parsed property value.
+  */
+  _parseProperty ( name, value ) {
+    value = this._parsePreArrayProperty( name, value );
     // parse numeric/percent values for strokeDash.. properties
-    this._assignProp( name, this._parseStrokeDashOption(name) );
+    return this._parseStrokeDashOption(name, value);
   }
   /*
     Method to calculate current progress of the deltas.
@@ -244,6 +279,25 @@ class Module {
         this._props[key] = `rgba(${r},${g},${b},${a})`;
       }
     }
+  }
+
+  /*
+    Method to parse values inside ∆.
+    @private
+    @param {String} Key name.
+    @param {Object} Delta.
+    @returns {Object} Delta with parsed parameters.
+  */
+  _parseDeltaValues (name, delta) {
+    for (var key in delta) {
+      var value = delta[key];
+      // delete the old key
+      delete delta[key];
+      // add parsed properties
+      var newEnd = this._parsePreArrayProperty(name, value);
+      delta[this._parsePreArrayProperty(name, key)] = newEnd;
+    }
+    return delta;
   }
   /*
     Method to calculate current progress and probably draw it in children.

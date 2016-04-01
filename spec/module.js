@@ -51,6 +51,12 @@
         md = new Module(options);
         return expect(md._o).toBe(options);
       });
+      it('should create _arrayPropertyMap', function() {
+        var md;
+        md = new Module;
+        expect(md._arrayPropertyMap['strokeDasharray']).toBe(1);
+        return expect(md._arrayPropertyMap['strokeDashoffset']).toBe(1);
+      });
       it('should fallback to empty object for _o', function() {
         var md;
         md = new Module;
@@ -225,13 +231,13 @@
       var tr;
       tr = new Module;
       it('should parse position option', function() {
-        var key, result;
-        tr._props.x = '100%';
+        var key, result, value;
         key = 'x';
+        value = '100%';
         spyOn(h, 'parseUnit').and.callThrough();
-        result = tr._parsePositionOption(key);
-        expect(h.parseUnit).toHaveBeenCalledWith(tr._props[key]);
-        return expect(result).toBe(h.parseUnit(tr._props[key]).string);
+        result = tr._parsePositionOption(key, value);
+        expect(h.parseUnit).toHaveBeenCalledWith(value);
+        return expect(result).toBe(h.parseUnit(value).string);
       });
       return it('should leave the value unattended if not pos property', function() {
         var key, result;
@@ -247,24 +253,24 @@
       var tr;
       tr = new Module;
       it('should parse strokeDash option', function() {
-        var key, result;
-        tr._props.strokeDasharray = 200;
+        var key, result, value;
         key = 'strokeDasharray';
+        value = 200;
         spyOn(h, 'parseUnit').and.callThrough();
-        result = tr._parseStrokeDashOption(key);
-        expect(h.parseUnit).toHaveBeenCalledWith(tr._props[key]);
-        expect(result[0].unit).toBe(h.parseUnit(tr._props[key]).unit);
-        expect(result[0].isStrict).toBe(h.parseUnit(tr._props[key]).isStrict);
-        expect(result[0].value).toBe(h.parseUnit(tr._props[key]).value);
-        expect(result[0].string).toBe(h.parseUnit(tr._props[key]).string);
+        result = tr._parseStrokeDashOption(key, value);
+        expect(h.parseUnit).toHaveBeenCalledWith(value);
+        expect(result[0].unit).toBe(h.parseUnit(value).unit);
+        expect(result[0].isStrict).toBe(h.parseUnit(value).isStrict);
+        expect(result[0].value).toBe(h.parseUnit(value).value);
+        expect(result[0].string).toBe(h.parseUnit(value).string);
         return expect(result[1]).not.toBeDefined();
       });
       it('should parse strokeDash option string', function() {
-        var key, result;
-        tr._props.strokeDasharray = '200 100';
+        var key, result, value;
         key = 'strokeDasharray';
+        value = '200 100';
         spyOn(h, 'parseUnit').and.callThrough();
-        result = tr._parseStrokeDashOption(key);
+        result = tr._parseStrokeDashOption(key, value);
         expect(h.parseUnit).toHaveBeenCalledWith('200');
         expect(h.parseUnit).toHaveBeenCalledWith('100');
         expect(result[0].unit).toBe(h.parseUnit(200).unit);
@@ -278,16 +284,16 @@
         return expect(result[2]).not.toBeDefined();
       });
       it('should parse strokeDashoffset option', function() {
-        var key, result;
-        tr._props.strokeDashoffset = '100%';
+        var key, result, value;
         key = 'strokeDashoffset';
+        value = '100%';
         spyOn(h, 'parseUnit').and.callThrough();
-        result = tr._parseStrokeDashOption(key);
-        expect(h.parseUnit).toHaveBeenCalledWith(tr._props[key]);
-        expect(result[0].unit).toBe(h.parseUnit(tr._props[key]).unit);
-        expect(result[0].isStrict).toBe(h.parseUnit(tr._props[key]).isStrict);
-        expect(result[0].value).toBe(h.parseUnit(tr._props[key]).value);
-        expect(result[0].string).toBe(h.parseUnit(tr._props[key]).string);
+        result = tr._parseStrokeDashOption(key, value);
+        expect(h.parseUnit).toHaveBeenCalledWith(value);
+        expect(result[0].unit).toBe(h.parseUnit(value).unit);
+        expect(result[0].isStrict).toBe(h.parseUnit(value).isStrict);
+        expect(result[0].value).toBe(h.parseUnit(value).value);
+        expect(result[0].string).toBe(h.parseUnit(value).string);
         return expect(result[1]).not.toBeDefined();
       });
       return it('should leave the value unattended if not strokeDash.. property', function() {
@@ -335,7 +341,9 @@
       });
       it('should parse option string', function() {
         var md, name, value;
-        md = new Module;
+        md = new Module({
+          isIt: 1
+        });
         spyOn(md, '_getDelta');
         spyOn(md, '_parseOptionString').and.callThrough();
         name = 'delay';
@@ -352,7 +360,7 @@
         name = 'x';
         value = '20%';
         md._parseOption(name, value);
-        expect(md._parsePositionOption).toHaveBeenCalledWith(name);
+        expect(md._parsePositionOption).toHaveBeenCalledWith(name, value);
         return expect(md._props[name]).toBe(value);
       });
       return it('should parse strokeDasharray option', function() {
@@ -361,11 +369,9 @@
         spyOn(md, '_parseStrokeDashOption').and.callThrough();
         name = 'strokeDasharray';
         value = '200 100% 200';
-        md._props[name] = value;
-        parsed = md._parseStrokeDashOption(name);
-        md._props[name] = value;
+        parsed = md._parseStrokeDashOption(name, value);
         md._parseOption(name, value);
-        expect(md._parseStrokeDashOption).toHaveBeenCalledWith(name);
+        expect(md._parseStrokeDashOption).toHaveBeenCalledWith(name, value);
         return expect(md._props[name]).toEqual(parsed);
       });
     });
@@ -401,7 +407,7 @@
             45: 55
           }
         });
-        return expect(md._props.radius).toBe(45);
+        return expect(md._props.radius).toBe(55);
       });
       it('should ignore properties defined in skipProps object', function() {
         var md;
@@ -598,7 +604,7 @@
         });
         return expect(h.warn).toHaveBeenCalled();
       });
-      return it('should call h.parseDelta', function() {
+      it('should call h.parseDelta', function() {
         var delta, key, md;
         md = new Module;
         md._index = 3;
@@ -609,6 +615,109 @@
         };
         md._getDelta(key, delta);
         return expect(h.parseDelta).toHaveBeenCalledWith(key, delta, md._index);
+      });
+      return it('should set end value to props', function() {
+        var delta, key, md;
+        md = new Module;
+        key = 'left';
+        delta = {
+          '50%': 0
+        };
+        md._getDelta(key, delta);
+        return expect(md._props.left).toBe(0);
+      });
+    });
+    describe('_parsePreArrayProperty method ->', function() {
+      it('should call _parseOptionString method', function() {
+        var key, md, value;
+        md = new Module;
+        key = 'left';
+        value = '50%';
+        spyOn(md, '_parseOptionString').and.callThrough();
+        md._parsePreArrayProperty(key, value);
+        return expect(md._parseOptionString).toHaveBeenCalledWith(value);
+      });
+      return it('should pass results of the prev call to _parsePositionOption method', function() {
+        var key, md, result, value;
+        md = new Module;
+        key = 'left';
+        value = 'stagger(200, 100)';
+        spyOn(md, '_parsePositionOption').and.callThrough();
+        result = md._parsePreArrayProperty(key, value);
+        expect(md._parsePositionOption).toHaveBeenCalledWith(key, md._parseOptionString(value));
+        value = md._parseOptionString(value);
+        value = md._parsePositionOption(key, value);
+        return expect(result).toBe(value);
+      });
+    });
+    describe('_parseProperty method ->', function() {
+      it('should call _parsePreArrayProperty method', function() {
+        var key, md, value;
+        md = new Module;
+        key = 'left';
+        value = '50%';
+        spyOn(md, '_parsePreArrayProperty').and.callThrough();
+        md._parseProperty(key, value);
+        return expect(md._parsePreArrayProperty).toHaveBeenCalledWith(key, value);
+      });
+      it('should pass results of the prev call to _parseStrokeDashOption method', function() {
+        var key, md, value;
+        md = new Module;
+        key = 'left';
+        value = 'stagger(200, 100)';
+        spyOn(md, '_parseStrokeDashOption').and.callThrough();
+        md._parseProperty(key, value);
+        value = md._parsePreArrayProperty(key, value);
+        return expect(md._parseStrokeDashOption).toHaveBeenCalledWith(key, value);
+      });
+      return it('should return result', function() {
+        var key, md, result, value;
+        md = new Module;
+        key = 'left';
+        value = 'stagger(200, 100)';
+        spyOn(md, '_parseStrokeDashOption').and.callThrough();
+        result = md._parseProperty(key, value);
+        value = md._parsePreArrayProperty(key, value);
+        value = md._parseStrokeDashOption(key, value);
+        return expect(result).toBe(value);
+      });
+    });
+    describe('_parseDeltaValues method ->', function() {
+      it('should parse delta values', function() {
+        var delta, deltaResult, md;
+        md = new Module;
+        delta = {
+          'stagger(100, 0)': 200
+        };
+        deltaResult = md._parseDeltaValues('left', delta);
+        expect(deltaResult).toEqual({
+          '100px': '200px'
+        });
+        return expect(deltaResult).toBe(delta);
+      });
+      it('should not arr values parse delta values', function() {
+        var delta, deltaResult, md;
+        md = new Module;
+        delta = {
+          'stagger(100, 0)': 200
+        };
+        deltaResult = md._parseDeltaValues('strokeDasharray', delta);
+        expect(deltaResult).toEqual({
+          '100': 200
+        });
+        return expect(deltaResult).toBe(delta);
+      });
+      return it('should not delete key if parsed is the same', function() {
+        var delta, deltaResult, md;
+        md = new Module;
+        delta = {
+          2: 1
+        };
+        deltaResult = md._parseDeltaValues('opacity', delta);
+        expect(deltaResult).toEqual({
+          2: 1
+        });
+        return expect(deltaResult).toBe(delta);
       });
     });
     return it('clean the _defaults  up', function() {

@@ -7,7 +7,7 @@
 
   Timeline = window.mojs.Timeline;
 
-  describe('Twenner ->', function() {
+  describe('Tweener ->', function() {
     afterEach(function() {
       t._stopLoop();
       return t.removeAll();

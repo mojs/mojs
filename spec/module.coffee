@@ -40,6 +40,10 @@ describe 'module class ->', ->
       options = {}
       md = new Module options
       expect(md._o).toBe options
+    it 'should create _arrayPropertyMap', ->
+      md = new Module
+      expect(md._arrayPropertyMap['strokeDasharray']).toBe 1
+      expect(md._arrayPropertyMap['strokeDashoffset']).toBe 1
     it 'should fallback to empty object for _o', ->
       md = new Module
 
@@ -89,6 +93,7 @@ describe 'module class ->', ->
       md = new Module
       expect(md._strokeDasharrayBuffer.length).toBe 0
       expect(h.isArray(md._strokeDasharrayBuffer)).toBe true
+
   describe '_assignProp method ->', ->
     it 'should set property on _props object', ->
       value = 2
@@ -152,12 +157,11 @@ describe 'module class ->', ->
   describe '_parsePositionOption method ->', ->
     tr = new Module
     it 'should parse position option', ->
-      tr._props.x = '100%'
-      key = 'x'
+      key = 'x'; value = '100%'
       spyOn(h, 'parseUnit').and.callThrough()
-      result = tr._parsePositionOption key
-      expect(h.parseUnit).toHaveBeenCalledWith tr._props[key]
-      expect(result).toBe h.parseUnit(tr._props[key]).string
+      result = tr._parsePositionOption key, value
+      expect(h.parseUnit).toHaveBeenCalledWith value
+      expect(result).toBe h.parseUnit(value).string
     it 'should leave the value unattended if not pos property', ->
       tr._props.x = '100%'
       key = 'fill'
@@ -169,21 +173,19 @@ describe 'module class ->', ->
   describe '_parseStrokeDashOption method ->', ->
     tr = new Module
     it 'should parse strokeDash option', ->
-      tr._props.strokeDasharray = 200
-      key = 'strokeDasharray'
+      key = 'strokeDasharray'; value = 200
       spyOn(h, 'parseUnit').and.callThrough()
-      result = tr._parseStrokeDashOption key
-      expect(h.parseUnit).toHaveBeenCalledWith tr._props[key]
-      expect(result[0].unit).toBe h.parseUnit(tr._props[key]).unit
-      expect(result[0].isStrict).toBe h.parseUnit(tr._props[key]).isStrict
-      expect(result[0].value).toBe h.parseUnit(tr._props[key]).value
-      expect(result[0].string).toBe h.parseUnit(tr._props[key]).string
+      result = tr._parseStrokeDashOption key, value
+      expect(h.parseUnit).toHaveBeenCalledWith value
+      expect(result[0].unit).toBe h.parseUnit(value).unit
+      expect(result[0].isStrict).toBe h.parseUnit(value).isStrict
+      expect(result[0].value).toBe h.parseUnit(value).value
+      expect(result[0].string).toBe h.parseUnit(value).string
       expect(result[1]).not.toBeDefined()
     it 'should parse strokeDash option string', ->
-      tr._props.strokeDasharray = '200 100'
-      key = 'strokeDasharray'
+      key = 'strokeDasharray'; value = '200 100'
       spyOn(h, 'parseUnit').and.callThrough()
-      result = tr._parseStrokeDashOption key
+      result = tr._parseStrokeDashOption key, value
       expect(h.parseUnit).toHaveBeenCalledWith '200'
       expect(h.parseUnit).toHaveBeenCalledWith '100'
       expect(result[0].unit).toBe h.parseUnit(200).unit
@@ -196,15 +198,14 @@ describe 'module class ->', ->
       expect(result[1].string).toBe h.parseUnit(100).string
       expect(result[2]).not.toBeDefined()
     it 'should parse strokeDashoffset option', ->
-      tr._props.strokeDashoffset = '100%'
-      key = 'strokeDashoffset'
+      key = 'strokeDashoffset'; value = '100%'
       spyOn(h, 'parseUnit').and.callThrough()
-      result = tr._parseStrokeDashOption key
-      expect(h.parseUnit).toHaveBeenCalledWith tr._props[key]
-      expect(result[0].unit).toBe h.parseUnit(tr._props[key]).unit
-      expect(result[0].isStrict).toBe h.parseUnit(tr._props[key]).isStrict
-      expect(result[0].value).toBe h.parseUnit(tr._props[key]).value
-      expect(result[0].string).toBe h.parseUnit(tr._props[key]).string
+      result = tr._parseStrokeDashOption key, value
+      expect(h.parseUnit).toHaveBeenCalledWith value
+      expect(result[0].unit).toBe h.parseUnit(value).unit
+      expect(result[0].isStrict).toBe h.parseUnit(value).isStrict
+      expect(result[0].value).toBe h.parseUnit(value).value
+      expect(result[0].string).toBe h.parseUnit(value).string
       expect(result[1]).not.toBeDefined()
     it 'should leave the value unattended if not strokeDash.. property', ->
       tr._props.x = '100%'
@@ -230,7 +231,7 @@ describe 'module class ->', ->
       md._parseOption name, delta
       expect(md._getDelta).toHaveBeenCalledWith name, delta
     it 'should parse option string', ->
-      md = new Module
+      md = new Module isIt: 1
       spyOn md, '_getDelta'
       spyOn(md, '_parseOptionString').and.callThrough()
       name = 'delay'; value = 'stagger(400, 200)'
@@ -243,17 +244,17 @@ describe 'module class ->', ->
       spyOn(md, '_parsePositionOption').and.callThrough()
       name = 'x'; value = '20%'
       md._parseOption name, value
-      expect(md._parsePositionOption).toHaveBeenCalledWith name
+      expect(md._parsePositionOption).toHaveBeenCalledWith name, value
       expect(md._props[name]).toBe value
     it 'should parse strokeDasharray option', ->
       md = new Module
       spyOn(md, '_parseStrokeDashOption').and.callThrough()
       name = 'strokeDasharray'; value = '200 100% 200'
-      md._props[name] = value
-      parsed = md._parseStrokeDashOption(name)
-      md._props[name] = value
+      # md._props[name] = value
+      parsed = md._parseStrokeDashOption name, value
+      # md._props[name] = value
       md._parseOption name, value
-      expect(md._parseStrokeDashOption).toHaveBeenCalledWith name
+      expect(md._parseStrokeDashOption).toHaveBeenCalledWith name, value
       expect(md._props[name]).toEqual parsed
 
   describe '_extendDefaults method ->', ->
@@ -272,7 +273,7 @@ describe 'module class ->', ->
       expect(md._props.radius).toBe(0)
     it 'should extend defaults object to properties if object was passed', ->
       md = new Module radius: {45: 55}
-      expect(md._props.radius).toBe(45)
+      expect(md._props.radius).toBe(55)
     it 'should ignore properties defined in skipProps object', ->
       md = new Module radius: 45
       md._skipProps = radius: 1
@@ -377,6 +378,85 @@ describe 'module class ->', ->
       key = 'left'; delta = { '50%': 0 }
       md._getDelta key, delta
       expect(h.parseDelta).toHaveBeenCalledWith key, delta, md._index
+
+    it 'should set end value to props', ->
+      md = new Module
+      key = 'left'; delta = { '50%': 0 }
+      md._getDelta key, delta
+      expect(md._props.left).toBe 0
+
+  describe '_parsePreArrayProperty method ->', ->
+    it 'should call _parseOptionString method', ->
+      md = new Module
+      key = 'left'; value = '50%'
+      spyOn(md, '_parseOptionString').and.callThrough()
+      md._parsePreArrayProperty( key, value )
+      expect(md._parseOptionString).toHaveBeenCalledWith value
+
+    it 'should pass results of the prev call to _parsePositionOption method', ->
+      md = new Module
+      key = 'left'; value = 'stagger(200, 100)'
+      spyOn(md, '_parsePositionOption').and.callThrough()
+      result = md._parsePreArrayProperty( key, value )
+      expect(md._parsePositionOption)
+        .toHaveBeenCalledWith key, md._parseOptionString(value)
+
+      value = md._parseOptionString(value)
+      value = md._parsePositionOption(key, value)
+      expect(result).toBe value
+
+  describe '_parseProperty method ->', ->
+    it 'should call _parsePreArrayProperty method', ->
+      md = new Module
+      key = 'left'; value = '50%'
+      spyOn(md, '_parsePreArrayProperty').and.callThrough()
+      md._parseProperty( key, value )
+      expect(md._parsePreArrayProperty).toHaveBeenCalledWith key, value
+
+    it 'should pass results of the prev call to _parseStrokeDashOption method', ->
+      md = new Module
+      key = 'left'; value = 'stagger(200, 100)'
+      spyOn(md, '_parseStrokeDashOption').and.callThrough()
+      md._parseProperty( key, value )
+
+      value = md._parsePreArrayProperty(key, value)
+      expect(md._parseStrokeDashOption)
+        .toHaveBeenCalledWith key, value
+
+    it 'should return result', ->
+      md = new Module
+      key = 'left'; value = 'stagger(200, 100)'
+      spyOn(md, '_parseStrokeDashOption').and.callThrough()
+      result = md._parseProperty( key, value )
+
+      value = md._parsePreArrayProperty(key, value)
+      value = md._parseStrokeDashOption(key, value)
+      expect(result).toBe value
+
+  describe '_parseDeltaValues method ->', ->
+    it 'should parse delta values', ->
+      md = new Module
+
+      delta = { 'stagger(100, 0)': 200 }
+      deltaResult = md._parseDeltaValues( 'left', delta )
+      expect(deltaResult).toEqual { '100px': '200px' }
+      expect(deltaResult).toBe delta
+
+    it 'should not arr values parse delta values', ->
+      md = new Module
+
+      delta = { 'stagger(100, 0)': 200 }
+      deltaResult = md._parseDeltaValues( 'strokeDasharray', delta )
+      expect(deltaResult).toEqual { '100': 200 }
+      expect(deltaResult).toBe delta
+
+    it 'should not delete key if parsed is the same', ->
+      md = new Module
+
+      delta = { 2: 1 }
+      deltaResult = md._parseDeltaValues( 'opacity', delta )
+      expect(deltaResult).toEqual { 2: 1 }
+      expect(deltaResult).toBe delta
 
   it 'clean the _defaults  up', ->
     Module::_declareDefaults = oldFun
