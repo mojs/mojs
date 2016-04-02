@@ -14,6 +14,7 @@ class Tuneable extends Thenable {
     if (o && Object.keys(o).length) {
       this._transformHistory(o);
       this._tuneNewOptions(o);
+      // this._history[0] = h.cloneObj(this._props);
       this._history[0] = h.extend( h.cloneObj(this._o), this._defaults )
       this._tuneSubModules();
       this._resetTweens();
@@ -72,7 +73,6 @@ class Tuneable extends Thenable {
                        history modifications is needed.
   */
   _transformHistoryRecord ( index, key, newValue, currRecord, nextRecord ) {
-    // console.log(key, newValue)
     // newValue = this._parseProperty( key, newValue );
     if (newValue == null ) { return null; }
 
@@ -81,7 +81,6 @@ class Tuneable extends Thenable {
     
     var oldValue = currRecord[key];
 
-
     // if index is 0 - always save the newValue
     // and return non-delta for subsequent modifications
     if ( index === 0 ) {
@@ -89,10 +88,18 @@ class Tuneable extends Thenable {
       // always return on tween properties
       if ( h.isTweenProp(key) && key !== 'duration' ) { return null; }
       // nontween properties
-      if ( this._isDelta(newValue) ) { return h.getDeltaEnd(newValue); }
-      else {
+      if ( this._isDelta(newValue) ) {
+
         var isNextRecord = ( nextRecord && (nextRecord[key] === oldValue) ),
-            isNextDelta  = ( nextRecord && (this._isDelta(nextRecord[key])) );
+            isNextObject = ( nextRecord && (this._isDelta(nextRecord[key])) ),
+            isNextDelta  = isNextObject && h.getDeltaStart(nextRecord[key]) === `${oldValue}`;
+
+        return ( isNextRecord || isNextDelta ) ? h.getDeltaEnd(newValue) : null;
+
+      } else {
+        var isNextRecord = ( nextRecord && (nextRecord[key] === oldValue) ),
+            isNextObject = ( nextRecord && (this._isDelta(nextRecord[key])) ),
+            isNextDelta  = isNextObject && h.getDeltaStart(nextRecord[key]) === `${oldValue}`;
 
         return ( isNextRecord || isNextDelta ) ? newValue : null;
       }
@@ -105,10 +112,13 @@ class Tuneable extends Thenable {
       } else {
         // if the old value is not delta and the new one is
         currRecord[key] = newValue;
+
+        var isNextRecord = ( nextRecord && (nextRecord[key] === oldValue) ),
+            isNextObject = ( nextRecord && (this._isDelta(nextRecord[key])) ),
+            isNextDelta  = isNextObject && h.getDeltaStart(nextRecord[key]) === `${oldValue}`;
         // if the next item has the same value - return the
         // item for subsequent modifications or stop
-        return ( nextRecord && nextRecord[key] === oldValue )
-          ? newValue : null;
+        return ( isNextRecord || isNextDelta ) ? newValue : null;
       }
     }
   }

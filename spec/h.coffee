@@ -907,6 +907,10 @@ describe 'Helpers ->', ->
       expect(h.isObject(2)).toBe false
       expect(h.isObject(true)).toBe false
 
+  describe 'getDeltaStart method ->', ->
+    it 'should return value of the 0 key of passed object', ->
+      expect(h.getDeltaStart({ 2: 1 })).toBe '2'
+
   describe 'getDeltaEnd method ->', ->
     it 'should return value of the 0 key of passed object', ->
       expect(h.getDeltaEnd({ 2: 1 })).toBe 1

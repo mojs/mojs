@@ -20,8 +20,6 @@ class Thenable extends Tweenable {
         prevModule = this._modules[ this._modules.length - 1 ],
         merged     = this._mergeThenOptions( prevRecord, o );
 
-    // console.log(merged)
-
     this._resetMergedFlags( merged );
     // reset isShowEnd flag on prev module
     prevModule._setProp && prevModule._setProp('isShowEnd', false);
@@ -62,9 +60,12 @@ class Thenable extends Tweenable {
     // have been already extended by defaults
     var initialRecord = h.cloneObj(this._props);
     for (var key in this._arrayPropertyMap) {
-      if (this._o[key]) { initialRecord[key] = this._o[key]; }
+      if (this._o[key]) {
+        var preParsed = this._parsePreArrayProperty(key, this._o[key]);
+        initialRecord[key] = preParsed;
+      }
     }
-    
+
     this._history = [ initialRecord ];
     // the array holds all modules in the then chain
     this._modules = [ this ];

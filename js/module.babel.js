@@ -106,9 +106,7 @@ class Module {
     @returns {String} Parsed options value.
   */
   _parsePositionOption (key, value) {
-    // var value = this._props[key];
     if (h.unitOptionMap[key]) { value = h.parseUnit(value).string; }
-    // this._o.isIt && console.log(value);
     return value;
   }
   /*

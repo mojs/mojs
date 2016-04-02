@@ -504,11 +504,18 @@ class Helpers
   isObject:(variable)-> variable != null and typeof variable is 'object'
   ###
     Method to get first value of the object.
-    Used to get end value on ∆'s.
+    Used to get end value on ∆s.
     @param {Object} Object to get the value of.
     @returns {Any} The value of the first object' property.
   ###
   getDeltaEnd: (obj)-> key = Object.keys(obj)[0]; return obj[key]
+  ###
+    Method to get first key of the object.
+    Used to get start value on ∆s.
+    @param {Object} Object to get the value of.
+    @returns {String} The key of the first object' property.
+  ###
+  getDeltaStart: (obj)-> key = Object.keys(obj)[0]; return key
   ###
     Method to check if propery exists in callbacksMap or tweenOptionMap.
     @param {String} Property name to check for

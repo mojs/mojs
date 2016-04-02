@@ -1,5 +1,5 @@
 (function() {
-  var Thenable, Tunable, h;
+  var Thenable, Tunable, h, oldFun;
 
   h = mojs.h;
 
@@ -7,7 +7,45 @@
 
   Thenable = mojs.Thenable;
 
+  oldFun = Tunable.prototype._declareDefaults;
+
   describe('Tunable ->', function() {
+    it('set the _defaults up', function() {
+      var defaults;
+      defaults = {
+        stroke: 'transparent',
+        strokeOpacity: 1,
+        strokeLinecap: '',
+        strokeWidth: 2,
+        strokeDasharray: 0,
+        strokeDashoffset: 0,
+        fill: 'deeppink',
+        fillOpacity: 1,
+        left: 0,
+        top: 0,
+        x: 0,
+        y: 0,
+        rx: 0,
+        ry: 0,
+        angle: 0,
+        scale: 1,
+        opacity: 1,
+        points: 3,
+        radius: {
+          0: 50
+        },
+        radiusX: null,
+        radiusY: null,
+        isShowStart: false,
+        isShowEnd: false,
+        size: null,
+        sizeGap: 0,
+        callbacksContext: null
+      };
+      return Tunable.prototype._declareDefaults = function() {
+        return this._defaults = defaults;
+      };
+    });
     describe('extention ->', function() {
       return it('should extend Thenable', function() {
         var rn;
@@ -28,20 +66,22 @@
         expect(tr._history[0].x).toBe(20);
         return expect(result).toBe(20);
       });
-      it('should return newValue if old value is delta and index is 0', function() {
+      it('should return null if next is different delta and index is 0', function() {
         var result, tr;
         tr = new Tunable({
           radius: {
             0: 50
           }
         }).then({
-          radius: 0
+          radius: {
+            100: 0
+          }
         }).then({
           radius: 50
         });
         result = tr._transformHistoryRecord(0, 'radius', 20);
         expect(tr._history[0].radius).toBe(20);
-        return expect(result).toBe(20);
+        return expect(result).toBe(null);
       });
       it('should return null if old value is delta but index isnt 0', function() {
         var result, tr;
@@ -58,9 +98,10 @@
         expect(tr._history[1].radius[20]).toBe(0);
         return expect(result).toBe(null);
       });
-      it('should rewrite everything until first delta', function() {
+      it('should rewrite everything until first delta # 0 index', function() {
         var result, tr;
         tr = new Tunable({
+          isIt: 1,
           radius: 75
         }).then({
           radius: 0
@@ -73,6 +114,20 @@
         result = tr._transformHistoryRecord(1, 'radius', 20);
         expect(tr._history[1].radius[20]).toBe(0);
         return expect(result).toBe(null);
+      });
+      it('should rewrite everything until first delta # non 0 index', function() {
+        var result, tr;
+        tr = new Tunable({
+          isIt: 1,
+          radius: 75
+        }).then({
+          radius: 0
+        }).then({
+          y: -200
+        });
+        result = tr._transformHistoryRecord(1, 'y', 20);
+        expect(tr._history[1].y).toBe(20);
+        return expect(result).toBe(20);
       });
       it('should rewrite everything until first defined item', function() {
         var result, tr;
@@ -110,6 +165,24 @@
         expect(result).toBe(100);
         result = tr._transformHistoryRecord(1, 'radius', 100);
         expect(tr._history[1].radius[100]).toBe(0);
+        return expect(result).toBe(null);
+      });
+      it('should save new delta value and not modify the next', function() {
+        var delta, result, tr;
+        tr = new Tunable({
+          radius: 75
+        }).then({
+          radius: {
+            100: 0
+          }
+        }).then({
+          radius: 50
+        });
+        delta = {
+          20: 100
+        };
+        result = tr._transformHistoryRecord(0, 'radius', delta);
+        expect(tr._history[0].radius[20]).toBe(100);
         return expect(result).toBe(null);
       });
       it('should return newValue if old value is delta and index is 0', function() {
@@ -471,7 +544,7 @@
         return expect(rn._modules[2]._tuneNewOptions).toHaveBeenCalled();
       });
     });
-    return describe('generate method ->', function() {
+    describe('generate method ->', function() {
       it('should call tune with _o', function() {
         var rn;
         rn = new Tunable({
@@ -488,6 +561,9 @@
         });
         return expect(rn.generate()).toBe(rn);
       });
+    });
+    return it('clean the _defaults  up', function() {
+      return Tunable.prototype._declareDefaults = oldFun;
     });
   });
 

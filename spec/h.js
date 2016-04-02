@@ -1268,6 +1268,13 @@
         return expect(h.isObject(true)).toBe(false);
       });
     });
+    describe('getDeltaStart method ->', function() {
+      return it('should return value of the 0 key of passed object', function() {
+        return expect(h.getDeltaStart({
+          2: 1
+        })).toBe('2');
+      });
+    });
     describe('getDeltaEnd method ->', function() {
       return it('should return value of the 0 key of passed object', function() {
         return expect(h.getDeltaEnd({

@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.211.0', isDebug: true, helpers: h,
+  revision:   '0.211.1', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -25,10 +25,11 @@ window.mojs = {
 
 // TODO:
 /*
-  duration to transit defaults
+  fix parsing new params in tune calls
   burst fix the tune for `then` chains
+  duration to transit defaults
   cover in thenable
-  randoms/swirls in then chains for transit and swirl.
+  swirls in then chains for transit and swirl.
   module names
   perf optimizations.
   --
@@ -36,72 +37,63 @@ window.mojs = {
   percentage for radius
 */
 
-// let sw = new mojs.Burst({
-//   count: 5,
-//   // left: '50%', top: '50%',
-//   isShowEnd: 1,
-//   isShowStart: 1,
-//   // isSwirl: false,
-//   radius: { 0: 100 },
-//   x: {0: 200},
-//   y: 0,
-//   angle: 90,
-//   childOptions: {
-//     shape: 'line',
-//     duration: 2000,
-//     isSwirl: 0,
-//     radius: { 7: 4 },
-//     stroke: ['cyan', 'yellow', 'white'],
-//     angle: { 0: 180 }
-//   }
+// // let sw = new mojs.Burst({
+// //   count: 5,
+// //   // left: '50%', top: '50%',
+// //   isShowEnd: 1,
+// //   isShowStart: 1,
+// //   // isSwirl: false,
+// //   radius: { 0: 100 },
+// //   x: {0: 200},
+// //   y: 0,
+// //   angle: 90,
+// //   childOptions: {
+// //     shape: 'line',
+// //     duration: 2000,
+// //     isSwirl: 0,
+// //     radius: { 7: 4 },
+// //     stroke: ['cyan', 'yellow', 'white'],
+// //     angle: { 0: 180 }
+// //   }
+// // }).then({
+// //   x: 0,
+// //   angle: 0,
+// //   childOptions: { radius: 20 }
+// // }).then({
+// //   angle: 180,
+// //   x: 200, y: 200,
+// //   childOptions: { radius: 0 }
+// // });
+
+// var sw = new mojs.Transit({
+//   x: { 0: 200 }
 // }).then({
-//   x: 0,
-//   angle: 0,
-//   childOptions: { radius: 20 }
+//   x: 400,
 // }).then({
-//   angle: 180,
-//   x: 200, y: 200,
-//   childOptions: { radius: 0 }
+//   x: 'rand(400, 600)', y: -200
 // });
 
-var sw = new mojs.Transit({
-  // isIt: 1,
-  left: '50%', top: '50%',
-  // duration: 4000,
-  // x: { 0 : 'rand(0, 400)' },
-  strokeDasharray: '50%',
-  strokeDashoffset: '-50%',
-  stroke: 'white',
-  fill: 'none',
-  isShowStart: 1,
-  isShowEnd: 1,
-  // radius: 150
-})
-.then({
-  strokeDashoffset: {'100%' : '0%'}
-  // x: 'rand(0, 100)'
-})
-// .then({
-//   strokeDashoffset: '-100%'
-// })
+// var playEl = document.querySelector('#js-play'),
+//     rangeSliderEl = document.querySelector('#js-range-slider');
+// document.body.addEventListener('click', function (e) {
+//   console.log('-=-=-=-=-=-')
+//   console.log(sw._history[0].x)
+//   console.log(sw._history[1].x)
+//   console.log(sw._history[2].x)
 
-console.log('-=-=-=-=-=-=-=-=-=-=-=-')
-// console.log(sw._history[0].strokeDasharray);
-console.log(sw._history[0].strokeDashoffset);
-console.log(sw._history[1].strokeDashoffset);
-// // console.log(sw._history[2].strokeDashoffset);
-
-var playEl = document.querySelector('#js-play'),
-    rangeSliderEl = document.querySelector('#js-range-slider');
-document.body.addEventListener('click', function (e) {
-  sw
-    // .tune({
-    //   x: e.pageX, y: e.pageY
-    //   // fill: 'white', duration: 1000
-    // });
-  sw
-    .replay();
-});
+//   sw
+//     .tune({
+//       x: e.pageX,
+//       y: e.pageY
+//       // fill: 'white', duration: 1000
+//     });
+//   console.log('-=-=-=-=-=-')
+//   console.log(sw._history[0].x)
+//   console.log(sw._history[1].x)
+//   console.log(sw._history[2].x)
+//   sw
+//     .replay();
+// });
 
 // // rangeSliderEl.addEventListener('input', function () {
 // //   tr.setProgress( rangeSliderEl.value/1000 );

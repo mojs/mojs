@@ -50,6 +50,21 @@
         expect(th._history[0].strokeDasharray).toEqual(options.strokeDasharray);
         return expect(th._history[0].strokeDashoffset).toEqual(options.strokeDashoffset);
       });
+      it('should pre parse property', function() {
+        var options, th;
+        options = {
+          strokeDasharray: 'stagger(200, 100)',
+          strokeDashoffset: 'stagger(100, 200)'
+        };
+        th = new Thenable(options);
+        th._props = {
+          strokeDasharray: [],
+          strokeDashoffset: []
+        };
+        th._vars();
+        expect(th._history[0].strokeDasharray).toEqual(th._parsePreArrayProperty('strokeDasharray', options.strokeDasharray));
+        return expect(th._history[0].strokeDashoffset).toEqual(th._parsePreArrayProperty('strokeDashoffset', options.strokeDashoffset));
+      });
       it('should create _modules object', function() {
         var th;
         th = new Thenable;

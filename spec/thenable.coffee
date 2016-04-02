@@ -18,8 +18,6 @@ describe 'thenable ->', ->
       th = new Thenable {}
       th._props = options
       th._vars()
-      # th._history[0].strokeDasharray  = th._props.strokeDasharray
-      # th._history[0].strokeDahsoffset = th._props.strokeDahsoffset
       expect(th._history[0]).toEqual th._props
 
     it 'should save string _arrayPropertyMap values', ->
@@ -32,6 +30,19 @@ describe 'thenable ->', ->
       th._vars()
       expect(th._history[0].strokeDasharray).toEqual options.strokeDasharray
       expect(th._history[0].strokeDashoffset).toEqual options.strokeDashoffset
+
+    it 'should pre parse property', ->
+      options = {
+        strokeDasharray: 'stagger(200, 100)',
+        strokeDashoffset: 'stagger(100, 200)'
+      }
+      th = new Thenable options
+      th._props = { strokeDasharray: [], strokeDashoffset: [] }
+      th._vars()
+      expect(th._history[0].strokeDasharray)
+        .toEqual th._parsePreArrayProperty 'strokeDasharray', options.strokeDasharray
+      expect(th._history[0].strokeDashoffset)
+      .toEqual th._parsePreArrayProperty 'strokeDashoffset', options.strokeDashoffset
 
     it 'should create _modules object', ->
       th = new Thenable

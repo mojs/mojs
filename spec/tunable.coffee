@@ -2,7 +2,40 @@ h         = mojs.h
 Tunable   = mojs.Tunable
 Thenable  = mojs.Thenable
 
+oldFun = Tunable::_declareDefaults
 describe 'Tunable ->', ->
+  it 'set the _defaults up', ->
+    defaults = {
+        stroke:           'transparent',
+        strokeOpacity:    1,
+        strokeLinecap:    '',
+        strokeWidth:      2,
+        strokeDasharray:  0,
+        strokeDashoffset: 0,
+        fill:             'deeppink',
+        fillOpacity:      1,
+        left:             0,
+        top:              0,
+        x:                0,
+        y:                0,
+        rx:               0,
+        ry:               0,
+        angle:            0,
+        scale:            1,
+        opacity:          1,
+        points:           3,
+        radius:           { 0: 50 },
+        radiusX:          null,
+        radiusY:          null,
+        isShowStart:      false,
+        isShowEnd:        false,
+        size:             null,
+        sizeGap:          0,
+        callbacksContext: null
+      }
+
+    Tunable::_declareDefaults = -> this._defaults = defaults
+
   describe 'extention ->', ->
     it 'should extend Thenable', ->
       rn = new Tunable
@@ -10,8 +43,8 @@ describe 'Tunable ->', ->
   describe '_vars method ->', ->
 
   describe '_transformHistoryRecord method ->', ->
-    # x : { 0 }  -> { 0 }  -> { 0 }
-    # x : { 20 } -> { 20 } -> { 20 }
+    # x : { 0 : 50 }  -> { 50: 0 }  -> { 0 : 50 }
+    # x : { 20 } -> { 20: 0 } -> { 0 : 50 }
     it 'should add property to the record', ->
       tr = new Tunable()
         .then radius: 0
@@ -22,16 +55,17 @@ describe 'Tunable ->', ->
       expect(tr._history[0].x).toBe 20
       expect(result).toBe 20
 
-    it 'should return newValue if old value is delta and index is 0', ->
+    it 'should return null if next is different delta and index is 0', ->
       # radius: { 0: 50 } -> { 50: 0 } -> { 0: 50 }
       # radius: ^{ 20 } -> { 20 : 0 } x-> { 0: 50 }
       tr = new Tunable({ radius: { 0: 50 } })
-        .then radius: 0
+        .then radius: { 100: 0 }
         .then radius: 50
 
       result = tr._transformHistoryRecord 0, 'radius', 20
       expect(tr._history[0].radius).toBe 20
-      expect(result).toBe 20
+      expect(result).toBe null
+
     it 'should return null if old value is delta but index isnt 0', ->
       # radius: { 0: 50 } -> { 50: 0 } -> { 0: 50 }
       # radius: { 20 } -> ^{ 20 : 0 } x-> { 0: 50 }
@@ -43,8 +77,10 @@ describe 'Tunable ->', ->
       expect(tr._history[1].radius[20]).toBe 0
       expect(result).toBe null
 
-    it 'should rewrite everything until first delta', ->
-      tr = new Tunable({ radius: 75 })
+    it 'should rewrite everything until first delta # 0 index', ->
+      # radius: { 75 } -> { 75: 0 } -> { 0: 50 }
+      # radius: { 20 } -> { 20 : 0 } x-> { 0: 50 }
+      tr = new Tunable({ isIt: 1, radius: 75 })
         .then radius: 0
         .then radius: 50
 
@@ -56,7 +92,20 @@ describe 'Tunable ->', ->
       expect(tr._history[1].radius[20]).toBe 0
       expect(result).toBe null
 
+    it 'should rewrite everything until first delta # non 0 index', ->
+      # y: { 0 } -> { 0 } -> { 0: -200 }
+      # radius: { 0 } -> ^{ 20 } x-> { 20: -200 }
+      tr = new Tunable({ isIt: 1, radius: 75 })
+        .then radius: 0
+        .then y: -200
+
+      result = tr._transformHistoryRecord 1, 'y', 20
+      expect(tr._history[1].y).toBe 20
+      expect(result).toBe 20
+
     it 'should rewrite everything until first defined item', ->
+      # duration: { 2000 } -> { 2000 } -> { 5000 } -> { 5000 }
+      # duration: { 1000 } -> { 1000 } -> { 5000 } -> { 5000 }
       tr = new Tunable({ duration: 2000 })
         .then radius: 0
         .then radius: 50, duration: 5000
@@ -71,6 +120,8 @@ describe 'Tunable ->', ->
       expect(result).toBe null
 
     it 'should save new delta value and modify the next', ->
+      # radius: { 75 } -> { 75: 0 } -> { 0: 50 }
+      # radius: { 20 : 100 } -> { 100 : 0 } -> { 0: 50 }
       tr = new Tunable({ radius: 75 })
         .then radius: 0
         .then radius: 50
@@ -84,9 +135,21 @@ describe 'Tunable ->', ->
       expect(tr._history[1].radius[100]).toBe 0
       expect(result).toBe null
 
+    it 'should save new delta value and not modify the next', ->
+      # radius: { 75 } -> { 100: 0 } -> { 0: 50 }
+      # radius: { 20 : 100 } -> { 100 : 0 } -> { 0: 50 }
+      tr = new Tunable({ radius: 75 })
+        .then radius: 100: 0
+        .then radius: 50
+
+      delta = { 20 : 100 }
+      result = tr._transformHistoryRecord 0, 'radius', delta
+      expect(tr._history[0].radius[20]).toBe 100
+      expect(result).toBe null
+
     it 'should return newValue if old value is delta and index is 0', ->
-      # radius: { 0: 50 } -> { 50: 0 } -> { 0: 50 }
-      # radius: ^{ 20 } -> { 20 : 0 } x-> { 0: 50 }
+      # duration: { 2000 } -> { 300 } -> { 500 }
+      # duration: { 500 } -> { 300 } x-> { 500 }
       tr = new Tunable({ duration: 2000 })
         .then duration: 300
         .then duration: 500
@@ -330,5 +393,8 @@ describe 'Tunable ->', ->
     it 'should return this', ->
       rn = new Tunable({ radius: 20 })
       expect(rn.generate()).toBe rn
+
+  it 'clean the _defaults  up', ->
+    Tunable::_declareDefaults = oldFun
 
 
