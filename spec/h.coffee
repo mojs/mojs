@@ -294,7 +294,7 @@ describe 'Helpers ->', ->
       describe 'unit values ->', ->
         it 'should calculate unit delta', ->
           delta = h.parseDelta 'x', {'0%': '100%'}
-          expect(delta.start.string)    .toBe   '0%'
+          expect(delta.start.string)    .toBe   '0'
           expect(delta.end.string)      .toBe   '100%'
           expect(delta.delta)           .toBe   100
           expect(delta.type)            .toBe   'unit'
@@ -418,6 +418,11 @@ describe 'Helpers ->', ->
         expect(unit.value)    .toBe 100
         expect(unit.unit)     .toBe 'px'
         expect(unit.string)   .toBe '100px'
+      it 'should always return 0 for 0', ->
+        unit = h.parseUnit(0)
+        expect(unit.value)    .toBe 0
+        expect(unit.unit)     .toBe 'px'
+        expect(unit.string)   .toBe '0'
       it 'should parse unitless string', ->
         unit = h.parseUnit('100')
         expect(unit.value)    .toBe 100
@@ -428,6 +433,11 @@ describe 'Helpers ->', ->
         expect(unit.value)    .toBe 100
         expect(unit.unit)     .toBe 'px'
         expect(unit.string)   .toBe '100px'
+      it 'should always return 0 for 0 in strings', ->
+        unit = h.parseUnit('0px')
+        expect(unit.value)    .toBe 0
+        expect(unit.unit)     .toBe 'px'
+        expect(unit.string)   .toBe '0'
       it 'should parse percent string', ->
         unit = h.parseUnit('100%')
         expect(unit.value)    .toBe 100

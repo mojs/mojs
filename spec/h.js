@@ -400,7 +400,7 @@
             delta = h.parseDelta('x', {
               '0%': '100%'
             });
-            expect(delta.start.string).toBe('0%');
+            expect(delta.start.string).toBe('0');
             expect(delta.end.string).toBe('100%');
             expect(delta.delta).toBe(100);
             return expect(delta.type).toBe('unit');
@@ -572,6 +572,13 @@
           expect(unit.unit).toBe('px');
           return expect(unit.string).toBe('100px');
         });
+        it('should always return 0 for 0', function() {
+          var unit;
+          unit = h.parseUnit(0);
+          expect(unit.value).toBe(0);
+          expect(unit.unit).toBe('px');
+          return expect(unit.string).toBe('0');
+        });
         it('should parse unitless string', function() {
           var unit;
           unit = h.parseUnit('100');
@@ -585,6 +592,13 @@
           expect(unit.value).toBe(100);
           expect(unit.unit).toBe('px');
           return expect(unit.string).toBe('100px');
+        });
+        it('should always return 0 for 0 in strings', function() {
+          var unit;
+          unit = h.parseUnit('0px');
+          expect(unit.value).toBe(0);
+          expect(unit.unit).toBe('px');
+          return expect(unit.string).toBe('0');
         });
         it('should parse percent string', function() {
           var unit;

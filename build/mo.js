@@ -4963,7 +4963,7 @@
 	        unit: 'px',
 	        isStrict: false,
 	        value: value,
-	        string: value + "px"
+	        string: value === 0 ? "" + value : value + "px"
 	      };
 	    } else if (typeof value === 'string') {
 	      regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim;
@@ -4978,7 +4978,7 @@
 	        unit: unit,
 	        isStrict: isStrict,
 	        value: amount,
-	        string: "" + amount + unit
+	        string: amount === 0 ? "" + amount : "" + amount + unit
 	      };
 	    }
 	    return value;
@@ -8012,7 +8012,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.211.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.211.2', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default

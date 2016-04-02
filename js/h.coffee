@@ -188,9 +188,9 @@ class Helpers
     if typeof value is 'number'
       return returnVal =
         unit:     'px'
-        isStrict:   false
+        isStrict: false
         value:    value
-        string:   "#{value}px"
+        string:   if value is 0 then "#{value}" else "#{value}px"
     else if typeof value is 'string'
       regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim
       unit = value.match(regex)?[0]; isStrict = true
@@ -201,7 +201,7 @@ class Helpers
         unit:     unit
         isStrict: isStrict
         value:    amount
-        string:   "#{amount}#{unit}"
+        string:   if amount is 0 then "#{amount}" else "#{amount}#{unit}"
     value
   bind:(func, context) ->
     wrapper = ->
