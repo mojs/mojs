@@ -1,9 +1,11 @@
 (function() {
-  var Swirl, Transit, tr;
+  var Module, Swirl, Transit, tr;
 
   Transit = mojs.Transit;
 
   Swirl = mojs.Swirl;
+
+  Module = mojs.Module;
 
   tr = new Transit;
 
@@ -29,7 +31,7 @@
         return expect(swirl._props.degreeShift).toBe(90);
       });
     });
-    describe('position calc ->', function() {
+    describe('_calcPosData method ->', function() {
       it('should calc position radius', function() {
         var swirl;
         swirl = new Swirl({
@@ -103,7 +105,7 @@
         expect(swirl._posData.x.start).toBe(0);
         return expect(swirl._posData.y.start).toBe(10);
       });
-      it('should set start position anyways', function() {
+      return it('should set start position anyways', function() {
         var swirl;
         swirl = new Swirl({
           x: {
@@ -114,7 +116,9 @@
         expect(swirl._props.x).toBe('0px');
         return expect(swirl._props.y).toBe('0px');
       });
-      return it('should call super _extendDefaults method', function() {
+    });
+    describe('_extendDefaults method ->', function() {
+      it('should call super _extendDefaults method', function() {
         var swirl;
         swirl = new Swirl({
           radius: [
@@ -123,9 +127,50 @@
             }, 20
           ]
         });
-        spyOn(Swirl.prototype, '_extendDefaults').and.callThrough();
+        spyOn(Module.prototype, '_extendDefaults').and.callThrough();
         swirl._extendDefaults();
-        return expect(Swirl.prototype._extendDefaults).toHaveBeenCalled();
+        return expect(Module.prototype._extendDefaults).toHaveBeenCalled();
+      });
+      return it('should call _calcPosData method', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        spyOn(swirl, '_calcPosData').and.callThrough();
+        swirl._extendDefaults();
+        return expect(swirl._calcPosData).toHaveBeenCalled();
+      });
+    });
+    describe('_tuneNewOptions method ->', function() {
+      it('should call super _tuneNewOptions method', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        spyOn(Module.prototype, '_tuneNewOptions').and.callThrough();
+        swirl._tuneNewOptions({});
+        return expect(Module.prototype._tuneNewOptions).toHaveBeenCalled();
+      });
+      return it('should call _calcPosData method', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        spyOn(swirl, '_calcPosData').and.callThrough();
+        swirl._tuneNewOptions();
+        return expect(swirl._calcPosData).toHaveBeenCalled();
       });
     });
     describe('_declareDefaults method ->', function() {

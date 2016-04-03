@@ -46,7 +46,25 @@ class Swirl extends Transit {
   */
   _extendDefaults () {
     super._extendDefaults();
+    this._calcPosData();
 
+    this._props.signRand = Math.round(h.rand(0, 1)) ? -1 : 1;
+  }
+  /*
+    Method to tune new oprions to _o and _props object.
+    @private
+    @overrides @ Module
+    @param {Object} Options object to tune to.
+  */
+  _tuneNewOptions (o) {
+    super._tuneNewOptions( o );
+    this._calcPosData();
+  }
+  /*
+    Method to calculate Swirl's position data.
+    @private
+  */
+  _calcPosData () {
     var p     = this._props,
         x     = this._getPosValue('x'),
         y     = this._getPosValue('y'),
@@ -57,8 +75,6 @@ class Swirl extends Transit {
       angle: (x.delta < 0) ? angle + 180 : angle,
       x, y
     }
-
-    p.signRand = Math.round(h.rand(0, 1)) ? -1 : 1;
   }
   /*
     Gets `x` or `y` position value.

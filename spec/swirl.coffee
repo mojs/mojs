@@ -1,5 +1,6 @@
 Transit = mojs.Transit
 Swirl   = mojs.Swirl
+Module  = mojs.Module
 
 tr = new Transit
 describe 'Swirl ->', ->
@@ -16,7 +17,8 @@ describe 'Swirl ->', ->
         x: {0:10}, y: {0:10}
         isSwirl: false, degreeShift: 90
       expect(swirl._props.degreeShift).toBe 90
-  describe 'position calc ->', ->
+
+  describe '_calcPosData method ->', ->
     it 'should calc position radius', ->
       swirl = new Swirl x: {0:10}, y: {0:20}
       expect(swirl._posData.radius).toBe Math.sqrt (10*10 + 20*20)
@@ -40,11 +42,32 @@ describe 'Swirl ->', ->
       swirl = new Swirl x: {0:10}, y: 0
       expect(swirl._props.x).toBe '0px'
       expect(swirl._props.y).toBe '0px'
+
+  describe '_extendDefaults method ->', ->
     it 'should call super _extendDefaults method', ->
       swirl = new Swirl radius: [{ 20: 50 }, 20]
-      spyOn(Swirl.prototype, '_extendDefaults').and.callThrough()
+      spyOn(Module.prototype, '_extendDefaults').and.callThrough()
       swirl._extendDefaults()
-      expect(Swirl.prototype._extendDefaults).toHaveBeenCalled()
+      expect(Module.prototype._extendDefaults).toHaveBeenCalled()
+
+    it 'should call _calcPosData method', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      spyOn(swirl, '_calcPosData').and.callThrough()
+      swirl._extendDefaults()
+      expect(swirl._calcPosData).toHaveBeenCalled()
+
+  describe '_tuneNewOptions method ->', ->
+    it 'should call super _tuneNewOptions method', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      spyOn(Module.prototype, '_tuneNewOptions').and.callThrough()
+      swirl._tuneNewOptions({})
+      expect(Module.prototype._tuneNewOptions).toHaveBeenCalled()
+
+    it 'should call _calcPosData method', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      spyOn(swirl, '_calcPosData').and.callThrough()
+      swirl._tuneNewOptions()
+      expect(swirl._calcPosData).toHaveBeenCalled()
 
   describe '_declareDefaults method ->', ->
     it 'should call super _declareDefaults', ->

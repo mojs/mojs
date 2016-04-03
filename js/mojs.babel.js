@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.212.1', isDebug: true, helpers: h,
+  revision:   '0.213.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -36,6 +36,8 @@ window.mojs = {
   parse rand(stagger(20, 10), 20) values
   percentage for radius
 */
+
+
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;

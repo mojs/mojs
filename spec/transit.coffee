@@ -457,45 +457,44 @@ describe 'Transit ->', ->
           duration: 200
           onComplete:-> expect(byte.el.style.left).toBe('50px'); dfr()
         byte.play()
-      describe 'x/y coordinates ->', ->
-        it 'should set a position with respect to units', ->
-          byte = new Byte
-            x: 100
-            y: 50
-          s = byte.el.style
-          tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-          expect(tr).toBe 'scale(1) translate(100px, 50px) rotate(0deg)'
-        it 'should animate position', (dfr)->
-          byte = new Byte
-            x: {100: '200px'}
-            duration: 200
-            onComplete:->
-              s = byte.el.style
-              tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-              expect(tr) .toBe 'scale(1) translate(200px, 0px) rotate(0deg)'
-              dfr()
-          byte.play()
-        it 'should animate position with respect to units', (dfr)->
-          byte = new Byte
-            x: {'20%': '50%'}
-            duration: 200
-            onComplete:->
-              s = byte.el.style
-              tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-              expect(tr).toBe 'scale(1) translate(50%, 0px) rotate(0deg)'
-              dfr()
-          byte.play()
-        it 'should fallback to end units if units are differnt', (dfr)->
-          byte = new Byte
-            x: { '20%': '50px' }
-            y: { 0    : '50%'  }
-            duration: 200
-            onComplete:->
-              s = byte.el.style
-              tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-              expect(tr).toBe 'scale(1) translate(50px, 50%) rotate(0deg)'
-              dfr()
-          byte.play()
+      it 'should set a position with respect to units', ->
+        byte = new Byte
+          x: 100
+          y: 50
+        s = byte.el.style
+        tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+        expect(tr).toBe 'scale(1) translate(100px, 50px) rotate(0deg)'
+      it 'should animate position', (dfr)->
+        byte = new Byte
+          x: {100: '200px'}
+          duration: 200
+          onComplete:->
+            s = byte.el.style
+            tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+            expect(tr) .toBe 'scale(1) translate(200px, 0) rotate(0deg)'
+            dfr()
+        byte.play()
+      it 'should animate position with respect to units', (dfr)->
+        byte = new Byte
+          x: {'20%': '50%'}
+          duration: 200
+          onComplete:->
+            s = byte.el.style
+            tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+            expect(tr).toBe 'scale(1) translate(50%, 0) rotate(0deg)'
+            dfr()
+        byte.play()
+      it 'should fallback to end units if units are differnt', (dfr)->
+        byte = new Byte
+          x: { '20%': '50px' }
+          y: { 0    : '50%'  }
+          duration: 200
+          onComplete:->
+            s = byte.el.style
+            tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+            expect(tr).toBe 'scale(1) translate(50px, 50%) rotate(0deg)'
+            dfr()
+        byte.play()
   
   describe '_render method ->', ->
     it 'should call draw method', ->
@@ -607,7 +606,7 @@ describe 'Transit ->', ->
       expect(byte.el.style.opacity)   .toBe     '1'
       s = byte.el.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-      expect(tr) .toBe     'scale(1) translate(0px, 0px) rotate(0deg)'
+      expect(tr) .toBe     'scale(1) translate(0, 0) rotate(0deg)'
     it 'should set only opacity if foreign context', ->
       byte = new Byte radius: 25, top: 10, ctx: svg
       byte._draw()
@@ -630,7 +629,7 @@ describe 'Transit ->', ->
       byte._draw()
       byte._draw()
       expect(byte.el.style.left)      .toBe     '0px'
-      expect(byte._lastSet.x.value)    .toBe     '0px'
+      expect(byte._lastSet.x.value)    .toBe    '0'
     it 'should return true if there is no el', ->
       byte = new Byte radius: 25
       byte.el = null
@@ -663,7 +662,7 @@ describe 'Transit ->', ->
         .toHaveBeenCalledWith(
           byte.el,
           'transform',
-          'scale(1) translate(4px, 0px) rotate(0deg)'
+          'scale(1) translate(4px, 0) rotate(0deg)'
         )
     it 'should set transform if x changed #2', ->
       byte = new Byte radius: 25, top: 10, y: { 0: 10 }
@@ -674,7 +673,7 @@ describe 'Transit ->', ->
         .toHaveBeenCalledWith(
           byte.el,
           'transform',
-          'scale(1) translate(0px, 4px) rotate(0deg)'
+          'scale(1) translate(0, 4px) rotate(0deg)'
         )
     it 'should set transform if x changed #3', ->
       byte = new Byte radius: 25, top: 10, scale: { 0: 10 }
@@ -685,7 +684,7 @@ describe 'Transit ->', ->
         .toHaveBeenCalledWith(
           byte.el,
           'transform',
-          'scale(3) translate(0px, 0px) rotate(0deg)'
+          'scale(3) translate(0, 0) rotate(0deg)'
         )
       
   describe '_isPropChanged method ->', ->
@@ -752,9 +751,9 @@ describe 'Transit ->', ->
       it 'should calculate unit delta', ->
         byte = new Byte x:  {'0%': '100%'}
         xDelta = byte._deltas.x
-        expect(xDelta.start.string)    .toBe   '0%'
+        expect(xDelta.start.string)    .toBe   '0'
         expect(xDelta.end.string)      .toBe   '100%'
-        expect(xDelta.delta)          .toBe   100
+        expect(xDelta.delta)           .toBe   100
         expect(xDelta.type)            .toBe   'unit'
     describe 'tween-related values ->', ->
       it 'should not calc delta for tween related props', ->

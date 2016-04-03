@@ -93,8 +93,8 @@ module.exports = function(config) {
       
       // 'build/h.js',
       // 'spec/h.js',
-      'build/transit.js',
-      'spec/transit.js',
+      // 'build/transit.js',
+      // 'spec/transit.js',
       // 'build/swirl.js',
       // 'spec/swirl.js',
       // 'build/burst.js',

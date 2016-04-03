@@ -715,71 +715,69 @@
           });
           return byte.play();
         });
-        return describe('x/y coordinates ->', function() {
-          it('should set a position with respect to units', function() {
-            var byte, s, tr;
-            byte = new Byte({
-              x: 100,
-              y: 50
-            });
-            s = byte.el.style;
-            tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-            return expect(tr).toBe('scale(1) translate(100px, 50px) rotate(0deg)');
+        it('should set a position with respect to units', function() {
+          var byte, s, tr;
+          byte = new Byte({
+            x: 100,
+            y: 50
           });
-          it('should animate position', function(dfr) {
-            var byte;
-            byte = new Byte({
-              x: {
-                100: '200px'
-              },
-              duration: 200,
-              onComplete: function() {
-                var s, tr;
-                s = byte.el.style;
-                tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-                expect(tr).toBe('scale(1) translate(200px, 0px) rotate(0deg)');
-                return dfr();
-              }
-            });
-            return byte.play();
+          s = byte.el.style;
+          tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+          return expect(tr).toBe('scale(1) translate(100px, 50px) rotate(0deg)');
+        });
+        it('should animate position', function(dfr) {
+          var byte;
+          byte = new Byte({
+            x: {
+              100: '200px'
+            },
+            duration: 200,
+            onComplete: function() {
+              var s, tr;
+              s = byte.el.style;
+              tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+              expect(tr).toBe('scale(1) translate(200px, 0) rotate(0deg)');
+              return dfr();
+            }
           });
-          it('should animate position with respect to units', function(dfr) {
-            var byte;
-            byte = new Byte({
-              x: {
-                '20%': '50%'
-              },
-              duration: 200,
-              onComplete: function() {
-                var s, tr;
-                s = byte.el.style;
-                tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-                expect(tr).toBe('scale(1) translate(50%, 0px) rotate(0deg)');
-                return dfr();
-              }
-            });
-            return byte.play();
+          return byte.play();
+        });
+        it('should animate position with respect to units', function(dfr) {
+          var byte;
+          byte = new Byte({
+            x: {
+              '20%': '50%'
+            },
+            duration: 200,
+            onComplete: function() {
+              var s, tr;
+              s = byte.el.style;
+              tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+              expect(tr).toBe('scale(1) translate(50%, 0) rotate(0deg)');
+              return dfr();
+            }
           });
-          return it('should fallback to end units if units are differnt', function(dfr) {
-            var byte;
-            byte = new Byte({
-              x: {
-                '20%': '50px'
-              },
-              y: {
-                0: '50%'
-              },
-              duration: 200,
-              onComplete: function() {
-                var s, tr;
-                s = byte.el.style;
-                tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-                expect(tr).toBe('scale(1) translate(50px, 50%) rotate(0deg)');
-                return dfr();
-              }
-            });
-            return byte.play();
+          return byte.play();
+        });
+        return it('should fallback to end units if units are differnt', function(dfr) {
+          var byte;
+          byte = new Byte({
+            x: {
+              '20%': '50px'
+            },
+            y: {
+              0: '50%'
+            },
+            duration: 200,
+            onComplete: function() {
+              var s, tr;
+              s = byte.el.style;
+              tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+              expect(tr).toBe('scale(1) translate(50px, 50%) rotate(0deg)');
+              return dfr();
+            }
           });
+          return byte.play();
         });
       });
     });
@@ -952,7 +950,7 @@
         expect(byte.el.style.opacity).toBe('1');
         s = byte.el.style;
         tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-        return expect(tr).toBe('scale(1) translate(0px, 0px) rotate(0deg)');
+        return expect(tr).toBe('scale(1) translate(0, 0) rotate(0deg)');
       });
       it('should set only opacity if foreign context', function() {
         var byte, s, tr;
@@ -990,7 +988,7 @@
         byte._draw();
         byte._draw();
         expect(byte.el.style.left).toBe('0px');
-        return expect(byte._lastSet.x.value).toBe('0px');
+        return expect(byte._lastSet.x.value).toBe('0');
       });
       it('should return true if there is no el', function() {
         var byte;
@@ -1045,7 +1043,7 @@
         byte._props.x = '4px';
         spyOn(h, 'setPrefixedStyle');
         byte._draw();
-        return expect(h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'scale(1) translate(4px, 0px) rotate(0deg)');
+        return expect(h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'scale(1) translate(4px, 0) rotate(0deg)');
       });
       it('should set transform if x changed #2', function() {
         var byte;
@@ -1059,7 +1057,7 @@
         byte._props.y = '4px';
         spyOn(h, 'setPrefixedStyle');
         byte._draw();
-        return expect(h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'scale(1) translate(0px, 4px) rotate(0deg)');
+        return expect(h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'scale(1) translate(0, 4px) rotate(0deg)');
       });
       return it('should set transform if x changed #3', function() {
         var byte;
@@ -1073,7 +1071,7 @@
         byte._props.scale = 3;
         spyOn(h, 'setPrefixedStyle');
         byte._draw();
-        return expect(h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'scale(3) translate(0px, 0px) rotate(0deg)');
+        return expect(h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'scale(3) translate(0, 0) rotate(0deg)');
       });
     });
     describe('_isPropChanged method ->', function() {
@@ -1212,7 +1210,7 @@
             }
           });
           xDelta = byte._deltas.x;
-          expect(xDelta.start.string).toBe('0%');
+          expect(xDelta.start.string).toBe('0');
           expect(xDelta.end.string).toBe('100%');
           expect(xDelta.delta).toBe(100);
           return expect(xDelta.type).toBe('unit');
