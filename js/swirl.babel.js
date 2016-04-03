@@ -31,6 +31,8 @@ class Swirl extends Transit {
     this._defaults.degreeShift    = 0;
     /* ∆ :: [number] :: Radius of the shape. */
     this._defaults.radius         = { 5 : 0};
+    /* [number: -1, 1] :: Directon of Swirl. */
+    this._defaults.direction      = 1;
     /* [boolean] :: If should have child shape. */
     this._defaults.isWithShape    = true;
   }
@@ -47,8 +49,6 @@ class Swirl extends Transit {
   _extendDefaults () {
     super._extendDefaults();
     this._calcPosData();
-
-    this._props.signRand = Math.round(h.rand(0, 1)) ? -1 : 1;
   }
   /*
     Method to tune new oprions to _o and _props object.
@@ -75,6 +75,8 @@ class Swirl extends Transit {
       angle: (x.delta < 0) ? angle + 180 : angle,
       x, y
     }
+    // set the last position to _props
+    // this._calcSwirlXY( 1 );
   }
   /*
     Gets `x` or `y` position value.
@@ -107,7 +109,18 @@ class Swirl extends Transit {
   _setProgress ( proc ) {
     this._progress = proc;
     this._calcCurrentProps(proc);
+    this._calcSwirlXY( proc );
 
+    this._calcOrigin();
+    this._draw(proc);
+  }
+  /*
+    Method to calculate x/y for Swirl's progress
+    @private
+    @mutates _props
+    @param {Number} Current progress in [0...1]
+  */
+  _calcSwirlXY (proc) {
     var p     = this._props,
         angle = this._posData.angle + p.degreeShift,
         point = h.getRadialPoint({
@@ -123,9 +136,6 @@ class Swirl extends Transit {
     var x = point.x, y = point.y;
     p.x = ( this._o.ctx ) ? x : x+this._posData.x.units;
     p.y = ( this._o.ctx ) ? y : y+this._posData.y.units;
-
-    this._calcOrigin();
-    this._draw(proc);
   }
   /*
     Method to get progress of the swirl.
@@ -135,7 +145,7 @@ class Swirl extends Transit {
   */
   _getSwirl (proc) {
     var p = this._props;
-    return p.signRand * p.swirlSize * Math.sin(p.swirlFrequency*proc);
+    return p.direction * p.swirlSize * Math.sin(p.swirlFrequency*proc);
   }
   /*
     Method to draw shape.

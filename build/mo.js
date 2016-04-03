@@ -2477,6 +2477,8 @@
 	      this._defaults.degreeShift = 0;
 	      /* ∆ :: [number] :: Radius of the shape. */
 	      this._defaults.radius = { 5: 0 };
+	      /* [number: -1, 1] :: Directon of Swirl. */
+	      this._defaults.direction = 1;
 	      /* [boolean] :: If should have child shape. */
 	      this._defaults.isWithShape = true;
 	    }
@@ -2496,8 +2498,6 @@
 	    value: function _extendDefaults() {
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Swirl.prototype), '_extendDefaults', this).call(this);
 	      this._calcPosData();
-
-	      this._props.signRand = Math.round(_h2.default.rand(0, 1)) ? -1 : 1;
 	    }
 	    /*
 	      Method to tune new oprions to _o and _props object.
@@ -2530,6 +2530,8 @@
 	        angle: x.delta < 0 ? angle + 180 : angle,
 	        x: x, y: y
 	      };
+	      // set the last position to _props
+	      // this._calcSwirlXY( 1 );
 	    }
 	    /*
 	      Gets `x` or `y` position value.
@@ -2568,7 +2570,21 @@
 	    value: function _setProgress(proc) {
 	      this._progress = proc;
 	      this._calcCurrentProps(proc);
+	      this._calcSwirlXY(proc);
 
+	      this._calcOrigin();
+	      this._draw(proc);
+	    }
+	    /*
+	      Method to calculate x/y for Swirl's progress
+	      @private
+	      @mutates _props
+	      @param {Number} Current progress in [0...1]
+	    */
+
+	  }, {
+	    key: '_calcSwirlXY',
+	    value: function _calcSwirlXY(proc) {
 	      var p = this._props,
 	          angle = this._posData.angle + p.degreeShift,
 	          point = _h2.default.getRadialPoint({
@@ -2585,9 +2601,6 @@
 	          y = point.y;
 	      p.x = this._o.ctx ? x : x + this._posData.x.units;
 	      p.y = this._o.ctx ? y : y + this._posData.y.units;
-
-	      this._calcOrigin();
-	      this._draw(proc);
 	    }
 	    /*
 	      Method to get progress of the swirl.
@@ -2600,7 +2613,7 @@
 	    key: '_getSwirl',
 	    value: function _getSwirl(proc) {
 	      var p = this._props;
-	      return p.signRand * p.swirlSize * Math.sin(p.swirlFrequency * proc);
+	      return p.direction * p.swirlSize * Math.sin(p.swirlFrequency * proc);
 	    }
 	    /*
 	      Method to draw shape.
@@ -8087,7 +8100,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.213.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.213.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8096,7 +8109,7 @@
 	// TODO:
 	/*
 	  swirls in then chains for x/y
-	  add swirl direction
+
 	  burst fix the tune for `then` chains
 	  cover in thenable
 	  cover in tunable

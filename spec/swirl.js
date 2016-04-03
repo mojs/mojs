@@ -249,6 +249,17 @@
         });
         return expect(swirl._defaults.radius[5]).toBe(0);
       });
+      it('should add direction default', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        return expect(swirl._defaults.direction).toBe(1);
+      });
       return it('should have isWithShape', function() {
         var swirl;
         swirl = new Swirl({
@@ -460,7 +471,7 @@
         swirl = new Swirl;
         swirl1 = swirl._getSwirl(.5);
         freq = Math.sin(swirl._props.swirlFrequency * .5);
-        sign = swirl._props.signRand;
+        sign = swirl._props.direction;
         return expect(swirl1).toBe(sign * swirl._props.swirlSize * freq);
       });
     });

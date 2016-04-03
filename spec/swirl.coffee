@@ -42,6 +42,11 @@ describe 'Swirl ->', ->
       swirl = new Swirl x: {0:10}, y: 0
       expect(swirl._props.x).toBe '0px'
       expect(swirl._props.y).toBe '0px'
+    # it 'should call _calcSwirlXY method with 1', ->
+    #   swirl = new Swirl x: {0:10}, y: 0
+    #   spyOn swirl, '_calcSwirlXY'
+    #   swirl._calcPosData()
+    #   expect(swirl._calcSwirlXY).toHaveBeenCalledWith 1
 
   describe '_extendDefaults method ->', ->
     it 'should call super _extendDefaults method', ->
@@ -93,6 +98,9 @@ describe 'Swirl ->', ->
     it 'should modify radius default', ->
       swirl = new Swirl fill: 'cyan'
       expect(swirl._defaults.radius[5]).toBe 0
+    it 'should add direction default', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      expect(swirl._defaults.direction).toBe 1
     it 'should have isWithShape', ->
       swirl = new Swirl fill: 'cyan'
       expect(swirl._defaults.isWithShape).toBe true
@@ -181,7 +189,7 @@ describe 'Swirl ->', ->
       swirl = new Swirl
       swirl1 = swirl._getSwirl(.5)
       freq = Math.sin(swirl._props.swirlFrequency*.5)
-      sign = swirl._props.signRand
+      sign = swirl._props.direction
       expect(swirl1).toBe sign*swirl._props.swirlSize*freq
 
   describe '_draw method ->', ->
