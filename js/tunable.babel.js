@@ -72,55 +72,60 @@ class Tuneable extends Thenable {
     @returns {Boolean} Returns true if no further
                        history modifications is needed.
   */
-  _transformHistoryRecord ( index, key, newValue, currRecord, nextRecord ) {
-    // newValue = this._parseProperty( key, newValue );
-    if (newValue == null ) { return null; }
+  _transformHistoryRecord ( index, key, newVal, currRecord, nextRecord ) {
+    // newVal = this._parseProperty( key, newVal );
+    if (newVal == null ) { return null; }
 
+    // fallback to history records, if wasn't specified
     currRecord = (currRecord == null) ? this._history[index]   : currRecord;
     nextRecord = (nextRecord == null) ? this._history[index+1] : nextRecord;
     
-    var oldValue = currRecord[key];
+    var oldVal  = currRecord[key],
+        nextVal = (nextRecord == null) ? null : nextRecord[key];
 
-    // if index is 0 - always save the newValue
+    // if index is 0 - always save the newVal
     // and return non-delta for subsequent modifications
     if ( index === 0 ) {
-      currRecord[key] = newValue;
+      currRecord[key] = newVal;
       // always return on tween properties
       if ( h.isTweenProp(key) && key !== 'duration' ) { return null; }
       // nontween properties
-      if ( this._isDelta(newValue) ) {
+      var isRewriteNext = this._isRewriteNext(oldVal, nextVal),
+          returnVal = (this._isDelta(newVal)) ? h.getDeltaEnd(newVal) : newVal;
+      
+      return ( isRewriteNext ) ? returnVal : null;
 
-        var isNextRecord = ( nextRecord && (nextRecord[key] === oldValue) ),
-            isNextObject = ( nextRecord && (this._isDelta(nextRecord[key])) ),
-            isNextDelta  = isNextObject && h.getDeltaStart(nextRecord[key]) === `${oldValue}`;
-
-        return ( isNextRecord || isNextDelta ) ? h.getDeltaEnd(newValue) : null;
-
-      } else {
-        var isNextRecord = ( nextRecord && (nextRecord[key] === oldValue) ),
-            isNextObject = ( nextRecord && (this._isDelta(nextRecord[key])) ),
-            isNextDelta  = isNextObject && h.getDeltaStart(nextRecord[key]) === `${oldValue}`;
-
-        return ( isNextRecord || isNextDelta ) ? newValue : null;
-      }
     } else {
       // if was delta and came none-deltta - rewrite
       // the start of the delta and stop
-      if ( this._isDelta( oldValue ) ) {
-        currRecord[key] = { [newValue] : h.getDeltaEnd(oldValue) };
+      if ( this._isDelta( oldVal ) ) {
+        currRecord[key] = { [newVal] : h.getDeltaEnd(oldVal) };
         return null;
       } else {
         // if the old value is not delta and the new one is
-        currRecord[key] = newValue;
-
-        var isNextRecord = ( nextRecord && (nextRecord[key] === oldValue) ),
-            isNextObject = ( nextRecord && (this._isDelta(nextRecord[key])) ),
-            isNextDelta  = isNextObject && h.getDeltaStart(nextRecord[key]) === `${oldValue}`;
+        currRecord[key] = newVal;
         // if the next item has the same value - return the
         // item for subsequent modifications or stop
-        return ( isNextRecord || isNextDelta ) ? newValue : null;
+        return ( this._isRewriteNext(oldVal, nextVal) ) ? newVal : null;
       }
     }
+  }
+  /*
+    Method to check if the next item should
+    be rewrited in transform history operation.
+    @private
+    @param {Any} Current value.
+    @param {Any} Next value.
+    @returns {Boolean} If need to rewrite the next value.
+  */
+  _isRewriteNext ( currVal, nextVal ) {
+    // return false if nothing to rewrite next
+    if (nextVal == null && currVal != null) { return false; }
+
+    var isEqual     = ( currVal === nextVal ),
+        isDelta     = this._isDelta(nextVal)
+    
+    return isEqual || (isDelta && h.getDeltaStart(nextVal) === `${currVal}`);
   }
   /*
     Method to tune new history options to all the submodules.

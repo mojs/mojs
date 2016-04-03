@@ -101,7 +101,6 @@
       it('should rewrite everything until first delta # 0 index', function() {
         var result, tr;
         tr = new Tunable({
-          isIt: 1,
           radius: 75
         }).then({
           radius: 0
@@ -118,7 +117,6 @@
       it('should rewrite everything until first delta # non 0 index', function() {
         var result, tr;
         tr = new Tunable({
-          isIt: 1,
           radius: 75
         }).then({
           radius: 0
@@ -132,7 +130,8 @@
       it('should rewrite everything until first defined item', function() {
         var result, tr;
         tr = new Tunable({
-          duration: 2000
+          duration: 2000,
+          isIt: 1
         }).then({
           radius: 0
         }).then({
@@ -560,6 +559,55 @@
           radius: 20
         });
         return expect(rn.generate()).toBe(rn);
+      });
+    });
+    describe('_isRewriteNext ->', function() {
+      it('should return true is the next record === the current one', function() {
+        var currentValue, nextValue, tn;
+        tn = new Tunable({
+          radius: 20
+        });
+        currentValue = 20;
+        nextValue = 20;
+        return expect(tn._isRewriteNext(currentValue, nextValue)).toBe(true);
+      });
+      it('should return false is the next record !== the current one', function() {
+        var currentValue, nextValue, tn;
+        tn = new Tunable({
+          radius: 20
+        });
+        currentValue = 20;
+        nextValue = 21;
+        return expect(tn._isRewriteNext(currentValue, nextValue)).toBe(false);
+      });
+      it('should return false if there is no newxt item', function() {
+        var currentValue, nextValue, tn;
+        tn = new Tunable({
+          radius: 20
+        });
+        currentValue = 20;
+        nextValue = null;
+        return expect(tn._isRewriteNext(currentValue, nextValue)).toBe(false);
+      });
+      it('should true if next is ∆ and start value === current one', function() {
+        var currentValue, nextValue, tn;
+        tn = new Tunable({
+          radius: 20
+        });
+        currentValue = 20;
+        nextValue = {
+          20: 100
+        };
+        return expect(tn._isRewriteNext(currentValue, nextValue)).toBe(true);
+      });
+      return it('should current and next are null', function() {
+        var currentValue, nextValue, tn;
+        tn = new Tunable({
+          radius: 20
+        });
+        currentValue = null;
+        nextValue = null;
+        return expect(tn._isRewriteNext(currentValue, nextValue)).toBe(true);
       });
     });
     return it('clean the _defaults  up', function() {

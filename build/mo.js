@@ -4222,58 +4222,68 @@
 
 	  }, {
 	    key: '_transformHistoryRecord',
-	    value: function _transformHistoryRecord(index, key, newValue, currRecord, nextRecord) {
-	      // newValue = this._parseProperty( key, newValue );
-	      if (newValue == null) {
+	    value: function _transformHistoryRecord(index, key, newVal, currRecord, nextRecord) {
+	      // newVal = this._parseProperty( key, newVal );
+	      if (newVal == null) {
 	        return null;
 	      }
 
+	      // fallback to history records, if wasn't specified
 	      currRecord = currRecord == null ? this._history[index] : currRecord;
 	      nextRecord = nextRecord == null ? this._history[index + 1] : nextRecord;
 
-	      var oldValue = currRecord[key];
+	      var oldVal = currRecord[key],
+	          nextVal = nextRecord == null ? null : nextRecord[key];
 
-	      // if index is 0 - always save the newValue
+	      // if index is 0 - always save the newVal
 	      // and return non-delta for subsequent modifications
 	      if (index === 0) {
-	        currRecord[key] = newValue;
+	        currRecord[key] = newVal;
 	        // always return on tween properties
 	        if (_h2.default.isTweenProp(key) && key !== 'duration') {
 	          return null;
 	        }
 	        // nontween properties
-	        if (this._isDelta(newValue)) {
+	        var isRewriteNext = this._isRewriteNext(oldVal, nextVal),
+	            returnVal = this._isDelta(newVal) ? _h2.default.getDeltaEnd(newVal) : newVal;
 
-	          var isNextRecord = nextRecord && nextRecord[key] === oldValue,
-	              isNextObject = nextRecord && this._isDelta(nextRecord[key]),
-	              isNextDelta = isNextObject && _h2.default.getDeltaStart(nextRecord[key]) === '' + oldValue;
-
-	          return isNextRecord || isNextDelta ? _h2.default.getDeltaEnd(newValue) : null;
-	        } else {
-	          var isNextRecord = nextRecord && nextRecord[key] === oldValue,
-	              isNextObject = nextRecord && this._isDelta(nextRecord[key]),
-	              isNextDelta = isNextObject && _h2.default.getDeltaStart(nextRecord[key]) === '' + oldValue;
-
-	          return isNextRecord || isNextDelta ? newValue : null;
-	        }
+	        return isRewriteNext ? returnVal : null;
 	      } else {
 	        // if was delta and came none-deltta - rewrite
 	        // the start of the delta and stop
-	        if (this._isDelta(oldValue)) {
-	          currRecord[key] = (0, _defineProperty3.default)({}, newValue, _h2.default.getDeltaEnd(oldValue));
+	        if (this._isDelta(oldVal)) {
+	          currRecord[key] = (0, _defineProperty3.default)({}, newVal, _h2.default.getDeltaEnd(oldVal));
 	          return null;
 	        } else {
 	          // if the old value is not delta and the new one is
-	          currRecord[key] = newValue;
-
-	          var isNextRecord = nextRecord && nextRecord[key] === oldValue,
-	              isNextObject = nextRecord && this._isDelta(nextRecord[key]),
-	              isNextDelta = isNextObject && _h2.default.getDeltaStart(nextRecord[key]) === '' + oldValue;
+	          currRecord[key] = newVal;
 	          // if the next item has the same value - return the
 	          // item for subsequent modifications or stop
-	          return isNextRecord || isNextDelta ? newValue : null;
+	          return this._isRewriteNext(oldVal, nextVal) ? newVal : null;
 	        }
 	      }
+	    }
+	    /*
+	      Method to check if the next item should
+	      be rewrited in transform history operation.
+	      @private
+	      @param {Any} Current value.
+	      @param {Any} Next value.
+	      @returns {Boolean} If need to rewrite the next value.
+	    */
+
+	  }, {
+	    key: '_isRewriteNext',
+	    value: function _isRewriteNext(currVal, nextVal) {
+	      // return false if nothing to rewrite next
+	      if (nextVal == null && currVal != null) {
+	        return false;
+	      }
+
+	      var isEqual = currVal === nextVal,
+	          isDelta = this._isDelta(nextVal);
+
+	      return isEqual || isDelta && _h2.default.getDeltaStart(nextVal) === '' + currVal;
 	    }
 	    /*
 	      Method to tune new history options to all the submodules.
@@ -8012,7 +8022,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.211.2', isDebug: true, helpers: _h2.default,
+	  revision: '0.211.3', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8032,63 +8042,62 @@
 	  percentage for radius
 	*/
 
-	// // let sw = new mojs.Burst({
-	// //   count: 5,
-	// //   // left: '50%', top: '50%',
-	// //   isShowEnd: 1,
-	// //   isShowStart: 1,
-	// //   // isSwirl: false,
-	// //   radius: { 0: 100 },
-	// //   x: {0: 200},
-	// //   y: 0,
-	// //   angle: 90,
-	// //   childOptions: {
-	// //     shape: 'line',
-	// //     duration: 2000,
-	// //     isSwirl: 0,
-	// //     radius: { 7: 4 },
-	// //     stroke: ['cyan', 'yellow', 'white'],
-	// //     angle: { 0: 180 }
-	// //   }
-	// // }).then({
-	// //   x: 0,
-	// //   angle: 0,
-	// //   childOptions: { radius: 20 }
-	// // }).then({
-	// //   angle: 180,
-	// //   x: 200, y: 200,
-	// //   childOptions: { radius: 0 }
-	// // });
-
-	// var sw = new mojs.Transit({
-	//   x: { 0: 200 }
+	// let sw = new mojs.Burst({
+	//   count: 5,
+	//   // left: '50%', top: '50%',
+	//   isShowEnd: 1,
+	//   isShowStart: 1,
+	//   // isSwirl: false,
+	//   radius: { 0: 100 },
+	//   x: {0: 200},
+	//   y: 0,
+	//   angle: 90,
+	//   childOptions: {
+	//     shape: 'line',
+	//     duration: 2000,
+	//     isSwirl: 0,
+	//     radius: { 7: 4 },
+	//     stroke: ['cyan', 'yellow', 'white'],
+	//     angle: { 0: 180 }
+	//   }
 	// }).then({
-	//   x: 400,
+	//   x: 0,
+	//   angle: 0,
+	//   childOptions: { radius: 20 }
 	// }).then({
-	//   x: 'rand(400, 600)', y: -200
+	//   angle: 180,
+	//   x: 200, y: 200,
+	//   childOptions: { radius: 0 }
 	// });
 
-	// var playEl = document.querySelector('#js-play'),
-	//     rangeSliderEl = document.querySelector('#js-range-slider');
-	// document.body.addEventListener('click', function (e) {
-	//   console.log('-=-=-=-=-=-')
-	//   console.log(sw._history[0].x)
-	//   console.log(sw._history[1].x)
-	//   console.log(sw._history[2].x)
+	var sw = new mojs.Transit({
+	  x: { 0: 200 }
+	}).then({
+	  x: 400
+	}).then({
+	  x: 'rand(400, 600)', y: -200
+	});
 
-	//   sw
-	//     .tune({
-	//       x: e.pageX,
-	//       y: e.pageY
-	//       // fill: 'white', duration: 1000
-	//     });
-	//   console.log('-=-=-=-=-=-')
-	//   console.log(sw._history[0].x)
-	//   console.log(sw._history[1].x)
-	//   console.log(sw._history[2].x)
-	//   sw
-	//     .replay();
-	// });
+	var playEl = document.querySelector('#js-play'),
+	    rangeSliderEl = document.querySelector('#js-range-slider');
+	document.body.addEventListener('click', function (e) {
+	  return;
+	  console.log('-=-=-=-=-=-');
+	  console.log(sw._history[0].x);
+	  console.log(sw._history[1].x);
+	  console.log(sw._history[2].x);
+
+	  sw.tune({
+	    x: e.pageX,
+	    y: e.pageY
+	    // fill: 'white', duration: 1000
+	  });
+	  console.log('-=-=-=-=-=-');
+	  console.log(sw._history[0].x);
+	  console.log(sw._history[1].x);
+	  console.log(sw._history[2].x);
+	  sw.replay();
+	});
 
 	// // rangeSliderEl.addEventListener('input', function () {
 	// //   tr.setProgress( rangeSliderEl.value/1000 );

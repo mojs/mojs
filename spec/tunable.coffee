@@ -80,7 +80,7 @@ describe 'Tunable ->', ->
     it 'should rewrite everything until first delta # 0 index', ->
       # radius: { 75 } -> { 75: 0 } -> { 0: 50 }
       # radius: { 20 } -> { 20 : 0 } x-> { 0: 50 }
-      tr = new Tunable({ isIt: 1, radius: 75 })
+      tr = new Tunable({ radius: 75 })
         .then radius: 0
         .then radius: 50
 
@@ -95,7 +95,7 @@ describe 'Tunable ->', ->
     it 'should rewrite everything until first delta # non 0 index', ->
       # y: { 0 } -> { 0 } -> { 0: -200 }
       # radius: { 0 } -> ^{ 20 } x-> { 20: -200 }
-      tr = new Tunable({ isIt: 1, radius: 75 })
+      tr = new Tunable({ radius: 75 })
         .then radius: 0
         .then y: -200
 
@@ -106,7 +106,7 @@ describe 'Tunable ->', ->
     it 'should rewrite everything until first defined item', ->
       # duration: { 2000 } -> { 2000 } -> { 5000 } -> { 5000 }
       # duration: { 1000 } -> { 1000 } -> { 5000 } -> { 5000 }
-      tr = new Tunable({ duration: 2000 })
+      tr = new Tunable({ duration: 2000, isIt: 1 })
         .then radius: 0
         .then radius: 50, duration: 5000
         .then radius: 50
@@ -393,6 +393,44 @@ describe 'Tunable ->', ->
     it 'should return this', ->
       rn = new Tunable({ radius: 20 })
       expect(rn.generate()).toBe rn
+
+  describe '_isRewriteNext ->', ->
+    it 'should return true is the next record === the current one', ->
+      tn = new Tunable({ radius: 20 })
+      currentValue = 20
+      nextValue    = 20
+      expect(tn._isRewriteNext( currentValue, nextValue ))
+        .toBe true
+
+    it 'should return false is the next record !== the current one', ->
+      tn = new Tunable({ radius: 20 })
+      currentValue = 20
+      nextValue    = 21
+      expect(tn._isRewriteNext( currentValue, nextValue ))
+        .toBe false
+
+    it 'should return false if there is no newxt item', ->
+      tn = new Tunable({ radius: 20 })
+      currentValue = 20
+      nextValue    = null
+      expect(tn._isRewriteNext( currentValue, nextValue ))
+        .toBe false
+
+    it 'should true if next is ∆ and start value === current one', ->
+      tn = new Tunable({ radius: 20 })
+      currentValue = 20
+      nextValue    = { 20: 100 }
+      expect(tn._isRewriteNext( currentValue, nextValue ))
+        .toBe true
+
+    it 'should current and next are null', ->
+      tn = new Tunable({ radius: 20 })
+      currentValue = null
+      nextValue    = null
+      expect(tn._isRewriteNext( currentValue, nextValue ))
+        .toBe true
+
+
 
   it 'clean the _defaults  up', ->
     Tunable::_declareDefaults = oldFun
