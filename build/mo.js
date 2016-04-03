@@ -4680,7 +4680,8 @@
 	      // if delta property
 	      if (this._isDelta(value) && name !== 'callbacksContext') {
 	        this._getDelta(name, value);
-	        return this._assignProp(name, _h2.default.getDeltaEnd(value));
+	        var deltaEnd = _h2.default.getDeltaEnd(value);
+	        return this._assignProp(name, this._parseProperty(name, deltaEnd));
 	      }
 
 	      this._assignProp(name, this._parseProperty(name, value));
@@ -8064,7 +8065,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.212.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.212.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8072,11 +8073,11 @@
 
 	// TODO:
 	/*
+	  swirls in then chains for x/y
+	  add swirl direction
 	  burst fix the tune for `then` chains
 	  cover in thenable
 	  cover in tunable
-	  swirls in then chains for x/y
-	  add swirl direction
 	  module names
 	  perf optimizations.
 	  --

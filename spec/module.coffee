@@ -227,10 +227,11 @@ describe 'module class ->', ->
     it 'should parse delta value', ->
       md = new Module
       spyOn md, '_getDelta'
-      name = 'radius'; delta = { 20: 30 }
+      name = 'x'; delta = { 20: 30 }
       md._parseOption name, delta
       expect(md._getDelta).toHaveBeenCalledWith name, delta
-      expect(md._props[name]).toBe h.getDeltaEnd( delta )
+      expect(md._props[name])
+        .toBe md._parseProperty( name, h.getDeltaEnd( delta ) )
     it 'should parse option string', ->
       md = new Module
       spyOn md, '_getDelta'
@@ -251,9 +252,7 @@ describe 'module class ->', ->
       md = new Module
       spyOn(md, '_parseStrokeDashOption').and.callThrough()
       name = 'strokeDasharray'; value = '200 100% 200'
-      # md._props[name] = value
       parsed = md._parseStrokeDashOption name, value
-      # md._props[name] = value
       md._parseOption name, value
       expect(md._parseStrokeDashOption).toHaveBeenCalledWith name, value
       expect(md._props[name]).toEqual parsed
@@ -472,9 +471,9 @@ describe 'module class ->', ->
     it 'should parse ∆ values', ->
       md = new Module
       spyOn(md, '_parseDeltaValues').and.callThrough()
-      delta = { 20: 100 }
-      result = md._preparsePropValue('left', delta)
-      expect(md._parseDeltaValues).toHaveBeenCalledWith 'left', delta
+      key = 'left'; delta = { 20: 100 }
+      result = md._preparsePropValue(key, delta)
+      expect(md._parseDeltaValues).toHaveBeenCalledWith key, delta
       expect(result['20px']).toBe '100px'
 
   it 'clean the _defaults  up', ->

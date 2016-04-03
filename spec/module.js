@@ -332,13 +332,13 @@
         var delta, md, name;
         md = new Module;
         spyOn(md, '_getDelta');
-        name = 'radius';
+        name = 'x';
         delta = {
           20: 30
         };
         md._parseOption(name, delta);
         expect(md._getDelta).toHaveBeenCalledWith(name, delta);
-        return expect(md._props[name]).toBe(h.getDeltaEnd(delta));
+        return expect(md._props[name]).toBe(md._parseProperty(name, h.getDeltaEnd(delta)));
       });
       it('should parse option string', function() {
         var md, name, value;
@@ -731,14 +731,15 @@
         return expect(result).toBe('20px');
       });
       return it('should parse ∆ values', function() {
-        var delta, md, result;
+        var delta, key, md, result;
         md = new Module;
         spyOn(md, '_parseDeltaValues').and.callThrough();
+        key = 'left';
         delta = {
           20: 100
         };
-        result = md._preparsePropValue('left', delta);
-        expect(md._parseDeltaValues).toHaveBeenCalledWith('left', delta);
+        result = md._preparsePropValue(key, delta);
+        expect(md._parseDeltaValues).toHaveBeenCalledWith(key, delta);
         return expect(result['20px']).toBe('100px');
       });
     });

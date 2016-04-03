@@ -219,7 +219,8 @@ class Module {
     // if delta property
     if ( this._isDelta( value ) && name !== 'callbacksContext' ) {
       this._getDelta( name, value );
-      return this._assignProp( name, h.getDeltaEnd( value ) );
+      var deltaEnd = h.getDeltaEnd( value );
+      return this._assignProp( name, this._parseProperty( name, deltaEnd ) );
     }
 
     this._assignProp( name, this._parseProperty( name, value ) );
