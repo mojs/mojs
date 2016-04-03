@@ -230,8 +230,9 @@ describe 'module class ->', ->
       name = 'radius'; delta = { 20: 30 }
       md._parseOption name, delta
       expect(md._getDelta).toHaveBeenCalledWith name, delta
+      expect(md._props[name]).toBe h.getDeltaEnd( delta )
     it 'should parse option string', ->
-      md = new Module isIt: 1
+      md = new Module
       spyOn md, '_getDelta'
       spyOn(md, '_parseOptionString').and.callThrough()
       name = 'delay'; value = 'stagger(400, 200)'
@@ -457,6 +458,24 @@ describe 'module class ->', ->
       deltaResult = md._parseDeltaValues( 'opacity', delta )
       expect(deltaResult).toEqual { 2: 1 }
       expect(deltaResult).toBe delta
+
+  describe '_preparsePropValue ->', ->
+    it 'should parse non ∆ values', ->
+      md = new Module
+      spyOn(md, '_parsePreArrayProperty').and.callThrough()
+      spyOn(md, '_parseDeltaValues').and.callThrough()
+      result = md._preparsePropValue('left', 20)
+      expect(md._parsePreArrayProperty).toHaveBeenCalledWith 'left', 20
+      expect(md._parseDeltaValues).not.toHaveBeenCalled()
+      expect(result).toBe '20px'
+
+    it 'should parse ∆ values', ->
+      md = new Module
+      spyOn(md, '_parseDeltaValues').and.callThrough()
+      delta = { 20: 100 }
+      result = md._preparsePropValue('left', delta)
+      expect(md._parseDeltaValues).toHaveBeenCalledWith 'left', delta
+      expect(result['20px']).toBe '100px'
 
   it 'clean the _defaults  up', ->
     Module::_declareDefaults = oldFun

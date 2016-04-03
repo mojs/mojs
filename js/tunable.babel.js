@@ -14,8 +14,18 @@ class Tuneable extends Thenable {
     if (o && Object.keys(o).length) {
       this._transformHistory(o);
       this._tuneNewOptions(o);
-      // this._history[0] = h.cloneObj(this._props);
-      this._history[0] = h.extend( h.cloneObj(this._o), this._defaults )
+      
+      // restore array prop values because _props
+      // contain them as parsed arrays
+      // but we need the as strings to store in history
+      // and merge in history chains
+      this._history[0] = h.cloneObj(this._props);
+      for (var key in this._arrayPropertyMap) {
+        if (o[key] != null) {
+          this._history[0][key] = this._preparsePropValue(key, o[key]);
+        }
+      }
+
       this._tuneSubModules();
       this._resetTweens();
     }
@@ -34,19 +44,28 @@ class Tuneable extends Thenable {
   // v PRIVATE METHOD(S) v
 
   /*
+    Method to preparse options in object.
+    @private
+    @param {Object} Object to preparse properties on.
+    @returns {Object} Passed object with preparsed props.
+  */
+  // _preParseOptions ( o ) {
+  //   for (var key in o) {
+  //     o[key] = this._preparsePropValue( key, o[key] );
+  //   }
+  //   return o;
+  // }
+  /*
     Method to transform history rewrite new options object chain on run.
     @private
     @param {Object} New options to tune for.
   */
   _transformHistory ( o ) {
-    var optionsKeys = Object.keys(o);
-
-    for (var i = 0; i < optionsKeys.length; i++ ) {
-      var optionsKey   = optionsKeys[i],
-          optionsValue = o[optionsKey];
-
-      if ( optionsKey === 'childOptions' ) { continue; }
-      this._transformHistoryFor( optionsKey, optionsValue );
+    for (var key in o) {
+      var value = o[key];
+      // !COVER!
+      if ( key === 'childOptions' ) { continue; }
+      this._transformHistoryFor( key, this._preparsePropValue( key, value ) );
     }
   }
   /*
@@ -92,9 +111,7 @@ class Tuneable extends Thenable {
       // nontween properties
       var isRewriteNext = this._isRewriteNext(oldVal, nextVal),
           returnVal = (this._isDelta(newVal)) ? h.getDeltaEnd(newVal) : newVal;
-      
       return ( isRewriteNext ) ? returnVal : null;
-
     } else {
       // if was delta and came none-deltta - rewrite
       // the start of the delta and stop
@@ -122,10 +139,21 @@ class Tuneable extends Thenable {
     // return false if nothing to rewrite next
     if (nextVal == null && currVal != null) { return false; }
 
-    var isEqual     = ( currVal === nextVal ),
-        isDelta     = this._isDelta(nextVal)
+    var isEqual      = (currVal === nextVal),
+        isNextDelta  = this._isDelta(nextVal),
+        isDelta      = this._isDelta(currVal),
+        isValueDeltaChain = false,
+        isDeltaChain = false;
+
+    if ( isDelta && isNextDelta ) {
+      if ( h.getDeltaEnd(currVal) == h.getDeltaStart(nextVal) ) {
+        isDeltaChain = true;
+      }
+    } else if ( isNextDelta ) {
+      isValueDeltaChain = h.getDeltaStart(nextVal) === `${currVal}`;
+    }
     
-    return isEqual || (isDelta && h.getDeltaStart(nextVal) === `${currVal}`);
+    return isEqual || isValueDeltaChain || isDeltaChain;
   }
   /*
     Method to tune new history options to all the submodules.

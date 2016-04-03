@@ -255,10 +255,12 @@
         });
         spyOn(tr, '_transformHistoryFor');
         tr._transformHistory({
-          x: 20
+          x: 20,
+          y: 'stagger(225, 10)'
         });
-        expect(tr._transformHistoryFor).toHaveBeenCalledWith('x', 20);
-        return expect(tr._transformHistoryFor.calls.count()).toBe(1);
+        expect(tr._transformHistoryFor).toHaveBeenCalledWith('x', '20px');
+        expect(tr._transformHistoryFor).toHaveBeenCalledWith('y', '225px');
+        return expect(tr._transformHistoryFor.calls.count()).toBe(2);
       });
       return it('should call skip childOptions ->', function() {
         var tr;
@@ -385,7 +387,7 @@
         return expect(tr.timeline._recalcTotalDuration).toHaveBeenCalled();
       });
     });
-    describe('change method ->', function() {
+    describe('tune method ->', function() {
       it('should extend defaults with passed object', function() {
         var byte, o;
         byte = new Tunable({
@@ -425,11 +427,9 @@
       it('should rewrite history', function() {
         var byte;
         byte = new Tunable();
-        byte._o = {
+        byte._props = {
           fill: 'cyan',
-          strokeWidth: 5
-        };
-        byte._defaults = {
+          strokeWidth: 5,
           opacity: 1
         };
         byte.tune({
@@ -465,6 +465,20 @@
           strokeWidth: 25
         });
         return expect(byte._props.radius).toBe(33);
+      });
+      it('should restore array props', function() {
+        var byte;
+        byte = new Tunable({
+          strokeWidth: {
+            10: 5
+          },
+          radius: 33
+        });
+        byte._props.strokeDasharray = 'stagger(100, 20)';
+        byte.tune({
+          strokeDasharray: 'stagger(150, 100)'
+        });
+        return expect(byte._history[0].strokeDasharray).toBe(150);
       });
       it('should call _recalcTotalDuration on timeline', function() {
         var byte;
@@ -595,6 +609,19 @@
           radius: 20
         });
         currentValue = 20;
+        nextValue = {
+          20: 100
+        };
+        return expect(tn._isRewriteNext(currentValue, nextValue)).toBe(true);
+      });
+      it('should true if deltas', function() {
+        var currentValue, nextValue, tn;
+        tn = new Tunable({
+          radius: 20
+        });
+        currentValue = {
+          50: 20
+        };
         nextValue = {
           20: 100
         };

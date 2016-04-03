@@ -192,10 +192,13 @@ describe 'Tunable ->', ->
     it 'should call _transformHistoryFor for every new property ->', ->
       tr = new Tunable({}).then({ radius: 0 }).then({ radius: 50 })
       spyOn tr, '_transformHistoryFor'
-      tr._transformHistory x: 20
+
+      tr._transformHistory x: 20, y: 'stagger(225, 10)'
       expect(tr._transformHistoryFor)
-        .toHaveBeenCalledWith 'x', 20
-      expect(tr._transformHistoryFor.calls.count()).toBe 1
+        .toHaveBeenCalledWith 'x', '20px'
+      expect(tr._transformHistoryFor)
+        .toHaveBeenCalledWith 'y', '225px'
+      expect(tr._transformHistoryFor.calls.count()).toBe 2
 
     it 'should call skip childOptions ->', ->
       tr = new Tunable({}).then({ radius: 0 }).then({ radius: 50 })
@@ -297,7 +300,7 @@ describe 'Tunable ->', ->
       expect(tr.timeline._recalcTotalDuration)
         .toHaveBeenCalled()
 
-  describe 'change method ->', ->
+  describe 'tune method ->', ->
     it 'should extend defaults with passed object', ->
       byte = new Tunable(strokeWidth: {10: 5})
       spyOn byte, '_tuneNewOptions'
@@ -316,8 +319,7 @@ describe 'Tunable ->', ->
       expect(byte._deltas.strokeWidth).toBeDefined()
     it 'should rewrite history', ->
       byte = new Tunable()
-      byte._o = { fill: 'cyan', strokeWidth: 5 }
-      byte._defaults = { opacity: 1 }
+      byte._props = { fill: 'cyan', strokeWidth: 5, opacity: 1 }
       byte.tune fill: 'yellow'
       expect(byte._history[0].fill).toBe 'yellow'
       expect(byte._history[0].strokeWidth).toBe 5
@@ -332,7 +334,13 @@ describe 'Tunable ->', ->
       byte._props.radius = 33
       byte.tune strokeWidth: 25
       expect(byte._props.radius).toBe 33
-    # TODO: check the tween props
+
+    it 'should restore array props', ->
+      byte = new Tunable(strokeWidth: {10: 5}, radius: 33)
+      byte._props.strokeDasharray = 'stagger(100, 20)'
+      byte.tune strokeDasharray: 'stagger(150, 100)'
+      expect(byte._history[0].strokeDasharray).toBe 150
+
     it 'should call _recalcTotalDuration on timeline', ->
       byte = new Tunable
       spyOn byte.timeline, '_recalcTotalDuration'
@@ -423,6 +431,13 @@ describe 'Tunable ->', ->
       expect(tn._isRewriteNext( currentValue, nextValue ))
         .toBe true
 
+    it 'should true if deltas', ->
+      tn = new Tunable({ radius: 20 })
+      currentValue = { 50: 20 }
+      nextValue    = { 20: 100 }
+      expect(tn._isRewriteNext( currentValue, nextValue ))
+        .toBe true
+
     it 'should current and next are null', ->
       tn = new Tunable({ radius: 20 })
       currentValue = null
@@ -430,7 +445,34 @@ describe 'Tunable ->', ->
       expect(tn._isRewriteNext( currentValue, nextValue ))
         .toBe true
 
+  # describe '_preParseOptions ->', ->
+  #   it 'should pre parse options in the object', ->
+  #     tn = new Tunable({ radius: 20 })
 
+  #     result = tn._preParseOptions({
+  #       x: 20,
+  #       left: '50%',
+  #       radius: 50,
+  #       strokeDasharray: '200 300'
+  #     })
+  #     expect(result.x).toBe '20px'
+  #     expect(result.left).toBe '50%'
+  #     expect(result.radius).toBe 50
+  #     expect(result.strokeDasharray).toBe '200 300'
+
+  #   it 'should pre parse delta values', ->
+  #     tn = new Tunable({ radius: 20 })
+
+  #     result = tn._preParseOptions({
+  #       x: {20 : 0},
+  #       left: '50%',
+  #       radius: 50,
+  #       strokeDasharray: {'stagger(100, 20)': 'stagger(200, 20)'}
+  #     })
+  #     expect(result.x['20px']).toBe '0'
+  #     expect(result.left).toBe '50%'
+  #     expect(result.radius).toBe 50
+  #     expect(result.strokeDasharray[100]).toBe 200
 
   it 'clean the _defaults  up', ->
     Tunable::_declareDefaults = oldFun

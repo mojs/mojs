@@ -218,7 +218,8 @@ class Module {
   _parseOption ( name, value ) {
     // if delta property
     if ( this._isDelta( value ) && name !== 'callbacksContext' ) {
-      this._getDelta( name, value ); return;
+      this._getDelta( name, value );
+      return this._assignProp( name, h.getDeltaEnd( value ) );
     }
 
     this._assignProp( name, this._parseProperty( name, value ) );
@@ -249,6 +250,36 @@ class Module {
     return this._parseStrokeDashOption(name, value);
   }
   /*
+    Method to parse values inside ∆.
+    @private
+    @param {String} Key name.
+    @param {Object} Delta.
+    @returns {Object} Delta with parsed parameters.
+  */
+  _parseDeltaValues (name, delta) {
+    for (var key in delta) {
+      var value = delta[key];
+      // delete the old key
+      delete delta[key];
+      // add parsed properties
+      var newEnd = this._parsePreArrayProperty(name, value);
+      delta[this._parsePreArrayProperty(name, key)] = newEnd;
+    }
+    return delta;
+  }
+  /*
+    Method to parse delta and nondelta properties.
+    @private
+    @param {String} Property name.
+    @param {Any}    Property value.
+    @returns {Any}  Parsed property value.
+  */
+  _preparsePropValue (key, value) {
+    return ( this._isDelta(value) )
+      ? this._parseDeltaValues(key, value)
+      : this._parsePreArrayProperty( key, value );
+  }
+  /*
     Method to calculate current progress of the deltas.
     @private
     @param {Number} Progress to calculate - [0..1].
@@ -277,25 +308,6 @@ class Module {
         this._props[key] = `rgba(${r},${g},${b},${a})`;
       }
     }
-  }
-
-  /*
-    Method to parse values inside ∆.
-    @private
-    @param {String} Key name.
-    @param {Object} Delta.
-    @returns {Object} Delta with parsed parameters.
-  */
-  _parseDeltaValues (name, delta) {
-    for (var key in delta) {
-      var value = delta[key];
-      // delete the old key
-      delete delta[key];
-      // add parsed properties
-      var newEnd = this._parsePreArrayProperty(name, value);
-      delta[this._parsePreArrayProperty(name, key)] = newEnd;
-    }
-    return delta;
   }
   /*
     Method to calculate current progress and probably draw it in children.

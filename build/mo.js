@@ -4148,8 +4148,18 @@
 	      if (o && (0, _keys2.default)(o).length) {
 	        this._transformHistory(o);
 	        this._tuneNewOptions(o);
-	        // this._history[0] = h.cloneObj(this._props);
-	        this._history[0] = _h2.default.extend(_h2.default.cloneObj(this._o), this._defaults);
+
+	        // restore array prop values because _props
+	        // contain them as parsed arrays
+	        // but we need the as strings to store in history
+	        // and merge in history chains
+	        this._history[0] = _h2.default.cloneObj(this._props);
+	        for (var key in this._arrayPropertyMap) {
+	          if (o[key] != null) {
+	            this._history[0][key] = this._preparsePropValue(key, o[key]);
+	          }
+	        }
+
 	        this._tuneSubModules();
 	        this._resetTweens();
 	      }
@@ -4171,6 +4181,18 @@
 	    // v PRIVATE METHOD(S) v
 
 	    /*
+	      Method to preparse options in object.
+	      @private
+	      @param {Object} Object to preparse properties on.
+	      @returns {Object} Passed object with preparsed props.
+	    */
+	    // _preParseOptions ( o ) {
+	    //   for (var key in o) {
+	    //     o[key] = this._preparsePropValue( key, o[key] );
+	    //   }
+	    //   return o;
+	    // }
+	    /*
 	      Method to transform history rewrite new options object chain on run.
 	      @private
 	      @param {Object} New options to tune for.
@@ -4179,16 +4201,13 @@
 	  }, {
 	    key: '_transformHistory',
 	    value: function _transformHistory(o) {
-	      var optionsKeys = (0, _keys2.default)(o);
-
-	      for (var i = 0; i < optionsKeys.length; i++) {
-	        var optionsKey = optionsKeys[i],
-	            optionsValue = o[optionsKey];
-
-	        if (optionsKey === 'childOptions') {
+	      for (var key in o) {
+	        var value = o[key];
+	        // !COVER!
+	        if (key === 'childOptions') {
 	          continue;
 	        }
-	        this._transformHistoryFor(optionsKey, optionsValue);
+	        this._transformHistoryFor(key, this._preparsePropValue(key, value));
 	      }
 	    }
 	    /*
@@ -4246,7 +4265,6 @@
 	        // nontween properties
 	        var isRewriteNext = this._isRewriteNext(oldVal, nextVal),
 	            returnVal = this._isDelta(newVal) ? _h2.default.getDeltaEnd(newVal) : newVal;
-
 	        return isRewriteNext ? returnVal : null;
 	      } else {
 	        // if was delta and came none-deltta - rewrite
@@ -4281,9 +4299,20 @@
 	      }
 
 	      var isEqual = currVal === nextVal,
-	          isDelta = this._isDelta(nextVal);
+	          isNextDelta = this._isDelta(nextVal),
+	          isDelta = this._isDelta(currVal),
+	          isValueDeltaChain = false,
+	          isDeltaChain = false;
 
-	      return isEqual || isDelta && _h2.default.getDeltaStart(nextVal) === '' + currVal;
+	      if (isDelta && isNextDelta) {
+	        if (_h2.default.getDeltaEnd(currVal) == _h2.default.getDeltaStart(nextVal)) {
+	          isDeltaChain = true;
+	        }
+	      } else if (isNextDelta) {
+	        isValueDeltaChain = _h2.default.getDeltaStart(nextVal) === '' + currVal;
+	      }
+
+	      return isEqual || isValueDeltaChain || isDeltaChain;
 	    }
 	    /*
 	      Method to tune new history options to all the submodules.
@@ -4650,7 +4679,8 @@
 	    value: function _parseOption(name, value) {
 	      // if delta property
 	      if (this._isDelta(value) && name !== 'callbacksContext') {
-	        this._getDelta(name, value);return;
+	        this._getDelta(name, value);
+	        return this._assignProp(name, _h2.default.getDeltaEnd(value));
 	      }
 
 	      this._assignProp(name, this._parseProperty(name, value));
@@ -4687,6 +4717,40 @@
 	      return this._parseStrokeDashOption(name, value);
 	    }
 	    /*
+	      Method to parse values inside ∆.
+	      @private
+	      @param {String} Key name.
+	      @param {Object} Delta.
+	      @returns {Object} Delta with parsed parameters.
+	    */
+
+	  }, {
+	    key: '_parseDeltaValues',
+	    value: function _parseDeltaValues(name, delta) {
+	      for (var key in delta) {
+	        var value = delta[key];
+	        // delete the old key
+	        delete delta[key];
+	        // add parsed properties
+	        var newEnd = this._parsePreArrayProperty(name, value);
+	        delta[this._parsePreArrayProperty(name, key)] = newEnd;
+	      }
+	      return delta;
+	    }
+	    /*
+	      Method to parse delta and nondelta properties.
+	      @private
+	      @param {String} Property name.
+	      @param {Any}    Property value.
+	      @returns {Any}  Parsed property value.
+	    */
+
+	  }, {
+	    key: '_preparsePropValue',
+	    value: function _preparsePropValue(key, value) {
+	      return this._isDelta(value) ? this._parseDeltaValues(key, value) : this._parsePreArrayProperty(key, value);
+	    }
+	    /*
 	      Method to calculate current progress of the deltas.
 	      @private
 	      @param {Number} Progress to calculate - [0..1].
@@ -4717,28 +4781,6 @@
 	          this._props[key] = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 	        }
 	      }
-	    }
-
-	    /*
-	      Method to parse values inside ∆.
-	      @private
-	      @param {String} Key name.
-	      @param {Object} Delta.
-	      @returns {Object} Delta with parsed parameters.
-	    */
-
-	  }, {
-	    key: '_parseDeltaValues',
-	    value: function _parseDeltaValues(name, delta) {
-	      for (var key in delta) {
-	        var value = delta[key];
-	        // delete the old key
-	        delete delta[key];
-	        // add parsed properties
-	        var newEnd = this._parsePreArrayProperty(name, value);
-	        delta[this._parsePreArrayProperty(name, key)] = newEnd;
-	      }
-	      return delta;
 	    }
 	    /*
 	      Method to calculate current progress and probably draw it in children.
@@ -8022,7 +8064,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.211.3', isDebug: true, helpers: _h2.default,
+	  revision: '0.212.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8030,78 +8072,17 @@
 
 	// TODO:
 	/*
-	  fix parsing new params in tune calls
 	  burst fix the tune for `then` chains
-	  duration to transit defaults
 	  cover in thenable
-	  swirls in then chains for transit and swirl.
+	  cover in tunable
+	  swirls in then chains for x/y
+	  add swirl direction
 	  module names
 	  perf optimizations.
 	  --
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
 	*/
-
-	// let sw = new mojs.Burst({
-	//   count: 5,
-	//   // left: '50%', top: '50%',
-	//   isShowEnd: 1,
-	//   isShowStart: 1,
-	//   // isSwirl: false,
-	//   radius: { 0: 100 },
-	//   x: {0: 200},
-	//   y: 0,
-	//   angle: 90,
-	//   childOptions: {
-	//     shape: 'line',
-	//     duration: 2000,
-	//     isSwirl: 0,
-	//     radius: { 7: 4 },
-	//     stroke: ['cyan', 'yellow', 'white'],
-	//     angle: { 0: 180 }
-	//   }
-	// }).then({
-	//   x: 0,
-	//   angle: 0,
-	//   childOptions: { radius: 20 }
-	// }).then({
-	//   angle: 180,
-	//   x: 200, y: 200,
-	//   childOptions: { radius: 0 }
-	// });
-
-	var sw = new mojs.Transit({
-	  x: { 0: 200 }
-	}).then({
-	  x: 400
-	}).then({
-	  x: 'rand(400, 600)', y: -200
-	});
-
-	var playEl = document.querySelector('#js-play'),
-	    rangeSliderEl = document.querySelector('#js-range-slider');
-	document.body.addEventListener('click', function (e) {
-	  return;
-	  console.log('-=-=-=-=-=-');
-	  console.log(sw._history[0].x);
-	  console.log(sw._history[1].x);
-	  console.log(sw._history[2].x);
-
-	  sw.tune({
-	    x: e.pageX,
-	    y: e.pageY
-	    // fill: 'white', duration: 1000
-	  });
-	  console.log('-=-=-=-=-=-');
-	  console.log(sw._history[0].x);
-	  console.log(sw._history[1].x);
-	  console.log(sw._history[2].x);
-	  sw.replay();
-	});
-
-	// // rangeSliderEl.addEventListener('input', function () {
-	// //   tr.setProgress( rangeSliderEl.value/1000 );
-	// // });
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;

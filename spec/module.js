@@ -337,13 +337,12 @@
           20: 30
         };
         md._parseOption(name, delta);
-        return expect(md._getDelta).toHaveBeenCalledWith(name, delta);
+        expect(md._getDelta).toHaveBeenCalledWith(name, delta);
+        return expect(md._props[name]).toBe(h.getDeltaEnd(delta));
       });
       it('should parse option string', function() {
         var md, name, value;
-        md = new Module({
-          isIt: 1
-        });
+        md = new Module;
         spyOn(md, '_getDelta');
         spyOn(md, '_parseOptionString').and.callThrough();
         name = 'delay';
@@ -718,6 +717,29 @@
           2: 1
         });
         return expect(deltaResult).toBe(delta);
+      });
+    });
+    describe('_preparsePropValue ->', function() {
+      it('should parse non ∆ values', function() {
+        var md, result;
+        md = new Module;
+        spyOn(md, '_parsePreArrayProperty').and.callThrough();
+        spyOn(md, '_parseDeltaValues').and.callThrough();
+        result = md._preparsePropValue('left', 20);
+        expect(md._parsePreArrayProperty).toHaveBeenCalledWith('left', 20);
+        expect(md._parseDeltaValues).not.toHaveBeenCalled();
+        return expect(result).toBe('20px');
+      });
+      return it('should parse ∆ values', function() {
+        var delta, md, result;
+        md = new Module;
+        spyOn(md, '_parseDeltaValues').and.callThrough();
+        delta = {
+          20: 100
+        };
+        result = md._preparsePropValue('left', delta);
+        expect(md._parseDeltaValues).toHaveBeenCalledWith('left', delta);
+        return expect(result['20px']).toBe('100px');
       });
     });
     return it('clean the _defaults  up', function() {
