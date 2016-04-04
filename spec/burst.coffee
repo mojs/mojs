@@ -62,6 +62,13 @@ describe 'Burst ->', ->
       burst = new Burst opts
       expect(burst.masterSwirl._o.radius).toBe 0
 
+    it 'should call _saveTimelineOptions method', ->
+      opts = {}
+      b = new Burst opts
+      spyOn b, '_saveTimelineOptions'
+      b._render()
+      expect(b._saveTimelineOptions).toHaveBeenCalledWith b._o
+
     it 'should call _renderSwirls method', ->
       opts = {}
       burst = new Burst opts
@@ -217,6 +224,13 @@ describe 'Burst ->', ->
       expect(mojs.Tweenable.prototype._makeTween).not.toHaveBeenCalled()
 
   describe '_makeTimeline method ->', ->
+
+    it 'should restore timeline options on _o', ->
+      timeline = {}
+      bs = new Burst timeline: timeline
+      bs._makeTimeline()
+      expect(bs._o.timeline).toBe timeline
+
     it 'should call super', ->
       bs = new Burst
       spyOn mojs.Tweenable::, '_makeTimeline'
@@ -707,7 +721,14 @@ describe 'Burst ->', ->
       for key of b._defaults
         expect(o[key]).toBe 1
 
-
+  describe '_saveTimelineOptions method ->', ->
+    it 'should save timelone options to _timelineOptions', ->
+      b = new Burst
+      timeline = {}
+      opts = { timeline: timeline }
+      b._saveTimelineOptions opts
+      expect( b._timelineOptions ).toBe timeline
+      expect( opts.timeline ).not.toBeDefined()
 
 
 

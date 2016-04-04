@@ -85,6 +85,14 @@
         burst = new Burst(opts);
         return expect(burst.masterSwirl._o.radius).toBe(0);
       });
+      it('should call _saveTimelineOptions method', function() {
+        var b, opts;
+        opts = {};
+        b = new Burst(opts);
+        spyOn(b, '_saveTimelineOptions');
+        b._render();
+        return expect(b._saveTimelineOptions).toHaveBeenCalledWith(b._o);
+      });
       it('should call _renderSwirls method', function() {
         var burst, opts;
         opts = {};
@@ -293,6 +301,15 @@
       });
     });
     describe('_makeTimeline method ->', function() {
+      it('should restore timeline options on _o', function() {
+        var bs, timeline;
+        timeline = {};
+        bs = new Burst({
+          timeline: timeline
+        });
+        bs._makeTimeline();
+        return expect(bs._o.timeline).toBe(timeline);
+      });
       it('should call super', function() {
         var bs;
         bs = new Burst;
@@ -954,7 +971,7 @@
         return expect(b._recalcModulesTime).toHaveBeenCalled();
       });
     });
-    return describe('_removeTweenProperties method ->', function() {
+    describe('_removeTweenProperties method ->', function() {
       return it('should remove all tween props from passed object', function() {
         var b, key, o, _results;
         b = new Burst;
@@ -977,6 +994,19 @@
           _results.push(expect(o[key]).toBe(1));
         }
         return _results;
+      });
+    });
+    return describe('_saveTimelineOptions method ->', function() {
+      return it('should save timelone options to _timelineOptions', function() {
+        var b, opts, timeline;
+        b = new Burst;
+        timeline = {};
+        opts = {
+          timeline: timeline
+        };
+        b._saveTimelineOptions(opts);
+        expect(b._timelineOptions).toBe(timeline);
+        return expect(opts.timeline).not.toBeDefined();
       });
     });
   });

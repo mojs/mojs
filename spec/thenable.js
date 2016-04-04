@@ -368,7 +368,7 @@
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(byte._history[1]).toBe(mergedOpton);
       });
-      return it('should parse end option when making delta from two statics', function() {
+      it('should parse end option when making delta from two statics', function() {
         var byte, end, mergedOpton, start;
         byte = new Byte;
         start = {
@@ -381,6 +381,21 @@
         byte._vars();
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(mergedOpton.left['10px']).toBe('100px');
+      });
+      return it('should just copy parent option', function() {
+        var byte, end, mergedOpton, parent, start;
+        byte = new Byte;
+        parent = {};
+        start = {
+          parent: null
+        };
+        end = {
+          parent: parent
+        };
+        byte._defaults = {};
+        byte._vars();
+        mergedOpton = byte._mergeThenOptions(start, end);
+        return expect(mergedOpton.parent).toBe(parent);
       });
     });
     describe('_isDelta method ->', function() {

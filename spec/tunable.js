@@ -246,7 +246,7 @@
       });
     });
     describe('_transformHistory method ->', function() {
-      it('should call _transformHistoryFor for every new property ->', function() {
+      return it('should call _transformHistoryFor for every new property ->', function() {
         var tr;
         tr = new Tunable({}).then({
           radius: 0
@@ -261,20 +261,6 @@
         expect(tr._transformHistoryFor).toHaveBeenCalledWith('x', '20px');
         expect(tr._transformHistoryFor).toHaveBeenCalledWith('y', '225px');
         return expect(tr._transformHistoryFor.calls.count()).toBe(2);
-      });
-      return it('should call skip childOptions ->', function() {
-        var tr;
-        tr = new Tunable({}).then({
-          radius: 0
-        }).then({
-          radius: 50
-        });
-        spyOn(tr, '_transformHistoryFor');
-        tr._transformHistory({
-          childOptions: {}
-        });
-        expect(tr._transformHistoryFor).not.toHaveBeenCalledWith('childOptions', {});
-        return expect(tr._transformHistoryFor.calls.count()).toBe(0);
       });
     });
     describe('_transformHistoryFor method ->', function() {

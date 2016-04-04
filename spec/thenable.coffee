@@ -228,6 +228,17 @@ describe 'thenable ->', ->
       byte._vars()
       mergedOpton = byte._mergeThenOptions start, end
       expect(mergedOpton.left['10px']).toBe '100px'
+    it 'should just copy parent option', ->
+      byte = new Byte
+
+      parent = {}
+      start = parent: null
+      end   = parent: parent
+
+      byte._defaults = {}
+      byte._vars()
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.parent).toBe parent
     # nope
     # it 'should not push merged options to the history if !isPush', ->
     #   byte = new Byte

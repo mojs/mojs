@@ -518,15 +518,12 @@
 	  }, {
 	    key: '_update',
 	    value: function _update(time, timelinePrevTime, wasYoyo, onEdge) {
-	      this._o.isIt && console.log('time: ' + time + ', timelinePrevTime: ' + timelinePrevTime + ', wasYoyo: ' + wasYoyo + ', onEdge: ' + onEdge + ' ');
 	      var p = this._props;
 	      // if we don't the _prevTime thus the direction we are heading to,
 	      // but prevTime was passed thus we are child of a Timeline
 	      // set _prevTime to passed one and pretent that there was unknown
 	      // update to not to block start/complete callbacks
-	      this._o.isIt && console.log('prevTime: ' + this._prevTime + ', timelinePrevTime: ' + timelinePrevTime);
 	      if (this._prevTime == null && timelinePrevTime != null) {
-	        this._o.isIt && console.log('setting the _prevTime to prevTime and _wasUknownUpdate');
 	        this._prevTime = timelinePrevTime;
 	        this._wasUknownUpdate = true;
 	      }
@@ -648,7 +645,6 @@
 
 	        this._setProgress(isYoyo ? 0 : 1, time, isYoyo);
 	        this._repeatComplete(time, isYoyo);
-	        this._o.isIt && console.log('h3');
 	        this._complete(time, isYoyo);
 	      }
 	      // if was active and went to - inactive area "-"
@@ -698,7 +694,6 @@
 	          this._isRepeatCompleted = false;
 	        }
 	        this._repeatComplete(time, isYoyo);
-	        this._o.isIt && console.log('h4');
 	        return this._complete(time, isYoyo);
 	      }
 
@@ -786,7 +781,6 @@
 	          // we have handled the case in this._wasUknownUpdate
 	          // block so filter that
 	          if (prevT === TCount && !this._wasUknownUpdate) {
-	            this._o.isIt && console.log('h6');
 	            this._complete(time, isYoyo);
 	            this._repeatComplete(time, isYoyo);
 	            this._firstUpdate(time, isYoyo);
@@ -984,7 +978,6 @@
 	      if (this._isCompleted) {
 	        return;
 	      }
-	      this._o.isIt && console.log('_complete!');
 	      var p = this._props;
 	      if (p.onComplete != null && typeof p.onComplete === 'function') {
 	        p.onComplete.call(p.callbacksContext || this, time > this._prevTime, isYoyo);
@@ -1489,6 +1482,10 @@
 	      this._o.isSwirl = this._props.isSwirl;
 	      this._o.radius = 0;
 
+	      // save timeline options and remove from _o
+	      // cuz the master swirl should not get them
+	      this._saveTimelineOptions(this._o);
+
 	      this.masterSwirl = new _swirl2.default(this._o);
 	      this._masterSwirls = [this.masterSwirl];
 
@@ -1511,6 +1508,19 @@
 	      }
 	      this._swirls = { 0: pack };
 	      this._setSwirlDuration(this.masterSwirl, this._calcPackTime(pack));
+	    }
+	    /*
+	      Method to save timeline options to _timelineOptions
+	      and delete the property on the object.
+	      @private
+	      @param {Object} The object to save the timeline options from.
+	    */
+
+	  }, {
+	    key: '_saveTimelineOptions',
+	    value: function _saveTimelineOptions(o) {
+	      this._timelineOptions = o.timeline;
+	      delete o.timeline;
 	    }
 	    /*
 	      Method to calculate total time of array of
@@ -1740,6 +1750,8 @@
 	  }, {
 	    key: '_makeTimeline',
 	    value: function _makeTimeline() {
+	      // restore timeline options that were deleted in _render method
+	      this._o.timeline = this._timelineOptions;
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_makeTimeline', this).call(this);
 	      this.timeline.add(this.masterSwirl, this._swirls[0]);
 	    }
@@ -3901,7 +3913,7 @@
 
 	      for (var key in end) {
 
-	        /* !COVER! */
+	        // just copy parent option
 	        if (key == 'parent') {
 	          o[key] = end[key];
 	          continue;
@@ -4148,10 +4160,8 @@
 	    value: function _transformHistory(o) {
 	      for (var key in o) {
 	        var value = o[key];
-	        // !COVER!
-	        if (key === 'childOptions') {
-	          continue;
-	        }
+	        // don't transform for childOptions
+	        // if ( key === 'childOptions' ) { continue; }
 	        this._transformHistoryFor(key, this._preparsePropValue(key, value));
 	      }
 	    }
@@ -8010,7 +8020,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.214.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.214.2', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8018,13 +8028,14 @@
 
 	// TODO:
 	/*
-	  
-	  cover in thenable
-	  cover in tunable
-	  module names
+	  timeline: {} for transit and burst after tune
+	  callbacksContext for the masterSwirl
+	  add onPlaybackStart, onPlaybackStop,
+	  onPlaybackFinish methods to support mojs-player
 	  perf optimizations.
 	  --
 	  add target instead of parent.
+	  module names
 	  swirls in then chains for x/y
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
@@ -8032,10 +8043,6 @@
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
-
-	// rangeSliderEl.addEventListener('input', function () {
-	//   tr.setProgress( rangeSliderEl.value/1000 );
-	// });
 
 	// ### istanbul ignore next ###
 	if (true) {

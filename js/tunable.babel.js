@@ -62,8 +62,8 @@ class Tuneable extends Thenable {
   _transformHistory ( o ) {
     for (var key in o) {
       var value = o[key];
-      // !COVER!
-      if ( key === 'childOptions' ) { continue; }
+      // don't transform for childOptions
+      // if ( key === 'childOptions' ) { continue; }
       this._transformHistoryFor( key, this._preparsePropValue( key, value ) );
     }
   }

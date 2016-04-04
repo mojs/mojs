@@ -191,7 +191,11 @@ class Burst extends Tunable {
     this._o.isWithShape = false;
     this._o.isSwirl     = this._props.isSwirl;
     this._o.radius      = 0;
-    
+
+    // save timeline options and remove from _o
+    // cuz the master swirl should not get them
+    this._saveTimelineOptions( this._o );
+
     this.masterSwirl    = new Swirl( this._o );
     this._masterSwirls  = [ this.masterSwirl ];
 
@@ -211,6 +215,16 @@ class Burst extends Tunable {
     }
     this._swirls = { 0: pack };
     this._setSwirlDuration( this.masterSwirl, this._calcPackTime(pack) );
+  }
+  /*
+    Method to save timeline options to _timelineOptions
+    and delete the property on the object.
+    @private
+    @param {Object} The object to save the timeline options from.
+  */
+  _saveTimelineOptions ( o ) {
+    this._timelineOptions = o.timeline;
+    delete o.timeline;
   }
   /*
     Method to calculate total time of array of
@@ -394,6 +408,8 @@ class Burst extends Tunable {
     @override @ Tweenable
   */
   _makeTimeline () {
+    // restore timeline options that were deleted in _render method
+    this._o.timeline = this._timelineOptions;
     super._makeTimeline();
     this.timeline.add( this.masterSwirl, this._swirls[0] );
   }

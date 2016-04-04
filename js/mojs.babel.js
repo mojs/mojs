@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.214.1', isDebug: true, helpers: h,
+  revision:   '0.214.2', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -25,13 +25,14 @@ window.mojs = {
 
 // TODO:
 /*
-  
-  cover in thenable
-  cover in tunable
-  module names
+  timeline: {} for transit and burst after tune
+  callbacksContext for the masterSwirl
+  add onPlaybackStart, onPlaybackStop,
+  onPlaybackFinish methods to support mojs-player
   perf optimizations.
   --
   add target instead of parent.
+  module names
   swirls in then chains for x/y
   parse rand(stagger(20, 10), 20) values
   percentage for radius
@@ -39,11 +40,6 @@ window.mojs = {
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
-
-// rangeSliderEl.addEventListener('input', function () {
-//   tr.setProgress( rangeSliderEl.value/1000 );
-// });
-
 
 
 // ### istanbul ignore next ###

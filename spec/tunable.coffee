@@ -200,13 +200,23 @@ describe 'Tunable ->', ->
         .toHaveBeenCalledWith 'y', '225px'
       expect(tr._transformHistoryFor.calls.count()).toBe 2
 
-    it 'should call skip childOptions ->', ->
-      tr = new Tunable({}).then({ radius: 0 }).then({ radius: 50 })
-      spyOn tr, '_transformHistoryFor'
-      tr._transformHistory childOptions: {}
-      expect(tr._transformHistoryFor)
-        .not.toHaveBeenCalledWith 'childOptions', {}
-      expect(tr._transformHistoryFor.calls.count()).toBe 0
+    # nope
+    # it 'should not call _transformHistoryFor for childOptions ->', ->
+    #   tr = new Tunable({}).then({ radius: 0 }).then({ radius: 50 })
+    #   spyOn tr, '_transformHistoryFor'
+
+    #   tr._transformHistory childOptions: {}
+    #   expect(tr._transformHistoryFor)
+    #     .not.toHaveBeenCalled()
+
+    # nope
+    # it 'should call skip childOptions ->', ->
+    #   tr = new Tunable({}).then({ radius: 0 }).then({ radius: 50 })
+    #   spyOn tr, '_transformHistoryFor'
+    #   tr._transformHistory childOptions: {}
+    #   expect(tr._transformHistoryFor)
+    #     .not.toHaveBeenCalledWith 'childOptions', {}
+    #   expect(tr._transformHistoryFor.calls.count()).toBe 0
 
   describe '_transformHistoryFor method ->', ->
     it 'should call _transformHistoryRecord for every history record', ->

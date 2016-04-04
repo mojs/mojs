@@ -119,7 +119,7 @@ class Thenable extends Tweenable {
 
     for (var key in end) {
 
-      /* !COVER! */
+      // just copy parent option
       if ( key == 'parent' ) {
         o[key] = end[key];
         continue;
