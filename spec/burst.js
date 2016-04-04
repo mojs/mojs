@@ -576,6 +576,41 @@
         return expect(burst._bufferTimeline instanceof mojs.Timeline).toBe(true);
       });
     });
+    describe('_recalcModulesTime method', function() {
+      it('should set duration on every moddules tween', function() {
+        var b, modules, shiftTime, time;
+        b = new Burst({
+          fill: 'cyan'
+        }).then({
+          'fill': 'yellow'
+        });
+        shiftTime = 0;
+        modules = b.masterSwirl._modules;
+        spyOn(b, '_calcPackTime').and.callThrough();
+        b._recalcModulesTime();
+        expect(b._calcPackTime).toHaveBeenCalledWith(b._swirls[0]);
+        time = b._calcPackTime(b._swirls[0]);
+        expect(modules[0].tween._props.duration).toBe(time);
+        expect(modules[0].tween._props.shiftTime).toBe(shiftTime);
+        shiftTime += time;
+        expect(b._calcPackTime).toHaveBeenCalledWith(b._swirls[1]);
+        time = b._calcPackTime(b._swirls[1]);
+        expect(modules[1].tween._props.duration).toBe(time);
+        expect(modules[1].tween._props.shiftTime).toBe(shiftTime);
+        return shiftTime += time;
+      });
+      return it('should call _recalcTotalDuration on main timeline', function() {
+        var b;
+        b = new Burst({
+          fill: 'cyan'
+        }).then({
+          'fill': 'yellow'
+        });
+        spyOn(b.timeline, '_recalcTotalDuration');
+        b._recalcModulesTime();
+        return expect(b.timeline._recalcTotalDuration).toHaveBeenCalled();
+      });
+    });
     describe('_masterThen method ->', function() {
       it('should pass options to masterSwirl', function() {
         var b, o;
@@ -789,6 +824,25 @@
           x: 200
         })).toBe(b);
       });
+      it('should call _tuneNewOptions method', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b, '_tuneNewOptions');
+        options = {
+          x: 200
+        };
+        b.tune(options);
+        return expect(b._tuneNewOptions).toHaveBeenCalledWith(options);
+      });
+      it('should not call _tuneNewOptions method if no options', function() {
+        var b, options, result;
+        b = new Burst;
+        spyOn(b, '_tuneNewOptions');
+        options = null;
+        result = b.tune(options);
+        expect(b._tuneNewOptions).not.toHaveBeenCalledWith(options);
+        return expect(result).toBe(b);
+      });
       it('should call tune on masterSwirl', function() {
         var b, options;
         b = new Burst;
@@ -799,8 +853,18 @@
         b.tune(options);
         return expect(b.masterSwirl.tune).toHaveBeenCalledWith(options);
       });
-      return it('should call tune 0 pack swirls', function() {
-        var b, childOptions, pack0;
+      it('should call _tuneSwirls method', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b, '_tuneSwirls');
+        options = {
+          x: 200
+        };
+        b.tune(options);
+        return expect(b._tuneSwirls).toHaveBeenCalledWith(options);
+      });
+      it('should call tune 0 pack swirls', function() {
+        var args, b, childOptions, option0, option1, option2, option3, option4, options, pack0;
         b = new Burst;
         pack0 = b._swirls[0];
         spyOn(pack0[0], 'tune');
@@ -812,14 +876,55 @@
           x: 200,
           fill: ['cyan', 'yellow']
         };
-        b.tune({
+        options = {
           childOptions: childOptions
-        });
-        expect(pack0[0].tune).toHaveBeenCalledWith(b._getChildOption(childOptions, 0));
-        expect(pack0[1].tune).toHaveBeenCalledWith(b._getChildOption(childOptions, 1));
-        expect(pack0[2].tune).toHaveBeenCalledWith(b._getChildOption(childOptions, 2));
-        expect(pack0[3].tune).toHaveBeenCalledWith(b._getChildOption(childOptions, 3));
-        return expect(pack0[4].tune).toHaveBeenCalledWith(b._getChildOption(childOptions, 4));
+        };
+        b.tune(options);
+        option0 = b._getChildOption(options, 0);
+        b._addBurstProperties(option0, 0);
+        args = pack0[0].tune.calls.first().args;
+        expect(args[0]).toEqual(option0);
+        option1 = b._getChildOption(options, 1);
+        b._addBurstProperties(option1, 1);
+        args = pack0[1].tune.calls.first().args;
+        expect(args[0]).toEqual(option1);
+        option2 = b._getChildOption(options, 2);
+        b._addBurstProperties(option2, 2);
+        args = pack0[2].tune.calls.first().args;
+        expect(args[0]).toEqual(option2);
+        option3 = b._getChildOption(options, 3);
+        b._addBurstProperties(option3, 3);
+        args = pack0[3].tune.calls.first().args;
+        expect(args[0]).toEqual(option3);
+        option4 = b._getChildOption(options, 4);
+        b._addBurstProperties(option4, 4);
+        args = pack0[4].tune.calls.first().args;
+        return expect(args[0]).toEqual(option4);
+      });
+      it('should add Burst properties to options', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b.masterSwirl, 'tune');
+        options = {
+          x: 200
+        };
+        spyOn(b, '_addBurstProperties');
+        b.tune(options);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 0);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 1);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 2);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 3);
+        return expect(b._addBurstProperties).toHaveBeenCalledWith({}, 4);
+      });
+      return it('should call _recalcModulesTime method', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b, '_recalcModulesTime');
+        options = {
+          x: 200
+        };
+        b.tune(options);
+        return expect(b._recalcModulesTime).toHaveBeenCalled();
       });
     });
   });

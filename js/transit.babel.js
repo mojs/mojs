@@ -70,6 +70,8 @@ class Transit extends Tunable {
       isShowStart:      false,
       // Possible values: [ boolean ]
       isShowEnd:        false,
+      // // Possible values: [ number > 0 ]
+      // duration:         400,
       // Possible values: [ number ]
       size:             null,
       // Possible values: [ number ]

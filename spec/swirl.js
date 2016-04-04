@@ -159,7 +159,42 @@
         swirl._tuneNewOptions({});
         return expect(Module.prototype._tuneNewOptions).toHaveBeenCalled();
       });
-      return it('should call _calcPosData method', function() {
+      it('should not call super _tuneNewOptions method if no o', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        spyOn(Module.prototype, '_tuneNewOptions').and.callThrough();
+        swirl._tuneNewOptions();
+        return expect(Module.prototype._tuneNewOptions).not.toHaveBeenCalled();
+      });
+      it('should call _calcPosData method if x changes', function() {
+        var swirl;
+        swirl = new Swirl({
+          x: 200
+        });
+        spyOn(swirl, '_calcPosData').and.callThrough();
+        swirl._tuneNewOptions({
+          x: 300
+        });
+        return expect(swirl._calcPosData).toHaveBeenCalled();
+      });
+      it('should call _calcPosData method if y changes', function() {
+        var swirl;
+        swirl = new Swirl({
+          y: 200
+        });
+        spyOn(swirl, '_calcPosData').and.callThrough();
+        swirl._tuneNewOptions({
+          y: 300
+        });
+        return expect(swirl._calcPosData).toHaveBeenCalled();
+      });
+      return it('should not call _calcPosData method if no x/y changes', function() {
         var swirl;
         swirl = new Swirl({
           radius: [
@@ -169,8 +204,10 @@
           ]
         });
         spyOn(swirl, '_calcPosData').and.callThrough();
-        swirl._tuneNewOptions();
-        return expect(swirl._calcPosData).toHaveBeenCalled();
+        swirl._tuneNewOptions({
+          radius: 200
+        });
+        return expect(swirl._calcPosData).not.toHaveBeenCalled();
       });
     });
     describe('_declareDefaults method ->', function() {

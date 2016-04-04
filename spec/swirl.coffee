@@ -68,11 +68,29 @@ describe 'Swirl ->', ->
       swirl._tuneNewOptions({})
       expect(Module.prototype._tuneNewOptions).toHaveBeenCalled()
 
-    it 'should call _calcPosData method', ->
+    it 'should not call super _tuneNewOptions method if no o', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      spyOn(Module.prototype, '_tuneNewOptions').and.callThrough()
+      swirl._tuneNewOptions()
+      expect(Module.prototype._tuneNewOptions).not.toHaveBeenCalled()
+
+    it 'should call _calcPosData method if x changes', ->
+      swirl = new Swirl x: 200
+      spyOn(swirl, '_calcPosData').and.callThrough()
+      swirl._tuneNewOptions({ x: 300 })
+      expect(swirl._calcPosData).toHaveBeenCalled()
+
+    it 'should call _calcPosData method if y changes', ->
+      swirl = new Swirl y: 200
+      spyOn(swirl, '_calcPosData').and.callThrough()
+      swirl._tuneNewOptions({ y: 300 })
+      expect(swirl._calcPosData).toHaveBeenCalled()
+
+    it 'should not call _calcPosData method if no x/y changes', ->
       swirl = new Swirl radius: [{ 20: 50 }, 20]
       spyOn(swirl, '_calcPosData').and.callThrough()
-      swirl._tuneNewOptions()
-      expect(swirl._calcPosData).toHaveBeenCalled()
+      swirl._tuneNewOptions({ radius: 200 })
+      expect(swirl._calcPosData).not.toHaveBeenCalled()
 
   describe '_declareDefaults method ->', ->
     it 'should call super _declareDefaults', ->

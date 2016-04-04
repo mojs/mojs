@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.213.2', isDebug: true, helpers: h,
+  revision:   '0.214.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -25,9 +25,7 @@ window.mojs = {
 
 // TODO:
 /*
-
-  left and top to 0 for svg elements
-  burst fix the tune for `then` chains
+  
   cover in thenable
   cover in tunable
   module names
@@ -38,9 +36,6 @@ window.mojs = {
   parse rand(stagger(20, 10), 20) values
   percentage for radius
 */
-
-
-
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;

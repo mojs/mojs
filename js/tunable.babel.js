@@ -14,7 +14,6 @@ class Tuneable extends Thenable {
     if (o && Object.keys(o).length) {
       this._transformHistory(o);
       this._tuneNewOptions(o);
-      
       // restore array prop values because _props
       // contain them as parsed arrays
       // but we need the as strings to store in history

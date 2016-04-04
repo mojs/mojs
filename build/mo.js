@@ -1315,24 +1315,63 @@
 	  }, {
 	    key: 'tune',
 	    value: function tune(o) {
-	      this.masterSwirl.tune(o);
-
-	      var pack0 = this._swirls[0];
-	      for (var i = 0; i < pack0.length; i++) {
-	        var swirl = pack0[i];
-	        swirl.tune(this._getChildOption(o.childOptions || {}, i));
+	      if (o == null) {
+	        return this;
 	      }
-
-	      // RECALC CONCURRENT TWEEN DURATIONS
-	      // if options object was passed
-	      // if (o && Object.keys(o).length) {
-	      // }
+	      // tune _props
+	      this._tuneNewOptions(o);
+	      // tune master swirl
+	      this.masterSwirl.tune(o);
+	      // tune child swirls
+	      this._tuneSwirls(o);
+	      // recalc time for modules
+	      this._recalcModulesTime();
 	      return this;
 	    }
 
 	    // ^ PUBLIC  METHODS ^
 	    // v PRIVATE METHODS v
 
+	    /*
+	      Method to recalc modules chain tween
+	      times after tuning new options.
+	      @private
+	    */
+
+	  }, {
+	    key: '_recalcModulesTime',
+	    value: function _recalcModulesTime() {
+	      var modules = this.masterSwirl._modules,
+	          swirls = this._swirls,
+	          shiftTime = 0;
+
+	      for (var i = 0; i < modules.length; i++) {
+	        var tween = modules[i].tween,
+	            packTime = this._calcPackTime(swirls[i]);
+	        tween._setProp({ 'duration': packTime, 'shiftTime': shiftTime });
+	        shiftTime += packTime;
+	      }
+
+	      this.timeline._recalcTotalDuration();
+	    }
+	    /*
+	      Method to tune Swirls with new options.
+	      @private
+	      @param {Object} New options.
+	    */
+
+	  }, {
+	    key: '_tuneSwirls',
+	    value: function _tuneSwirls(o) {
+	      // get swirls in first pack
+	      var pack0 = this._swirls[0];
+	      for (var i = 0; i < pack0.length; i++) {
+	        var swirl = pack0[i],
+	            option = this._getChildOption(o || {}, i);
+	        this._addBurstProperties(option, i);
+	        swirl.tune(option);
+	      }
+	    }
 	    /*
 	      Method to call then on masterSwirl.
 	      @param {Object} Then options.
@@ -1516,8 +1555,20 @@
 	      options.parent = this.masterSwirl.el;
 	      options.isSwirl = options.isSwirl == null ? false : options.isSwirl;
 
-	      // options.isTimelineLess = true;
-	      // option.callbacksContext = this;  ?
+	      this._addBurstProperties(options, index);
+
+	      return options;
+	    }
+	    /*
+	      Method to add Burst options to object.
+	      @private
+	      @param {Object} Options to add the properties to.
+	      @param {Number} Index of the Swirl.
+	    */
+
+	  }, {
+	    key: '_addBurstProperties',
+	    value: function _addBurstProperties(options, index) {
 	      var p = this._props,
 	          points = p.count,
 	          degreeCnt = p.degree % 360 === 0 ? points : points - 1 || 1,
@@ -1528,8 +1579,6 @@
 	      options.x = this._getDeltaFromPoints('x', pointStart, pointEnd);
 	      options.y = this._getDeltaFromPoints('y', pointStart, pointEnd);
 	      options.angle = this._getBitAngle(options.angle, index);
-
-	      return options;
 	    }
 	    /* 
 	      Method to get transits angle in burst so
@@ -1663,196 +1712,7 @@
 
 	  }, {
 	    key: '_makeTween',
-	    value: function _makeTween() {} /* don't create any tween */
-	    // /*
-	    //   Method to get childOption for then call.
-	    //   @private
-	    //   @param   {Object} Object to look in.
-	    //   @param   {Number} Index of the current Swirl.
-	    //   @returns {Object} Options for the current swirl.
-	    // */
-	    // _getThenOption (obj, i) {
-	    //   var options = {};
-
-	    //   for ( var key in obj.childOptions ) {
-	    //     options[key] = this._getPropByMod( key, i, obj.childOptions);
-	    //   }
-
-	    //   return options;
-	    // }
-	    // /*
-	    //   Method to copy _o options to _props with fallback to _defaults.
-	    //   @private
-	    //   @override @ Swirl
-	    // */
-	    // _extendDefaults () {
-	    //   // call super extendDefaults on Swirl
-	    //   super._extendDefaults();
-	    //   // calc size immedietely, the Swirls' options rely on size
-	    //   this._calcSize();
-	    // }
-	    // /*
-	    //   Method to declare `childDefaults` for `childOptions` object.
-	    //   @private
-	    // */
-	    // _declareChildDefaults () {
-	    //   /* CHILD DEFAULTS - SWIRL's DEFAULTS WITH ADDITIONS*/
-	    //   // copy the defaults to the childDefaults property
-	    //   this._childDefaults = h.cloneObj( this._defaults );
-	    //   // [boolean] :: If shape should follow sinusoidal path.
-	    //   this._childDefaults.isSwirl = false;
-	    //   // copy tween options and callbacks
-	    //   for (var key in h.tweenOptionMap) { this._childDefaults[key] = null; }
-	    //   for (var key in h.callbacksMap)   { this._childDefaults[key] = null; }
-	    // }
-	    // /*
-	    //   Method to create child transits.
-	    //   @private
-	    //   @override Transit
-	    // */
-	    // _createBit () {
-	    //   this._swirls = [];
-	    //   for (var index = 0; index < this._props.count; index++) {
-	    //     this._swirls.push( new Swirl( this._getOption( index ) ) );
-	    //   }
-	    // }
-	    // /*
-	    //   Method to calculate option for specific transit.
-	    //   @private
-	    //   @param {Number} Index of the swirl.
-	    // */
-	    // _getOption (i) {
-	    //   var option  = {};
-
-	    //   for (var key in this._childDefaults) {
-	    //     // this is priorty for the property lookup
-	    //     // firstly try to find the prop in this._o.childOptions
-	    //     var prop = this._getPropByMod( key, i, this._o.childOptions );
-	    //     // lastly fallback to defaults
-	    //     prop = ( prop == null )
-	    //       ? this._getPropByMod( key, i, this._childDefaults ) : prop;
-	    //     // parse `stagger` and `rand` values if needed
-	    //     option[key] = h.parseStringOption(prop, i);
-	    //   }
-
-	    //   return this._addOptionalProps( option, i );
-	    // }
-	    // /*
-	    //   Method to draw self DIV element.
-	    //   @private
-	    //   @override @ Transit
-	    // */
-	    // _draw () { this._drawEl(); }
-	    // /*
-	    //   Method to calculate maximum size of element.
-	    //   @private
-	    //   @override @ Transit
-	    // */
-	    // _calcSize () {
-	    //   var p = this._props;
-	    //   p.size   = ( p.size == null ) ? 2 : p.size;
-	    //   p.center = p.size / 2;
-	    // }
-	    // /*
-	    //   Method to setup  timeline options before creating the Timeline instance.
-	    //   @override @ Transit
-	    //   @private
-	    // */
-	    // _transformTweenOptions () {
-	    //   this._o.unitTimeline = this._o.unitTimeline || {};
-	    //   this._o.unitTimeline.callbacksContext = this;
-	    //   this._applyCallbackOverrides( this._o.unitTimeline );
-	    // }
-	    // /*
-	    //   Method to create timeline.
-	    //   @private
-	    //   @override @ Tweenable
-	    //   @param {Object} Timeline's options.
-	    //                   An object which contains "timeline" property with
-	    //                   timeline options.
-	    // */
-	    // _makeTimeline () {
-	    //   // create unit Timeline to controll all Swirls
-	    //   this.unitTimeline = new Timeline( this._o.unitTimeline );
-	    //   this.unitTimeline.add(...this._swirls);
-	    //   // if isTimelineLess wasn't passed to the module - we need
-	    //   // to create Master Timeline in case we will have `then` chain,-
-	    //   // the master will control all the unitTimelines of the chain.
-	    //   if ( !this._o.wasTimelineLess ) {
-	    //     super._makeTimeline();
-	    //     this.timeline.add( this.unitTimeline );
-	    //   // otherwise set the timeline property to the unitTimeline,
-	    //   // this will allow to `.append( )` this module to master timeline
-	    //   // automatically in the `Thenable.then` method.
-	    //   } else { this.timeline = this.unitTimeline; }
-	    //   // reset the timeline and unitTimeline options objects.
-	    //   this._o.timeline     = null;
-	    //   // this._o.unitTimeline = undefined;
-	    // }
-	    // /*
-	    //   Method to tune new history options to all the submodules.
-	    //   @private
-	    //   @override @ Tunable
-	    // */
-	    // // _tuneSubModules () {
-	    // //   // call _tuneSubModules on Tunable
-	    // //   super._tuneSubModules();
-	    // //   // tune swirls including their tweens
-	    // //   for (var index = 0; index < this._swirls.length; index++) {
-	    // //     var swirl   = this._swirls[index],
-	    // //         options = this._getOption( index );
-
-	    // //     swirl._tuneNewOptions( options );
-	    // //     this._resetTween( swirl.tween, options );
-	    // //   }
-
-	    // //   this._o.timeline && this.timeline._setProp(this._o.timeline);
-	    // //   this.timeline._recalcTotalDuration();
-	    // // }
-
-	    // /*
-	    //   Method to reset some flags on merged options object.
-	    //   @private
-	    //   @overrides @ Thenable
-	    //   @param   {Object} Options object.
-	    //   @returns {Object} Options object.
-	    // */
-	    // _resetTweens () { /* don't reset tweens for now */ }
-	    // /*
-	    //   Method to reset some flags on merged options object.
-	    //   @private
-	    //   @override @ Thenable
-	    //   @param   {Object} Options object.
-	    //   @returns {Object} Options object.
-	    // */
-	    // _resetMergedFlags (obj) {
-	    //   // call super @ Thenable
-	    //   super._resetMergedFlags(obj);
-	    //   obj.wasTimelineLess = obj.isTimelineLess;
-	    //   obj.isTimelineLess  = false;
-	    //   return obj;
-	    // }
-
-	    /*
-	      Method to merge two options into one. Used in .then chains.
-	      @private
-	      @param {Object} Start options for the merge.
-	      @param {Object} End options for the merge.
-	      @returns {Object} Merged options.
-	    */
-	    // _mergeThenOptions ( start, end ) {
-	    //   var startChild  = start.childOptions || {},
-	    //       endChild    = end.childOptions   || {},
-	    //       mergedChild = super._mergeThenOptions( startChild, endChild, false ),
-	    //       merged      = super._mergeThenOptions( start, end, false );
-
-	    //   merged.childOptions = mergedChild;
-
-	    //   this._history.push( merged );
-
-	    //   return merged;
-	    // }
-
+	    value: function _makeTween() {/* don't create any tween */}
 	  }]);
 	  return Burst;
 	}(_tunable2.default);
@@ -1996,6 +1856,8 @@
 	        isShowStart: false,
 	        // Possible values: [ boolean ]
 	        isShowEnd: false,
+	        // // Possible values: [ number > 0 ]
+	        // duration:         400,
 	        // Possible values: [ number ]
 	        size: null,
 	        // Possible values: [ number ]
@@ -2482,6 +2344,8 @@
 	      this._defaults.radius = { 5: 0 };
 	      /* [number: -1, 1] :: Directon of Swirl. */
 	      this._defaults.direction = 1;
+
+	      /* technical ones: */
 	      /* [boolean] :: If should have child shape. */
 	      this._defaults.isWithShape = true;
 	    }
@@ -2512,8 +2376,14 @@
 	  }, {
 	    key: '_tuneNewOptions',
 	    value: function _tuneNewOptions(o) {
+	      if (o == null) {
+	        return;
+	      }
+
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Swirl.prototype), '_tuneNewOptions', this).call(this, o);
-	      this._calcPosData();
+	      if (o.x != null || o.y != null) {
+	        this._calcPosData();
+	      }
 	    }
 	    /*
 	      Method to calculate Swirl's position data.
@@ -4185,7 +4055,6 @@
 	      if (o && (0, _keys2.default)(o).length) {
 	        this._transformHistory(o);
 	        this._tuneNewOptions(o);
-
 	        // restore array prop values because _props
 	        // contain them as parsed arrays
 	        // but we need the as strings to store in history
@@ -8101,7 +7970,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.213.2', isDebug: true, helpers: _h2.default,
+	  revision: '0.214.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8109,9 +7978,7 @@
 
 	// TODO:
 	/*
-
-	  left and top to 0 for svg elements
-	  burst fix the tune for `then` chains
+	  
 	  cover in thenable
 	  cover in tunable
 	  module names

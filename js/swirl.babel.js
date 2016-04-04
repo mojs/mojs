@@ -33,6 +33,8 @@ class Swirl extends Transit {
     this._defaults.radius         = { 5 : 0};
     /* [number: -1, 1] :: Directon of Swirl. */
     this._defaults.direction      = 1;
+
+    /* technical ones: */
     /* [boolean] :: If should have child shape. */
     this._defaults.isWithShape    = true;
   }
@@ -57,8 +59,12 @@ class Swirl extends Transit {
     @param {Object} Options object to tune to.
   */
   _tuneNewOptions (o) {
+    if ( o == null ) { return }
+      
     super._tuneNewOptions( o );
-    this._calcPosData();
+    if ( o.x != null || o.y != null ) {
+      this._calcPosData();
+    }
   }
   /*
     Method to calculate Swirl's position data.

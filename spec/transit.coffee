@@ -52,13 +52,14 @@ describe 'Transit ->', ->
       expect(byte._defaults.scale).toBe            1
       expect(byte._defaults.opacity).toBe          1
       expect(byte._defaults.points).toBe           3
+      # expect(byte._defaults.duration).toBe         400
       expect(byte._defaults.radius[0]).toBe        50
       expect(byte._defaults.radiusX).toBe          null
       expect(byte._defaults.radiusY).toBe          null
       expect(byte._defaults.isShowEnd).toBe        false
       expect(byte._defaults.isShowStart).toBe      false
       expect(byte._defaults.size).toBe             null
-      expect(byte._defaults.callbacksContext).toBe          null
+      expect(byte._defaults.callbacksContext).toBe null
       expect(byte._defaults.sizeGap).toBe          0
 
     it 'should add callbacksContext to the _skipPropsDelta', ->
