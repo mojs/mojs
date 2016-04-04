@@ -37,7 +37,24 @@
         });
         expect(burst._defaults.radiusX).toEqual(null);
         expect(burst._defaults.radiusY).toEqual(null);
+        expect(burst._defaults.easing).toEqual('linear.none');
         return expect(burst._defaults.isSwirl).toEqual(false);
+      });
+    });
+    describe('_extendDefaults method ->', function() {
+      it('should call _removeTweenProperties method', function() {
+        var b;
+        b = new Burst;
+        spyOn(b, '_removeTweenProperties');
+        b._extendDefaults();
+        return expect(b._removeTweenProperties).toHaveBeenCalledWith(b._o);
+      });
+      return it('should call super', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(mojs.Module.prototype, '_extendDefaults');
+        burst._extendDefaults();
+        return expect(mojs.Module.prototype._extendDefaults).toHaveBeenCalled();
       });
     });
     describe('_render method ->', function() {
@@ -704,6 +721,16 @@
         });
         return expect(b.then({})).toBe(b);
       });
+      it('should call _removeTweenProperties method', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b, '_removeTweenProperties');
+        options = {
+          x: 200
+        };
+        b.then(options);
+        return expect(b._removeTweenProperties).toHaveBeenCalledWith(options);
+      });
       it('should call _masterThen method', function() {
         var b, options;
         b = new Burst({
@@ -816,7 +843,7 @@
         return expect(set).not.toThrow();
       });
     });
-    return describe('tune method ->', function() {
+    describe('tune method ->', function() {
       it('should return `this`', function() {
         var b;
         b = new Burst;
@@ -925,6 +952,31 @@
         };
         b.tune(options);
         return expect(b._recalcModulesTime).toHaveBeenCalled();
+      });
+    });
+    return describe('_removeTweenProperties method ->', function() {
+      return it('should remove all tween props from passed object', function() {
+        var b, key, o, _results;
+        b = new Burst;
+        o = {};
+        for (key in h.tweenOptionMap) {
+          o[key] = 1;
+        }
+        for (key in b._defaults) {
+          o[key] = 1;
+        }
+        b._removeTweenProperties(o);
+        for (key in h.tweenOptionMap) {
+          if (key !== 'easing') {
+            expect(o[key]).not.toBeDefined();
+          }
+        }
+        expect(o['easing']).toBe(1);
+        _results = [];
+        for (key in b._defaults) {
+          _results.push(expect(o[key]).toBe(1));
+        }
+        return _results;
       });
     });
   });

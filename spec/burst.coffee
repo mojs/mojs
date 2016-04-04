@@ -22,7 +22,21 @@ describe 'Burst ->', ->
       expect(burst._defaults.radius).toEqual { 0 : 50 }
       expect(burst._defaults.radiusX).toEqual null
       expect(burst._defaults.radiusY).toEqual null
+      expect(burst._defaults.easing).toEqual 'linear.none'
       expect(burst._defaults.isSwirl).toEqual false
+
+  describe '_extendDefaults method ->', ->
+    it 'should call _removeTweenProperties method', ->
+      b = new Burst
+      spyOn b, '_removeTweenProperties'
+      b._extendDefaults()
+      expect(b._removeTweenProperties).toHaveBeenCalledWith b._o
+
+    it 'should call super', ->
+      burst = new Burst
+      spyOn mojs.Module::, '_extendDefaults'
+      burst._extendDefaults()
+      expect(mojs.Module::_extendDefaults).toHaveBeenCalled()
 
   describe '_render method ->', ->
     it 'should create master swirl', ->
@@ -383,440 +397,6 @@ describe 'Burst ->', ->
       burst._vars()
       expect(burst._bufferTimeline instanceof mojs.Timeline).toBe true
 
-  # describe 'initialization ->', ->
-  #   it 'should have _defaults', ->
-  #     b = new Burst
-  #     s = new Swirl
-  #     # delete b._defaults.childOptions
-  #     delete b._defaults.count
-  #     delete b._defaults.degree
-  #     b._defaults.radius = s._defaults.radius
-  #     expect(b._defaults).toEqual s._defaults
-  #   # it 'should have childOptions', ->
-  #   #   b = new Burst
-  #   #   expect(b._defaults.childOptions).toBe null
-  #   it 'should add Burts properties' , ->
-  #     b = new Burst
-  #     expect(b._defaults.degree).toBe 360
-  #     expect(b._defaults.count).toBe 5
-  #   it 'should have _childDefaults', ->
-  #     b = new Burst
-  #     s = new Swirl
-
-  #     for key, value of h.tweenOptionMap
-  #       delete b._childDefaults[key]
-  #     for key, value of h.callbacksMap
-  #       delete b._childDefaults[key]
-
-  #     b._childDefaults.isSwirl = true
-  #     expect(b._childDefaults).toEqual s._defaults
-
-  #   it 'should modify isSwirl', ->
-  #     b = new Burst
-  #     s = new Swirl
-  #     expect(b._childDefaults.isSwirl).toBe false
-
-  #   it 'should add tween options to _childDefaults', ->
-  #     b = new Burst
-
-  #     for key, value of h.tweenOptionMap
-  #       expect(b._childDefaults[key]).toBe null
-  #     for key, value of h.callbacksMap
-  #       expect(b._childDefaults[key]).toBe null
-
-  #   # old
-  #   # it 'should have _optionsIntersection', ->
-  #   #   b = new Burst
-  #   #   s = new Swirl
-  #   #   expect(b._optionsIntersection['radius']) .toBe 1
-  #   #   expect(b._optionsIntersection['radiusX']).toBe 1
-  #   #   expect(b._optionsIntersection['radiusY']).toBe 1
-  #   #   expect(b._optionsIntersection['angle'])  .toBe 1
-  #   #   expect(b._optionsIntersection['opacity']).toBe 1
-  #   #   expect(b._optionsIntersection['scale']).toBe 1
-
-  #   it 'should add unitTimeline to the _skipPropsDelta', ->
-  #     b = new Burst
-  #     expect(b._skipPropsDelta.unitTimeline).toBeDefined()
-
-  # describe '_createBit method ->', ->
-  #   it 'should create _swirls array', ->
-  #     b = new Burst
-  #     b._createBit()
-  #     expect(b._swirls.length).toBe b._props.count
-  #   it 'should pass index to the swirls', ->
-  #     b = new Burst
-  #     b._createBit()
-  #     expect(b._swirls[0]._o.index).toBe 0
-  #     expect(b._swirls[1]._o.index).toBe 1
-  #     expect(b._swirls[2]._o.index).toBe 2
-  #     expect(b._swirls[3]._o.index).toBe 3
-  #     expect(b._swirls[4]._o.index).toBe 4
-  #   # probably not
-  #   # it 'should pass isTimelineLess option to the swirls', ->
-  #   #   b = new Burst
-  #   #   b._createBit()
-  #   #   expect(b._swirls[0]._o.isTimelineLess).toBe true
-  #   #   expect(b._swirls[1]._o.isTimelineLess).toBe true
-  #   #   expect(b._swirls[2]._o.isTimelineLess).toBe true
-  #   #   expect(b._swirls[3]._o.isTimelineLess).toBe true
-  #   #   expect(b._swirls[4]._o.isTimelineLess).toBe true
-  #   it 'should pass options to swirls', ->
-  #     b = new Burst
-  #     b._createBit()
-  #     options0 = b._getOption 0
-  #     delete options0.callbacksContext
-  #     for key of options0
-  #       expect(b._swirls[0]._o[key]).toEqual options0[key]
-  #     options1 = b._getOption 1
-  #     delete options1.callbacksContext
-  #     for key of options1
-  #       expect(b._swirls[1]._o[key]).toEqual options1[key]
-  #     options2 = b._getOption 2
-  #     delete options2.callbacksContext
-  #     for key of options2
-  #       expect(b._swirls[2]._o[key]).toEqual options2[key]
-
-  # describe '_getOption method ->', ->
-  #   it 'should return an option obj based on i ->', ->
-  #     burst = new Burst
-  #       childOptions: radius: [ { 20: 50}, 20, '500' ]
-  #     option0 = burst._getOption 0
-  #     option1 = burst._getOption 1
-  #     option7 = burst._getOption 7
-  #     expect(option0.radius[20]).toBe 50
-  #     expect(option1.radius)    .toBe 20
-  #     expect(option7.radius)    .toBe 20
-  #   it 'should try to fallback to childDefaiults first ->', ->
-  #     burst = new Burst
-  #       duration: 2000
-  #       childOptions: radius: [ 200, null, '500' ]
-  #     option0 = burst._getOption 0
-  #     option1 = burst._getOption 1
-  #     option7 = burst._getOption 7
-  #     option8 = burst._getOption 8
-  #     expect(option0.radius)   .toBe 200
-  #     expect(option1.radius[5]).toBe 0
-  #     expect(option7.radius[5]).toBe 0
-  #     expect(option8.radius)   .toBe '500'
-  #   # old
-  #   # it 'should fallback to parent prop if defined  ->', ->
-  #   #   burst = new Burst
-  #   #     fill: 2000
-  #   #     childOptions: fill: [ 200, null, '500' ]
-  #   #   option0 = burst._getOption 0
-  #   #   option1 = burst._getOption 1
-  #   #   option7 = burst._getOption 7
-  #   #   option8 = burst._getOption 8
-  #   #   expect(option0.fill).toBe 200
-  #   #   expect(option1.fill).toBe 2000
-  #   #   expect(option7.fill).toBe 2000
-  #   #   expect(option8.fill).toBe '500'
-  #   # old
-  #   # it 'should fallback to parent default ->', ->
-  #   #   burst = new Burst
-  #   #     childOptions: fill: [ 200, null, '500' ]
-  #   #   option0 = burst._getOption 0
-  #   #   option1 = burst._getOption 1
-  #   #   option7 = burst._getOption 7
-  #   #   option8 = burst._getOption 8
-  #   #   expect(option0.fill).toBe 200
-  #   #   expect(option1.fill).toBe 'deeppink'
-  #   #   expect(option7.fill).toBe 'deeppink'
-  #   #   expect(option8.fill).toBe '500'
-  #   # old
-  #   # it 'should have all the props filled ->', ->
-  #   #   burst = new Burst
-  #   #     childOptions: duration: [ 200, null, '500' ]
-  #   #   option0 = burst._getOption 0
-  #   #   option1 = burst._getOption 1
-  #   #   option7 = burst._getOption 7
-  #   #   option8 = burst._getOption 8
-  #   #   expect(option0.radius[5]).toBe 0
-  #   #   expect(option1.radius[5]).toBe 0
-  #   #   expect(option7.radius[5]).toBe 0
-  #   #   expect(option8.radius[5]).toBe 0
-  #   it 'should have parent only options ->', ->
-  #     burst = new Burst
-  #       radius: { 'rand(10,20)': 100 }
-  #       angle: {50: 0}
-  #     option0 = burst._getOption 0
-  #     expect(option0.radius[5]) .toBe 0
-  #     expect(option0.angle)     .toBe 90
-
-  #   it 'should parse stagger ->', ->
-  #     burst = new Burst
-  #       radius: { 0: 100 }
-  #       count:  2,
-  #       childOptions: {
-  #         angle: 'stagger(20, 40)'
-  #       }
-
-  #     option0 = burst._getOption 0
-  #     option1 = burst._getOption 1
-  #     expect(option0.angle).toBe 90 + (20)
-  #     expect(option1.angle).toBe 270 + (20 + 40)
-
-  #   it 'should parse rand ->', ->
-  #     burst = new Burst
-  #       radius: { 0: 100 }
-  #       count:  2,
-  #       childOptions: {
-  #         angle: 'rand(20, 40)'
-  #       }
-
-  #     option0 = burst._getOption 0
-  #     option1 = burst._getOption 1
-  #     expect(option0.angle).toBeGreaterThan 90 + (20)
-  #     expect(option1.angle).not.toBeGreaterThan 270 + (20 + 40)
-
-  # describe '_calcSize method ->', ->
-  #   it 'should calc set size to 2', ->
-  #     bs = new Burst
-  #     expect(bs._props.size).toBe 2
-  #     expect(bs._props.center).toBe 1
-  #   it 'should recieve size', ->
-  #     bs = new Burst size: 40
-  #     expect(bs._props.size).toBe 40
-  #     expect(bs._props.center).toBe 20
-  # describe '_draw method ->', ->
-  #   it 'should call _drawEl method ->', ->
-  #     bs = new Burst
-  #     spyOn bs, '_drawEl'
-  #     bs._draw()
-  #     expect(bs._drawEl).toHaveBeenCalled()
-
-  # describe '_transformTweenOptions method ->', ->
-  #   it 'should call _applyCallbackOverrides with _o.timeline', ->
-  #     tr = new Burst timeline: { delay: 200 }
-  #     spyOn(tr, '_applyCallbackOverrides').and.callThrough()
-  #     tr._transformTweenOptions()
-  #     expect(tr._applyCallbackOverrides).toHaveBeenCalledWith tr._o.unitTimeline
-  #   it 'should fallback to an empty `timeline options` object on _o', ->
-  #     tr = new Burst
-  #     expect(tr._o.unitTimeline).toBeDefined()
-
-  #   it 'should add `this` as callbacksContext to the unitTimeline', ->
-  #     b = new Burst
-  #     expect(b.unitTimeline._o.callbacksContext).toBe b
-
-  # describe '_makeTimeline method ->', ->
-  #   it 'should create unitTimeline', ->
-  #     bs = new Burst
-  #     opts = bs._o.unitTimeline
-  #     bs._makeTimeline()
-  #     expect(bs.unitTimeline instanceof mojs.Timeline).toBe true
-  #     expect(bs.unitTimeline._o).toBe opts
-
-  #   it 'should add swirls to the unitTimeline', ->
-  #     bs = new Burst
-  #     bs.unitTimeline._timelines.length = 0
-  #     bs._makeTimeline()
-  #     expect(bs.unitTimeline._timelines.length).toBe bs._defaults.count
-
-  #   describe 'if !wasTimelineLess ->', ->
-  #     it 'should call super _makeTimeline', ->
-  #       bs = new Burst
-  #       spyOn Burst.prototype, '_makeTimeline'
-  #       bs._makeTimeline()
-  #       expect(Burst.prototype._makeTimeline).toHaveBeenCalled()
-
-  #     it 'should add unitTimeline', ->
-  #       bs = new Burst
-  #       bs._makeTimeline()
-  #       expect(bs.timeline._timelines[0]).toBe bs.unitTimeline
-
-  #   describe 'if wasTimelineLess ->', ->
-  #     it 'should set unitTimeline as timeline', ->
-  #       bs = new Burst
-  #       bs._o.wasTimelineLess = true
-  #       bs._makeTimeline()
-  #       expect(bs.timeline).toBe bs.unitTimeline
-
-  #   it 'should reset _o.timeline object', ->
-  #     bs = new Burst timeline: { delay: 400 }
-  #     bs.timeline._timelines.length = 0
-  #     bs._makeTimeline()
-  #     expect(bs._o.timeline).toBe null
-
-  #   # it 'should reset _o.unitTimeline object', ->
-  #   #   bs = new Burst unitTimeline: { delay: 400 }
-  #   #   bs._makeTimeline()
-  #   #   expect(bs._o.unitTimeline).tooBe null
-
-  # describe '_extendDefaults method ->', ->
-  #   it 'should call super', ->
-  #     b = new Burst
-  #     spyOn Swirl.prototype, '_extendDefaults'
-  #     b._extendDefaults()
-  #     expect(Swirl.prototype._extendDefaults)
-  #       .toHaveBeenCalled()
-
-  #   it 'should call _calcSize', ->
-  #     b = new Burst
-  #     spyOn b, '_calcSize'
-  #     b._extendDefaults()
-  #     expect(b._calcSize).toHaveBeenCalled()
-
-  # # describe '_tuneSubModules method ->', ->
-  # #   it 'should call super', ->
-  # #     b = new Burst
-  # #     spyOn Tunable.prototype, '_tuneSubModules'
-  # #     b._tuneSubModules()
-  # #     expect(Tunable.prototype._tuneSubModules)
-  # #       .toHaveBeenCalled()
-  # #   it 'should call _tuneNewOptions on each swirl', ->
-  # #     b = new Burst count: 2
-  # #     spyOn b._swirls[0], '_tuneNewOptions'
-  # #     spyOn b._swirls[1], '_tuneNewOptions'
-  # #     spyOn b, '_resetTween'
-  # #     b._tuneSubModules()
-  # #     expect(b._swirls[0]._tuneNewOptions.calls.first().args[0])
-  # #       .toEqual b._getOption(0)
-  # #     expect(b._swirls[1]._tuneNewOptions.calls.first().args[0])
-  # #       .toEqual b._getOption(1)
-
-  # #     expect(b._resetTween.calls.argsFor(0)[0]).toBe b._swirls[0].tween
-  # #     expect(b._resetTween.calls.argsFor(0)[1]).toEqual b._getOption(0)
-
-  # #     expect(b._resetTween.calls.argsFor(1)[0]).toBe b._swirls[1].tween
-  # #     expect(b._resetTween.calls.argsFor(1)[1]).toEqual b._getOption(1)
-
-  # #     expect(b._resetTween.calls.count()).toBe 2
-
-  # #   it 'should set prop on timeline', ->
-  # #     isCalled = null
-  # #     b = new Burst count: 2
-  # #     timelineOpts = { onComplete: null }
-  # #     b._o.timeline = timelineOpts
-  # #     spyOn b.timeline, '_setProp'
-  # #     b._tuneSubModules()
-  # #     expect(b.timeline._setProp).toHaveBeenCalledWith timelineOpts
-
-  # #   it 'should not set prop on timeline if no object', ->
-  # #     isCalled = null
-  # #     b = new Burst count: 2
-  # #     timelineOpts = { onComplete: null }
-  # #     spyOn b.timeline, '_setProp'
-  # #     b._tuneSubModules()
-  # #     expect(b.timeline._setProp).not.toHaveBeenCalled()
-
-  # #   it 'should call _recalcTotalDuration on timeline', ->
-  # #     b = new Burst count: 2
-  # #     spyOn b.timeline, '_recalcTotalDuration'
-  # #     b._tuneSubModules()
-  # #     expect(b.timeline._recalcTotalDuration.calls.count()).toBe 1
-
-  # describe '_resetMergedFlags method', ->
-  #   it 'should call the super method', ->
-  #     b = new Burst count: 2
-
-  #     spyOn Thenable.prototype, '_resetMergedFlags'
-  #     obj = {}
-  #     b._resetMergedFlags(obj)
-  #     expect(Thenable.prototype._resetMergedFlags).toHaveBeenCalledWith obj
-
-  #   it 'should return the same object back', ->
-  #     b = new Burst count: 2
-
-  #     obj = {}
-  #     expect(b._resetMergedFlags(obj)).toBe obj
-
-  #   it 'should set isTimelineLess option to false', ->
-  #     b = new Burst count: 2
-
-  #     obj = {}
-  #     expect(b._resetMergedFlags(obj).isTimelineLess).toBe false
-
-  #   it 'should save the isTimelineLess flag option to false', ->
-  #     b = new Burst count: 2
-
-  #     obj = {}
-  #     expect(b._resetMergedFlags(obj).wasTimelineLess).toBe true
-  #     expect(b._resetMergedFlags(obj).isTimelineLess).toBe false
-
-  # # describe '_mergeThenOptions method ->', ->
-  # #   it 'should call super', ->
-  # #     b = new Burst count: 2
-
-  # #     spyOn(Thenable.prototype, '_mergeThenOptions')
-  # #       .and.callThrough()
-  # #     startObj = { fill: 'cyan', childOptions: { fill: 'yellow' } }
-  # #     endObj   = { fill: 'purple', childOptions: { fill: 'black' } }
-  # #     b._mergeThenOptions( startObj, endObj )
-  # #     expect(Thenable.prototype._mergeThenOptions)
-  # #       .toHaveBeenCalledWith startObj, endObj, false
-
-  # #   it 'should call super with childOptions', ->
-  # #     b = new Burst count: 2
-
-  # #     spyOn(Thenable.prototype, '_mergeThenOptions')
-  # #       .and.callThrough()
-  # #     startChildObj = { fill: 'yellow' }
-  # #     endChildObj   = { fill: 'black' }
-  # #     startObj = { fill: 'cyan', childOptions: startChildObj }
-  # #     endObj   = { fill: 'purple', childOptions: endChildObj }
-  # #     b._mergeThenOptions( startObj, endObj )
-  # #     expect(Thenable.prototype._mergeThenOptions)
-  # #       .toHaveBeenCalledWith startChildObj, endChildObj, false
-
-  # #   it 'should fallback to {} for childOptions', ->
-  # #     b = new Burst count: 2
-
-  # #     spyOn(Thenable.prototype, '_mergeThenOptions')
-  # #       .and.callThrough()
-  # #     startChildObj = null
-  # #     endChildObj   = null
-  # #     startObj = { fill: 'cyan', childOptions: startChildObj }
-  # #     endObj   = { fill: 'purple', childOptions: endChildObj }
-  # #     b._mergeThenOptions( startObj, endObj )
-  # #     expect(Thenable.prototype._mergeThenOptions)
-  # #       .toHaveBeenCalledWith {}, {}, false
-
-  # #   it 'should set merged children to parent', ->
-  # #     b = new Burst count: 2
-
-  # #     startChildObj = { fill: 'yellow' }
-  # #     endChildObj   = { fill: 'black' }
-  # #     startObj = { fill: 'cyan', childOptions: startChildObj }
-  # #     endObj   = { fill: 'purple', childOptions: endChildObj }
-      
-  # #     childResult  = Thenable.prototype
-  # #       ._mergeThenOptions.call(b, startChildObj, endChildObj )
-  # #     parentResult = Thenable.prototype
-  # #       ._mergeThenOptions.call(b, startObj, endObj )
-
-  # #     result = b._mergeThenOptions( startObj, endObj )
-
-  # #     parentResult.childOptions = childResult
-
-  # #     expect(result).toEqual parentResult
-
-  # #   it 'should push merged object to history', ->
-  # #     b = new Burst count: 2
-
-  # #     startChildObj = { fill: 'yellow' }
-  # #     endChildObj   = { fill: 'black' }
-  # #     startObj = { fill: 'cyan', childOptions: startChildObj }
-  # #     endObj   = { fill: 'purple', childOptions: endChildObj }
-      
-  # #     result = b._mergeThenOptions( startObj, endObj )
-
-  # #     expect(b._history[1]).toBe result
-
-  # describe '_getThenOption method ->', ->
-  #   it 'should get options from childOptions', ->
-  #     b = new Burst count: 2
-  #     o = { childOptions: { fill: [ 'yellow', 'cyan', 'blue' ] } }
-  #     result = b._getThenOption( o, 1 )
-  #     expect(result.fill).toBe 'cyan'
-
-  #   it 'should not throw if there is no childOptions', ->
-  #     b = new Burst count: 2
-  #     o = { }
-  #     result = b._getThenOption( o, 1 )
-  #     expect(result).toEqual {}
-
   describe '_recalcModulesTime method', ->
     it 'should set duration on every moddules tween', ->
       b = new Burst(fill: 'cyan').then('fill': 'yellow')
@@ -915,6 +495,13 @@ describe 'Burst ->', ->
     it 'should return this', ->
       b = new Burst count: 2
       expect( b.then({}) ).toBe b
+
+    it 'should call _removeTweenProperties method', ->
+      b = new Burst
+      spyOn b, '_removeTweenProperties'
+      options = { x: 200 }
+      b.then(options)
+      expect(b._removeTweenProperties).toHaveBeenCalledWith options
 
     it 'should call _masterThen method', ->
       b = new Burst count: 2
@@ -1099,42 +686,26 @@ describe 'Burst ->', ->
       b.tune(options)
       expect(b._recalcModulesTime).toHaveBeenCalled()
 
+  describe '_removeTweenProperties method ->', ->
+    it 'should remove all tween props from passed object', ->
+      b = new Burst
+      o = {}
+      for key of h.tweenOptionMap
+        o[key] = 1
 
-  #   it 'should create swirless master Burst', ->
-  #     b = new Burst count: 2
-  
-  #     b.then({ childOptions: { radius: [ 10, 20 ] } })
+      for key of b._defaults
+        o[key] = 1
 
-  #     expect(b._modules[1] instanceof Burst).toBe true
-  #     expect(b._modules[1]._o.count).toBe 0
+      b._removeTweenProperties(o)
 
-  #   it 'should pass the swirlLess Burst to swirls', ->
-  #     b = new Burst count: 2
-  
-  #     b.then({ childOptions: { radius: [ 10, 20 ] } })
+      for key of h.tweenOptionMap
+        if key isnt 'easing'
+          expect(o[key]).not.toBeDefined()
+      
+      expect(o['easing']).toBe 1
 
-  #     expect(b._swirls[1]._modules[1]._o.parent).toBe b._modules[1].el
-
-  #   it 'should pass merged options to the master busrt', ->
-  #     b = new Burst(count: 2, opacity: { 0: 1 } )
-        
-  #       .then({ opacity: 0, childOptions: { radius: [ 10, 20 ] } })
-
-  #     expect(b._modules[1]._o.opacity[1]).toBe 0
-
-  #   it 'should set duration prop on master Burst', ->
-  #     b = new Burst(count: 2, opacity: { 0: 1 } )
-  #       .then({
-  #         opacity: 0,
-  #         childOptions: { duration: 'stagger(100, 200)', radius: [ 10, 20 ] }
-  #       })
-
-  #     expect(b._modules[1].timeline._props.duration).toBe 300
-
-
-
-
-
+      for key of b._defaults
+        expect(o[key]).toBe 1
 
 
 

@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.214.0', isDebug: true, helpers: h,
+  revision:   '0.214.1', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -39,6 +39,12 @@ window.mojs = {
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
+
+// rangeSliderEl.addEventListener('input', function () {
+//   tr.setProgress( rangeSliderEl.value/1000 );
+// });
+
+
 
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {

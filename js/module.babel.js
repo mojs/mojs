@@ -176,6 +176,7 @@ class Module {
   /*
     Method to copy `_o` options to `_props` object
     with fallback to `_defaults`.
+    @private
   */
   _extendDefaults ( ) {
     this._props  = {};

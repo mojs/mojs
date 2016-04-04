@@ -21,6 +21,8 @@ class Burst extends Tunable {
       radiusX:  null,
       /* ∆ :: [number > 0] :: Y radius of the Burst. */
       radiusY:  null,
+      /* [string] :: Easing for the main module (not children). */
+      easing:  'linear.none',
       /* [boolean] :: If Burst itself should follow sinusoidal path. */
       isSwirl:  false
     }
@@ -33,6 +35,9 @@ class Burst extends Tunable {
     @returns  {Object} this.
   */
   then ( o ) {
+    // remove tween properties (not callbacks)
+    this._removeTweenProperties( o );
+
     var newMaster = this._masterThen( o ),
         newSwirls = this._childThen( o, newMaster );
 
@@ -49,6 +54,8 @@ class Burst extends Tunable {
   */
   tune (o) {
     if ( o == null ) { return this; }
+    // remove tween options (not callbacks)
+    this._removeTweenProperties( o );
     // tune _props
     this._tuneNewOptions( o );
     // tune master swirl
@@ -64,6 +71,32 @@ class Burst extends Tunable {
   // ^ PUBLIC  METHODS ^
   // v PRIVATE METHODS v
 
+  /*
+    Method to copy `_o` options to `_props` object
+    with fallback to `_defaults`.
+    @private
+    @overrides @ Module
+  */
+  _extendDefaults () {
+    // remove tween properties (not callbacks)
+    this._removeTweenProperties( this._o );
+    super._extendDefaults();
+  }
+  /*
+    Method to remove all tween (excluding
+    callbacks) props from object.
+    @private
+    @param {Object} Object which should be cleaned
+                    up from tween properties.
+  */
+  _removeTweenProperties ( o ) {
+    for (var key in h.tweenOptionMap) {
+      // remove all items that are not declared in _defaults
+      if ( this._defaults[key] == null ) {
+        delete o[key];
+      }
+    }
+  }
   /*
     Method to recalc modules chain tween
     times after tuning new options.

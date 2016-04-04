@@ -1282,6 +1282,8 @@
 	        radiusX: null,
 	        /* ∆ :: [number > 0] :: Y radius of the Burst. */
 	        radiusY: null,
+	        /* [string] :: Easing for the main module (not children). */
+	        easing: 'linear.none',
 	        /* [boolean] :: If Burst itself should follow sinusoidal path. */
 	        isSwirl: false
 	      };
@@ -1297,6 +1299,9 @@
 	  }, {
 	    key: 'then',
 	    value: function then(o) {
+	      // remove tween properties (not callbacks)
+	      this._removeTweenProperties(o);
+
 	      var newMaster = this._masterThen(o),
 	          newSwirls = this._childThen(o, newMaster);
 
@@ -1318,6 +1323,8 @@
 	      if (o == null) {
 	        return this;
 	      }
+	      // remove tween options (not callbacks)
+	      this._removeTweenProperties(o);
 	      // tune _props
 	      this._tuneNewOptions(o);
 	      // tune master swirl
@@ -1332,6 +1339,38 @@
 	    // ^ PUBLIC  METHODS ^
 	    // v PRIVATE METHODS v
 
+	    /*
+	      Method to copy `_o` options to `_props` object
+	      with fallback to `_defaults`.
+	      @private
+	      @overrides @ Module
+	    */
+
+	  }, {
+	    key: '_extendDefaults',
+	    value: function _extendDefaults() {
+	      // remove tween properties (not callbacks)
+	      this._removeTweenProperties(this._o);
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_extendDefaults', this).call(this);
+	    }
+	    /*
+	      Method to remove all tween (excluding
+	      callbacks) props from object.
+	      @private
+	      @param {Object} Object which should be cleaned
+	                      up from tween properties.
+	    */
+
+	  }, {
+	    key: '_removeTweenProperties',
+	    value: function _removeTweenProperties(o) {
+	      for (var key in _h2.default.tweenOptionMap) {
+	        // remove all items that are not declared in _defaults
+	        if (this._defaults[key] == null) {
+	          delete o[key];
+	        }
+	      }
+	    }
 	    /*
 	      Method to recalc modules chain tween
 	      times after tuning new options.
@@ -4530,6 +4569,7 @@
 	    /*
 	      Method to copy `_o` options to `_props` object
 	      with fallback to `_defaults`.
+	      @private
 	    */
 
 	  }, {
@@ -7970,7 +8010,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.214.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.214.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7992,6 +8032,10 @@
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
+
+	// rangeSliderEl.addEventListener('input', function () {
+	//   tr.setProgress( rangeSliderEl.value/1000 );
+	// });
 
 	// ### istanbul ignore next ###
 	if (true) {
