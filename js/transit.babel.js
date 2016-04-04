@@ -114,6 +114,8 @@ class Transit extends Tunable {
         this.ctx.style.position = 'absolute';
         this.ctx.style.width    = '100%';
         this.ctx.style.height   = '100%';
+        this.ctx.style.left     = '0';
+        this.ctx.style.top      = '0';
         this.el = document.createElement('div');
         this.el.appendChild(this.ctx);
         this._createBit();

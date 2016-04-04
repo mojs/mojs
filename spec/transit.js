@@ -488,7 +488,9 @@
         svg = byte.el.firstChild;
         expect(svg.style.position).toBe('absolute');
         expect(svg.style.width).toBe('100%');
-        return expect(svg.style.height).toBe('100%');
+        expect(svg.style.height).toBe('100%');
+        expect(svg.style.left).toBe('0px');
+        return expect(svg.style.top).toBe('0px');
       });
       it('should not create context and el if context was passed', function() {
         var byte;

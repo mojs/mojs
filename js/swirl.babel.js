@@ -65,8 +65,7 @@ class Swirl extends Transit {
     @private
   */
   _calcPosData () {
-    var p     = this._props,
-        x     = this._getPosValue('x'),
+    var x     = this._getPosValue('x'),
         y     = this._getPosValue('y'),
         angle = (90 + Math.atan((y.delta/x.delta) || 0)*h.RAD_TO_DEG);
 
@@ -84,10 +83,9 @@ class Swirl extends Transit {
     @param {String} Name of the property.
   */
   _getPosValue (name) {
-    if ( this._deltas[name] ) {
-      var delta = this._deltas[name];
+    var delta = this._deltas[name];
+    if ( delta ) {
       // delete from deltas to prevent normal
-      // deltas calculation for the property
       delete this._deltas[name];
       return {
         start:  delta.start.value,
@@ -109,6 +107,7 @@ class Swirl extends Transit {
   _setProgress ( proc ) {
     this._progress = proc;
     this._calcCurrentProps(proc);
+    
     this._calcSwirlXY( proc );
 
     this._calcOrigin();

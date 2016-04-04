@@ -312,6 +312,8 @@ describe 'Transit ->', ->
       expect(svg.style.position)                .toBe 'absolute'
       expect(svg.style.width)                   .toBe '100%'
       expect(svg.style.height)                  .toBe '100%'
+      expect(svg.style.left)                    .toBe '0px'
+      expect(svg.style.top)                     .toBe '0px'
     it 'should not create context and el if context was passed', ->
       svg.isSvg = true
       byte = new Byte ctx: svg
