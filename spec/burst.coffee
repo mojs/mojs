@@ -700,6 +700,20 @@ describe 'Burst ->', ->
       b.tune(options)
       expect(b._recalcModulesTime).toHaveBeenCalled()
 
+    it 'should call _saveTimelineOptions method', ->
+      b = new Burst
+      spyOn b, '_saveTimelineOptions'
+      options = { x: 200 }
+      b.tune(options)
+      expect(b._saveTimelineOptions).toHaveBeenCalledWith options
+
+    it 'should set new options on timeline', ->
+      b = new Burst
+      spyOn b.timeline, '_setProp'
+      options = { x: 200 }
+      b.tune(options)
+      expect(b.timeline._setProp).toHaveBeenCalledWith b._timelineOptions
+
   describe '_removeTweenProperties method ->', ->
     it 'should remove all tween props from passed object', ->
       b = new Burst
@@ -722,7 +736,7 @@ describe 'Burst ->', ->
         expect(o[key]).toBe 1
 
   describe '_saveTimelineOptions method ->', ->
-    it 'should save timelone options to _timelineOptions', ->
+    it 'should save timeline options to _timelineOptions', ->
       b = new Burst
       timeline = {}
       opts = { timeline: timeline }
@@ -730,6 +744,12 @@ describe 'Burst ->', ->
       expect( b._timelineOptions ).toBe timeline
       expect( opts.timeline ).not.toBeDefined()
 
+    # nope
+    # it 'should set _timelineOptions to null first', ->
+    #   b = new Burst
+    #   opts = { }
+    #   b._saveTimelineOptions opts
+    #   expect( b._timelineOptions ).toBe null
 
 
 

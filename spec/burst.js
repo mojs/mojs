@@ -960,7 +960,7 @@
         expect(b._addBurstProperties).toHaveBeenCalledWith({}, 3);
         return expect(b._addBurstProperties).toHaveBeenCalledWith({}, 4);
       });
-      return it('should call _recalcModulesTime method', function() {
+      it('should call _recalcModulesTime method', function() {
         var b, options;
         b = new Burst;
         spyOn(b, '_recalcModulesTime');
@@ -969,6 +969,26 @@
         };
         b.tune(options);
         return expect(b._recalcModulesTime).toHaveBeenCalled();
+      });
+      it('should call _saveTimelineOptions method', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b, '_saveTimelineOptions');
+        options = {
+          x: 200
+        };
+        b.tune(options);
+        return expect(b._saveTimelineOptions).toHaveBeenCalledWith(options);
+      });
+      return it('should set new options on timeline', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b.timeline, '_setProp');
+        options = {
+          x: 200
+        };
+        b.tune(options);
+        return expect(b.timeline._setProp).toHaveBeenCalledWith(b._timelineOptions);
       });
     });
     describe('_removeTweenProperties method ->', function() {
@@ -997,7 +1017,7 @@
       });
     });
     return describe('_saveTimelineOptions method ->', function() {
-      return it('should save timelone options to _timelineOptions', function() {
+      return it('should save timeline options to _timelineOptions', function() {
         var b, opts, timeline;
         b = new Burst;
         timeline = {};

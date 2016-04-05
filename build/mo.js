@@ -1314,6 +1314,12 @@
 	      if (o == null) {
 	        return this;
 	      }
+	      // save timeline options to _timelineOptions
+	      // and delete the timeline options on o
+	      // cuz masterSwirl should not get them
+	      this._saveTimelineOptions(o);
+	      // add new timeline properties to timeline
+	      this.timeline._setProp(this._timelineOptions);
 	      // remove tween options (not callbacks)
 	      this._removeTweenProperties(o);
 	      // tune _props
@@ -8019,7 +8025,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.214.5', isDebug: true, helpers: _h2.default,
+	  revision: '0.214.6', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8027,7 +8033,6 @@
 
 	// TODO:
 	/*
-	  timeline: {} for transit and burst after tune
 	  show/hide prev module in then chains (Transit)
 	  callbacksContext for the masterSwirl
 	  add onPlaybackStart, onPlaybackStop,

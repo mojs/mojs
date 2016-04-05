@@ -54,6 +54,12 @@ class Burst extends Tunable {
   */
   tune (o) {
     if ( o == null ) { return this; }
+    // save timeline options to _timelineOptions
+    // and delete the timeline options on o
+    // cuz masterSwirl should not get them
+    this._saveTimelineOptions( o );
+    // add new timeline properties to timeline
+    this.timeline._setProp( this._timelineOptions );
     // remove tween options (not callbacks)
     this._removeTweenProperties( o );
     // tune _props
@@ -66,7 +72,6 @@ class Burst extends Tunable {
     this._recalcModulesTime();
     return this;
   }
-
 
   // ^ PUBLIC  METHODS ^
   // v PRIVATE METHODS v
