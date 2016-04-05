@@ -4294,6 +4294,7 @@
 	        shift += prevTween ? prevTween._props.repeatTime : 0;
 	        this._resetTween(tween, this._history[i], shift);
 	      }
+	      this.timeline._setProp(this._props.timeline);
 	      this.timeline._recalcTotalDuration();
 	    }
 	    /*
@@ -8018,7 +8019,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.214.4', isDebug: true, helpers: _h2.default,
+	  revision: '0.214.5', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default

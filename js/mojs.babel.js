@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.214.4', isDebug: true, helpers: h,
+  revision:   '0.214.5', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -41,10 +41,6 @@ window.mojs = {
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
-
-
-
-
 
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {

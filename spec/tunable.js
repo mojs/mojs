@@ -361,6 +361,19 @@
         shift += tweens[1]._props.repeatTime;
         return expect(tr._resetTween).toHaveBeenCalledWith(tweens[2], tr._history[2], shift);
       });
+      it('should set new props on timeline', function() {
+        var timeline, tr;
+        tr = new Tunable().then({
+          fill: 'cyan'
+        }).then({
+          fill: 'yellow'
+        });
+        timeline = {};
+        tr._props.timeline = timeline;
+        spyOn(tr.timeline, '_setProp');
+        tr._resetTweens();
+        return expect(tr.timeline._setProp).toHaveBeenCalledWith(timeline);
+      });
       return it('should call _recalcTotalDuration on the timeline', function() {
         var tr;
         tr = new Tunable().then({

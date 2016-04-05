@@ -180,6 +180,7 @@ class Tuneable extends Thenable {
       shift += (prevTween) ? prevTween._props.repeatTime : 0;
       this._resetTween( tween, this._history[i], shift );
     }
+    this.timeline._setProp( this._props.timeline );
     this.timeline._recalcTotalDuration();
   }
   /*
