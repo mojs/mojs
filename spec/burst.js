@@ -85,6 +85,12 @@
         burst = new Burst(opts);
         return expect(burst.masterSwirl._o.radius).toBe(0);
       });
+      it('should self as callbacksContext', function() {
+        var burst, opts;
+        opts = {};
+        burst = new Burst(opts);
+        return expect(burst.masterSwirl._o.callbacksContext).toBe(burst);
+      });
       it('should call _saveTimelineOptions method', function() {
         var b, opts;
         opts = {};

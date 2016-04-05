@@ -193,9 +193,10 @@ class Burst extends Tunable {
     Method for initial render of the module.
   */
   _render () {
-    this._o.isWithShape = false;
-    this._o.isSwirl     = this._props.isSwirl;
-    this._o.radius      = 0;
+    this._o.isWithShape      = false;
+    this._o.isSwirl          = this._props.isSwirl;
+    this._o.radius           = 0;
+    this._o.callbacksContext = this;
 
     // save timeline options and remove from _o
     // cuz the master swirl should not get them
