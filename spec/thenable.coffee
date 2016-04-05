@@ -449,6 +449,7 @@ describe 'thenable ->', ->
       th._resetMergedFlags(obj)
       expect(obj.isTimelineLess)  .toBe true
       expect(obj.isShowStart)     .toBe false
+      expect(obj.isShowEnd)       .toBe false
       expect(obj.callbacksContext).toBe th
 
   describe '_getArrayLength method ->', ->

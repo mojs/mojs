@@ -46,6 +46,8 @@ class Thenable extends Tweenable {
     obj.isTimelineLess = true;
     // reset isShowStart flag for the submodules
     obj.isShowStart    = false;
+    // reset isShowEnd flag for the submodules
+    obj.isShowEnd      = false;
     // set the submodule callbacks context
     obj.callbacksContext = this;
     return obj;

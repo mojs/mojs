@@ -666,6 +666,7 @@
         th._resetMergedFlags(obj);
         expect(obj.isTimelineLess).toBe(true);
         expect(obj.isShowStart).toBe(false);
+        expect(obj.isShowEnd).toBe(false);
         return expect(obj.callbacksContext).toBe(th);
       });
     });
