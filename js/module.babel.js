@@ -14,6 +14,11 @@ class Module {
       strokeDashoffset: 1
     }
 
+    this._skipPropsDelta = {
+      callbacksContext: 1,
+      timeline: 1
+    };
+
     this._declareDefaults();
     this._extendDefaults();
     this._vars();
@@ -218,7 +223,7 @@ class Module {
   */
   _parseOption ( name, value ) {
     // if delta property
-    if ( this._isDelta( value ) && name !== 'callbacksContext' ) {
+    if ( this._isDelta( value ) && !this._skipPropsDelta[name] ) {
       this._getDelta( name, value );
       var deltaEnd = h.getDeltaEnd( value );
       return this._assignProp( name, this._parseProperty( name, deltaEnd ) );

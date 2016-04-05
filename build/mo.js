@@ -1835,7 +1835,7 @@
 
 	// TODO
 	//  - refactor
-	//    - add set if changed to Module
+	//    - add setIfChanged to Module
 	//  --
 	//  - tween for every prop
 
@@ -1907,17 +1907,13 @@
 	        isShowEnd: false,
 	        // // Possible values: [ number > 0 ]
 	        // duration:         400,
+
 	        // Possible values: [ number ]
 	        size: null,
 	        // Possible values: [ number ]
 	        sizeGap: 0,
 	        // context for all the callbacks
 	        callbacksContext: null
-	      };
-	      // properties that will be excluded from delta parsing
-	      this._skipPropsDelta = this._skipPropsDelta || {
-	        callbacksContext: 1,
-	        timeline: 1
 	      };
 	    }
 
@@ -2015,7 +2011,6 @@
 	  }, {
 	    key: '_draw',
 	    value: function _draw() {
-	      // console.time('draw')
 	      this.bit.setProp({
 	        x: this._origin.x,
 	        y: this._origin.y,
@@ -2036,7 +2031,6 @@
 	      });
 	      // transform:            this._calcShapeTransform()
 	      this.bit.draw();this._drawEl();
-	      // console.timeEnd('draw')
 	    }
 	    /*
 	      Method to set current modules props to main div el.
@@ -3912,7 +3906,6 @@
 	      var endKeys = (0, _keys2.default)(end);
 
 	      for (var key in end) {
-
 	        // just copy parent option
 	        if (key == 'parent') {
 	          o[key] = end[key];
@@ -4369,6 +4362,11 @@
 	      strokeDashoffset: 1
 	    };
 
+	    this._skipPropsDelta = {
+	      callbacksContext: 1,
+	      timeline: 1
+	    };
+
 	    this._declareDefaults();
 	    this._extendDefaults();
 	    this._vars();
@@ -4634,7 +4632,7 @@
 	    key: '_parseOption',
 	    value: function _parseOption(name, value) {
 	      // if delta property
-	      if (this._isDelta(value) && name !== 'callbacksContext') {
+	      if (this._isDelta(value) && !this._skipPropsDelta[name]) {
 	        this._getDelta(name, value);
 	        var deltaEnd = _h2.default.getDeltaEnd(value);
 	        return this._assignProp(name, this._parseProperty(name, deltaEnd));
@@ -8020,7 +8018,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.214.3', isDebug: true, helpers: _h2.default,
+	  revision: '0.214.4', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8029,6 +8027,7 @@
 	// TODO:
 	/*
 	  timeline: {} for transit and burst after tune
+	  show/hide prev module in then chains (Transit)
 	  callbacksContext for the masterSwirl
 	  add onPlaybackStart, onPlaybackStop,
 	  onPlaybackFinish methods to support mojs-player
@@ -8043,91 +8042,6 @@
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
-
-	// let speedEl = document.querySelector('#js-speed-slider'),
-	//     timeEl  = document.querySelector('#js-range-slider')
-
-	// var isSet = false;
-	// var sw = new mojs.Tween({
-	//   duration: 10000,
-	//   onComplete: function () {
-	//     setTimeout( function () {
-	//       sw.play();
-	//     }, 1);
-	//   },
-	//   onUpdate: function (p) {
-	//     timeEl.value = p*1000;
-	//   }
-	// }).play();
-
-	// speedEl.addEventListener('input', function () {
-	//   sw._setProp('speed', this.value/1000);
-	// });
-
-	// var sw = new mojs.Transit({
-	//   count: 5,
-	//   left: '50%', top: '50%',
-	//   isShowEnd: 1,
-	//   isShowStart: 1,
-	//   // isSwirl: false,
-	//   radius: { 0: 100 },
-	//   timeline: { delay: 1000 },
-	//   x: {0: 200},
-	//   y: 0,
-	//   angle: 90,
-	//   easing: 'expo.out',
-	//   // childOptions: {
-	//   //   shape: 'cross',
-	//   //   duration: 3000,
-	//   //   isSwirl: 0,
-	//   //   radius: 20,
-	//   //   stroke: ['cyan', 'yellow', 'white'],
-	//   //   angle: { 0: 180 }
-	//   // }
-	// }).then({
-	//   x:      0,
-	//   degree: 180,
-	//   // delay: 2000,
-	//   angle:  0,
-	//   radius: 100,
-	//   childOptions: { radius: 20 }
-	// }).then({
-	//   angle: 180,
-	//   x: 200, y: 200,
-	//   childOptions: { radius: 0 }
-	// });
-
-	// var sw = new mojs.Swirl({
-	//   x: { 0: 200 },
-	//   radius: 5,
-	//   duration: 4000
-	// }).then({
-	//   x: 0
-	// }).then({
-	//   x: 200
-	// });
-
-	// var sw = new mojs.Transit({
-	//   top: '50%', left: '50%',
-	//   x: { 200: 0 },
-	//   isShowEnd: true
-	// }).then({
-	//   x: 100
-	// }).then({
-	//   x: 300, y: -200
-	// });
-
-	// console.log(sw._history[0].isShowEnd)
-	// console.log(sw._history[1].isShowEnd)
-	// console.log(sw._history[2].isShowEnd)
-
-	// var playEl = document.querySelector('#js-play'),
-	//     rangeSliderEl = document.querySelector('#js-range-slider');
-	// document.body.addEventListener('click', function (e) {
-	//   sw
-	//     // .tune({ timeline: {delay: 5000} })
-	//     .replay();
-	// });
 
 	// ### istanbul ignore next ###
 	if (true) {

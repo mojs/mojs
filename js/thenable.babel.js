@@ -120,7 +120,6 @@ class Thenable extends Tweenable {
     var endKeys = Object.keys(end);
 
     for (var key in end) {
-
       // just copy parent option
       if ( key == 'parent' ) {
         o[key] = end[key];

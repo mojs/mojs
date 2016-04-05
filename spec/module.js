@@ -57,6 +57,12 @@
         expect(md._arrayPropertyMap['strokeDasharray']).toBe(1);
         return expect(md._arrayPropertyMap['strokeDashoffset']).toBe(1);
       });
+      it('should create _arrayPropertyMap', function() {
+        var md;
+        md = new Module;
+        expect(md._skipPropsDelta.callbacksContext).toBe(1);
+        return expect(md._skipPropsDelta.timeline).toBe(1);
+      });
       it('should fallback to empty object for _o', function() {
         var md;
         md = new Module;

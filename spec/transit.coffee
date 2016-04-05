@@ -62,11 +62,6 @@ describe 'Transit ->', ->
       expect(byte._defaults.callbacksContext).toBe null
       expect(byte._defaults.sizeGap).toBe          0
 
-    it 'should add callbacksContext to the _skipPropsDelta', ->
-      byte = new Byte
-      expect(byte._skipPropsDelta.callbacksContext).toBeDefined()
-      expect(byte._skipPropsDelta.timeline).toBeDefined()
-
   describe '_applyCallbackOverrides ->', ->
     it 'should create callbackOverrides object on passed object', ->
       tr = new Transit

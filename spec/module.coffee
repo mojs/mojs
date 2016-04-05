@@ -44,6 +44,11 @@ describe 'module class ->', ->
       md = new Module
       expect(md._arrayPropertyMap['strokeDasharray']).toBe 1
       expect(md._arrayPropertyMap['strokeDashoffset']).toBe 1
+    it 'should create _arrayPropertyMap', ->
+      md = new Module
+      expect(md._skipPropsDelta.callbacksContext).toBe 1
+      expect(md._skipPropsDelta.timeline).toBe 1
+
     it 'should fallback to empty object for _o', ->
       md = new Module
 

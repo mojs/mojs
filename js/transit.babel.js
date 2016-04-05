@@ -10,7 +10,7 @@ import Timeline   from './tween/timeline';
 
 // TODO
 //  - refactor
-//    - add set if changed to Module
+//    - add setIfChanged to Module
 //  --
 //  - tween for every prop
 
@@ -72,6 +72,7 @@ class Transit extends Tunable {
       isShowEnd:        false,
       // // Possible values: [ number > 0 ]
       // duration:         400,
+      
       // Possible values: [ number ]
       size:             null,
       // Possible values: [ number ]
@@ -79,12 +80,6 @@ class Transit extends Tunable {
       // context for all the callbacks
       callbacksContext: null,
     }
-    // properties that will be excluded from delta parsing
-    this._skipPropsDelta = this._skipPropsDelta || {
-      callbacksContext:   1,
-      timeline:           1
-    }
-
   }
 
   // ^ PUBLIC  METHOD(S) ^
@@ -161,7 +156,6 @@ class Transit extends Tunable {
     @private
   */
   _draw () {
-    // console.time('draw')
     this.bit.setProp({
       x:                    this._origin.x,
       y:                    this._origin.y,
@@ -182,7 +176,6 @@ class Transit extends Tunable {
       // transform:            this._calcShapeTransform()
     });
     this.bit.draw(); this._drawEl();
-    // console.timeEnd('draw')
   }
   /*
     Method to set current modules props to main div el.
