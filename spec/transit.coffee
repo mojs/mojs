@@ -59,7 +59,7 @@ describe 'Transit ->', ->
       expect(byte._defaults.isShowEnd).toBe        false
       expect(byte._defaults.isShowStart).toBe      false
       expect(byte._defaults.size).toBe             null
-      expect(byte._defaults.callbacksContext).toBe null
+      expect(byte._defaults.callbacksContext).toBe byte
       expect(byte._defaults.sizeGap).toBe          0
 
   describe '_applyCallbackOverrides ->', ->

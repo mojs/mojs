@@ -279,12 +279,13 @@ describe 'module class ->', ->
     it 'should extend defaults object to properties if object was passed', ->
       md = new Module radius: {45: 55}
       expect(md._props.radius).toBe(55)
-    it 'should ignore properties defined in skipProps object', ->
-      md = new Module radius: 45
-      md._skipProps = radius: 1
-      md._o.radius = 50
-      md._extendDefaults()
-      expect(md._props.radius).not.toBe(50)
+    # probably nope
+    # it 'should ignore properties defined in skipProps object', ->
+    #   md = new Module radius: 45
+    #   md._skipProps = radius: 1
+    #   md._o.radius = 50
+    #   md._extendDefaults()
+    #   expect(md._props.radius).not.toBe(50)
     it 'should extend defaults object to properties if array was passed', ->
       array = [50, 100]
       md = new Module radius: array
@@ -348,11 +349,12 @@ describe 'module class ->', ->
       spyOn(md, '_hide').and.callThrough()
       md._tuneNewOptions radius: 20
       expect(md._hide).toHaveBeenCalled()
-    it 'should ignore properties defined in skipProps object', ->
-      md = new Module radius: 45
-      md._skipProps = radius: 1
-      md._tuneNewOptions radius: 20
-      expect(md._props.radius).toBe(45)
+    # probably nope
+    # it 'should ignore properties defined in skipProps object', ->
+    #   md = new Module radius: 45
+    #   md._skipProps = radius: 1
+    #   md._tuneNewOptions radius: 20
+    #   expect(md._props.radius).toBe(45)
     it 'should extend defaults object to properties if array was passed', ->
       md = new Module radius: 50
       md._tuneNewOptions 'radius': [50, 100]

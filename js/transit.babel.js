@@ -72,13 +72,12 @@ class Transit extends Tunable {
       isShowEnd:        false,
       // // Possible values: [ number > 0 ]
       // duration:         400,
-      
       // Possible values: [ number ]
       size:             null,
       // Possible values: [ number ]
       sizeGap:          0,
       // context for all the callbacks
-      callbacksContext: null,
+      callbacksContext: this,
     }
   }
 
@@ -229,9 +228,6 @@ class Transit extends Tunable {
     // return if empty object
     if ( !((o != null) && Object.keys(o).length) ) { return 1; }
 
-    // this.tween._setProp(o);
-    // this.timeline && this.timeline._recalcTotalDuration && this.timeline._recalcTotalDuration();
-    
     this._calcSize();
     this._setElStyles();
   }

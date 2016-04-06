@@ -113,9 +113,7 @@ class Swirl extends Transit {
   _setProgress ( proc ) {
     this._progress = proc;
     this._calcCurrentProps(proc);
-    
     this._calcSwirlXY( proc );
-
     this._calcOrigin();
     this._draw(proc);
   }

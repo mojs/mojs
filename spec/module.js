@@ -414,18 +414,6 @@
         });
         return expect(md._props.radius).toBe(55);
       });
-      it('should ignore properties defined in skipProps object', function() {
-        var md;
-        md = new Module({
-          radius: 45
-        });
-        md._skipProps = {
-          radius: 1
-        };
-        md._o.radius = 50;
-        md._extendDefaults();
-        return expect(md._props.radius).not.toBe(50);
-      });
       it('should extend defaults object to properties if array was passed', function() {
         var array, md;
         array = [50, 100];
@@ -551,19 +539,6 @@
           radius: 20
         });
         return expect(md._hide).toHaveBeenCalled();
-      });
-      it('should ignore properties defined in skipProps object', function() {
-        var md;
-        md = new Module({
-          radius: 45
-        });
-        md._skipProps = {
-          radius: 1
-        };
-        md._tuneNewOptions({
-          radius: 20
-        });
-        return expect(md._props.radius).toBe(45);
       });
       it('should extend defaults object to properties if array was passed', function() {
         var md;

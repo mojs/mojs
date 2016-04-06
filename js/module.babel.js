@@ -188,7 +188,7 @@ class Module {
     this._deltas = {};
     for (var key in this._defaults) {
       // skip property if it is listed in _skipProps
-      if (this._skipProps && this._skipProps[key]) { continue; }
+      // if (this._skipProps && this._skipProps[key]) { continue; }
       // copy the properties to the _o object
       var value = ( this._o[key] != null ) ? this._o[key] : this._defaults[key];
       // parse option
@@ -206,7 +206,7 @@ class Module {
     this._hide();
     for (var key in o) {
       // skip property if it is listed in _skipProps
-      if (this._skipProps && this._skipProps[key]) { continue; }
+      // if (this._skipProps && this._skipProps[key]) { continue; }
       // copy the properties to the _o object
       // delete the key from deltas
       o && (delete this._deltas[key]);

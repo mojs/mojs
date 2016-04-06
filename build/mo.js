@@ -1914,13 +1914,12 @@
 	        isShowEnd: false,
 	        // // Possible values: [ number > 0 ]
 	        // duration:         400,
-
 	        // Possible values: [ number ]
 	        size: null,
 	        // Possible values: [ number ]
 	        sizeGap: 0,
 	        // context for all the callbacks
-	        callbacksContext: null
+	        callbacksContext: this
 	      };
 	    }
 
@@ -2110,9 +2109,6 @@
 	      if (!(o != null && (0, _keys2.default)(o).length)) {
 	        return 1;
 	      }
-
-	      // this.tween._setProp(o);
-	      // this.timeline && this.timeline._recalcTotalDuration && this.timeline._recalcTotalDuration();
 
 	      this._calcSize();
 	      this._setElStyles();
@@ -2491,9 +2487,7 @@
 	    value: function _setProgress(proc) {
 	      this._progress = proc;
 	      this._calcCurrentProps(proc);
-
 	      this._calcSwirlXY(proc);
-
 	      this._calcOrigin();
 	      this._draw(proc);
 	    }
@@ -4595,9 +4589,7 @@
 	      this._deltas = {};
 	      for (var key in this._defaults) {
 	        // skip property if it is listed in _skipProps
-	        if (this._skipProps && this._skipProps[key]) {
-	          continue;
-	        }
+	        // if (this._skipProps && this._skipProps[key]) { continue; }
 	        // copy the properties to the _o object
 	        var value = this._o[key] != null ? this._o[key] : this._defaults[key];
 	        // parse option
@@ -4618,9 +4610,7 @@
 	      this._hide();
 	      for (var key in o) {
 	        // skip property if it is listed in _skipProps
-	        if (this._skipProps && this._skipProps[key]) {
-	          continue;
-	        }
+	        // if (this._skipProps && this._skipProps[key]) { continue; }
 	        // copy the properties to the _o object
 	        // delete the key from deltas
 	        o && delete this._deltas[key];
@@ -8026,7 +8016,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.214.7', isDebug: true, helpers: _h2.default,
+	  revision: '0.214.8', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
