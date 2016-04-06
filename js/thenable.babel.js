@@ -49,7 +49,7 @@ class Thenable extends Tweenable {
     // reset isShowEnd flag for the submodules
     obj.isShowEnd      = false;
     // set the submodule callbacks context
-    obj.callbacksContext = this;
+    obj.callbacksContext = this._props.callbacksContext;
     return obj;
   }
   /*

@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.214.8', isDebug: true, helpers: h,
+  revision:   '0.214.9', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -25,7 +25,6 @@ window.mojs = {
 
 // TODO:
 /*
-  callbacksContext for the swirl in burst
   show/hide prev module in then chains (Transit)
   add onPlaybackStart, onPlaybackStop,
   onPlaybackFinish methods to support mojs-player
@@ -40,6 +39,14 @@ window.mojs = {
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
+
+// var playEl = document.querySelector('#js-play'),
+//     rangeSliderEl = document.querySelector('#js-range-slider');
+// document.body.addEventListener('click', function (e) {
+//   sw
+//     .tune({ timeline: {delay: 0 , repeat: 2 } })
+//     .replay();
+// });
 
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {

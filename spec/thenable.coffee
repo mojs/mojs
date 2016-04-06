@@ -376,7 +376,7 @@ describe 'thenable ->', ->
       th.then()
       expect(th._mergeThenOptions).not.toHaveBeenCalled()
 
-    describe 'submodule creation', ->
+    describe 'submodule creation ->', ->
       it 'should create the new Module with options', ->
         th = new Thenable radius: 20, duration: 1000, delay: 10
         th._defaults = {}
@@ -389,12 +389,14 @@ describe 'thenable ->', ->
         th._vars()
         th.then({ stroke: 'cyan' })
         expect(th._modules[1]._o.isTimelineLess).toBe true
-      it 'should pass this as callbacksContext to the submodule', ->
+      it 'should pass _props.callbacksContext to the submodule', ->
         th = new Thenable radius: 20, duration: 1000, delay: 10
         th._defaults = {}
+        th._props.callbacksContext = {}
         th._vars()
         th.then({ stroke: 'cyan' })
-        expect(th.timeline._timelines[1]._props.callbacksContext).toBe th
+        expect(th.timeline._timelines[1]._o.callbacksContext)
+          .toBe th._props.callbacksContext
       it 'should reset isShowStart flag on submodule', ->
         th = new Thenable
           radius: 20, duration: 1000, delay: 10
@@ -450,7 +452,7 @@ describe 'thenable ->', ->
       expect(obj.isTimelineLess)  .toBe true
       expect(obj.isShowStart)     .toBe false
       expect(obj.isShowEnd)       .toBe false
-      expect(obj.callbacksContext).toBe th
+      expect(obj.callbacksContext).toBe th._props.callbacksContext
 
   describe '_getArrayLength method ->', ->
     it 'should get length if array', ->
