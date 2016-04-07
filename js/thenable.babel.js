@@ -49,7 +49,7 @@ class Thenable extends Tweenable {
     // set the submodule callbacks context
     obj.callbacksContext = this._props.callbacksContext;
     // set previous module
-    obj.prevChainModule  = this._modules[this._modules.length-1];
+    obj.prevChainModule  = h.getLastItem( this._modules );
     return obj;
   }
   /*

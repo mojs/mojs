@@ -772,7 +772,7 @@
         spyOn(b, '_childThen').and.callThrough();
         options = {};
         b.then(options);
-        return expect(b._childThen).toHaveBeenCalledWith(options, b._getLastItem(b._masterSwirls));
+        return expect(b._childThen).toHaveBeenCalledWith(options, h.getLastItem(b._masterSwirls));
       });
       it('should set duration on new msater swirl', function() {
         var b, time;
@@ -800,19 +800,6 @@
           }
         });
         return expect(b.timeline._recalcTotalDuration).toHaveBeenCalled();
-      });
-    });
-    describe('_getLastItem method ->', function() {
-      return it('should get the last item of array', function() {
-        var b;
-        b = new Burst({
-          count: 2
-        });
-        expect(b._getLastItem([1, 2, 3, 4])).toBe(4);
-        expect(b._getLastItem([1, 2, 3, 7])).toBe(7);
-        expect(b._getLastItem([1, 2, 3])).toBe(3);
-        expect(b._getLastItem([1, 2])).toBe(2);
-        return expect(b._getLastItem([1])).toBe(1);
       });
     });
     describe('_calcPackTime method ->', function() {

@@ -349,18 +349,24 @@ class Transit extends Tunable {
   _applyCallbackOverrides (obj) {
     var it = this,
         p  = this._props;
-
     // specify control functions for the module
     obj.callbackOverrides = {
       onUpdate: function (pe) { return it._setProgress(pe); },
       onStart: function (isFwd) {
-        return isFwd ? it._show() : (!p.isShowStart && it._hide());
+        if ( isFwd ) {
+          it._show();
+          // hide previous module in then chain
+          it._hidePrevChainModule();
+        } else {
+          (!p.isShowStart && it._hide())
+          // show previous module in then chain
+          it._showPrevChainModule();
+        }
       },
       onComplete: function (isFwd) {
         return isFwd ? (!p.isShowEnd && it._hide()) : it._show();
       }
     }
-
   }
   /*
     Method to setup tween and timeline options before creating them.
@@ -376,6 +382,22 @@ class Transit extends Tunable {
   _fillTransform () {
     var p = this._props;
     return `scale(${p.scale}) translate(${p.x}, ${p.y}) rotate(${p.angle}deg)`;
+  }
+  /*
+    Method to hide previousChainModule.
+    @private
+  */
+  _hidePrevChainModule () {
+    var p = this._props;
+    p.prevChainModule && p.prevChainModule._hide();
+  }
+  /*
+    Method to show previousChainModule.
+    @private
+  */
+  _showPrevChainModule () {
+    var p = this._props;
+    p.prevChainModule && p.prevChainModule._show();
   }
 }
 

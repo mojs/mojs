@@ -15,9 +15,10 @@ class Module {
     }
 
     this._skipPropsDelta = {
-      callbacksContext: 1,
-      timeline: 1
-      // previousChainedModule: 1
+      timeline: 1,
+      prevChainModule: 1,
+      callbacksContext: 1
+
     };
 
     this._declareDefaults();

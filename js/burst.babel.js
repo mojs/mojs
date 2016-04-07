@@ -144,7 +144,7 @@ class Burst extends Tunable {
   _masterThen (o) {
     this.masterSwirl.then(o);
     // get the latest master swirl in then chain
-    var newMasterSwirl = this._getLastItem(this.masterSwirl._modules);
+    var newMasterSwirl = h.getLastItem(this.masterSwirl._modules);
     // save to masterSwirls
     this._masterSwirls.push(newMasterSwirl);
     return newMasterSwirl;
@@ -166,7 +166,7 @@ class Burst extends Tunable {
       options.parent = newMasterSwirl.el;
       pack[i].then( options );
       // save the new item in `then` chain
-      newPack.push( this._getLastItem(pack[i]._modules) );
+      newPack.push( h.getLastItem(pack[i]._modules) );
     }
     // save the pack to _swirls object
     this._swirls[this._masterSwirls.length-1] = newPack;
@@ -182,13 +182,6 @@ class Burst extends Tunable {
     // just buffer timeline for calculations
     this._bufferTimeline = new Timeline;
   }
-  /*
-    Method to get the last item of array.
-    @private
-    @param {Array} Array to get the last item in.
-    @returns {Any} The last item of array.
-  */
-  _getLastItem (arr) { return arr[arr.length-1]; }
   /*
     Method for initial render of the module.
   */

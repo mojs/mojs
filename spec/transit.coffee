@@ -129,6 +129,13 @@ describe 'Transit ->', ->
         spyOn tr, '_show'
         obj.callbackOverrides.onStart true
         expect(tr._show).toHaveBeenCalled()
+      it 'should call _hidePrevChainModule if isForward', ->
+        tr = new Transit
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_hidePrevChainModule'
+        obj.callbackOverrides.onStart true
+        expect(tr._hidePrevChainModule).toHaveBeenCalled()
       it 'should call _hide if not isForward', ->
         tr = new Transit
         obj = {}
@@ -136,6 +143,13 @@ describe 'Transit ->', ->
         spyOn tr, '_hide'
         obj.callbackOverrides.onStart false
         expect(tr._hide).toHaveBeenCalled()
+      it 'should call _showPrevChainModule if not isForward', ->
+        tr = new Transit
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_showPrevChainModule'
+        obj.callbackOverrides.onStart false
+        expect(tr._showPrevChainModule).toHaveBeenCalled()
       it 'should not call _hide if not isForward and !isShowStart', ->
         tr = new Transit isShowStart: true
         obj = {}
@@ -977,3 +991,35 @@ describe 'Transit ->', ->
       tr = new Transit x: 100, y: 100, angle: 50, scale: 2
       expect(tr._fillTransform())
         .toBe 'scale(2) translate(100px, 100px) rotate(50deg)'  
+
+  describe '_hidePrevChainModule method ->', ->
+    it 'should hide prevChainModule', ->
+      module = { _hide: -> }
+      tr = new Transit prevChainModule: module
+
+      spyOn tr._props.prevChainModule, '_hide'
+      tr._hidePrevChainModule()
+      expect(tr._props.prevChainModule._hide).toHaveBeenCalled()
+
+    it 'should not throw', ->
+      tr = new Transit
+      fun = -> tr._hidePrevChainModule()
+      expect(fun).not.toThrow()
+
+  describe '_showPrevChainModule method ->', ->
+    it 'should hide prevChainModule', ->
+      module = { _show: -> }
+      tr = new Transit prevChainModule: module
+
+      spyOn tr._props.prevChainModule, '_show'
+      tr._showPrevChainModule()
+      expect(tr._props.prevChainModule._show).toHaveBeenCalled()
+
+    it 'should not throw', ->
+      tr = new Transit
+      fun = -> tr._showPrevChainModule()
+      expect(fun).not.toThrow()
+
+
+
+

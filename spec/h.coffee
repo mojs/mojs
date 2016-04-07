@@ -956,6 +956,14 @@ describe 'Helpers ->', ->
       expect(result).toBeGreaterThan     30
       expect(result).not.toBeGreaterThan 50
 
+  describe '_getLastItem method ->', ->
+    it 'should get the last item of array', ->
+      expect(h.getLastItem([1,2,3,4])).toBe 4
+      expect(h.getLastItem([1,2,3,7])).toBe 7
+      expect(h.getLastItem([1,2,3])).toBe 3
+      expect(h.getLastItem([1,2])).toBe 2
+      expect(h.getLastItem([1])).toBe 1
+
     
 
 

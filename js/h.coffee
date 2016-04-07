@@ -536,5 +536,13 @@ class Helpers
       value = @parseIfRand( value )
     value
 
+  ###
+    Method to get the last item of array.
+    @private
+    @param {Array} Array to get the last item in.
+    @returns {Any} The last item of array.
+  ###
+  getLastItem: (arr) -> arr[arr.length-1]
+
 h = new Helpers
 module.exports = h

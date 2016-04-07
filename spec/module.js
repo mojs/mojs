@@ -61,7 +61,8 @@
         var md;
         md = new Module;
         expect(md._skipPropsDelta.callbacksContext).toBe(1);
-        return expect(md._skipPropsDelta.timeline).toBe(1);
+        expect(md._skipPropsDelta.timeline).toBe(1);
+        return expect(md._skipPropsDelta.prevChainModule).toBe(1);
       });
       it('should fallback to empty object for _o', function() {
         var md;

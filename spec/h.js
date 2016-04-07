@@ -1313,7 +1313,7 @@
         return _results;
       });
     });
-    return describe('parseStringOption method', function() {
+    describe('parseStringOption method', function() {
       it('should return passed value if not a string', function() {
         var obj, result;
         obj = {};
@@ -1341,6 +1341,15 @@
         result = h.parseStringOption('stagger(rand(10, 20), rand(20, 30))', 1);
         expect(result).toBeGreaterThan(30);
         return expect(result).not.toBeGreaterThan(50);
+      });
+    });
+    return describe('_getLastItem method ->', function() {
+      return it('should get the last item of array', function() {
+        expect(h.getLastItem([1, 2, 3, 4])).toBe(4);
+        expect(h.getLastItem([1, 2, 3, 7])).toBe(7);
+        expect(h.getLastItem([1, 2, 3])).toBe(3);
+        expect(h.getLastItem([1, 2])).toBe(2);
+        return expect(h.getLastItem([1])).toBe(1);
       });
     });
   });

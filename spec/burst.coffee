@@ -536,7 +536,7 @@ describe 'Burst ->', ->
       b.then options
 
       expect( b._childThen )
-        .toHaveBeenCalledWith options, b._getLastItem b._masterSwirls
+        .toHaveBeenCalledWith options, h.getLastItem b._masterSwirls
 
     it 'should set duration on new msater swirl', ->
       b = new Burst count: 2
@@ -554,16 +554,6 @@ describe 'Burst ->', ->
 
       expect(b.timeline._recalcTotalDuration).toHaveBeenCalled()
 
-
-  describe '_getLastItem method ->', ->
-    it 'should get the last item of array', ->
-      b = new Burst count: 2
-
-      expect(b._getLastItem([1,2,3,4])).toBe 4
-      expect(b._getLastItem([1,2,3,7])).toBe 7
-      expect(b._getLastItem([1,2,3])).toBe 3
-      expect(b._getLastItem([1,2])).toBe 2
-      expect(b._getLastItem([1])).toBe 1
 
   describe '_calcPackTime method ->', ->
     it 'should calculate time of swirls array', ->
