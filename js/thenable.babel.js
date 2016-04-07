@@ -43,14 +43,13 @@ class Thenable extends Tweenable {
   */
   _resetMergedFlags (obj) {
     // set the submodule to be without timeline for perf reasons
-    obj.isTimelineLess = true;
+    obj.isTimelineLess   = true;
     // reset isShowStart flag for the submodules
-    obj.isShowStart    = false;
-
-    // obj.previousChainedModule = this._modules[this._modules.length-1];
-    
+    obj.isShowStart      = false;    
     // set the submodule callbacks context
     obj.callbacksContext = this._props.callbacksContext;
+    // set previous module
+    obj.prevChainModule  = this._modules[this._modules.length-1];
     return obj;
   }
   /*

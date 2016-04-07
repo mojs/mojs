@@ -457,11 +457,11 @@ describe 'thenable ->', ->
 
     it 'should reset flags on the piped object', ->
       obj = {}
-      th = new Thenable
+      th = new Thenable({}).then({})
       th._resetMergedFlags(obj)
       expect(obj.isTimelineLess)  .toBe true
       expect(obj.isShowStart)     .toBe false
-      # expect(obj.isShowEnd)       .toBe false
+      expect(obj.prevChainModule) .toBe th._modules[th._modules.length-1]
       expect(obj.callbacksContext).toBe th._props.callbacksContext
 
   describe '_getArrayLength method ->', ->

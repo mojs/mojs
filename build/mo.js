@@ -3820,11 +3820,10 @@
 	      obj.isTimelineLess = true;
 	      // reset isShowStart flag for the submodules
 	      obj.isShowStart = false;
-
-	      // obj.previousChainedModule = this._modules[this._modules.length-1];
-
 	      // set the submodule callbacks context
 	      obj.callbacksContext = this._props.callbacksContext;
+	      // set previous module
+	      obj.prevChainModule = this._modules[this._modules.length - 1];
 	      return obj;
 	    }
 	    /*
@@ -8020,7 +8019,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.215.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.216.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
