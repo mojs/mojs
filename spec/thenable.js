@@ -276,6 +276,20 @@
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(mergedOpton.shape).toBe('rect');
       });
+      it('should not merge booleans', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          isShowEnd: true
+        };
+        end = {
+          isShowEnd: false
+        };
+        byte._defaults = {};
+        byte._vars();
+        mergedOpton = byte._mergeThenOptions(start, end);
+        return expect(mergedOpton.isShowEnd).toBe(false);
+      });
       it('should work with new tween values', function() {
         var byte, end, mergedOpton, start;
         byte = new Byte;
@@ -602,25 +616,6 @@
           });
           return expect(th._modules[1]._o.isShowStart).toBe(false);
         });
-        it('should reset isShowEnd flag on previous submodule', function() {
-          var th;
-          th = new Thenable({
-            radius: 20,
-            duration: 1000,
-            delay: 10,
-            isShowEnd: true
-          });
-          th._props = {};
-          th._setProp = function(key, value) {
-            return this._props[key] = value;
-          };
-          th._defaults = {};
-          th._vars();
-          th.then({
-            stroke: 'cyan'
-          });
-          return expect(th._modules[0]._props.isShowEnd).toBe(false);
-        });
         it('should add the submodule to the _modules array', function() {
           var th;
           th = new Thenable({
@@ -667,7 +662,6 @@
         th._resetMergedFlags(obj);
         expect(obj.isTimelineLess).toBe(true);
         expect(obj.isShowStart).toBe(false);
-        expect(obj.isShowEnd).toBe(false);
         return expect(obj.callbacksContext).toBe(th._props.callbacksContext);
       });
     });

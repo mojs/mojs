@@ -20,9 +20,11 @@ class Thenable extends Tweenable {
         prevModule = this._modules[ this._modules.length - 1 ],
         merged     = this._mergeThenOptions( prevRecord, o );
 
+    // console.log(merged.isShowEnd);
+
     this._resetMergedFlags( merged );
     // reset isShowEnd flag on prev module
-    prevModule._setProp && prevModule._setProp('isShowEnd', false);
+    // prevModule._setProp && prevModule._setProp('isShowEnd', false);
     // create a submodule of the same type as the master module
     var module  = new this.constructor( merged );
     // save the modules to the _modules array
@@ -47,7 +49,7 @@ class Thenable extends Tweenable {
     // reset isShowStart flag for the submodules
     obj.isShowStart    = false;
     // reset isShowEnd flag for the submodules
-    obj.isShowEnd      = false;
+    // obj.isShowEnd      = true;
     // set the submodule callbacks context
     obj.callbacksContext = this._props.callbacksContext;
     return obj;
@@ -121,10 +123,7 @@ class Thenable extends Tweenable {
 
     for (var key in end) {
       // just copy parent option
-      if ( key == 'parent' ) {
-        o[key] = end[key];
-        continue;
-      };
+      if ( key == 'parent' ) { o[key] = end[key]; continue; };
 
       // get key/value of the end object
       // endKey - name of the property, endValue - value of the property
@@ -185,7 +184,8 @@ class Thenable extends Tweenable {
   */
   _mergeThenProperty ( key, startValue, endValue ) {
     // if isnt tween property
-    if ( !h.isTweenProp(key) && !this._nonMergeProps[key] ) {
+    var isBoolean = typeof endValue === 'boolean';
+    if ( !h.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean ) {
       // if end value is delta - just save it
       if ( this._isDelta(endValue) ) {
         return this._parseDeltaValues(key, endValue);

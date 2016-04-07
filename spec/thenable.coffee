@@ -167,6 +167,15 @@ describe 'thenable ->', ->
       mergedOpton = byte._mergeThenOptions start, end
       expect(mergedOpton.shape)    .toBe 'rect'
 
+    it 'should not merge booleans', ->
+      byte = new Byte
+      start = isShowEnd: true
+      end   = isShowEnd: false 
+      byte._defaults = {}
+      byte._vars()
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.isShowEnd)    .toBe false
+
     it 'should work with new tween values', ->
       byte = new Byte
       start = radius: 10
@@ -408,21 +417,22 @@ describe 'thenable ->', ->
         th.then({ stroke: 'cyan' })
         expect(th._modules[1]._o.isShowStart).toBe false
 
-      it 'should reset isShowEnd flag on previous submodule', ->
-        th = new Thenable
-          radius: 20, duration: 1000, delay: 10
-          isShowEnd: true
+      # nope
+      # it 'should reset isShowEnd flag on previous submodule', ->
+      #   th = new Thenable
+      #     radius: 20, duration: 1000, delay: 10
+      #     isShowEnd: true
 
-        # expect that _props and _setProps are defiened
-        th._props   = {}
-        th._setProp = ( key, value )-> this._props[key] = value
+      #   # expect that _props and _setProps are defiened
+      #   th._props   = {}
+      #   th._setProp = ( key, value )-> this._props[key] = value
 
-        th._defaults = {}
-        th._vars()
+      #   th._defaults = {}
+      #   th._vars()
         
-        th.then({ stroke: 'cyan' })
+      #   th.then({ stroke: 'cyan' })
 
-        expect(th._modules[0]._props.isShowEnd).toBe false
+      #   expect(th._modules[0]._props.isShowEnd).toBe false
 
       it 'should add the submodule to the _modules array', ->
         th = new Thenable radius: 20, duration: 1000, delay: 10
@@ -451,7 +461,7 @@ describe 'thenable ->', ->
       th._resetMergedFlags(obj)
       expect(obj.isTimelineLess)  .toBe true
       expect(obj.isShowStart)     .toBe false
-      expect(obj.isShowEnd)       .toBe false
+      # expect(obj.isShowEnd)       .toBe false
       expect(obj.callbacksContext).toBe th._props.callbacksContext
 
   describe '_getArrayLength method ->', ->

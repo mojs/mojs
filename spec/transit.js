@@ -78,7 +78,7 @@
         expect(byte._defaults.radius[0]).toBe(50);
         expect(byte._defaults.radiusX).toBe(null);
         expect(byte._defaults.radiusY).toBe(null);
-        expect(byte._defaults.isShowEnd).toBe(false);
+        expect(byte._defaults.isShowEnd).toBe(true);
         expect(byte._defaults.isShowStart).toBe(false);
         expect(byte._defaults.size).toBe(null);
         expect(byte._defaults.callbacksContext).toBe(byte);
@@ -203,7 +203,9 @@
         });
         it('should call _hide if isForward', function() {
           var obj, tr;
-          tr = new Transit;
+          tr = new Transit({
+            isShowEnd: false
+          });
           obj = {};
           tr._applyCallbackOverrides(obj);
           spyOn(tr, '_hide');
