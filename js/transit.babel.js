@@ -78,6 +78,8 @@ class Transit extends Tunable {
       sizeGap:          0,
       // context for all the callbacks
       callbacksContext: this,
+      // previous modules in then chain
+      prevChainModule:  null,
     }
   }
 

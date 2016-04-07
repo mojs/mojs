@@ -1919,7 +1919,9 @@
 	        // Possible values: [ number ]
 	        sizeGap: 0,
 	        // context for all the callbacks
-	        callbacksContext: this
+	        callbacksContext: this,
+	        // previous modules in then chain
+	        prevChainModule: null
 	      };
 	    }
 
@@ -3789,8 +3791,6 @@
 	          prevModule = this._modules[this._modules.length - 1],
 	          merged = this._mergeThenOptions(prevRecord, o);
 
-	      // console.log(merged.isShowEnd);
-
 	      this._resetMergedFlags(merged);
 	      // reset isShowEnd flag on prev module
 	      // prevModule._setProp && prevModule._setProp('isShowEnd', false);
@@ -3820,8 +3820,9 @@
 	      obj.isTimelineLess = true;
 	      // reset isShowStart flag for the submodules
 	      obj.isShowStart = false;
-	      // reset isShowEnd flag for the submodules
-	      // obj.isShowEnd      = true;
+
+	      // obj.previousChainedModule = this._modules[this._modules.length-1];
+
 	      // set the submodule callbacks context
 	      obj.callbacksContext = this._props.callbacksContext;
 	      return obj;
@@ -4369,6 +4370,7 @@
 	    this._skipPropsDelta = {
 	      callbacksContext: 1,
 	      timeline: 1
+	      // previousChainedModule: 1
 	    };
 
 	    this._declareDefaults();

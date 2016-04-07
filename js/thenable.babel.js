@@ -20,8 +20,6 @@ class Thenable extends Tweenable {
         prevModule = this._modules[ this._modules.length - 1 ],
         merged     = this._mergeThenOptions( prevRecord, o );
 
-    // console.log(merged.isShowEnd);
-
     this._resetMergedFlags( merged );
     // reset isShowEnd flag on prev module
     // prevModule._setProp && prevModule._setProp('isShowEnd', false);
@@ -48,8 +46,9 @@ class Thenable extends Tweenable {
     obj.isTimelineLess = true;
     // reset isShowStart flag for the submodules
     obj.isShowStart    = false;
-    // reset isShowEnd flag for the submodules
-    // obj.isShowEnd      = true;
+
+    // obj.previousChainedModule = this._modules[this._modules.length-1];
+    
     // set the submodule callbacks context
     obj.callbacksContext = this._props.callbacksContext;
     return obj;
