@@ -535,16 +535,25 @@ describe 'Burst ->', ->
       options = {}
       b.then options
 
-      expect( b._childThen )
-        .toHaveBeenCalledWith options, h.getLastItem b._masterSwirls
+      # expect( b._childThen )
+      #   .toHaveBeenCalledWith options, h.getLastItem b._masterSwirls
 
-    it 'should set duration on new msater swirl', ->
+      expect(b._childThen.calls.count()).toBe 1
+      expect(b._childThen.calls.first().args[0]).toBe options
+      expect(b._childThen.calls.first().args[1])
+        .toBe h.getLastItem b._masterSwirls
+
+    it 'should set duration on new master swirl', ->
       b = new Burst count: 2
       spyOn(b, '_setSwirlDuration').and.callThrough()
       b.then({ childOptions: { duration: 50 } })
       time = b._calcPackTime( b._swirls[1] )
-      expect(b._setSwirlDuration)
-        .toHaveBeenCalledWith b._masterSwirls[1], time
+
+      expect(b._setSwirlDuration.calls.count()).toBe 1
+      expect(b._setSwirlDuration.calls.first().args[0])
+        .toBe b._masterSwirls[1]
+      expect(b._setSwirlDuration.calls.first().args[1])
+        .toBe time
 
     it 'should call _recalcTotalDuration method', ->
       b = new Burst count: 2
@@ -553,7 +562,6 @@ describe 'Burst ->', ->
       b.then({ childOptions: { radius: [ 10, 20 ] } })
 
       expect(b.timeline._recalcTotalDuration).toHaveBeenCalled()
-
 
   describe '_calcPackTime method ->', ->
     it 'should calculate time of swirls array', ->

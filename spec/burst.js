@@ -772,9 +772,11 @@
         spyOn(b, '_childThen').and.callThrough();
         options = {};
         b.then(options);
-        return expect(b._childThen).toHaveBeenCalledWith(options, h.getLastItem(b._masterSwirls));
+        expect(b._childThen.calls.count()).toBe(1);
+        expect(b._childThen.calls.first().args[0]).toBe(options);
+        return expect(b._childThen.calls.first().args[1]).toBe(h.getLastItem(b._masterSwirls));
       });
-      it('should set duration on new msater swirl', function() {
+      it('should set duration on new master swirl', function() {
         var b, time;
         b = new Burst({
           count: 2
@@ -786,7 +788,9 @@
           }
         });
         time = b._calcPackTime(b._swirls[1]);
-        return expect(b._setSwirlDuration).toHaveBeenCalledWith(b._masterSwirls[1], time);
+        expect(b._setSwirlDuration.calls.count()).toBe(1);
+        expect(b._setSwirlDuration.calls.first().args[0]).toBe(b._masterSwirls[1]);
+        return expect(b._setSwirlDuration.calls.first().args[1]).toBe(time);
       });
       return it('should call _recalcTotalDuration method', function() {
         var b;
