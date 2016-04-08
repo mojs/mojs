@@ -5566,7 +5566,7 @@ describe 'Tween ->', ->
       t.play()
       expect(t._subPlay).toHaveBeenCalledWith(0, 'play')
 
-  describe 'reverse method ->', ->
+  describe 'playBackward method ->', ->
     it 'should set _state to "reverse"',->
       t = new Tween
       t.playBackward()
@@ -5728,6 +5728,138 @@ describe 'Tween ->', ->
       t._setPlaybackState 'pause'
       expect(t._prevState).toBe 'play'
       expect(t._state).toBe 'pause'
+    describe 'onPlaybackStart / play callback ->', ->
+      it 'should call _playbackStart method if play', ()->
+        duration = 50
+        t = new Tween duration: duration
+        spyOn t, '_playbackStart'
+        t._setPlaybackState 'play'
+        expect(t._playbackStart).toHaveBeenCalled()
+      it 'should call _playbackStart method if play', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'play'
+        t._setPlaybackState 'pause'
+        spyOn t, '_playbackStart'
+        t._setPlaybackState 'play'
+        expect(t._playbackStart).toHaveBeenCalled()
+      it 'should not call _playbackStart method if already play', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'play'
+        spyOn t, '_playbackStart'
+        t._setPlaybackState 'play'
+        expect(t._playbackStart).not.toHaveBeenCalled()
+      it 'should not call _playbackStart method if already reverse', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'reverse'
+        spyOn t, '_playbackStart'
+        t._setPlaybackState 'play'
+        expect(t._playbackStart).not.toHaveBeenCalled()
+
+    describe 'onPlaybackStart / reverse callback ->', ->
+      it 'should call _playbackStart method if reverse', ()->
+        duration = 50
+        t = new Tween duration: duration
+        spyOn t, '_playbackStart'
+        t._setPlaybackState 'reverse'
+        expect(t._playbackStart).toHaveBeenCalled()
+      it 'should call _playbackStart method if reverse', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'reverse'
+        t._setPlaybackState 'pause'
+        spyOn t, '_playbackStart'
+        t._setPlaybackState 'reverse'
+        expect(t._playbackStart).toHaveBeenCalled()
+      it 'should not call _playbackStart method if already reverse', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'reverse'
+        spyOn t, '_playbackStart'
+        t._setPlaybackState 'reverse'
+        expect(t._playbackStart).not.toHaveBeenCalled()
+      it 'should not call _playbackStart method if already play', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'play'
+        spyOn t, '_playbackStart'
+        t._setPlaybackState 'reverse'
+        expect(t._playbackStart).not.toHaveBeenCalled()
+
+    describe 'onPlaybackPause / pause callback ->', ->
+      it 'should call _playbackPause method if pause', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'play'
+        spyOn t, '_playbackPause'
+        t._setPlaybackState 'pause'
+        expect(t._playbackPause).toHaveBeenCalled()
+      it 'should call _playbackPause method if play', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'play'
+        spyOn t, '_playbackPause'
+        t._setPlaybackState 'pause'
+        expect(t._playbackPause).toHaveBeenCalled()
+      it 'should call _playbackPause method if already was reverse', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'reverse'
+        spyOn t, '_playbackPause'
+        t._setPlaybackState 'pause'
+        expect(t._playbackPause).toHaveBeenCalled()
+      it 'should not call _playbackPause method if already stopped', ()->
+        duration = 50
+        t = new Tween duration: duration
+        spyOn t, '_playbackPause'
+        t._setPlaybackState 'pause'
+        expect(t._playbackPause).not.toHaveBeenCalled()
+      it 'should not call _playbackPause method if already paused', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'play'
+        t._setPlaybackState 'pause'
+        spyOn t, '_playbackPause'
+        t._setPlaybackState 'pause'
+        expect(t._playbackPause).not.toHaveBeenCalled()
+    describe 'onPlaybackStop / stop callback ->', ->
+      it 'should call _playbackStop method if stop', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'play'
+        spyOn t, '_playbackStop'
+        t._setPlaybackState 'stop'
+        expect(t._playbackStop).toHaveBeenCalled()
+      it 'should call _playbackStop method if stop', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'play'
+        spyOn t, '_playbackStop'
+        t._setPlaybackState 'stop'
+        expect(t._playbackStop).toHaveBeenCalled()
+      it 'should call _playbackStop method if was play', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'play'
+        spyOn t, '_playbackStop'
+        t._setPlaybackState 'stop'
+        expect(t._playbackStop).toHaveBeenCalled()
+      it 'should call _playbackStop method if already paused', ()->
+        duration = 50
+        t = new Tween duration: duration
+        t._setPlaybackState 'play'
+        t._setPlaybackState 'pause'
+        spyOn t, '_playbackStop'
+        t._setPlaybackState 'stop'
+        expect(t._playbackStop).toHaveBeenCalled()
+      it 'should not call _playbackStop method if already stopped', ()->
+        duration = 50
+        t = new Tween duration: duration
+        spyOn t, '_playbackStop'
+        t._setPlaybackState 'stop'
+        expect(t._playbackStop).not.toHaveBeenCalled()
 
   describe '_removeFromTweener method ->', ->
     it 'should call tweener.remove method with self',->
@@ -6601,6 +6733,12 @@ describe 'Tween ->', ->
       , 2*duration
 
   describe '_onTweenerFinish method', ->
+    it 'should call _playbackComplete method', ->
+      tw = new Tween duration: 50
+      spyOn tw, '_playbackComplete'
+      tw._onTweenerFinish()
+      expect(tw._playbackComplete).toHaveBeenCalled()
+
     it 'should set _state to stop', (dfr)->
       duration = 50
       tw = new Tween duration: duration

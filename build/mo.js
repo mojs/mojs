@@ -193,6 +193,8 @@
 	      this._props.isReversed = false;
 	      this._subPlay(shift, 'play');
 	      this._setPlaybackState('play');
+	      // call onPlaybackStart callback
+	      this._playbackStart();
 	      return this;
 	    }
 	    /*
@@ -213,7 +215,8 @@
 	      this._props.isReversed = true;
 	      this._subPlay(shift, 'reverse');
 	      this._setPlaybackState('reverse');
-	      // reset previous time cache
+	      // call onPlaybackStart callback
+	      this._playbackStart();
 	      return this;
 	    }
 	    /*
@@ -225,8 +228,13 @@
 	  }, {
 	    key: 'pause',
 	    value: function pause() {
+	      if (this._state === 'pause' || this._state === 'stop') {
+	        return false;
+	      }
 	      this._removeFromTweener();
 	      this._setPlaybackState('pause');
+	      // call onPlaybackStart callback
+	      this._playbackPause();
 	      return this;
 	    }
 	    /*
@@ -251,8 +259,9 @@
 	      : this._state === 'reverse' ? 1 : 0;
 
 	      this.setProgress(stopProc);
-	      this._prevTime = null;
 	      this._setPlaybackState('stop');
+	      // call onPlaybackStart callback
+	      this._playbackStop();
 	      this._prevTime = null;
 	      return this;
 	    }
@@ -373,7 +382,6 @@
 	    value: function _normPrevTimeForward() {
 	      var p = this._props;return p.startTime + this._progressTime - p.delay;
 	    }
-
 	    /*
 	      Constructor of the class.
 	      @private
@@ -419,6 +427,24 @@
 	      // save previous state
 	      this._prevState = this._state;
 	      this._state = state;
+
+	      // callbacks
+	      var wasPause = this._prevState === 'pause',
+	          wasStop = this._prevState === 'stop',
+	          wasPlay = this._prevState === 'play',
+	          wasReverse = this._prevState === 'reverse',
+	          wasPlaying = wasPlay || wasReverse,
+	          wasStill = wasStop || wasPause;
+
+	      if ((state === 'play' || state === 'reverse') && wasStill) {
+	        this._playbackStart();
+	      }
+	      if (state === 'pause' && wasPlaying) {
+	        this._playbackPause();
+	      }
+	      if (state === 'stop' && (wasPlaying || wasPause)) {
+	        this._playbackStop();
+	      }
 	    }
 	    /*
 	      Method to declare some vars.
@@ -1137,6 +1163,7 @@
 	    key: '_onTweenerFinish',
 	    value: function _onTweenerFinish() {
 	      this._setPlaybackState('stop');
+	      this._playbackComplete();
 	    }
 	    /*
 	      Method to set property[s] on Tween.
@@ -8118,7 +8145,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.221.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.222.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8126,8 +8153,6 @@
 
 	// TODO:
 	/*
-	  add onPlaybackStart, onPlaybackStop,
-	  onPlaybackFinish methods to support mojs-player
 	  perf optimizations.
 	  --
 	  module names

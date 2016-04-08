@@ -5265,7 +5265,7 @@
         return expect(t._subPlay).toHaveBeenCalledWith(0, 'play');
       });
     });
-    describe('reverse method ->', function() {
+    describe('playBackward method ->', function() {
       it('should set _state to "reverse"', function() {
         var t;
         t = new Tween;
@@ -5492,13 +5492,219 @@
         t._setPlaybackState('play');
         return expect(t._state).toBe('play');
       });
-      return it('should track previous playback state', function() {
+      it('should track previous playback state', function() {
         var t;
         t = new Tween;
         t._setPlaybackState('play');
         t._setPlaybackState('pause');
         expect(t._prevState).toBe('play');
         return expect(t._state).toBe('pause');
+      });
+      describe('onPlaybackStart / play callback ->', function() {
+        it('should call _playbackStart method if play', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          spyOn(t, '_playbackStart');
+          t._setPlaybackState('play');
+          return expect(t._playbackStart).toHaveBeenCalled();
+        });
+        it('should call _playbackStart method if play', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('play');
+          t._setPlaybackState('pause');
+          spyOn(t, '_playbackStart');
+          t._setPlaybackState('play');
+          return expect(t._playbackStart).toHaveBeenCalled();
+        });
+        it('should not call _playbackStart method if already play', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('play');
+          spyOn(t, '_playbackStart');
+          t._setPlaybackState('play');
+          return expect(t._playbackStart).not.toHaveBeenCalled();
+        });
+        return it('should not call _playbackStart method if already reverse', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('reverse');
+          spyOn(t, '_playbackStart');
+          t._setPlaybackState('play');
+          return expect(t._playbackStart).not.toHaveBeenCalled();
+        });
+      });
+      describe('onPlaybackStart / reverse callback ->', function() {
+        it('should call _playbackStart method if reverse', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          spyOn(t, '_playbackStart');
+          t._setPlaybackState('reverse');
+          return expect(t._playbackStart).toHaveBeenCalled();
+        });
+        it('should call _playbackStart method if reverse', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('reverse');
+          t._setPlaybackState('pause');
+          spyOn(t, '_playbackStart');
+          t._setPlaybackState('reverse');
+          return expect(t._playbackStart).toHaveBeenCalled();
+        });
+        it('should not call _playbackStart method if already reverse', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('reverse');
+          spyOn(t, '_playbackStart');
+          t._setPlaybackState('reverse');
+          return expect(t._playbackStart).not.toHaveBeenCalled();
+        });
+        return it('should not call _playbackStart method if already play', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('play');
+          spyOn(t, '_playbackStart');
+          t._setPlaybackState('reverse');
+          return expect(t._playbackStart).not.toHaveBeenCalled();
+        });
+      });
+      describe('onPlaybackPause / pause callback ->', function() {
+        it('should call _playbackPause method if pause', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('play');
+          spyOn(t, '_playbackPause');
+          t._setPlaybackState('pause');
+          return expect(t._playbackPause).toHaveBeenCalled();
+        });
+        it('should call _playbackPause method if play', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('play');
+          spyOn(t, '_playbackPause');
+          t._setPlaybackState('pause');
+          return expect(t._playbackPause).toHaveBeenCalled();
+        });
+        it('should call _playbackPause method if already was reverse', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('reverse');
+          spyOn(t, '_playbackPause');
+          t._setPlaybackState('pause');
+          return expect(t._playbackPause).toHaveBeenCalled();
+        });
+        it('should not call _playbackPause method if already stopped', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          spyOn(t, '_playbackPause');
+          t._setPlaybackState('pause');
+          return expect(t._playbackPause).not.toHaveBeenCalled();
+        });
+        return it('should not call _playbackPause method if already paused', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('play');
+          t._setPlaybackState('pause');
+          spyOn(t, '_playbackPause');
+          t._setPlaybackState('pause');
+          return expect(t._playbackPause).not.toHaveBeenCalled();
+        });
+      });
+      return describe('onPlaybackStop / stop callback ->', function() {
+        it('should call _playbackStop method if stop', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('play');
+          spyOn(t, '_playbackStop');
+          t._setPlaybackState('stop');
+          return expect(t._playbackStop).toHaveBeenCalled();
+        });
+        it('should call _playbackStop method if stop', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('play');
+          spyOn(t, '_playbackStop');
+          t._setPlaybackState('stop');
+          return expect(t._playbackStop).toHaveBeenCalled();
+        });
+        it('should call _playbackStop method if was play', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('play');
+          spyOn(t, '_playbackStop');
+          t._setPlaybackState('stop');
+          return expect(t._playbackStop).toHaveBeenCalled();
+        });
+        it('should call _playbackStop method if already paused', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          t._setPlaybackState('play');
+          t._setPlaybackState('pause');
+          spyOn(t, '_playbackStop');
+          t._setPlaybackState('stop');
+          return expect(t._playbackStop).toHaveBeenCalled();
+        });
+        return it('should not call _playbackStop method if already stopped', function() {
+          var duration, t;
+          duration = 50;
+          t = new Tween({
+            duration: duration
+          });
+          spyOn(t, '_playbackStop');
+          t._setPlaybackState('stop');
+          return expect(t._playbackStop).not.toHaveBeenCalled();
+        });
       });
     });
     describe('_removeFromTweener method ->', function() {
@@ -6736,6 +6942,15 @@
       });
     });
     describe('_onTweenerFinish method', function() {
+      it('should call _playbackComplete method', function() {
+        var tw;
+        tw = new Tween({
+          duration: 50
+        });
+        spyOn(tw, '_playbackComplete');
+        tw._onTweenerFinish();
+        return expect(tw._playbackComplete).toHaveBeenCalled();
+      });
       return it('should set _state to stop', function(dfr) {
         var duration, tw;
         duration = 50;

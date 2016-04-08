@@ -77,6 +77,8 @@ class Tween extends Module {
     this._props.isReversed = false;
     this._subPlay( shift, 'play' );
     this._setPlaybackState( 'play' );
+    // call onPlaybackStart callback
+    this._playbackStart();
     return this;
   }
   /*
@@ -90,7 +92,8 @@ class Tween extends Module {
     this._props.isReversed = true;
     this._subPlay( shift, 'reverse' );
     this._setPlaybackState( 'reverse' );
-    // reset previous time cache
+    // call onPlaybackStart callback
+    this._playbackStart();
     return this;
   }
   /*
@@ -99,8 +102,11 @@ class Tween extends Module {
     @returns {Object} Self.
   */
   pause () {
+    if ( this._state === 'pause' || this._state === 'stop' )  { return false; }
     this._removeFromTweener();
     this._setPlaybackState('pause');
+    // call onPlaybackStart callback
+    this._playbackPause();
     return this;
   }
   /*
@@ -120,8 +126,9 @@ class Tween extends Module {
       : ( this._state === 'reverse' ) ? 1 : 0
 
     this.setProgress( stopProc );
-    this._prevTime = null;
     this._setPlaybackState('stop');
+    // call onPlaybackStart callback
+    this._playbackStop();
     this._prevTime = null;
     return this;
   }
@@ -215,11 +222,9 @@ class Tween extends Module {
     @private
     @return {Number} Normalized prev time.
   */
-
   _normPrevTimeForward () {
     var p = this._props; return p.startTime + this._progressTime - p.delay;
   }
-
   /*
     Constructor of the class.
     @private
@@ -249,6 +254,24 @@ class Tween extends Module {
     // save previous state
     this._prevState = this._state;
     this._state     = state;
+
+    // callbacks
+    var wasPause   = this._prevState === 'pause',
+        wasStop    = this._prevState === 'stop',
+        wasPlay    = this._prevState === 'play',
+        wasReverse = this._prevState === 'reverse',
+        wasPlaying = wasPlay || wasReverse,
+        wasStill   = wasStop || wasPause;
+
+    if ((state === 'play' || state === 'reverse') &&  wasStill ) {
+      this._playbackStart();
+    }
+    if ( state === 'pause' && wasPlaying ) {
+      this._playbackPause();
+    }
+    if ( state === 'stop' && (wasPlaying || wasPause)) {
+      this._playbackStop();
+    }
   }
   /*
     Method to declare some vars.
@@ -871,7 +894,10 @@ class Tween extends Module {
     from tweener when finished.
     @private
   */
-  _onTweenerFinish () { this._setPlaybackState('stop'); }
+  _onTweenerFinish () {
+    this._setPlaybackState('stop');
+    this._playbackComplete();
+  }
   /*
     Method to set property[s] on Tween.
     @private
