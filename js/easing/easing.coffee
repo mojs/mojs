@@ -17,9 +17,9 @@ class Easing
   # EASINGS
   linear: none: (k) -> k
   ease:
-    in:     bezier.apply @, [ 0.42,   0,     1,      1   ]
-    out:    bezier.apply @, [ 0,      0,    0.58,    1   ]
-    inout:  bezier.apply @, [ 0.42,   0,    0.58,    1   ]
+    in:     bezier.apply @, [ 0.42,   0,     1,      1 ]
+    out:    bezier.apply @, [ 0,      0,    0.58,    1 ]
+    inout:  bezier.apply @, [ 0.42,   0,    0.58,    1 ]
   quad:
     in:     (k) -> k * k
     out:    (k) -> k * (2 - k)

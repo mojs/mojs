@@ -194,6 +194,7 @@ class Timeline extends Tween {
     super._declareDefaults();
     // remove default 
     this._defaults.duration = 0;
+    this._defaults.easing   = 'Linear.None';
     this._defaults.nameBase = 'Timeline';
   }
 

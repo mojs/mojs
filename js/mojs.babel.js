@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.218.1', isDebug: true, helpers: h,
+  revision:   '0.219.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -25,7 +25,6 @@ window.mojs = {
 
 // TODO:
 /*
-  hide all modules on start
   add onPlaybackStart, onPlaybackStop,
   onPlaybackFinish methods to support mojs-player
   perf optimizations.

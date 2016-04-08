@@ -122,7 +122,7 @@
 	      // DEFAULTS
 	      this._defaults = {
 	        /* duration of the tween [0..∞] */
-	        duration: 600,
+	        duration: 350,
 	        /* delay of the tween [-∞..∞] */
 	        delay: 0,
 	        /* repeat of the tween [0..∞], means how much to
@@ -138,7 +138,7 @@
 	            for now (under consideration). */
 	        yoyo: false,
 	        /* easing for the tween, could be any easing type [link to easing-types.md] */
-	        easing: 'Linear.None',
+	        easing: 'Ease.Out',
 	        /* custom tween's name */
 	        name: null,
 	        /* custom tween's base name */
@@ -3348,6 +3348,7 @@
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Timeline.prototype), '_declareDefaults', this).call(this);
 	      // remove default
 	      this._defaults.duration = 0;
+	      this._defaults.easing = 'Linear.None';
 	      this._defaults.nameBase = 'Timeline';
 	    }
 	  }]);
@@ -8063,7 +8064,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.218.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.219.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8071,7 +8072,6 @@
 
 	// TODO:
 	/*
-	  hide all modules on start
 	  add onPlaybackStart, onPlaybackStop,
 	  onPlaybackFinish methods to support mojs-player
 	  perf optimizations.

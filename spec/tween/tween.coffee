@@ -44,10 +44,11 @@ describe 'Tween ->', ->
       # expect(t._globalName)   .toBe '_Tweens'
     it 'should have defaults', ->
       t = new Tween
-      expect(t._defaults.duration).toBe  600
+      expect(t._defaults.duration).toBe  350
       expect(t._defaults.delay).toBe     0
       expect(t._defaults.yoyo).toBe      false
       expect(t._defaults.speed).toBe     1
+      expect(t._defaults.easing).toBe    'Ease.Out'
       expect(t._defaults.name).toBe      null
       expect(t._defaults.nameBase).toBe  'Tween'
       expect(t._defaults.onStart).toBeDefined()
@@ -715,6 +716,7 @@ describe 'Tween ->', ->
       t = new Tween
         repeat:     1
         duration:   duration
+        easing:     'Linear.None'
         onUpdate:(p, ep, isForward)->
           updateDirection = isForward
           updateValue = p
@@ -870,6 +872,7 @@ describe 'Tween ->', ->
       t = new Tween
         repeat:     1
         duration:   duration
+        easing:     'Linear.None'
         onUpdate:(p, ep, isForward)->
           updateDirection = isForward
           updateValue = p
@@ -1053,6 +1056,7 @@ describe 'Tween ->', ->
         repeat:     2
         duration:   duration
         delay:      delay
+        easing:     'Linear.None'
         onUpdate:(p, ep, isForward)->
           updateDirection = isForward
           updateValue = p
@@ -1331,6 +1335,7 @@ describe 'Tween ->', ->
         repeat:     2
         duration:   duration
         delay:      delay
+        easing:     'Linear.None'
         onUpdate:(p, ep, isForward)->
           updateDirection = isForward
           updateValue = p
@@ -1611,6 +1616,7 @@ describe 'Tween ->', ->
       t = new Tween
         repeat:     2
         duration:   duration
+        easing:     'Linear.None'
         onUpdate:(p, ep, isForward)->
           updateDirection = isForward
           updateValue = p
@@ -1842,6 +1848,7 @@ describe 'Tween ->', ->
       t = new Tween
         repeat:     2
         duration:   duration
+        easing:     'Linear.None'
         onUpdate:(p, pe, isForward)->
           updateDirection = isForward
           updateValue = p
@@ -2120,6 +2127,7 @@ describe 'Tween ->', ->
         repeat:     2
         duration:   duration
         delay:      delay
+        easing:     'Linear.None'
         onUpdate:(p, pe, isForward)->
           updateDirection = isForward
           updateValue = p
@@ -2349,6 +2357,7 @@ describe 'Tween ->', ->
         repeat:     2
         duration:   duration
         delay:      delay
+        easing:     'Linear.None'
         onUpdate:(p, pe, isForward)->
           updateDirection = isForward
           updateValue = p
@@ -2608,6 +2617,7 @@ describe 'Tween ->', ->
         repeat:     1
         yoyo:       true
         duration:   duration
+        easing:     'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward
@@ -2795,6 +2805,7 @@ describe 'Tween ->', ->
         repeat:     1
         yoyo:       true
         duration:   duration
+        easing:     'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward
@@ -3015,6 +3026,7 @@ describe 'Tween ->', ->
         yoyo:       true
         duration:   duration
         delay:      delay
+        easing:     'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward
@@ -3347,6 +3359,7 @@ describe 'Tween ->', ->
         yoyo:       true
         duration:   duration
         delay:      delay
+        easing:     'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward
@@ -3670,6 +3683,7 @@ describe 'Tween ->', ->
         repeat:     2
         yoyo:       true
         duration:   duration
+        easing:     'Linear.None'
         #delay:      delay
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
@@ -3950,6 +3964,7 @@ describe 'Tween ->', ->
         repeat:     2
         yoyo:       true
         duration:   duration
+        easing:     'Linear.None'
         #delay:      delay
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
@@ -4292,6 +4307,7 @@ describe 'Tween ->', ->
         yoyo:       true
         duration:   duration
         delay:      delay
+        easing:     'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward
@@ -4571,6 +4587,7 @@ describe 'Tween ->', ->
         yoyo:       true
         duration:   duration
         delay:      delay
+        easing:     'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward

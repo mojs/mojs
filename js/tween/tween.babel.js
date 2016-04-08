@@ -13,7 +13,7 @@ class Tween extends Module {
     // DEFAULTS
     this._defaults = {
       /* duration of the tween [0..∞] */
-      duration:               600,
+      duration:               350,
       /* delay of the tween [-∞..∞] */
       delay:                  0,
       /* repeat of the tween [0..∞], means how much to
@@ -29,7 +29,7 @@ class Tween extends Module {
           for now (under consideration). */
       yoyo:                   false,
       /* easing for the tween, could be any easing type [link to easing-types.md] */
-      easing:                 'Linear.None',
+      easing:                 'Ease.Out',
       /* custom tween's name */
       name:                   null,
       /* custom tween's base name */
