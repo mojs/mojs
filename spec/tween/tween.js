@@ -79,6 +79,10 @@
         expect(t._defaults.onComplete).toBeDefined();
         expect(t._defaults.onUpdate).toBeDefined();
         expect(t._defaults.onProgress).toBeDefined();
+        expect(t._defaults.onPlaybackStart).toBe(null);
+        expect(t._defaults.onPlaybackPause).toBe(null);
+        expect(t._defaults.onPlaybackStop).toBe(null);
+        expect(t._defaults.onPlaybackComplete).toBe(null);
         return expect(t._defaults.isChained).toBe(false);
       });
       return it('should extend defaults to props', function() {
@@ -5580,6 +5584,150 @@
         tw._isCompleted = true;
         tw._start();
         return expect(tw._isCompleted).toBe(true);
+      });
+    });
+    describe('_playbackStart method ->', function() {
+      it('should call onPlaybackStart callback', function() {
+        var fun, isCalled, tw;
+        isCalled = null;
+        fun = function() {
+          return isCalled = true;
+        };
+        tw = new Tween({
+          onPlaybackStart: fun
+        });
+        tw._playbackStart();
+        return expect(isCalled).toBe(true);
+      });
+      it('should call onPlaybackStart callback with callbacksContext', function() {
+        var context, fun, isRightScrope, tw;
+        isRightScrope = null;
+        context = {};
+        fun = function() {
+          return isRightScrope = this === context;
+        };
+        tw = new Tween({
+          callbacksContext: context,
+          onPlaybackStart: fun
+        });
+        tw._playbackStart();
+        return expect(isRightScrope).toBe(true);
+      });
+      return it('should not throw if onPlaybackStart not set', function() {
+        var fun, tw;
+        tw = new Tween;
+        fun = function() {
+          return tw._playbackStart();
+        };
+        return expect(fun).not.toThrow();
+      });
+    });
+    describe('_playbackPause method ->', function() {
+      it('should call onPlaybackPause callback', function() {
+        var fun, isCalled, tw;
+        isCalled = null;
+        fun = function() {
+          return isCalled = true;
+        };
+        tw = new Tween({
+          onPlaybackPause: fun
+        });
+        tw._playbackPause();
+        return expect(isCalled).toBe(true);
+      });
+      it('should call onPlaybackPause callback with callbacksContext', function() {
+        var context, fun, isRightScrope, tw;
+        isRightScrope = null;
+        context = {};
+        fun = function() {
+          return isRightScrope = this === context;
+        };
+        tw = new Tween({
+          callbacksContext: context,
+          onPlaybackPause: fun
+        });
+        tw._playbackPause();
+        return expect(isRightScrope).toBe(true);
+      });
+      return it('should not throw if onPlaybackPause not set', function() {
+        var fun, tw;
+        tw = new Tween;
+        fun = function() {
+          return tw._playbackPause();
+        };
+        return expect(fun).not.toThrow();
+      });
+    });
+    describe('_playbackStop method ->', function() {
+      it('should call onPlaybackStop callback', function() {
+        var fun, isCalled, tw;
+        isCalled = null;
+        fun = function() {
+          return isCalled = true;
+        };
+        tw = new Tween({
+          onPlaybackStop: fun
+        });
+        tw._playbackStop();
+        return expect(isCalled).toBe(true);
+      });
+      it('should call onPlaybackStop callback with callbacksContext', function() {
+        var context, fun, isRightScrope, tw;
+        isRightScrope = null;
+        context = {};
+        fun = function() {
+          return isRightScrope = this === context;
+        };
+        tw = new Tween({
+          callbacksContext: context,
+          onPlaybackStop: fun
+        });
+        tw._playbackStop();
+        return expect(isRightScrope).toBe(true);
+      });
+      return it('should not throw if onPlaybackStop not set', function() {
+        var fun, tw;
+        tw = new Tween;
+        fun = function() {
+          return tw._playbackStop();
+        };
+        return expect(fun).not.toThrow();
+      });
+    });
+    describe('_playbackComplete method ->', function() {
+      it('should call onPlaybackComplete callback', function() {
+        var fun, isCalled, tw;
+        isCalled = null;
+        fun = function() {
+          return isCalled = true;
+        };
+        tw = new Tween({
+          onPlaybackComplete: fun
+        });
+        tw._playbackComplete();
+        return expect(isCalled).toBe(true);
+      });
+      it('should call onPlaybackComplete callback with callbacksContext', function() {
+        var context, fun, isRightScrope, tw;
+        isRightScrope = null;
+        context = {};
+        fun = function() {
+          return isRightScrope = this === context;
+        };
+        tw = new Tween({
+          callbacksContext: context,
+          onPlaybackComplete: fun
+        });
+        tw._playbackComplete();
+        return expect(isRightScrope).toBe(true);
+      });
+      return it('should not throw if onPlaybackComplete not set', function() {
+        var fun, tw;
+        tw = new Tween;
+        fun = function() {
+          return tw._playbackComplete();
+        };
+        return expect(fun).not.toThrow();
       });
     });
     describe('_repeatComplete method ->', function() {

@@ -58,6 +58,10 @@ describe 'Tween ->', ->
       expect(t._defaults.onComplete).toBeDefined()
       expect(t._defaults.onUpdate).toBeDefined()
       expect(t._defaults.onProgress).toBeDefined()
+      expect(t._defaults.onPlaybackStart).toBe null
+      expect(t._defaults.onPlaybackPause).toBe null
+      expect(t._defaults.onPlaybackStop) .toBe null
+      expect(t._defaults.onPlaybackComplete).toBe null
       expect(t._defaults.isChained).toBe false
     it 'should extend defaults to props', ->
       t = new Tween duration: 1000
@@ -5780,6 +5784,90 @@ describe 'Tween ->', ->
       tw._isCompleted = true
       tw._start()
       expect(tw._isCompleted).toBe true
+
+  describe '_playbackStart method ->', ->
+    it 'should call onPlaybackStart callback', ->
+      isCalled = null
+      fun = -> isCalled = true
+      tw = new Tween onPlaybackStart: fun
+      tw._playbackStart()
+      expect(isCalled).toBe true
+    it 'should call onPlaybackStart callback with callbacksContext', ->
+      isRightScrope = null
+      context = {}
+      fun = -> isRightScrope = ( this is context )
+      tw = new Tween
+        callbacksContext: context
+        onPlaybackStart: fun
+      tw._playbackStart()
+      expect(isRightScrope).toBe true
+    it 'should not throw if onPlaybackStart not set', ->
+      tw = new Tween
+      fun = -> tw._playbackStart()
+      expect(fun).not.toThrow()
+
+  describe '_playbackPause method ->', ->
+    it 'should call onPlaybackPause callback', ->
+      isCalled = null
+      fun = -> isCalled = true
+      tw = new Tween onPlaybackPause: fun
+      tw._playbackPause()
+      expect(isCalled).toBe true
+    it 'should call onPlaybackPause callback with callbacksContext', ->
+      isRightScrope = null
+      context = {}
+      fun = -> isRightScrope = ( this is context )
+      tw = new Tween
+        callbacksContext: context
+        onPlaybackPause: fun
+      tw._playbackPause()
+      expect(isRightScrope).toBe true
+    it 'should not throw if onPlaybackPause not set', ->
+      tw = new Tween
+      fun = -> tw._playbackPause()
+      expect(fun).not.toThrow()
+
+  describe '_playbackStop method ->', ->
+    it 'should call onPlaybackStop callback', ->
+      isCalled = null
+      fun = -> isCalled = true
+      tw = new Tween onPlaybackStop: fun
+      tw._playbackStop()
+      expect(isCalled).toBe true
+    it 'should call onPlaybackStop callback with callbacksContext', ->
+      isRightScrope = null
+      context = {}
+      fun = -> isRightScrope = ( this is context )
+      tw = new Tween
+        callbacksContext: context
+        onPlaybackStop: fun
+      tw._playbackStop()
+      expect(isRightScrope).toBe true
+    it 'should not throw if onPlaybackStop not set', ->
+      tw = new Tween
+      fun = -> tw._playbackStop()
+      expect(fun).not.toThrow()
+
+  describe '_playbackComplete method ->', ->
+    it 'should call onPlaybackComplete callback', ->
+      isCalled = null
+      fun = -> isCalled = true
+      tw = new Tween onPlaybackComplete: fun
+      tw._playbackComplete()
+      expect(isCalled).toBe true
+    it 'should call onPlaybackComplete callback with callbacksContext', ->
+      isRightScrope = null
+      context = {}
+      fun = -> isRightScrope = ( this is context )
+      tw = new Tween
+        callbacksContext: context
+        onPlaybackComplete: fun
+      tw._playbackComplete()
+      expect(isRightScrope).toBe true
+    it 'should not throw if onPlaybackComplete not set', ->
+      tw = new Tween
+      fun = -> tw._playbackComplete()
+      expect(fun).not.toThrow()
 
   describe '_repeatComplete method ->', ->
     it 'should call onRepeatComplete callback', ->

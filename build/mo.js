@@ -166,6 +166,11 @@
 	        onFirstUpdate: null,
 	        onUpdate: null,
 	        isChained: false,
+	        // playback callbacks
+	        onPlaybackStart: null,
+	        onPlaybackPause: null,
+	        onPlaybackStop: null,
+	        onPlaybackComplete: null,
 	        // context which all callbacks will be called with
 	        callbacksContext: null
 	      };
@@ -940,7 +945,6 @@
 	      p.wasYoyo = isYoyo;
 	      return this;
 	    }
-
 	    /*
 	      Method to set tween's state to start and call onStart callback.
 	      @method _start
@@ -962,7 +966,58 @@
 	      this._isCompleted = false;this._isStarted = true;
 	      this._isFirstUpdate = false;
 	    }
+	    /*
+	      Method to call onPlaybackStart callback
+	      @private
+	    */
 
+	  }, {
+	    key: '_playbackStart',
+	    value: function _playbackStart() {
+	      var p = this._props;
+	      if (p.onPlaybackStart != null && typeof p.onPlaybackStart === 'function') {
+	        p.onPlaybackStart.call(p.callbacksContext || this);
+	      }
+	    }
+	    /*
+	      Method to call onPlaybackPause callback
+	      @private
+	    */
+
+	  }, {
+	    key: '_playbackPause',
+	    value: function _playbackPause() {
+	      var p = this._props;
+	      if (p.onPlaybackPause != null && typeof p.onPlaybackPause === 'function') {
+	        p.onPlaybackPause.call(p.callbacksContext || this);
+	      }
+	    }
+	    /*
+	      Method to call onPlaybackStop callback
+	      @private
+	    */
+
+	  }, {
+	    key: '_playbackStop',
+	    value: function _playbackStop() {
+	      var p = this._props;
+	      if (p.onPlaybackStop != null && typeof p.onPlaybackStop === 'function') {
+	        p.onPlaybackStop.call(p.callbacksContext || this);
+	      }
+	    }
+	    /*
+	      Method to call onPlaybackComplete callback
+	      @private
+	    */
+
+	  }, {
+	    key: '_playbackComplete',
+	    value: function _playbackComplete() {
+	      var p = this._props;
+	      if (p.onPlaybackComplete != null && typeof p.onPlaybackComplete === 'function') {
+	        p.onPlaybackComplete.call(p.callbacksContext || this);
+	      }
+	    }
 	    /*
 	      Method to set tween's state to complete.
 	      @method _complete
@@ -1009,7 +1064,6 @@
 	      }
 	      this._isFirstUpdate = true;
 	    }
-
 	    /*
 	      Method call onRepeatComplete calback and set flags.
 	      @private
@@ -8064,7 +8118,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.219.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.221.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8084,6 +8138,14 @@
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
+
+	// var playEl = document.querySelector('#js-play'),
+	//     rangeSliderEl = document.querySelector('#js-range-slider');
+	// document.body.addEventListener('click', function (e) {
+	//   sw
+	//     .tune({ timeline: {delay: 0 , repeat: 1 } })
+	//     .replay();
+	// });
 
 	// ### istanbul ignore next ###
 	if (true) {

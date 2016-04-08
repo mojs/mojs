@@ -57,6 +57,11 @@ class Tween extends Module {
       onFirstUpdate:          null,
       onUpdate:               null,
       isChained:              false,
+      // playback callbacks
+      onPlaybackStart:        null,
+      onPlaybackPause:        null,
+      onPlaybackStop:         null,
+      onPlaybackComplete:     null,
       // context which all callbacks will be called with
       callbacksContext:       null
     }
@@ -722,7 +727,6 @@ class Tween extends Module {
     p.wasYoyo = isYoyo;
     return this;
   }
-
   /*
     Method to set tween's state to start and call onStart callback.
     @method _start
@@ -739,7 +743,46 @@ class Tween extends Module {
     this._isCompleted = false; this._isStarted = true;
     this._isFirstUpdate = false;
   }
-
+  /*
+    Method to call onPlaybackStart callback
+    @private
+  */
+  _playbackStart ( ) {
+    var p = this._props;
+    if (p.onPlaybackStart != null && typeof p.onPlaybackStart === 'function') {
+      p.onPlaybackStart.call(p.callbacksContext || this);
+    }
+  }
+  /*
+    Method to call onPlaybackPause callback
+    @private
+  */
+  _playbackPause ( ) {
+    var p = this._props;
+    if (p.onPlaybackPause != null && typeof p.onPlaybackPause === 'function') {
+      p.onPlaybackPause.call(p.callbacksContext || this);
+    }
+  }
+  /*
+    Method to call onPlaybackStop callback
+    @private
+  */
+  _playbackStop ( ) {
+    var p = this._props;
+    if (p.onPlaybackStop != null && typeof p.onPlaybackStop === 'function') {
+      p.onPlaybackStop.call(p.callbacksContext || this);
+    }
+  }
+  /*
+    Method to call onPlaybackComplete callback
+    @private
+  */
+  _playbackComplete ( ) {
+    var p = this._props;
+    if (p.onPlaybackComplete != null && typeof p.onPlaybackComplete === 'function') {
+      p.onPlaybackComplete.call(p.callbacksContext || this);
+    }
+  }
   /*
     Method to set tween's state to complete.
     @method _complete
@@ -776,7 +819,6 @@ class Tween extends Module {
     }
     this._isFirstUpdate = true;
   }
-
   /*
     Method call onRepeatComplete calback and set flags.
     @private
