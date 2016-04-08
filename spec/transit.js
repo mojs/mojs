@@ -174,6 +174,15 @@
           obj.callbackOverrides.onStart(true);
           return expect(tr._hidePrevChainModule).toHaveBeenCalled();
         });
+        it('should call _hideModuleChain if isForward', function() {
+          var obj, tr;
+          tr = new Transit;
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_hideModuleChain');
+          obj.callbackOverrides.onStart(true);
+          return expect(tr._hideModuleChain).toHaveBeenCalled();
+        });
         it('should call _hide if not isForward', function() {
           var obj, tr;
           tr = new Transit;
@@ -192,7 +201,7 @@
           obj.callbackOverrides.onStart(false);
           return expect(tr._showPrevChainModule).toHaveBeenCalled();
         });
-        return it('should not call _hide if not isForward and !isShowStart', function() {
+        it('should not call _hide if not isForward and !isShowStart', function() {
           var obj, tr;
           tr = new Transit({
             isShowStart: true
@@ -202,6 +211,15 @@
           spyOn(tr, '_hide');
           obj.callbackOverrides.onStart(false);
           return expect(tr._hide).not.toHaveBeenCalled();
+        });
+        return it('should not call _hideModuleChain if !isForward', function() {
+          var obj, tr;
+          tr = new Transit;
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_hideModuleChain');
+          obj.callbackOverrides.onStart(false);
+          return expect(tr._hideModuleChain).not.toHaveBeenCalled();
         });
       });
       return describe('onComplete callback override ->', function() {
@@ -1666,7 +1684,7 @@
         return expect(fun).not.toThrow();
       });
     });
-    return describe('_showPrevChainModule method ->', function() {
+    describe('_showPrevChainModule method ->', function() {
       it('should hide prevChainModule', function() {
         var module, tr;
         module = {
@@ -1686,6 +1704,27 @@
           return tr._showPrevChainModule();
         };
         return expect(fun).not.toThrow();
+      });
+    });
+    return describe('_hideModuleChain method ->', function() {
+      return it('should hide all modules in chain', function() {
+        var tr;
+        tr = new Transit().then({
+          fill: 'orange'
+        }).then({
+          fill: 'cyan'
+        }).then({
+          fill: 'yellow'
+        });
+        spyOn(tr._modules[0], '_hide');
+        spyOn(tr._modules[1], '_hide');
+        spyOn(tr._modules[2], '_hide');
+        spyOn(tr._modules[3], '_hide');
+        tr._hideModuleChain();
+        expect(tr._modules[0]._hide).not.toHaveBeenCalled();
+        expect(tr._modules[1]._hide).toHaveBeenCalled();
+        expect(tr._modules[2]._hide).toHaveBeenCalled();
+        return expect(tr._modules[3]._hide).toHaveBeenCalled();
       });
     });
   });

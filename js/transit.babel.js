@@ -352,11 +352,13 @@ class Transit extends Tunable {
     // specify control functions for the module
     obj.callbackOverrides = {
       onUpdate: function (pe) { return it._setProgress(pe); },
-      onStart: function (isFwd) {
+      onStart:  function (isFwd) {
         if ( isFwd ) {
           it._show();
           // hide previous module in then chain
           it._hidePrevChainModule();
+          // hide all modules in the chain (for chain parent only)
+          it._hideModuleChain();
         } else {
           (!p.isShowStart && it._hide())
           // show previous module in then chain
@@ -398,6 +400,15 @@ class Transit extends Tunable {
   _showPrevChainModule () {
     var p = this._props;
     p.prevChainModule && p.prevChainModule._show();
+  }
+  /*
+    Method to hide all modules in then chain.
+    @private
+  */
+  _hideModuleChain () {
+    for (var i = 1; i < this._modules.length; i++ ) {
+      this._modules[i]._hide();
+    }
   }
 }
 

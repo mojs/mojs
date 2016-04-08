@@ -136,6 +136,13 @@ describe 'Transit ->', ->
         spyOn tr, '_hidePrevChainModule'
         obj.callbackOverrides.onStart true
         expect(tr._hidePrevChainModule).toHaveBeenCalled()
+      it 'should call _hideModuleChain if isForward', ->
+        tr = new Transit
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_hideModuleChain'
+        obj.callbackOverrides.onStart true
+        expect(tr._hideModuleChain).toHaveBeenCalled()
       it 'should call _hide if not isForward', ->
         tr = new Transit
         obj = {}
@@ -157,6 +164,14 @@ describe 'Transit ->', ->
         spyOn tr, '_hide'
         obj.callbackOverrides.onStart false
         expect(tr._hide).not.toHaveBeenCalled()
+
+      it 'should not call _hideModuleChain if !isForward', ->
+        tr = new Transit
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_hideModuleChain'
+        obj.callbackOverrides.onStart false
+        expect(tr._hideModuleChain).not.toHaveBeenCalled()
 
     describe 'onComplete callback override ->', ->
       it 'should override this._o.onComplete', ->
@@ -1019,6 +1034,25 @@ describe 'Transit ->', ->
       tr = new Transit
       fun = -> tr._showPrevChainModule()
       expect(fun).not.toThrow()
+
+  describe '_hideModuleChain method ->', ->
+    it 'should hide all modules in chain', ->
+      tr = new Transit()
+        .then( fill: 'orange' )
+        .then( fill: 'cyan' )
+        .then( fill: 'yellow' )
+
+      spyOn tr._modules[0], '_hide'
+      spyOn tr._modules[1], '_hide'
+      spyOn tr._modules[2], '_hide'
+      spyOn tr._modules[3], '_hide'
+
+      tr._hideModuleChain()
+
+      expect(tr._modules[0]._hide).not.toHaveBeenCalled()
+      expect(tr._modules[1]._hide).toHaveBeenCalled()
+      expect(tr._modules[2]._hide).toHaveBeenCalled()
+      expect(tr._modules[3]._hide).toHaveBeenCalled()
 
 
 

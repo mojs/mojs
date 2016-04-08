@@ -2263,6 +2263,8 @@
 	            it._show();
 	            // hide previous module in then chain
 	            it._hidePrevChainModule();
+	            // hide all modules in the chain (for chain parent only)
+	            it._hideModuleChain();
 	          } else {
 	            !p.isShowStart && it._hide();
 	            // show previous module in then chain
@@ -2318,6 +2320,18 @@
 	    value: function _showPrevChainModule() {
 	      var p = this._props;
 	      p.prevChainModule && p.prevChainModule._show();
+	    }
+	    /*
+	      Method to hide all modules in then chain.
+	      @private
+	    */
+
+	  }, {
+	    key: '_hideModuleChain',
+	    value: function _hideModuleChain() {
+	      for (var i = 1; i < this._modules.length; i++) {
+	        this._modules[i]._hide();
+	      }
 	    }
 	  }]);
 	  return Transit;
@@ -8049,7 +8063,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.218.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.218.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8067,6 +8081,9 @@
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
 	*/
+
+	mojs.h = mojs.helpers;
+	mojs.delta = mojs.h.delta;
 
 	// ### istanbul ignore next ###
 	if (true) {
