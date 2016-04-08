@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.217.1', isDebug: true, helpers: h,
+  revision:   '0.218.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -25,6 +25,7 @@ window.mojs = {
 
 // TODO:
 /*
+  hide all modules on start
   add onPlaybackStart, onPlaybackStop,
   onPlaybackFinish methods to support mojs-player
   perf optimizations.
@@ -34,28 +35,6 @@ window.mojs = {
   parse rand(stagger(20, 10), 20) values
   percentage for radius
 */
-
-mojs.h     = mojs.helpers;
-mojs.delta = mojs.h.delta;
-
-// var sw = new mojs.Transit({
-//   left: '50%', top: '50%',
-//   x: { 0 : 200 },
-// }).then({
-//   delay: 2000,
-//   x: 0,
-// }).then({
-//   delay: 2000,
-//   x: 200,
-// });
-
-// var playEl = document.querySelector('#js-play'),
-//     rangeSliderEl = document.querySelector('#js-range-slider');
-// document.body.addEventListener('click', function (e) {
-//   sw
-//     // .tune({ timeline: {delay: 0 , repeat: 2 } })
-//     .replay();
-// });
 
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {

@@ -1901,8 +1901,8 @@
 	        isShowStart: false,
 	        // Possible values: [ boolean ]
 	        isShowEnd: true,
-	        // // Possible values: [ number > 0 ]
-	        // duration:         400,
+	        // Possible values: [ number > 0 ]
+	        duration: 400,
 	        // Possible values: [ number ]
 	        size: null,
 	        // Possible values: [ number ]
@@ -2410,7 +2410,6 @@
 	      this._defaults.radius = { 5: 0 };
 	      /* [number: -1, 1] :: Directon of Swirl. */
 	      this._defaults.direction = 1;
-
 	      /* technical ones: */
 	      /* [boolean] :: If should have child shape. */
 	      this._defaults.isWithShape = true;
@@ -8050,7 +8049,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.217.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.218.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8058,6 +8057,7 @@
 
 	// TODO:
 	/*
+	  hide all modules on start
 	  add onPlaybackStart, onPlaybackStop,
 	  onPlaybackFinish methods to support mojs-player
 	  perf optimizations.
@@ -8067,28 +8067,6 @@
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
 	*/
-
-	mojs.h = mojs.helpers;
-	mojs.delta = mojs.h.delta;
-
-	// var sw = new mojs.Transit({
-	//   left: '50%', top: '50%',
-	//   x: { 0 : 200 },
-	// }).then({
-	//   delay: 2000,
-	//   x: 0,
-	// }).then({
-	//   delay: 2000,
-	//   x: 200,
-	// });
-
-	// var playEl = document.querySelector('#js-play'),
-	//     rangeSliderEl = document.querySelector('#js-range-slider');
-	// document.body.addEventListener('click', function (e) {
-	//   sw
-	//     // .tune({ timeline: {delay: 0 , repeat: 2 } })
-	//     .replay();
-	// });
 
 	// ### istanbul ignore next ###
 	if (true) {
