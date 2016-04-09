@@ -89,6 +89,7 @@ describe 'Transit ->', ->
       it 'should not override onUpdate function if exists', ->
         isRightScope = null; args = null
         options = {
+          easing: 'Linear.None',
           onUpdate:->
             isRightScope = @ is tr
             args = arguments
@@ -106,7 +107,7 @@ describe 'Transit ->', ->
         expect(args[3]).toBe false
 
       it 'should call _setProgress method', ->
-        options = { onUpdate:-> }
+        options = { easing: 'Linear.None', onUpdate:-> }
         obj = {}
         tr = new Transit options
 

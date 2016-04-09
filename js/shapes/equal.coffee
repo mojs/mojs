@@ -1,11 +1,15 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-Bit = require './bit'
+Bit = require('./bit').default;
 
 class Equal extends Bit
-  shape: 'path'
-  ratio: 1.43
+  # shape: 'path'
+  # ratio: 1.43
+  vars:->
+    super
+    this.shape = 'path';
+    this.ratio = 1.43;
   draw:->
     super
     return if !@props.points

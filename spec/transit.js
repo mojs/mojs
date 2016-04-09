@@ -119,6 +119,7 @@
           isRightScope = null;
           args = null;
           options = {
+            easing: 'Linear.None',
             onUpdate: function() {
               isRightScope = this === tr;
               return args = arguments;
@@ -137,6 +138,7 @@
         return it('should call _setProgress method', function() {
           var obj, options, progress, tr;
           options = {
+            easing: 'Linear.None',
             onUpdate: function() {}
           };
           obj = {};

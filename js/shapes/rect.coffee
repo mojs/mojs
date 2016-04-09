@@ -1,11 +1,15 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-Bit = require './bit'
+Bit = require('./bit').default;
 
 class Rect extends Bit
-  shape:   'rect'
-  ratio:   1.43
+  # shape:   'rect'
+  # ratio:   1.43
+  vars:->
+    super
+    this.shape = 'rect';
+    this.ratio = 1.43;
   draw:->
     super
     radiusX = if @props.radiusX? then @props.radiusX else @props.radius

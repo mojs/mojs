@@ -91,14 +91,14 @@ module.exports = function(config) {
       // 'build/mo.js',
       // 'build/mojs.js',
       
-      'build/h.js',
-      'spec/h.js',
-      'build/transit.js',
-      'spec/transit.js',
-      'build/swirl.js',
-      'spec/swirl.js',
-      'build/burst.js',
-      'spec/burst.js',
+      // 'build/h.js',
+      // 'spec/h.js',
+      // 'build/transit.js',
+      // 'spec/transit.js',
+      // 'build/swirl.js',
+      // 'spec/swirl.js',
+      // 'build/burst.js',
+      // 'spec/burst.js',
 
       'build/module.js',
       'spec/module.js',
@@ -128,8 +128,8 @@ module.exports = function(config) {
 
       'build/motion-path.js',
       'spec/motion-path.js',
-      'build/bits/*.js',
-      'spec/bits/*.js'
+      // 'build/bits/*.js',
+      // 'spec/bits/*.js'
     ],
 
     // preprocess matching files before serving them to the browser

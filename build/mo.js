@@ -2285,7 +2285,7 @@
 	  }, {
 	    key: '_createBit',
 	    value: function _createBit() {
-	      var bitClass = shapesMap.getShape(this._o.shape || 'circle');
+	      var bitClass = shapesMap.getShape(this._props.shape);
 	      this.bit = new bitClass({ ctx: this.ctx, el: this._o.bit, isDrawLess: true });
 	      // if draw on foreign context
 	      // or we are animating an svg element outside the module
@@ -5579,7 +5579,7 @@
 
 	var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
-	Bit = __webpack_require__(25);
+	Bit = __webpack_require__(25)["default"];
 
 	Circle = __webpack_require__(34);
 
@@ -6548,7 +6548,7 @@
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
 
-	var _getOwnPropertyDescriptor = __webpack_require__(47);
+	var _getOwnPropertyDescriptor = __webpack_require__(48);
 
 	var _getOwnPropertyDescriptor2 = _interopRequireDefault(_getOwnPropertyDescriptor);
 
@@ -6587,7 +6587,7 @@
 
 	exports.__esModule = true;
 
-	var _defineProperty = __webpack_require__(48);
+	var _defineProperty = __webpack_require__(47);
 
 	var _defineProperty2 = _interopRequireDefault(_defineProperty);
 
@@ -6615,210 +6615,233 @@
 /* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Bit, h;
+	'use strict';
 
-	h = __webpack_require__(16);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	Bit = (function() {
-	  Bit.prototype.ns = 'http://www.w3.org/2000/svg';
+	var _keys = __webpack_require__(27);
 
-	  Bit.prototype.shape = 'line';
+	var _keys2 = _interopRequireDefault(_keys);
 
-	  Bit.prototype.ratio = 1;
+	var _typeof2 = __webpack_require__(15);
 
-	  Bit.prototype.defaults = {
-	    radius: 50,
-	    radiusX: void 0,
-	    radiusY: void 0,
-	    points: 3,
-	    x: 0,
-	    y: 0,
-	    rx: 0,
-	    ry: 0,
-	    angle: 0,
-	    stroke: 'hotpink',
-	    'stroke-width': 2,
-	    'stroke-opacity': 1,
-	    fill: 'transparent',
-	    'fill-opacity': 1,
-	    'stroke-dasharray': '',
-	    'stroke-dashoffset': '',
-	    'stroke-linecap': ''
-	  };
+	var _typeof3 = _interopRequireDefault(_typeof2);
 
+	var _classCallCheck2 = __webpack_require__(21);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(24);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _h = __webpack_require__(16);
+
+	var _h2 = _interopRequireDefault(_h);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Bit = function () {
 	  function Bit(o) {
-	    this.o = o != null ? o : {};
+	    (0, _classCallCheck3.default)(this, Bit);
+
+	    this.o = o;
 	    this.vars();
 	    this.render();
-	    this;
+	    return this;
 	  }
 
-	  Bit.prototype.vars = function() {
-	    if (this.o.ctx && this.o.ctx.tagName === 'svg') {
-	      this.ctx = this.o.ctx;
-	    } else if (!this.o.el) {
-	      h.error('You should pass a real context(ctx) to the bit');
-	    }
-	    this.state = {};
-	    this.drawMapLength = this.drawMap.length;
-	    this.extendDefaults();
-	    return this.calcTransform();
-	  };
+	  (0, _createClass3.default)(Bit, [{
+	    key: 'vars',
+	    value: function vars() {
+	      this.ns = 'http://www.w3.org/2000/svg';
+	      this.shape = 'line';
+	      this.ratio = 1;
+	      this.defaults = {
+	        radius: 50,
+	        radiusX: undefined,
+	        radiusY: undefined,
+	        points: 3,
+	        x: 0,
+	        y: 0,
+	        rx: 0,
+	        ry: 0,
+	        angle: 0,
+	        stroke: 'hotpink',
+	        'stroke-width': 2,
+	        'stroke-opacity': 1,
+	        fill: 'transparent',
+	        'fill-opacity': 1,
+	        'stroke-dasharray': '',
+	        'stroke-dashoffset': '',
+	        'stroke-linecap': ''
+	      };
 
-	  Bit.prototype.calcTransform = function() {
-	    var rotate;
-	    rotate = "rotate(" + this.props.angle + ", " + this.props.x + ", " + this.props.y + ")";
-	    return this.props.transform = "" + rotate;
-	  };
+	      this.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
 
-	  Bit.prototype.extendDefaults = function() {
-	    var key, ref, results, value;
-	    if (this.props == null) {
-	      this.props = {};
+	      if (this.o.ctx && this.o.ctx.tagName === 'svg') {
+	        this.ctx = this.o.ctx;
+	      } else if (!this.o.el) {
+	        _h2.default.error('You should pass a real context(ctx) to the bit');
+	        // # --> COVER return if not ctx and not el
+	        // # return true
+	      }
+	      this.state = {};this.drawMapLength = this.drawMap.length;
+	      this.extendDefaults();
+	      this.calcTransform();
 	    }
-	    ref = this.defaults;
-	    results = [];
-	    for (key in ref) {
-	      value = ref[key];
-	      results.push(this.props[key] = this.o[key] != null ? this.o[key] : value);
+	  }, {
+	    key: 'calcTransform',
+	    value: function calcTransform() {
+	      var p = this.props,
+	          rotate = 'rotate(' + p.angle + ', ' + p.x + ', ' + p.y + ')';
+	      p.transform = '' + rotate;
 	    }
-	    return results;
-	  };
+	  }, {
+	    key: 'extendDefaults',
+	    value: function extendDefaults() {
+	      this.props = this.props == null ? {} : this.props;
+	      for (var key in this.defaults) {
+	        var value = this.defaults[key];
+	        this.props[key] = this.o[key] != null ? this.o[key] : value;
+	      }
+	    }
+	  }, {
+	    key: 'setAttr',
+	    value: function setAttr(attr, value) {
+	      if ((typeof attr === 'undefined' ? 'undefined' : (0, _typeof3.default)(attr)) === 'object') {
+	        var keys = (0, _keys2.default)(attr),
+	            len = keys.length,
+	            el = value || this.el;
 
-	  Bit.prototype.setAttr = function(attr, value) {
-	    var el, key, keys, len, results, val;
-	    if (typeof attr === 'object') {
-	      keys = Object.keys(attr);
-	      len = keys.length;
-	      el = value || this.el;
-	      results = [];
+	        while (len--) {
+	          var key = keys[len],
+	              val = attr[key];
+	          el.setAttribute(key, val);
+	        }
+	      } else {
+	        this.el.setAttribute(attr, value);
+	      }
+	    }
+	  }, {
+	    key: 'setProp',
+	    value: function setProp(attr, value) {
+	      if ((typeof attr === 'undefined' ? 'undefined' : (0, _typeof3.default)(attr)) === 'object') {
+	        for (var key in attr) {
+	          var val = attr[key];
+	          this.props[key] = val;
+	        }
+	      } else {
+	        this.props[attr] = value;
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      this.isRendered = true;
+	      if (this.o.el != null) {
+	        this.el = this.o.el;
+	        this.isForeign = true;
+	      } else {
+	        this.el = document.createElementNS(this.ns, this.shape || 'line');
+	        !this.o.isDrawLess && this.draw();this.ctx.appendChild(this.el);
+	      }
+	    }
+	  }, {
+	    key: 'draw',
+	    value: function draw() {
+	      this.props.length = this.getLength();
+
+	      var len = this.drawMapLength;
 	      while (len--) {
-	        key = keys[len];
-	        val = attr[key];
-	        results.push(el.setAttribute(key, val));
+	        var name = this.drawMap[len];
+	        switch (name) {
+	          case 'stroke-dasharray':
+	          case 'stroke-dashoffset':
+	            this.castStrokeDash(name);
+	          // # name is 'stroke-dashoffset' and console.log this.props[name]
+	        }
+	        this.setAttrsIfChanged(name, this.props[name]);
 	      }
-	      return results;
-	    } else {
-	      return this.el.setAttribute(attr, value);
+	      this.state.radius = this.props.radius;
 	    }
-	  };
-
-	  Bit.prototype.setProp = function(attr, value) {
-	    var key, results, val;
-	    if (typeof attr === 'object') {
-	      results = [];
-	      for (key in attr) {
-	        val = attr[key];
-	        results.push(this.props[key] = val);
+	  }, {
+	    key: 'castStrokeDash',
+	    value: function castStrokeDash(name) {
+	      // # if array of values
+	      var p = this.props;
+	      if (_h2.default.isArray(p[name])) {
+	        var stroke = '';
+	        for (var i = 0; i < p[name].length; i++) {
+	          var dash = p[name][i],
+	              cast = dash.unit === '%' ? this.castPercent(dash.value) : dash.value;
+	          stroke += cast + ' ';
+	        }
+	        p[name] = stroke === '0 ' ? stroke = '' : stroke;
+	        return p[name] = stroke;
 	      }
-	      return results;
-	    } else {
-	      return this.props[attr] = value;
-	    }
-	  };
-
-	  Bit.prototype.render = function() {
-	    this.isRendered = true;
-	    if (this.o.el != null) {
-	      this.el = this.o.el;
-	      return this.isForeign = true;
-	    } else {
-	      this.el = document.createElementNS(this.ns, this.shape || 'line');
-	      !this.o.isDrawLess && this.draw();
-	      return this.ctx.appendChild(this.el);
-	    }
-	  };
-
-	  Bit.prototype.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
-
-	  Bit.prototype.draw = function() {
-	    var len, name;
-	    this.props.length = this.getLength();
-	    len = this.drawMapLength;
-	    while (len--) {
-	      name = this.drawMap[len];
-	      switch (name) {
-	        case 'stroke-dasharray':
-	        case 'stroke-dashoffset':
-	          this.castStrokeDash(name);
+	      // # if single value
+	      if ((0, _typeof3.default)(p[name]) === 'object') {
+	        stroke = p[name].unit === '%' ? this.castPercent(p[name].value) : p[name].value;
+	        p[name] = stroke === 0 ? stroke = '' : stroke;
 	      }
-	      this.setAttrsIfChanged(name, this.props[name]);
 	    }
-	    return this.state.radius = this.props.radius;
-	  };
-
-	  Bit.prototype.castStrokeDash = function(name) {
-	    var cast, dash, i, j, len1, ref, stroke;
-	    if (h.isArray(this.props[name])) {
-	      stroke = '';
-	      ref = this.props[name];
-	      for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
-	        dash = ref[i];
-	        cast = dash.unit === '%' ? this.castPercent(dash.value) : dash.value;
-	        stroke += cast + " ";
+	  }, {
+	    key: 'castPercent',
+	    value: function castPercent(percent) {
+	      return percent * (this.props.length / 100);
+	    }
+	  }, {
+	    key: 'setAttrsIfChanged',
+	    value: function setAttrsIfChanged(name, value) {
+	      if ((typeof name === 'undefined' ? 'undefined' : (0, _typeof3.default)(name)) === 'object') {
+	        var keys = (0, _keys2.default)(name),
+	            len = keys.length;
+	        while (len--) {
+	          var key = keys[len],
+	              value = name[key];
+	          this.setAttrIfChanged(key, value);
+	        }
+	      } else {
+	        value = value == null ? this.props[name] : value;
+	        this.setAttrIfChanged(name, value);
 	      }
-	      this.props[name] = stroke === '0 ' ? stroke = '' : stroke;
-	      return this.props[name] = stroke;
 	    }
-	    if (typeof this.props[name] === 'object') {
-	      stroke = this.props[name].unit === '%' ? this.castPercent(this.props[name].value) : this.props[name].value;
-	      return this.props[name] = stroke === 0 ? stroke = '' : stroke;
-	    }
-	  };
-
-	  Bit.prototype.castPercent = function(percent) {
-	    return percent * (this.props.length / 100);
-	  };
-
-	  Bit.prototype.setAttrsIfChanged = function(name, value) {
-	    var key, keys, len, results;
-	    if (typeof name === 'object') {
-	      keys = Object.keys(name);
-	      len = keys.length;
-	      results = [];
-	      while (len--) {
-	        key = keys[len];
-	        value = name[key];
-	        results.push(this.setAttrIfChanged(key, value));
+	  }, {
+	    key: 'setAttrIfChanged',
+	    value: function setAttrIfChanged(name, value) {
+	      if (this.isChanged(name, value)) {
+	        this.el.setAttribute(name, value);
+	        this.state[name] = value;
 	      }
-	      return results;
-	    } else {
-	      if (value == null) {
-	        value = this.props[name];
+	    }
+	  }, {
+	    key: 'isChanged',
+	    value: function isChanged(name, value) {
+	      value = value == null ? this.props[name] : value;
+	      return this.state[name] !== value;
+	    }
+	  }, {
+	    key: 'getLength',
+	    value: function getLength() {
+	      var p = this.props,
+	          len = 0,
+	          isGetLength = !!(this.el && this.el.getTotalLength);
+
+	      if (isGetLength && this.el.getAttribute('d')) {
+	        len = this.el.getTotalLength();
+	      } else {
+	        len = 2 * (p.radiusX != null ? p.radiusX : p.radius);
 	      }
-	      return this.setAttrIfChanged(name, value);
+	      return len;
 	    }
-	  };
-
-	  Bit.prototype.setAttrIfChanged = function(name, value) {
-	    if (this.isChanged(name, value)) {
-	      this.el.setAttribute(name, value);
-	      return this.state[name] = value;
-	    }
-	  };
-
-	  Bit.prototype.isChanged = function(name, value) {
-	    if (value == null) {
-	      value = this.props[name];
-	    }
-	    return this.state[name] !== value;
-	  };
-
-	  Bit.prototype.getLength = function() {
-	    var ref;
-	    if ((((ref = this.el) != null ? ref.getTotalLength : void 0) != null) && this.el.getAttribute('d')) {
-	      return this.el.getTotalLength();
-	    } else {
-	      return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);
-	    }
-	  };
-
+	  }]);
 	  return Bit;
+	}();
 
-	})();
-
-	module.exports = Bit;
-
+	exports.default = Bit;
 
 /***/ },
 /* 26 */
@@ -6904,7 +6927,7 @@
 
 	exports.__esModule = true;
 
-	var _defineProperty = __webpack_require__(48);
+	var _defineProperty = __webpack_require__(47);
 
 	var _defineProperty2 = _interopRequireDefault(_defineProperty);
 
@@ -6947,7 +6970,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(25);
+	Bit = __webpack_require__(25)["default"];
 
 	Circle = (function(superClass) {
 	  extend(Circle, superClass);
@@ -6956,7 +6979,10 @@
 	    return Circle.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Circle.prototype.shape = 'ellipse';
+	  Circle.prototype.vars = function() {
+	    Circle.__super__.vars.apply(this, arguments);
+	    return this.shape = 'ellipse';
+	  };
 
 	  Circle.prototype.draw = function() {
 	    var rx, ry;
@@ -6995,7 +7021,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(25);
+	Bit = __webpack_require__(25)["default"];
 
 	Line = (function(superClass) {
 	  extend(Line, superClass);
@@ -7033,7 +7059,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(25);
+	Bit = __webpack_require__(25)["default"];
 
 	Zigzag = (function(superClass) {
 	  extend(Zigzag, superClass);
@@ -7042,9 +7068,11 @@
 	    return Zigzag.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Zigzag.prototype.shape = 'path';
-
-	  Zigzag.prototype.ratio = 1.43;
+	  Zigzag.prototype.vars = function() {
+	    Zigzag.__super__.vars.apply(this, arguments);
+	    this.shape = 'path';
+	    return this.ratio = 1.43;
+	  };
 
 	  Zigzag.prototype.draw = function() {
 	    var char, i, iX, iX2, iY, iY2, j, points, radiusX, radiusY, ref, stepX, stepY, strokeWidth, xStart, yStart;
@@ -7090,7 +7118,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(25);
+	Bit = __webpack_require__(25)["default"];
 
 	Rect = (function(superClass) {
 	  extend(Rect, superClass);
@@ -7099,9 +7127,11 @@
 	    return Rect.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Rect.prototype.shape = 'rect';
-
-	  Rect.prototype.ratio = 1.43;
+	  Rect.prototype.vars = function() {
+	    Rect.__super__.vars.apply(this, arguments);
+	    this.shape = 'rect';
+	    return this.ratio = 1.43;
+	  };
 
 	  Rect.prototype.draw = function() {
 	    var radiusX, radiusY;
@@ -7142,7 +7172,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(25);
+	Bit = __webpack_require__(25)["default"];
 
 	h = __webpack_require__(16);
 
@@ -7153,7 +7183,10 @@
 	    return Polygon.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Polygon.prototype.shape = 'path';
+	  Polygon.prototype.vars = function() {
+	    Polygon.__super__.vars.apply(this, arguments);
+	    return this.shape = 'path';
+	  };
 
 	  Polygon.prototype.draw = function() {
 	    this.drawShape();
@@ -7209,7 +7242,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(25);
+	Bit = __webpack_require__(25)["default"];
 
 	Cross = (function(superClass) {
 	  extend(Cross, superClass);
@@ -7218,7 +7251,10 @@
 	    return Cross.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Cross.prototype.shape = 'path';
+	  Cross.prototype.vars = function() {
+	    Cross.__super__.vars.apply(this, arguments);
+	    return this.shape = 'path';
+	  };
 
 	  Cross.prototype.draw = function() {
 	    var d, line1, line2, radiusX, radiusY, x1, x2, y1, y2;
@@ -7261,7 +7297,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(25);
+	Bit = __webpack_require__(25)["default"];
 
 	Equal = (function(superClass) {
 	  extend(Equal, superClass);
@@ -7270,9 +7306,11 @@
 	    return Equal.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Equal.prototype.shape = 'path';
-
-	  Equal.prototype.ratio = 1.43;
+	  Equal.prototype.vars = function() {
+	    Equal.__super__.vars.apply(this, arguments);
+	    this.shape = 'path';
+	    return this.ratio = 1.43;
+	  };
 
 	  Equal.prototype.draw = function() {
 	    var d, i, j, radiusX, radiusY, ref, x1, x2, y, yStart, yStep;
@@ -8145,7 +8183,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.222.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.222.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8164,13 +8202,19 @@
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
 
-	// var playEl = document.querySelector('#js-play'),
-	//     rangeSliderEl = document.querySelector('#js-range-slider');
-	// document.body.addEventListener('click', function (e) {
-	//   sw
-	//     .tune({ timeline: {delay: 0 , repeat: 1 } })
-	//     .replay();
-	// });
+	var sw = new mojs.Transit({
+	  x: { 0: 200 },
+	  isTimelineLess: 1,
+	  duration: 4000
+	});
+
+	var playEl = document.querySelector('#js-play'),
+	    rangeSliderEl = document.querySelector('#js-range-slider');
+	document.body.addEventListener('click', function (e) {
+	  sw
+	  // .tune({ timeline: {delay: 0 , repeat: 1 } })
+	  .replay();
+	});
 
 	// ### istanbul ignore next ###
 	if (true) {
@@ -8205,9 +8249,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(68);
-	__webpack_require__(69);
-	module.exports = function getOwnPropertyDescriptor(it, key){
-	  return $.getDesc(it, key);
+	module.exports = function defineProperty(it, key, desc){
+	  return $.setDesc(it, key, desc);
 	};
 
 /***/ },
@@ -8215,8 +8258,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(68);
-	module.exports = function defineProperty(it, key, desc){
-	  return $.setDesc(it, key, desc);
+	__webpack_require__(69);
+	module.exports = function getOwnPropertyDescriptor(it, key){
+	  return $.getDesc(it, key);
 	};
 
 /***/ },

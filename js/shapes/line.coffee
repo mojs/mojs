@@ -1,7 +1,7 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-Bit = require './bit'
+Bit = require('./bit').default;
 
 class Line extends Bit
   draw:->

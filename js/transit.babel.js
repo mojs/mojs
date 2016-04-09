@@ -311,7 +311,7 @@ class Transit extends Tunable {
     @private
   */
   _createBit () {
-    var bitClass = shapesMap.getShape(this._o.shape || 'circle');
+    var bitClass = shapesMap.getShape(this._props.shape);
     this.bit = new bitClass({ ctx: this.ctx, el: this._o.bit, isDrawLess: true });
     // if draw on foreign context
     // or we are animating an svg element outside the module

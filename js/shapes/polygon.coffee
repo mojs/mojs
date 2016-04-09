@@ -1,11 +1,13 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-Bit = require './bit'
+Bit = require('./bit').default;
 h   = require '../h'
 
 class Polygon extends Bit
-  shape: 'path'
+  vars: ->
+    super
+    this.shape = 'path';
   draw:->
     # !@isDraw and @drawShape()
     @drawShape()

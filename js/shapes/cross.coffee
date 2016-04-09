@@ -1,10 +1,13 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-Bit = require './bit'
+Bit = require('./bit').default;
 
 class Cross extends Bit
-  shape: 'path'
+  # shape: 'path'
+  vars:->
+    super
+    this.shape = 'path';
   draw:->
     super
     radiusX = if @props.radiusX? then @props.radiusX else @props.radius

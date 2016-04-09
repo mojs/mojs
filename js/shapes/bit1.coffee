@@ -101,10 +101,13 @@ class Bit
     else
       value ?= @props[name]
       @setAttrIfChanged name, value
+
   setAttrIfChanged:(name, value)->
     if @isChanged(name, value)
       @el.setAttribute(name, value); @state[name] = value
+
   isChanged:(name, value)-> value ?= @props[name]; @state[name] isnt value
+  
   getLength:->
     if @el?.getTotalLength? and @el.getAttribute('d') then @el.getTotalLength()
     else 2*if @props.radiusX? then @props.radiusX else @props.radius

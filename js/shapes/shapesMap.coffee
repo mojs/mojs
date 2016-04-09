@@ -1,5 +1,5 @@
 
-Bit       = require './bit'
+Bit       = require('./bit').default
 Circle    = require './circle'
 Line      = require './line'
 Zigzag    = require './zigzag'
