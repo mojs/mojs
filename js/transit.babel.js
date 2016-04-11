@@ -2,9 +2,10 @@
 const h         = require('./h');
 const Bit       = require('./shapes/bit');
 const shapesMap = require('./shapes/shapesMap');
-import Tweenable  from './tween/tweenable';
+import Module     from './module';
 import Thenable   from './thenable';
 import Tunable    from './tunable';
+import Tweenable  from './tween/tweenable';
 import Tween      from './tween/tween';
 import Timeline   from './tween/timeline';
 
@@ -97,6 +98,7 @@ class Transit extends Tunable {
     this._origin   = {};
     // should draw on foreign svg canvas
     this.isForeign = !!this._o.ctx;
+    // this._super_setProgress = Module.prototype._setProgress.bind(this);
     // should take an svg element as self bit
     return this.isForeignBit = !!this._o.bit;
   }
@@ -193,7 +195,10 @@ class Transit extends Tunable {
       var isTranslate = this._isPropChanged('x') || this._isPropChanged('y'),
           isScaleRotate = this._isPropChanged('scale') || this._isPropChanged('angle');
       if ( isTranslate || isScaleRotate ) {
-        h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
+        var transform = this._fillTransform();
+        this.el.style["#{h.prefix.css}#{'transform'}"] = transform;
+        this.el.style['transform'] = transform;
+        // h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
       }
     }
   }
@@ -326,7 +331,9 @@ class Transit extends Tunable {
   */
   _setProgress ( progress ) {
     // call the super on Module
-    super._setProgress( progress );
+    // this._super_setProgress(progress);
+    Module.prototype._setProgress.call(this, progress);
+    // super._setProgress( progress );
     this._calcOrigin();
     this._draw(progress);
   }

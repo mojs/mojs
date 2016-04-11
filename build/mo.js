@@ -1883,9 +1883,9 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _tweenable = __webpack_require__(10);
+	var _module = __webpack_require__(13);
 
-	var _tweenable2 = _interopRequireDefault(_tweenable);
+	var _module2 = _interopRequireDefault(_module);
 
 	var _thenable = __webpack_require__(11);
 
@@ -1894,6 +1894,10 @@
 	var _tunable = __webpack_require__(12);
 
 	var _tunable2 = _interopRequireDefault(_tunable);
+
+	var _tweenable = __webpack_require__(10);
+
+	var _tweenable2 = _interopRequireDefault(_tweenable);
 
 	var _tween = __webpack_require__(2);
 
@@ -2012,6 +2016,7 @@
 	      this._origin = {};
 	      // should draw on foreign svg canvas
 	      this.isForeign = !!this._o.ctx;
+	      // this._super_setProgress = Module.prototype._setProgress.bind(this);
 	      // should take an svg element as self bit
 	      return this.isForeignBit = !!this._o.bit;
 	    }
@@ -2130,7 +2135,10 @@
 	        var isTranslate = this._isPropChanged('x') || this._isPropChanged('y'),
 	            isScaleRotate = this._isPropChanged('scale') || this._isPropChanged('angle');
 	        if (isTranslate || isScaleRotate) {
-	          h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
+	          var transform = this._fillTransform();
+	          this.el.style["#{h.prefix.css}#{'transform'}"] = transform;
+	          this.el.style['transform'] = transform;
+	          // h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
 	        }
 	      }
 	    }
@@ -2305,7 +2313,9 @@
 	    key: '_setProgress',
 	    value: function _setProgress(progress) {
 	      // call the super on Module
-	      (0, _get3.default)((0, _getPrototypeOf2.default)(Transit.prototype), '_setProgress', this).call(this, progress);
+	      // this._super_setProgress(progress);
+	      _module2.default.prototype._setProgress.call(this, progress);
+	      // super._setProgress( progress );
 	      this._calcOrigin();
 	      this._draw(progress);
 	    }
@@ -5051,9 +5061,7 @@
 	  };
 
 	  Helpers.prototype.setPrefixedStyle = function(el, name, value) {
-	    if (name === 'transform') {
-	      el.style["" + this.prefix.css + name] = value;
-	    }
+	    (name === 'transform') && (el.style["" + this.prefix.css + name] = value);
 	    return el.style[name] = value;
 	  };
 

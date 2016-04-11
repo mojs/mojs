@@ -36,6 +36,7 @@ window.mojs = {
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
 
+
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {
   define("mojs", [], function () { return mojs; });

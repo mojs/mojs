@@ -147,7 +147,7 @@ class Helpers
     if value < min then min else if value > max then max else value
     # Math.min Math.max(value, min), max
   setPrefixedStyle:(el, name, value)->
-    (el.style["#{@prefix.css}#{name}"] = value) if name is 'transform'
+    (name is 'transform') and (el.style["#{@prefix.css}#{name}"] = value)
     el.style[name] = value
   # ---
   # 
