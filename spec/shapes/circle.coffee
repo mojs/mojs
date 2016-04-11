@@ -23,7 +23,7 @@ describe 'Circle ->', ->
       expect(rx).toBe('40')
       expect(ry).toBe('35')
       expect(cx).toBe('0')
-      expect(cy).toBe('50')
+      expect(cy).toBe('50px')
 
     it 'should fallback to radius', ->
       svg   = document.createElementNS?(ns, "svg")

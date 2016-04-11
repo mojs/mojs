@@ -1,18 +1,14 @@
+import Module from '../module';
 import h  from '../h';
 
-class Bit {
-  constructor (o) {
-    this.o = o;
-    this.vars();
-    this.render();
-    return this;
-  }
+class Bit extends Module {
+  _declareDefaults () {
+    this._defaults = {
+      ns:                   'http://www.w3.org/2000/svg',
+      ctx:                  null,
 
-  vars () {
-    this.ns    = 'http://www.w3.org/2000/svg';
-    this.shape = 'line';
-    this.ratio = 1;
-    this.defaults = {
+      shape:                'line',
+      ratio:                1,
       radius:               50,
       radiusX:              undefined,
       radiusY:              undefined,
@@ -31,36 +27,30 @@ class Bit {
       'stroke-dashoffset':  '',
       'stroke-linecap':     ''
     }
-
-    this.drawMap = [
+    this._drawMap = [
       'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill',
       'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform',
     ]
+  }
 
-    if (this.o.ctx && this.o.ctx.tagName === 'svg') {
-      this.ctx = this.o.ctx
-    } else if (!this.o.el) {
+  _vars () {
+    if (this._o.ctx && this._o.ctx.tagName === 'svg') {
+      this.ctx = this._o.ctx
+    } else if (!this._o.el) {
       h.error('You should pass a real context(ctx) to the bit');
       // # --> COVER return if not ctx and not el
       // # return true
     }
-    this.state = {}; this.drawMapLength = this.drawMap.length;
-    this.extendDefaults();
-    this.calcTransform();
-  }
-  calcTransform () {
-    var p      = this.props,
-        rotate = `rotate(${p.angle}, ${p.x}, ${p.y})`;
-    p.transform = `${rotate}`;
+    this._state = {}; this._drawMapLength = this._drawMap.length;
+    // this.calcTransform();
   }
 
-  extendDefaults () {
-    this.props = (this.props == null) ? {} : this.props;
-    for ( var key in this.defaults ) {
-      var value = this.defaults[key];
-      this.props[key] = (this.o[key] != null) ? this.o[key] : value;
-    }
-  }
+  // calcTransform () {
+  //   var p      = this._props,
+  //       rotate = `rotate(${p.angle}, ${p.x}, ${p.y})`;
+  //   p.transform = `${rotate}`;
+  // }
+
   setAttr (attr, value) {
     if ( typeof attr === 'object' ) {
       var keys = Object.keys(attr),
@@ -79,41 +69,41 @@ class Bit {
     if ( typeof attr === 'object' ) {
       for ( var key in attr) {
         var val = attr[key];
-        this.props[key] = val;
+        this._props[key] = val;
       }
-    } else { this.props[attr] = value; }
+    } else { this._props[attr] = value; }
   }
 
-  render () {
+  _render () {
     this.isRendered = true;
-    if (this.o.el != null) {
-      this.el = this.o.el;
+    if (this._o.el != null) {
+      this.el = this._o.el;
       this.isForeign = true;
     } else {
-      this.el = document.createElementNS(this.ns, this.shape || 'line');
-      !this.o.isDrawLess && this.draw(); this.ctx.appendChild(this.el);
+      this.el = document.createElementNS(this._props.ns, this._props.shape);
+      !this._o.isDrawLess && this.draw(); this.ctx.appendChild(this.el);
     }
   }
 
   draw () {
-    this.props.length = this.getLength();
+    this._props.length = this.getLength();
 
-    var len = this.drawMapLength;
+    var len = this._drawMapLength;
     while(len--) {
-      var name = this.drawMap[len];
+      var name = this._drawMap[len];
       switch ( name ) {
         case 'stroke-dasharray':
         case 'stroke-dashoffset':
           this.castStrokeDash(name);
-          // # name is 'stroke-dashoffset' and console.log this.props[name]
+          // # name is 'stroke-dashoffset' and console.log this._props[name]
       }
-      this.setAttrIfChanged( name, this.props[name] );
+      this.setAttrIfChanged( name, this._props[name] );
     }
-    this.state.radius = this.props.radius;
+    this._state.radius = this._props.radius;
   }
   castStrokeDash (name) {
     // # if array of values
-    var p = this.props;
+    var p = this._props;
     if ( h.isArray(p[name]) ) {
       var stroke = '';
       for ( var i = 0; i < p[name].length; i++ ) {
@@ -134,11 +124,9 @@ class Bit {
       p[name] = ( stroke === 0 ) ? stroke = '' : stroke
     }
   }
-  castPercent (percent) {
-    return percent * (this.props.length/100);
-  }
+  castPercent (percent) { return percent * (this._props.length/100); }
+  
   setAttrsIfChanged (name, value) {
-    // if ( typeof name === 'object' ) {
     var keys = Object.keys(name),
         len  = keys.length;
     while(len--) {
@@ -146,26 +134,17 @@ class Bit {
           value = name[key];
       this.setAttrIfChanged(key, value);
     }
-    // } else {
-    //   value = ( value == null) ? this.props[name] : value;
-    //   this.setAttrIfChanged( name, value );
-    // }
   }
 
   setAttrIfChanged (name, value) {
-    if ( this.state[name] !== value ) {
+    if ( this._state[name] !== value ) {
       this.el.setAttribute(name, value);
-      this.state[name] = value;
+      this._state[name] = value;
     }
   }
 
-  // isChanged (name, value){
-  //   value = ( value == null) ? this.props[name] : value;
-  //   return ( this.state[name] !== value );
-  // }
-
   getLength () {
-    var p   = this.props,
+    var p   = this._props,
         len = 0,
         isGetLength = !!( this.el && this.el.getTotalLength );
 

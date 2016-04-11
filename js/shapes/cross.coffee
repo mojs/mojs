@@ -5,22 +5,23 @@ Bit = require('./bit').default;
 
 class Cross extends Bit
   # shape: 'path'
-  vars:->
+  _declareDefaults: ->
     super
-    this.shape = 'path';
+    @_defaults.shape = 'path'
   draw:->
     super
-    radiusX = if @props.radiusX? then @props.radiusX else @props.radius
-    radiusY = if @props.radiusY? then @props.radiusY else @props.radius
-    x1 = @props.x-radiusX; x2 = @props.x+radiusX
-    line1 = "M#{x1},#{@props.y} L#{x2},#{@props.y}"
-    y1 = @props.y-radiusY; y2 = @props.y+radiusY
-    line2 = "M#{@props.x},#{y1} L#{@props.x},#{y2}"
+    radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
+    radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
+    x = parseInt(@_props.x, 10); y = parseInt(@_props.y, 10)
+    x1 = x-radiusX; x2 = x+radiusX
+    line1 = "M#{x1},#{@_props.y} L#{x2},#{@_props.y}"
+    y1 = y-radiusY; y2 = y+radiusY
+    line2 = "M#{@_props.x},#{y1} L#{@_props.x},#{y2}"
     d = "#{line1} #{line2}"
     @setAttr d: d
   getLength:->
-    radiusX = if @props.radiusX? then @props.radiusX else @props.radius
-    radiusY = if @props.radiusY? then @props.radiusY else @props.radius
+    radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
+    radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
     2*(radiusX+radiusY)
 
 module.exports = Cross

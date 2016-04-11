@@ -12,7 +12,15 @@
   });
 
   describe('Bit', function() {
-    describe('context', function() {
+    describe('extention ->', function() {
+      return it('should extend Module', function() {
+        bit = new Bit({
+          ctx: svg
+        });
+        return expect(bit instanceof mojs.Module).toBe(true);
+      });
+    });
+    describe('context ->', function() {
       return it('context passed should be real svg node', function() {
         expect(function() {
           return new Bit;
@@ -30,15 +38,15 @@
       });
     });
     describe('methods', function() {
-      return it('should have vars method', function() {
-        return expect(bit.vars).toBeDefined();
+      return it('should have _vars method', function() {
+        return expect(bit._vars).toBeDefined();
       });
     });
-    describe('render method', function() {
-      it('should have render method', function() {
-        return expect(bit.render).toBeDefined();
+    describe('_render method ->', function() {
+      it('should have _render method', function() {
+        return expect(bit._render).toBeDefined();
       });
-      it('should call render method on init', function() {
+      it('should call _render method on init', function() {
         return expect(bit.isRendered).toBe(true);
       });
       it('should add self to context', function() {
@@ -54,7 +62,7 @@
           ctx: svg
         });
         spyOn(bit, 'draw');
-        bit.render();
+        bit._render();
         return expect(bit.draw).toHaveBeenCalled();
       });
       return it('should not run draw method if isDrawLess option passed', function() {
@@ -64,13 +72,13 @@
           isDrawLess: true
         });
         spyOn(bit, 'draw');
-        bit.render();
+        bit._render();
         return expect(bit.draw).not.toHaveBeenCalled();
       });
     });
     describe('draw method ->', function() {
       it('should set attributes', function() {
-        var fill, isIE9Transform, isTransform, stroke, strokeDasharray, strokeOffset, strokeWidth, transform;
+        var fill, stroke, strokeDasharray, strokeOffset, strokeWidth, transform;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
         bit = new Bit({
           ctx: svg,
@@ -89,14 +97,11 @@
         strokeDasharray = bit.el.getAttribute('stroke-dasharray');
         strokeOffset = bit.el.getAttribute('stroke-dashoffset');
         transform = bit.el.getAttribute('transform');
-        isTransform = transform === 'rotate(45, 20, 20)';
-        isIE9Transform = transform === 'rotate(45 20 20)';
         expect(stroke).toBe('#0f0');
         expect(strokeWidth).toBe('3');
         expect(fill).toBe('#0ff');
         expect(strokeDasharray).toBe('100');
-        expect(strokeOffset).toBe('50');
-        return expect(isTransform || isIE9Transform).toBe(true);
+        return expect(strokeOffset).toBe('50');
       });
       it('should save its state', function() {
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
@@ -115,15 +120,14 @@
           angle: 45
         });
         bit.draw();
-        expect(bit.state['stroke']).toBe('#0f0');
-        expect(bit.state['stroke-width']).toBe(3);
-        expect(bit.state['stroke-opacity']).toBe(.5);
-        expect(bit.state['stroke-dasharray']).toBe(100);
-        expect(bit.state['stroke-dashoffset']).toBe(50);
-        expect(bit.state['stroke-linecap']).toBe('round');
-        expect(bit.state['fill']).toBe('#0ff');
-        expect(bit.state['fill-opacity']).toBe('#f0f');
-        return expect(bit.state['transform']).toBe('rotate(45, 20, 20)');
+        expect(bit._state['stroke']).toBe('#0f0');
+        expect(bit._state['stroke-width']).toBe(3);
+        expect(bit._state['stroke-opacity']).toBe(.5);
+        expect(bit._state['stroke-dasharray']).toBe(100);
+        expect(bit._state['stroke-dashoffset']).toBe(50);
+        expect(bit._state['stroke-linecap']).toBe('round');
+        expect(bit._state['fill']).toBe('#0ff');
+        return expect(bit._state['fill-opacity']).toBe('#f0f');
       });
       it('should not set attribute if property not changed ->', function() {
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
@@ -157,7 +161,7 @@
           'stroke-width': 3
         });
         spyOn(bit.el, 'setAttribute');
-        bit.props['stroke-width'] = 3;
+        bit._props['stroke-width'] = 3;
         bit.setAttrsIfChanged({
           'stroke-width': 3
         });
@@ -182,7 +186,7 @@
         bit.setAttrsIfChanged({
           'stroke-width': 30
         });
-        return expect(bit.state['stroke-width']).toBe(30);
+        return expect(bit._state['stroke-width']).toBe(30);
       });
       return it('should work with values hash ->', function() {
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
@@ -194,8 +198,8 @@
           radius: 30,
           stroke: 'orange'
         });
-        expect(bit.state['radius']).toBe(30);
-        return expect(bit.state['stroke']).toBe('orange');
+        expect(bit._state['radius']).toBe(30);
+        return expect(bit._state['stroke']).toBe('orange');
       });
     });
     describe('setProp method ->', function() {
@@ -205,7 +209,7 @@
           stroke: '#0f0'
         });
         bit.setProp('stroke', '#ff0000');
-        return expect(bit.props.stroke).toBe('#ff0000');
+        return expect(bit._props.stroke).toBe('#ff0000');
       });
       return it('should set multiple properties ->', function() {
         bit = new Bit({
@@ -216,8 +220,8 @@
           stroke: '#ff0000',
           fill: '#0000ff'
         });
-        expect(bit.props.stroke).toBe('#ff0000');
-        return expect(bit.props.fill).toBe('#0000ff');
+        expect(bit._props.stroke).toBe('#ff0000');
+        return expect(bit._props.fill).toBe('#0000ff');
       });
     });
     describe('setAttr method ->', function() {
@@ -241,71 +245,33 @@
     });
     describe('defaults and options', function() {
       it('should have defaults object', function() {
-        return expect(bit.defaults).toBeDefined();
+        return expect(bit._defaults).toBeDefined();
       });
       it('should have state object', function() {
-        return expect(bit.state).toBeDefined();
+        return expect(bit._state).toBeDefined();
       });
-      it('should have drawMap object', function() {
-        expect(bit.drawMap).toBeDefined();
-        return expect(bit.drawMapLength).toBeDefined();
+      it('should have _drawMap object', function() {
+        expect(bit._drawMap).toBeDefined();
+        return expect(bit._drawMapLength).toBeDefined();
       });
       it('should have options object', function() {
-        return expect(bit.o).toBeDefined();
+        return expect(bit._o).toBeDefined();
       });
       it('should have ratio', function() {
-        return expect(bit.ratio).toBeDefined();
+        return expect(bit._defaults.ratio).toBeDefined();
       });
       it('should have dafaults', function() {
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
         bit = new Bit({
           ctx: svg
         });
-        return expect(bit.props.radius).toBe(50);
-      });
-      it('should have extendDefaults method', function() {
-        bit = new Bit({
-          ctx: svg,
-          radius: 45
-        });
-        expect(bit.extendDefaults).toBeDefined();
-        return expect(function() {
-          return bit.extendDefaults();
-        }).not.toThrow();
-      });
-      it('should extend defaults object to properties', function() {
-        bit = new Bit({
-          ctx: svg,
-          radius: 45,
-          'stroke-width': 5
-        });
-        expect(bit.props.radius).toBe(45);
-        return expect(bit.props['stroke-width']).toBe(5);
-      });
-      it('should work with 0 values', function() {
-        bit = new Bit({
-          ctx: svg,
-          radius: 45,
-          'stroke-width': 5,
-          points: 0
-        });
-        return expect(bit.props.points).toBe(0);
+        return expect(bit._props.radius).toBe(50);
       });
       it('should have namespace object', function() {
-        return expect(bit.ns).toBe('http://www.w3.org/2000/svg');
+        return expect(bit._defaults.ns).toBe('http://www.w3.org/2000/svg');
       });
       return it('should have shape object', function() {
-        return expect(bit.shape).toBeDefined();
-      });
-    });
-    describe('calculations', function() {
-      return it('should calculate transform object', function() {
-        bit = new Bit({
-          ctx: svg,
-          angle: 90
-        });
-        expect(bit.props.transform).toBe('rotate(90, 0, 0)');
-        return expect(bit.calcTransform).toBeDefined();
+        return expect(bit._defaults.shape).toBeDefined();
       });
     });
     describe('foreign el ->', function() {
@@ -366,7 +332,7 @@
           ctx: document.createElementNS(ns, 'svg'),
           radius: 100
         });
-        return expect(bit.props.length).toBe(200);
+        return expect(bit._props.length).toBe(200);
       });
       return it('should call getLength method', function() {
         bit = new Bit({
@@ -387,7 +353,7 @@
           radius: 100
         });
         pixels = bit.castPercent(50);
-        return expect(pixels).toBe((bit.props.length / 100) * 50);
+        return expect(pixels).toBe((bit._props.length / 100) * 50);
       });
     });
     describe('castStrokeDash method ->', function() {
@@ -396,50 +362,50 @@
           ctx: document.createElementNS(ns, 'svg'),
           radius: 100
         });
-        bit.props['stroke-dashoffset'] = {
+        bit._props['stroke-dashoffset'] = {
           unit: 'px',
           value: 100
         };
         bit.castStrokeDash('stroke-dashoffset');
-        return expect(bit.props['stroke-dashoffset']).toBe(100);
+        return expect(bit._props['stroke-dashoffset']).toBe(100);
       });
       it('should cast % values', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
           radius: 100
         });
-        bit.props['stroke-dashoffset'] = {
+        bit._props['stroke-dashoffset'] = {
           unit: '%',
           value: 100
         };
         bit.castStrokeDash('stroke-dashoffset');
-        return expect(bit.props['stroke-dashoffset']).toBe(bit.props.length);
+        return expect(bit._props['stroke-dashoffset']).toBe(bit._props.length);
       });
       it('should not set 0 value >> ff issue fix', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
           radius: 100
         });
-        bit.props['stroke-dasharray'] = {
+        bit._props['stroke-dasharray'] = {
           unit: 'px',
           value: 0
         };
         bit.castStrokeDash('stroke-dasharray');
-        return expect(bit.props['stroke-dasharray']).toBe('');
+        return expect(bit._props['stroke-dasharray']).toBe('');
       });
       return it('should not set 0 value >> ff issue fix #2', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
           radius: 100
         });
-        bit.props['stroke-dasharray'] = [
+        bit._props['stroke-dasharray'] = [
           {
             unit: 'px',
             value: 0
           }
         ];
         bit.castStrokeDash('stroke-dasharray');
-        return expect(bit.props['stroke-dasharray']).toBe('');
+        return expect(bit._props['stroke-dasharray']).toBe('');
       });
     });
     return describe('stroke-dash value setting ->', function() {
@@ -455,7 +421,7 @@
           }
         ]);
         bit.draw();
-        return expect(bit.props['stroke-dasharray']).toBe('100 ');
+        return expect(bit._props['stroke-dasharray']).toBe('100 ');
       });
       it('should cast % values', function() {
         var dash;
@@ -473,8 +439,8 @@
           }
         ]);
         bit.draw();
-        dash = (bit.props.length / 100) * 50;
-        return expect(bit.props['stroke-dasharray']).toBe("100 " + dash + " ");
+        dash = (bit._props.length / 100) * 50;
+        return expect(bit._props['stroke-dasharray']).toBe("100 " + dash + " ");
       });
       return it('should cast % single values', function() {
         var dash;
@@ -487,8 +453,8 @@
           unit: '%'
         });
         bit.draw();
-        dash = (bit.props.length / 100) * 25;
-        return expect(bit.props['stroke-dasharray']).toBe(dash);
+        dash = (bit._props.length / 100) * 25;
+        return expect(bit._props['stroke-dasharray']).toBe(dash);
       });
     });
   });

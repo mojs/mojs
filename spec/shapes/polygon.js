@@ -22,7 +22,7 @@
       tri = new Polygon({
         ctx: svg
       });
-      return expect(tri.props.points).toBe(3);
+      return expect(tri._props.points).toBe(3);
     });
     it('should have recieve points prop', function() {
       var tri;
@@ -30,7 +30,7 @@
         ctx: svg,
         points: 8
       });
-      return expect(tri.props.points).toBe(8);
+      return expect(tri._props.points).toBe(8);
     });
     it('should call drawShape method', function() {
       var tri;
@@ -49,7 +49,7 @@
         ctx: svg
       });
       expect(tri.radialPoints).toBeDefined();
-      return expect(tri.radialPoints.length).toBe(tri.props.points);
+      return expect(tri.radialPoints.length).toBe(tri._props.points);
     });
     it('should calculate radialPoints', function() {
       var tri;
@@ -57,7 +57,7 @@
         ctx: svg
       });
       expect(tri.radialPoints).toBeDefined();
-      return expect(tri.radialPoints.length).toBe(tri.props.points);
+      return expect(tri.radialPoints.length).toBe(tri._props.points);
     });
     describe('draw ->', function() {
       it('should add properties to el', function() {

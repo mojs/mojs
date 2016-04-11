@@ -3,16 +3,16 @@ Bit    = mojs.shapesMap.getShape('bit')
 ns     = 'http://www.w3.org/2000/svg'
 svg    = document.createElementNS?(ns, "svg")
 
-describe 'Equal', ->
+describe 'Equal ->', ->
   it 'should extend Bit', ->
     equal = new Equal ctx: svg
     expect(equal instanceof Bit).toBe(true)
   it 'have shape of path', ->
     equal = new Equal ctx: svg
-    expect(equal.shape).toBe 'path'
+    expect(equal._defaults.shape).toBe 'path'
   it 'have ratio of 1.43', ->
     equal = new Equal ctx: svg
-    expect(equal.ratio).toBe 1.43
+    expect(equal._defaults.ratio).toBe 1.43
   describe 'methods ->', ->
     describe 'draw method ->', ->
       it 'should define points', ->

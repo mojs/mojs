@@ -280,7 +280,7 @@ describe 'Transit ->', ->
         shape:        'rect'
       svg = document.createElementNS ns, 'svg'
       rect  = new Rect ctx: svg
-      expect(byte._props.size).toBe(212*rect.ratio)
+      expect(byte._props.size).toBe(212*rect._props.ratio)
     it 'should not calculate size el size if size was passed', ->
       byte = new Byte
         radius:       100
@@ -411,14 +411,14 @@ describe 'Transit ->', ->
     it 'should create bit', ->
       byte = new Byte radius: 25
       expect(byte.bit).toBeDefined()
-      expect(byte.bit.o.isDrawLess).toBe true
+      expect(byte.bit._o.isDrawLess).toBe true
     it 'should create bit based on shape option or fallback to circle', ->
       byte = new Byte
         radius:  25
         shape:   'rect'
       byte2 = new Byte radius: 25
-      expect(byte.bit.shape).toBe  'rect'
-      expect(byte2.bit.shape).toBe 'ellipse'
+      expect(byte.bit._props.shape).toBe  'rect'
+      expect(byte2.bit._props.shape).toBe 'ellipse'
     it 'should add itself to body', ->
       byte = new Byte radius: 25
       expect(byte.el.parentNode.tagName.toLowerCase()).toBe('body')
@@ -583,35 +583,35 @@ describe 'Transit ->', ->
         points:           4
 
       byte._draw()
-      expect(byte.bit.props.x).toBe byte._origin.x
-      expect(byte.bit.props.y).toBe byte._origin.y
-      expect(byte.bit.props.rx).toBe byte._props.rx
-      expect(byte.bit.props.ry).toBe byte._props.ry
-      expect(byte.bit.props.stroke).toBe byte._props.stroke
-      expect(byte.bit.props['stroke-width']).toBe byte._props.strokeWidth
-      expect(byte.bit.props['stroke-opacity']).toBe byte._props.strokeOpacity
-      expect(byte.bit.props['stroke-linecap']).toBe byte._props.strokeLinecap
-      expect(byte.bit.props['stroke-dasharray']).toBe byte._props.strokeDasharray[0].value + ' '
-      expect(byte.bit.props['stroke-dashoffset']).toBe byte._props.strokeDashoffset[0].value + ' '
-      expect(byte.bit.props['fill']).toBe byte._props.fill
-      expect(byte.bit.props['fill-opacity']).toBe byte._props.fillOpacity
-      expect(byte.bit.props['radius']).toBe byte._props.radius
-      expect(byte.bit.props['radiusX']).toBe byte._props.radiusX
-      expect(byte.bit.props['radiusY']).toBe byte._props.radiusY
-      expect(byte.bit.props['points']).toBe byte._props.points
+      expect(byte.bit._props.x).toBe byte._origin.x
+      expect(byte.bit._props.y).toBe byte._origin.y
+      expect(byte.bit._props.rx).toBe byte._props.rx
+      expect(byte.bit._props.ry).toBe byte._props.ry
+      expect(byte.bit._props.stroke).toBe byte._props.stroke
+      expect(byte.bit._props['stroke-width']).toBe byte._props.strokeWidth
+      expect(byte.bit._props['stroke-opacity']).toBe byte._props.strokeOpacity
+      expect(byte.bit._props['stroke-linecap']).toBe byte._props.strokeLinecap
+      expect(byte.bit._props['stroke-dasharray']).toBe byte._props.strokeDasharray[0].value + ' '
+      expect(byte.bit._props['stroke-dashoffset']).toBe byte._props.strokeDashoffset[0].value + ' '
+      expect(byte.bit._props['fill']).toBe byte._props.fill
+      expect(byte.bit._props['fill-opacity']).toBe byte._props.fillOpacity
+      expect(byte.bit._props['radius']).toBe byte._props.radius
+      expect(byte.bit._props['radiusX']).toBe byte._props.radiusX
+      expect(byte.bit._props['radiusY']).toBe byte._props.radiusY
+      expect(byte.bit._props['points']).toBe byte._props.points
       # old
-      # expect(byte.bit.props['transform']).toBe byte._calcShapeTransform()
+      # expect(byte.bit._props['transform']).toBe byte._calcShapeTransform()
 
     it 'should set x/y to center', ->
       byte = new Byte radius: 25
       byte._draw()
-      expect(byte.bit.props.x).toBe byte._props.center
-      expect(byte.bit.props.y).toBe byte._props.center
+      expect(byte.bit._props.x).toBe byte._props.center
+      expect(byte.bit._props.y).toBe byte._props.center
     it 'should set x/y to props.x/props.y if context was passed', ->
       byte = new Byte radius: 25, ctx: svg
       byte._draw()
-      expect(byte.bit.props.x).toBe parseFloat byte._props.x
-      expect(byte.bit.props.y).toBe parseFloat byte._props.y
+      expect(byte.bit._props.x).toBe parseFloat byte._props.x
+      expect(byte.bit._props.y).toBe parseFloat byte._props.y
     it 'should call bit._draw method', ->
       byte = new Byte radius: 25
       spyOn byte.bit, 'draw'
@@ -969,7 +969,7 @@ describe 'Transit ->', ->
 
       tr._props.size = 1
       tr._increaseSizeWithBitRatio()
-      expect(tr._props.size).toBe tr.bit.ratio
+      expect(tr._props.size).toBe tr.bit._props.ratio
 
     it 'should increase size based 2 gap sizes', ->
       gap = 20
@@ -977,7 +977,7 @@ describe 'Transit ->', ->
 
       tr._props.size = 1
       tr._increaseSizeWithBitRatio()
-      expect(tr._props.size).toBe tr.bit.ratio + 2*gap
+      expect(tr._props.size).toBe tr.bit._props.ratio + 2*gap
 
   describe 'callbacksContext option ->', ->
     it 'should pass the options to the tween', ->

@@ -31,7 +31,7 @@
       line = new Zigzag({
         ctx: svg
       });
-      return expect(line.ratio).toBe(1.43);
+      return expect(line._defaults.ratio).toBe(1.43);
     });
     describe('methods ->', function() {
       return describe('draw method ->', function() {

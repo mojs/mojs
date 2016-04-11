@@ -10,10 +10,10 @@ describe 'Polygon ->', ->
 
   it 'should have points prop', ->
     tri = new Polygon ctx: svg
-    expect(tri.props.points).toBe 3
+    expect(tri._props.points).toBe 3
   it 'should have recieve points prop', ->
     tri = new Polygon ctx: svg, points: 8
-    expect(tri.props.points).toBe 8
+    expect(tri._props.points).toBe 8
   
   it 'should call drawShape method', ->
     tri = new Polygon ctx: svg, points: 8
@@ -30,11 +30,11 @@ describe 'Polygon ->', ->
   it 'should calculate radialPoints', ->
     tri = new Polygon ctx: svg
     expect(tri.radialPoints).toBeDefined()
-    expect(tri.radialPoints.length).toBe tri.props.points
+    expect(tri.radialPoints.length).toBe tri._props.points
   it 'should calculate radialPoints', ->
     tri = new Polygon ctx: svg
     expect(tri.radialPoints).toBeDefined()
-    expect(tri.radialPoints.length).toBe tri.props.points
+    expect(tri.radialPoints.length).toBe tri._props.points
 
   describe 'draw ->', ->
     it 'should add properties to el', ->

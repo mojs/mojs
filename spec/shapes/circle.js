@@ -35,7 +35,7 @@
         expect(rx).toBe('40');
         expect(ry).toBe('35');
         expect(cx).toBe('0');
-        return expect(cy).toBe('50');
+        return expect(cy).toBe('50px');
       });
       it('should fallback to radius', function() {
         var cross, rx, ry;

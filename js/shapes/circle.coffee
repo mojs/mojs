@@ -4,21 +4,21 @@
 Bit = require('./bit').default;
 
 class Circle extends Bit
-  vars: ->
+  _declareDefaults: ->
     super
-    this.shape = 'ellipse';
+    this._defaults.shape = 'ellipse';
   draw:->
-    rx = if @props.radiusX? then @props.radiusX else @props.radius
-    ry = if @props.radiusY? then @props.radiusY else @props.radius
+    rx = if @_props.radiusX? then @_props.radiusX else @_props.radius
+    ry = if @_props.radiusY? then @_props.radiusY else @_props.radius
     @setAttrIfChanged 'rx', rx
     @setAttrIfChanged 'ry', ry
-    @setAttrIfChanged 'cx', @props.x
-    @setAttrIfChanged 'cy', @props.y
-    # @setAttrsIfChanged rx: rx, ry: ry, cx: @props.x, cy: @props.y
+    @setAttrIfChanged 'cx', @_props.x
+    @setAttrIfChanged 'cy', @_props.y
+    # @setAttrsIfChanged rx: rx, ry: ry, cx: @_props.x, cy: @_props.y
     super
   getLength:->
-    radiusX = if @props.radiusX? then @props.radiusX else @props.radius
-    radiusY = if @props.radiusY? then @props.radiusY else @props.radius
+    radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
+    radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
     # Math.pow is needed for safari's 6.0.5 odd bug
     # pow = Math.pow;
     2*Math.PI*Math.sqrt((radiusX*radiusX + radiusY*radiusY)/2)

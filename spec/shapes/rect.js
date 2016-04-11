@@ -19,10 +19,10 @@
     });
     describe('defaults ->', function() {
       it('should have shape of "rect"', function() {
-        return expect(rect.shape).toBe('rect');
+        return expect(rect._defaults.shape).toBe('rect');
       });
       return it('should have ratio of 1.43', function() {
-        return expect(rect.ratio).toBe(1.43);
+        return expect(rect._defaults.ratio).toBe(1.43);
       });
     });
     describe('draw ->', function() {
@@ -47,8 +47,8 @@
         expect(height).toBe('40');
         expect(x).toBe('30');
         expect(y).toBe('80');
-        expect(rx).toBe('10');
-        return expect(ry).toBe('20');
+        expect(rx).toBe('10px');
+        return expect(ry).toBe('20px');
       });
       it('should work with radiusX/radiusY props', function() {
         var height, width, x, y;

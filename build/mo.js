@@ -2250,7 +2250,7 @@
 	    key: '_increaseSizeWithBitRatio',
 	    value: function _increaseSizeWithBitRatio() {
 	      var p = this._props;
-	      p.size *= this.bit.ratio;
+	      p.size *= this.bit._props.ratio;
 	      p.size += 2 * p.sizeGap;
 	    }
 	    /*
@@ -6627,6 +6627,10 @@
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
 
+	var _getPrototypeOf = __webpack_require__(26);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
 	var _classCallCheck2 = __webpack_require__(21);
 
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
@@ -6635,29 +6639,41 @@
 
 	var _createClass3 = _interopRequireDefault(_createClass2);
 
+	var _possibleConstructorReturn2 = __webpack_require__(22);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(20);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _module = __webpack_require__(13);
+
+	var _module2 = _interopRequireDefault(_module);
+
 	var _h = __webpack_require__(16);
 
 	var _h2 = _interopRequireDefault(_h);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Bit = function () {
-	  function Bit(o) {
-	    (0, _classCallCheck3.default)(this, Bit);
+	var Bit = function (_Module) {
+	  (0, _inherits3.default)(Bit, _Module);
 
-	    this.o = o;
-	    this.vars();
-	    this.render();
-	    return this;
+	  function Bit() {
+	    (0, _classCallCheck3.default)(this, Bit);
+	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(Bit).apply(this, arguments));
 	  }
 
 	  (0, _createClass3.default)(Bit, [{
-	    key: 'vars',
-	    value: function vars() {
-	      this.ns = 'http://www.w3.org/2000/svg';
-	      this.shape = 'line';
-	      this.ratio = 1;
-	      this.defaults = {
+	    key: '_declareDefaults',
+	    value: function _declareDefaults() {
+	      this._defaults = {
+	        ns: 'http://www.w3.org/2000/svg',
+	        ctx: null,
+
+	        shape: 'line',
+	        ratio: 1,
 	        radius: 50,
 	        radiusX: undefined,
 	        radiusY: undefined,
@@ -6676,36 +6692,28 @@
 	        'stroke-dashoffset': '',
 	        'stroke-linecap': ''
 	      };
-
-	      this.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
-
-	      if (this.o.ctx && this.o.ctx.tagName === 'svg') {
-	        this.ctx = this.o.ctx;
-	      } else if (!this.o.el) {
+	      this._drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
+	    }
+	  }, {
+	    key: '_vars',
+	    value: function _vars() {
+	      if (this._o.ctx && this._o.ctx.tagName === 'svg') {
+	        this.ctx = this._o.ctx;
+	      } else if (!this._o.el) {
 	        _h2.default.error('You should pass a real context(ctx) to the bit');
 	        // # --> COVER return if not ctx and not el
 	        // # return true
 	      }
-	      this.state = {};this.drawMapLength = this.drawMap.length;
-	      this.extendDefaults();
-	      this.calcTransform();
+	      this._state = {};this._drawMapLength = this._drawMap.length;
+	      // this.calcTransform();
 	    }
-	  }, {
-	    key: 'calcTransform',
-	    value: function calcTransform() {
-	      var p = this.props,
-	          rotate = 'rotate(' + p.angle + ', ' + p.x + ', ' + p.y + ')';
-	      p.transform = '' + rotate;
-	    }
-	  }, {
-	    key: 'extendDefaults',
-	    value: function extendDefaults() {
-	      this.props = this.props == null ? {} : this.props;
-	      for (var key in this.defaults) {
-	        var value = this.defaults[key];
-	        this.props[key] = this.o[key] != null ? this.o[key] : value;
-	      }
-	    }
+
+	    // calcTransform () {
+	    //   var p      = this._props,
+	    //       rotate = `rotate(${p.angle}, ${p.x}, ${p.y})`;
+	    //   p.transform = `${rotate}`;
+	    // }
+
 	  }, {
 	    key: 'setAttr',
 	    value: function setAttr(attr, value) {
@@ -6729,47 +6737,47 @@
 	      if ((typeof attr === 'undefined' ? 'undefined' : (0, _typeof3.default)(attr)) === 'object') {
 	        for (var key in attr) {
 	          var val = attr[key];
-	          this.props[key] = val;
+	          this._props[key] = val;
 	        }
 	      } else {
-	        this.props[attr] = value;
+	        this._props[attr] = value;
 	      }
 	    }
 	  }, {
-	    key: 'render',
-	    value: function render() {
+	    key: '_render',
+	    value: function _render() {
 	      this.isRendered = true;
-	      if (this.o.el != null) {
-	        this.el = this.o.el;
+	      if (this._o.el != null) {
+	        this.el = this._o.el;
 	        this.isForeign = true;
 	      } else {
-	        this.el = document.createElementNS(this.ns, this.shape || 'line');
-	        !this.o.isDrawLess && this.draw();this.ctx.appendChild(this.el);
+	        this.el = document.createElementNS(this._props.ns, this._props.shape);
+	        !this._o.isDrawLess && this.draw();this.ctx.appendChild(this.el);
 	      }
 	    }
 	  }, {
 	    key: 'draw',
 	    value: function draw() {
-	      this.props.length = this.getLength();
+	      this._props.length = this.getLength();
 
-	      var len = this.drawMapLength;
+	      var len = this._drawMapLength;
 	      while (len--) {
-	        var name = this.drawMap[len];
+	        var name = this._drawMap[len];
 	        switch (name) {
 	          case 'stroke-dasharray':
 	          case 'stroke-dashoffset':
 	            this.castStrokeDash(name);
-	          // # name is 'stroke-dashoffset' and console.log this.props[name]
+	          // # name is 'stroke-dashoffset' and console.log this._props[name]
 	        }
-	        this.setAttrIfChanged(name, this.props[name]);
+	        this.setAttrIfChanged(name, this._props[name]);
 	      }
-	      this.state.radius = this.props.radius;
+	      this._state.radius = this._props.radius;
 	    }
 	  }, {
 	    key: 'castStrokeDash',
 	    value: function castStrokeDash(name) {
 	      // # if array of values
-	      var p = this.props;
+	      var p = this._props;
 	      if (_h2.default.isArray(p[name])) {
 	        var stroke = '';
 	        for (var i = 0; i < p[name].length; i++) {
@@ -6789,12 +6797,11 @@
 	  }, {
 	    key: 'castPercent',
 	    value: function castPercent(percent) {
-	      return percent * (this.props.length / 100);
+	      return percent * (this._props.length / 100);
 	    }
 	  }, {
 	    key: 'setAttrsIfChanged',
 	    value: function setAttrsIfChanged(name, value) {
-	      // if ( typeof name === 'object' ) {
 	      var keys = (0, _keys2.default)(name),
 	          len = keys.length;
 	      while (len--) {
@@ -6802,29 +6809,19 @@
 	            value = name[key];
 	        this.setAttrIfChanged(key, value);
 	      }
-	      // } else {
-	      //   value = ( value == null) ? this.props[name] : value;
-	      //   this.setAttrIfChanged( name, value );
-	      // }
 	    }
 	  }, {
 	    key: 'setAttrIfChanged',
 	    value: function setAttrIfChanged(name, value) {
-	      if (this.state[name] !== value) {
+	      if (this._state[name] !== value) {
 	        this.el.setAttribute(name, value);
-	        this.state[name] = value;
+	        this._state[name] = value;
 	      }
 	    }
-
-	    // isChanged (name, value){
-	    //   value = ( value == null) ? this.props[name] : value;
-	    //   return ( this.state[name] !== value );
-	    // }
-
 	  }, {
 	    key: 'getLength',
 	    value: function getLength() {
-	      var p = this.props,
+	      var p = this._props,
 	          len = 0,
 	          isGetLength = !!(this.el && this.el.getTotalLength);
 
@@ -6837,7 +6834,7 @@
 	    }
 	  }]);
 	  return Bit;
-	}();
+	}(_module2.default);
 
 	exports.default = Bit;
 
@@ -6977,26 +6974,26 @@
 	    return Circle.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Circle.prototype.vars = function() {
-	    Circle.__super__.vars.apply(this, arguments);
-	    return this.shape = 'ellipse';
+	  Circle.prototype._declareDefaults = function() {
+	    Circle.__super__._declareDefaults.apply(this, arguments);
+	    return this._defaults.shape = 'ellipse';
 	  };
 
 	  Circle.prototype.draw = function() {
 	    var rx, ry;
-	    rx = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
-	    ry = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+	    rx = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    ry = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
 	    this.setAttrIfChanged('rx', rx);
 	    this.setAttrIfChanged('ry', ry);
-	    this.setAttrIfChanged('cx', this.props.x);
-	    this.setAttrIfChanged('cy', this.props.y);
+	    this.setAttrIfChanged('cx', this._props.x);
+	    this.setAttrIfChanged('cy', this._props.y);
 	    return Circle.__super__.draw.apply(this, arguments);
 	  };
 
 	  Circle.prototype.getLength = function() {
 	    var radiusX, radiusY;
-	    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
-	    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
 	    return 2 * Math.PI * Math.sqrt((radiusX * radiusX + radiusY * radiusY) / 2);
 	  };
 
@@ -7028,12 +7025,12 @@
 
 	  Line.prototype.draw = function() {
 	    var radiusX;
-	    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
 	    this.setAttrsIfChanged({
-	      x1: this.props.x - radiusX,
-	      x2: this.props.x + radiusX,
-	      y1: this.props.y,
-	      y2: this.props.y
+	      x1: this._props.x - radiusX,
+	      x2: this._props.x + radiusX,
+	      y1: this._props.y,
+	      y2: this._props.y
 	    });
 	    return Line.__super__.draw.apply(this, arguments);
 	  };
@@ -7064,31 +7061,31 @@
 	    return Zigzag.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Zigzag.prototype.vars = function() {
-	    Zigzag.__super__.vars.apply(this, arguments);
-	    this.shape = 'path';
-	    return this.ratio = 1.43;
+	  Zigzag.prototype._declareDefaults = function() {
+	    Zigzag.__super__._declareDefaults.apply(this, arguments);
+	    this._defaults.shape = 'path';
+	    return this._defaults.ratio = 1.43;
 	  };
 
 	  Zigzag.prototype.draw = function() {
 	    var char, i, iX, iX2, iY, iY2, j, points, radiusX, radiusY, ref, stepX, stepY, strokeWidth, xStart, yStart;
-	    if (!this.props.points) {
+	    if (!this._props.points) {
 	      return;
 	    }
-	    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
-	    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
 	    points = '';
-	    stepX = 2 * radiusX / this.props.points;
-	    stepY = 2 * radiusY / this.props.points;
-	    strokeWidth = this.props['stroke-width'];
-	    xStart = this.props.x - radiusX;
-	    yStart = this.props.y - radiusY;
-	    for (i = j = ref = this.props.points; ref <= 0 ? j < 0 : j > 0; i = ref <= 0 ? ++j : --j) {
+	    stepX = 2 * radiusX / this._props.points;
+	    stepY = 2 * radiusY / this._props.points;
+	    strokeWidth = this._props['stroke-width'];
+	    xStart = this._props.x - radiusX;
+	    yStart = this._props.y - radiusY;
+	    for (i = j = ref = this._props.points; ref <= 0 ? j < 0 : j > 0; i = ref <= 0 ? ++j : --j) {
 	      iX = xStart + i * stepX + strokeWidth;
 	      iY = yStart + i * stepY + strokeWidth;
 	      iX2 = xStart + (i - 1) * stepX + strokeWidth;
 	      iY2 = yStart + (i - 1) * stepY + strokeWidth;
-	      char = i === this.props.points ? 'M' : 'L';
+	      char = i === this._props.points ? 'M' : 'L';
 	      points += "" + char + iX + "," + iY + " l0, -" + stepY + " l-" + stepX + ", 0";
 	    }
 	    this.setAttr({
@@ -7123,31 +7120,31 @@
 	    return Rect.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Rect.prototype.vars = function() {
-	    Rect.__super__.vars.apply(this, arguments);
-	    this.shape = 'rect';
-	    return this.ratio = 1.43;
+	  Rect.prototype._declareDefaults = function() {
+	    Rect.__super__._declareDefaults.apply(this, arguments);
+	    this._defaults.shape = 'rect';
+	    return this._defaults.ratio = 1.43;
 	  };
 
 	  Rect.prototype.draw = function() {
 	    var radiusX, radiusY;
 	    Rect.__super__.draw.apply(this, arguments);
-	    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
-	    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
 	    return this.setAttrsIfChanged({
 	      width: 2 * radiusX,
 	      height: 2 * radiusY,
-	      x: this.props.x - radiusX,
-	      y: this.props.y - radiusY,
-	      rx: this.props.rx,
-	      ry: this.props.ry
+	      x: parseFloat(this._props.x) - radiusX,
+	      y: parseFloat(this._props.y) - radiusY,
+	      rx: this._props.rx,
+	      ry: this._props.ry
 	    });
 	  };
 
 	  Rect.prototype.getLength = function() {
 	    var radiusX, radiusY;
-	    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
-	    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
 	    return 2 * radiusX + 2 * radiusY;
 	  };
 
@@ -7179,9 +7176,9 @@
 	    return Polygon.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Polygon.prototype.vars = function() {
-	    Polygon.__super__.vars.apply(this, arguments);
-	    return this.shape = 'path';
+	  Polygon.prototype._declareDefaults = function() {
+	    Polygon.__super__._declareDefaults.apply(this, arguments);
+	    return this._defaults.shape = 'path';
 	  };
 
 	  Polygon.prototype.draw = function() {
@@ -7191,17 +7188,17 @@
 
 	  Polygon.prototype.drawShape = function() {
 	    var char, d, i, j, k, len, point, ref, ref1, step;
-	    step = 360 / this.props.points;
+	    step = 360 / this._props.points;
 	    this.radialPoints = [];
-	    for (i = j = 0, ref = this.props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+	    for (i = j = 0, ref = this._props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
 	      this.radialPoints.push(h.getRadialPoint({
-	        radius: this.props.radius,
-	        radiusX: this.props.radiusX,
-	        radiusY: this.props.radiusY,
+	        radius: this._props.radius,
+	        radiusX: this._props.radiusX,
+	        radiusY: this._props.radiusY,
 	        angle: i * step,
 	        center: {
-	          x: this.props.x,
-	          y: this.props.y
+	          x: parseFloat(this._props.x),
+	          y: parseFloat(this._props.y)
 	        }
 	      }));
 	    }
@@ -7247,22 +7244,24 @@
 	    return Cross.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Cross.prototype.vars = function() {
-	    Cross.__super__.vars.apply(this, arguments);
-	    return this.shape = 'path';
+	  Cross.prototype._declareDefaults = function() {
+	    Cross.__super__._declareDefaults.apply(this, arguments);
+	    return this._defaults.shape = 'path';
 	  };
 
 	  Cross.prototype.draw = function() {
-	    var d, line1, line2, radiusX, radiusY, x1, x2, y1, y2;
+	    var d, line1, line2, radiusX, radiusY, x, x1, x2, y, y1, y2;
 	    Cross.__super__.draw.apply(this, arguments);
-	    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
-	    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
-	    x1 = this.props.x - radiusX;
-	    x2 = this.props.x + radiusX;
-	    line1 = "M" + x1 + "," + this.props.y + " L" + x2 + "," + this.props.y;
-	    y1 = this.props.y - radiusY;
-	    y2 = this.props.y + radiusY;
-	    line2 = "M" + this.props.x + "," + y1 + " L" + this.props.x + "," + y2;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
+	    x = parseInt(this._props.x, 10);
+	    y = parseInt(this._props.y, 10);
+	    x1 = x - radiusX;
+	    x2 = x + radiusX;
+	    line1 = "M" + x1 + "," + this._props.y + " L" + x2 + "," + this._props.y;
+	    y1 = y - radiusY;
+	    y2 = y + radiusY;
+	    line2 = "M" + this._props.x + "," + y1 + " L" + this._props.x + "," + y2;
 	    d = line1 + " " + line2;
 	    return this.setAttr({
 	      d: d
@@ -7271,8 +7270,8 @@
 
 	  Cross.prototype.getLength = function() {
 	    var radiusX, radiusY;
-	    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
-	    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
 	    return 2 * (radiusX + radiusY);
 	  };
 
@@ -7302,26 +7301,26 @@
 	    return Equal.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Equal.prototype.vars = function() {
-	    Equal.__super__.vars.apply(this, arguments);
-	    this.shape = 'path';
-	    return this.ratio = 1.43;
+	  Equal.prototype._declareDefaults = function() {
+	    Equal.__super__._declareDefaults.apply(this, arguments);
+	    this._defaults.shape = 'path';
+	    return this._defaults.ratio = 1.43;
 	  };
 
 	  Equal.prototype.draw = function() {
 	    var d, i, j, radiusX, radiusY, ref, x1, x2, y, yStart, yStep;
 	    Equal.__super__.draw.apply(this, arguments);
-	    if (!this.props.points) {
+	    if (!this._props.points) {
 	      return;
 	    }
-	    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
-	    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
-	    x1 = this.props.x - radiusX;
-	    x2 = this.props.x + radiusX;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
+	    x1 = this._props.x - radiusX;
+	    x2 = this._props.x + radiusX;
 	    d = '';
-	    yStep = 2 * radiusY / (this.props.points - 1);
-	    yStart = this.props.y - radiusY;
-	    for (i = j = 0, ref = this.props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+	    yStep = 2 * radiusY / (this._props.points - 1);
+	    yStart = this._props.y - radiusY;
+	    for (i = j = 0, ref = this._props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
 	      y = "" + (i * yStep + yStart);
 	      d += "M" + x1 + ", " + y + " L" + x2 + ", " + y + " ";
 	    }
@@ -7331,7 +7330,7 @@
 	  };
 
 	  Equal.prototype.getLength = function() {
-	    return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);
+	    return 2 * (this._props.radiusX != null ? this._props.radiusX : this._props.radius);
 	  };
 
 	  return Equal;
@@ -8179,7 +8178,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.222.2', isDebug: true, helpers: _h2.default,
+	  revision: '0.223.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default

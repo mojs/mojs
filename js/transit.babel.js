@@ -284,7 +284,7 @@ class Transit extends Tunable {
   */
   _increaseSizeWithBitRatio () {
     var p   = this._props;
-    p.size *= this.bit.ratio;
+    p.size *= this.bit._props.ratio;
     p.size += 2 * p.sizeGap;
   }
   /*

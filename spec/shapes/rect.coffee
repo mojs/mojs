@@ -9,9 +9,9 @@ describe 'Rect ->', ->
     expect(rect instanceof Bit).toBe(true)
   describe 'defaults ->', ->
     it 'should have shape of "rect"', ->
-      expect(rect.shape).toBe 'rect'
+      expect(rect._defaults.shape).toBe 'rect'
     it 'should have ratio of 1.43', ->
-      expect(rect.ratio).toBe 1.43
+      expect(rect._defaults.ratio).toBe 1.43
   describe 'draw ->', ->
     it 'should add properties to el', ->
       svg     = document.createElementNS?(ns, "svg")
@@ -26,8 +26,8 @@ describe 'Rect ->', ->
       expect(height).toBe   '40'
       expect(x).toBe        '30'
       expect(y).toBe        '80'
-      expect(rx).toBe       '10'
-      expect(ry).toBe       '20'
+      expect(rx).toBe       '10px'
+      expect(ry).toBe       '20px'
     it 'should work with radiusX/radiusY props', ->
       svg     = document.createElementNS?(ns, "svg")
       rect    = new Rect ctx: svg, radiusY: 50, radiusX: 40, x: 100, y: 200

@@ -9,7 +9,7 @@
 
   svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
 
-  describe('Equal', function() {
+  describe('Equal ->', function() {
     it('should extend Bit', function() {
       var equal;
       equal = new Equal({
@@ -22,14 +22,14 @@
       equal = new Equal({
         ctx: svg
       });
-      return expect(equal.shape).toBe('path');
+      return expect(equal._defaults.shape).toBe('path');
     });
     it('have ratio of 1.43', function() {
       var equal;
       equal = new Equal({
         ctx: svg
       });
-      return expect(equal.ratio).toBe(1.43);
+      return expect(equal._defaults.ratio).toBe(1.43);
     });
     describe('methods ->', function() {
       return describe('draw method ->', function() {

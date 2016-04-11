@@ -5,23 +5,23 @@ Bit = require('./bit').default;
 h   = require '../h'
 
 class Polygon extends Bit
-  vars: ->
+  _declareDefaults:->
     super
-    this.shape = 'path';
+    this._defaults.shape = 'path'
   draw:->
     # !@isDraw and @drawShape()
     @drawShape()
     super
   drawShape:->
-    # @props.points = parseInt(@props.points)
-    step = 360/(@props.points); @radialPoints = []
-    for i in [0...@props.points]
+    # @_props.points = parseInt(@_props.points)
+    step = 360/(@_props.points); @radialPoints = []
+    for i in [0...@_props.points]
       @radialPoints.push h.getRadialPoint
-        radius:   @props.radius
-        radiusX:  @props.radiusX
-        radiusY:  @props.radiusY
+        radius:   @_props.radius
+        radiusX:  @_props.radiusX
+        radiusY:  @_props.radiusY
         angle:    (i*step)
-        center:   x: @props.x, y: @props.y
+        center:   x: parseFloat(@_props.x), y: parseFloat(@_props.y)
     d = ''
     for point, i in @radialPoints
       char = if i is 0 then 'M' else 'L'
