@@ -109,29 +109,30 @@ describe 'Bit', ->
       bit = new Bit ctx: svg, 'stroke-width': 3
       spyOn bit.el, 'setAttribute'
       bit.props['stroke-width'] = 3
-      bit.setAttrsIfChanged 'stroke-width'
+      bit.setAttrsIfChanged 'stroke-width': 3
       expect(bit.el.setAttribute).not.toHaveBeenCalled()
 
     it 'should set attribute if property changed ->', ->
       svg = document.createElementNS?(ns, 'svg')
       bit = new Bit ctx: svg, 'stroke-width', 3
       spyOn bit.el, 'setAttribute'
-      bit.props['stroke-width'] = 4
-      bit.setAttrsIfChanged 'stroke-width'
+      # bit.props['stroke-width'] = 4
+      bit.setAttrsIfChanged 'stroke-width': 4
       expect(bit.el.setAttribute).toHaveBeenCalled()
 
     it 'should save the current value to state if changed ->', ->
       svg = document.createElementNS?(ns, 'svg')
       bit = new Bit ctx: svg, 'stroke-width', 2
-      bit.props['stroke-width'] = 30
-      bit.setAttrsIfChanged 'stroke-width'
+      # bit.props['stroke-width'] = 30
+      bit.setAttrsIfChanged 'stroke-width': 30
       expect(bit.state['stroke-width']).toBe 30
 
-    it 'should recieve value to set ->', ->
-      svg = document.createElementNS?(ns, 'svg')
-      bit = new Bit ctx: svg, radius: 20
-      bit.setAttrsIfChanged 'radius', 30
-      expect(bit.state['radius']).toBe 30
+    # old
+    # it 'should recieve value to set ->', ->
+    #   svg = document.createElementNS?(ns, 'svg')
+    #   bit = new Bit ctx: svg, radius: 20
+    #   bit.setAttrsIfChanged 'radius', 30
+    #   expect(bit.state['radius']).toBe 30
 
     it 'should work with values hash ->', ->
       svg = document.createElementNS?(ns, 'svg')
@@ -341,20 +342,21 @@ describe 'Bit', ->
       bit.castStrokeDash 'stroke-dasharray'
       expect(bit.props['stroke-dasharray']).toBe ''
 
-  describe 'isChanged method ->', ->
-    it 'should check if attribute was changed', ->
-      bit = new Bit
-        ctx:    document.createElementNS ns, 'svg'
-        stroke: 'deeppink'
-      expect(bit.isChanged('stroke')).toBe false
-      bit.setProp 'stroke', 'green'
-      expect(bit.isChanged('stroke')).toBe true
+  # old
+  # describe 'isChanged method ->', ->
+  #   it 'should check if attribute was changed', ->
+  #     bit = new Bit
+  #       ctx:    document.createElementNS ns, 'svg'
+  #       stroke: 'deeppink'
+  #     expect(bit.isChanged('stroke')).toBe false
+  #     bit.setProp 'stroke', 'green'
+  #     expect(bit.isChanged('stroke')).toBe true
 
-    it 'should recieve value to set', ->
-      bit = new Bit
-        ctx:    document.createElementNS ns, 'svg'
-        radius: 20
-      expect(bit.isChanged('radius', 30)).toBe true
+  #   it 'should recieve value to set', ->
+  #     bit = new Bit
+  #       ctx:    document.createElementNS ns, 'svg'
+  #       radius: 20
+  #     expect(bit.isChanged('radius', 30)).toBe true
 
   describe 'stroke-dash value setting ->', ->
     it 'should set the property from an array', ->

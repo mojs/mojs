@@ -107,7 +107,7 @@ class Bit {
           this.castStrokeDash(name);
           // # name is 'stroke-dashoffset' and console.log this.props[name]
       }
-      this.setAttrsIfChanged(name, this.props[name]);
+      this.setAttrIfChanged( name, this.props[name] );
     }
     this.state.radius = this.props.radius;
   }
@@ -138,31 +138,31 @@ class Bit {
     return percent * (this.props.length/100);
   }
   setAttrsIfChanged (name, value) {
-    if ( typeof name === 'object' ) {
-      var keys = Object.keys(name),
-          len  = keys.length;
-      while(len--) {
-        var key   = keys[len],
-            value = name[key];
-        this.setAttrIfChanged(key, value);
-      }
-    } else {
-      value = ( value == null) ? this.props[name] : value;
-      this.setAttrIfChanged( name, value );
+    // if ( typeof name === 'object' ) {
+    var keys = Object.keys(name),
+        len  = keys.length;
+    while(len--) {
+      var key   = keys[len],
+          value = name[key];
+      this.setAttrIfChanged(key, value);
     }
+    // } else {
+    //   value = ( value == null) ? this.props[name] : value;
+    //   this.setAttrIfChanged( name, value );
+    // }
   }
 
   setAttrIfChanged (name, value) {
-    if ( this.isChanged(name, value) ) {
+    if ( this.state[name] !== value ) {
       this.el.setAttribute(name, value);
       this.state[name] = value;
     }
   }
 
-  isChanged (name, value){
-    value = ( value == null) ? this.props[name] : value;
-    return ( this.state[name] !== value );
-  }
+  // isChanged (name, value){
+  //   value = ( value == null) ? this.props[name] : value;
+  //   return ( this.state[name] !== value );
+  // }
 
   getLength () {
     var p   = this.props,

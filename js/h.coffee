@@ -147,10 +147,10 @@ class Helpers
     if value < min then min else if value > max then max else value
     # Math.min Math.max(value, min), max
   setPrefixedStyle:(el, name, value)->
-    if name.match /transform/gim
-      el.style["#{name}"] = value
+    if name is 'transform'
       el.style["#{@prefix.css}#{name}"] = value
-    else el.style[name] = value
+      el.style[name] = value
+    else  el.style[name] = value
   # ---
   # 
   # Sets styles on element with prefix(if needed) on el

@@ -158,7 +158,9 @@
         });
         spyOn(bit.el, 'setAttribute');
         bit.props['stroke-width'] = 3;
-        bit.setAttrsIfChanged('stroke-width');
+        bit.setAttrsIfChanged({
+          'stroke-width': 3
+        });
         return expect(bit.el.setAttribute).not.toHaveBeenCalled();
       });
       it('should set attribute if property changed ->', function() {
@@ -167,8 +169,9 @@
           ctx: svg
         }, 'stroke-width', 3);
         spyOn(bit.el, 'setAttribute');
-        bit.props['stroke-width'] = 4;
-        bit.setAttrsIfChanged('stroke-width');
+        bit.setAttrsIfChanged({
+          'stroke-width': 4
+        });
         return expect(bit.el.setAttribute).toHaveBeenCalled();
       });
       it('should save the current value to state if changed ->', function() {
@@ -176,18 +179,10 @@
         bit = new Bit({
           ctx: svg
         }, 'stroke-width', 2);
-        bit.props['stroke-width'] = 30;
-        bit.setAttrsIfChanged('stroke-width');
-        return expect(bit.state['stroke-width']).toBe(30);
-      });
-      it('should recieve value to set ->', function() {
-        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
-        bit = new Bit({
-          ctx: svg,
-          radius: 20
+        bit.setAttrsIfChanged({
+          'stroke-width': 30
         });
-        bit.setAttrsIfChanged('radius', 30);
-        return expect(bit.state['radius']).toBe(30);
+        return expect(bit.state['stroke-width']).toBe(30);
       });
       return it('should work with values hash ->', function() {
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
@@ -445,24 +440,6 @@
         ];
         bit.castStrokeDash('stroke-dasharray');
         return expect(bit.props['stroke-dasharray']).toBe('');
-      });
-    });
-    describe('isChanged method ->', function() {
-      it('should check if attribute was changed', function() {
-        bit = new Bit({
-          ctx: document.createElementNS(ns, 'svg'),
-          stroke: 'deeppink'
-        });
-        expect(bit.isChanged('stroke')).toBe(false);
-        bit.setProp('stroke', 'green');
-        return expect(bit.isChanged('stroke')).toBe(true);
-      });
-      return it('should recieve value to set', function() {
-        bit = new Bit({
-          ctx: document.createElementNS(ns, 'svg'),
-          radius: 20
-        });
-        return expect(bit.isChanged('radius', 30)).toBe(true);
       });
     });
     return describe('stroke-dash value setting ->', function() {
