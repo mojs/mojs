@@ -4871,7 +4871,22 @@
 	exports.default = Module;
 
 /***/ },
-/* 14 */,
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -5037,10 +5052,8 @@
 	  Helpers.prototype.setPrefixedStyle = function(el, name, value) {
 	    if (name === 'transform') {
 	      el.style["" + this.prefix.css + name] = value;
-	      return el.style[name] = value;
-	    } else {
-	      return el.style[name] = value;
 	    }
+	    return el.style[name] = value;
 	  };
 
 	  Helpers.prototype.style = function(el, name, value) {
@@ -6973,12 +6986,10 @@
 	    var rx, ry;
 	    rx = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
 	    ry = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
-	    this.setAttrsIfChanged({
-	      rx: rx,
-	      ry: ry,
-	      cx: this.props.x,
-	      cy: this.props.y
-	    });
+	    this.setAttrIfChanged('rx', rx);
+	    this.setAttrIfChanged('ry', ry);
+	    this.setAttrIfChanged('cx', this.props.x);
+	    this.setAttrIfChanged('cy', this.props.y);
 	    return Circle.__super__.draw.apply(this, arguments);
 	  };
 
@@ -6986,7 +6997,7 @@
 	    var radiusX, radiusY;
 	    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
 	    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
-	    return 2 * Math.PI * Math.sqrt((Math.pow(radiusX, 2) + Math.pow(radiusY, 2)) / 2);
+	    return 2 * Math.PI * Math.sqrt((radiusX * radiusX + radiusY * radiusY) / 2);
 	  };
 
 	  return Circle;
@@ -8095,7 +8106,11 @@
 /* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {'use strict';
+
+	var _typeof2 = __webpack_require__(15);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
 
 	var _h = __webpack_require__(16);
 
@@ -8164,7 +8179,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.222.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.222.2', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8182,6 +8197,18 @@
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
+
+	// ### istanbul ignore next ###
+	if (true) {
+	  !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+	    return mojs;
+	  }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}
+	// ### istanbul ignore next ###
+	if ((false ? 'undefined' : (0, _typeof3.default)(module)) === "object" && (0, _typeof3.default)(module.exports) === "object") {
+	  module.exports = mojs;
+	}
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module)))
 
 /***/ },
 /* 54 */
