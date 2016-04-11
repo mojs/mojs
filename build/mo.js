@@ -2089,25 +2089,26 @@
 	  }, {
 	    key: '_draw',
 	    value: function _draw() {
-	      this.bit.setProp({
-	        x: this._origin.x,
-	        y: this._origin.y,
-	        rx: this._props.rx,
-	        ry: this._props.ry,
-	        stroke: this._props.stroke,
-	        'stroke-width': this._props.strokeWidth,
-	        'stroke-opacity': this._props.strokeOpacity,
-	        'stroke-dasharray': this._props.strokeDasharray,
-	        'stroke-dashoffset': this._props.strokeDashoffset,
-	        'stroke-linecap': this._props.strokeLinecap,
-	        fill: this._props.fill,
-	        'fill-opacity': this._props.fillOpacity,
-	        radius: this._props.radius,
-	        radiusX: this._props.radiusX,
-	        radiusY: this._props.radiusY,
-	        points: this._props.points
-	      });
-	      // transform:            this._calcShapeTransform()
+	      var p = this._props,
+	          bP = this.bit._props;
+	      // set props on bit
+	      bP.x = this._origin.x;
+	      bP.y = this._origin.y;
+	      bP.rx = p.rx;
+	      bP.ry = p.ry;
+	      bP.stroke = p.stroke;
+	      bP['stroke-width'] = p.strokeWidth;
+	      bP['stroke-opacity'] = p.strokeOpacity;
+	      bP['stroke-dasharray'] = p.strokeDasharray;
+	      bP['stroke-dashoffset'] = p.strokeDashoffset;
+	      bP['stroke-linecap'] = p.strokeLinecap;
+	      bP.fill = p.fill;
+	      bP['fill-opacity'] = p.fillOpacity;
+	      bP.radius = p.radius;
+	      bP.radiusX = p.radiusX;
+	      bP.radiusY = p.radiusY;
+	      bP.points = p.points;
+
 	      this.bit.draw();this._drawEl();
 	    }
 	    /*
@@ -8178,7 +8179,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.223.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.223.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default

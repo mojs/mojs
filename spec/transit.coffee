@@ -559,11 +559,12 @@ describe 'Transit ->', ->
       byte._render true
       expect(cnt).toBe document.body.children.length
   describe '_draw method ->', ->
-    it 'should call _setProp method', ->
-      byte = new Byte radius: 25
-      spyOn byte.bit, 'setProp'
-      byte._draw()
-      expect(byte.bit.setProp).toHaveBeenCalled()
+    # nope
+    # it 'should call _setProp method', ->
+    #   byte = new Byte radius: 25
+    #   spyOn byte.bit, 'setProp'
+    #   byte._draw()
+    #   expect(byte.bit.setProp).toHaveBeenCalled()
     it 'should set all attributes to shape\'s properties', ->
       byte = new Byte
         radius: 25,

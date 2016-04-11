@@ -157,25 +157,26 @@ class Transit extends Tunable {
     @private
   */
   _draw () {
-    this.bit.setProp({
-      x:                    this._origin.x,
-      y:                    this._origin.y,
-      rx:                   this._props.rx,
-      ry:                   this._props.ry,
-      stroke:               this._props.stroke,
-      'stroke-width':       this._props.strokeWidth,
-      'stroke-opacity':     this._props.strokeOpacity,
-      'stroke-dasharray':   this._props.strokeDasharray,
-      'stroke-dashoffset':  this._props.strokeDashoffset,
-      'stroke-linecap':     this._props.strokeLinecap,
-      fill:                 this._props.fill,
-      'fill-opacity':       this._props.fillOpacity,
-      radius:               this._props.radius,
-      radiusX:              this._props.radiusX,
-      radiusY:              this._props.radiusY,
-      points:               this._props.points,
-      // transform:            this._calcShapeTransform()
-    });
+    var p  = this._props,
+        bP = this.bit._props;
+    // set props on bit
+    bP.x                    = this._origin.x;
+    bP.y                    = this._origin.y;
+    bP.rx                   = p.rx;
+    bP.ry                   = p.ry;
+    bP.stroke               = p.stroke;
+    bP['stroke-width']      = p.strokeWidth;
+    bP['stroke-opacity']    = p.strokeOpacity;
+    bP['stroke-dasharray']  = p.strokeDasharray;
+    bP['stroke-dashoffset'] = p.strokeDashoffset;
+    bP['stroke-linecap']    = p.strokeLinecap;
+    bP.fill                 = p.fill;
+    bP['fill-opacity']      = p.fillOpacity;
+    bP.radius               = p.radius;
+    bP.radiusX              = p.radiusX;
+    bP.radiusY              = p.radiusY;
+    bP.points               = p.points;
+
     this.bit.draw(); this._drawEl();
   }
   /*

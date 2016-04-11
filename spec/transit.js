@@ -879,15 +879,6 @@
       });
     });
     describe('_draw method ->', function() {
-      it('should call _setProp method', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25
-        });
-        spyOn(byte.bit, 'setProp');
-        byte._draw();
-        return expect(byte.bit.setProp).toHaveBeenCalled();
-      });
       it('should set all attributes to shape\'s properties', function() {
         var byte;
         byte = new Byte({
