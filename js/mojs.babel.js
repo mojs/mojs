@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.223.2', isDebug: true, helpers: h,
+  revision:   '0.223.3', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -36,38 +36,6 @@ window.mojs = {
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
 
-// let tr  = new mojs.Transit({
-//       opacity: {0:1}, duration: 10000, x: { 0: 200 },
-//       easing: 'linear.none'
-//     }),
-//     bit = tr.bit,
-//     i   = 0;
-
-// var  suite = new Benchmark.Suite;
-// suite.add('#1', function () {
-//   tr.setProgress( i++ / 10000 );
-//   if (i > 10000) { i = 0; }
-// })
-// .on('cycle', function (e) {
-//   console.log(String(e.target));
-// })
-// .run({ 'async': true });
-
-// let sw = new mojs.Transit({
-//   shape: 'circle',
-//   x:        { 0: 200 },
-//   isTimelineLess: 1,
-//   easing: 'linear.none',
-//   duration: 4000
-// });
-
-// var playEl = document.querySelector('#js-play'),
-//     rangeSliderEl = document.querySelector('#js-range-slider');
-// document.body.addEventListener('click', function (e) {
-//   sw
-//     // .tune({ timeline: {delay: 0 , repeat: 1 } })
-//     .replay();
-// });
 
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {
