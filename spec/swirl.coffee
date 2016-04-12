@@ -8,6 +8,7 @@ describe 'Swirl ->', ->
     it 'should extend Transit class', ->
       swirl = new Swirl
       expect(swirl instanceof Transit).toBe true
+    # nope
     # it 'should have _skipPropsDelta', ->
     #   swirl = new Swirl
     #   expect(swirl._skipPropsDelta.x).toBe 1

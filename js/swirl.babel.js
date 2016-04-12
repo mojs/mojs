@@ -157,7 +157,8 @@ class Swirl extends Transit {
   */
   _draw () {
     // call _draw or just _drawEl @ Transit depending if there is `shape`
-    Transit.prototype[( this._props.isWithShape ) ? '_draw' : '_drawEl']();
+    var methodName = ( this._props.isWithShape ) ? '_draw' : '_drawEl';
+    Transit.prototype[ methodName ].call(this);
   }
 }
 

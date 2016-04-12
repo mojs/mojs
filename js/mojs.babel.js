@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.223.3', isDebug: true, helpers: h,
+  revision:   '0.223.4', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -25,6 +25,8 @@ window.mojs = {
 
 // TODO:
 /*
+  setSpeed method for tween
+  -
   module names
   swirls in then chains for x/y
   parse rand(stagger(20, 10), 20) values

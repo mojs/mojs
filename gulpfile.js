@@ -1,6 +1,6 @@
 var gulp          = require('gulp');
 var fs            = require('fs');
-// var stylus        = require('gulp-stylus');
+var stylus        = require('gulp-stylus');
 var autoprefixer  = require('gulp-autoprefixer');
 var notify        = require('gulp-notify');
 var livereload    = require('gulp-livereload');

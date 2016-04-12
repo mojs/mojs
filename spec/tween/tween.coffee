@@ -6888,4 +6888,7 @@ describe 'Tween ->', ->
       expect(tr._overrideCallback)
         .toHaveBeenCalledWith null, controlCallback
 
+  # describe 'setSpeed method ->', ->
+    
+
 

@@ -77,8 +77,6 @@ class Tween extends Module {
     this._props.isReversed = false;
     this._subPlay( shift, 'play' );
     this._setPlaybackState( 'play' );
-    // call onPlaybackStart callback
-    this._playbackStart();
     return this;
   }
   /*
@@ -92,8 +90,6 @@ class Tween extends Module {
     this._props.isReversed = true;
     this._subPlay( shift, 'reverse' );
     this._setPlaybackState( 'reverse' );
-    // call onPlaybackStart callback
-    this._playbackStart();
     return this;
   }
   /*
@@ -105,8 +101,6 @@ class Tween extends Module {
     if ( this._state === 'pause' || this._state === 'stop' )  { return false; }
     this._removeFromTweener();
     this._setPlaybackState('pause');
-    // call onPlaybackStart callback
-    this._playbackPause();
     return this;
   }
   /*
@@ -127,8 +121,6 @@ class Tween extends Module {
 
     this.setProgress( stopProc );
     this._setPlaybackState('stop');
-    // call onPlaybackStart callback
-    this._playbackStop();
     this._prevTime = null;
     return this;
   }
@@ -155,7 +147,7 @@ class Tween extends Module {
     return this;
   }
   /*
-    API method to set total progress on timeline.
+    API method to set progress on tween.
     @public
     @param {Number} Progress to set.
     @returns {Object} Self.
@@ -457,6 +449,7 @@ class Tween extends Module {
     } else { (this._isInActiveArea) && this._updateInInactiveArea( time ); }
     
     this._prevTime = time;
+    // console.log(this._prevTime)
     return (time >= p.endTime) || (time <= startPoint);
   }
   /*
