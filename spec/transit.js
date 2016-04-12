@@ -1028,15 +1028,15 @@
         return expect(byte._drawEl()).toBe(true);
       });
       it('should set transform if angle changed', function() {
-        var byte;
+        var byte, resultStr;
         byte = new Byte({
           angle: 25
         });
         byte._draw();
         byte._props.angle = 26;
-        spyOn(h, 'setPrefixedStyle');
         byte._draw();
-        return expect(h.setPrefixedStyle).toHaveBeenCalled();
+        resultStr = 'scale(1) translate(0, 0) rotate(26deg)';
+        return expect(byte.el.style['transform']).toBe(resultStr);
       });
       it('should not set transform if angle changed', function() {
         var byte;
@@ -1044,9 +1044,9 @@
           angle: 25
         });
         byte._draw();
-        spyOn(h, 'setPrefixedStyle');
+        spyOn(byte, '_fillTransform');
         byte._draw();
-        return expect(h.setPrefixedStyle).not.toHaveBeenCalled();
+        return expect(byte._fillTransform).not.toHaveBeenCalled();
       });
       it('should set transform if one of the x, y or scale changed', function() {
         var byte;
@@ -1056,12 +1056,12 @@
           ctx: svg
         });
         byte._draw();
-        spyOn(h, 'setPrefixedStyle');
+        spyOn(byte, '_fillTransform');
         byte._draw();
-        return expect(h.setPrefixedStyle).not.toHaveBeenCalled();
+        return expect(byte._fillTransform).not.toHaveBeenCalled();
       });
       it('should set transform if x changed #1', function() {
-        var byte;
+        var byte, resultStr;
         byte = new Byte({
           radius: 25,
           top: 10,
@@ -1070,12 +1070,14 @@
           }
         });
         byte._props.x = '4px';
-        spyOn(h, 'setPrefixedStyle');
+        spyOn(byte, '_fillTransform').and.callThrough();
         byte._draw();
-        return expect(h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'scale(1) translate(4px, 0) rotate(0deg)');
+        expect(byte._fillTransform).toHaveBeenCalled();
+        resultStr = 'scale(1) translate(4px, 0) rotate(0deg)';
+        return expect(byte.el.style['transform']).toBe(resultStr);
       });
       it('should set transform if x changed #2', function() {
-        var byte;
+        var byte, resultStr;
         byte = new Byte({
           radius: 25,
           top: 10,
@@ -1084,12 +1086,13 @@
           }
         });
         byte._props.y = '4px';
-        spyOn(h, 'setPrefixedStyle');
+        spyOn(byte, '_fillTransform');
         byte._draw();
-        return expect(h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'scale(1) translate(0, 4px) rotate(0deg)');
+        expect(byte._fillTransform).toHaveBeenCalled();
+        return resultStr = 'scale(1) translate(0, 4px) rotate(0deg)';
       });
       return it('should set transform if x changed #3', function() {
-        var byte;
+        var byte, resultStr;
         byte = new Byte({
           radius: 25,
           top: 10,
@@ -1098,9 +1101,11 @@
           }
         });
         byte._props.scale = 3;
-        spyOn(h, 'setPrefixedStyle');
+        spyOn(byte, '_fillTransform').and.callThrough();
         byte._draw();
-        return expect(h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'scale(3) translate(0, 0) rotate(0deg)');
+        expect(byte._fillTransform).toHaveBeenCalled();
+        resultStr = 'scale(3) translate(0, 0) rotate(0deg)';
+        return expect(byte.el.style['transform']).toBe(resultStr);
       });
     });
     describe('_isPropChanged method ->', function() {

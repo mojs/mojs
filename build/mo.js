@@ -3329,6 +3329,7 @@
 	  }, {
 	    key: '_setProgress',
 	    value: function _setProgress(p, time, isYoyo) {
+	      // Tween.prototype._setProgress.call( this, p, time );
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Timeline.prototype), '_setProgress', this).call(this, p, time);
 	      // we need to pass self previous time to children
 	      // to prevent initial _wasUnknownUpdate nested waterfall
@@ -8187,7 +8188,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.223.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.223.2', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8205,6 +8206,39 @@
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
+
+	// let tr  = new mojs.Transit({
+	//       opacity: {0:1}, duration: 10000, x: { 0: 200 },
+	//       easing: 'linear.none'
+	//     }),
+	//     bit = tr.bit,
+	//     i   = 0;
+
+	// var  suite = new Benchmark.Suite;
+	// suite.add('#1', function () {
+	//   tr.setProgress( i++ / 10000 );
+	//   if (i > 10000) { i = 0; }
+	// })
+	// .on('cycle', function (e) {
+	//   console.log(String(e.target));
+	// })
+	// .run({ 'async': true });
+
+	// let sw = new mojs.Transit({
+	//   shape: 'circle',
+	//   x:        { 0: 200 },
+	//   isTimelineLess: 1,
+	//   easing: 'linear.none',
+	//   duration: 4000
+	// });
+
+	// var playEl = document.querySelector('#js-play'),
+	//     rangeSliderEl = document.querySelector('#js-range-slider');
+	// document.body.addEventListener('click', function (e) {
+	//   sw
+	//     // .tune({ timeline: {delay: 0 , repeat: 1 } })
+	//     .replay();
+	// });
 
 	// ### istanbul ignore next ###
 	if (true) {
