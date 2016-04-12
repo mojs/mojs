@@ -25,8 +25,6 @@ window.mojs = {
 
 // TODO:
 /*
-  perf optimizations.
-  --
   module names
   swirls in then chains for x/y
   parse rand(stagger(20, 10), 20) values
@@ -35,7 +33,6 @@ window.mojs = {
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
-
 
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {

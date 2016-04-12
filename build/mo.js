@@ -2135,9 +2135,10 @@
 	        var isTranslate = this._isPropChanged('x') || this._isPropChanged('y'),
 	            isScaleRotate = this._isPropChanged('scale') || this._isPropChanged('angle');
 	        if (isTranslate || isScaleRotate) {
-	          var transform = this._fillTransform();
-	          this.el.style["#{h.prefix.css}#{'transform'}"] = transform;
-	          this.el.style['transform'] = transform;
+	          var transform = this._fillTransform(),
+	              style = this.el.style;
+	          style["#{h.prefix.css}#{'transform'}"] = transform;
+	          style['transform'] = transform;
 	          // h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
 	        }
 	      }
@@ -2666,7 +2667,8 @@
 	  }, {
 	    key: '_draw',
 	    value: function _draw() {
-	      (0, _get3.default)((0, _getPrototypeOf2.default)(Swirl.prototype), this._props.isWithShape ? '_draw' : '_drawEl', this).call(this);
+	      // call _draw or just _drawEl @ Transit depending if there is `shape`
+	      _transit2.default.prototype[this._props.isWithShape ? '_draw' : '_drawEl']();
 	    }
 	  }]);
 	  return Swirl;
@@ -8196,8 +8198,6 @@
 
 	// TODO:
 	/*
-	  perf optimizations.
-	  --
 	  module names
 	  swirls in then chains for x/y
 	  parse rand(stagger(20, 10), 20) values

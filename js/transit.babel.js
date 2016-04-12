@@ -195,9 +195,10 @@ class Transit extends Tunable {
       var isTranslate = this._isPropChanged('x') || this._isPropChanged('y'),
           isScaleRotate = this._isPropChanged('scale') || this._isPropChanged('angle');
       if ( isTranslate || isScaleRotate ) {
-        var transform = this._fillTransform();
-        this.el.style["#{h.prefix.css}#{'transform'}"] = transform;
-        this.el.style['transform'] = transform;
+        var transform = this._fillTransform(),
+            style     = this.el.style;
+        style["#{h.prefix.css}#{'transform'}"] = transform;
+        style['transform'] = transform;
         // h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
       }
     }

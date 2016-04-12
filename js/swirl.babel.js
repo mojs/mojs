@@ -156,7 +156,8 @@ class Swirl extends Transit {
     @overrides @ Transit.
   */
   _draw () {
-    super[ ( this._props.isWithShape ) ? '_draw' : '_drawEl' ]();
+    // call _draw or just _drawEl @ Transit depending if there is `shape`
+    Transit.prototype[( this._props.isWithShape ) ? '_draw' : '_drawEl']();
   }
 }
 
