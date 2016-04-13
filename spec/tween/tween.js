@@ -5485,6 +5485,54 @@
         return expect(t.playBackward).toHaveBeenCalledWith(0);
       });
     });
+    describe('setSpeed method ->', function() {
+      it('should return this', function() {
+        var tw;
+        tw = new Tween;
+        return expect(tw.setSpeed(.5)).toBe(tw);
+      });
+      it('should set speed', function() {
+        var speed, tw;
+        tw = new Tween;
+        speed = 3.2;
+        tw.setSpeed(speed);
+        return expect(tw._props.speed).toBe(speed);
+      });
+      it('should call _setResume time if playing', function() {
+        var speed, tw;
+        tw = new Tween;
+        speed = 3.2;
+        tw._setPlaybackState('play');
+        spyOn(tw, '_setResumeTime');
+        tw.setSpeed(speed);
+        return expect(tw._setResumeTime).toHaveBeenCalledWith('play');
+      });
+      it('should call _setResume time if playingBackward', function() {
+        var speed, tw;
+        tw = new Tween;
+        speed = 3.2;
+        tw._setPlaybackState('reverse');
+        spyOn(tw, '_setResumeTime');
+        tw.setSpeed(speed);
+        return expect(tw._setResumeTime).toHaveBeenCalledWith('reverse');
+      });
+      it('should not call _setResume time if stopped', function() {
+        var speed, tw;
+        tw = new Tween;
+        speed = 3.2;
+        spyOn(tw, '_setResumeTime');
+        tw.setSpeed(speed);
+        return expect(tw._setResumeTime).not.toHaveBeenCalledWith('stop');
+      });
+      return it('should not call _setResume time if paused', function() {
+        var speed, tw;
+        tw = new Tween;
+        speed = 3.2;
+        spyOn(tw, '_setResumeTime');
+        tw.setSpeed(speed);
+        return expect(tw._setResumeTime).not.toHaveBeenCalledWith('pause');
+      });
+    });
     describe('_setPlaybackState method ->', function() {
       it('should set playback state', function() {
         var t;
@@ -7077,7 +7125,7 @@
         return expect(result.isMojsCallbackOverride).toBe(true);
       });
     });
-    return describe('_assignProp method ->', function() {
+    describe('_assignProp method ->', function() {
       it('should parse easign', function() {
         var tr;
         tr = new Tween;
@@ -7127,6 +7175,47 @@
         tr._assignProp('onStart', null);
         expect(typeof tr._props.onStart).toBe('function');
         return expect(tr._overrideCallback).toHaveBeenCalledWith(null, controlCallback);
+      });
+    });
+    return describe('_setResumeTime method ->', function() {
+      it('should call _setStartTime method', function() {
+        var shift, time, tw;
+        tw = new Tween;
+        spyOn(tw, '_setStartTime');
+        shift = 20;
+        tw._setResumeTime('play', shift);
+        time = tw._resumeTime - Math.abs(shift) - tw._progressTime;
+        return expect(tw._setStartTime).toHaveBeenCalledWith(time, false);
+      });
+      it('should have default of 0 shift', function() {
+        var time, tw;
+        tw = new Tween;
+        spyOn(tw, '_setStartTime');
+        tw._setResumeTime('play');
+        time = tw._resumeTime - Math.abs(0) - tw._progressTime;
+        return expect(tw._setStartTime).toHaveBeenCalledWith(time, false);
+      });
+      return describe('_prevTime normalization ->', function() {
+        it('should not set _prevTime if it is null', function() {
+          var tw;
+          tw = new Tween;
+          tw._setResumeTime('play');
+          return expect(tw._prevTime).toBe(null);
+        });
+        it('should set prevTime to _normPrevTimeForward() if `play`', function() {
+          var tw;
+          tw = new Tween;
+          tw._prevTime = 200;
+          tw._setResumeTime('play');
+          return expect(tw._prevTime).toBe(tw._normPrevTimeForward());
+        });
+        return it('should set prevTime to _normPrevTimeForward() if `reverse`', function() {
+          var tw;
+          tw = new Tween;
+          tw._prevTime = 200;
+          tw._setResumeTime('reverse');
+          return expect(tw._prevTime).toBe(tw._props.endTime - tw._progressTime);
+        });
       });
     });
   });

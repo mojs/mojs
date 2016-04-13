@@ -311,6 +311,23 @@
 	      this._update(p.startTime - p.delay + progress * p.repeatTime);
 	      return this;
 	    }
+	    /*
+	      Method to set tween's speed.
+	      @public
+	      @param {Number} Speed value.
+	      @returns this.
+	    */
+
+	  }, {
+	    key: 'setSpeed',
+	    value: function setSpeed(speed) {
+	      this._props.speed = speed;
+	      // if playing - normalize _startTime and _prevTime to the current point.
+	      if (this._state === 'play' || this._state === 'reverse') {
+	        this._setResumeTime(this._state);
+	      }
+	      return this;
+	    }
 
 	    // ^ PUBLIC  METHOD(S) ^
 	    // v PRIVATE METHOD(S) v
@@ -349,20 +366,35 @@
 	      if (isFlip) {
 	        this._progressTime = p.repeatTime - this._progressTime;
 	      }
-	      // get current moment as resume time
-	      this._resumeTime = performance.now();
-	      // set start time regarding passed `shift` and `procTime`
-	      this._setStartTime(this._resumeTime - Math.abs(shift) - this._progressTime, false, state);
-	      // if we have prevTime - we need to normalize
-	      // it for the current resume time
-	      if (this._prevTime != null) {
-	        this._prevTime = state === 'play' ? this._normPrevTimeForward() : p.endTime - this._progressTime;
-	      }
+	      // set resume time and normalize prev/start times
+	      this._setResumeTime(state, shift);
 	      // add self to tweener = play
 	      _tweener2.default.add(this);
 	      return this;
 	    }
+	    /*
+	      Method to set _resumeTime, _startTime and _prevTime.
+	      @private
+	      @param {String} Current state. [play, reverse]
+	      @param {Number} Time shift. *Default* is 0.
+	    */
 
+	  }, {
+	    key: '_setResumeTime',
+	    value: function _setResumeTime(state) {
+	      var shift = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+
+	      // get current moment as resume time
+	      this._resumeTime = performance.now();
+	      // set start time regarding passed `shift` and `procTime`
+	      var startTime = this._resumeTime - Math.abs(shift) - this._progressTime;
+	      this._setStartTime(startTime, false);
+	      // if we have prevTime - we need to normalize
+	      // it for the current resume time
+	      if (this._prevTime != null) {
+	        this._prevTime = state === 'play' ? this._normPrevTimeForward() : this._props.endTime - this._progressTime;
+	      }
+	    }
 	    /*
 	      Method recalculate _prevTime for forward direction.
 	      @private
@@ -372,7 +404,8 @@
 	  }, {
 	    key: '_normPrevTimeForward',
 	    value: function _normPrevTimeForward() {
-	      var p = this._props;return p.startTime + this._progressTime - p.delay;
+	      var p = this._props;
+	      return p.startTime + this._progressTime - p.delay;
 	    }
 	    /*
 	      Constructor of the class.
@@ -8183,7 +8216,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.223.4', isDebug: true, helpers: _h2.default,
+	  revision: '0.224.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default

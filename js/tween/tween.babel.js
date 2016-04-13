@@ -165,6 +165,20 @@ class Tween extends Module {
     this._update( (p.startTime - p.delay) + progress*p.repeatTime );
     return this;
   }
+  /*
+    Method to set tween's speed.
+    @public
+    @param {Number} Speed value.
+    @returns this.
+  */
+  setSpeed ( speed ) {
+    this._props.speed = speed;
+    // if playing - normalize _startTime and _prevTime to the current point.
+    if ( this._state === 'play' || this._state === 'reverse' ) {
+      this._setResumeTime( this._state );
+    }
+    return this;
+  }
 
   // ^ PUBLIC  METHOD(S) ^
   // v PRIVATE METHOD(S) v
@@ -194,28 +208,40 @@ class Tween extends Module {
       ? 0 : this._progressTime;
     // flip the _progressTime if playback direction changed
     if ( isFlip ) { this._progressTime = p.repeatTime - this._progressTime; }
-    // get current moment as resume time
-    this._resumeTime = performance.now();
-    // set start time regarding passed `shift` and `procTime`
-    this._setStartTime( this._resumeTime-Math.abs(shift)-this._progressTime, false, state );
-    // if we have prevTime - we need to normalize
-    // it for the current resume time
-    if ( this._prevTime != null ) {
-      this._prevTime = ( state === 'play' )
-        ? this._normPrevTimeForward() : p.endTime - this._progressTime;
-    }
+    // set resume time and normalize prev/start times
+    this._setResumeTime( state, shift );
     // add self to tweener = play
     t.add(this);
     return this;
   }
-
+  /*
+    Method to set _resumeTime, _startTime and _prevTime.
+    @private
+    @param {String} Current state. [play, reverse]
+    @param {Number} Time shift. *Default* is 0.
+  */
+  _setResumeTime ( state, shift = 0 ) {
+    // get current moment as resume time
+    this._resumeTime = performance.now();
+    // set start time regarding passed `shift` and `procTime`
+    var startTime = this._resumeTime - Math.abs(shift) - this._progressTime;
+    this._setStartTime( startTime, false );
+    // if we have prevTime - we need to normalize
+    // it for the current resume time
+    if ( this._prevTime != null ) {
+      this._prevTime = ( state === 'play' )
+        ? this._normPrevTimeForward()
+        : this._props.endTime - this._progressTime;
+    }
+  }
   /*
     Method recalculate _prevTime for forward direction.
     @private
     @return {Number} Normalized prev time.
   */
   _normPrevTimeForward () {
-    var p = this._props; return p.startTime + this._progressTime - p.delay;
+    var p = this._props;
+    return p.startTime + this._progressTime - p.delay;
   }
   /*
     Constructor of the class.

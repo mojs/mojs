@@ -5716,6 +5716,42 @@ describe 'Tween ->', ->
       spyOn(t, 'playBackward').and.callThrough()
       t.replayBackward()
       expect(t.playBackward).toHaveBeenCalledWith 0
+
+  describe 'setSpeed method ->', ->
+    it 'should return this', ->
+      tw = new Tween
+      expect(tw.setSpeed(.5)).toBe tw
+    it 'should set speed', ->
+      tw = new Tween
+      speed = 3.2
+      tw.setSpeed speed
+      expect(tw._props.speed).toBe speed
+    it 'should call _setResume time if playing', ->
+      tw = new Tween
+      speed = 3.2
+      tw._setPlaybackState 'play'
+      spyOn tw, '_setResumeTime'
+      tw.setSpeed speed
+      expect(tw._setResumeTime).toHaveBeenCalledWith 'play'
+    it 'should call _setResume time if playingBackward', ->
+      tw = new Tween
+      speed = 3.2
+      tw._setPlaybackState 'reverse'
+      spyOn tw, '_setResumeTime'
+      tw.setSpeed speed
+      expect(tw._setResumeTime).toHaveBeenCalledWith 'reverse'
+    it 'should not call _setResume time if stopped', ->
+      tw = new Tween
+      speed = 3.2
+      spyOn tw, '_setResumeTime'
+      tw.setSpeed speed
+      expect(tw._setResumeTime).not.toHaveBeenCalledWith 'stop'
+    it 'should not call _setResume time if paused', ->
+      tw = new Tween
+      speed = 3.2
+      spyOn tw, '_setResumeTime'
+      tw.setSpeed speed
+      expect(tw._setResumeTime).not.toHaveBeenCalledWith 'pause'
     
   describe '_setPlaybackState method ->', ->
     it 'should set playback state', ->
@@ -6888,7 +6924,49 @@ describe 'Tween ->', ->
       expect(tr._overrideCallback)
         .toHaveBeenCalledWith null, controlCallback
 
-  # describe 'setSpeed method ->', ->
+  describe '_setResumeTime method ->', ->
+    # it 'should set _resumeTime to now()', (dfr)->
+    #   tw = new Tween
+    #   setTimeout ->
+    #     tw._setResumeTime( 'play' )
+    #     now = performance.now()
+    #     console.log now, tw._resumeTime
+    #     expect(typeof tw._resumeTime).toBe 'number'
+    #     expect(tw._resumeTime - now).not.toBeGreaterThan 5
+    #     dfr()
+    #   , 20
+
+    it 'should call _setStartTime method', ()->
+      tw = new Tween
+      spyOn tw, '_setStartTime'
+      shift = 20
+      tw._setResumeTime( 'play', shift )
+      time = tw._resumeTime - Math.abs(shift) - tw._progressTime
+      expect(tw._setStartTime).toHaveBeenCalledWith time, false
+    it 'should have default of 0 shift', ()->
+      tw = new Tween
+      spyOn tw, '_setStartTime'
+      tw._setResumeTime( 'play' )
+      time = tw._resumeTime - Math.abs(0) - tw._progressTime
+      expect(tw._setStartTime).toHaveBeenCalledWith time, false
+    describe '_prevTime normalization ->', ->
+      it 'should not set _prevTime if it is null', ()->
+        tw = new Tween
+        tw._setResumeTime( 'play' )
+        expect(tw._prevTime).toBe null
+      it 'should set prevTime to _normPrevTimeForward() if `play`', ->
+        tw = new Tween
+        tw._prevTime = 200
+        tw._setResumeTime( 'play' )
+        expect(tw._prevTime).toBe tw._normPrevTimeForward()
+      it 'should set prevTime to _normPrevTimeForward() if `reverse`', ->
+        tw = new Tween
+        tw._prevTime = 200
+        tw._setResumeTime( 'reverse' )
+        expect(tw._prevTime).toBe tw._props.endTime - tw._progressTime
+
+
+
     
 
 
