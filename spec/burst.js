@@ -376,8 +376,8 @@
         expect(result.left).toBe('50%');
         return expect(result.top).toBe('50%');
       });
-      it('should add x/y ->', function() {
-        var burst, obj0, obj1, result0, result1;
+      it('should add x/y', function() {
+        var burst, eps, isClose, isZero, obj0, obj1, result0, result1;
         burst = new Burst({
           radius: {
             0: 100
@@ -389,9 +389,15 @@
         obj1 = {};
         result0 = burst._addOptionalProps(obj0, 0);
         result1 = burst._addOptionalProps(obj1, 1);
-        expect(obj0.x[0]).toBeCloseTo(0, 5);
+        eps = 0.00001;
+        isClose = obj0.x[0] - 0 < eps;
+        isZero = obj0.x === 0;
+        expect(isClose || isZero).toBe(true);
         expect(obj0.y[0]).toBeCloseTo(-100, 5);
-        expect(obj1.x[0]).toBeCloseTo(0, 5);
+        eps = 0.00001;
+        isClose = obj1.x[0] - 0 < eps;
+        isZero = obj1.x === 0;
+        expect(isClose || isZero).toBe(true);
         return expect(obj1.y[0]).toBeCloseTo(100, 5);
       });
       return it('should add angles ->', function() {

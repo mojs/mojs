@@ -147,7 +147,7 @@
           spyOn(tr, '_setProgress');
           progress = .1;
           tr.timeline.setProgress(progress);
-          return expect(tr._setProgress).toHaveBeenCalledWith(progress);
+          return expect(tr._setProgress.calls.first().args[0]).toBeCloseTo(progress, 5);
         });
       });
       describe('onStart callback override ->', function() {
@@ -525,8 +525,8 @@
         expect(svg.style.position).toBe('absolute');
         expect(svg.style.width).toBe('100%');
         expect(svg.style.height).toBe('100%');
-        expect(svg.style.left).toBe('0px');
-        return expect(svg.style.top).toBe('0px');
+        expect(parseInt(svg.style.left, 10)).toBe(0);
+        return expect(parseInt(svg.style.top, 10)).toBe(0);
       });
       it('should not create context and el if context was passed', function() {
         var byte;
@@ -978,9 +978,9 @@
           radius: 25,
           top: 10
         });
-        expect(byte.el.style.left).toBe('0px');
         expect(byte.el.style.top).toBe('10px');
         expect(byte.el.style.opacity).toBe('1');
+        expect(parseInt(byte.el.style.left, 10)).toBe(0);
         s = byte.el.style;
         tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
         isTr = tr === 'scale(1) translate(0, 0) rotate(0deg)';
@@ -1022,8 +1022,8 @@
         });
         byte._draw();
         byte._draw();
-        expect(byte.el.style.left).toBe('0px');
-        return expect(byte._lastSet.x.value).toBe('0');
+        expect(byte._lastSet.x.value).toBe('0');
+        return expect(parseInt(byte.el.style.left, 10)).toBe(0);
       });
       it('should return true if there is no el', function() {
         var byte;
@@ -1560,8 +1560,7 @@
         bit = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'rect') : void 0;
         svg.appendChild(bit);
         byte = new Transit({
-          bit: bit,
-          isIt: 1
+          bit: bit
         });
         return expect(byte.bit.el).toBe(bit);
       });

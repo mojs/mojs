@@ -158,15 +158,19 @@ describe 'Swirl ->', ->
         degreeShift: 90
       # swirl._setProgress .4
       swirl._setProgress .5
-      expect(parseInt(swirl._props.x, 10)).toBe -5
+      x = parseFloat(swirl._props.x).toFixed 2
+      expect(x).toBe '-5.00'
       expect(parseInt(swirl._props.y, 10)).toBe 5
+      
     it 'should set x/y progress regarding delta degreeShift', ->
       swirl = new Swirl
         x: {0:10}, y: {0:10}, isSwirl: false,
         degreeShift: { 0: 180 }
       # swirl._setProgress .5
       swirl._setProgress .5
-      expect(parseInt(swirl._props.x, 10)).toBe -5
+      
+      x = parseFloat(swirl._props.x).toFixed 2
+      expect(x).toBe '-5.00'
       expect(parseInt(swirl._props.y, 10)).toBe 5
     it 'should set x/y progress', ->
       swirl = new Swirl x: {0:10}, y: {0:10}, isSwirl: false
@@ -177,8 +181,13 @@ describe 'Swirl ->', ->
       swirl = new Swirl
         x: {0:'-10'}, y: {0:'-10'}, isSwirl: false
       swirl._setProgress 1
-      expect(parseInt(swirl._props.x, 10)).toBe -10
-      expect(parseInt(swirl._props.y, 10)).toBe -10
+      
+      x = parseFloat(swirl._props.x).toFixed 2
+      expect(x).toBe '-10.00'
+      y = parseFloat(swirl._props.y).toFixed 2
+      expect(y).toBe '-10.00'
+      # expect(parseInt(swirl._props.x, 10)).toBe -10
+      # expect(parseInt(swirl._props.y, 10)).toBe -10
     it 'should set plain x/y progress if foreign context', ->
       swirl = new Swirl
         x: {0:10}, y: {0:10}, ctx: tr.ctx, isSwirl: false

@@ -97,7 +97,6 @@ describe 'Burst ->', ->
 
     it 'should set time on tween of masterSwirl', ->
       burst = new Burst
-        # isIt: 1
         childOptions:
           duration: 'stagger(500, 1000)'
           repeat: 2
@@ -285,21 +284,27 @@ describe 'Burst ->', ->
       expect(result.left).toBe '50%'
       expect(result.top).toBe '50%'
 
-    it 'should add x/y ->', ->
+    it 'should add x/y', ->
       burst = new Burst
         radius: { 0: 100 }
         count:  2,
-        size: 0,
+        size: 0
 
       obj0 = {}
       obj1 = {}
       result0 = burst._addOptionalProps obj0, 0
       result1 = burst._addOptionalProps obj1, 1
 
-      expect(obj0.x[0]).toBeCloseTo 0, 5
+      eps = 0.00001
+      isClose = obj0.x[0] - 0 < eps
+      isZero  = obj0.x is 0
+      expect(isClose or isZero).toBe true
       expect(obj0.y[0]).toBeCloseTo -100, 5
 
-      expect(obj1.x[0]).toBeCloseTo 0, 5
+      eps = 0.00001
+      isClose = obj1.x[0] - 0 < eps
+      isZero  = obj1.x is 0
+      expect(isClose or isZero).toBe true
       expect(obj1.y[0]).toBeCloseTo 100, 5
 
     it 'should add angles ->', ->

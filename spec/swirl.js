@@ -375,7 +375,7 @@
         return expect(parseInt(swirl._props.y, 10)).toBe(5);
       });
       it('should set x/y progress regarding degreeShift', function() {
-        var swirl;
+        var swirl, x;
         swirl = new Swirl({
           x: {
             0: 10
@@ -387,11 +387,12 @@
           degreeShift: 90
         });
         swirl._setProgress(.5);
-        expect(parseInt(swirl._props.x, 10)).toBe(-5);
+        x = parseFloat(swirl._props.x).toFixed(2);
+        expect(x).toBe('-5.00');
         return expect(parseInt(swirl._props.y, 10)).toBe(5);
       });
       it('should set x/y progress regarding delta degreeShift', function() {
-        var swirl;
+        var swirl, x;
         swirl = new Swirl({
           x: {
             0: 10
@@ -405,7 +406,8 @@
           }
         });
         swirl._setProgress(.5);
-        expect(parseInt(swirl._props.x, 10)).toBe(-5);
+        x = parseFloat(swirl._props.x).toFixed(2);
+        expect(x).toBe('-5.00');
         return expect(parseInt(swirl._props.y, 10)).toBe(5);
       });
       it('should set x/y progress', function() {
@@ -424,7 +426,7 @@
         return expect(parseInt(swirl._props.y, 10)).toBe(10);
       });
       it('should set negative x/y progress', function() {
-        var swirl;
+        var swirl, x, y;
         swirl = new Swirl({
           x: {
             0: '-10'
@@ -435,8 +437,10 @@
           isSwirl: false
         });
         swirl._setProgress(1);
-        expect(parseInt(swirl._props.x, 10)).toBe(-10);
-        return expect(parseInt(swirl._props.y, 10)).toBe(-10);
+        x = parseFloat(swirl._props.x).toFixed(2);
+        expect(x).toBe('-10.00');
+        y = parseFloat(swirl._props.y).toFixed(2);
+        return expect(y).toBe('-10.00');
       });
       it('should set plain x/y progress if foreign context', function() {
         var swirl;

@@ -115,7 +115,7 @@ describe 'Transit ->', ->
         spyOn tr, '_setProgress'
         progress = .1
         tr.timeline.setProgress progress
-        expect(tr._setProgress).toHaveBeenCalledWith progress
+        expect(tr._setProgress.calls.first().args[0]).toBeCloseTo progress, 5
 
     describe 'onStart callback override ->', ->
       it 'should override this._o.onStart', ->
@@ -339,8 +339,8 @@ describe 'Transit ->', ->
       expect(svg.style.position)                .toBe 'absolute'
       expect(svg.style.width)                   .toBe '100%'
       expect(svg.style.height)                  .toBe '100%'
-      expect(svg.style.left)                    .toBe '0px'
-      expect(svg.style.top)                     .toBe '0px'
+      expect(parseInt(svg.style.left, 10))      .toBe 0
+      expect(parseInt(svg.style.top, 10))       .toBe 0
     it 'should not create context and el if context was passed', ->
       svg.isSvg = true
       byte = new Byte ctx: svg
@@ -635,9 +635,9 @@ describe 'Transit ->', ->
   describe '_drawEl method ->', ->
     it 'should set el positions and transforms', ->
       byte = new Byte radius: 25, top: 10
-      expect(byte.el.style.left)      .toBe     '0px'
       expect(byte.el.style.top)       .toBe     '10px'
       expect(byte.el.style.opacity)   .toBe     '1'
+      expect(parseInt(byte.el.style.left, 10)).toBe 0
       s = byte.el.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
       isTr  = tr is 'scale(1) translate(0, 0) rotate(0deg)'
@@ -664,8 +664,8 @@ describe 'Transit ->', ->
       byte = new Byte radius: 25, y: 10
       byte._draw()
       byte._draw()
-      expect(byte.el.style.left)      .toBe     '0px'
-      expect(byte._lastSet.x.value)    .toBe    '0'
+      expect(byte._lastSet.x.value)   .toBe    '0'
+      expect(parseInt(byte.el.style.left, 10)).toBe 0
     it 'should return true if there is no el', ->
       byte = new Byte radius: 25
       byte.el = null
@@ -943,7 +943,7 @@ describe 'Transit ->', ->
       bit  = document.createElementNS?(ns, 'rect')
       svg.appendChild bit
 
-      byte = new Transit bit: bit, isIt: 1
+      byte = new Transit bit: bit
       expect(byte.bit.el).toBe bit
 
     it 'should set isForeignBit flag', ->

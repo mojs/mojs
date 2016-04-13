@@ -2036,7 +2036,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         t._update(t._props.startTime + timeShift - (duration / 2));
-        expect(updateValue).toBe(.5);
+        expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -6798,7 +6798,7 @@
     });
     describe('_progress method ->', function() {
       return it('should call onProgress callback', function() {
-        var duration, time, tw;
+        var args, duration, time, tw;
         duration = 1000;
         tw = new Tween({
           duration: duration,
@@ -6809,7 +6809,9 @@
         time = tw._props.startTime + duration / 2;
         tw._prevTime = time - 1;
         tw._progress(.5, time);
-        return expect(tw._props.onProgress).toHaveBeenCalledWith(.5, true);
+        args = tw._props.onProgress.calls.first().args;
+        expect(args[0]).toBeCloseTo(.5, 5);
+        return expect(args[1]).toBe(true);
       });
     });
     describe('onProgress callback ->', function() {

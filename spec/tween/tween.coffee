@@ -2049,7 +2049,7 @@ describe 'Tween ->', ->
 
       # start again
       t._update t._props.startTime + timeShift - (duration/2)
-      expect(updateValue).toBe(.5)
+      expect(updateValue).toBeCloseTo(.5, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -6626,7 +6626,9 @@ describe 'Tween ->', ->
       time = tw._props.startTime + duration/2
       tw._prevTime = time - 1
       tw._progress( .5, time )
-      expect(tw._props.onProgress).toHaveBeenCalledWith .5, true
+      args = tw._props.onProgress.calls.first().args
+      expect(args[0]).toBeCloseTo .5, 5
+      expect(args[1]).toBe true
 
   describe 'onProgress callback ->', ->
     it 'should be called with current progress and direction', ->
