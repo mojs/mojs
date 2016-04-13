@@ -137,6 +137,18 @@ describe 'tweenable ->', ->
       result = tw.setProgress( .5 )
       expect(result).toBe tw
 
+  describe 'setSpeed ->', ->
+    it 'should call timeline\'s setSpeed method', ->
+      tw = new Tweenable
+      spyOn tw.timeline, 'setSpeed'
+      progress = .5
+      tw.setSpeed( progress )
+      expect(tw.timeline.setSpeed).toHaveBeenCalledWith progress
+    it 'should return this', ->
+      tw = new Tweenable
+      result = tw.setSpeed( .5 )
+      expect(result).toBe tw
+
   describe 'isTimelineLess option ->', ->
     it 'should not create timeline', ->
       tw = new Tweenable isTimelineLess: true

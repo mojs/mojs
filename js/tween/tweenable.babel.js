@@ -13,6 +13,7 @@ class Tweenable extends Module {
   /*
     play method for the timeline.
     @public
+    @param {Number} Time shift.
     @returns this.
   */
   play () {
@@ -22,6 +23,7 @@ class Tweenable extends Module {
   /*
     playBackward method for the timeline.
     @public
+    @param {Number} Time shift.
     @returns this.
   */
   playBackward () {
@@ -40,6 +42,9 @@ class Tweenable extends Module {
   /*
     stop method for the timeline.
     @public
+    @param {Number} [0...1] Progress to set on stop.
+                            *Default* is `0` if `play`
+                            and `1` if `playBAckward`.
     @returns this.
   */
   stop () {
@@ -67,10 +72,20 @@ class Tweenable extends Module {
   /*
     setProgress method for the timeline.
     @public
+    @param {Number} [0...1] Progress value.
     @returns this.
   */
   setProgress () {
     this.timeline.setProgress.apply( this.timeline, arguments );
+    return this;
+  }
+  /*
+    setSpeed method for the timeline.
+    @param {Number} Speed value.
+    @returns this.
+  */
+  setSpeed ( speed ) {
+    this.timeline.setSpeed.apply( this.timeline, arguments );
     return this;
   }
   

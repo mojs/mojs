@@ -230,6 +230,22 @@
         return expect(result).toBe(tw);
       });
     });
+    describe('setSpeed ->', function() {
+      it('should call timeline\'s setSpeed method', function() {
+        var progress, tw;
+        tw = new Tweenable;
+        spyOn(tw.timeline, 'setSpeed');
+        progress = .5;
+        tw.setSpeed(progress);
+        return expect(tw.timeline.setSpeed).toHaveBeenCalledWith(progress);
+      });
+      return it('should return this', function() {
+        var result, tw;
+        tw = new Tweenable;
+        result = tw.setSpeed(.5);
+        return expect(result).toBe(tw);
+      });
+    });
     describe('isTimelineLess option ->', function() {
       it('should not create timeline', function() {
         var tw;
