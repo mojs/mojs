@@ -763,7 +763,7 @@
           tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
           return expect(tr).toBe('scale(1) translate(100px, 50px) rotate(0deg)');
         });
-        it('should animate position', function(dfr) {
+        it('should animate shift position', function(dfr) {
           var byte;
           byte = new Byte({
             x: {
@@ -771,10 +771,12 @@
             },
             duration: 200,
             onComplete: function() {
-              var s, tr;
+              var isTr, isTr2, s, tr;
               s = byte.el.style;
               tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-              expect(tr).toBe('scale(1) translate(200px, 0) rotate(0deg)');
+              isTr = tr === 'scale(1) translate(200px, 0) rotate(0deg)';
+              isTr2 = tr === 'scale(1) translate(200px, 0px) rotate(0deg)';
+              expect(isTr || isTr2).toBe(true);
               return dfr();
             }
           });
@@ -788,10 +790,12 @@
             },
             duration: 200,
             onComplete: function() {
-              var s, tr;
+              var isTr, isTr2, s, tr;
               s = byte.el.style;
               tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-              expect(tr).toBe('scale(1) translate(50%, 0) rotate(0deg)');
+              isTr = tr === 'scale(1) translate(50%, 0) rotate(0deg)';
+              isTr2 = tr === 'scale(1) translate(50%, 0px) rotate(0deg)';
+              expect(isTr || isTr2).toBe(true);
               return dfr();
             }
           });
@@ -969,7 +973,7 @@
     });
     describe('_drawEl method ->', function() {
       it('should set el positions and transforms', function() {
-        var byte, s, tr;
+        var byte, isTr, isTr2, s, tr;
         byte = new Byte({
           radius: 25,
           top: 10
@@ -979,7 +983,9 @@
         expect(byte.el.style.opacity).toBe('1');
         s = byte.el.style;
         tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-        return expect(tr).toBe('scale(1) translate(0, 0) rotate(0deg)');
+        isTr = tr === 'scale(1) translate(0, 0) rotate(0deg)';
+        isTr2 = tr === 'scale(1) translate(0px, 0px) rotate(0deg)';
+        return expect(isTr || isTr2).toBe(true);
       });
       it('should set only opacity if foreign context', function() {
         var byte, s, tr;
@@ -1028,15 +1034,18 @@
         return expect(byte._drawEl()).toBe(true);
       });
       it('should set transform if angle changed', function() {
-        var byte, resultStr;
+        var byte, isTr, isTr2, style, tr;
         byte = new Byte({
           angle: 25
         });
         byte._draw();
         byte._props.angle = 26;
         byte._draw();
-        resultStr = 'scale(1) translate(0, 0) rotate(26deg)';
-        return expect(byte.el.style['transform']).toBe(resultStr);
+        style = byte.el.style;
+        tr = style['transform'] || style["" + mojs.h.prefix.css + "transform"];
+        isTr = tr === 'scale(1) translate(0, 0) rotate(26deg)';
+        isTr2 = tr === 'scale(1) translate(0px, 0px) rotate(26deg)';
+        return expect(isTr || isTr2).toBe(true);
       });
       it('should not set transform if angle changed', function() {
         var byte;
@@ -1061,7 +1070,7 @@
         return expect(byte._fillTransform).not.toHaveBeenCalled();
       });
       it('should set transform if x changed #1', function() {
-        var byte, resultStr;
+        var byte, isTr, isTr2, style, tr;
         byte = new Byte({
           radius: 25,
           top: 10,
@@ -1073,11 +1082,14 @@
         spyOn(byte, '_fillTransform').and.callThrough();
         byte._draw();
         expect(byte._fillTransform).toHaveBeenCalled();
-        resultStr = 'scale(1) translate(4px, 0) rotate(0deg)';
-        return expect(byte.el.style['transform']).toBe(resultStr);
+        style = byte.el.style;
+        tr = style['transform'] || style["" + mojs.h.prefix.css + "transform"];
+        isTr = tr === 'scale(1) translate(4px, 0) rotate(0deg)';
+        isTr2 = tr === 'scale(1) translate(4px, 0px) rotate(0deg)';
+        return expect(isTr || isTr2).toBe(true);
       });
       it('should set transform if x changed #2', function() {
-        var byte, resultStr;
+        var byte, isTr, isTr2, style, tr;
         byte = new Byte({
           radius: 25,
           top: 10,
@@ -1086,13 +1098,17 @@
           }
         });
         byte._props.y = '4px';
-        spyOn(byte, '_fillTransform');
+        spyOn(byte, '_fillTransform').and.callThrough();
         byte._draw();
         expect(byte._fillTransform).toHaveBeenCalled();
-        return resultStr = 'scale(1) translate(0, 4px) rotate(0deg)';
+        style = byte.el.style;
+        tr = style['transform'] || style["" + mojs.h.prefix.css + "transform"];
+        isTr = tr === 'scale(1) translate(0, 4px) rotate(0deg)';
+        isTr2 = tr === 'scale(1) translate(0px, 4px) rotate(0deg)';
+        return expect(isTr || isTr2).toBe(true);
       });
       return it('should set transform if x changed #3', function() {
-        var byte, resultStr;
+        var byte, isTr, isTr2, style, tr;
         byte = new Byte({
           radius: 25,
           top: 10,
@@ -1104,8 +1120,11 @@
         spyOn(byte, '_fillTransform').and.callThrough();
         byte._draw();
         expect(byte._fillTransform).toHaveBeenCalled();
-        resultStr = 'scale(3) translate(0, 0) rotate(0deg)';
-        return expect(byte.el.style['transform']).toBe(resultStr);
+        style = byte.el.style;
+        tr = style['transform'] || style["" + mojs.h.prefix.css + "transform"];
+        isTr = tr === 'scale(3) translate(0, 0) rotate(0deg)';
+        isTr2 = tr === 'scale(3) translate(0px, 0px) rotate(0deg)';
+        return expect(isTr || isTr2).toBe(true);
       });
     });
     describe('_isPropChanged method ->', function() {
@@ -1540,8 +1559,9 @@
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
         bit = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'rect') : void 0;
         svg.appendChild(bit);
-        byte = new Byte({
-          bit: bit
+        byte = new Transit({
+          bit: bit,
+          isIt: 1
         });
         return expect(byte.bit.el).toBe(bit);
       });

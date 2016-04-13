@@ -63,8 +63,8 @@ module.exports = function(config) {
 
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
       reporters = ['progress', 'coverage', 'clear-screen'];
-      browsers = ['PhantomJS'];
-      // browsers = [];
+      // browsers = ['PhantomJS'];
+      browsers = [];
   } else {
       reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
       browsers = Object.keys(customLaunchers);
@@ -91,40 +91,40 @@ module.exports = function(config) {
       // 'build/mo.js',
       // 'build/mojs.js',
       
-      'build/h.js',
-      'spec/h.js',
-      'build/transit.js',
-      'spec/transit.js',
-      'build/swirl.js',
-      'spec/swirl.js',
-      'build/burst.js',
-      'spec/burst.js',
+      // 'build/h.js',
+      // 'spec/h.js',
+      // 'build/transit.js',
+      // 'spec/transit.js',
+      // 'build/swirl.js',
+      // 'spec/swirl.js',
+      // 'build/burst.js',
+      // 'spec/burst.js',
 
-      'build/module.js',
-      'spec/module.js',
+      // 'build/module.js',
+      // 'spec/module.js',
       // 'build/tween/tweenable.js',
       // 'spec/tween/tweenable.js',
-      'build/tunable.js',
-      'spec/tunable.js',
-      'build/thenable.js',
-      'spec/thenable.js',
-      'build/runable.js',
-      'spec/runable.js',
+      // 'build/tunable.js',
+      // 'spec/tunable.js',
+      // 'build/thenable.js',
+      // 'spec/thenable.js',
+      // 'build/runable.js',
+      // 'spec/runable.js',
       
-      'build/spriter.js',
-      'spec/spriter.js',
+      // 'build/spriter.js',
+      // 'spec/spriter.js',
       'build/stagger.js',
       'spec/stagger.js',
 
-      'build/easing/easing.js',
-      'spec/easing/easing.js',
+      // 'build/easing/easing.js',
+      // 'spec/easing/easing.js',
 
-      // 'build/timeline.js',
-      // 'spec/timeline.js',
-      // 'build/tween.js',
-      // 'spec/tween.js',
-      'build/tweener.js',
-      'spec/tweener.js',
+      // 'build/tween/timeline.js',
+      // 'spec/tween/timeline.js',
+      // 'build/tween/tween.js',
+      // 'spec/tween/tween.js',
+      // 'build/tween/tweener.js',
+      // 'spec/tween/tweener.js',
 
       'build/motion-path.js',
       'spec/motion-path.js',
@@ -135,8 +135,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'build/mo.js': 'coverage',
-        // 'dist/**/*.js': ['browserify']
+      'build/mo.js': 'coverage',
+      // 'dist/**/*.js': ['browserify']
     },
     // browserify: {
     //   debug: true,

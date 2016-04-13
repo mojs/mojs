@@ -32,14 +32,14 @@ class Bit extends Module {
       'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform',
     ]
   }
-
+// 
   _vars () {
     if (this._o.ctx && this._o.ctx.tagName === 'svg') {
-      this.ctx = this._o.ctx
+      this.ctx = this._o.ctx;
     } else if (!this._o.el) {
       h.error('You should pass a real context(ctx) to the bit');
       // # --> COVER return if not ctx and not el
-      // # return true
+      return true;
     }
     this._state = {}; this._drawMapLength = this._drawMap.length;
     // this.calcTransform();

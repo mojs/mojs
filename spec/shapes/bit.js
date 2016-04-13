@@ -1,5 +1,5 @@
 (function() {
-  var Bit, bit, ns, svg;
+  var Bit, bit, h, ns, svg;
 
   Bit = mojs.shapesMap.getShape('bit');
 
@@ -10,6 +10,8 @@
   bit = new Bit({
     ctx: svg
   });
+
+  h = mojs.h;
 
   describe('Bit', function() {
     describe('extention ->', function() {
@@ -22,19 +24,15 @@
     });
     describe('context ->', function() {
       return it('context passed should be real svg node', function() {
-        expect(function() {
-          return new Bit;
-        }).toThrow();
-        expect(function() {
-          return bit = new Bit({
-            ctx: 'a'
-          });
-        }).toThrow();
-        return expect(function() {
-          return bit = new Bit({
-            ctx: svg
-          });
-        }).not.toThrow();
+        var b;
+        b = new Bit({
+          ctx: svg,
+          isIt: 1
+        });
+        delete b._o.ctx;
+        expect(b._vars()).toBe(true);
+        b._o.ctx = svg;
+        return expect(b._vars()).not.toBeDefined();
       });
     });
     describe('methods', function() {

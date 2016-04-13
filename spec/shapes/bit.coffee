@@ -2,6 +2,7 @@ Bit   = mojs.shapesMap.getShape('bit')
 ns    = 'http://www.w3.org/2000/svg'
 svg   = document.createElementNS?(ns, 'svg')
 bit   = new Bit ctx: svg
+h     = mojs.h
 
 describe 'Bit', ->
   describe 'extention ->', ->
@@ -10,9 +11,14 @@ describe 'Bit', ->
       expect(bit instanceof mojs.Module).toBe true
   describe 'context ->', ->
     it 'context passed should be real svg node', ->
-      expect(-> new Bit).toThrow()
-      expect(-> bit = new Bit ctx: 'a').toThrow()
-      expect(-> bit = new Bit ctx: svg).not.toThrow()
+      b = new Bit ctx: svg, isIt: 1
+      delete b._o.ctx
+      expect(b._vars()).toBe true
+      b._o.ctx = svg
+      expect(b._vars()).not.toBeDefined()
+      # expect(-> new Bit).toThrow()
+      # expect(-> bit = new Bit ctx: 'a').toThrow()
+      # expect(-> bit = new Bit ctx: svg).not.toThrow()
   describe 'methods', ->
     it 'should have _vars method', ->
       expect(bit._vars).toBeDefined()

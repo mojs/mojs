@@ -1,4 +1,4 @@
-import h from './h'
+import h from './h';
 
 /*
   Base class for module. Extends and parses defaults.
@@ -23,7 +23,13 @@ class Module {
 
     this._declareDefaults();
     this._extendDefaults();
-    this._vars();
+
+    this._vars()
+    // COVER
+    // if ( this._vars() ) {
+      // this._o.isIt && console.log('RETURN');
+      // return ;
+    // };
     this._render();
   }
   /*

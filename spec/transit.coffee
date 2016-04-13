@@ -493,14 +493,16 @@ describe 'Transit ->', ->
         s = byte.el.style
         tr = s.transform or s["#{mojs.h.prefix.css}transform"]
         expect(tr).toBe 'scale(1) translate(100px, 50px) rotate(0deg)'
-      it 'should animate position', (dfr)->
+      it 'should animate shift position', (dfr)->
         byte = new Byte
           x: {100: '200px'}
           duration: 200
           onComplete:->
             s = byte.el.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-            expect(tr) .toBe 'scale(1) translate(200px, 0) rotate(0deg)'
+            isTr  = tr is 'scale(1) translate(200px, 0) rotate(0deg)'
+            isTr2 = tr is 'scale(1) translate(200px, 0px) rotate(0deg)'
+            expect(isTr or isTr2).toBe true
             dfr()
         byte.play()
       it 'should animate position with respect to units', (dfr)->
@@ -510,7 +512,9 @@ describe 'Transit ->', ->
           onComplete:->
             s = byte.el.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-            expect(tr).toBe 'scale(1) translate(50%, 0) rotate(0deg)'
+            isTr = tr is 'scale(1) translate(50%, 0) rotate(0deg)'
+            isTr2 = tr is 'scale(1) translate(50%, 0px) rotate(0deg)'
+            expect(isTr or isTr2).toBe true
             dfr()
         byte.play()
       it 'should fallback to end units if units are differnt', (dfr)->
@@ -636,7 +640,9 @@ describe 'Transit ->', ->
       expect(byte.el.style.opacity)   .toBe     '1'
       s = byte.el.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-      expect(tr) .toBe     'scale(1) translate(0, 0) rotate(0deg)'
+      isTr  = tr is 'scale(1) translate(0, 0) rotate(0deg)'
+      isTr2 = tr is 'scale(1) translate(0px, 0px) rotate(0deg)'
+      expect(isTr or isTr2).toBe true
     it 'should set only opacity if foreign context', ->
       byte = new Byte radius: 25, top: 10, ctx: svg
       byte._draw()
@@ -669,8 +675,11 @@ describe 'Transit ->', ->
       byte._draw()
       byte._props.angle = 26
       byte._draw()
-      resultStr = 'scale(1) translate(0, 0) rotate(26deg)'
-      expect(byte.el.style['transform']).toBe resultStr
+      style = byte.el.style
+      tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
+      isTr = tr is 'scale(1) translate(0, 0) rotate(26deg)'
+      isTr2 = tr is 'scale(1) translate(0px, 0px) rotate(26deg)'
+      expect(isTr or isTr2).toBe true
       # expect(byte.el.style["#{h.prefix.css}transform"]).toBe resultStr
     it 'should not set transform if angle changed', ->
       byte = new Byte angle: 25
@@ -690,23 +699,38 @@ describe 'Transit ->', ->
       spyOn(byte, '_fillTransform').and.callThrough()
       byte._draw()
       expect(byte._fillTransform).toHaveBeenCalled()
-      resultStr = 'scale(1) translate(4px, 0) rotate(0deg)'
-      expect(byte.el.style['transform']).toBe resultStr
+      style = byte.el.style
+      tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
+      isTr = tr is 'scale(1) translate(4px, 0) rotate(0deg)'
+      isTr2 = tr is 'scale(1) translate(4px, 0px) rotate(0deg)'
+      expect(isTr or isTr2).toBe true
+
     it 'should set transform if x changed #2', ->
       byte = new Byte radius: 25, top: 10, y: { 0: 10 }
       byte._props.y = '4px'
-      spyOn byte, '_fillTransform'
+      spyOn(byte, '_fillTransform').and.callThrough()
       byte._draw()
       expect(byte._fillTransform).toHaveBeenCalled()
-      resultStr = 'scale(1) translate(0, 4px) rotate(0deg)'
+      style = byte.el.style
+      tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
+      isTr = tr is 'scale(1) translate(0, 4px) rotate(0deg)'
+      isTr2 = tr is 'scale(1) translate(0px, 4px) rotate(0deg)'
+      expect(isTr or isTr2).toBe true
+
     it 'should set transform if x changed #3', ->
       byte = new Byte radius: 25, top: 10, scale: { 0: 10 }
       byte._props.scale = 3
       spyOn(byte, '_fillTransform').and.callThrough()
       byte._draw()
       expect(byte._fillTransform).toHaveBeenCalled()
-      resultStr = 'scale(3) translate(0, 0) rotate(0deg)'
-      expect(byte.el.style['transform']).toBe resultStr
+      # resultStr = 'scale(3) translate(0, 0) rotate(0deg)'
+      # expect(byte.el.style['transform']).toBe resultStr
+      style = byte.el.style
+      tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
+      isTr = tr is 'scale(3) translate(0, 0) rotate(0deg)'
+      isTr2 = tr is 'scale(3) translate(0px, 0px) rotate(0deg)'
+      expect(isTr or isTr2).toBe true
+
       
   describe '_isPropChanged method ->', ->
     it 'should return bool showing if prop was changed after the last set', ->
@@ -918,8 +942,10 @@ describe 'Transit ->', ->
       svg  = document.createElementNS?(ns, 'svg')
       bit  = document.createElementNS?(ns, 'rect')
       svg.appendChild bit
-      byte = new Byte bit: bit
+
+      byte = new Transit bit: bit, isIt: 1
       expect(byte.bit.el).toBe bit
+
     it 'should set isForeignBit flag', ->
       svg  = document.createElementNS?(ns, 'svg')
       bit  = document.createElementNS?(ns, 'rect')
