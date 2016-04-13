@@ -5231,14 +5231,15 @@
         return expect(Math.abs(t._props.startTime - start)).not.toBeGreaterThan(5);
       });
       it('should return immediately if already playing', function() {
-        var t;
+        var result, t;
         t = new Tween({
           duration: 1000
         });
         t.play();
         spyOn(t, '_subPlay');
-        t.play();
-        return expect(t._subPlay).not.toHaveBeenCalled();
+        result = t.play();
+        expect(t._subPlay).not.toHaveBeenCalled();
+        return expect(result).toBe(t);
       });
       it('should run if already playing but ended', function(dfr) {
         var duration, t;
@@ -5308,14 +5309,15 @@
         return expect(t._progressTime).toBe(t._props.repeatTime - progress);
       });
       it('should return immediately if already reversing', function() {
-        var t;
+        var result, t;
         t = new Tween({
           duration: 1000
         });
         t.playBackward();
         spyOn(t, '_subPlay');
-        t.playBackward();
-        return expect(t._subPlay).not.toHaveBeenCalled();
+        result = t.playBackward();
+        expect(t._subPlay).not.toHaveBeenCalled();
+        return expect(result).toBe(t);
       });
       it('should run if already reversing but ended', function(dfr) {
         var duration, t;
@@ -5354,10 +5356,19 @@
         timeline.pause();
         return expect(timeline._removeFromTweener).toHaveBeenCalled();
       });
-      return it('should set _state to "pause"', function() {
+      it('should set _state to "pause"', function() {
         var t;
         t = new Tween;
         return t.pause();
+      });
+      return it('should remove immediately if paused', function() {
+        var result, t;
+        t = new Tween;
+        t.play().pause();
+        spyOn(t, '_removeFromTweener');
+        result = t.pause();
+        expect(t._removeFromTweener).not.toHaveBeenCalled();
+        return expect(result).toBe(t);
       });
     });
     describe('stop method', function() {
@@ -5429,12 +5440,13 @@
         return expect(t._props.isReversed).toBe(false);
       });
       return it('should return immediately if already stopped', function() {
-        var t;
+        var result, t;
         t = new Tween;
         t.stop();
         t._props.isReversed = true;
-        t.stop();
-        return expect(t._props.isReversed).toBe(true);
+        result = t.stop();
+        expect(t._props.isReversed).toBe(true);
+        return expect(result).toBe(t);
       });
     });
     describe('replay method ->', function() {

@@ -188,7 +188,7 @@
 	      var shift = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
 
 	      if (this._state === 'play' && this._isRunning) {
-	        return false;
+	        return this;
 	      }
 	      this._props.isReversed = false;
 	      this._subPlay(shift, 'play');
@@ -208,7 +208,7 @@
 	      var shift = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
 
 	      if (this._state === 'reverse' && this._isRunning) {
-	        return false;
+	        return this;
 	      }
 	      this._props.isReversed = true;
 	      this._subPlay(shift, 'reverse');
@@ -225,7 +225,7 @@
 	    key: 'pause',
 	    value: function pause() {
 	      if (this._state === 'pause' || this._state === 'stop') {
-	        return false;
+	        return this;
 	      }
 	      this._removeFromTweener();
 	      this._setPlaybackState('pause');
@@ -242,7 +242,7 @@
 	    key: 'stop',
 	    value: function stop(progress) {
 	      if (this._state === 'stop') {
-	        return;
+	        return this;
 	      }
 	      this._props.isReversed = false;
 	      this._removeFromTweener();
@@ -8234,7 +8234,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.225.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.225.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8252,68 +8252,6 @@
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
-
-	// let el      = document.querySelector('#js-el'),
-	//     speedEl = document.querySelector('#js-speed-slider'),
-	//     tw      = new mojs.Tween({
-	//       duration: 20000,
-	//       // delay:    1000,
-	//       repeat: 3,
-	//       easing: 'linear.none',
-	//       onStart () {
-	//         console.log('ON START');
-	//       },
-	//       onRepeatStart () {
-	//         console.log('ON REPEAT START');
-	//       },
-	//       onComplete () {
-	//         console.log('ON COMPLETE');
-	//       },
-	//       onRepeatComplete () {
-	//         console.log('ON REPEAT COMPLETE');
-	//       },
-	//       onFirstUpdate () {
-	//         console.log('ON FIRST UPDATE');
-	//       },
-	//       onUpdate (p) {
-	//         console.log('ON UPDATE');
-	//         el.style.transform = `translateX( ${1000*p}px )`;
-	//         // console.log(p)
-	//       },
-	//       // onStart    () { console.time('duration'); },
-	//       // onComplete () { console.timeEnd('duration'); },
-	//     })
-	//     // .play();
-
-	// let playBtn         = document.querySelector('#js-play'),
-	//     playBackwardBtn = document.querySelector('#js-play-backward'),
-	//     pauseBtn        = document.querySelector('#js-pause'),
-	//     stopBtn         = document.querySelector('#js-stop');
-
-	// speedEl.addEventListener('input', function () {
-	//   tw.setSpeed( this.value/1000 );
-	// });
-
-	// playBtn.addEventListener('click', function () { tw.play(); });
-	// playBackwardBtn.addEventListener('click', function () { tw.playBackward(); });
-	// pauseBtn.addEventListener('click', function () { tw.pause(); });
-	// stopBtn.addEventListener('click', function () { tw.stop(); });
-
-	// let x1Btn    = document.querySelector('#js-x1'),
-	//     x25Btn   = document.querySelector('#js-x25'),
-	//     x50Btn   = document.querySelector('#js-x50'),
-	//     x100Btn  = document.querySelector('#js-x100'),
-	//     x250Btn  = document.querySelector('#js-x250'),
-	//     x500Btn  = document.querySelector('#js-x500'),
-	//     x1000Btn = document.querySelector('#js-x1000');
-
-	// x1Btn.addEventListener('click', () => { tw.setSpeed(.1); });
-	// x25Btn.addEventListener('click', () => { tw.setSpeed(.25); });
-	// x50Btn.addEventListener('click', () => { tw.setSpeed(.5); });
-	// x100Btn.addEventListener('click', () => { tw.setSpeed(1); });
-	// x250Btn.addEventListener('click', () => { tw.setSpeed(2.5); });
-	// x500Btn.addEventListener('click', () => { tw.setSpeed(5); });
-	// x1000Btn.addEventListener('click', () => { tw.setSpeed(10); });
 
 	// ### istanbul ignore next ###
 	if (true) {

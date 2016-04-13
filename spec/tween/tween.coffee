@@ -5547,8 +5547,9 @@ describe 'Tween ->', ->
       t = new Tween duration: 1000
       t.play()
       spyOn t, '_subPlay'
-      t.play()
+      result = t.play()
       expect(t._subPlay).not.toHaveBeenCalled()
+      expect(result).toBe t
     it 'should run if already playing but ended', (dfr)->
       duration = 50
       t = new Tween duration: duration
@@ -5599,8 +5600,9 @@ describe 'Tween ->', ->
       t = new Tween duration: 1000
       t.playBackward()
       spyOn t, '_subPlay'
-      t.playBackward()
+      result = t.playBackward()
       expect(t._subPlay).not.toHaveBeenCalled()
+      expect(result).toBe t
     it 'should run if already reversing but ended', (dfr)->
       duration = 50
       t = new Tween duration: duration
@@ -5629,6 +5631,13 @@ describe 'Tween ->', ->
     it 'should set _state to "pause"',->
       t = new Tween
       t.pause()
+    it 'should remove immediately if paused',->
+      t = new Tween
+      t.play().pause()
+      spyOn t, '_removeFromTweener'
+      result = t.pause()
+      expect(t._removeFromTweener).not.toHaveBeenCalled()
+      expect(result).toBe t
 
   describe 'stop method', ->
     it 'should call removeFromTweener method with self',->
@@ -5678,8 +5687,9 @@ describe 'Tween ->', ->
       t = new Tween
       t.stop()
       t._props.isReversed = true
-      t.stop()
+      result = t.stop()
       expect(t._props.isReversed).toBe true
+      expect(result).toBe t
 
   describe 'replay method ->', ->
     it 'should call stop and play methods', ->

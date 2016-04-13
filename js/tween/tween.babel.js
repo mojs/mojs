@@ -73,7 +73,7 @@ class Tween extends Module {
     @return {Object} Self.
   */
   play ( shift = 0 ) {
-    if ( this._state === 'play' && this._isRunning ) { return false; }
+    if ( this._state === 'play' && this._isRunning ) { return this; }
     this._props.isReversed = false;
     this._subPlay( shift, 'play' );
     this._setPlaybackState( 'play' );
@@ -86,7 +86,7 @@ class Tween extends Module {
     @return {Object} Self.
   */
   playBackward ( shift = 0 ) {
-    if ( this._state === 'reverse' && this._isRunning)  { return false; }
+    if ( this._state === 'reverse' && this._isRunning)  { return this; }
     this._props.isReversed = true;
     this._subPlay( shift, 'reverse' );
     this._setPlaybackState( 'reverse' );
@@ -98,7 +98,7 @@ class Tween extends Module {
     @returns {Object} Self.
   */
   pause () {
-    if ( this._state === 'pause' || this._state === 'stop' )  { return false; }
+    if ( this._state === 'pause' || this._state === 'stop' )  { return this; }
     this._removeFromTweener();
     this._setPlaybackState('pause');
     return this;
@@ -110,7 +110,7 @@ class Tween extends Module {
     @returns {Object} Self.
   */
   stop ( progress ) {
-    if ( this._state === 'stop' ) { return; }
+    if ( this._state === 'stop' ) { return this; }
     this._props.isReversed = false;
     this._removeFromTweener();
     // if progress passed - use it
