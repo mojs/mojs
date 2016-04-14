@@ -224,7 +224,7 @@
         s = new Stagger({
           onStaggerStart: fun
         });
-        return expect(s.timeline.o.onStart).toBe(fun);
+        return expect(s.timeline._o.onStart).toBe(fun);
       });
       it('should pass the onStaggerUpdate callback to timeline', function() {
         var fun, s;
@@ -232,7 +232,7 @@
         s = new Stagger({
           onStaggerUpdate: fun
         });
-        return expect(s.timeline.o.onUpdate).toBe(fun);
+        return expect(s.timeline._o.onUpdate).toBe(fun);
       });
       it('should pass the onStaggerComplete callback to timeline', function() {
         var fun, s;
@@ -240,7 +240,7 @@
         s = new Stagger({
           onStaggerComplete: fun
         });
-        return expect(s.timeline.o.onComplete).toBe(fun);
+        return expect(s.timeline._o.onComplete).toBe(fun);
       });
       return it('should pass the onStaggerReverseComplete callback to timeline', function() {
         var fun, s;
@@ -248,7 +248,7 @@
         s = new Stagger({
           onStaggerReverseComplete: fun
         });
-        return expect(s.timeline.o.onReverseComplete).toBe(fun);
+        return expect(s.timeline._o.onReverseComplete).toBe(fun);
       });
     });
     describe('moduleDelay option ->', function() {
@@ -257,7 +257,7 @@
         s = new Stagger({
           moduleDelay: 200
         });
-        return expect(s.timeline.o.delay).toBe(200);
+        return expect(s.timeline._o.delay).toBe(200);
       });
     });
     return describe('quantifier option ->', function() {

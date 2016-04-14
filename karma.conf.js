@@ -113,8 +113,8 @@ module.exports = function(config) {
       
       // 'build/spriter.js',
       // 'spec/spriter.js',
-      'build/stagger.js',
-      'spec/stagger.js',
+      // 'build/stagger.js',
+      // 'spec/stagger.js',
 
       // 'build/easing/easing.js',
       // 'spec/easing/easing.js',
@@ -126,8 +126,8 @@ module.exports = function(config) {
       // 'build/tween/tweener.js',
       // 'spec/tween/tweener.js',
 
-      'build/motion-path.js',
-      'spec/motion-path.js',
+      // 'build/motion-path.js',
+      // 'spec/motion-path.js',
       // 'build/bits/*.js',
       // 'spec/bits/*.js'
     ],

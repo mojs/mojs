@@ -455,6 +455,7 @@
             path: 'M0,100 L100,0',
             el: document.createElement('div'),
             isRunLess: true,
+            easing: 'linear.none',
             onUpdate: function(p, o) {
               progress = p;
               x = o.x;
@@ -465,9 +466,9 @@
           mp.timeline.setProgress(.45);
           mp.timeline.setProgress(.5);
           expect(progress.toFixed(1)).toBe('0.5');
-          expect(x).toBe(50);
-          expect(y).toBe(50);
-          return expect(angle).toBe(0);
+          expect(x).toBeCloseTo(50, 5);
+          expect(y).toBeCloseTo(50, 5);
+          return expect(angle).toBeCloseTo(0, 5);
         });
       });
     });
@@ -1638,8 +1639,8 @@
           pathEnd: 1
         });
         expect(mp.timeline._timelines.length).toBe(2);
-        expect(mp.timeline._timelines[1].o.duration).toBe(2000);
-        return expect(mp.timeline._timelines[1].o.onFirstUpdate).toBeDefined();
+        expect(mp.timeline._timelines[1]._o.duration).toBe(2000);
+        return expect(mp.timeline._timelines[1]._o.onFirstUpdate).toBeDefined();
       });
       it('should add isChained option to the new timeline', function() {
         mp = new MotionPath({
@@ -1652,7 +1653,7 @@
           pathStart: .5,
           pathEnd: 1
         });
-        return expect(mp.timeline._timelines[1].o.isChained).toBe(true);
+        return expect(mp.timeline._timelines[1]._o.isChained).toBe(true);
       });
       return it('should not add isChained option if delay', function() {
         mp = new MotionPath({
@@ -1666,7 +1667,7 @@
           pathEnd: 1,
           delay: 100
         });
-        return expect(mp.timeline._timelines[1].o.isChained).toBe(false);
+        return expect(mp.timeline._timelines[1]._o.isChained).toBe(false);
       });
     });
     describe('tuneOptions ->', function() {
@@ -1709,7 +1710,7 @@
           path: coords,
           el: document.createElement('div')
         });
-        type = typeof mp.timeline._timelines[0].o.onFirstUpdate;
+        type = typeof mp.timeline._timelines[0]._o.onFirstUpdate;
         return expect(type).toBe('function');
       });
     });

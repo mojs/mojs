@@ -131,24 +131,24 @@ describe 'stagger ->', ->
     it 'should pass the onStaggerStart callback to timeline', ->
       fun = ->
       s = new Stagger onStaggerStart: fun
-      expect(s.timeline.o.onStart).toBe fun
+      expect(s.timeline._o.onStart).toBe fun
     it 'should pass the onStaggerUpdate callback to timeline', ->
       fun = ->
       s = new Stagger onStaggerUpdate: fun
-      expect(s.timeline.o.onUpdate).toBe fun
+      expect(s.timeline._o.onUpdate).toBe fun
     it 'should pass the onStaggerComplete callback to timeline', ->
       fun = ->
       s = new Stagger onStaggerComplete: fun
-      expect(s.timeline.o.onComplete).toBe fun
+      expect(s.timeline._o.onComplete).toBe fun
     it 'should pass the onStaggerReverseComplete callback to timeline', ->
       fun = ->
       s = new Stagger onStaggerReverseComplete: fun
-      expect(s.timeline.o.onReverseComplete).toBe fun
+      expect(s.timeline._o.onReverseComplete).toBe fun
 
   describe 'moduleDelay option ->', ->
     it 'should pass the moduleDelay option to timeline', ->
       s = new Stagger moduleDelay: 200
-      expect(s.timeline.o.delay).toBe 200
+      expect(s.timeline._o.delay).toBe 200
 
   describe 'quantifier option ->', ->
     it 'should be passed to the _getChildQuantity method', ->
