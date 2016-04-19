@@ -4,7 +4,12 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom.svg)](https://saucelabs.com/u/legomushroom)
 
-##What to Use MOJ JS for and When to Use It
+##What to Use mo · js for and When to Use It
+Use **Moj · js** to craft charming animations that will bring your websites to life and captivate your visitors. By using **Moj · js** you can breathe new found life into your website with elegantly crafted animations that captivate and illicit their excitement and encourage them to explore. 
+
+>Animation offers a medium of story telling and visual entertainment which can bring pleasure and information to people of all ages everywhere in the world. -Walt Disney
+
+**Mo · js** uses natural easing resulting in delightfully smooth animations, as opposed to linear movement  which may give the appearance of hollow or lifeless movement. By Contrast, excellently crafted easing appeals to the users attention and raises their curiosity, thus draws them in. Create beatifully elegant animations with precise control over animation curves using **Moj · js**.
 
 ## Demos
 [[motion graphics for the web](http://codepen.io/sol0mka/full/ogOYJj/)]
