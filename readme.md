@@ -4,6 +4,8 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom.svg)](https://saucelabs.com/u/legomushroom)
 
+##What to Use MOJ JS for and When to Use It
+
 ## Demos
 [[motion graphics for the web](http://codepen.io/sol0mka/full/ogOYJj/)]
 [[bubble layout](http://codepen.io/sol0mka/full/yNOage/)]
