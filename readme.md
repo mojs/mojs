@@ -9,7 +9,7 @@ Use **Moj · js** to craft charming animations that will bring your websites to 
 
 >Animation offers a medium of story telling and visual entertainment which can bring pleasure and information to people of all ages everywhere in the world. -Walt Disney
 
-**Mo · js** uses natural easing resulting in delightfully smooth animations, as opposed to linear movement  which may give the appearance of hollow or lifeless movement. By Contrast, excellently crafted easing appeals to the users attention and raises their curiosity, thus draws them in. Create beatifully elegant animations with precise control over animation curves using **Moj · js**.
+**Mo · js** uses natural easing resulting in delightfully smooth animations, as opposed to linear movement  which may give the appearance of hollow, stiff or lifeless movement. By Contrast, excellently crafted easing appeals to the users attention and raises their curiosity, thus draws them in. Create beatifully elegant animations with precise control over animation curves using **Moj · js**.
 
 ## Demos
 [[motion graphics for the web](http://codepen.io/sol0mka/full/ogOYJj/)]
