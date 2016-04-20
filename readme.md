@@ -4,12 +4,12 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom.svg)](https://saucelabs.com/u/legomushroom)
 
-##What to Use mo · js for and When to Use It
-Use **Moj · js** to craft charming animations that will bring your websites to life and captivate your visitors. By using **Moj · js** you can breathe new found life into your website with elegantly crafted animations that captivate and illicit their excitement and encourage them to explore. 
+##What to Use mo · js For and When to Use It
+**mo · js**, a JavaScript library, is a collection of prewritten code that helps to add charming animations to web objects bring your websites to life and captivating your visitors. By using **mo · js** you can inject life into your website with elegantly crafted transitions, movement and object state changes that delight and illicit users excitement and encourage exploration. 
 
 >Animation offers a medium of story telling and visual entertainment which can bring pleasure and information to people of all ages everywhere in the world. -Walt Disney
 
-**Mo · js** uses natural easing resulting in delightfully smooth animations, as opposed to linear movement  which may give the appearance of hollow, stiff or unnatural movement. By Contrast, excellently crafted easing appeals to the users attention and raises their curiosity, thus draws them in. Create beatifully elegant animations with precise control over animation curves using **Moj · js**.
+**mo · js** uses natural easing baked into the code resulting in delightfully smooth animations of your web objects, as opposed to linear movement  which may give the appearance of hollow, stiff or unnatural movement. Use **mo · js** to enhance stale web objects like buttons, text inputs and dropdowns. Use it to enrich content visually. Create beatifully elegant animations with precise control over animation curves using **mo · js**.
 
 ## Demos
 [[motion graphics for the web](http://codepen.io/sol0mka/full/ogOYJj/)]
