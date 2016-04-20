@@ -9,7 +9,7 @@ Looking to enhance user experience on your site with unique effects and smooth a
 
 **mo · js** is a simple to add collection of pre-written JavaScript code, or a library, created by Oleg Solomka. The library is fast, retina ready, modular and open sourced. Easy, declarative interface **mo · js** provides make you, the developer, feel like a master over your project. Constantly refined by the dedicated community this “motion for the web” library can be customized per project and has excellent browser support. Go ahead and add a swirl, burst or a wave to your website object or make it dance across the screen in the most natural way. Have your project draw users in by using **mo · js**.
 
-##What to Use mo · js For and When to Use It
+##What to Use moj · js For and When to Use It
 **mo · js**, a JavaScript library, is a collection of prewritten code that helps to add charming animations to web objects bring your websites to life and captivating your visitors. By using **mo · js** you can inject life into your website with elegantly crafted transitions, movement and object state changes that delight and illicit users excitement and encourage exploration. 
 
 >Animation offers a medium of story telling and visual entertainment which can bring pleasure and information to people of all ages everywhere in the world. -Walt Disney
