@@ -1,7 +1,8 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-Bit = require('./bit').default;
+Bit = require('./bit').default or require('./bit');
+
 class Circle extends Bit
   _declareDefaults: ->
     super

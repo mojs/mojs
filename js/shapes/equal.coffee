@@ -1,7 +1,7 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-Bit = require('./bit').default;
+Bit = require('./bit').default or require('./bit');
 
 class Equal extends Bit
   # shape: 'path'

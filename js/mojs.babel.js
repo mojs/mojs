@@ -16,15 +16,20 @@ import Module     from './module';
 import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
-window.mojs = {
-  revision:   '0.225.2', isDebug: true, helpers: h,
+var mojs = {
+  revision:   '0.225.3', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
 }
 
+window.mojs = mojs;
+
 // TODO:
 /*
+  tween looses speed option on stoop/pause -> play
+  not able to `play()` in `onComplete` callback
+  ---
   module names
   swirls in then chains for x/y
   parse rand(stagger(20, 10), 20) values

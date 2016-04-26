@@ -1,7 +1,7 @@
 {
   "name": "mo-js",
   "description": "motion graphics toolbelt for the web",
-  "version": "0.225.2",
+  "version": "0.225.3",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -19,7 +19,7 @@
     "name": "LegoMushroom",
     "email": "legomushroom@gmail.com",
     "twitter": "@legomushroom",
-    "url": "http://legomushroom.com"
+    "url": "https://twitter.com/legomushroom"
   },
   "repository": {
     "type": "git",

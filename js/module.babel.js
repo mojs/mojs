@@ -303,13 +303,18 @@ class Module {
     for (var key in this._deltas) {
       var value = this._deltas[key];
       if ( value.type === 'array' ) {
-        this._strokeDasharrayBuffer.length = 0;
+        var arr;
+        // if prop property is array - reuse it else - create an array
+        if ( h.isArray( this._props[key] ) ) {
+          arr = this._props[key];
+          arr.length = 0;
+        } else { arr = []; }
         for ( var i = 0; i < value.delta.length; i++ ) {
           var item = value.delta[i],
               dash = value.start[i].value + p * item.value;
-          this._strokeDasharrayBuffer.push({ value: dash, unit: item.unit });
+          arr.push({ value: dash, unit: item.unit });
         }
-        this._props[key] = this._strokeDasharrayBuffer;
+        this._props[key] = arr;
       } else if ( value.type === 'number' ) {
         this._props[key] = value.start + value.delta * p;
       } else if ( value.type === 'unit' ) {
