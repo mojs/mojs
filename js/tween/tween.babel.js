@@ -179,6 +179,23 @@ class Tween extends Module {
     }
     return this;
   }
+  /*
+    Method to reset tween's state and properties.
+    @public
+    @returns this.
+  */
+  reset () {
+    this._removeFromTweener();
+    this._setPlaybackState('stop');
+    this._progressTime     = 0;
+    this._props.isReversed = false;
+    this._isCompleted      = false;
+    this._isStarted        = false;
+    this._isFirstUpdate    = false;
+    this._prevTime         = null;
+    this._prevYoyo         = undefined;
+    return this;
+  }
 
   // ^ PUBLIC  METHOD(S) ^
   // v PRIVATE METHOD(S) v

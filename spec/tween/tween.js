@@ -5371,7 +5371,7 @@
         return expect(result).toBe(t);
       });
     });
-    describe('stop method', function() {
+    describe('stop method ->', function() {
       it('should call removeFromTweener method with self', function() {
         var timeline;
         tweener.removeAll();
@@ -5447,6 +5447,78 @@
         result = t.stop();
         expect(t._props.isReversed).toBe(true);
         return expect(result).toBe(t);
+      });
+    });
+    describe('reset method ->', function() {
+      it('should call removeFromTweener method with self', function() {
+        var timeline;
+        tweener.removeAll();
+        timeline = new Tween({
+          duration: 2000
+        });
+        timeline.play();
+        spyOn(timeline, '_removeFromTweener');
+        timeline.reset();
+        return expect(timeline._removeFromTweener).toHaveBeenCalled();
+      });
+      it('should reset _prevTime to null', function() {
+        var tw;
+        tweener.removeAll();
+        tw = new Tween({
+          duration: 2000
+        });
+        tw.play();
+        tw.reset();
+        return expect(tw._prevTime).toBe(null);
+      });
+      it('should set _state to "stop"', function() {
+        var t;
+        t = new Tween;
+        t.reset();
+        return expect(t._state).toBe('stop');
+      });
+      it('should set isReversed to false', function() {
+        var t;
+        t = new Tween;
+        t._props.isReversed = true;
+        t.play().reset();
+        return expect(t._props.isReversed).toBe(false);
+      });
+      it('should set prevYoyo to false', function() {
+        var t;
+        t = new Tween;
+        t._prevYoyo = true;
+        t.play().reset();
+        return expect(t._prevYoyo).toBe(void 0);
+      });
+      it('should set _isCompleted to false', function() {
+        var t;
+        t = new Tween;
+        t._isCompleted = true;
+        t.play().reset();
+        return expect(t._isCompleted).toBe(false);
+      });
+      it('should set _isStarted to false', function() {
+        var t;
+        t = new Tween;
+        t._isStarted = true;
+        t.play().reset();
+        return expect(t._isStarted).toBe(false);
+      });
+      it('should set _isFirstUpdate to false', function() {
+        var t;
+        t = new Tween;
+        t._isFirstUpdate = true;
+        t.play().reset();
+        return expect(t._isFirstUpdate).toBe(false);
+      });
+      return it('should set _progressTime to false', function() {
+        var t;
+        t = new Tween;
+        t.play();
+        t._progressTime = 20;
+        t.reset();
+        return expect(t._progressTime).toBe(0);
       });
     });
     describe('replay method ->', function() {

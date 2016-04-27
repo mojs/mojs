@@ -5639,7 +5639,7 @@ describe 'Tween ->', ->
       expect(t._removeFromTweener).not.toHaveBeenCalled()
       expect(result).toBe t
 
-  describe 'stop method', ->
+  describe 'stop method ->', ->
     it 'should call removeFromTweener method with self',->
       tweener.removeAll()
       timeline = new Tween duration: 2000
@@ -5690,6 +5690,64 @@ describe 'Tween ->', ->
       result = t.stop()
       expect(t._props.isReversed).toBe true
       expect(result).toBe t
+
+  describe 'reset method ->', ->
+    it 'should call removeFromTweener method with self',->
+      tweener.removeAll()
+      timeline = new Tween duration: 2000
+      timeline.play()
+      spyOn timeline, '_removeFromTweener'
+      timeline.reset()
+      expect(timeline._removeFromTweener).toHaveBeenCalled()
+    it 'should reset _prevTime to null',->
+      tweener.removeAll()
+      tw = new Tween duration: 2000
+      tw.play()
+      tw.reset()
+      expect(tw._prevTime).toBe null
+    it 'should set _state to "stop"',->
+      t = new Tween
+      t.reset()
+      expect(t._state).toBe 'stop'
+    it 'should set isReversed to false',->
+      t = new Tween
+      t._props.isReversed = true
+      t.play().reset()
+      expect(t._props.isReversed).toBe false
+    it 'should set prevYoyo to false',->
+      t = new Tween
+      t._prevYoyo = true
+      t.play().reset()
+      expect(t._prevYoyo).toBe undefined
+    it 'should set _isCompleted to false',->
+      t = new Tween
+      t._isCompleted = true
+      t.play().reset()
+      expect(t._isCompleted).toBe false
+    it 'should set _isStarted to false',->
+      t = new Tween
+      t._isStarted = true
+      t.play().reset()
+      expect(t._isStarted).toBe false
+    it 'should set _isFirstUpdate to false',->
+      t = new Tween
+      t._isFirstUpdate = true
+      t.play().reset()
+      expect(t._isFirstUpdate).toBe false
+    it 'should set _progressTime to false',->
+      t = new Tween
+      t.play();
+      t._progressTime = 20;
+      t.reset();
+      expect(t._progressTime).toBe 0
+    # no need for now
+    # it 'should return immediately if already stopped',->
+    #   t = new Tween
+    #   t.reset()
+    #   t._props.isReversed = true
+    #   result = t.reset()
+    #   expect(t._props.isReversed).toBe true
+    #   expect(result).toBe t
 
   describe 'replay method ->', ->
     it 'should call stop and play methods', ->
