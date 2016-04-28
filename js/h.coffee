@@ -438,7 +438,6 @@ class Helpers
   isDOM:(o)->
     return false if !o?
     # if typeof Node is 'function' then o instanceof Node
-    # else
     isNode = typeof o.nodeType is 'number' and typeof o.nodeName is 'string'
     typeof o is 'object' and isNode
   getChildElements:(element)->
@@ -533,7 +532,6 @@ class Helpers
       value = @parseIfStagger( value, index )
       value = @parseIfRand( value )
     value
-
   ###
     Method to get the last item of array.
     @private
@@ -541,6 +539,19 @@ class Helpers
     @returns {Any} The last item of array.
   ###
   getLastItem: (arr) -> arr[arr.length-1]
+  ###
+    Method parse HTMLElement.
+    @private
+    @param {String, Object} Selector string or HTMLElement.
+    @returns {Object} HTMLElement.
+  ###
+  parseEl: ( el )->
+    if h.isDOM( el ) then return el
+    else if ( typeof el is 'string' )
+      el = document.querySelector( el )
+    
+    if ( el == null ) then h.error( "Can't parse HTML element: ", el );
+    el
 
 h = new Helpers
 module.exports = h

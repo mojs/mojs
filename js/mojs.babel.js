@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 var mojs = {
-  revision:   '0.226.6', isDebug: true, helpers: h,
+  revision:   '0.228.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -27,10 +27,8 @@ window.mojs = mojs;
 
 // TODO:
 /*
-  add reset to tweenable
-  loosing `parent` option in `then`
-  not able to `play()` in `onComplete` callback
   'rand' angle flick with `then`
+  not able to `play()` in `onComplete` callback
   ---
   module names
   swirls in then chains for x/y
@@ -40,6 +38,9 @@ window.mojs = mojs;
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
+
+// let tr = new mojs.Transit({  parent: '#js-parent', left: '50%', top: '50%' }).then({ radius: 0 });
+// tr.play();
 
 // let tw = new mojs.Tween({
 //   duration: 10000,

@@ -659,11 +659,13 @@
         var obj, th;
         obj = {};
         th = new Thenable({}).then({});
+        th.wrapperEl = document.createElement('div');
         th._resetMergedFlags(obj);
         expect(obj.isTimelineLess).toBe(true);
         expect(obj.isShowStart).toBe(false);
         expect(obj.prevChainModule).toBe(th._modules[th._modules.length - 1]);
-        return expect(obj.callbacksContext).toBe(th._props.callbacksContext);
+        expect(obj.callbacksContext).toBe(th._props.callbacksContext);
+        return expect(obj.parent).toBe(th.wrapperEl);
       });
     });
     return describe('_getArrayLength method ->', function() {

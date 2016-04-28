@@ -23,6 +23,8 @@ class Transit extends Tunable {
   _declareDefaults () {
     // DEFAULTS / APIs
     this._defaults = {
+      // where to append the module to [selector, HTMLElement]
+      parent:           document.body,
       // Possible values: [circle, line, zigzag, rect, polygon, cross, equal ]
       shape:            'circle',
       // ∆ :: Possible values: [color name, rgb, rgba, hex]
@@ -116,11 +118,25 @@ class Transit extends Tunable {
         this.ctx.style.height   = '100%';
         this.ctx.style.left     = '0';
         this.ctx.style.top      = '0';
+
         this.el = document.createElement('div');
         this.el.appendChild(this.ctx);
+
         this._createBit();
         this._calcSize();
-        (this._o.parent || document.body).appendChild(this.el);
+        
+        // create stacking context wrapper for all elements in `then` chain
+        // if the module is the first one in the chain
+        if ( !this._props.prevChainModule ) {
+          this.wrapperEl = document.createElement('div');
+          this.wrapperEl.style.opacity = 0.9998;
+          this.wrapperEl.appendChild( this.el );
+          this.wrapperEl.setAttribute( 'data-name', 'mojs-transit' );
+          this._props.parent.appendChild( this.wrapperEl );
+        } else {
+          this._props.parent.appendChild(this.el);
+        }
+
       } else { this.ctx = this._o.ctx; this._createBit(); this._calcSize(); }
       this.isRendered = true;
     }

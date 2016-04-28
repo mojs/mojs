@@ -24,12 +24,7 @@ class Module {
     this._declareDefaults();
     this._extendDefaults();
 
-    this._vars()
-    // COVER
-    // if ( this._vars() ) {
-      // this._o.isIt && console.log('RETURN');
-      // return ;
-    // };
+    this._vars();
     this._render();
   }
   /*
@@ -260,6 +255,9 @@ class Module {
     @returns {Any}  Parsed property value.
   */
   _parseProperty ( name, value ) {
+    // parse `HTML` element in `parent` option
+    if ( name === 'parent' ) { return h.parseEl( value ); }
+    // parse `stagger`, `rand` and `position`
     value = this._parsePreArrayProperty( name, value );
     // parse numeric/percent values for strokeDash.. properties
     return this._parseStrokeDashOption(name, value);

@@ -56,6 +56,7 @@
         var byte;
         byte = new Byte;
         expect(byte._defaults).toBeDefined();
+        expect(byte._defaults.parent).toBe(document.body);
         expect(byte._defaults.shape).toBe('circle');
         expect(byte._defaults.stroke).toBe('transparent');
         expect(byte._defaults.strokeOpacity).toBe(1);
@@ -502,6 +503,23 @@
       });
     });
     describe('el creation ->', function() {
+      it('should create wrapperEl', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        expect(byte.wrapperEl.tagName.toLowerCase()).toBe('div');
+        expect(byte.wrapperEl.style['opacity']).toBe('0.9998');
+        return expect(byte.wrapperEl.getAttribute('data-name')).toBe('mojs-transit');
+      });
+      it('should not create wrapperEl if `prevChainModule` passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          prevChainModule: new Byte
+        });
+        return expect(byte.wrapperEl).not.toBeDefined();
+      });
       it('should create el', function() {
         var byte;
         byte = new Byte({
@@ -624,22 +642,25 @@
         expect(byte.bit._props.shape).toBe('rect');
         return expect(byte2.bit._props.shape).toBe('ellipse');
       });
-      it('should add itself to body', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25
-        });
-        return expect(byte.el.parentNode.tagName.toLowerCase()).toBe('body');
-      });
-      return it('should add itself to parent if the option was passed', function() {
+      it('should add itself to parent if the option was passed', function() {
         var byte, div;
         div = typeof document.createElement === "function" ? document.createElement('div') : void 0;
-        div.isDiv = true;
+        byte = new Byte({
+          radius: 25,
+          parent: div,
+          prevChainModule: new Byte
+        });
+        return expect(byte.el.parentNode).toBe(div);
+      });
+      return it('should add itself to wrapperEl if `prevChainModule`', function() {
+        var byte, div;
+        div = typeof document.createElement === "function" ? document.createElement('div') : void 0;
         byte = new Byte({
           radius: 25,
           parent: div
         });
-        return expect(byte.el.parentNode.isDiv).toBe(true);
+        expect(byte.el.parentNode).toBe(byte.wrapperEl);
+        return expect(byte.wrapperEl.parentNode).toBe(div);
       });
     });
     describe('opacity set ->', function() {

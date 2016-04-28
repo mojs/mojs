@@ -414,6 +414,14 @@ describe 'module class ->', ->
       expect(result).toBe value
 
   describe '_parseProperty method ->', ->
+    it 'should call h.parseEl method is name is `parent`', ->
+      md = new Module
+      key = 'parent'; value = 'body'
+      spyOn(h, 'parseEl').and.callThrough()
+      result = md._parseProperty( key, value )
+      expect(h.parseEl).toHaveBeenCalledWith value
+      expect(result).toBe document.body
+
     it 'should call _parsePreArrayProperty method', ->
       md = new Module
       key = 'left'; value = '50%'

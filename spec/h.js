@@ -1343,13 +1343,30 @@
         return expect(result).not.toBeGreaterThan(50);
       });
     });
-    return describe('_getLastItem method ->', function() {
+    describe('_getLastItem method ->', function() {
       return it('should get the last item of array', function() {
         expect(h.getLastItem([1, 2, 3, 4])).toBe(4);
         expect(h.getLastItem([1, 2, 3, 7])).toBe(7);
         expect(h.getLastItem([1, 2, 3])).toBe(3);
         expect(h.getLastItem([1, 2])).toBe(2);
         return expect(h.getLastItem([1])).toBe(1);
+      });
+    });
+    return describe('parseEl method ->', function() {
+      it('should find an element if `string` passed ', function() {
+        return expect(h.parseEl('body')).toBe(document.body);
+      });
+      it('should error if no element found ', function() {
+        var el;
+        spyOn(h, 'error').and.callThrough();
+        el = h.parseEl('#some-element');
+        return expect(h.error).toHaveBeenCalled();
+      });
+      return it('should return an HTMLElement unattended ', function() {
+        var el;
+        el = document.createElement('div');
+        expect(h.parseEl(document.body)).toBe(document.body);
+        return expect(h.parseEl(el)).toBe(el);
       });
     });
   });

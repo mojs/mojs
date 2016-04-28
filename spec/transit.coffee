@@ -33,6 +33,7 @@ describe 'Transit ->', ->
     it 'should have defaults object', ->
       byte = new Byte
       expect(byte._defaults).toBeDefined()
+      expect(byte._defaults.parent).toBe           document.body
       expect(byte._defaults.shape).toBe            'circle'
       expect(byte._defaults.stroke).toBe           'transparent'
       expect(byte._defaults.strokeOpacity).toBe    1
@@ -326,7 +327,18 @@ describe 'Transit ->', ->
         easing: 'Back.InOut'
       expect(byte._props.size)   .toBe(212*1.1)
       expect(byte._props.center) .toBe(byte._props.size/2)
+  
   describe 'el creation ->', ->
+    it 'should create wrapperEl', ->
+      byte = new Byte radius: 25
+      expect(byte.wrapperEl.tagName.toLowerCase()).toBe('div')
+      expect(byte.wrapperEl.style[ 'opacity' ]).toBe('0.9998')
+      expect(byte.wrapperEl.getAttribute('data-name')).toBe('mojs-transit')
+
+    it 'should not create wrapperEl if `prevChainModule` passed', ->
+      byte = new Byte radius: 25, prevChainModule: new Byte
+      expect(byte.wrapperEl).not.toBeDefined()
+
     it 'should create el', ->
       byte = new Byte radius: 25
       expect(byte.el.tagName.toLowerCase()).toBe('div')
@@ -419,16 +431,24 @@ describe 'Transit ->', ->
       byte2 = new Byte radius: 25
       expect(byte.bit._props.shape).toBe  'rect'
       expect(byte2.bit._props.shape).toBe 'ellipse'
-    it 'should add itself to body', ->
-      byte = new Byte radius: 25
-      expect(byte.el.parentNode.tagName.toLowerCase()).toBe('body')
+
     it 'should add itself to parent if the option was passed', ->
       div  = document.createElement?('div')
-      div.isDiv = true
       byte = new Byte
         radius: 25
         parent: div
-      expect(byte.el.parentNode.isDiv).toBe true
+        prevChainModule: new Byte
+
+      expect(byte.el.parentNode).toBe div
+
+    it 'should add itself to wrapperEl if `prevChainModule`', ->
+      div  = document.createElement?('div')
+      byte = new Byte
+        radius:          25
+        parent:          div
+      expect(byte.el.parentNode).toBe byte.wrapperEl
+      expect(byte.wrapperEl.parentNode).toBe div
+
   describe 'opacity set ->', ->
     it 'should set a position with respect to units', ->
       byte = new Byte opacity: .5

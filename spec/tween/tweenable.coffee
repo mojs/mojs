@@ -103,6 +103,17 @@ describe 'tweenable ->', ->
       tw = new Tweenable
       result = tw.stop()
       expect(result).toBe tw
+  describe 'reset ->', ->
+    it 'should call timeline\'s reset method', ->
+      tw = new Tweenable
+      spyOn tw.timeline, 'reset'
+      progress = .5
+      tw.reset( progress )
+      expect(tw.timeline.reset).toHaveBeenCalledWith progress
+    it 'should return this', ->
+      tw = new Tweenable
+      result = tw.reset()
+      expect(result).toBe tw
   describe 'replay method ->', ->
     it 'should call timeline\'s replay method', ->
       tw = new Tweenable

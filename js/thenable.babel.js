@@ -50,6 +50,8 @@ class Thenable extends Tweenable {
     obj.callbacksContext = this._props.callbacksContext;
     // set previous module
     obj.prevChainModule  = h.getLastItem( this._modules );
+    // pass wrapper el as parent to all subsequent modules in `then` chain
+    obj.parent           = this.wrapperEl;
     return obj;
   }
   /*

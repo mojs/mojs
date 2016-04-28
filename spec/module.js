@@ -632,6 +632,16 @@
       });
     });
     describe('_parseProperty method ->', function() {
+      it('should call h.parseEl method is name is `parent`', function() {
+        var key, md, result, value;
+        md = new Module;
+        key = 'parent';
+        value = 'body';
+        spyOn(h, 'parseEl').and.callThrough();
+        result = md._parseProperty(key, value);
+        expect(h.parseEl).toHaveBeenCalledWith(value);
+        return expect(result).toBe(document.body);
+      });
       it('should call _parsePreArrayProperty method', function() {
         var key, md, value;
         md = new Module;

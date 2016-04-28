@@ -11,7 +11,7 @@ import Module   from '../module';
 */
 class Tweenable extends Module {
   /*
-    play method for the timeline.
+    `play` method for the timeline.
     @public
     @param {Number} Time shift.
     @returns this.
@@ -21,7 +21,7 @@ class Tweenable extends Module {
     return this;
   }
   /*
-    playBackward method for the timeline.
+    `playBackward` method for the timeline.
     @public
     @param {Number} Time shift.
     @returns this.
@@ -31,7 +31,7 @@ class Tweenable extends Module {
     return this;
   }
   /*
-    pause method for the timeline.
+    `pause` method for the timeline.
     @public
     @returns this.
   */
@@ -40,7 +40,7 @@ class Tweenable extends Module {
     return this;
   }
   /*
-    stop method for the timeline.
+    `stop` method for the timeline.
     @public
     @param {Number} [0...1] Progress to set on stop.
                             *Default* is `0` if `play`
@@ -52,7 +52,16 @@ class Tweenable extends Module {
     return this;
   }
   /*
-    replay method for the timeline.
+    `reset` method for the timeline.
+    @public
+    @returns this.
+  */
+  reset () {
+    this.timeline.reset.apply( this.timeline, arguments );
+    return this;
+  }
+  /*
+    `replay` method for the timeline.
     @public
     @returns this.
   */
@@ -61,7 +70,7 @@ class Tweenable extends Module {
     return this;
   }
   /*
-    replay method for the timeline.
+    `replay` method for the timeline.
     @public
     @returns this.
   */
@@ -70,7 +79,7 @@ class Tweenable extends Module {
     return this;
   }
   /*
-    setProgress method for the timeline.
+    `setProgress` method for the timeline.
     @public
     @param {Number} [0...1] Progress value.
     @returns this.

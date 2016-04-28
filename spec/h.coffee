@@ -964,6 +964,20 @@ describe 'Helpers ->', ->
       expect(h.getLastItem([1,2])).toBe 2
       expect(h.getLastItem([1])).toBe 1
 
+  describe 'parseEl method ->', ->
+    it 'should find an element if `string` passed ', ->
+      expect( h.parseEl( 'body' ) ).toBe document.body
+
+    it 'should error if no element found ', ->
+      spyOn(h, 'error').and.callThrough()
+      el = h.parseEl( '#some-element' )
+      expect( h.error ).toHaveBeenCalled()
+
+    it 'should return an HTMLElement unattended ', ->
+      el = document.createElement 'div'
+      expect( h.parseEl( document.body ) ).toBe document.body
+      expect( h.parseEl( el ) ).toBe el
+
     
 
 

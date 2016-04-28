@@ -454,15 +454,16 @@ describe 'thenable ->', ->
       obj = {}
       th = new Thenable
       expect(th._resetMergedFlags(obj)).toBe obj
-
     it 'should reset flags on the piped object', ->
       obj = {}
       th = new Thenable({}).then({})
+      th.wrapperEl = document.createElement 'div'
       th._resetMergedFlags(obj)
       expect(obj.isTimelineLess)  .toBe true
       expect(obj.isShowStart)     .toBe false
       expect(obj.prevChainModule) .toBe th._modules[th._modules.length-1]
       expect(obj.callbacksContext).toBe th._props.callbacksContext
+      expect(obj.parent).toBe     th.wrapperEl
 
   describe '_getArrayLength method ->', ->
     it 'should get length if array', ->

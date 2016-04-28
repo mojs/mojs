@@ -182,6 +182,22 @@
         return expect(result).toBe(tw);
       });
     });
+    describe('reset ->', function() {
+      it('should call timeline\'s reset method', function() {
+        var progress, tw;
+        tw = new Tweenable;
+        spyOn(tw.timeline, 'reset');
+        progress = .5;
+        tw.reset(progress);
+        return expect(tw.timeline.reset).toHaveBeenCalledWith(progress);
+      });
+      return it('should return this', function() {
+        var result, tw;
+        tw = new Tweenable;
+        result = tw.reset();
+        return expect(result).toBe(tw);
+      });
+    });
     describe('replay method ->', function() {
       it('should call timeline\'s replay method', function() {
         var progress, tw;
