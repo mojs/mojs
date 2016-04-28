@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 var mojs = {
-  revision:   '0.226.0', isDebug: true, helpers: h,
+  revision:   '0.226.3', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -27,8 +27,8 @@ window.mojs = mojs;
 
 // TODO:
 /*
+  add reset to tweenable
   loosing `parent` option in `then`
-  tween looses speed option on stop/pause -> play
   not able to `play()` in `onComplete` callback
   'rand' angle flick with `then`
   ---
@@ -43,37 +43,32 @@ mojs.delta = mojs.h.delta;
 
 // let tw = new mojs.Tween({
 //   duration: 10000,
-//   onStart () {
-//     console.log('ON START');
+//   // speed: 5,
+//   onUpdate ( p ) {
+//     console.log(p);
 //   },
-//   onFirstUpdate () {
-//     console.log('ON FIRST UPDATE');
-//   },
-//   onRepeatStart () {
-//     console.log('ON REAPEAT START');
-//   },
-//   onRepeatComplete () {
-//     console.log('ON REAPEAT COMPLETE');
-//   },
-//   onComplete () {
-//     console.log('ON COMPLETE');
-//   },
-//   onUpdate (p) {
-//     console.log(p)
+//   onComplete (isForward) {
+//     // tw.reset();
+//     // tw.setProgress(0);
+//     // tw.play();
+//     // console.log(`COMPLETE: ${isForward}`)
 //   }
 // });
+
 
 // let play  = document.querySelector('#js-play'),
 //     playB = document.querySelector('#js-play-backward'),
 //     pause = document.querySelector('#js-pause'),
 //     stop  = document.querySelector('#js-stop'),
-//     reset = document.querySelector('#js-reset');
+//     reset = document.querySelector('#js-reset'),
+//     set0  = document.querySelector('#js-set0');
 
 // play.addEventListener('click', function () {  tw.play();  });
 // playB.addEventListener('click', function () {  tw.playBackward();  });
 // pause.addEventListener('click', function () {  tw.pause();  });
 // stop.addEventListener('click', function () {  tw.stop();  });
 // reset.addEventListener('click', function () {  tw.reset();  });
+// set0.addEventListener('click', function () {  tw.setProgress(0);  });
 
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {

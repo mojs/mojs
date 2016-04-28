@@ -554,3 +554,24 @@ describe 'Timeline ->', ->
       expect(firstUpdated).toBe 'tween 2'
       tm.setProgress(0).play()
 
+  describe 'reset method ->' , ->
+    it 'should call super', ->
+      tm = new mojs.Timeline
+      spyOn Tween.prototype, 'reset'
+      tm.reset()
+      expect(Tween.prototype.reset).toHaveBeenCalled()
+    it 'should call reset on child timelines', ->
+      tm = new mojs.Timeline
+      tw1 = new mojs.Tween
+      tw2 = new mojs.Tween
+      tm.add tw1, tw2
+      spyOn tw1, 'reset'
+      spyOn tw2, 'reset'
+      tm.reset()
+      expect(tw1.reset).toHaveBeenCalled()
+      expect(tw2.reset).toHaveBeenCalled()
+    it 'should return this', ->
+      tm = new mojs.Timeline
+      result = tm.reset()
+      expect(result).toBe tm
+

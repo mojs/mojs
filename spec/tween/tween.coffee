@@ -5640,13 +5640,13 @@ describe 'Tween ->', ->
       expect(result).toBe t
 
   describe 'stop method ->', ->
-    it 'should call removeFromTweener method with self',->
+    it 'should call reset method',->
       tweener.removeAll()
       timeline = new Tween duration: 2000
       timeline.play()
-      spyOn timeline, '_removeFromTweener'
+      spyOn timeline, 'reset'
       timeline.stop()
-      expect(timeline._removeFromTweener).toHaveBeenCalled()
+      expect(timeline.reset).toHaveBeenCalled()
     it 'should reset progress to 0 if played',->
       tweener.removeAll()
       tw = new Tween duration: 2000
@@ -5668,21 +5668,6 @@ describe 'Tween ->', ->
       spyOn tw, 'setProgress'
       tw.stop(.5)
       expect(tw.setProgress).toHaveBeenCalledWith .5
-    it 'should reset _prevTime to null',->
-      tweener.removeAll()
-      tw = new Tween duration: 2000
-      tw.play()
-      tw.stop()
-      expect(tw._prevTime).toBe null
-    it 'should set _state to "stop"',->
-      t = new Tween
-      t.stop()
-      expect(t._state).toBe 'stop'
-    it 'should set isReversed to false',->
-      t = new Tween
-      t._props.isReversed = true
-      t.play().stop()
-      expect(t._props.isReversed).toBe false
     it 'should return immediately if already stopped',->
       t = new Tween
       t.stop()
@@ -5699,12 +5684,12 @@ describe 'Tween ->', ->
       spyOn timeline, '_removeFromTweener'
       timeline.reset()
       expect(timeline._removeFromTweener).toHaveBeenCalled()
-    it 'should reset _prevTime to null',->
+    it 'should reset _prevTime to undefined',->
       tweener.removeAll()
       tw = new Tween duration: 2000
       tw.play()
       tw.reset()
-      expect(tw._prevTime).toBe null
+      expect(tw._prevTime).toBe undefined
     it 'should set _state to "stop"',->
       t = new Tween
       t.reset()
@@ -5734,28 +5719,36 @@ describe 'Tween ->', ->
       t._isFirstUpdate = true
       t.play().reset()
       expect(t._isFirstUpdate).toBe false
-    it 'should set _progressTime to false',->
+    it 'should set _progressTime to 0',->
       t = new Tween
       t.play();
       t._progressTime = 20;
       t.reset();
       expect(t._progressTime).toBe 0
-    # no need for now
-    # it 'should return immediately if already stopped',->
-    #   t = new Tween
-    #   t.reset()
-    #   t._props.isReversed = true
-    #   result = t.reset()
-    #   expect(t._props.isReversed).toBe true
-    #   expect(result).toBe t
+    it 'should set _startTime to undefined',->
+      t = new Tween
+      t.play();
+      t._props.startTime = 20;
+      t.reset();
+      expect(t._props.startTime).toBe undefined
+    it 'should set _wasUknownUpdate to undefined',->
+      t = new Tween
+      t.play();
+      t._wasUknownUpdate = 20;
+      t.reset();
+      expect(t._wasUknownUpdate).toBe undefined
+    it 'should return this', ->
+      tw = new mojs.Tween
+      result = tw.reset()
+      expect(result).toBe tw
 
   describe 'replay method ->', ->
-    it 'should call stop and play methods', ->
+    it 'should call reset and play methods', ->
       t = new Tween
-      spyOn(t, 'stop').and.callThrough()
+      spyOn(t, 'reset').and.callThrough()
       spyOn(t, 'play').and.callThrough()
       t.replay( 200 )
-      expect(t.stop).toHaveBeenCalled()
+      expect(t.reset).toHaveBeenCalled()
       expect(t.play).toHaveBeenCalledWith 200
     it 'should return this', ->
       t = new Tween
@@ -5768,12 +5761,12 @@ describe 'Tween ->', ->
       expect(t.play).toHaveBeenCalledWith 0
 
   describe 'replayBackward method ->', ->
-    it 'should call stop and playBackward methods', ->
+    it 'should call reset and playBackward methods', ->
       t = new Tween
-      spyOn(t, 'stop').and.callThrough()
+      spyOn(t, 'reset').and.callThrough()
       spyOn(t, 'playBackward').and.callThrough()
       t.replayBackward( 200 )
-      expect(t.stop).toHaveBeenCalled()
+      expect(t.reset).toHaveBeenCalled()
       expect(t.playBackward).toHaveBeenCalledWith 200
     it 'should return this', ->
       t = new Tween

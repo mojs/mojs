@@ -111,17 +111,15 @@ class Tween extends Module {
   */
   stop ( progress ) {
     if ( this._state === 'stop' ) { return this; }
-    this._props.isReversed = false;
-    this._removeFromTweener();
-    // if progress passed - use it
+
     var stopProc = (progress != null) ? progress
       /* if no progress passsed - set 1 if tween
          is playingBackward, otherwise set to 0 */
       : ( this._state === 'reverse' ) ? 1 : 0
 
     this.setProgress( stopProc );
-    this._setPlaybackState('stop');
-    this._prevTime = null;
+
+    this.reset();
     return this;
   }
   /*
@@ -131,7 +129,7 @@ class Tween extends Module {
     @returns {Object} Self.
   */
   replay( shift = 0 ) {
-    this.stop();
+    this.reset();
     this.play( shift );
     return this;
   }
@@ -142,7 +140,7 @@ class Tween extends Module {
     @returns {Object} Self.
   */
   replayBackward( shift = 0 ) {
-    this.stop();
+    this.reset();
     this.playBackward( shift );
     return this;
   }
@@ -188,12 +186,14 @@ class Tween extends Module {
     this._removeFromTweener();
     this._setPlaybackState('stop');
     this._progressTime     = 0;
-    this._props.isReversed = false;
     this._isCompleted      = false;
     this._isStarted        = false;
     this._isFirstUpdate    = false;
-    this._prevTime         = null;
+    this._wasUknownUpdate  = undefined;
+    this._prevTime         = undefined;
     this._prevYoyo         = undefined;
+    this._props.startTime  = undefined;
+    this._props.isReversed = false;
     return this;
   }
 

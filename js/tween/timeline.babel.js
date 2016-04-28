@@ -31,6 +31,20 @@ class Timeline extends Tween {
     return this;
   }
 
+  /*
+    Method to reset tween's state and properties.
+    @public
+    @overrides @ Tween
+    @returns this.
+  */
+  reset () {
+    super.reset();
+    for (var i = 0; i < this._timelines.length; i++) {
+      this._timelines[i].reset();
+    }
+    return this;
+  }
+
   // ^ PUBLIC  METHOD(S) ^
   // v PRIVATE METHOD(S) v
   

@@ -5372,16 +5372,16 @@
       });
     });
     describe('stop method ->', function() {
-      it('should call removeFromTweener method with self', function() {
+      it('should call reset method', function() {
         var timeline;
         tweener.removeAll();
         timeline = new Tween({
           duration: 2000
         });
         timeline.play();
-        spyOn(timeline, '_removeFromTweener');
+        spyOn(timeline, 'reset');
         timeline.stop();
-        return expect(timeline._removeFromTweener).toHaveBeenCalled();
+        return expect(timeline.reset).toHaveBeenCalled();
       });
       it('should reset progress to 0 if played', function() {
         var tw;
@@ -5416,29 +5416,6 @@
         tw.stop(.5);
         return expect(tw.setProgress).toHaveBeenCalledWith(.5);
       });
-      it('should reset _prevTime to null', function() {
-        var tw;
-        tweener.removeAll();
-        tw = new Tween({
-          duration: 2000
-        });
-        tw.play();
-        tw.stop();
-        return expect(tw._prevTime).toBe(null);
-      });
-      it('should set _state to "stop"', function() {
-        var t;
-        t = new Tween;
-        t.stop();
-        return expect(t._state).toBe('stop');
-      });
-      it('should set isReversed to false', function() {
-        var t;
-        t = new Tween;
-        t._props.isReversed = true;
-        t.play().stop();
-        return expect(t._props.isReversed).toBe(false);
-      });
       return it('should return immediately if already stopped', function() {
         var result, t;
         t = new Tween;
@@ -5461,7 +5438,7 @@
         timeline.reset();
         return expect(timeline._removeFromTweener).toHaveBeenCalled();
       });
-      it('should reset _prevTime to null', function() {
+      it('should reset _prevTime to undefined', function() {
         var tw;
         tweener.removeAll();
         tw = new Tween({
@@ -5469,7 +5446,7 @@
         });
         tw.play();
         tw.reset();
-        return expect(tw._prevTime).toBe(null);
+        return expect(tw._prevTime).toBe(void 0);
       });
       it('should set _state to "stop"', function() {
         var t;
@@ -5512,7 +5489,7 @@
         t.play().reset();
         return expect(t._isFirstUpdate).toBe(false);
       });
-      return it('should set _progressTime to false', function() {
+      it('should set _progressTime to 0', function() {
         var t;
         t = new Tween;
         t.play();
@@ -5520,15 +5497,37 @@
         t.reset();
         return expect(t._progressTime).toBe(0);
       });
-    });
-    describe('replay method ->', function() {
-      it('should call stop and play methods', function() {
+      it('should set _startTime to undefined', function() {
         var t;
         t = new Tween;
-        spyOn(t, 'stop').and.callThrough();
+        t.play();
+        t._props.startTime = 20;
+        t.reset();
+        return expect(t._props.startTime).toBe(void 0);
+      });
+      it('should set _wasUknownUpdate to undefined', function() {
+        var t;
+        t = new Tween;
+        t.play();
+        t._wasUknownUpdate = 20;
+        t.reset();
+        return expect(t._wasUknownUpdate).toBe(void 0);
+      });
+      return it('should return this', function() {
+        var result, tw;
+        tw = new mojs.Tween;
+        result = tw.reset();
+        return expect(result).toBe(tw);
+      });
+    });
+    describe('replay method ->', function() {
+      it('should call reset and play methods', function() {
+        var t;
+        t = new Tween;
+        spyOn(t, 'reset').and.callThrough();
         spyOn(t, 'play').and.callThrough();
         t.replay(200);
-        expect(t.stop).toHaveBeenCalled();
+        expect(t.reset).toHaveBeenCalled();
         return expect(t.play).toHaveBeenCalledWith(200);
       });
       it('should return this', function() {
@@ -5546,13 +5545,13 @@
       });
     });
     describe('replayBackward method ->', function() {
-      it('should call stop and playBackward methods', function() {
+      it('should call reset and playBackward methods', function() {
         var t;
         t = new Tween;
-        spyOn(t, 'stop').and.callThrough();
+        spyOn(t, 'reset').and.callThrough();
         spyOn(t, 'playBackward').and.callThrough();
         t.replayBackward(200);
-        expect(t.stop).toHaveBeenCalled();
+        expect(t.reset).toHaveBeenCalled();
         return expect(t.playBackward).toHaveBeenCalledWith(200);
       });
       it('should return this', function() {
