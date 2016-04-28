@@ -313,11 +313,9 @@ class Tween extends Module {
     @private
   */
   _vars () {
-    // call _vars @ Module
-    // super._vars();
-    this.progress  = 0;
-    this._prevTime = null;
-    this._progressTime = 0;
+    this.progress       = 0;
+    this._prevTime      = undefined;
+    this._progressTime  = 0;
     this._negativeShift = 0;
     this._state = 'stop';
     // if negative delay was specified,
@@ -451,7 +449,7 @@ class Tween extends Module {
       }
       // reset the _prevTime - drop one frame to undestand
       // where we are heading
-      this._prevTime = null;
+      this._prevTime = undefined;
     }
     // if in active area and not ended - save progress time
     // for pause/play purposes.
@@ -470,7 +468,7 @@ class Tween extends Module {
     // We need to know what direction we are heading to,
     // so if we don't have the previous update value - this is very first
     // update, - skip it entirely and wait for the next value
-    if ( this._prevTime === null ) {
+    if ( this._prevTime == null ) {
       this._prevTime = time;
       this._wasUknownUpdate = true;
       return false;

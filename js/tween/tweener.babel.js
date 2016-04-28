@@ -41,9 +41,9 @@ class Tweener {
       // cache the current tween
       var tween = this.tweens[i];
       if ( tween && tween._update(time) === true ) {
-        this.remove(i);
+        this.remove( tween );
         tween._onTweenerFinish();
-        tween._prevTime = null;
+        tween._prevTime = undefined;
       }
     }
   }

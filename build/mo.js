@@ -467,10 +467,8 @@
 
 
 	  Tween.prototype._vars = function _vars() {
-	    // call _vars @ Module
-	    // super._vars();
 	    this.progress = 0;
-	    this._prevTime = null;
+	    this._prevTime = undefined;
 	    this._progressTime = 0;
 	    this._negativeShift = 0;
 	    this._state = 'stop';
@@ -614,7 +612,7 @@
 	        }
 	      // reset the _prevTime - drop one frame to undestand
 	      // where we are heading
-	      this._prevTime = null;
+	      this._prevTime = undefined;
 	    }
 	    // if in active area and not ended - save progress time
 	    // for pause/play purposes.
@@ -636,7 +634,7 @@
 	    // We need to know what direction we are heading to,
 	    // so if we don't have the previous update value - this is very first
 	    // update, - skip it entirely and wait for the next value
-	    if (this._prevTime === null) {
+	    if (this._prevTime == null) {
 	      this._prevTime = time;
 	      this._wasUknownUpdate = true;
 	      return false;
@@ -3391,9 +3389,9 @@
 	      // cache the current tween
 	      var tween = this.tweens[i];
 	      if (tween && tween._update(time) === true) {
-	        this.remove(i);
+	        this.remove(tween);
 	        tween._onTweenerFinish();
-	        tween._prevTime = null;
+	        tween._prevTime = undefined;
 	      }
 	    }
 	  };
@@ -7812,7 +7810,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.226.3', isDebug: true, helpers: _h2.default,
+	  revision: '0.226.6', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default

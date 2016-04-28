@@ -320,6 +320,18 @@ describe 'Tween ->', ->
       time = t._props.startTime + shift
       t._update time
       expect(t._prevTime).toBeCloseTo (t._props.endTime - t._progressTime), 3
+    it 'should skip frame with `undefined` too', ->
+      duration = 1000
+      t = new Tween(duration: duration)
+      t._setStartTime()
+      t._wasUknownUpdate = false
+      t._prevTime = undefined
+      
+      shift = 200
+      time = t._props.startTime + shift
+      t._update time
+      expect(t._wasUknownUpdate).toBe true
+      # expect(t._prevTime).toBeCloseTo (t._props.endTime - t._progressTime), 3
     it 'should recalculate time for speed if defined', ->
       delay = 50; duration = 1000
       speed = 2
@@ -7013,10 +7025,10 @@ describe 'Tween ->', ->
       time = tw._resumeTime - Math.abs(0) - tw._progressTime
       expect(tw._setStartTime).toHaveBeenCalledWith time, false
     describe '_prevTime normalization ->', ->
-      it 'should not set _prevTime if it is null', ()->
+      it 'should not set _prevTime if it is undefined', ()->
         tw = new Tween
         tw._setResumeTime( 'play' )
-        expect(tw._prevTime).toBe null
+        expect(tw._prevTime).toBe undefined
       it 'should set prevTime to _normPrevTimeForward() if `play`', ->
         tw = new Tween
         tw._prevTime = 200

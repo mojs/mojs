@@ -512,6 +512,20 @@
         t._update(time);
         return expect(t._prevTime).toBeCloseTo(t._props.endTime - t._progressTime, 3);
       });
+      it('should skip frame with `undefined` too', function() {
+        var duration, shift, t, time;
+        duration = 1000;
+        t = new Tween({
+          duration: duration
+        });
+        t._setStartTime();
+        t._wasUknownUpdate = false;
+        t._prevTime = void 0;
+        shift = 200;
+        time = t._props.startTime + shift;
+        t._update(time);
+        return expect(t._wasUknownUpdate).toBe(true);
+      });
       it('should recalculate time for speed if defined', function() {
         var delay, duration, speed, startPoint, t, time;
         delay = 50;
@@ -7281,11 +7295,11 @@
         return expect(tw._setStartTime).toHaveBeenCalledWith(time, false);
       });
       return describe('_prevTime normalization ->', function() {
-        it('should not set _prevTime if it is null', function() {
+        it('should not set _prevTime if it is undefined', function() {
           var tw;
           tw = new Tween;
           tw._setResumeTime('play');
-          return expect(tw._prevTime).toBe(null);
+          return expect(tw._prevTime).toBe(void 0);
         });
         it('should set prevTime to _normPrevTimeForward() if `play`', function() {
           var tw;

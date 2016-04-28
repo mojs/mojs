@@ -142,10 +142,10 @@ describe 'Tweener ->', ->
       expect(t.tweens[0]).toBe tw
       spyOn(t, 'remove').and.callThrough()
       t._update time = performance.now() + 200
-      expect(t.remove).toHaveBeenCalledWith 0
+      expect(t.remove).toHaveBeenCalledWith tw
       expect(t.tweens[0]).not.toBeDefined()
 
-    it 'should set tween\'s _prevTime to null if ended', (dfr)->
+    it 'should set tween\'s _prevTime to undefined if ended', (dfr)->
       tw = new Tween duration: 100
       tw._setStartTime()
       t.add tw
@@ -154,7 +154,7 @@ describe 'Tweener ->', ->
       startTime = performance.now()
 
       setTimeout ->
-        expect(tw._prevTime).toBe null
+        expect(tw._prevTime).toBe undefined
         dfr()
       , 400
 
