@@ -6,31 +6,13 @@
     <link rel="stylesheet" type="text/css" href="css/main.css">
   </head>
   <body>
-    <button id="js-play">play</button>
-    <button id="js-play-backward">play-backward</button>
-    <button id="js-pause">pause</button>
-    <button id="js-stop">stop</button>
-    <button id="js-reset">reset</button>
-    <button id="js-set0">set0</button>
-    <hr>
-    <button id="js-x1">x.1</button>
-    <button id="js-x25">x.25</button>
-    <button id="js-x50">x.5</button>
-    <button id="js-x100">x1</button>
-    <button id="js-x250">x2.5</button>
-    <button id="js-x500">x5</button>
-    <button id="js-x1000">x10</button>
-    <hr>
     
     <div id="js-parent" class="parent"></div>
 
     <style>
-      div {
-        outline1: 1px solid cyan;
-        /*display: block !important;*/
-      }
       .el {
-        background: cyan;
+        background:   cyan;
+        position:     absolute;
       }
 
       .parent {
@@ -43,16 +25,28 @@
 
     <div class="el" id="js-el"></div>
 
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mo-js/0.174.4/mo.min.js"></script> -->
-
-    <input type="range" min="100" max="5000" value="1000" style="width: 500px;  margin-top: 200px; margin-left: 200px; " id="js-speed-slider">
-    
-    <input type="range" min="0" max="1000" value="0" style="width: 500px; margin-top: 200px; margin-left: 200px;" id="js-range-slider">
-
     <script src="vendor/lodash.min.js"></script>
     <script src="vendor/platform.js"></script>
     <script src="vendor/benchmark.js"></script>
 
     <script src="build/mo.js"></script>
+    <script src="node_modules/mojs-player/build/mojs-player.js"></script>
+
+    <script>
+      // let el = document.querySelector( '#js-el' );
+      // let tw = new mojs.Tween({
+      //   duration:  4000,
+      //   onUpdate (p) {
+      //     el.style.transform = `translateX(${ 1000 * p }px)`;
+      //   }
+      // });
+      // let mojsPlayer = new MojsPlayer({
+      //   add:       tw,
+      //   isPlaying: true,
+      //   progress:  .5,
+      //   speed:     5,
+      // });
+    </script>
+
   </body>
 </html>

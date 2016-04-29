@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 var mojs = {
-  revision:   '0.228.0', isDebug: true, helpers: h,
+  revision:   '0.228.1', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -39,43 +39,15 @@ window.mojs = mojs;
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
 
-// let tr = new mojs.Transit({  parent: '#js-parent', left: '50%', top: '50%' }).then({ radius: 0 });
-// tr.play();
-
-// let tw = new mojs.Tween({
-//   duration: 10000,
-//   // speed: 5,
-//   onUpdate ( p ) {
-//     console.log(p);
-//   },
-//   onComplete (isForward) {
-//     // tw.reset();
-//     // tw.setProgress(0);
-//     // tw.play();
-//     // console.log(`COMPLETE: ${isForward}`)
-//   }
+// let mojsPlayer = new MojsPlayer({
+//   add:       tw
 // });
 
-
-// let play  = document.querySelector('#js-play'),
-//     playB = document.querySelector('#js-play-backward'),
-//     pause = document.querySelector('#js-pause'),
-//     stop  = document.querySelector('#js-stop'),
-//     reset = document.querySelector('#js-reset'),
-//     set0  = document.querySelector('#js-set0');
-
-// play.addEventListener('click', function () {  tw.play();  });
-// playB.addEventListener('click', function () {  tw.playBackward();  });
-// pause.addEventListener('click', function () {  tw.pause();  });
-// stop.addEventListener('click', function () {  tw.stop();  });
-// reset.addEventListener('click', function () {  tw.reset();  });
-// set0.addEventListener('click', function () {  tw.setProgress(0);  });
-
-// ### istanbul ignore next ###
+// istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {
   define("mojs", [], function () { return mojs; });
 }
-// ### istanbul ignore next ###
+// istanbul ignore next
 if ( (typeof module === "object") && (typeof module.exports === "object") ) {
   module.exports = mojs;
 }
