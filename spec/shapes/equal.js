@@ -24,13 +24,6 @@
       });
       return expect(equal._defaults.shape).toBe('path');
     });
-    it('have ratio of 1.43', function() {
-      var equal;
-      equal = new Equal({
-        ctx: svg
-      });
-      return expect(equal._defaults.ratio).toBe(1.43);
-    });
     describe('methods ->', function() {
       return describe('draw method ->', function() {
         it('should define points', function() {

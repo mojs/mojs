@@ -47,12 +47,13 @@ describe 'Transit ->', ->
       expect(byte._defaults.top).toBe              0
       expect(byte._defaults.x).toBe                0
       expect(byte._defaults.y).toBe                0
-      expect(byte._defaults.rx).toBe               0
-      expect(byte._defaults.ry).toBe               0
       expect(byte._defaults.angle).toBe            0
       expect(byte._defaults.scale).toBe            1
       expect(byte._defaults.scaleX).toBe           null
       expect(byte._defaults.scaleY).toBe           null
+      expect(byte._defaults.origin).toBe           '50% 50%'
+      expect(byte._defaults.rx).toBe               0
+      expect(byte._defaults.ry).toBe               0
       expect(byte._defaults.opacity).toBe          1
       expect(byte._defaults.points).toBe           3
       expect(byte._defaults.duration).toBe         400
@@ -244,38 +245,38 @@ describe 'Transit ->', ->
       byte = new Byte
         radius:       { 25: -100 }
         strokeWidth:  { 6:  4    }
-      expect(byte._props.size).toBe(212)
+      expect(byte._props.size).toBe(206)
     it 'should calculate size el size based on radiusX/Y', ->
       byte = new Byte
         radius:       { 25: -100 }
         radiusX:      200
         strokeWidth:  { 6:  4    }
-      expect(byte._props.size).toBe(412)
+      expect(byte._props.size).toBe(406)
     it 'should calculate size el size based on radiusX/Y', ->
       byte = new Byte
         radius:       { 25: -100 }
         radiusX:      200
         radiusY:      300
         strokeWidth:  { 6:  4    }
-      expect(byte._props.size).toBe(612)
+      expect(byte._props.size).toBe(606)
     it 'should calculate size el size based on radiusX/Y', ->
       byte = new Byte
         radius:       { 25: -100 }
         radiusY:      30
         strokeWidth:  { 6:  4    }
-      expect(byte._props.size).toBe(212)
+      expect(byte._props.size).toBe(206)
     it 'should calculate size el size based on radiusX/Y', ->
       byte = new Byte
         radius:       50
         radiusY:      30
         strokeWidth:  { 6:  4 }
-      expect(byte._props.size).toBe(112)
+      expect(byte._props.size).toBe(106)
     it 'should have sizeGap option', ->
       byte = new Byte
         radius:       { 25: -100 }
         strokeWidth:  { 6:  4    }
         sizeGap: 40
-      expect(byte._props.size).toBe(292)
+      expect(byte._props.size).toBe(286)
     it 'should calculate size el size depending on shape\'s ratio', ->
       byte = new Byte
         radius:       { 25: -100 }
@@ -283,7 +284,7 @@ describe 'Transit ->', ->
         shape:        'rect'
       svg = document.createElementNS ns, 'svg'
       rect  = new Rect ctx: svg
-      expect(byte._props.size).toBe(212*rect._props.ratio)
+      expect(byte._props.size).toBe(206)
     it 'should not calculate size el size if size was passed', ->
       byte = new Byte
         radius:       100
@@ -301,33 +302,34 @@ describe 'Transit ->', ->
       byte = new Byte
         radius:       { 25: -100 }
         strokeWidth:  { 4:  6    }
-      expect(byte._props.size)   .toBe(212)
-      expect(byte._props.center) .toBe(106)
+      expect(byte._props.size)   .toBe(206)
+      expect(byte._props.center) .toBe(103)
     it 'should increase size if elastic.out/inout easing', ->
       byte = new Byte
         radius:       { 25: -100 }
         strokeWidth:  { 4:  6    }
         easing: 'Elastic.Out'
-      expect(byte._props.size)   .toBe(212*1.25)
+      expect(byte._props.size)   .toBe(206*1.25)
       expect(byte._props.center) .toBe(byte._props.size/2)
       byte = new Byte
         radius:       { 25: -100 }
         strokeWidth:  { 4:  6    }
         easing: 'Elastic.InOut'
-      expect(byte._props.size)   .toBe(212*1.25)
+      expect(byte._props.size)   .toBe(206*1.25)
       expect(byte._props.center) .toBe(byte._props.size/2)
     it 'should increase size if back.out/inout easing', ->
       byte = new Byte
+        isIt: 1
         radius:       { 25: -100 }
-        strokeWidth:  { 4:  6    }
+        strokeWidth:  { 4:  6 }
         easing: 'back.Out'
-      expect(byte._props.size)   .toBe(212*1.1)
+      expect(byte._props.size)   .toBe(206*1.1)
       expect(byte._props.center) .toBe(byte._props.size/2)
       byte = new Byte
         radius:       { 25: -100 }
         strokeWidth:  { 4:  6    }
         easing: 'Back.InOut'
-      expect(byte._props.size)   .toBe(212*1.1)
+      expect(byte._props.size)   .toBe(206*1.1)
       expect(byte._props.center) .toBe(byte._props.size/2)
   
   describe 'el creation ->', ->
@@ -371,13 +373,13 @@ describe 'Transit ->', ->
         x:            10
         y:            20
       expect(byte.el.style.position)              .toBe 'absolute'
-      expect(byte.el.style.width)                 .toBe '54px'
-      expect(byte.el.style.height)                .toBe '54px'
+      expect(byte.el.style.width)                 .toBe '52px'
+      expect(byte.el.style.height)                .toBe '52px'
       expect(byte.el.style.display)               .toBe 'none'
-      expect(byte.el.style['margin-left'])        .toBe '-27px'
-      expect(byte.el.style['margin-top'])         .toBe '-27px'
-      expect(byte.el.style['marginLeft'])         .toBe '-27px'
-      expect(byte.el.style['marginTop'])          .toBe '-27px'
+      expect(byte.el.style['margin-left'])        .toBe '-26px'
+      expect(byte.el.style['margin-top'])         .toBe '-26px'
+      expect(byte.el.style['marginLeft'])         .toBe '-26px'
+      expect(byte.el.style['marginTop'])          .toBe '-26px'
       #expect(byte.el.style['backface-visibility']).toBe 'hidden'
       #expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
       expect(byte._isShown).toBe false
@@ -393,10 +395,10 @@ describe 'Transit ->', ->
       expect(byte.el.style.position)              .not.toBe 'absolute'
       expect(byte.el.style.width)                 .not.toBe '54px'
       expect(byte.el.style.height)                .not.toBe '54px'
-      expect(byte.el.style['margin-left'])        .not.toBe '-27px'
-      expect(byte.el.style['margin-top'])         .not.toBe '-27px'
-      expect(byte.el.style['marginLeft'])         .not.toBe '-27px'
-      expect(byte.el.style['marginTop'])          .not.toBe '-27px'
+      expect(byte.el.style['margin-left'])        .not.toBe '-26px'
+      expect(byte.el.style['margin-top'])         .not.toBe '-26px'
+      expect(byte.el.style['marginLeft'])         .not.toBe '-26px'
+      expect(byte.el.style['marginTop'])          .not.toBe '-26px'
       # expect(byte.el.style['backface-visibility']).not.toBe 'hidden'
       # prefixedProp = "#{h.prefix.css}backface-visibility"
       # expect(byte.el.style[prefixedProp]).not.toBe 'hidden'
@@ -417,12 +419,12 @@ describe 'Transit ->', ->
       byte._render()
       h.remBase = 16
       expect(byte.el.style.position)              .toBe 'absolute'
-      expect(byte.el.style.width)                 .toBe '54px'
-      expect(byte.el.style.height)                .toBe '54px'
-      expect(byte.el.style['margin-left'])        .toBe '-27px'
-      expect(byte.el.style['margin-top'])         .toBe '-27px'
-      expect(byte.el.style['marginLeft'])         .toBe '-27px'
-      expect(byte.el.style['marginTop'])          .toBe '-27px'
+      expect(byte.el.style.width)                 .toBe '52px'
+      expect(byte.el.style.height)                .toBe '52px'
+      expect(byte.el.style['margin-left'])        .toBe '-26px'
+      expect(byte.el.style['margin-top'])         .toBe '-26px'
+      expect(byte.el.style['marginLeft'])         .toBe '-26px'
+      expect(byte.el.style['marginTop'])          .toBe '-26px'
       #expect(byte.el.style['backface-visibility']).toBe 'hidden'
       #expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
     it 'should create bit', ->
@@ -782,6 +784,38 @@ describe 'Transit ->', ->
       isTr2 = tr is 'scale(3, 3) translate(0px, 0px) rotate(0deg)'
       expect(isTr or isTr2).toBe true
 
+    it 'should set `transform-origin` if `origin`', ->
+      byte = new Byte origin: '50% 30%'
+      byte._drawEl()
+      prop = 'transform-origin'
+      style = byte.el.style
+      tr = style[ prop ] or style["#{mojs.h.prefix.css}#{prop}"]
+      expect(tr).toBe '50% 30% '
+
+    it 'should set `transform-origin` if `origin` changed', ->
+      byte = new Byte origin: '50% 30%'
+      spyOn(byte, '_fillOrigin').and.callThrough()
+      byte._props.origin = byte._parseStrokeDashOption( 'origin', '50% 40%');
+      byte._drawEl()
+      prop = 'transform-origin'
+      style = byte.el.style
+      tr = style[ prop ] or style["#{mojs.h.prefix.css}#{prop}"]
+      expect(tr).toBe '50% 40% '
+      expect(byte._fillOrigin).toHaveBeenCalled()
+
+    it 'should not set `transform-origin` if `origin`', ->
+      byte = new Byte origin: '50% 30%'
+      byte._draw()
+      spyOn(byte, '_fillOrigin').and.callThrough()
+      byte._draw()
+      expect(byte._fillOrigin).not.toHaveBeenCalled()
+
+    it 'should set `transform-origin` if `origin` in `_deltas`', ->
+      byte = new Byte origin: { '50% 30%': '50% 0'}
+      spyOn(byte, '_fillOrigin').and.callThrough()
+      byte._drawEl()
+      byte._drawEl()
+      expect(byte._fillOrigin.calls.count()).toBe 2
       
   describe '_isPropChanged method ->', ->
     it 'should return bool showing if prop was changed after the last set', ->
@@ -1076,6 +1110,20 @@ describe 'Transit ->', ->
       tr = new Transit x: 100, y: 100, angle: 50, scaleX: 2, scaleY: 3
       expect(tr._fillTransform())
         .toBe 'scale(2, 3) translate(100px, 100px) rotate(50deg)'  
+
+  describe '_fillOrigin method ->', ->
+    it 'return tranform-origin string of the el', ->
+      tr = new Transit x: 100, y: 100, origin: '50% 30%'
+      expect(tr._fillOrigin()).toBe '50% 30% '
+
+    it 'return tranform-origin string of the el with delta', ->
+      tr = new Transit
+        x: 100, y: 100,
+        easing: 'liner.none',
+        origin: { '0% 0%' : '50% 200%' }
+      tr.setProgress 0
+      tr.setProgress .5
+      expect(tr._fillOrigin()).toBe '25% 100% '
 
   describe '_hidePrevChainModule method ->', ->
     it 'should hide prevChainModule', ->

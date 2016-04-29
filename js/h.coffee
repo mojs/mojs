@@ -377,7 +377,7 @@ class Helpers
           b: endColorObj.b - startColorObj.b
           a: endColorObj.a - startColorObj.a
     # color strokeDasharray/strokeDashoffset
-    else if key is 'strokeDasharray' or key is 'strokeDashoffset'
+    else if key is 'strokeDasharray' or key is 'strokeDashoffset' or key is 'origin'
       startArr  = @strToArr start
       endArr    = @strToArr end
       @normDashArrays startArr, endArr

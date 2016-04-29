@@ -10,9 +10,9 @@ describe 'Equal ->', ->
   it 'have shape of path', ->
     equal = new Equal ctx: svg
     expect(equal._defaults.shape).toBe 'path'
-  it 'have ratio of 1.43', ->
-    equal = new Equal ctx: svg
-    expect(equal._defaults.ratio).toBe 1.43
+  # it 'have ratio of 1.43', ->
+  #   equal = new Equal ctx: svg
+  #   expect(equal._defaults.ratio).toBe 1.43
   describe 'methods ->', ->
     describe 'draw method ->', ->
       it 'should define points', ->

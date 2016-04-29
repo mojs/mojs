@@ -11,9 +11,9 @@ describe 'Zigzag ->', ->
   it 'should add itself to context', ->
     line = new Zigzag ctx: svg
     expect(svg.firstChild).toBeDefined()
-  it 'should have ratio of 1.43', ->
-    line = new Zigzag ctx: svg
-    expect(line._defaults.ratio).toBe 1.43
+  # it 'should have ratio of 1.43', ->
+  #   line = new Zigzag ctx: svg
+  #   expect(line._defaults.ratio).toBe 1.43
   describe 'methods ->', ->
     describe 'draw method ->', ->
       it 'should add properties to el', ->

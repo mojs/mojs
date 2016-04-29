@@ -51,10 +51,6 @@ class Transit extends Tunable {
       x:                0,
       // ∆ :: Units :: Possible values: [ number, string ]
       y:                0,
-      // ∆ :: Units :: Possible values: [ number, string ]
-      rx:               0,
-      // ∆ :: Units :: Possible values: [ number, string ]
-      ry:               0,
       // ∆ :: Possible values: [ number ]
       angle:            0,
       // ∆ :: Possible values: [ number ]
@@ -63,8 +59,14 @@ class Transit extends Tunable {
       scaleX:           null,
       // ∆ :: Possible values: [ number ] Fallbacks to `scale`.
       scaleY:           null,
+      // ∆ :: Possible values: [ number, string ]
+      origin:           '50% 50%',
       // ∆ :: Possible values: [ 0..1 ]
       opacity:          1,
+      // ∆ :: Units :: Possible values: [ number, string ]
+      rx:               0,
+      // ∆ :: Units :: Possible values: [ number, string ]
+      ry:               0,
       // ∆ :: Possible values: [ number ]
       points:           3,
       // ∆ :: Possible values: [ number ]
@@ -226,9 +228,15 @@ class Transit extends Tunable {
       if ( isTranslate || isScale || isRotate ) {
         var transform = this._fillTransform(),
             style     = this.el.style;
-        style["#{h.prefix.css}#{'transform'}"] = transform;
+        style[`${ h.prefix.css }transform`] = transform;
         style['transform'] = transform;
-        // h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
+      }
+
+      if ( this._isPropChanged('origin') || this._deltas[ 'origin' ] ) {
+        var origin = this._fillOrigin(),
+            style  = this.el.style;
+        style[`${ h.prefix.css }transform-origin`] = origin;
+        style['transform-origin'] = origin;
       }
     }
   }
@@ -291,7 +299,7 @@ class Transit extends Tunable {
         radius  = this._calcMaxShapeRadius(),
         dStroke = this._deltas['strokeWidth'],
         stroke  = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this._props.strokeWidth;
-    p.size = 2 * radius + 2 * stroke;
+    p.size = 2 * radius + stroke;
     this._increaseSizeWithEasing();
     this._increaseSizeWithBitRatio();
     return p.center = p.size / 2;
@@ -304,6 +312,7 @@ class Transit extends Tunable {
     var p              = this._props,
         easing         = this._o.easing,
         isStringEasing = easing && typeof easing === 'string';
+
     switch ( isStringEasing && easing.toLowerCase() ) {
       case 'elastic.out':
       case 'elastic.inout':
@@ -320,7 +329,7 @@ class Transit extends Tunable {
   */
   _increaseSizeWithBitRatio () {
     var p   = this._props;
-    p.size *= this.bit._props.ratio;
+    // p.size *= this.bit._props.ratio;
     p.size += 2 * p.sizeGap;
   }
   /*
@@ -415,7 +424,7 @@ class Transit extends Tunable {
   */
   _transformTweenOptions () { this._applyCallbackOverrides( this._o ); }
   /*
-    Method to create transform string;
+    Method to create transform string.
     @private
     @returns {String} Transform string.
   */
@@ -426,6 +435,19 @@ class Transit extends Tunable {
         scale  = `${ scaleX }, ${scaleY}`;
 
     return `scale(${scale}) translate(${p.x}, ${p.y}) rotate(${p.angle}deg)`;
+  }
+  /*
+    Method to create transform-origin string.
+    @private
+    @returns {String} Transform string.
+  */
+  _fillOrigin () {
+    var p   = this._props,
+        str = '';
+    for (var i = 0; i < p.origin.length; i++) {
+      str += `${ p.origin[i].string } `;
+    }
+    return str;
   }
   /*
     Method to hide previousChainModule.

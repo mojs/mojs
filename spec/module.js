@@ -55,7 +55,8 @@
         var md;
         md = new Module;
         expect(md._arrayPropertyMap['strokeDasharray']).toBe(1);
-        return expect(md._arrayPropertyMap['strokeDashoffset']).toBe(1);
+        expect(md._arrayPropertyMap['strokeDashoffset']).toBe(1);
+        return expect(md._arrayPropertyMap['origin']).toBe(1);
       });
       it('should create _arrayPropertyMap', function() {
         var md;

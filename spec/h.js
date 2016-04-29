@@ -378,9 +378,39 @@
           });
         });
         describe('array values ->', function() {
-          return it('should calculate array delta', function() {
+          it('should calculate array delta', function() {
             var delta;
             delta = h.parseDelta('strokeDasharray', {
+              '200 100%': '300'
+            });
+            expect(delta.type).toBe('array');
+            expect(delta.start[0].value).toBe(200);
+            expect(delta.start[0].unit).toBe('px');
+            expect(delta.end[0].value).toBe(300);
+            expect(delta.end[0].unit).toBe('px');
+            expect(delta.start[1].value).toBe(100);
+            expect(delta.start[1].unit).toBe('%');
+            expect(delta.end[1].value).toBe(0);
+            return expect(delta.end[1].unit).toBe('%');
+          });
+          it('should calculate array delta', function() {
+            var delta;
+            delta = h.parseDelta('strokeDashoffset', {
+              '200 100%': '300'
+            });
+            expect(delta.type).toBe('array');
+            expect(delta.start[0].value).toBe(200);
+            expect(delta.start[0].unit).toBe('px');
+            expect(delta.end[0].value).toBe(300);
+            expect(delta.end[0].unit).toBe('px');
+            expect(delta.start[1].value).toBe(100);
+            expect(delta.start[1].unit).toBe('%');
+            expect(delta.end[1].value).toBe(0);
+            return expect(delta.end[1].unit).toBe('%');
+          });
+          return it('should calculate array delta', function() {
+            var delta;
+            delta = h.parseDelta('origin', {
               '200 100%': '300'
             });
             expect(delta.type).toBe('array');

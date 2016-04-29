@@ -7,14 +7,15 @@ class Zigzag extends Bit
   _declareDefaults:->
     super
     @_defaults.shape = 'path';
-    @_defaults.ratio = 1.43;
+    # @_defaults.ratio = 1.43;
   draw:->
     return if !@_props.points
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
     points = ''; stepX = 2*radiusX/@_props.points
     stepY  = 2*radiusY/@_props.points; strokeWidth = @_props['stroke-width']
-    xStart = @_props.x - radiusX; yStart = @_props.y - radiusY
+    xStart = @_props.x - radiusX - strokeWidth
+    yStart = @_props.y - radiusY - strokeWidth
     for i in [@_props.points...0]
       iX = xStart + i*stepX + strokeWidth; iY = yStart + i*stepY + strokeWidth
       iX2 = xStart + (i-1)*stepX + strokeWidth

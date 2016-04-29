@@ -9,7 +9,7 @@ class Rect extends Bit
   _declareDefaults:->
     super
     this._defaults.shape = 'rect'
-    this._defaults.ratio = 1.43
+    # this._defaults.ratio = 1.43
   draw:->
     super
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius

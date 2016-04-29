@@ -9,7 +9,7 @@ class Equal extends Bit
   _declareDefaults:->
     super
     this._defaults.shape = 'path'
-    this._defaults.ratio = 1.43
+    # this._defaults.ratio = 1.43
   draw:->
     super
     return if !@_props.points

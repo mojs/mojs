@@ -10,8 +10,9 @@ class Module {
     // map of props that should be
     // parsed to arrays of values
     this._arrayPropertyMap = {
+      strokeDashoffset: 1,
       strokeDasharray:  1,
-      strokeDashoffset: 1
+      origin:           1
     }
 
     this._skipPropsDelta = {
@@ -300,6 +301,7 @@ class Module {
   _calcCurrentProps ( p ) {
     for (var key in this._deltas) {
       var value = this._deltas[key];
+      // this._o.isIt && console.log(value)
       if ( value.type === 'array' ) {
         var arr;
         // if prop property is array - reuse it else - create an array
@@ -307,12 +309,19 @@ class Module {
           arr = this._props[key];
           arr.length = 0;
         } else { arr = []; }
+
         for ( var i = 0; i < value.delta.length; i++ ) {
           var item = value.delta[i],
               dash = value.start[i].value + p * item.value;
-          arr.push({ value: dash, unit: item.unit });
+          arr.push({
+            string: `${dash}${item.unit}`,
+            value:  dash,
+            unit:   item.unit,
+          });
         }
+
         this._props[key] = arr;
+
       } else if ( value.type === 'number' ) {
         this._props[key] = value.start + value.delta * p;
       } else if ( value.type === 'unit' ) {
