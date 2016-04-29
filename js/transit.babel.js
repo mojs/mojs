@@ -59,6 +59,10 @@ class Transit extends Tunable {
       angle:            0,
       // ∆ :: Possible values: [ number ]
       scale:            1,
+      // ∆ :: Possible values: [ number ] Fallbacks to `scale`.
+      scaleX:           null,
+      // ∆ :: Possible values: [ number ] Fallbacks to `scale`.
+      scaleY:           null,
       // ∆ :: Possible values: [ 0..1 ]
       opacity:          1,
       // ∆ :: Possible values: [ number ]
@@ -129,7 +133,8 @@ class Transit extends Tunable {
         // if the module is the first one in the chain
         if ( !this._props.prevChainModule ) {
           this.wrapperEl = document.createElement('div');
-          this.wrapperEl.style.opacity = 0.9998;
+          // h.setPrefixedStyle( this.wrapperEl, 'transform', 'translate(0, 0)' );
+          this.wrapperEl.style.opacity = '0.99999'
           this.wrapperEl.appendChild( this.el );
           this.wrapperEl.setAttribute( 'data-name', 'mojs-transit' );
           this._props.parent.appendChild( this.wrapperEl );
@@ -208,9 +213,17 @@ class Transit extends Tunable {
     if (!this.isForeign) {
       this._isPropChanged('left')  && (this.el.style.left = p.left);
       this._isPropChanged('top')   && (this.el.style.top = p.top);
-      var isTranslate = this._isPropChanged('x') || this._isPropChanged('y'),
-          isScaleRotate = this._isPropChanged('scale') || this._isPropChanged('angle');
-      if ( isTranslate || isScaleRotate ) {
+      
+      var isX = this._isPropChanged('x'),
+          isY = this._isPropChanged('y'),
+          isTranslate = isX || isY,
+          isScaleX = this._isPropChanged('scaleX'),
+          isScaleY = this._isPropChanged('scaleY'),
+          isScale  = this._isPropChanged('scale'),
+          isScale = isScale || isScaleX || isScaleY,
+          isRotate = this._isPropChanged('angle');
+
+      if ( isTranslate || isScale || isRotate ) {
         var transform = this._fillTransform(),
             style     = this.el.style;
         style["#{h.prefix.css}#{'transform'}"] = transform;
@@ -407,8 +420,12 @@ class Transit extends Tunable {
     @returns {String} Transform string.
   */
   _fillTransform () {
-    var p = this._props;
-    return `scale(${p.scale}) translate(${p.x}, ${p.y}) rotate(${p.angle}deg)`;
+    var p      = this._props,
+        scaleX = ( p.scaleX != null ) ? p.scaleX : p.scale,
+        scaleY = ( p.scaleY != null ) ? p.scaleY : p.scale,
+        scale  = `${ scaleX }, ${scaleY}`;
+
+    return `scale(${scale}) translate(${p.x}, ${p.y}) rotate(${p.angle}deg)`;
   }
   /*
     Method to hide previousChainModule.

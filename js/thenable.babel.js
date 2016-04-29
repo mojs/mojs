@@ -140,6 +140,11 @@ class Thenable extends Tweenable {
         startValue = start.radius;
       }
 
+      var  isSubRadius = (key === 'scaleX' || key === 'scaleY');
+      if ( isSubRadius && startValue == null ) {
+        startValue = start.scale;
+      }
+
       o[key] = this._mergeThenProperty( key, startValue, endValue );
       // // if one of the properties is array - merge
       // // with array, - else merge two plain properties

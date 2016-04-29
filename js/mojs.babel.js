@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 var mojs = {
-  revision:   '0.228.1', isDebug: true, helpers: h,
+  revision:   '0.229.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -39,8 +39,20 @@ window.mojs = mojs;
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
 
+// let tr = new mojs.Transit({
+//   left: '50%', top: '50%',
+//   duration:   2000,
+//   radius:     50,
+//   radiusY:     { 0: 20 }
+// }).then({
+//   radiusX:     100,
+//   radiusY:     120,
+// }).then({
+//   radiusY:     100
+// });;
+
 // let mojsPlayer = new MojsPlayer({
-//   add:       tw
+//   add:       tr
 // });
 
 // istanbul ignore next

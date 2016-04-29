@@ -104,10 +104,8 @@ module.exports = function(config) {
       'spec/tween/tweenable.js',
       'build/tunable.js',
       'spec/tunable.js',
-      'build/thenable.js',
-      'spec/thenable.js',
-      'build/runable.js',
-      'spec/runable.js',
+      // 'build/thenable.js',
+      // 'spec/thenable.js',
       
       'build/spriter.js',
       'spec/spriter.js',

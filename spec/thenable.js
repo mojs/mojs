@@ -343,6 +343,39 @@
         expect(mergedOpton.radiusX[10]).toBe(200);
         return expect(mergedOpton.radiusY[20]).toBe(100);
       });
+      it('should fallback to radius for scaleX/scaleY props', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          scale: 10
+        };
+        end = {
+          scaleX: 200,
+          scaleY: 100
+        };
+        byte._defaults = {};
+        byte._vars();
+        mergedOpton = byte._mergeThenOptions(start, end);
+        expect(mergedOpton.scaleX[10]).toBe(200);
+        return expect(mergedOpton.scaleY[10]).toBe(100);
+      });
+      it("should fallback to scale for scaleX/scaleY props and not ovveride previous values", function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          scale: 10,
+          scaleY: 20
+        };
+        end = {
+          scaleX: 200,
+          scaleY: 100
+        };
+        byte._defaults = {};
+        byte._vars();
+        mergedOpton = byte._mergeThenOptions(start, end);
+        expect(mergedOpton.scaleX[10]).toBe(200);
+        return expect(mergedOpton.scaleY[20]).toBe(100);
+      });
       it("should always take sub radius values", function() {
         var byte, end, mergedOpton, start;
         byte = new Byte;
