@@ -406,7 +406,7 @@
         return expect(bit._props['stroke-dasharray']).toBe('');
       });
     });
-    return describe('stroke-dash value setting ->', function() {
+    describe('stroke-dash value setting ->', function() {
       it('should set the property from an array', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
@@ -453,6 +453,50 @@
         bit.draw();
         dash = (bit._props.length / 100) * 25;
         return expect(bit._props['stroke-dasharray']).toBe(dash);
+      });
+    });
+    describe('_pointsDelta method ->', function() {
+      return it('should return distance between points', function() {
+        var dx, dy, i, point1, point2, _i, _results;
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg')
+        });
+        _results = [];
+        for (i = _i = 0; _i < 50; i = ++_i) {
+          point1 = {
+            x: 20 * i,
+            y: 120 + i
+          };
+          point2 = {
+            x: 200 + i,
+            y: -120 * i
+          };
+          dx = Math.abs(point1.x - point2.x);
+          dy = Math.abs(point1.y - point2.y);
+          _results.push(expect(bit._pointsDelta(point1, point2)).toBe(Math.sqrt(dx * dx + dy * dy)));
+        }
+        return _results;
+      });
+    });
+    return describe('_getPointsPerimiter method', function() {
+      return it('should calculate sum between all points', function() {
+        var i, points, sum, _i, _j, _ref;
+        bit = new Bit({
+          ctx: svg
+        });
+        points = [];
+        for (i = _i = 1; _i < 20; i = ++_i) {
+          points.push({
+            x: 100 * Math.random(),
+            y: 100 * Math.random()
+          });
+        }
+        sum = 0;
+        for (i = _j = 1, _ref = points.length; 1 <= _ref ? _j < _ref : _j > _ref; i = 1 <= _ref ? ++_j : --_j) {
+          sum += bit._pointsDelta(points[i - 1], points[i]);
+        }
+        sum += bit._pointsDelta(points[0], mojs.h.getLastItem(points));
+        return expect(bit._getPointsPerimiter(points)).toBe(sum);
       });
     });
   });

@@ -113,25 +113,15 @@
       });
     });
     return describe('getLength method', function() {
-      it('should calculate total length of the path', function() {
-        var bit, radius;
-        radius = 100;
-        bit = new Polygon({
-          ctx: document.createElementNS(ns, 'svg'),
-          radius: radius
+      return it('should calculate sum between all points', function() {
+        var polygon;
+        polygon = new Polygon({
+          ctx: svg,
+          radiusX: 100,
+          radiusY: 200
         });
-        return expect(bit.getLength().toFixed(1)).toBe('519.6');
-      });
-      return it('should calculate total length of the with different radiusX/Y', function() {
-        var bit, radiusX, radiusY;
-        radiusX = 100;
-        radiusY = 50;
-        bit = new Polygon({
-          ctx: document.createElementNS(ns, 'svg'),
-          radiusX: radiusX,
-          radiusY: radiusY
-        });
-        return expect(bit.getLength().toFixed(2)).toBe('402.33');
+        polygon.drawShape();
+        return expect(polygon.getLength()).toBe(polygon._getPointsPerimiter(polygon.radialPoints));
       });
     });
   });

@@ -155,6 +155,35 @@ class Bit extends Module {
     }
     return len;
   }
+  /*
+    Method to calculate total sum between points.
+    @private
+    @param {Array} Array of points.
+    @returns {Number} Distance bewtween all points.
+  */
+  _getPointsPerimiter ( points ) {
+    let sum    = 0;
+
+    for (var i = 1; i < points.length; i++ ) {
+      sum += this._pointsDelta( points[i-1], points[i] );
+    }
+
+    sum += this._pointsDelta( points[0], h.getLastItem( points ) );
+    return sum;
+  }
+  /*
+    Method to get delta from two points.
+    @private
+    @param {Object} Point 1.
+    @param {Object} Point 2.
+    @returns {Number} Distance between the pooints.
+  */
+  _pointsDelta ( point1, point2 ) {
+    let dx = Math.abs( point1.x - point2.x ),
+        dy = Math.abs( point1.y - point2.y );
+    return Math.sqrt( dx*dx + dy*dy );
+  }
+
 }
 
 export default Bit;

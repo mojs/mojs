@@ -402,5 +402,34 @@ describe 'Bit', ->
       dash = (bit._props.length/100)*25
       expect(bit._props['stroke-dasharray']).toBe dash
 
+  describe '_pointsDelta method ->', ->
+    it 'should return distance between points', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+
+      for i in [ 0...50 ]
+        point1 = { x: 20*i, y: 120+i }
+        point2 = { x: 200+i, y: -120*i }
+        dx = Math.abs( point1.x - point2.x )
+        dy = Math.abs( point1.y - point2.y )
+        expect( bit._pointsDelta( point1, point2 ) )
+          .toBe Math.sqrt( dx*dx + dy*dy )
+
+  describe '_getPointsPerimiter method', ->
+    it 'should calculate sum between all points', ->
+      bit  = new Bit ctx: svg
+      # create points for test
+      points = []
+      for i in [1...20]
+        points.push( {  x: 100*Math.random(), y: 100*Math.random() }  )
+
+      sum = 0
+      for i in [1...points.length]
+        sum += bit._pointsDelta points[i-1], points[i]
+
+      sum += bit._pointsDelta points[0], mojs.h.getLastItem points
+
+      expect( bit._getPointsPerimiter( points ) ).toBe sum
+
 
 

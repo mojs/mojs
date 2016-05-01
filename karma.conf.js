@@ -91,10 +91,10 @@ module.exports = function(config) {
       // 'build/h.js',
       // 'spec/h.js',
       
-      // 'build/transit.js',
-      // 'spec/transit.js',
-      // 'build/swirl.js',
-      // 'spec/swirl.js',
+      // // 'build/transit.js',
+      // // 'spec/transit.js',
+      // // 'build/swirl.js',
+      // // 'spec/swirl.js',
       // 'build/burst.js',
       // 'spec/burst.js',
 
@@ -104,8 +104,8 @@ module.exports = function(config) {
       // 'spec/tween/tweenable.js',
       // 'build/tunable.js',
       // 'spec/tunable.js',
-      // // 'build/thenable.js',
-      // // 'spec/thenable.js',
+      // 'build/thenable.js',
+      // 'spec/thenable.js',
       
       // 'build/spriter.js',
       // 'spec/spriter.js',
@@ -124,8 +124,8 @@ module.exports = function(config) {
 
       // 'build/motion-path.js',
       // 'spec/motion-path.js',
-      // 'build/bits/*.js',
-      // 'spec/bits/*.js'
+      // // 'build/bits/*.js',
+      // // 'spec/bits/*.js'
     ],
 
     // preprocess matching files before serving them to the browser

@@ -14,7 +14,12 @@ class Polygon extends Bit
     super
   drawShape:->
     # @_props.points = parseInt(@_props.points)
-    step = 360/(@_props.points); @radialPoints = []
+    step = 360/(@_props.points)
+
+    # reuse radial points buffer
+    if !@radialPoints? then @radialPoints = []
+    else @radialPoints.length = 0
+
     for i in [0...@_props.points]
       @radialPoints.push h.getRadialPoint
         radius:   @_props.radius
@@ -29,6 +34,6 @@ class Polygon extends Bit
 
     @setAttr d: d += 'z'
 
-  getLength:-> @el.getTotalLength()
+  getLength:-> @_getPointsPerimiter( @radialPoints );
 
 module.exports = Polygon

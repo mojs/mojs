@@ -33,19 +33,21 @@ describe 'Zigzag ->', ->
           points: 0
         expect(zigzag.el.getAttribute('d')).toBeFalsy()
 
+      it 'should calculate path length', ->
+        zigzag = new Zigzag
+          ctx:    document.createElementNS?(ns, "svg")
+          radius: 20
+          points: 10
+        zigzag.draw()
+        expect(zigzag._length).toBe 80
+
   describe 'getLength method ->', ->
     it 'should calculate total length of the path', ->
-      radius = 100
       bit = new Zigzag
         ctx:    document.createElementNS ns, 'svg'
-        radius: radius
-      expect(Math.round bit.getLength()).toBe 400
+        radiusX: 100
+        radiusY: 550
 
-    it 'should calculate total length of the with different radiusX/Y', ->
-      radiusX = 100
-      radiusY = 50
-      bit = new Zigzag
-        ctx:    document.createElementNS ns, 'svg'
-        radiusX: radiusX
-        radiusY: radiusY
-      expect(bit.getLength()).toBe 300
+      bit.draw()
+
+      expect( bit.getLength() ).toBe bit._length

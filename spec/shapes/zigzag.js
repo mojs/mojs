@@ -43,7 +43,7 @@
           });
           return expect(zigzag.el.getAttribute('d')).toBeTruthy();
         });
-        return it('should not work with 0 points', function() {
+        it('should not work with 0 points', function() {
           var zigzag;
           zigzag = new Zigzag({
             ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
@@ -52,28 +52,28 @@
           });
           return expect(zigzag.el.getAttribute('d')).toBeFalsy();
         });
+        return it('should calculate path length', function() {
+          var zigzag;
+          zigzag = new Zigzag({
+            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+            radius: 20,
+            points: 10
+          });
+          zigzag.draw();
+          return expect(zigzag._length).toBe(80);
+        });
       });
     });
     return describe('getLength method ->', function() {
-      it('should calculate total length of the path', function() {
-        var bit, radius;
-        radius = 100;
+      return it('should calculate total length of the path', function() {
+        var bit;
         bit = new Zigzag({
           ctx: document.createElementNS(ns, 'svg'),
-          radius: radius
+          radiusX: 100,
+          radiusY: 550
         });
-        return expect(Math.round(bit.getLength())).toBe(400);
-      });
-      return it('should calculate total length of the with different radiusX/Y', function() {
-        var bit, radiusX, radiusY;
-        radiusX = 100;
-        radiusY = 50;
-        bit = new Zigzag({
-          ctx: document.createElementNS(ns, 'svg'),
-          radiusX: radiusX,
-          radiusY: radiusY
-        });
-        return expect(bit.getLength()).toBe(300);
+        bit.draw();
+        return expect(bit.getLength()).toBe(bit._length);
       });
     });
   });
