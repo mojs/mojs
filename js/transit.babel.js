@@ -163,18 +163,19 @@ class Transit extends Tunable {
     var marginSize, ref, size,
         p = this._props;
     if (!this.isForeign) {
-      size = this._props.size + "px";
-      this.el.style.position = 'absolute';
-      this.el.style.top      = p.top;
-      this.el.style.left     = p.left;
-      this.el.style.width    = size;
-      this.el.style.height   = size;
-      this.el.style.opacity  = p.opacity;
-      marginSize = (-this._props.size / 2) + "px";
-      this.el.style['margin-left'] = marginSize;
-      this.el.style['margin-top']  = marginSize;
-      this.el.style['marginLeft']  = marginSize;
-      this.el.style['marginTop']   = marginSize;
+      let style = this.el.style;
+      size           = `${ p.size }px`;
+      marginSize     = `${ -p.size / 2 }px`;
+      style.position = 'absolute';
+      style.top      = p.top;
+      style.left     = p.left;
+      style.width    = size;
+      style.height   = size;
+      style.opacity  = p.opacity;
+      style['margin-left'] = marginSize;
+      style['margin-top']  = marginSize;
+      style['marginLeft']  = marginSize;
+      style['marginTop']   = marginSize;
     }
   }
   /*
@@ -434,7 +435,7 @@ class Transit extends Tunable {
         scaleY = ( p.scaleY != null ) ? p.scaleY : p.scale,
         scale  = `${ scaleX }, ${scaleY}`;
 
-    return `scale(${scale}) translate(${p.x}, ${p.y}) rotate(${p.angle}deg)`;
+    return `translate(${p.x}, ${p.y}) rotate(${p.angle}deg) scale(${scale})`;
   }
   /*
     Method to create transform-origin string.

@@ -457,7 +457,7 @@ describe 'Transit ->', ->
       expect(byte.wrapperEl.parentNode).toBe div
 
   describe 'opacity set ->', ->
-    it 'should set a position with respect to units', ->
+    it 'should set opacity with respect to units', ->
       byte = new Byte opacity: .5
       expect(byte.el.style.opacity).toBe '0.5'
     it 'should animate opacity', (dfr)->
@@ -519,7 +519,7 @@ describe 'Transit ->', ->
           y: 50
         s = byte.el.style
         tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-        expect(tr).toBe 'scale(1, 1) translate(100px, 50px) rotate(0deg)'
+        expect(tr).toBe 'translate(100px, 50px) rotate(0deg) scale(1, 1)'
       it 'should animate shift position', (dfr)->
         byte = new Byte
           x: {100: '200px'}
@@ -527,8 +527,8 @@ describe 'Transit ->', ->
           onComplete:->
             s = byte.el.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-            isTr  = tr is 'scale(1, 1) translate(200px, 0) rotate(0deg)'
-            isTr2 = tr is 'scale(1, 1) translate(200px, 0px) rotate(0deg)'
+            isTr  = tr is 'translate(200px, 0) rotate(0deg) scale(1, 1)'
+            isTr2 = tr is 'translate(200px, 0px) rotate(0deg) scale(1, 1)'
             expect(isTr or isTr2).toBe true
             dfr()
         byte.play()
@@ -539,8 +539,8 @@ describe 'Transit ->', ->
           onComplete:->
             s = byte.el.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-            isTr = tr is 'scale(1, 1) translate(50%, 0) rotate(0deg)'
-            isTr2 = tr is 'scale(1, 1) translate(50%, 0px) rotate(0deg)'
+            isTr = tr is 'translate(50%, 0) rotate(0deg) scale(1, 1)'
+            isTr2 = tr is 'translate(50%, 0px) rotate(0deg) scale(1, 1)'
             expect(isTr or isTr2).toBe true
             dfr()
         byte.play()
@@ -552,7 +552,7 @@ describe 'Transit ->', ->
           onComplete:->
             s = byte.el.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-            expect(tr).toBe 'scale(1, 1) translate(50px, 50%) rotate(0deg)'
+            expect(tr).toBe 'translate(50px, 50%) rotate(0deg) scale(1, 1)'
             dfr()
         byte.play()
   
@@ -667,8 +667,8 @@ describe 'Transit ->', ->
       expect(parseInt(byte.el.style.left, 10)).toBe 0
       s = byte.el.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-      isTr  = tr is 'scale(1, 1) translate(0, 0) rotate(0deg)'
-      isTr2 = tr is 'scale(1, 1) translate(0px, 0px) rotate(0deg)'
+      isTr  = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
+      isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
       expect(isTr or isTr2).toBe true
     it 'should set only opacity if foreign context', ->
       byte = new Byte radius: 25, top: 10, ctx: svg
@@ -704,8 +704,8 @@ describe 'Transit ->', ->
       byte._draw()
       style = byte.el.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
-      isTr = tr is 'scale(1, 1) translate(0, 0) rotate(26deg)'
-      isTr2 = tr is 'scale(1, 1) translate(0px, 0px) rotate(26deg)'
+      isTr = tr is 'translate(0, 0) rotate(26deg) scale(1, 1)'
+      isTr2 = tr is 'translate(0px, 0px) rotate(26deg) scale(1, 1)'
       expect(isTr or isTr2).toBe true
       # expect(byte.el.style["#{h.prefix.css}transform"]).toBe resultStr
     it 'should not set transform if angle changed', ->
@@ -754,8 +754,8 @@ describe 'Transit ->', ->
       expect(byte._fillTransform).toHaveBeenCalled()
       style = byte.el.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
-      isTr = tr is 'scale(1, 1) translate(4px, 0) rotate(0deg)'
-      isTr2 = tr is 'scale(1, 1) translate(4px, 0px) rotate(0deg)'
+      isTr = tr is 'translate(4px, 0) rotate(0deg) scale(1, 1)'
+      isTr2 = tr is 'translate(4px, 0px) rotate(0deg) scale(1, 1)'
       expect(isTr or isTr2).toBe true
 
     it 'should set transform if x changed #2', ->
@@ -766,8 +766,8 @@ describe 'Transit ->', ->
       expect(byte._fillTransform).toHaveBeenCalled()
       style = byte.el.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
-      isTr = tr is 'scale(1, 1) translate(0, 4px) rotate(0deg)'
-      isTr2 = tr is 'scale(1, 1) translate(0px, 4px) rotate(0deg)'
+      isTr = tr is 'translate(0, 4px) rotate(0deg) scale(1, 1)'
+      isTr2 = tr is 'translate(0px, 4px) rotate(0deg) scale(1, 1)'
       expect(isTr or isTr2).toBe true
 
     it 'should set transform if x changed #3', ->
@@ -780,8 +780,8 @@ describe 'Transit ->', ->
       # expect(byte.el.style['transform']).toBe resultStr
       style = byte.el.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
-      isTr = tr is 'scale(3, 3) translate(0, 0) rotate(0deg)'
-      isTr2 = tr is 'scale(3, 3) translate(0px, 0px) rotate(0deg)'
+      isTr = tr is 'translate(0, 0) rotate(0deg) scale(3, 3)'
+      isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(3, 3)'
       expect(isTr or isTr2).toBe true
 
     it 'should set `transform-origin` if `origin`', ->
@@ -1109,7 +1109,7 @@ describe 'Transit ->', ->
     it 'return tranform string of the el', ->
       tr = new Transit x: 100, y: 100, angle: 50, scaleX: 2, scaleY: 3
       expect(tr._fillTransform())
-        .toBe 'scale(2, 3) translate(100px, 100px) rotate(50deg)'  
+        .toBe 'translate(100px, 100px) rotate(50deg) scale(2, 3)'
 
   describe '_fillOrigin method ->', ->
     it 'return tranform-origin string of the el', ->

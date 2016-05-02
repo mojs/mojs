@@ -668,7 +668,7 @@
       });
     });
     describe('opacity set ->', function() {
-      it('should set a position with respect to units', function() {
+      it('should set opacity with respect to units', function() {
         var byte;
         byte = new Byte({
           opacity: .5
@@ -786,7 +786,7 @@
           });
           s = byte.el.style;
           tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-          return expect(tr).toBe('scale(1, 1) translate(100px, 50px) rotate(0deg)');
+          return expect(tr).toBe('translate(100px, 50px) rotate(0deg) scale(1, 1)');
         });
         it('should animate shift position', function(dfr) {
           var byte;
@@ -799,8 +799,8 @@
               var isTr, isTr2, s, tr;
               s = byte.el.style;
               tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-              isTr = tr === 'scale(1, 1) translate(200px, 0) rotate(0deg)';
-              isTr2 = tr === 'scale(1, 1) translate(200px, 0px) rotate(0deg)';
+              isTr = tr === 'translate(200px, 0) rotate(0deg) scale(1, 1)';
+              isTr2 = tr === 'translate(200px, 0px) rotate(0deg) scale(1, 1)';
               expect(isTr || isTr2).toBe(true);
               return dfr();
             }
@@ -818,8 +818,8 @@
               var isTr, isTr2, s, tr;
               s = byte.el.style;
               tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-              isTr = tr === 'scale(1, 1) translate(50%, 0) rotate(0deg)';
-              isTr2 = tr === 'scale(1, 1) translate(50%, 0px) rotate(0deg)';
+              isTr = tr === 'translate(50%, 0) rotate(0deg) scale(1, 1)';
+              isTr2 = tr === 'translate(50%, 0px) rotate(0deg) scale(1, 1)';
               expect(isTr || isTr2).toBe(true);
               return dfr();
             }
@@ -840,7 +840,7 @@
               var s, tr;
               s = byte.el.style;
               tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-              expect(tr).toBe('scale(1, 1) translate(50px, 50%) rotate(0deg)');
+              expect(tr).toBe('translate(50px, 50%) rotate(0deg) scale(1, 1)');
               return dfr();
             }
           });
@@ -1008,8 +1008,8 @@
         expect(parseInt(byte.el.style.left, 10)).toBe(0);
         s = byte.el.style;
         tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-        isTr = tr === 'scale(1, 1) translate(0, 0) rotate(0deg)';
-        isTr2 = tr === 'scale(1, 1) translate(0px, 0px) rotate(0deg)';
+        isTr = tr === 'translate(0, 0) rotate(0deg) scale(1, 1)';
+        isTr2 = tr === 'translate(0px, 0px) rotate(0deg) scale(1, 1)';
         return expect(isTr || isTr2).toBe(true);
       });
       it('should set only opacity if foreign context', function() {
@@ -1068,8 +1068,8 @@
         byte._draw();
         style = byte.el.style;
         tr = style['transform'] || style["" + mojs.h.prefix.css + "transform"];
-        isTr = tr === 'scale(1, 1) translate(0, 0) rotate(26deg)';
-        isTr2 = tr === 'scale(1, 1) translate(0px, 0px) rotate(26deg)';
+        isTr = tr === 'translate(0, 0) rotate(26deg) scale(1, 1)';
+        isTr2 = tr === 'translate(0px, 0px) rotate(26deg) scale(1, 1)';
         return expect(isTr || isTr2).toBe(true);
       });
       it('should not set transform if angle changed', function() {
@@ -1151,8 +1151,8 @@
         expect(byte._fillTransform).toHaveBeenCalled();
         style = byte.el.style;
         tr = style['transform'] || style["" + mojs.h.prefix.css + "transform"];
-        isTr = tr === 'scale(1, 1) translate(4px, 0) rotate(0deg)';
-        isTr2 = tr === 'scale(1, 1) translate(4px, 0px) rotate(0deg)';
+        isTr = tr === 'translate(4px, 0) rotate(0deg) scale(1, 1)';
+        isTr2 = tr === 'translate(4px, 0px) rotate(0deg) scale(1, 1)';
         return expect(isTr || isTr2).toBe(true);
       });
       it('should set transform if x changed #2', function() {
@@ -1170,8 +1170,8 @@
         expect(byte._fillTransform).toHaveBeenCalled();
         style = byte.el.style;
         tr = style['transform'] || style["" + mojs.h.prefix.css + "transform"];
-        isTr = tr === 'scale(1, 1) translate(0, 4px) rotate(0deg)';
-        isTr2 = tr === 'scale(1, 1) translate(0px, 4px) rotate(0deg)';
+        isTr = tr === 'translate(0, 4px) rotate(0deg) scale(1, 1)';
+        isTr2 = tr === 'translate(0px, 4px) rotate(0deg) scale(1, 1)';
         return expect(isTr || isTr2).toBe(true);
       });
       it('should set transform if x changed #3', function() {
@@ -1189,8 +1189,8 @@
         expect(byte._fillTransform).toHaveBeenCalled();
         style = byte.el.style;
         tr = style['transform'] || style["" + mojs.h.prefix.css + "transform"];
-        isTr = tr === 'scale(3, 3) translate(0, 0) rotate(0deg)';
-        isTr2 = tr === 'scale(3, 3) translate(0px, 0px) rotate(0deg)';
+        isTr = tr === 'translate(0, 0) rotate(0deg) scale(3, 3)';
+        isTr2 = tr === 'translate(0px, 0px) rotate(0deg) scale(3, 3)';
         return expect(isTr || isTr2).toBe(true);
       });
       it('should set `transform-origin` if `origin`', function() {
@@ -1791,7 +1791,7 @@
           scaleX: 2,
           scaleY: 3
         });
-        return expect(tr._fillTransform()).toBe('scale(2, 3) translate(100px, 100px) rotate(50deg)');
+        return expect(tr._fillTransform()).toBe('translate(100px, 100px) rotate(50deg) scale(2, 3)');
       });
     });
     describe('_fillOrigin method ->', function() {
