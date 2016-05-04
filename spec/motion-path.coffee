@@ -1,5 +1,5 @@
 MotionPath = window.mojs.MotionPath
-Transit    = window.mojs.Transit
+Shape      = window.mojs.Shape
 h          = window.mojs.helpers
 
 mp = new MotionPath path: 'M0,0 L100,100', el: document.createElement 'div'
@@ -1081,7 +1081,7 @@ describe 'MotionPath ->', ->
       expect(mp.el instanceof HTMLElement).toBe(true)
 
     it 'should return the module when module was passed', ->
-      tr = new Transit
+      tr = new Shape
       mp = new MotionPath
         path: coords
         el:   tr
@@ -1247,14 +1247,14 @@ describe 'MotionPath ->', ->
     it 'should be set if module was passed', ->
       mp = new MotionPath
         path:       coords
-        el:         (new Transit isRunLess: true)
+        el:         (new Shape isRunLess: true)
         isRunLess: true
         isPresetPosition: false
       expect(mp.isModule).toBe true
 
   describe 'setModulePosition method ->', ->
     it 'should use setProp of the module to set position', ->
-      module = (new Transit isRunLess: true)
+      module = (new Shape isRunLess: true)
       mp = new MotionPath
         path:       coords
         el:         module
@@ -1267,7 +1267,7 @@ describe 'MotionPath ->', ->
         shiftX: '100px', shiftY: '200px', angle: 0
 
     it 'should call module.draw method', ->
-      module = (new Transit isRunLess: true)
+      module = (new Shape isRunLess: true)
       mp = new MotionPath
         path:       coords
         el:         module
@@ -1278,7 +1278,7 @@ describe 'MotionPath ->', ->
       expect(mp.el._draw).toHaveBeenCalled()
 
     it 'should be called if isModule', ->
-      module = (new Transit isRunLess: true)
+      module = (new Shape isRunLess: true)
       mp = new MotionPath
         path:       coords
         el:         module

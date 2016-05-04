@@ -18,11 +18,17 @@
     it('should have Burst', function() {
       return expect(mojs.Burst).toBeDefined();
     });
-    it('should have Transit', function() {
-      return expect(mojs.Transit).toBeDefined();
+    it('should have Shape', function() {
+      return expect(mojs.Shape).toBeDefined();
     });
-    it('should have Swirl', function() {
-      return expect(mojs.Swirl).toBeDefined();
+    it('should have Transit alias', function() {
+      return expect(mojs.Transit).toBe(mojs.Shape);
+    });
+    it('should have ShapeSwirl', function() {
+      return expect(mojs.ShapeSwirl).toBeDefined();
+    });
+    it('should have Swirl alias', function() {
+      return expect(mojs.Swirl).toBe(mojs.ShapeSwirl);
     });
     it('should have stagger', function() {
       return expect(mojs.stagger).toBeDefined();

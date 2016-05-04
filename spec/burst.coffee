@@ -1,16 +1,16 @@
-Transit  = mojs.Transit
-Swirl    = mojs.Swirl
-Burst    = mojs.Burst
-Tunable  = mojs.Tunable
-Tunable  = mojs.Tunable
-t        = mojs.tweener
-h        = mojs.h
+Shape       = mojs.Shape
+ShapeSwirl  = mojs.ShapeSwirl
+Burst       = mojs.Burst
+Tunable     = mojs.Tunable
+Tunable     = mojs.Tunable
+t           = mojs.tweener
+h           = mojs.h
 
 describe 'Burst ->', ->
   beforeEach -> t.removeAll()
 
   describe 'extension ->', ->
-    it 'should extend Transit class', ->
+    it 'should extend Shape class', ->
       burst = new Burst
       expect(burst instanceof Tunable).toBe true
 
@@ -43,7 +43,7 @@ describe 'Burst ->', ->
       burst = new Burst
       burst.masterSwirl = undefined
       burst._render()
-      expect(burst.masterSwirl instanceof Swirl).toBe true
+      expect(burst.masterSwirl instanceof ShapeSwirl).toBe true
 
     it 'should pass options to master swirl', ->
       opts = {}
@@ -136,11 +136,11 @@ describe 'Burst ->', ->
       pack = burst._swirls[0]
       expect( h.isArray(pack) ).toBe true
       expect( pack.length ).toBe count
-      expect( pack[0] instanceof Swirl ).toBe true
-      expect( pack[1] instanceof Swirl ).toBe true
-      expect( pack[2] instanceof Swirl ).toBe true
-      expect( pack[3] instanceof Swirl ).toBe true
-      expect( pack[4] instanceof Swirl ).toBe true
+      expect( pack[0] instanceof ShapeSwirl ).toBe true
+      expect( pack[1] instanceof ShapeSwirl ).toBe true
+      expect( pack[2] instanceof ShapeSwirl ).toBe true
+      expect( pack[3] instanceof ShapeSwirl ).toBe true
+      expect( pack[4] instanceof ShapeSwirl ).toBe true
 
     it 'should pass options to swirls', ->
       count = 5; fills = [ 'cyan', 'yellow', 'blue' ]
@@ -503,8 +503,8 @@ describe 'Burst ->', ->
       b._childThen(o, b._masterThen(o))
 
       expect(b._swirls[1].length).toBe 2
-      expect(b._swirls[1][0] instanceof Swirl).toBe true
-      expect(b._swirls[1][1] instanceof Swirl).toBe true
+      expect(b._swirls[1][0] instanceof ShapeSwirl).toBe true
+      expect(b._swirls[1][1] instanceof ShapeSwirl).toBe true
 
     it 'should return the new pack', ->
       b = new Burst count: 2
@@ -571,14 +571,14 @@ describe 'Burst ->', ->
   describe '_calcPackTime method ->', ->
     it 'should calculate time of swirls array', ->
       # should not include shift time
-      sw = new Swirl
+      sw = new ShapeSwirl
       sw.timeline._props.shiftTime = 200000
 
       pack = [
         sw,
-        new Swirl( duration: 2000 ),
-        new Swirl( duration: 1800, delay: 400 ),
-        new Swirl( duration: 4000, speed: 3 )
+        new ShapeSwirl( duration: 2000 ),
+        new ShapeSwirl( duration: 1800, delay: 400 ),
+        new ShapeSwirl( duration: 4000, speed: 3 )
       ]
 
       b = new Burst
@@ -594,7 +594,7 @@ describe 'Burst ->', ->
   describe '_setSwirlDuration method ->', ->
     it 'should set tweens time', ->
       b = new Burst
-      sw = new Swirl
+      sw = new ShapeSwirl
 
       spyOn sw.tween,    '_setProp'
       spyOn sw.timeline, '_recalcTotalDuration'
@@ -607,7 +607,7 @@ describe 'Burst ->', ->
 
     it 'should not throw if Swirl has no timeline', ->
       b = new Burst
-      sw = new Swirl
+      sw = new ShapeSwirl
 
       sw.timeline = sw.tween
 

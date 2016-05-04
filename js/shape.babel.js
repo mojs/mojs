@@ -15,7 +15,7 @@ import Timeline   from './tween/timeline';
 //  --
 //  - tween for every prop
 
-class Transit extends Tunable {
+class Shape extends Tunable {
   /*
     Method to declare module's defaults.
     @private
@@ -138,7 +138,7 @@ class Transit extends Tunable {
           // h.setPrefixedStyle( this.wrapperEl, 'transform', 'translate(0, 0)' );
           this.wrapperEl.style.opacity = '0.99999'
           this.wrapperEl.appendChild( this.el );
-          this.wrapperEl.setAttribute( 'data-name', 'mojs-transit' );
+          this.wrapperEl.setAttribute( 'data-name', 'mojs-shape' );
           this._props.parent.appendChild( this.wrapperEl );
         } else {
           this._props.parent.appendChild(this.el);
@@ -477,4 +477,4 @@ class Transit extends Tunable {
   }
 }
 
-export default Transit;
+export default Shape;

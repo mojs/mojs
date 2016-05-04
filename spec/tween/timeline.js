@@ -1,5 +1,5 @@
 (function() {
-  var Timeline, Transit, Tween, h, tweener;
+  var Shape, Timeline, Tween, h, tweener;
 
   Timeline = window.mojs.Timeline;
 
@@ -7,7 +7,7 @@
 
   tweener = window.mojs.tweener;
 
-  Transit = window.mojs.Transit;
+  Shape = window.mojs.Shape;
 
   h = mojs.h;
 
@@ -38,7 +38,7 @@
       });
       return it('should make generic name if no one was specified with custom nameBase', function() {
         var nameBase, t;
-        nameBase = 'Transit';
+        nameBase = 'Shape';
         tweener["_" + nameBase + "s"] = void 0;
         t = new Timeline({
           nameBase: nameBase
@@ -148,7 +148,7 @@
       it('should treat a module with timeline object as a timeline', function() {
         var t, tr;
         t = new Timeline;
-        tr = new Transit;
+        tr = new Shape;
         t.add(tr);
         expect(t._timelines.length).toBe(1);
         expect(t._timelines[0] instanceof Timeline).toBe(true);
@@ -463,14 +463,14 @@
       it('should add module\'s timeline', function() {
         var t;
         t = new Timeline;
-        t.add(new Transit);
+        t.add(new Shape);
         expect(t._timelines.length).toBe(1);
         return expect(t._timelines[0] instanceof Timeline).toBe(true);
       });
       it('should append module\'s timeline', function() {
         var t;
         t = new Timeline;
-        t.append(new Transit);
+        t.append(new Shape);
         expect(t._timelines.length).toBe(1);
         return expect(t._timelines[0] instanceof Timeline).toBe(true);
       });

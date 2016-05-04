@@ -1,9 +1,9 @@
 (function() {
-  var Burst, Swirl, Transit, Tunable, h, t;
+  var Burst, Shape, ShapeSwirl, Tunable, h, t;
 
-  Transit = mojs.Transit;
+  Shape = mojs.Shape;
 
-  Swirl = mojs.Swirl;
+  ShapeSwirl = mojs.ShapeSwirl;
 
   Burst = mojs.Burst;
 
@@ -20,7 +20,7 @@
       return t.removeAll();
     });
     describe('extension ->', function() {
-      return it('should extend Transit class', function() {
+      return it('should extend Shape class', function() {
         var burst;
         burst = new Burst;
         return expect(burst instanceof Tunable).toBe(true);
@@ -63,7 +63,7 @@
         burst = new Burst;
         burst.masterSwirl = void 0;
         burst._render();
-        return expect(burst.masterSwirl instanceof Swirl).toBe(true);
+        return expect(burst.masterSwirl instanceof ShapeSwirl).toBe(true);
       });
       it('should pass options to master swirl', function() {
         var burst, opts;
@@ -171,11 +171,11 @@
         pack = burst._swirls[0];
         expect(h.isArray(pack)).toBe(true);
         expect(pack.length).toBe(count);
-        expect(pack[0] instanceof Swirl).toBe(true);
-        expect(pack[1] instanceof Swirl).toBe(true);
-        expect(pack[2] instanceof Swirl).toBe(true);
-        expect(pack[3] instanceof Swirl).toBe(true);
-        return expect(pack[4] instanceof Swirl).toBe(true);
+        expect(pack[0] instanceof ShapeSwirl).toBe(true);
+        expect(pack[1] instanceof ShapeSwirl).toBe(true);
+        expect(pack[2] instanceof ShapeSwirl).toBe(true);
+        expect(pack[3] instanceof ShapeSwirl).toBe(true);
+        return expect(pack[4] instanceof ShapeSwirl).toBe(true);
       });
       it('should pass options to swirls', function() {
         var burst, count, fills, pack;
@@ -725,8 +725,8 @@
         };
         b._childThen(o, b._masterThen(o));
         expect(b._swirls[1].length).toBe(2);
-        expect(b._swirls[1][0] instanceof Swirl).toBe(true);
-        return expect(b._swirls[1][1] instanceof Swirl).toBe(true);
+        expect(b._swirls[1][0] instanceof ShapeSwirl).toBe(true);
+        return expect(b._swirls[1][1] instanceof ShapeSwirl).toBe(true);
       });
       return it('should return the new pack', function() {
         var b, o, result;
@@ -815,15 +815,15 @@
     describe('_calcPackTime method ->', function() {
       return it('should calculate time of swirls array', function() {
         var b, i, maxTime, p, pack, sw, swirl, tm, tween, _i, _len;
-        sw = new Swirl;
+        sw = new ShapeSwirl;
         sw.timeline._props.shiftTime = 200000;
         pack = [
-          sw, new Swirl({
+          sw, new ShapeSwirl({
             duration: 2000
-          }), new Swirl({
+          }), new ShapeSwirl({
             duration: 1800,
             delay: 400
-          }), new Swirl({
+          }), new ShapeSwirl({
             duration: 4000,
             speed: 3
           })
@@ -844,7 +844,7 @@
       it('should set tweens time', function() {
         var b, duration, sw;
         b = new Burst;
-        sw = new Swirl;
+        sw = new ShapeSwirl;
         spyOn(sw.tween, '_setProp');
         spyOn(sw.timeline, '_recalcTotalDuration');
         duration = 10;
@@ -855,7 +855,7 @@
       return it('should not throw if Swirl has no timeline', function() {
         var b, set, sw;
         b = new Burst;
-        sw = new Swirl;
+        sw = new ShapeSwirl;
         sw.timeline = sw.tween;
         set = function() {
           return b._setSwirlDuration(sw, 10);

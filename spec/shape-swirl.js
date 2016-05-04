@@ -1,24 +1,24 @@
 (function() {
-  var Module, Swirl, Transit, tr;
+  var Module, Shape, ShapeSwirl, tr;
 
-  Transit = mojs.Transit;
+  Shape = mojs.Shape;
 
-  Swirl = mojs.Swirl;
+  ShapeSwirl = mojs.ShapeSwirl;
 
   Module = mojs.Module;
 
-  tr = new Transit;
+  tr = new Shape;
 
-  describe('Swirl ->', function() {
+  describe('ShapeSwirl ->', function() {
     describe('extension ->', function() {
-      it('should extend Transit class', function() {
+      it('should extend Shape class', function() {
         var swirl;
-        swirl = new Swirl;
-        return expect(swirl instanceof Transit).toBe(true);
+        swirl = new ShapeSwirl;
+        return expect(swirl instanceof Shape).toBe(true);
       });
       return it('should have degreeShift value', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -34,7 +34,7 @@
     describe('_calcPosData method ->', function() {
       it('should calc position radius', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -46,7 +46,7 @@
       });
       it('should calc position angle', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -58,7 +58,7 @@
       });
       it('should calc position angle', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: -10
           },
@@ -70,7 +70,7 @@
       });
       it('should calc position angle', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 0
           },
@@ -82,7 +82,7 @@
       });
       it('should calc position angle', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: -10
           },
@@ -94,7 +94,7 @@
       });
       it('should save startX and StartY values', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -107,7 +107,7 @@
       });
       return it('should set start position anyways', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -120,7 +120,7 @@
     describe('_extendDefaults method ->', function() {
       it('should call super _extendDefaults method', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -133,7 +133,7 @@
       });
       return it('should call _calcPosData method', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -148,7 +148,7 @@
     describe('_tuneNewOptions method ->', function() {
       it('should call super _tuneNewOptions method', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -161,7 +161,7 @@
       });
       it('should not call super _tuneNewOptions method if no o', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -174,7 +174,7 @@
       });
       it('should call _calcPosData method if x changes', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: 200
         });
         spyOn(swirl, '_calcPosData').and.callThrough();
@@ -185,7 +185,7 @@
       });
       it('should call _calcPosData method if y changes', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           y: 200
         });
         spyOn(swirl, '_calcPosData').and.callThrough();
@@ -196,7 +196,7 @@
       });
       return it('should not call _calcPosData method if no x/y changes', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -213,20 +213,20 @@
     describe('_declareDefaults method ->', function() {
       it('should call super _declareDefaults', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
             }, 20
           ]
         });
-        spyOn(Swirl.prototype, '_declareDefaults').and.callThrough();
+        spyOn(ShapeSwirl.prototype, '_declareDefaults').and.callThrough();
         swirl._declareDefaults();
-        return expect(Swirl.prototype._declareDefaults).toHaveBeenCalled();
+        return expect(ShapeSwirl.prototype._declareDefaults).toHaveBeenCalled();
       });
       it('should add swirlSize default', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -237,7 +237,7 @@
       });
       it('should add swirlFrequency default', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -248,7 +248,7 @@
       });
       it('should add isSwirl default', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -259,7 +259,7 @@
       });
       it('should add pathScale default', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -270,7 +270,7 @@
       });
       it('should add degreeShift default', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -281,14 +281,14 @@
       });
       it('should modify radius default', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           fill: 'cyan'
         });
         return expect(swirl._defaults.radius[5]).toBe(0);
       });
       it('should add direction default', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -299,7 +299,7 @@
       });
       return it('should have isWithShape', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           fill: 'cyan'
         });
         return expect(swirl._defaults.isWithShape).toBe(true);
@@ -308,7 +308,7 @@
     describe('_setProgress ->', function() {
       it('should svae progress', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -321,7 +321,7 @@
       });
       it('should call _calcCurrentProps method', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -334,7 +334,7 @@
       });
       it('should call _calcOrigin method', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -347,7 +347,7 @@
       });
       it('should call _draw method', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           radius: [
             {
               20: 50
@@ -360,7 +360,7 @@
       });
       it('should set x/y progress', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -376,7 +376,7 @@
       });
       it('should set x/y progress regarding degreeShift', function() {
         var swirl, x;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -393,7 +393,7 @@
       });
       it('should set x/y progress regarding delta degreeShift', function() {
         var swirl, x;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -412,7 +412,7 @@
       });
       it('should set x/y progress', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -427,7 +427,7 @@
       });
       it('should set negative x/y progress', function() {
         var swirl, x, y;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: '-10'
           },
@@ -444,7 +444,7 @@
       });
       it('should set plain x/y progress if foreign context', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -461,7 +461,7 @@
       });
       it('should respect pathScale value', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -477,7 +477,7 @@
       });
       it('should not add swirl', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -492,7 +492,7 @@
       });
       return it('should add swirl if isSwirl', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           x: {
             0: 10
           },
@@ -509,7 +509,7 @@
     describe('_getSwirl method ->', function() {
       return it('should calc swirl based on swirlFrequency and swirlSize props', function() {
         var freq, sign, swirl, swirl1;
-        swirl = new Swirl;
+        swirl = new ShapeSwirl;
         swirl1 = swirl._getSwirl(.5);
         freq = Math.sin(swirl._props.swirlFrequency * .5);
         sign = swirl._props.direction;
@@ -519,21 +519,21 @@
     return describe('_draw method ->', function() {
       it('should call super', function() {
         var swirl;
-        swirl = new Swirl;
-        spyOn(Transit.prototype, '_draw');
+        swirl = new ShapeSwirl;
+        spyOn(Shape.prototype, '_draw');
         swirl._draw();
-        return expect(Transit.prototype._draw).toHaveBeenCalled();
+        return expect(Shape.prototype._draw).toHaveBeenCalled();
       });
       return it('should not call super if !isWithShape', function() {
         var swirl;
-        swirl = new Swirl({
+        swirl = new ShapeSwirl({
           isWithShape: false
         });
-        spyOn(Transit.prototype, '_draw');
-        spyOn(Transit.prototype, '_drawEl');
+        spyOn(Shape.prototype, '_draw');
+        spyOn(Shape.prototype, '_drawEl');
         swirl._draw();
-        expect(Transit.prototype._draw).not.toHaveBeenCalled();
-        return expect(Transit.prototype._drawEl).toHaveBeenCalled();
+        expect(Shape.prototype._draw).not.toHaveBeenCalled();
+        return expect(Shape.prototype._drawEl).toHaveBeenCalled();
       });
     });
   });

@@ -225,6 +225,20 @@ describe 'Tween ->', ->
       expect(t._isCompleted).toBe true
       expect(t._isRepeatCompleted).toBe true
       expect(returnValue).toBe true
+
+    it 'should treat very close to `endTime`, `time` as `endTime`', ->
+      t = new Tween(duration: 1000, delay: 200)
+      t._setStartTime()
+      t._update t._props.startTime
+      spyOn(t, '_complete').and.callThrough()
+      returnValue = t._update t._props.endTime - 0.000000001
+      expect(t.progress).toBeCloseTo 1, 5
+      expect(t._isCompleted).toBe true
+      expect(t._isRepeatCompleted).toBe true
+      expect(returnValue).toBe true
+
+      # expect(t._complete).toHaveBeenCalledWidth( t._props.endTime );
+
     it 'should return true on the start', ->
       t = new Tween(duration: 1000, delay: 200, onUpdate:(p)-> )
       t._setStartTime()
@@ -269,11 +283,15 @@ describe 'Tween ->', ->
       expect(t._isInActiveArea).toBe(false)
       expect(t._props.onUpdate).toHaveBeenCalledWith(1, 1, true, false)
     it 'should set Tween to the end if Tween ended', ->
+      
       t = new Tween(duration: 1000, delay: 500)
       t._setStartTime()
+
       t._update t._props.startTime + 200
       t._update t._props.startTime + 1200
+        
       expect(t.progress).not.toBe 1
+
     it 'should save progress time to _progressTime', ->
       delay = 500; duration = 1000
       t = new Tween(duration: duration, delay: delay)

@@ -1,9 +1,9 @@
 (function() {
-  var MotionPath, Transit, coords, h, isMotionReset, mp, parseQadraticCurve;
+  var MotionPath, Shape, coords, h, isMotionReset, mp, parseQadraticCurve;
 
   MotionPath = window.mojs.MotionPath;
 
-  Transit = window.mojs.Transit;
+  Shape = window.mojs.Shape;
 
   h = window.mojs.helpers;
 
@@ -1515,7 +1515,7 @@
       });
       it('should return the module when module was passed', function() {
         var tr;
-        tr = new Transit;
+        tr = new Shape;
         mp = new MotionPath({
           path: coords,
           el: tr,
@@ -1718,7 +1718,7 @@
       return it('should be set if module was passed', function() {
         mp = new MotionPath({
           path: coords,
-          el: new Transit({
+          el: new Shape({
             isRunLess: true
           }),
           isRunLess: true,
@@ -1730,7 +1730,7 @@
     describe('setModulePosition method ->', function() {
       it('should use setProp of the module to set position', function() {
         var module;
-        module = new Transit({
+        module = new Shape({
           isRunLess: true
         });
         mp = new MotionPath({
@@ -1750,7 +1750,7 @@
       });
       it('should call module.draw method', function() {
         var module;
-        module = new Transit({
+        module = new Shape({
           isRunLess: true
         });
         mp = new MotionPath({
@@ -1765,7 +1765,7 @@
       });
       it('should be called if isModule', function() {
         var module;
-        module = new Transit({
+        module = new Shape({
           isRunLess: true
         });
         mp = new MotionPath({

@@ -1,5 +1,5 @@
-Byte      = mojs.Transit
-Transit   = mojs.Transit
+Byte      = mojs.Shape
+Shape     = mojs.Shape
 Bit       = mojs.shapesMap.getShape('bit')
 Thenable  = mojs.Thenable
 Tweenable = mojs.Tweenable
@@ -12,7 +12,7 @@ svg  = document.createElementNS?(ns, 'svg')
 console.warn  = ->
 console.error = ->
 
-describe 'Transit ->', ->
+describe 'Shape ->', ->
   describe '_vars method', ->
     it 'should have own _vars function ->', ->
       byte = new Byte
@@ -69,7 +69,7 @@ describe 'Transit ->', ->
 
   describe '_applyCallbackOverrides ->', ->
     it 'should create callbackOverrides object on passed object', ->
-      tr = new Transit
+      tr = new Shape
       obj = {}
       tr._applyCallbackOverrides(obj)
       expect(typeof obj.callbackOverrides).toBe 'object'
@@ -78,12 +78,12 @@ describe 'Transit ->', ->
 
     describe 'onUpdate callback override ->', ->
       it 'should override this._o.onUpdate', ->
-        tr = new Transit
+        tr = new Shape
         obj = {}
         tr._applyCallbackOverrides(obj)
         expect(typeof obj.callbackOverrides.onUpdate).toBe 'function'
       it 'should call _setProgress ', ->
-        tr = new Transit
+        tr = new Shape
         obj = {}
         tr._applyCallbackOverrides(obj)
         spyOn tr, '_setProgress'
@@ -98,7 +98,7 @@ describe 'Transit ->', ->
             isRightScope = @ is tr
             args = arguments
           }
-        tr = new Transit options
+        tr = new Shape options
         expect(typeof tr._o.onUpdate).toBe 'function'
 
         tr.timeline.setProgress 0
@@ -113,7 +113,7 @@ describe 'Transit ->', ->
       it 'should call _setProgress method', ->
         options = { easing: 'Linear.None', onUpdate:-> }
         obj = {}
-        tr = new Transit options
+        tr = new Shape options
 
         tr.timeline.setProgress 0
         spyOn tr, '_setProgress'
@@ -123,47 +123,47 @@ describe 'Transit ->', ->
 
     describe 'onStart callback override ->', ->
       it 'should override this._o.onStart', ->
-        tr = new Transit
+        tr = new Shape
         obj = {}
         tr._applyCallbackOverrides( obj )
         expect(typeof obj.callbackOverrides.onStart).toBe 'function'
       it 'should call _show if isForward', ->
-        tr = new Transit
+        tr = new Shape
         obj = {}
         tr._applyCallbackOverrides( obj )
         spyOn tr, '_show'
         obj.callbackOverrides.onStart true
         expect(tr._show).toHaveBeenCalled()
       it 'should call _hidePrevChainModule if isForward', ->
-        tr = new Transit
+        tr = new Shape
         obj = {}
         tr._applyCallbackOverrides( obj )
         spyOn tr, '_hidePrevChainModule'
         obj.callbackOverrides.onStart true
         expect(tr._hidePrevChainModule).toHaveBeenCalled()
       it 'should call _hideModuleChain if isForward', ->
-        tr = new Transit
+        tr = new Shape
         obj = {}
         tr._applyCallbackOverrides( obj )
         spyOn tr, '_hideModuleChain'
         obj.callbackOverrides.onStart true
         expect(tr._hideModuleChain).toHaveBeenCalled()
       it 'should call _hide if not isForward', ->
-        tr = new Transit
+        tr = new Shape
         obj = {}
         tr._applyCallbackOverrides( obj )
         spyOn tr, '_hide'
         obj.callbackOverrides.onStart false
         expect(tr._hide).toHaveBeenCalled()
       it 'should call _showPrevChainModule if not isForward', ->
-        tr = new Transit
+        tr = new Shape
         obj = {}
         tr._applyCallbackOverrides( obj )
         spyOn tr, '_showPrevChainModule'
         obj.callbackOverrides.onStart false
         expect(tr._showPrevChainModule).toHaveBeenCalled()
       it 'should not call _hide if not isForward and !isShowStart', ->
-        tr = new Transit isShowStart: true
+        tr = new Shape isShowStart: true
         obj = {}
         tr._applyCallbackOverrides( obj )
         spyOn tr, '_hide'
@@ -171,7 +171,7 @@ describe 'Transit ->', ->
         expect(tr._hide).not.toHaveBeenCalled()
 
       it 'should not call _hideModuleChain if !isForward', ->
-        tr = new Transit
+        tr = new Shape
         obj = {}
         tr._applyCallbackOverrides( obj )
         spyOn tr, '_hideModuleChain'
@@ -180,26 +180,26 @@ describe 'Transit ->', ->
 
     describe 'onComplete callback override ->', ->
       it 'should override this._o.onComplete', ->
-        tr = new Transit
+        tr = new Shape
         obj = {}
         tr._applyCallbackOverrides( obj )
         expect(typeof obj.callbackOverrides.onComplete).toBe 'function'
       it 'should call _show if !isForward', ->
-        tr = new Transit
+        tr = new Shape
         obj = {}
         tr._applyCallbackOverrides( obj )
         spyOn tr, '_show'
         obj.callbackOverrides.onComplete false
         expect(tr._show).toHaveBeenCalled()
       it 'should call _hide if isForward', ->
-        tr = new Transit isShowEnd: false
+        tr = new Shape isShowEnd: false
         obj = {}
         tr._applyCallbackOverrides( obj )
         spyOn tr, '_hide'
         obj.callbackOverrides.onComplete true
         expect(tr._hide).toHaveBeenCalled()
       it 'should not call _hide if isForward but isShowEnd', ->
-        tr = new Transit isShowEnd: true
+        tr = new Shape isShowEnd: true
         obj = {}
         tr._applyCallbackOverrides( obj )
         spyOn tr, '_hide'
@@ -208,7 +208,7 @@ describe 'Transit ->', ->
 
   describe '_transformTweenOptions method', ->
     it 'should call _applyCallbackOverrides with _o', ->
-      tr = new Transit
+      tr = new Shape
       spyOn tr, '_applyCallbackOverrides'
       tr._transformTweenOptions()
       expect(tr._applyCallbackOverrides).toHaveBeenCalledWith tr._o
@@ -227,10 +227,10 @@ describe 'Transit ->', ->
       expect(byte._o.option).toBe 1
   describe 'index option ->', ->
     it 'should receive index option', ->
-      byte = new Transit index: 5
+      byte = new Shape index: 5
       expect(byte._index).toBe 5
     it 'should fallback to 0', ->
-      byte = new Transit
+      byte = new Shape
       expect(byte._index).toBe 0
   describe 'options history ->', ->
     it 'should have history array', ->
@@ -337,7 +337,7 @@ describe 'Transit ->', ->
       byte = new Byte radius: 25
       expect(byte.wrapperEl.tagName.toLowerCase()).toBe('div')
       expect(byte.wrapperEl.style[ 'opacity' ]).toBe('0.99999')
-      expect(byte.wrapperEl.getAttribute('data-name')).toBe('mojs-transit')
+      expect(byte.wrapperEl.getAttribute('data-name')).toBe('mojs-shape')
       # transform = byte.wrapperEl.style[ 'transform' ]
       # prefixedTransform = byte.wrapperEl.style[ "#{h.prefix.css}transform" ]
       # expect(transform or prefixedTransform).toBe('translate(0, 0)')
@@ -904,7 +904,7 @@ describe 'Transit ->', ->
       expect(byte._origin.x).toBe parseFloat byte._props.x
       expect(byte._origin.y).toBe parseFloat byte._props.y
   describe '_setProgress method ->', ->
-    it 'should set transition progress', ->
+    it 'should set Shapeion progress', ->
       byte = new Byte radius:  {'25.50': -75.50}
       byte._setProgress .5
       expect(byte._progress).toBe .5
@@ -922,7 +922,7 @@ describe 'Transit ->', ->
       byte._setProgress .5
       expect(byte._origin.x).toBeDefined()
       expect(byte._origin.y).toBeDefined()
-    it 'should have origin should be the center of the transit', ->
+    it 'should have origin should be the center of the Shape', ->
       byte = new Byte radius:  {'25': 75}
       byte._setProgress .5
       expect(byte._origin.x).toBe byte._props.center
@@ -1028,7 +1028,7 @@ describe 'Transit ->', ->
       bit  = document.createElementNS?(ns, 'rect')
       svg.appendChild bit
 
-      byte = new Transit bit: bit
+      byte = new Shape bit: bit
       expect(byte.bit.el).toBe bit
 
     it 'should set isForeignBit flag', ->
@@ -1039,28 +1039,28 @@ describe 'Transit ->', ->
       expect(byte.isForeignBit).toBe true
   describe '_increaseSizeWithEasing method ->', ->
     it 'should increase size based on easing - elastic.out', ->
-      tr = new Transit easing: 'elastic.out'
+      tr = new Shape easing: 'elastic.out'
 
       tr._props.size = 1
       tr._increaseSizeWithEasing()
       expect(tr._props.size).toBe 1.25
 
     it 'should increase size based on easing - elastic.inout', ->
-      tr = new Transit easing: 'elastic.inout'
+      tr = new Shape easing: 'elastic.inout'
 
       tr._props.size = 1
       tr._increaseSizeWithEasing()
       expect(tr._props.size).toBe 1.25
 
     it 'should increase size based on easing - back.out', ->
-      tr = new Transit easing: 'back.out'
+      tr = new Shape easing: 'back.out'
 
       tr._props.size = 1
       tr._increaseSizeWithEasing()
       expect(tr._props.size).toBe 1.1
 
     it 'should increase size based on easing - back.inout', ->
-      tr = new Transit easing: 'back.inout'
+      tr = new Shape easing: 'back.inout'
 
       tr._props.size = 1
       tr._increaseSizeWithEasing()
@@ -1068,7 +1068,7 @@ describe 'Transit ->', ->
 
   describe '_increaseSizeWithBitRatio method ->', ->
     it 'should increase size based on bit ratio', ->
-      tr = new Transit shape: 'equal'
+      tr = new Shape shape: 'equal'
 
       tr._props.size = 1
       tr._increaseSizeWithBitRatio()
@@ -1076,7 +1076,7 @@ describe 'Transit ->', ->
 
     it 'should increase size based 2 gap sizes', ->
       gap = 20
-      tr = new Transit shape: 'equal', sizeGap: gap
+      tr = new Shape shape: 'equal', sizeGap: gap
 
       tr._props.size = 1
       tr._increaseSizeWithBitRatio()
@@ -1085,7 +1085,7 @@ describe 'Transit ->', ->
   describe 'callbacksContext option ->', ->
     it 'should pass the options to the tween', ->
       obj = {}; isRightContext = null
-      tr = new Transit
+      tr = new Shape
         callbacksContext: obj
         onUpdate:-> isRightContext = @ is obj
       
@@ -1096,7 +1096,7 @@ describe 'Transit ->', ->
 
     it 'should pass the options to the timeline', ->
       obj = {}; isRightContext = null
-      tr = new Transit
+      tr = new Shape
         callbacksContext: obj
         timeline: { onUpdate:-> isRightContext = @ is obj }
       
@@ -1107,17 +1107,17 @@ describe 'Transit ->', ->
   
   describe '_fillTransform method ->', ->
     it 'return tranform string of the el', ->
-      tr = new Transit x: 100, y: 100, angle: 50, scaleX: 2, scaleY: 3
+      tr = new Shape x: 100, y: 100, angle: 50, scaleX: 2, scaleY: 3
       expect(tr._fillTransform())
         .toBe 'translate(100px, 100px) rotate(50deg) scale(2, 3)'
 
   describe '_fillOrigin method ->', ->
     it 'return tranform-origin string of the el', ->
-      tr = new Transit x: 100, y: 100, origin: '50% 30%'
+      tr = new Shape x: 100, y: 100, origin: '50% 30%'
       expect(tr._fillOrigin()).toBe '50% 30% '
 
     it 'return tranform-origin string of the el with delta', ->
-      tr = new Transit
+      tr = new Shape
         x: 100, y: 100,
         easing: 'liner.none',
         origin: { '0% 0%' : '50% 200%' }
@@ -1128,34 +1128,34 @@ describe 'Transit ->', ->
   describe '_hidePrevChainModule method ->', ->
     it 'should hide prevChainModule', ->
       module = { _hide: -> }
-      tr = new Transit prevChainModule: module
+      tr = new Shape prevChainModule: module
 
       spyOn tr._props.prevChainModule, '_hide'
       tr._hidePrevChainModule()
       expect(tr._props.prevChainModule._hide).toHaveBeenCalled()
 
     it 'should not throw', ->
-      tr = new Transit
+      tr = new Shape
       fun = -> tr._hidePrevChainModule()
       expect(fun).not.toThrow()
 
   describe '_showPrevChainModule method ->', ->
     it 'should hide prevChainModule', ->
       module = { _show: -> }
-      tr = new Transit prevChainModule: module
+      tr = new Shape prevChainModule: module
 
       spyOn tr._props.prevChainModule, '_show'
       tr._showPrevChainModule()
       expect(tr._props.prevChainModule._show).toHaveBeenCalled()
 
     it 'should not throw', ->
-      tr = new Transit
+      tr = new Shape
       fun = -> tr._showPrevChainModule()
       expect(fun).not.toThrow()
 
   describe '_hideModuleChain method ->', ->
     it 'should hide all modules in chain', ->
-      tr = new Transit()
+      tr = new Shape()
         .then( fill: 'orange' )
         .then( fill: 'cyan' )
         .then( fill: 'yellow' )

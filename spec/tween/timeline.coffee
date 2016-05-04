@@ -1,7 +1,7 @@
 Timeline = window.mojs.Timeline
 Tween    = window.mojs.Tween
 tweener  = window.mojs.tweener
-Transit  = window.mojs.Transit
+Shape    = window.mojs.Shape
 h        = mojs.h
 
 describe 'Timeline ->', ->
@@ -23,7 +23,7 @@ describe 'Timeline ->', ->
       t = new Timeline
       expect(t._props.name).toBe 'Timeline 2'
     it 'should make generic name if no one was specified with custom nameBase', ->
-      nameBase = 'Transit'
+      nameBase = 'Shape'
       tweener["_#{nameBase}s"] = undefined;
       t = new Timeline nameBase: nameBase 
       expect(t._props.name).toBe "#{nameBase} 1"
@@ -101,7 +101,7 @@ describe 'Timeline ->', ->
       expect(obj).toBe t
     it 'should treat a module with timeline object as a timeline',->
       t = new Timeline
-      tr = new Transit
+      tr = new Shape
       t.add tr
       expect(t._timelines.length).toBe 1
       expect(t._timelines[0] instanceof Timeline).toBe true
@@ -317,12 +317,12 @@ describe 'Timeline ->', ->
       expect(t._timelines[0] instanceof Tween).toBe true
     it 'should add module\'s timeline',->
       t = new Timeline
-      t.add new Transit
+      t.add new Shape
       expect(t._timelines.length).toBe 1
       expect(t._timelines[0] instanceof Timeline).toBe true
     it 'should append module\'s timeline',->
       t = new Timeline
-      t.append new Transit
+      t.append new Shape
       expect(t._timelines.length).toBe 1
       expect(t._timelines[0] instanceof Timeline).toBe true
     it 'should call _calcDimentions method',->

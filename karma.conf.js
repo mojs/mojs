@@ -91,10 +91,10 @@ module.exports = function(config) {
       // 'build/h.js',
       // 'spec/h.js',
       
-      // // 'build/transit.js',
-      // // 'spec/transit.js',
-      // // 'build/swirl.js',
-      // // 'spec/swirl.js',
+      // 'build/shape.js',
+      // 'spec/shape.js',
+      // 'build/shape-swirl.js',
+      // 'spec/shape-swirl.js',
       // 'build/burst.js',
       // 'spec/burst.js',
 
@@ -115,17 +115,17 @@ module.exports = function(config) {
       // 'build/easing/easing.js',
       // 'spec/easing/easing.js',
 
-      // 'build/tween/timeline.js',
-      // 'spec/tween/timeline.js',
-      // 'build/tween/tween.js',
-      // 'spec/tween/tween.js',
-      // 'build/tween/tweener.js',
-      // 'spec/tween/tweener.js',
+      // // 'build/tween/timeline.js',
+      // // 'spec/tween/timeline.js',
+      // // 'build/tween/tween.js',
+      // // 'spec/tween/tween.js',
+      // // 'build/tween/tweener.js',
+      // // 'spec/tween/tweener.js',
 
       // 'build/motion-path.js',
       // 'spec/motion-path.js',
-      // // 'build/bits/*.js',
-      // // 'spec/bits/*.js'
+      // 'build/bits/*.js',
+      // 'spec/bits/*.js'
     ],
 
     // preprocess matching files before serving them to the browser

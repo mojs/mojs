@@ -1,13 +1,13 @@
-import Transit from './transit';
-import Timeline from './tween/timeline';
-import Swirl   from './swirl';
-import Tunable from './tunable';
-import h       from './h';
+// import Shape    from './shape';
+import Timeline   from './tween/timeline';
+import ShapeSwirl from './shape-swirl';
+import Tunable    from './tunable';
+import h          from './h';
 
 class Burst extends Tunable {
   /*
     Method to declare defaults.
-    @override @ Swirl.
+    @override @ ShapeSwirl.
   */
   _declareDefaults () {
     this._defaults = {
@@ -195,7 +195,7 @@ class Burst extends Tunable {
     // cuz the master swirl should not get them
     this._saveTimelineOptions( this._o );
 
-    this.masterSwirl    = new Swirl( this._o );
+    this.masterSwirl    = new ShapeSwirl( this._o );
     this._masterSwirls  = [ this.masterSwirl ];
 
     this._renderSwirls();
@@ -210,7 +210,7 @@ class Burst extends Tunable {
 
     for ( var i = 0; i < p.count; i++ ) {
       var option = this._getChildOption( this._o, i );
-      pack.push( new Swirl( this._addOptionalProps( option, i ) ));
+      pack.push( new ShapeSwirl( this._addOptionalProps( option, i ) ));
     }
     this._swirls = { 0: pack };
     this._setSwirlDuration( this.masterSwirl, this._calcPackTime(pack) );
@@ -314,11 +314,11 @@ class Burst extends Tunable {
     options.angle = this._getBitAngle( options.angle, index );
   }
   /* 
-    Method to get transits angle in burst so
+    Method to get shapes angle in burst so
     it will follow circular shape.
      
      @param    {Number, Object} Base angle.
-     @param    {Number}         Transit's index in burst.
+     @param    {Number}         Shape's index in burst.
      @returns  {Number}         Angle in burst.
   */ 
   _getBitAngle ( angleProperty = 0, i ) {

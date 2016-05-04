@@ -1,9 +1,9 @@
 (function() {
-  var Bit, Byte, Rect, Thenable, Transit, Tweenable, h, ns, svg;
+  var Bit, Byte, Rect, Shape, Thenable, Tweenable, h, ns, svg;
 
-  Byte = mojs.Transit;
+  Byte = mojs.Shape;
 
-  Transit = mojs.Transit;
+  Shape = mojs.Shape;
 
   Bit = mojs.shapesMap.getShape('bit');
 
@@ -23,7 +23,7 @@
 
   console.error = function() {};
 
-  describe('Transit ->', function() {
+  describe('Shape ->', function() {
     describe('_vars method', function() {
       it('should have own _vars function ->', function() {
         var byte;
@@ -94,7 +94,7 @@
     describe('_applyCallbackOverrides ->', function() {
       it('should create callbackOverrides object on passed object', function() {
         var obj, tr;
-        tr = new Transit;
+        tr = new Shape;
         obj = {};
         tr._applyCallbackOverrides(obj);
         expect(typeof obj.callbackOverrides).toBe('object');
@@ -103,14 +103,14 @@
       describe('onUpdate callback override ->', function() {
         it('should override this._o.onUpdate', function() {
           var obj, tr;
-          tr = new Transit;
+          tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           return expect(typeof obj.callbackOverrides.onUpdate).toBe('function');
         });
         it('should call _setProgress ', function() {
           var obj, progress, tr;
-          tr = new Transit;
+          tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           spyOn(tr, '_setProgress');
@@ -129,7 +129,7 @@
               return args = arguments;
             }
           };
-          tr = new Transit(options);
+          tr = new Shape(options);
           expect(typeof tr._o.onUpdate).toBe('function');
           tr.timeline.setProgress(0);
           tr.timeline.setProgress(.1);
@@ -146,7 +146,7 @@
             onUpdate: function() {}
           };
           obj = {};
-          tr = new Transit(options);
+          tr = new Shape(options);
           tr.timeline.setProgress(0);
           spyOn(tr, '_setProgress');
           progress = .1;
@@ -157,14 +157,14 @@
       describe('onStart callback override ->', function() {
         it('should override this._o.onStart', function() {
           var obj, tr;
-          tr = new Transit;
+          tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           return expect(typeof obj.callbackOverrides.onStart).toBe('function');
         });
         it('should call _show if isForward', function() {
           var obj, tr;
-          tr = new Transit;
+          tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           spyOn(tr, '_show');
@@ -173,7 +173,7 @@
         });
         it('should call _hidePrevChainModule if isForward', function() {
           var obj, tr;
-          tr = new Transit;
+          tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           spyOn(tr, '_hidePrevChainModule');
@@ -182,7 +182,7 @@
         });
         it('should call _hideModuleChain if isForward', function() {
           var obj, tr;
-          tr = new Transit;
+          tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           spyOn(tr, '_hideModuleChain');
@@ -191,7 +191,7 @@
         });
         it('should call _hide if not isForward', function() {
           var obj, tr;
-          tr = new Transit;
+          tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           spyOn(tr, '_hide');
@@ -200,7 +200,7 @@
         });
         it('should call _showPrevChainModule if not isForward', function() {
           var obj, tr;
-          tr = new Transit;
+          tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           spyOn(tr, '_showPrevChainModule');
@@ -209,7 +209,7 @@
         });
         it('should not call _hide if not isForward and !isShowStart', function() {
           var obj, tr;
-          tr = new Transit({
+          tr = new Shape({
             isShowStart: true
           });
           obj = {};
@@ -220,7 +220,7 @@
         });
         return it('should not call _hideModuleChain if !isForward', function() {
           var obj, tr;
-          tr = new Transit;
+          tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           spyOn(tr, '_hideModuleChain');
@@ -231,14 +231,14 @@
       return describe('onComplete callback override ->', function() {
         it('should override this._o.onComplete', function() {
           var obj, tr;
-          tr = new Transit;
+          tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           return expect(typeof obj.callbackOverrides.onComplete).toBe('function');
         });
         it('should call _show if !isForward', function() {
           var obj, tr;
-          tr = new Transit;
+          tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           spyOn(tr, '_show');
@@ -247,7 +247,7 @@
         });
         it('should call _hide if isForward', function() {
           var obj, tr;
-          tr = new Transit({
+          tr = new Shape({
             isShowEnd: false
           });
           obj = {};
@@ -258,7 +258,7 @@
         });
         return it('should not call _hide if isForward but isShowEnd', function() {
           var obj, tr;
-          tr = new Transit({
+          tr = new Shape({
             isShowEnd: true
           });
           obj = {};
@@ -272,7 +272,7 @@
     describe('_transformTweenOptions method', function() {
       return it('should call _applyCallbackOverrides with _o', function() {
         var tr;
-        tr = new Transit;
+        tr = new Shape;
         spyOn(tr, '_applyCallbackOverrides');
         tr._transformTweenOptions();
         return expect(tr._applyCallbackOverrides).toHaveBeenCalledWith(tr._o);
@@ -303,14 +303,14 @@
     describe('index option ->', function() {
       it('should receive index option', function() {
         var byte;
-        byte = new Transit({
+        byte = new Shape({
           index: 5
         });
         return expect(byte._index).toBe(5);
       });
       return it('should fallback to 0', function() {
         var byte;
-        byte = new Transit;
+        byte = new Shape;
         return expect(byte._index).toBe(0);
       });
     });
@@ -514,7 +514,7 @@
         });
         expect(byte.wrapperEl.tagName.toLowerCase()).toBe('div');
         expect(byte.wrapperEl.style['opacity']).toBe('0.99999');
-        return expect(byte.wrapperEl.getAttribute('data-name')).toBe('mojs-transit');
+        return expect(byte.wrapperEl.getAttribute('data-name')).toBe('mojs-shape');
       });
       it('should not create wrapperEl if `prevChainModule` passed', function() {
         var byte;
@@ -1421,7 +1421,7 @@
       });
     });
     describe('_setProgress method ->', function() {
-      it('should set transition progress', function() {
+      it('should set Shapeion progress', function() {
         var byte;
         byte = new Byte({
           radius: {
@@ -1463,7 +1463,7 @@
         expect(byte._origin.x).toBeDefined();
         return expect(byte._origin.y).toBeDefined();
       });
-      it('should have origin should be the center of the transit', function() {
+      it('should have origin should be the center of the Shape', function() {
         var byte;
         byte = new Byte({
           radius: {
@@ -1673,7 +1673,7 @@
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
         bit = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'rect') : void 0;
         svg.appendChild(bit);
-        byte = new Transit({
+        byte = new Shape({
           bit: bit
         });
         return expect(byte.bit.el).toBe(bit);
@@ -1692,7 +1692,7 @@
     describe('_increaseSizeWithEasing method ->', function() {
       it('should increase size based on easing - elastic.out', function() {
         var tr;
-        tr = new Transit({
+        tr = new Shape({
           easing: 'elastic.out'
         });
         tr._props.size = 1;
@@ -1701,7 +1701,7 @@
       });
       it('should increase size based on easing - elastic.inout', function() {
         var tr;
-        tr = new Transit({
+        tr = new Shape({
           easing: 'elastic.inout'
         });
         tr._props.size = 1;
@@ -1710,7 +1710,7 @@
       });
       it('should increase size based on easing - back.out', function() {
         var tr;
-        tr = new Transit({
+        tr = new Shape({
           easing: 'back.out'
         });
         tr._props.size = 1;
@@ -1719,7 +1719,7 @@
       });
       return it('should increase size based on easing - back.inout', function() {
         var tr;
-        tr = new Transit({
+        tr = new Shape({
           easing: 'back.inout'
         });
         tr._props.size = 1;
@@ -1730,7 +1730,7 @@
     describe('_increaseSizeWithBitRatio method ->', function() {
       it('should increase size based on bit ratio', function() {
         var tr;
-        tr = new Transit({
+        tr = new Shape({
           shape: 'equal'
         });
         tr._props.size = 1;
@@ -1740,7 +1740,7 @@
       return it('should increase size based 2 gap sizes', function() {
         var gap, tr;
         gap = 20;
-        tr = new Transit({
+        tr = new Shape({
           shape: 'equal',
           sizeGap: gap
         });
@@ -1754,7 +1754,7 @@
         var isRightContext, obj, tr;
         obj = {};
         isRightContext = null;
-        tr = new Transit({
+        tr = new Shape({
           callbacksContext: obj,
           onUpdate: function() {
             return isRightContext = this === obj;
@@ -1768,7 +1768,7 @@
         var isRightContext, obj, tr;
         obj = {};
         isRightContext = null;
-        tr = new Transit({
+        tr = new Shape({
           callbacksContext: obj,
           timeline: {
             onUpdate: function() {
@@ -1784,7 +1784,7 @@
     describe('_fillTransform method ->', function() {
       return it('return tranform string of the el', function() {
         var tr;
-        tr = new Transit({
+        tr = new Shape({
           x: 100,
           y: 100,
           angle: 50,
@@ -1797,7 +1797,7 @@
     describe('_fillOrigin method ->', function() {
       it('return tranform-origin string of the el', function() {
         var tr;
-        tr = new Transit({
+        tr = new Shape({
           x: 100,
           y: 100,
           origin: '50% 30%'
@@ -1806,7 +1806,7 @@
       });
       return it('return tranform-origin string of the el with delta', function() {
         var tr;
-        tr = new Transit({
+        tr = new Shape({
           x: 100,
           y: 100,
           easing: 'liner.none',
@@ -1825,7 +1825,7 @@
         module = {
           _hide: function() {}
         };
-        tr = new Transit({
+        tr = new Shape({
           prevChainModule: module
         });
         spyOn(tr._props.prevChainModule, '_hide');
@@ -1834,7 +1834,7 @@
       });
       return it('should not throw', function() {
         var fun, tr;
-        tr = new Transit;
+        tr = new Shape;
         fun = function() {
           return tr._hidePrevChainModule();
         };
@@ -1847,7 +1847,7 @@
         module = {
           _show: function() {}
         };
-        tr = new Transit({
+        tr = new Shape({
           prevChainModule: module
         });
         spyOn(tr._props.prevChainModule, '_show');
@@ -1856,7 +1856,7 @@
       });
       return it('should not throw', function() {
         var fun, tr;
-        tr = new Transit;
+        tr = new Shape;
         fun = function() {
           return tr._showPrevChainModule();
         };
@@ -1866,7 +1866,7 @@
     return describe('_hideModuleChain method ->', function() {
       return it('should hide all modules in chain', function() {
         var tr;
-        tr = new Transit().then({
+        tr = new Shape().then({
           fill: 'orange'
         }).then({
           fill: 'cyan'

@@ -1,5 +1,5 @@
 
-import Transit from './transit';
+import Shape from './shape';
 import h from './h';
 
 /*
@@ -8,16 +8,16 @@ import h from './h';
   - tweak then chains
 */
 
-class Swirl extends Transit {
+class ShapeSwirl extends Shape {
   /*
     Method to declare _defaults and other default objects.
     @private
-    @override @ Transit
+    @override @ Shape
   */
   _declareDefaults () {
     super._declareDefaults();
 
-    /* _DEFAULTS ARE - TRANSIT DEFAULTS + THESE: */
+    /* _DEFAULTS ARE - Shape DEFAULTS + THESE: */
     
     /* [boolean] :: If shape should follow sinusoidal path. */
     this._defaults.isSwirl        = true;
@@ -106,7 +106,7 @@ class Swirl extends Transit {
   /*
     Method to calculate the progress of the Swirl.
     @private
-    @overrides @ Transit
+    @overrides @ Shape
     @param {Numer} Progress of the Swirl in range of [0..1]
   */
   _setProgress ( proc ) {
@@ -153,13 +153,13 @@ class Swirl extends Transit {
     Method to draw shape.
     If !isWithShape - draw self el only, but not shape.
     @private
-    @overrides @ Transit.
+    @overrides @ Shape.
   */
   _draw () {
-    // call _draw or just _drawEl @ Transit depending if there is `shape`
+    // call _draw or just _drawEl @ Shape depending if there is `shape`
     var methodName = ( this._props.isWithShape ) ? '_draw' : '_drawEl';
-    Transit.prototype[ methodName ].call(this);
+    Shape.prototype[ methodName ].call(this);
   }
 }
 
-export default Swirl;
+export default ShapeSwirl;

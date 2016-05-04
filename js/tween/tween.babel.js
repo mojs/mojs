@@ -411,6 +411,11 @@ class Tween extends Module {
       time = this._playTime + ( p.speed * ( time - this._playTime ) );
     }
 
+    // due to javascript precision issues, after speed mapping
+    // we can get very close number that was made from progress of 1
+    // and in fact represents `endTime` if so, set the time to `endTime`
+    if ( Math.abs( p.endTime - time ) < 0.00000001 ) { time = p.endTime; }
+
     // if parent is onEdge but not very start nor very end
     if ( onEdge && wasYoyo != null ) {
       var T        = this._getPeriod(time),
@@ -546,7 +551,7 @@ class Tween extends Module {
         yoyoZero    = (isYoyo) ? 1 : 0,
         yoyoOne     = 1-yoyoZero;
 
-    if ( time === this._props.endTime ) {
+    if ( time === props.endTime ) {
       this._wasUknownUpdate = false;
       // if `time` is equal to `endTime`, T represents the next period,
       // so we need to decrement T and calculate "one" value regarding yoyo

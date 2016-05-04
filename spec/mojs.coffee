@@ -11,10 +11,14 @@ describe 'mojs ->', ->
     expect(mojs.delta).toBe mojs.helpers.delta
   it 'should have Burst', ->
     expect(mojs.Burst).toBeDefined()
-  it 'should have Transit', ->
-    expect(mojs.Transit).toBeDefined()
-  it 'should have Swirl', ->
-    expect(mojs.Swirl).toBeDefined()
+  it 'should have Shape', ->
+    expect(mojs.Shape).toBeDefined()
+  it 'should have Transit alias', ->
+    expect(mojs.Transit).toBe mojs.Shape
+  it 'should have ShapeSwirl', ->
+    expect(mojs.ShapeSwirl).toBeDefined()
+  it 'should have Swirl alias', ->
+    expect(mojs.Swirl).toBe mojs.ShapeSwirl
   it 'should have stagger', ->
     expect(mojs.stagger).toBeDefined()
   it 'should have Spriter', ->

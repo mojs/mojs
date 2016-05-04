@@ -1,32 +1,40 @@
-import h          from './h';
-import shapesMap  from './shapes/shapesMap';
-import Burst      from './burst';
-import Transit    from './transit';
-import Swirl      from './swirl';
-import stagger    from './stagger';
-import Spriter    from './spriter';
-import MotionPath from './motion-path';
-import Tween      from './tween/tween';
-import Timeline   from './tween/timeline';
-import Tweener    from './tween/tweener';
-import Tweenable  from './tween/tweenable';
-import Thenable   from './thenable';
-import Tunable    from './tunable';
-import Module     from './module';
-import tweener    from './tween/tweener';
-import easing     from './easing/easing';
+import h            from './h';
+import shapesMap    from './shapes/shapesMap';
+import Burst        from './burst';
+import Shape        from './shape';
+import ShapeSwirl   from './shape-swirl';
+import stagger      from './stagger';
+import Spriter      from './spriter';
+import MotionPath   from './motion-path';
+import Tween        from './tween/tween';
+import Timeline     from './tween/timeline';
+import Tweener      from './tween/tweener';
+import Tweenable    from './tween/tweenable';
+import Thenable     from './thenable';
+import Tunable      from './tunable';
+import Module       from './module';
+import tweener      from './tween/tweener';
+import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.231.0', isDebug: true, helpers: h,
-  Transit, Swirl, Burst, stagger, Spriter, MotionPath,
+  revision:   '0.233.1', isDebug: true, helpers: h,
+  Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
 }
+
+// functions alias
+mojs.h       = mojs.helpers;
+mojs.delta   = mojs.h.delta;
+// module alias
+mojs.Transit = mojs.Shape;
+mojs.Swirl   = mojs.ShapeSwirl;
 
 window.mojs = mojs;
 
 // TODO:
 /*
+  add isForce3d option
   'rand' angle flick with `then`
   not able to `play()` in `onComplete` callback
   ---
@@ -36,8 +44,15 @@ window.mojs = mojs;
   percentage for radius
 */
 
-mojs.h     = mojs.helpers;
-mojs.delta = mojs.h.delta;
+// let tr = new mojs.Transit({
+//   left: '50%', top: '50%',
+//   shape: 'polygon',
+//   radius: 75,
+//   isShowStart: true,
+//   fill: 'none',
+//   stroke: 'white',
+//   strokeWidth: 50
+// })
 
 // let mojsPlayer = new MojsPlayer({
 //   add:       tr

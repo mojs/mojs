@@ -357,6 +357,21 @@
         expect(t._isRepeatCompleted).toBe(true);
         return expect(returnValue).toBe(true);
       });
+      it('should treat very close to `endTime`, `time` as `endTime`', function() {
+        var returnValue, t;
+        t = new Tween({
+          duration: 1000,
+          delay: 200
+        });
+        t._setStartTime();
+        t._update(t._props.startTime);
+        spyOn(t, '_complete').and.callThrough();
+        returnValue = t._update(t._props.endTime - 0.000000001);
+        expect(t.progress).toBeCloseTo(1, 5);
+        expect(t._isCompleted).toBe(true);
+        expect(t._isRepeatCompleted).toBe(true);
+        return expect(returnValue).toBe(true);
+      });
       it('should return true on the start', function() {
         var returnValue, t;
         t = new Tween({
