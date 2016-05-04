@@ -192,7 +192,7 @@ class Tween extends Module {
     this._wasUknownUpdate  = undefined;
     this._prevTime         = undefined;
     this._prevYoyo         = undefined;
-    this._props.startTime  = undefined;
+    // this._props.startTime  = undefined;
     this._props.isReversed = false;
     return this;
   }
@@ -495,7 +495,6 @@ class Tween extends Module {
     } else { (this._isInActiveArea) && this._updateInInactiveArea( time ); }
     
     this._prevTime = time;
-    // console.log(this._prevTime)
     return (time >= p.endTime) || (time <= startPoint);
   }
   /*

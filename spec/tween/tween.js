@@ -5526,14 +5526,6 @@
         t.reset();
         return expect(t._progressTime).toBe(0);
       });
-      it('should set _startTime to undefined', function() {
-        var t;
-        t = new Tween;
-        t.play();
-        t._props.startTime = 20;
-        t.reset();
-        return expect(t._props.startTime).toBe(void 0);
-      });
       it('should set _wasUknownUpdate to undefined', function() {
         var t;
         t = new Tween;

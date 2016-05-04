@@ -39,10 +39,17 @@ class Timeline extends Tween {
   */
   reset () {
     super.reset();
-    for (var i = 0; i < this._timelines.length; i++) {
+    this._resetChildren();
+    return this;
+  }
+  /*
+    Method to call `reset` method on all children.
+    @private
+  */
+  _resetChildren () {
+    for ( var i = 0; i < this._timelines.length; i++ ) {
       this._timelines[i].reset();
     }
-    return this;
   }
 
   // ^ PUBLIC  METHOD(S) ^

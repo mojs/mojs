@@ -868,7 +868,7 @@
         return tm.setProgress(0).play();
       });
     });
-    return describe('reset method ->', function() {
+    describe('reset method ->', function() {
       it('should call super', function() {
         var tm;
         tm = new mojs.Timeline;
@@ -877,6 +877,21 @@
         return expect(Tween.prototype.reset).toHaveBeenCalled();
       });
       it('should call reset on child timelines', function() {
+        var tm;
+        tm = new mojs.Timeline;
+        spyOn(tm, '_resetChildren');
+        tm.reset();
+        return expect(tm._resetChildren).toHaveBeenCalled();
+      });
+      return it('should return this', function() {
+        var result, tm;
+        tm = new mojs.Timeline;
+        result = tm.reset();
+        return expect(result).toBe(tm);
+      });
+    });
+    return describe('_resetChildren method ->', function() {
+      return it('should call reset on child timelines', function() {
         var tm, tw1, tw2;
         tm = new mojs.Timeline;
         tw1 = new mojs.Tween;
@@ -884,15 +899,9 @@
         tm.add(tw1, tw2);
         spyOn(tw1, 'reset');
         spyOn(tw2, 'reset');
-        tm.reset();
+        tm._resetChildren();
         expect(tw1.reset).toHaveBeenCalled();
         return expect(tw2.reset).toHaveBeenCalled();
-      });
-      return it('should return this', function() {
-        var result, tm;
-        tm = new mojs.Timeline;
-        result = tm.reset();
-        return expect(result).toBe(tm);
       });
     });
   });

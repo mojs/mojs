@@ -562,16 +562,25 @@ describe 'Timeline ->', ->
       expect(Tween.prototype.reset).toHaveBeenCalled()
     it 'should call reset on child timelines', ->
       tm = new mojs.Timeline
+      spyOn tm, '_resetChildren'
+      tm.reset()
+      expect( tm._resetChildren ).toHaveBeenCalled()
+    it 'should return this', ->
+      tm = new mojs.Timeline
+      result = tm.reset()
+      expect(result).toBe tm
+
+  describe '_resetChildren method ->' , ->
+    it 'should call reset on child timelines', ->
+      tm = new mojs.Timeline
       tw1 = new mojs.Tween
       tw2 = new mojs.Tween
       tm.add tw1, tw2
       spyOn tw1, 'reset'
       spyOn tw2, 'reset'
-      tm.reset()
+      tm._resetChildren()
       expect(tw1.reset).toHaveBeenCalled()
       expect(tw2.reset).toHaveBeenCalled()
-    it 'should return this', ->
-      tm = new mojs.Timeline
-      result = tm.reset()
-      expect(result).toBe tm
+
+
 
