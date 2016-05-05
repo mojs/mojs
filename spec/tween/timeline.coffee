@@ -581,6 +581,3 @@ describe 'Timeline ->', ->
       tm._resetChildren()
       expect(tw1.reset).toHaveBeenCalled()
       expect(tw2.reset).toHaveBeenCalled()
-
-
-

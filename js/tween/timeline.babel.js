@@ -51,6 +51,19 @@ class Timeline extends Tween {
       this._timelines[i].reset();
     }
   }
+  /*
+    Method to set tween's state to complete.
+    @private
+    @overrides @ Tween
+    @param {Number} Current time.
+    @param {Boolean} Is yoyo period.
+  */
+  // _complete ( time, isYoyo ) {
+  //   // this._updateChildren( 1, time, isYoyo );
+  //   // this._setProgress( 1, time, isYoyo );
+  //   super._complete( time, isYoyo );
+  //   // this._resetChildren();
+  // }
 
   // ^ PUBLIC  METHOD(S) ^
   // v PRIVATE METHOD(S) v
@@ -126,6 +139,10 @@ class Timeline extends Tween {
     // to prevent initial _wasUnknownUpdate nested waterfall
     // if not yoyo option set, pass the previous time
     // otherwise, pass previous or next time regarding yoyo period.
+    this._updateChildren( p, time, isYoyo );
+  }
+
+  _updateChildren ( p, time, isYoyo ) {
     var coef = ( time > this._prevTime ) ? -1 : 1;
     if ( this._props.yoyo && isYoyo ) { coef *= -1; }
     var timeToTimelines     = this._props.startTime + p*(this._props.duration),

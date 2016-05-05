@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.233.2', isDebug: true, helpers: h,
+  revision:   '0.233.4', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -43,6 +43,52 @@ window.mojs = mojs;
   parse rand(stagger(20, 10), 20) values
   percentage for radius
 */
+
+let tw = new mojs.Tween({
+  delay: 1000,
+  isIt: 1,
+  onStart ( isFwd ) {
+    console.log('ON START', isFwd);
+  },
+  onRepeatStart ( isFwd ) {
+    console.log('ON REPEAT START', isFwd);
+  },
+  onUpdate (p) {
+    console.log(`ON UPDATE: ${p}`)
+  },
+  onRepeatComplete (isFwd) {
+    console.log('ON REPEAT COMPLETE', isFwd);
+  },
+  onComplete (isFwd) {
+    console.log('ON COMPLETE', isFwd);
+  }
+});
+
+let tm0 = new mojs.Timeline({
+  delay: 2000,
+  onStart ( isFwd ) {
+    console.log('TM0: ON START', isFwd);
+  },
+  onRepeatStart ( isFwd ) {
+    console.log('TM0: ON REPEAT START', isFwd);
+  },
+  onUpdate (p) {
+    console.log(`TM0: ON UPDATE: ${p}`)
+  },
+  onRepeatComplete (isFwd) {
+    console.log('TM0: ON REPEAT COMPLETE', isFwd);
+  },
+  onComplete (isFwd) {
+    console.log('TM0: ON COMPLETE', isFwd);
+  }
+});
+
+let tm = new mojs.Timeline({ repeat: 3 });
+
+tm
+  .add( tm0.add(tw) )
+  .play();
+
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {

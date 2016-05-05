@@ -643,6 +643,16 @@
         expect(t._updateInActiveArea).toHaveBeenCalled();
         return expect(t._props.onStart).toHaveBeenCalledWith(true, false);
       });
+      it('should update all children timelines if onEdge', function() {
+        var t;
+        t = new Timeline;
+        t.add(new Tween, new Tween);
+        spyOn(t._timelines[0], '_update');
+        spyOn(t._timelines[1], '_update');
+        t._update(20, 10, false, 1);
+        expect(t._timelines[0]._update).toHaveBeenCalledWith(20, 10, false, 1);
+        return expect(t._timelines[1]._update).toHaveBeenCalledWith(20, 10, false, 1);
+      });
       it('should call callbacks if on edge "+1" + was yoyo', function() {
         var duration, t, tm;
         tm = new mojs.Timeline({

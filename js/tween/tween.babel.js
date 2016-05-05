@@ -421,6 +421,14 @@ class Tween extends Module {
       var T        = this._getPeriod(time),
           isYoyo   = !!(p.yoyo && this._props.repeat && (T % 2 === 1));
 
+      // for timeline
+      // notify children about edge jump
+      if ( this._timelines ) {
+        for (var i = 0; i < this._timelines.length; i++) {
+          this._timelines[i]._update( time, timelinePrevTime, wasYoyo, onEdge );
+        }
+      }
+
       // forward edge direction
       if ( onEdge === 1 ) {
         // jumped from yoyo period?
@@ -524,6 +532,7 @@ class Tween extends Module {
       this._isRepeatStart = false;
       this._repeatStart( time, false );
       this._start( time, false );
+      // this._o.isIt && console.log('here');
     }
     this._isInActiveArea = false;
   }
@@ -857,6 +866,7 @@ class Tween extends Module {
     if (p.onComplete != null && typeof p.onComplete === 'function') {
       p.onComplete.call( p.callbacksContext || this, time > this._prevTime, isYoyo );
     }
+
     this._isCompleted = true; this._isStarted = false;
     this._isFirstUpdate = false;
     // reset _prevYoyo for timeline usage

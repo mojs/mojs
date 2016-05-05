@@ -225,7 +225,6 @@ describe 'Tween ->', ->
       expect(t._isCompleted).toBe true
       expect(t._isRepeatCompleted).toBe true
       expect(returnValue).toBe true
-
     it 'should treat very close to `endTime`, `time` as `endTime`', ->
       t = new Tween(duration: 1000, delay: 200)
       t._setStartTime()
@@ -236,9 +235,7 @@ describe 'Tween ->', ->
       expect(t._isCompleted).toBe true
       expect(t._isRepeatCompleted).toBe true
       expect(returnValue).toBe true
-
       # expect(t._complete).toHaveBeenCalledWidth( t._props.endTime );
-
     it 'should return true on the start', ->
       t = new Tween(duration: 1000, delay: 200, onUpdate:(p)-> )
       t._setStartTime()
@@ -410,6 +407,15 @@ describe 'Tween ->', ->
       t._update (t._props.startTime + 1300), time, prevTime
       expect(t._updateInActiveArea).toHaveBeenCalled()
       expect(t._props.onStart).toHaveBeenCalledWith(true, false)
+
+    it 'should update all children timelines if onEdge', ->
+      t = new Timeline
+      t.add new Tween, new Tween
+      spyOn t._timelines[0], '_update'
+      spyOn t._timelines[1], '_update'
+      t._update 20, 10, false, 1
+      expect( t._timelines[0]._update ).toHaveBeenCalledWith 20, 10, false, 1
+      expect( t._timelines[1]._update ).toHaveBeenCalledWith 20, 10, false, 1
 
     it 'should call callbacks if on edge "+1" + was yoyo', ->
       tm = new mojs.Timeline repeat: 2, yoyo: true
