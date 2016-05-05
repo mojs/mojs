@@ -7992,7 +7992,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.233.4', isDebug: true, helpers: _h2.default,
+	  revision: '0.233.5', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8018,49 +8018,6 @@
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
 	*/
-
-	var tw = new mojs.Tween({
-	  delay: 1000,
-	  isIt: 1,
-	  onStart: function onStart(isFwd) {
-	    console.log('ON START', isFwd);
-	  },
-	  onRepeatStart: function onRepeatStart(isFwd) {
-	    console.log('ON REPEAT START', isFwd);
-	  },
-	  onUpdate: function onUpdate(p) {
-	    console.log('ON UPDATE: ' + p);
-	  },
-	  onRepeatComplete: function onRepeatComplete(isFwd) {
-	    console.log('ON REPEAT COMPLETE', isFwd);
-	  },
-	  onComplete: function onComplete(isFwd) {
-	    console.log('ON COMPLETE', isFwd);
-	  }
-	});
-
-	var tm0 = new mojs.Timeline({
-	  delay: 2000,
-	  onStart: function onStart(isFwd) {
-	    console.log('TM0: ON START', isFwd);
-	  },
-	  onRepeatStart: function onRepeatStart(isFwd) {
-	    console.log('TM0: ON REPEAT START', isFwd);
-	  },
-	  onUpdate: function onUpdate(p) {
-	    console.log('TM0: ON UPDATE: ' + p);
-	  },
-	  onRepeatComplete: function onRepeatComplete(isFwd) {
-	    console.log('TM0: ON REPEAT COMPLETE', isFwd);
-	  },
-	  onComplete: function onComplete(isFwd) {
-	    console.log('TM0: ON COMPLETE', isFwd);
-	  }
-	});
-
-	var tm = new mojs.Timeline({ repeat: 3 });
-
-	tm.add(tm0.add(tw)).play();
 
 	// istanbul ignore next
 	if (true) {
