@@ -692,16 +692,17 @@
         var obj, th;
         obj = {};
         th = new Thenable({}).then({});
-        th.wrapperEl = document.createElement('div');
+        th.el = document.createElement('div');
         th._resetMergedFlags(obj);
         expect(obj.isTimelineLess).toBe(true);
         expect(obj.isShowStart).toBe(false);
         expect(obj.prevChainModule).toBe(th._modules[th._modules.length - 1]);
         expect(obj.callbacksContext).toBe(th._props.callbacksContext);
-        return expect(obj.parent).toBe(th.wrapperEl);
+        expect(obj.parent).toBe(th.el);
+        return expect(obj.masterModule).toBe(th);
       });
     });
-    return describe('_getArrayLength method ->', function() {
+    describe('_getArrayLength method ->', function() {
       it('should get length if array', function() {
         var th;
         th = new Thenable;
@@ -713,6 +714,36 @@
         expect(th._getArrayLength({})).toBe(-1);
         expect(th._getArrayLength('some string')).toBe(-1);
         return expect(th._getArrayLength(true)).toBe(-1);
+      });
+    });
+    describe('_isFirstInChain method', function() {
+      it('should return `true` if element is master', function() {
+        var shape;
+        shape = new Thenable;
+        return expect(shape._isFirstInChain()).toBe(true);
+      });
+      return it('should return `false` if element isnt master', function() {
+        var shape;
+        shape = new Thenable({}).then({
+          radius: 0
+        });
+        return expect(shape._modules[1]._isFirstInChain()).toBe(false);
+      });
+    });
+    return describe('_isLastInChain method', function() {
+      it('should return `true` if element is master', function() {
+        var shape;
+        shape = new Thenable;
+        return expect(shape._isLastInChain()).toBe(true);
+      });
+      return it('should return `false` if element isnt master', function() {
+        var shape;
+        shape = new Thenable().then({
+          radius: 20
+        }).then({
+          radius: 40
+        });
+        return expect(shape._modules[0]._isLastInChain()).toBe(false);
       });
     });
   });

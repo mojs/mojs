@@ -301,7 +301,7 @@ class Module {
   _calcCurrentProps ( p ) {
     for (var key in this._deltas) {
       var value = this._deltas[key];
-      // this._o.isIt && console.log(value)
+      
       if ( value.type === 'array' ) {
         var arr;
         // if prop property is array - reuse it else - create an array

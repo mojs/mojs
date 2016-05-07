@@ -1,4 +1,3 @@
-
 const h         = require('./h');
 const Bit       = require('./shapes/bit');
 const shapesMap = require('./shapes/shapesMap');
@@ -86,9 +85,7 @@ class Shape extends Tunable {
       // Possible values: [ number ]
       sizeGap:          0,
       // context for all the callbacks
-      callbacksContext: this,
-      // previous modules in then chain
-      prevChainModule:  null,
+      callbacksContext: this
     }
   }
 
@@ -104,9 +101,14 @@ class Shape extends Tunable {
     super._vars();
     this._lastSet = {};
     this._origin   = {};
+    // save _master module
+    this._masterModule    = this._o.masterModule;
+    // save passed position el from master module
+    this._positionEl      = this._o.positionEl;
+    // save previous module in the chain
+    this._prevChainModule = this._o.prevChainModule;
     // should draw on foreign svg canvas
     this.isForeign = !!this._o.ctx;
-    // this._super_setProgress = Module.prototype._setProgress.bind(this);
     // should take an svg element as self bit
     return this.isForeignBit = !!this._o.bit;
   }
@@ -119,40 +121,67 @@ class Shape extends Tunable {
     if (!this.isRendered) {
       if (!this.isForeign && !this.isForeignBit) {
         this.ctx = document.createElementNS(h.NS, 'svg');
-        this.ctx.style.position = 'absolute';
-        this.ctx.style.width    = '100%';
-        this.ctx.style.height   = '100%';
-        this.ctx.style.left     = '0';
-        this.ctx.style.top      = '0';
-
-        this.el = document.createElement('div');
-        this.el.appendChild(this.ctx);
+        h.style( this.ctx, {
+          position: 'absolute',
+          width:    '100%',
+          height:   '100%',
+          left:     0,
+          top:      0
+        });
+        // create main element for the module
+        this._moduleEl = document.createElement('div');
+        this._moduleEl.appendChild(this.ctx);
+        this._moduleEl.setAttribute( 'data-name', 'mojs-shape-module-el' );
 
         this._createBit();
         this._calcSize();
-        
         // create stacking context wrapper for all elements in `then` chain
         // if the module is the first one in the chain
-        if ( !this._props.prevChainModule ) {
-          this.wrapperEl = document.createElement('div');
-          // h.setPrefixedStyle( this.wrapperEl, 'transform', 'translate(0, 0)' );
-          this.wrapperEl.style.opacity = '0.99999'
-          this.wrapperEl.appendChild( this.el );
-          this.wrapperEl.setAttribute( 'data-name', 'mojs-shape' );
-          this._props.parent.appendChild( this.wrapperEl );
+        if ( !this._positionEl ) {
+          // position el - element to set all CSS properties on
+          // stays the same for all the modules in the `then` chain
+          this._positionEl = document.createElement('div');
+          this._positionEl.style['position'] = 'absolute';
+          this._positionEl.style['width'] = '0px';
+          this._positionEl.style['height'] = '0px';
+          this._positionEl.setAttribute( 'data-name', 'mojs-shape' );
+          this._hidePositionEl();
+          // shift el simply shifts el to -50% for both x/y to be sure
+          // that the module cooordinates start in the center of the module
+          this._shiftEl = document.createElement('div');
+          this._shiftEl.setAttribute( 'data-name', 'mojs-shape-shift' );
+          h.style(this._shiftEl, {
+            position:   'absolute',
+            left:       '0px',
+            top:        '0px',
+            transform:  'translate(-50%, -50%)',
+          });
+          // the `el` element for all the modules in the chain
+          this.el = document.createElement('div');
+          this.el.setAttribute( 'data-name', 'mojs-shape-el' );
+
+          this._shiftEl.appendChild( this.el );
+          this.el.appendChild( this._moduleEl );
+          this._positionEl.appendChild( this._shiftEl );
+          this._props.parent.appendChild( this._positionEl );
         } else {
-          this._props.parent.appendChild(this.el);
+          this._props.parent.appendChild(this._moduleEl);
         }
 
       } else { this.ctx = this._o.ctx; this._createBit(); this._calcSize(); }
       this.isRendered = true;
     }
-    this._setElStyles();
-    
-    // if (this.el != null) { this.el.style.opacity = this._props.opacity; }
-    if (this._o.isShowStart) { this._show(); } else { this._hide(); }
 
-    this._setProgress( 0 );
+    this._setElStyles();
+
+    // if (this.el != null) { this.el.style.opacity = this._props.opacity; }
+    if (this._props.isShowStart) { this._show(); } else { this._hide(); }
+
+    if ( this._isFirstInChain() && this._props.isShowStart ) {
+      this._showPositionEl();
+    }
+    // set initial position for the first module in the chain
+    this._isFirstInChain() && this._setProgress(0);
     return this;
   }
   /*
@@ -160,22 +189,14 @@ class Shape extends Tunable {
     @private
   */
   _setElStyles () {
-    var marginSize, ref, size,
-        p = this._props;
+    if ( !this._moduleEl ) { return; }
     if (!this.isForeign) {
-      let style = this.el.style;
-      size           = `${ p.size }px`;
-      marginSize     = `${ -p.size / 2 }px`;
-      style.position = 'absolute';
-      style.top      = p.top;
-      style.left     = p.left;
+      let p     = this._props,
+          style = this._moduleEl.style,
+          size  = `${ p.size }px`;
+      // style.position = 'absolute';
       style.width    = size;
       style.height   = size;
-      style.opacity  = p.opacity;
-      style['margin-left'] = marginSize;
-      style['margin-top']  = marginSize;
-      style['marginLeft']  = marginSize;
-      style['marginTop']   = marginSize;
     }
   }
   /*
@@ -210,12 +231,14 @@ class Shape extends Tunable {
     @private
   */
   _drawEl () {
-    if (this.el == null) { return true; }
-    var p = this._props;
-    this._isPropChanged('opacity') && (this.el.style.opacity = p.opacity);
+    if (this._positionEl == null) { return true; }
+    var p     = this._props,
+        style = this._positionEl.style;
+
+    this._isPropChanged('opacity') && (style.opacity = p.opacity);
     if (!this.isForeign) {
-      this._isPropChanged('left')  && (this.el.style.left = p.left);
-      this._isPropChanged('top')   && (this.el.style.top = p.top);
+      this._isPropChanged('left')  && (style.left = p.left);
+      this._isPropChanged('top')   && (style.top = p.top);
       
       var isX = this._isPropChanged('x'),
           isY = this._isPropChanged('y'),
@@ -223,19 +246,17 @@ class Shape extends Tunable {
           isScaleX = this._isPropChanged('scaleX'),
           isScaleY = this._isPropChanged('scaleY'),
           isScale  = this._isPropChanged('scale'),
-          isScale = isScale || isScaleX || isScaleY,
+          isScale  = isScale || isScaleX || isScaleY,
           isRotate = this._isPropChanged('angle');
 
       if ( isTranslate || isScale || isRotate ) {
-        var transform = this._fillTransform(),
-            style     = this.el.style;
+        var transform = this._fillTransform();
         style[`${ h.prefix.css }transform`] = transform;
         style['transform'] = transform;
       }
 
       if ( this._isPropChanged('origin') || this._deltas[ 'origin' ] ) {
-        var origin = this._fillOrigin(),
-            style  = this.el.style;
+        var origin = this._fillOrigin();
         style[`${ h.prefix.css }transform-origin`] = origin;
         style['transform-origin'] = origin;
       }
@@ -371,7 +392,6 @@ class Shape extends Tunable {
   */
   _setProgress ( progress ) {
     // call the super on Module
-    // this._super_setProgress(progress);
     Module.prototype._setProgress.call(this, progress);
     // super._setProgress( progress );
     this._calcOrigin();
@@ -403,18 +423,30 @@ class Shape extends Tunable {
       onStart:  function (isFwd) {
         if ( isFwd ) {
           it._show();
+          it._isFirstInChain() && it._showPositionEl();
           // hide previous module in then chain
           it._hidePrevChainModule();
           // hide all modules in the chain (for chain parent only)
           it._hideModuleChain();
         } else {
-          (!p.isShowStart && it._hide())
+          if ( !p.isShowStart ) {
+            it._hide();
+            it._isFirstInChain() && it._hidePositionEl();
+          }
           // show previous module in then chain
           it._showPrevChainModule();
         }
       },
       onComplete: function (isFwd) {
-        return isFwd ? (!p.isShowEnd && it._hide()) : it._show();
+        if ( isFwd ) {
+          if ( !p.isShowEnd ) {
+            it._hide();
+            it._isLastInChain() && it._hidePositionEl();
+          }
+        } else {
+          it._show();
+          it._isLastInChain() && it._showPositionEl();
+        }
       }
     }
   }
@@ -456,15 +488,14 @@ class Shape extends Tunable {
   */
   _hidePrevChainModule () {
     var p = this._props;
-    p.prevChainModule && p.prevChainModule._hide();
+    this._prevChainModule && this._prevChainModule._hide();
   }
   /*
     Method to show previousChainModule.
     @private
   */
   _showPrevChainModule () {
-    var p = this._props;
-    p.prevChainModule && p.prevChainModule._show();
+    this._prevChainModule && this._prevChainModule._show();
   }
   /*
     Method to hide all modules in then chain.
@@ -474,6 +505,52 @@ class Shape extends Tunable {
     for (var i = 1; i < this._modules.length; i++ ) {
       this._modules[i]._hide();
     }
+  }
+  /*
+    Method to show element.
+    @private
+  */
+  _show () {
+    if ( !this._moduleEl ) { return; }
+    this._moduleEl.style.display = 'block';
+    this._isShown = true;
+  }
+  /*
+    Method to hide element.
+    @private
+  */
+  _hide () {
+    if ( !this._moduleEl ) { return; }
+    this._moduleEl.style.display = 'none';
+    this._isShown = false;
+  }
+  /*
+    Method to show `_positionEl` element.
+    @private
+  */
+  _showPositionEl () {
+    if ( !this._positionEl ) { return; }
+    this._positionEl.style.display = 'block'; }
+  /*
+    Method to hide `_positionEl` element.
+    @private
+  */
+  _hidePositionEl () {
+    if ( !this._positionEl ) { return; }
+    this._positionEl.style.display = 'none';
+  }
+  /*
+    Method to reset some flags on merged options object.
+    @private
+    @overrides @ Thenable
+    @param   {Object} Options object.
+    @returns {Object} Options object.
+  */
+  _resetMergedFlags (obj) {
+    super._resetMergedFlags(obj);
+    // pass the `_positionEl` to the child module
+    obj.positionEl = this._positionEl;
+    return obj;
   }
 }
 

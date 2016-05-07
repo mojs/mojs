@@ -25,6 +25,8 @@ class Thenable extends Tweenable {
     // prevModule._setProp && prevModule._setProp('isShowEnd', false);
     // create a submodule of the same type as the master module
     var module  = new this.constructor( merged );
+    // set `this` as amster module of child module
+    module._masterModule = this;
     // save the modules to the _modules array
     this._modules.push( module );
     // add module's tween into master timeline
@@ -51,7 +53,9 @@ class Thenable extends Tweenable {
     // set previous module
     obj.prevChainModule  = h.getLastItem( this._modules );
     // pass wrapper el as parent to all subsequent modules in `then` chain
-    obj.parent           = this.wrapperEl;
+    obj.parent           = this.el;
+    // pass the `this` as master module
+    obj.masterModule     = this;
     return obj;
   }
   /*
@@ -227,6 +231,26 @@ class Thenable extends Tweenable {
     var isObject = h.isObject( optionsValue );
     isObject = isObject && !optionsValue.unit;
     return !(!isObject || h.isArray(optionsValue) || h.isDOM(optionsValue));
+  }
+  /*
+    Method to check if the module is first in `then` chain.
+    @private
+    @returns {Boolean} If the module is the first in module chain.
+  */
+  _isFirstInChain () { return !this._masterModule; }
+  /*
+    Method to check if the module is last in `then` chain.
+    @private
+    @returns {Boolean} If the module is the last in module chain.
+  */
+  _isLastInChain () {
+    let master = this._masterModule;
+    // if there is no master field - check the modules length
+    // if module length is 1 thus there is no modules chain 
+    // it is the last one, otherwise it isnt
+    if ( !master ) { return ( this._modules.length === 1 ); }
+    // if there is master - check if it is the last item in _modules chain
+    return ( this === h.getLastItem(master._modules) )
   }
 }
 

@@ -488,13 +488,14 @@ describe 'thenable ->', ->
     it 'should reset flags on the piped object', ->
       obj = {}
       th = new Thenable({}).then({})
-      th.wrapperEl = document.createElement 'div'
+      th.el = document.createElement 'div'
       th._resetMergedFlags(obj)
       expect(obj.isTimelineLess)  .toBe true
       expect(obj.isShowStart)     .toBe false
       expect(obj.prevChainModule) .toBe th._modules[th._modules.length-1]
       expect(obj.callbacksContext).toBe th._props.callbacksContext
-      expect(obj.parent).toBe     th.wrapperEl
+      expect(obj.parent).toBe           th.el
+      expect(obj.masterModule).toBe     th
 
   describe '_getArrayLength method ->', ->
     it 'should get length if array', ->
@@ -506,6 +507,25 @@ describe 'thenable ->', ->
       expect(th._getArrayLength( 'some string' )).toBe -1
       expect(th._getArrayLength( true )).toBe -1
 
-  
+  describe '_isFirstInChain method', ->
+    it 'should return `true` if element is master', ->
+      shape = new Thenable
+      expect(shape._isFirstInChain()).toBe true
+
+    it 'should return `false` if element isnt master', ->
+      shape = new Thenable({}).then({ radius: 0 })
+      expect(shape._modules[1]._isFirstInChain()).toBe false
+
+  describe '_isLastInChain method', ->
+    it 'should return `true` if element is master', ->
+      shape = new Thenable
+      expect(shape._isLastInChain()).toBe true
+
+    it 'should return `false` if element isnt master', ->
+      shape = new Thenable().then({radius: 20}).then({radius: 40})
+
+      expect(shape._modules[0]._isLastInChain()).toBe false
+      # expect(shape._modules[1]._isLastInChain()).toBe false
+      # expect(shape._modules[2]._isLastInChain()).toBe true
 
 

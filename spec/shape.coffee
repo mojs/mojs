@@ -21,6 +21,24 @@ describe 'Shape ->', ->
     it 'should call _vars super method', ->
       byte = new Byte
       expect(byte._history.length).toBe 1
+    it 'should save passed _o.masterModule to _masterModule', ->
+      obj = {}
+      byte = new Byte masterModule: obj
+      byte._masterModule = null
+      byte._vars()
+      expect(byte._masterModule).toBe obj
+    it 'should save passed _o.positionEl to _positionEl', ->
+      obj = document.createElement 'div'
+      byte = new Byte positionEl: obj
+      byte._positionEl = null
+      byte._vars()
+      expect(byte._positionEl).toBe obj
+    it 'should save passed _o.prevChainModule to _prevChainModule', ->
+      obj = {}
+      byte = new Byte prevChainModule: obj
+      byte._prevChainModule = null
+      byte._vars()
+      expect(byte._prevChainModule).toBe obj
 
   describe 'extension ->', ->
     it 'should extend Tweenable class', ->
@@ -65,7 +83,6 @@ describe 'Shape ->', ->
       expect(byte._defaults.size).toBe             null
       expect(byte._defaults.sizeGap).toBe          0
       expect(byte._defaults.callbacksContext).toBe byte
-      expect(byte._defaults.prevChainModule).toBe  null
 
   describe '_applyCallbackOverrides ->', ->
     it 'should create callbackOverrides object on passed object', ->
@@ -134,6 +151,13 @@ describe 'Shape ->', ->
         spyOn tr, '_show'
         obj.callbackOverrides.onStart true
         expect(tr._show).toHaveBeenCalled()
+      it 'should call _showPositionEl if isForward and _isFirstInChain()', ->
+        tr = new Shape
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_showPositionEl'
+        obj.callbackOverrides.onStart true
+        expect(tr._showPositionEl).toHaveBeenCalled()
       it 'should call _hidePrevChainModule if isForward', ->
         tr = new Shape
         obj = {}
@@ -155,14 +179,7 @@ describe 'Shape ->', ->
         spyOn tr, '_hide'
         obj.callbackOverrides.onStart false
         expect(tr._hide).toHaveBeenCalled()
-      it 'should call _showPrevChainModule if not isForward', ->
-        tr = new Shape
-        obj = {}
-        tr._applyCallbackOverrides( obj )
-        spyOn tr, '_showPrevChainModule'
-        obj.callbackOverrides.onStart false
-        expect(tr._showPrevChainModule).toHaveBeenCalled()
-      it 'should not call _hide if not isForward and !isShowStart', ->
+      it 'should not call _hide if not isForward and isShowStart', ->
         tr = new Shape isShowStart: true
         obj = {}
         tr._applyCallbackOverrides( obj )
@@ -170,6 +187,27 @@ describe 'Shape ->', ->
         obj.callbackOverrides.onStart false
         expect(tr._hide).not.toHaveBeenCalled()
 
+      it 'should call _hidePositionEl if not isForward and _isFirstInChain', ->
+        tr = new Shape
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_hidePositionEl'
+        obj.callbackOverrides.onStart false
+        expect(tr._hidePositionEl).toHaveBeenCalled()
+      it 'should not call _hidePosition if not isForward and isShowStart', ->
+        tr = new Shape isShowStart: true
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_hidePositionEl'
+        obj.callbackOverrides.onStart false
+        expect(tr._hidePositionEl).not.toHaveBeenCalled()
+      it 'should call _showPrevChainModule if not isForward', ->
+        tr = new Shape
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_showPrevChainModule'
+        obj.callbackOverrides.onStart false
+        expect(tr._showPrevChainModule).toHaveBeenCalled()
       it 'should not call _hideModuleChain if !isForward', ->
         tr = new Shape
         obj = {}
@@ -191,7 +229,29 @@ describe 'Shape ->', ->
         spyOn tr, '_show'
         obj.callbackOverrides.onComplete false
         expect(tr._show).toHaveBeenCalled()
-      it 'should call _hide if isForward', ->
+      it 'should call _showPositionEl if !isForward and _isLastInChain()', ->
+        tr = new Shape
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_showPositionEl'
+        obj.callbackOverrides.onComplete false
+        expect(tr._showPositionEl).toHaveBeenCalled()
+      it 'should call _showPositionEl if !isForward and _isLastInChain() #2', ->
+        tr = new Shape().then radius: 0
+        el = tr._modules[1]
+        obj = {}
+        el._applyCallbackOverrides( obj )
+        spyOn el, '_showPositionEl'
+        obj.callbackOverrides.onComplete false
+        expect(el._showPositionEl).toHaveBeenCalled()
+      it 'should not call _showPositionEl if !isForward and not _isLastInChain', ->
+        tr = new Shape().then radius: 0
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_showPositionEl'
+        obj.callbackOverrides.onComplete false
+        expect(tr._showPositionEl).not.toHaveBeenCalled()
+      it 'should call _hide if isForward and !isShowEnd', ->
         tr = new Shape isShowEnd: false
         obj = {}
         tr._applyCallbackOverrides( obj )
@@ -199,12 +259,35 @@ describe 'Shape ->', ->
         obj.callbackOverrides.onComplete true
         expect(tr._hide).toHaveBeenCalled()
       it 'should not call _hide if isForward but isShowEnd', ->
-        tr = new Shape isShowEnd: true
+        tr = new Shape
         obj = {}
         tr._applyCallbackOverrides( obj )
         spyOn tr, '_hide'
         obj.callbackOverrides.onComplete true
         expect(tr._hide).not.toHaveBeenCalled()
+
+      it 'should call _hidePositionEl if isForward and _isLastInChain', ->
+        tr = new Shape isShowEnd: false
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_hidePositionEl'
+        obj.callbackOverrides.onComplete true
+        expect(tr._hidePositionEl).toHaveBeenCalled()
+      it 'should not call _hidePositionEl if isForward and _isLastInChain but isShowEnd', ->
+        tr = new Shape
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_hidePositionEl'
+        obj.callbackOverrides.onComplete true
+        expect(tr._hidePositionEl).not.toHaveBeenCalled()
+
+      it 'should not call _hidePositionEl if isForward but !_isLastInChain and isShowEnd', ->
+        tr = new Shape().then radius: 0
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_hidePositionEl'
+        obj.callbackOverrides.onComplete true
+        expect(tr._hidePositionEl).not.toHaveBeenCalled()
 
   describe '_transformTweenOptions method', ->
     it 'should call _applyCallbackOverrides with _o', ->
@@ -331,141 +414,17 @@ describe 'Shape ->', ->
         easing: 'Back.InOut'
       expect(byte._props.size)   .toBe(206*1.1)
       expect(byte._props.center) .toBe(byte._props.size/2)
-  
-  describe 'el creation ->', ->
-    it 'should create wrapperEl', ->
-      byte = new Byte radius: 25
-      expect(byte.wrapperEl.tagName.toLowerCase()).toBe('div')
-      expect(byte.wrapperEl.style[ 'opacity' ]).toBe('0.99999')
-      expect(byte.wrapperEl.getAttribute('data-name')).toBe('mojs-shape')
-      # transform = byte.wrapperEl.style[ 'transform' ]
-      # prefixedTransform = byte.wrapperEl.style[ "#{h.prefix.css}transform" ]
-      # expect(transform or prefixedTransform).toBe('translate(0, 0)')
-
-    it 'should not create wrapperEl if `prevChainModule` passed', ->
-      byte = new Byte radius: 25, prevChainModule: new Byte
-      expect(byte.wrapperEl).not.toBeDefined()
-
-    it 'should create el', ->
-      byte = new Byte radius: 25
-      expect(byte.el.tagName.toLowerCase()).toBe('div')
-    it 'should create context', ->
-      byte = new Byte radius: 25
-      expect(byte.el.firstChild.tagName.toLowerCase()).toBe('svg')
-    it 'should set context styles', ->
-      byte = new Byte radius: 25
-      svg = byte.el.firstChild
-      expect(svg.style.position)                .toBe 'absolute'
-      expect(svg.style.width)                   .toBe '100%'
-      expect(svg.style.height)                  .toBe '100%'
-      expect(parseInt(svg.style.left, 10))      .toBe 0
-      expect(parseInt(svg.style.top, 10))       .toBe 0
-    it 'should not create context and el if context was passed', ->
-      svg.isSvg = true
-      byte = new Byte ctx: svg
-      expect(byte.el)           .toBe byte.bit.el
-      expect(byte.ctx)          .toBeDefined()
-      expect(byte.ctx.isSvg)    .toBe true
-    it 'should set el size', ->
-      byte = new Byte
-        radius:       25
-        strokeWidth:  2
-        x:            10
-        y:            20
-      expect(byte.el.style.position)              .toBe 'absolute'
-      expect(byte.el.style.width)                 .toBe '52px'
-      expect(byte.el.style.height)                .toBe '52px'
-      expect(byte.el.style.display)               .toBe 'none'
-      expect(byte.el.style['margin-left'])        .toBe '-26px'
-      expect(byte.el.style['margin-top'])         .toBe '-26px'
-      expect(byte.el.style['marginLeft'])         .toBe '-26px'
-      expect(byte.el.style['marginTop'])          .toBe '-26px'
-      #expect(byte.el.style['backface-visibility']).toBe 'hidden'
-      #expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
-      expect(byte._isShown).toBe false
-    it 'should skip props if foreign context', ->
-      byte = new Byte
-        radius:       25
-        strokeWidth:  2
-        x:            10
-        y:            20
-        ctx: svg
-      expect(byte.el.style.display)               .toBe 'none'
-      expect(byte.el.style.opacity)               .toBe '1'
-      expect(byte.el.style.position)              .not.toBe 'absolute'
-      expect(byte.el.style.width)                 .not.toBe '54px'
-      expect(byte.el.style.height)                .not.toBe '54px'
-      expect(byte.el.style['margin-left'])        .not.toBe '-26px'
-      expect(byte.el.style['margin-top'])         .not.toBe '-26px'
-      expect(byte.el.style['marginLeft'])         .not.toBe '-26px'
-      expect(byte.el.style['marginTop'])          .not.toBe '-26px'
-      # expect(byte.el.style['backface-visibility']).not.toBe 'hidden'
-      # prefixedProp = "#{h.prefix.css}backface-visibility"
-      # expect(byte.el.style[prefixedProp]).not.toBe 'hidden'
-      expect(byte._isShown).toBe false
-    it 'should set display: block if isShowStart was passed', ->
-      byte = new Byte isShowStart: true
-      expect(byte.el.style.display).toBe 'block'
-      expect(byte._isShown).toBe true
-    it 'should set el size', ->
-    # it 'should set el size based on remBase', ->
-      byte = new Byte
-        radius:       25
-        strokeWidth:  2
-        x:            10
-        y:            20
-      byte.isRendered = false
-      h.remBase = 8
-      byte._render()
-      h.remBase = 16
-      expect(byte.el.style.position)              .toBe 'absolute'
-      expect(byte.el.style.width)                 .toBe '52px'
-      expect(byte.el.style.height)                .toBe '52px'
-      expect(byte.el.style['margin-left'])        .toBe '-26px'
-      expect(byte.el.style['margin-top'])         .toBe '-26px'
-      expect(byte.el.style['marginLeft'])         .toBe '-26px'
-      expect(byte.el.style['marginTop'])          .toBe '-26px'
-      #expect(byte.el.style['backface-visibility']).toBe 'hidden'
-      #expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
-    it 'should create bit', ->
-      byte = new Byte radius: 25
-      expect(byte.bit).toBeDefined()
-      expect(byte.bit._o.isDrawLess).toBe true
-    it 'should create bit based on shape option or fallback to circle', ->
-      byte = new Byte
-        radius:  25
-        shape:   'rect'
-      byte2 = new Byte radius: 25
-      expect(byte.bit._props.shape).toBe  'rect'
-      expect(byte2.bit._props.shape).toBe 'ellipse'
-
-    it 'should add itself to parent if the option was passed', ->
-      div  = document.createElement?('div')
-      byte = new Byte
-        radius: 25
-        parent: div
-        prevChainModule: new Byte
-
-      expect(byte.el.parentNode).toBe div
-
-    it 'should add itself to wrapperEl if `prevChainModule`', ->
-      div  = document.createElement?('div')
-      byte = new Byte
-        radius:          25
-        parent:          div
-      expect(byte.el.parentNode).toBe byte.wrapperEl
-      expect(byte.wrapperEl.parentNode).toBe div
 
   describe 'opacity set ->', ->
     it 'should set opacity with respect to units', ->
       byte = new Byte opacity: .5
-      expect(byte.el.style.opacity).toBe '0.5'
+      expect(byte._positionEl.style.opacity).toBe '0.5'
     it 'should animate opacity', (dfr)->
       byte = new Byte
         opacity:    { 1: 0}
         duration:   100
         onComplete:->
-          expect(byte.el.style.opacity).toBe('0');
+          expect(byte._positionEl.style.opacity).toBe('0');
           dfr()
       byte.play()
 
@@ -473,13 +432,13 @@ describe 'Shape ->', ->
     describe 'x/y coordinates ->', ->
       it 'should set a position with respect to units', ->
         byte = new Byte left: 100, top: 50
-        expect(byte.el.style.left).toBe '100px'
-        expect(byte.el.style.top) .toBe '50px'
+        expect(byte._positionEl.style.left).toBe '100px'
+        expect(byte._positionEl.style.top) .toBe '50px'
       it 'should animate position', (dfr)->
         byte = new Byte
           left: {100: '200px'}
           duration: 100
-          onComplete:-> expect(byte.el.style.left).toBe('200px'); dfr()
+          onComplete:-> expect(byte._positionEl.style.left).toBe('200px'); dfr()
         byte.play()
       it 'should warn when x/y animated position and not foreign context',->
         spyOn console, 'warn'
@@ -497,7 +456,7 @@ describe 'Shape ->', ->
           duration: 100
         byte.play()
         setTimeout ->
-          expect(byte.el.style.left)   .toBe '50%'
+          expect(byte._positionEl.style.left)   .toBe '50%'
           dfr()
         , 500
       it 'end unit that were not specified should fallback to start unit', ()->
@@ -511,13 +470,13 @@ describe 'Shape ->', ->
         byte = new Byte
           left: {'20%': '50px'}
           duration: 200
-          onComplete:-> expect(byte.el.style.left).toBe('50px'); dfr()
+          onComplete:-> expect(byte._positionEl.style.left).toBe('50px'); dfr()
         byte.play()
       it 'should set a position with respect to units', ->
         byte = new Byte
           x: 100
           y: 50
-        s = byte.el.style
+        s = byte._positionEl.style
         tr = s.transform or s["#{mojs.h.prefix.css}transform"]
         expect(tr).toBe 'translate(100px, 50px) rotate(0deg) scale(1, 1)'
       it 'should animate shift position', (dfr)->
@@ -525,7 +484,7 @@ describe 'Shape ->', ->
           x: {100: '200px'}
           duration: 200
           onComplete:->
-            s = byte.el.style
+            s = byte._positionEl.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
             isTr  = tr is 'translate(200px, 0) rotate(0deg) scale(1, 1)'
             isTr2 = tr is 'translate(200px, 0px) rotate(0deg) scale(1, 1)'
@@ -537,7 +496,7 @@ describe 'Shape ->', ->
           x: {'20%': '50%'}
           duration: 200
           onComplete:->
-            s = byte.el.style
+            s = byte._positionEl.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
             isTr = tr is 'translate(50%, 0) rotate(0deg) scale(1, 1)'
             isTr2 = tr is 'translate(50%, 0px) rotate(0deg) scale(1, 1)'
@@ -550,7 +509,7 @@ describe 'Shape ->', ->
           y: { 0    : '50%'  }
           duration: 200
           onComplete:->
-            s = byte.el.style
+            s = byte._positionEl.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
             expect(tr).toBe 'translate(50px, 50%) rotate(0deg) scale(1, 1)'
             dfr()
@@ -589,6 +548,41 @@ describe 'Shape ->', ->
       cnt = document.body.children.length
       byte._render true
       expect(cnt).toBe document.body.children.length
+
+    it 'should call `_setProgress(0)` if `_isFirstInChain()`', ->
+      byte = new Byte
+      spyOn byte, '_setProgress'
+      byte.isRendered = false
+      byte._render()
+      expect(byte._setProgress).toHaveBeenCalledWith(0)
+
+    it 'should not call `_setProgress(0)` if not `_isFirstInChain()`', ->
+      byte = new Byte().then radius: 0
+      el = byte._modules[1]
+      spyOn el, '_setProgress'
+      el.isRendered = false
+      el._render()
+      expect(el._setProgress).not.toHaveBeenCalledWith(0)
+
+    it 'should call `_showPositionEl` if `_isFirstInChain()` and `isShowStart`', ->
+      byte = new Byte({ isShowStart: true })
+      spyOn byte, '_showPositionEl'
+      byte._render()
+      expect(byte._showPositionEl).toHaveBeenCalled()
+
+    it 'should not call `_showPositionEl` if `_isFirstInChain()` and not `isShowStart`', ->
+      byte = new Byte({ isShowStart: false })
+      spyOn byte, '_showPositionEl'
+      byte._render()
+      expect(byte._showPositionEl).not.toHaveBeenCalled()
+
+    it 'should not call `_showPositionEl` if not `_isFirstInChain()` and `isShowStart`', ->
+      byte = new Byte({ isShowStart: true }).then({ radius: 20, isShowStart: true })
+      el = byte._modules[1]
+      spyOn el, '_showPositionEl'
+      el._render()
+      expect(el._showPositionEl).not.toHaveBeenCalled()
+
   describe '_draw method ->', ->
     # nope
     # it 'should call _setProp method', ->
@@ -660,49 +654,49 @@ describe 'Shape ->', ->
       byte._setProgress .5
       expect(byte._draw).toHaveBeenCalledWith .5
   describe '_drawEl method ->', ->
-    it 'should set el positions and transforms', ->
+    it 'should set _positionEl positions and transforms', ->
       byte = new Byte radius: 25, top: 10
-      expect(byte.el.style.top)       .toBe     '10px'
-      expect(byte.el.style.opacity)   .toBe     '1'
-      expect(parseInt(byte.el.style.left, 10)).toBe 0
-      s = byte.el.style
+      expect(byte._positionEl.style.top)       .toBe     '10px'
+      expect(byte._positionEl.style.opacity)   .toBe     '1'
+      expect(parseInt(byte._positionEl.style.left, 10)).toBe 0
+      s = byte._positionEl.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
       isTr  = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
       expect(isTr or isTr2).toBe true
-    it 'should set only opacity if foreign context', ->
-      byte = new Byte radius: 25, top: 10, ctx: svg
-      byte._draw()
-      expect(byte.el.style.opacity)   .toBe         '1'
-      expect(byte.el.style.left)      .not.toBe     '0px'
-      expect(byte.el.style.top)       .not.toBe     '10px'
-      s = byte.el.style
-      tr = if s.transform? then s.transform
-      else s["#{mojs.h.prefix.css}transform"]
-      expect(tr).toBeFalsy()
+    # it 'should set only opacity if foreign context', ->
+    #   byte = new Byte radius: 25, top: 10, ctx: svg
+    #   byte._draw()
+    #   expect(byte._positionEl.style.opacity)   .toBe         '1'
+    #   expect(byte._positionEl.style.left)      .not.toBe     '0px'
+    #   expect(byte._positionEl.style.top)       .not.toBe     '10px'
+    #   s = byte._positionEl.style
+    #   tr = if s.transform? then s.transform
+    #   else s["#{mojs.h.prefix.css}transform"]
+    #   expect(tr).toBeFalsy()
     it 'should set new values', ->
       byte = new Byte radius: 25, top: 10
       byte._draw()
       byte._props.left = '1px'
       byte._draw()
-      expect(byte.el.style.left)      .toBe     '1px'
+      expect(byte._positionEl.style.left)      .toBe     '1px'
       expect(byte._lastSet.left.value) .toBe     '1px'
     it 'should not set old values', ->
       byte = new Byte radius: 25, y: 10
       byte._draw()
       byte._draw()
       expect(byte._lastSet.x.value)   .toBe    '0'
-      expect(parseInt(byte.el.style.left, 10)).toBe 0
+      expect(parseInt(byte._positionEl.style.left, 10)).toBe 0
     it 'should return true if there is no el', ->
       byte = new Byte radius: 25
-      byte.el = null
+      byte._positionEl = null
       expect(byte._drawEl()).toBe true
     it 'should set transform if angle changed', ->
       byte = new Byte angle: 25
       byte._draw()
       byte._props.angle = 26
       byte._draw()
-      style = byte.el.style
+      style = byte._positionEl.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(0, 0) rotate(26deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 0px) rotate(26deg) scale(1, 1)'
@@ -752,7 +746,7 @@ describe 'Shape ->', ->
       spyOn(byte, '_fillTransform').and.callThrough()
       byte._draw()
       expect(byte._fillTransform).toHaveBeenCalled()
-      style = byte.el.style
+      style = byte._positionEl.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(4px, 0) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(4px, 0px) rotate(0deg) scale(1, 1)'
@@ -764,7 +758,7 @@ describe 'Shape ->', ->
       spyOn(byte, '_fillTransform').and.callThrough()
       byte._draw()
       expect(byte._fillTransform).toHaveBeenCalled()
-      style = byte.el.style
+      style = byte._positionEl.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(0, 4px) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 4px) rotate(0deg) scale(1, 1)'
@@ -778,7 +772,7 @@ describe 'Shape ->', ->
       expect(byte._fillTransform).toHaveBeenCalled()
       # resultStr = 'scale(3) translate(0, 0) rotate(0deg)'
       # expect(byte.el.style['transform']).toBe resultStr
-      style = byte.el.style
+      style = byte._positionEl.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(0, 0) rotate(0deg) scale(3, 3)'
       isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(3, 3)'
@@ -788,7 +782,7 @@ describe 'Shape ->', ->
       byte = new Byte origin: '50% 30%'
       byte._drawEl()
       prop = 'transform-origin'
-      style = byte.el.style
+      style = byte._positionEl.style
       tr = style[ prop ] or style["#{mojs.h.prefix.css}#{prop}"]
       expect(tr).toBe '50% 30% '
 
@@ -798,7 +792,7 @@ describe 'Shape ->', ->
       byte._props.origin = byte._parseStrokeDashOption( 'origin', '50% 40%');
       byte._drawEl()
       prop = 'transform-origin'
-      style = byte.el.style
+      style = byte._positionEl.style
       tr = style[ prop ] or style["#{mojs.h.prefix.css}#{prop}"]
       expect(tr).toBe '50% 40% '
       expect(byte._fillOrigin).toHaveBeenCalled()
@@ -1130,9 +1124,9 @@ describe 'Shape ->', ->
       module = { _hide: -> }
       tr = new Shape prevChainModule: module
 
-      spyOn tr._props.prevChainModule, '_hide'
+      spyOn tr._prevChainModule, '_hide'
       tr._hidePrevChainModule()
-      expect(tr._props.prevChainModule._hide).toHaveBeenCalled()
+      expect(tr._prevChainModule._hide).toHaveBeenCalled()
 
     it 'should not throw', ->
       tr = new Shape
@@ -1144,9 +1138,9 @@ describe 'Shape ->', ->
       module = { _show: -> }
       tr = new Shape prevChainModule: module
 
-      spyOn tr._props.prevChainModule, '_show'
+      spyOn tr._prevChainModule, '_show'
       tr._showPrevChainModule()
-      expect(tr._props.prevChainModule._show).toHaveBeenCalled()
+      expect(tr._prevChainModule._show).toHaveBeenCalled()
 
     it 'should not throw', ->
       tr = new Shape
@@ -1171,6 +1165,220 @@ describe 'Shape ->', ->
       expect(tr._modules[1]._hide).toHaveBeenCalled()
       expect(tr._modules[2]._hide).toHaveBeenCalled()
       expect(tr._modules[3]._hide).toHaveBeenCalled()
+
+  describe 'el creation ->', ->
+    describe '_positionEl ->', ->
+      it 'should create _positionEl', ->
+        byte = new Byte radius: 25
+        expect(byte._positionEl.tagName.toLowerCase()).toBe 'div'
+        style = byte._positionEl.style 
+        expect(style[ 'position' ]).toBe 'absolute'
+        expect(style[ 'width' ]).toBe '0px'
+        expect(style[ 'height' ]).toBe '0px'
+        expect(style[ 'display' ]).toBe 'none'
+        # expect(byte.el.style.opacity)     .toBe 1
+        expect(byte._positionEl.getAttribute('data-name')).toBe('mojs-shape')
+
+      it 'should set `_o.positionEl` to `_positionEl` if passed', ->
+        div = document.createElement 'div'
+        byte = new Byte radius: 25, positionEl: div
+        expect(byte._positionEl).toBe div
+
+    describe '_shiftEl ->', ->
+      it 'should create _shiftEl', ->
+        byte = new Byte radius: 25
+        expect(byte._shiftEl.tagName.toLowerCase()).toBe 'div'
+        style = byte._shiftEl.style 
+        expect(byte._shiftEl.getAttribute('data-name')).toBe('mojs-shape-shift')
+
+        expect(style['position']).toBe 'absolute'
+        expect(style['left']).toBe '0px'
+        expect(style['top']).toBe '0px'
+        tr = style['transform'] or style["#{h.prefix.css}transform"]
+        expect(tr).toBe 'translate(-50%, -50%)'
+
+        expect(byte._shiftEl.parentNode).toBe byte._positionEl
+
+      it 'should not create _positionEl if `positionEl` passed', ->
+        byte = new Byte radius: 25, positionEl: document.createElement 'div'
+        expect(byte._shiftEl).not.toBeDefined()
+
+    describe 'el ->', ->
+      it 'should create el', ->
+        byte = new Byte radius: 25
+        expect(byte.el.tagName.toLowerCase()).toBe 'div'
+        style = byte.el.style
+
+        # expect(style['']).toBe ''
+
+        expect(byte.el.getAttribute('data-name')).toBe('mojs-shape-el')
+        expect(byte.el.parentNode).toBe byte._shiftEl
+
+      it 'should not create el if `positionEl` passed', ->
+        byte = new Byte radius: 25, positionEl: document.createElement 'div'
+        expect(byte.el).not.toBeDefined()
+
+    describe '_moduleEl ->', ->
+      it 'should create _moduleEl', ->
+        byte = new Byte radius: 25
+        expect(byte._moduleEl.tagName.toLowerCase()).toBe 'div'
+        style = byte._moduleEl.style
+
+        expect(style['width']).toBe '52px'
+        expect(style['height']).toBe '52px'
+
+        expect(byte._moduleEl.getAttribute('data-name')).toBe('mojs-shape-module-el')
+        expect(byte._moduleEl.parentNode).toBe byte.el
+        expect(byte._isShown).toBe false
+
+      it 'should set display: block if isShowStart was passed', ->
+        byte = new Byte isShowStart: true
+        expect(byte._moduleEl.style.display).toBe 'block'
+        expect(byte._isShown).toBe true
+
+    describe 'context el ->', ->
+      it 'should create context', ->
+        byte = new Byte radius: 25
+        expect(byte._moduleEl.firstChild.tagName.toLowerCase()).toBe('svg')
+      it 'should set context styles', ->
+        byte = new Byte radius: 25
+        svg = byte._moduleEl.firstChild
+        expect(svg.style.position)                .toBe 'absolute'
+        expect(svg.style.width)                   .toBe '100%'
+        expect(svg.style.height)                  .toBe '100%'
+        expect(parseInt(svg.style.left, 10))      .toBe 0
+        expect(parseInt(svg.style.top, 10))       .toBe 0
+      it 'should not create context and el if context was passed', ->
+        svg.isSvg = true
+        byte = new Byte ctx: svg
+        expect(byte.el)           .toBe byte.bit.el
+        expect(byte.ctx)          .toBeDefined()
+        expect(byte.ctx.isSvg)    .toBe true
+
+    it 'should create bit', ->
+      byte = new Byte radius: 25
+      expect(byte.bit).toBeDefined()
+      expect(byte.bit._o.isDrawLess).toBe true
+    it 'should create bit based on shape option or fallback to circle', ->
+      byte = new Byte
+        radius:  25
+        shape:   'rect'
+      byte2 = new Byte radius: 25
+      expect(byte.bit._props.shape).toBe  'rect'
+      expect(byte2.bit._props.shape).toBe 'ellipse'
+
+    it 'should add itself to parent if the option was passed', ->
+      div  = document.createElement?('div')
+      byte = new Byte
+        radius: 25
+        parent: div
+        positionEl: document.createElement 'div'
+
+      expect(byte._moduleEl.parentNode).toBe div
+
+    # # it 'should skip props if foreign context', ->
+    # #   byte = new Byte
+    # #     radius:       25
+    # #     strokeWidth:  2
+    # #     x:            10
+    # #     y:            20
+    # #     ctx: svg
+    # #   expect(byte.el.style.display)               .toBe 'none'
+    # #   expect(byte.el.style.opacity)               .toBe '1'
+    # #   expect(byte.el.style.position)              .not.toBe 'absolute'
+    # #   expect(byte.el.style.width)                 .not.toBe '54px'
+    # #   expect(byte.el.style.height)                .not.toBe '54px'
+    # #   expect(byte.el.style['margin-left'])        .not.toBe '-26px'
+    # #   expect(byte.el.style['margin-top'])         .not.toBe '-26px'
+    # #   expect(byte.el.style['marginLeft'])         .not.toBe '-26px'
+    # #   expect(byte.el.style['marginTop'])          .not.toBe '-26px'
+    # #   # expect(byte.el.style['backface-visibility']).not.toBe 'hidden'
+    # #   # prefixedProp = "#{h.prefix.css}backface-visibility"
+    # #   # expect(byte.el.style[prefixedProp]).not.toBe 'hidden'
+    # #   expect(byte._isShown).toBe false
+    # # it 'should set el size', ->
+    # # # it 'should set el size based on remBase', ->
+    # #   byte = new Byte
+    # #     radius:       25
+    # #     strokeWidth:  2
+    # #     x:            10
+    # #     y:            20
+    # #   byte.isRendered = false
+    # #   h.remBase = 8
+    # #   byte._render()
+    # #   h.remBase = 16
+    # #   expect(byte.el.style.position)              .toBe 'absolute'
+    # #   expect(byte.el.style.width)                 .toBe '52px'
+    # #   expect(byte.el.style.height)                .toBe '52px'
+    # #   expect(byte.el.style['margin-left'])        .toBe '-26px'
+    # #   expect(byte.el.style['margin-top'])         .toBe '-26px'
+    # #   expect(byte.el.style['marginLeft'])         .toBe '-26px'
+    # #   expect(byte.el.style['marginTop'])          .toBe '-26px'
+    # #   #expect(byte.el.style['backface-visibility']).toBe 'hidden'
+    # #   #expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
+
+  describe '_resetMergedFlags method ->', ->
+    it 'should call super', ->
+      shape = new Shape
+      spyOn Thenable.prototype, '_resetMergedFlags'
+
+      obj = {}
+      shape._resetMergedFlags(obj)
+      expect(Thenable.prototype._resetMergedFlags).toHaveBeenCalledWith(obj)
+
+    it 'should return the same object', ->
+      shape = new Shape
+      obj = {}
+      result = shape._resetMergedFlags(obj)
+      expect(result).toBe obj
+
+    it 'should set psitionEl to _positionEl', ->
+      shape = new Shape
+      obj = {}
+      shape._resetMergedFlags(obj)
+      expect(obj.positionEl).toBe shape._positionEl
+
+  describe '_hide method ->' , ->
+    it 'should set `display` of `_moduleEl` to `none`', ->
+      byte = new Byte radius: 25
+      byte._moduleEl.style[ 'display' ] = 'block'
+      byte._hide()
+      expect( byte._moduleEl.style[ 'display' ] ).toBe 'none'
+
+    it 'should set `_isShown` to false', ->
+      byte = new Byte radius: 25
+      byte._isShown = true
+      byte._hide()
+      expect( byte._isShown ).toBe false
+
+  describe '_show method ->' , ->
+    it 'should set `display` of `_moduleEl` to `block`', ->
+      byte = new Byte radius: 25
+      byte._moduleEl.style[ 'display' ] = 'none'
+      byte._show()
+      expect( byte._moduleEl.style[ 'display' ] ).toBe 'block'
+
+    it 'should set `_isShown` to true', ->
+      byte = new Byte radius: 25
+      byte._isShown = true
+      byte._show()
+      expect( byte._isShown ).toBe true
+
+  describe '_showPositionEl method ->', ->
+    it 'should show position el', ->
+      byte = new Byte radius: 25
+      byte._positionEl.style['display'] = 'none'
+      byte._showPositionEl()
+      expect(byte._positionEl.style['display']).toBe 'block'
+
+  describe '_hidePositionEl method ->', ->
+    it 'should show position el', ->
+      byte = new Byte radius: 25
+      byte._positionEl.style['display'] = 'block'
+      byte._hidePositionEl()
+      expect(byte._positionEl.style['display']).toBe 'none'
+
+
 
 
 

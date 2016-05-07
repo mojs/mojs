@@ -33,10 +33,40 @@
           return byte._vars();
         }).not.toThrow();
       });
-      return it('should call _vars super method', function() {
+      it('should call _vars super method', function() {
         var byte;
         byte = new Byte;
         return expect(byte._history.length).toBe(1);
+      });
+      it('should save passed _o.masterModule to _masterModule', function() {
+        var byte, obj;
+        obj = {};
+        byte = new Byte({
+          masterModule: obj
+        });
+        byte._masterModule = null;
+        byte._vars();
+        return expect(byte._masterModule).toBe(obj);
+      });
+      it('should save passed _o.positionEl to _positionEl', function() {
+        var byte, obj;
+        obj = document.createElement('div');
+        byte = new Byte({
+          positionEl: obj
+        });
+        byte._positionEl = null;
+        byte._vars();
+        return expect(byte._positionEl).toBe(obj);
+      });
+      return it('should save passed _o.prevChainModule to _prevChainModule', function() {
+        var byte, obj;
+        obj = {};
+        byte = new Byte({
+          prevChainModule: obj
+        });
+        byte._prevChainModule = null;
+        byte._vars();
+        return expect(byte._prevChainModule).toBe(obj);
       });
     });
     describe('extension ->', function() {
@@ -87,8 +117,7 @@
         expect(byte._defaults.isShowStart).toBe(false);
         expect(byte._defaults.size).toBe(null);
         expect(byte._defaults.sizeGap).toBe(0);
-        expect(byte._defaults.callbacksContext).toBe(byte);
-        return expect(byte._defaults.prevChainModule).toBe(null);
+        return expect(byte._defaults.callbacksContext).toBe(byte);
       });
     });
     describe('_applyCallbackOverrides ->', function() {
@@ -171,6 +200,15 @@
           obj.callbackOverrides.onStart(true);
           return expect(tr._show).toHaveBeenCalled();
         });
+        it('should call _showPositionEl if isForward and _isFirstInChain()', function() {
+          var obj, tr;
+          tr = new Shape;
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_showPositionEl');
+          obj.callbackOverrides.onStart(true);
+          return expect(tr._showPositionEl).toHaveBeenCalled();
+        });
         it('should call _hidePrevChainModule if isForward', function() {
           var obj, tr;
           tr = new Shape;
@@ -198,16 +236,7 @@
           obj.callbackOverrides.onStart(false);
           return expect(tr._hide).toHaveBeenCalled();
         });
-        it('should call _showPrevChainModule if not isForward', function() {
-          var obj, tr;
-          tr = new Shape;
-          obj = {};
-          tr._applyCallbackOverrides(obj);
-          spyOn(tr, '_showPrevChainModule');
-          obj.callbackOverrides.onStart(false);
-          return expect(tr._showPrevChainModule).toHaveBeenCalled();
-        });
-        it('should not call _hide if not isForward and !isShowStart', function() {
+        it('should not call _hide if not isForward and isShowStart', function() {
           var obj, tr;
           tr = new Shape({
             isShowStart: true
@@ -217,6 +246,35 @@
           spyOn(tr, '_hide');
           obj.callbackOverrides.onStart(false);
           return expect(tr._hide).not.toHaveBeenCalled();
+        });
+        it('should call _hidePositionEl if not isForward and _isFirstInChain', function() {
+          var obj, tr;
+          tr = new Shape;
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_hidePositionEl');
+          obj.callbackOverrides.onStart(false);
+          return expect(tr._hidePositionEl).toHaveBeenCalled();
+        });
+        it('should not call _hidePosition if not isForward and isShowStart', function() {
+          var obj, tr;
+          tr = new Shape({
+            isShowStart: true
+          });
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_hidePositionEl');
+          obj.callbackOverrides.onStart(false);
+          return expect(tr._hidePositionEl).not.toHaveBeenCalled();
+        });
+        it('should call _showPrevChainModule if not isForward', function() {
+          var obj, tr;
+          tr = new Shape;
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_showPrevChainModule');
+          obj.callbackOverrides.onStart(false);
+          return expect(tr._showPrevChainModule).toHaveBeenCalled();
         });
         return it('should not call _hideModuleChain if !isForward', function() {
           var obj, tr;
@@ -245,7 +303,39 @@
           obj.callbackOverrides.onComplete(false);
           return expect(tr._show).toHaveBeenCalled();
         });
-        it('should call _hide if isForward', function() {
+        it('should call _showPositionEl if !isForward and _isLastInChain()', function() {
+          var obj, tr;
+          tr = new Shape;
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_showPositionEl');
+          obj.callbackOverrides.onComplete(false);
+          return expect(tr._showPositionEl).toHaveBeenCalled();
+        });
+        it('should call _showPositionEl if !isForward and _isLastInChain() #2', function() {
+          var el, obj, tr;
+          tr = new Shape().then({
+            radius: 0
+          });
+          el = tr._modules[1];
+          obj = {};
+          el._applyCallbackOverrides(obj);
+          spyOn(el, '_showPositionEl');
+          obj.callbackOverrides.onComplete(false);
+          return expect(el._showPositionEl).toHaveBeenCalled();
+        });
+        it('should not call _showPositionEl if !isForward and not _isLastInChain', function() {
+          var obj, tr;
+          tr = new Shape().then({
+            radius: 0
+          });
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_showPositionEl');
+          obj.callbackOverrides.onComplete(false);
+          return expect(tr._showPositionEl).not.toHaveBeenCalled();
+        });
+        it('should call _hide if isForward and !isShowEnd', function() {
           var obj, tr;
           tr = new Shape({
             isShowEnd: false
@@ -256,16 +346,45 @@
           obj.callbackOverrides.onComplete(true);
           return expect(tr._hide).toHaveBeenCalled();
         });
-        return it('should not call _hide if isForward but isShowEnd', function() {
+        it('should not call _hide if isForward but isShowEnd', function() {
           var obj, tr;
-          tr = new Shape({
-            isShowEnd: true
-          });
+          tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           spyOn(tr, '_hide');
           obj.callbackOverrides.onComplete(true);
           return expect(tr._hide).not.toHaveBeenCalled();
+        });
+        it('should call _hidePositionEl if isForward and _isLastInChain', function() {
+          var obj, tr;
+          tr = new Shape({
+            isShowEnd: false
+          });
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_hidePositionEl');
+          obj.callbackOverrides.onComplete(true);
+          return expect(tr._hidePositionEl).toHaveBeenCalled();
+        });
+        it('should not call _hidePositionEl if isForward and _isLastInChain but isShowEnd', function() {
+          var obj, tr;
+          tr = new Shape;
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_hidePositionEl');
+          obj.callbackOverrides.onComplete(true);
+          return expect(tr._hidePositionEl).not.toHaveBeenCalled();
+        });
+        return it('should not call _hidePositionEl if isForward but !_isLastInChain and isShowEnd', function() {
+          var obj, tr;
+          tr = new Shape().then({
+            radius: 0
+          });
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_hidePositionEl');
+          obj.callbackOverrides.onComplete(true);
+          return expect(tr._hidePositionEl).not.toHaveBeenCalled();
         });
       });
     });
@@ -506,174 +625,13 @@
         return expect(byte._props.center).toBe(byte._props.size / 2);
       });
     });
-    describe('el creation ->', function() {
-      it('should create wrapperEl', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25
-        });
-        expect(byte.wrapperEl.tagName.toLowerCase()).toBe('div');
-        expect(byte.wrapperEl.style['opacity']).toBe('0.99999');
-        return expect(byte.wrapperEl.getAttribute('data-name')).toBe('mojs-shape');
-      });
-      it('should not create wrapperEl if `prevChainModule` passed', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25,
-          prevChainModule: new Byte
-        });
-        return expect(byte.wrapperEl).not.toBeDefined();
-      });
-      it('should create el', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25
-        });
-        return expect(byte.el.tagName.toLowerCase()).toBe('div');
-      });
-      it('should create context', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25
-        });
-        return expect(byte.el.firstChild.tagName.toLowerCase()).toBe('svg');
-      });
-      it('should set context styles', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25
-        });
-        svg = byte.el.firstChild;
-        expect(svg.style.position).toBe('absolute');
-        expect(svg.style.width).toBe('100%');
-        expect(svg.style.height).toBe('100%');
-        expect(parseInt(svg.style.left, 10)).toBe(0);
-        return expect(parseInt(svg.style.top, 10)).toBe(0);
-      });
-      it('should not create context and el if context was passed', function() {
-        var byte;
-        svg.isSvg = true;
-        byte = new Byte({
-          ctx: svg
-        });
-        expect(byte.el).toBe(byte.bit.el);
-        expect(byte.ctx).toBeDefined();
-        return expect(byte.ctx.isSvg).toBe(true);
-      });
-      it('should set el size', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25,
-          strokeWidth: 2,
-          x: 10,
-          y: 20
-        });
-        expect(byte.el.style.position).toBe('absolute');
-        expect(byte.el.style.width).toBe('52px');
-        expect(byte.el.style.height).toBe('52px');
-        expect(byte.el.style.display).toBe('none');
-        expect(byte.el.style['margin-left']).toBe('-26px');
-        expect(byte.el.style['margin-top']).toBe('-26px');
-        expect(byte.el.style['marginLeft']).toBe('-26px');
-        expect(byte.el.style['marginTop']).toBe('-26px');
-        return expect(byte._isShown).toBe(false);
-      });
-      it('should skip props if foreign context', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25,
-          strokeWidth: 2,
-          x: 10,
-          y: 20,
-          ctx: svg
-        });
-        expect(byte.el.style.display).toBe('none');
-        expect(byte.el.style.opacity).toBe('1');
-        expect(byte.el.style.position).not.toBe('absolute');
-        expect(byte.el.style.width).not.toBe('54px');
-        expect(byte.el.style.height).not.toBe('54px');
-        expect(byte.el.style['margin-left']).not.toBe('-26px');
-        expect(byte.el.style['margin-top']).not.toBe('-26px');
-        expect(byte.el.style['marginLeft']).not.toBe('-26px');
-        expect(byte.el.style['marginTop']).not.toBe('-26px');
-        return expect(byte._isShown).toBe(false);
-      });
-      it('should set display: block if isShowStart was passed', function() {
-        var byte;
-        byte = new Byte({
-          isShowStart: true
-        });
-        expect(byte.el.style.display).toBe('block');
-        return expect(byte._isShown).toBe(true);
-      });
-      it('should set el size', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25,
-          strokeWidth: 2,
-          x: 10,
-          y: 20
-        });
-        byte.isRendered = false;
-        h.remBase = 8;
-        byte._render();
-        h.remBase = 16;
-        expect(byte.el.style.position).toBe('absolute');
-        expect(byte.el.style.width).toBe('52px');
-        expect(byte.el.style.height).toBe('52px');
-        expect(byte.el.style['margin-left']).toBe('-26px');
-        expect(byte.el.style['margin-top']).toBe('-26px');
-        expect(byte.el.style['marginLeft']).toBe('-26px');
-        return expect(byte.el.style['marginTop']).toBe('-26px');
-      });
-      it('should create bit', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25
-        });
-        expect(byte.bit).toBeDefined();
-        return expect(byte.bit._o.isDrawLess).toBe(true);
-      });
-      it('should create bit based on shape option or fallback to circle', function() {
-        var byte, byte2;
-        byte = new Byte({
-          radius: 25,
-          shape: 'rect'
-        });
-        byte2 = new Byte({
-          radius: 25
-        });
-        expect(byte.bit._props.shape).toBe('rect');
-        return expect(byte2.bit._props.shape).toBe('ellipse');
-      });
-      it('should add itself to parent if the option was passed', function() {
-        var byte, div;
-        div = typeof document.createElement === "function" ? document.createElement('div') : void 0;
-        byte = new Byte({
-          radius: 25,
-          parent: div,
-          prevChainModule: new Byte
-        });
-        return expect(byte.el.parentNode).toBe(div);
-      });
-      return it('should add itself to wrapperEl if `prevChainModule`', function() {
-        var byte, div;
-        div = typeof document.createElement === "function" ? document.createElement('div') : void 0;
-        byte = new Byte({
-          radius: 25,
-          parent: div
-        });
-        expect(byte.el.parentNode).toBe(byte.wrapperEl);
-        return expect(byte.wrapperEl.parentNode).toBe(div);
-      });
-    });
     describe('opacity set ->', function() {
       it('should set opacity with respect to units', function() {
         var byte;
         byte = new Byte({
           opacity: .5
         });
-        return expect(byte.el.style.opacity).toBe('0.5');
+        return expect(byte._positionEl.style.opacity).toBe('0.5');
       });
       return it('should animate opacity', function(dfr) {
         var byte;
@@ -683,7 +641,7 @@
           },
           duration: 100,
           onComplete: function() {
-            expect(byte.el.style.opacity).toBe('0');
+            expect(byte._positionEl.style.opacity).toBe('0');
             return dfr();
           }
         });
@@ -698,8 +656,8 @@
             left: 100,
             top: 50
           });
-          expect(byte.el.style.left).toBe('100px');
-          return expect(byte.el.style.top).toBe('50px');
+          expect(byte._positionEl.style.left).toBe('100px');
+          return expect(byte._positionEl.style.top).toBe('50px');
         });
         it('should animate position', function(dfr) {
           var byte;
@@ -709,7 +667,7 @@
             },
             duration: 100,
             onComplete: function() {
-              expect(byte.el.style.left).toBe('200px');
+              expect(byte._positionEl.style.left).toBe('200px');
               return dfr();
             }
           });
@@ -748,7 +706,7 @@
           });
           byte.play();
           return setTimeout(function() {
-            expect(byte.el.style.left).toBe('50%');
+            expect(byte._positionEl.style.left).toBe('50%');
             return dfr();
           }, 500);
         });
@@ -772,7 +730,7 @@
             },
             duration: 200,
             onComplete: function() {
-              expect(byte.el.style.left).toBe('50px');
+              expect(byte._positionEl.style.left).toBe('50px');
               return dfr();
             }
           });
@@ -784,7 +742,7 @@
             x: 100,
             y: 50
           });
-          s = byte.el.style;
+          s = byte._positionEl.style;
           tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
           return expect(tr).toBe('translate(100px, 50px) rotate(0deg) scale(1, 1)');
         });
@@ -797,7 +755,7 @@
             duration: 200,
             onComplete: function() {
               var isTr, isTr2, s, tr;
-              s = byte.el.style;
+              s = byte._positionEl.style;
               tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
               isTr = tr === 'translate(200px, 0) rotate(0deg) scale(1, 1)';
               isTr2 = tr === 'translate(200px, 0px) rotate(0deg) scale(1, 1)';
@@ -816,7 +774,7 @@
             duration: 200,
             onComplete: function() {
               var isTr, isTr2, s, tr;
-              s = byte.el.style;
+              s = byte._positionEl.style;
               tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
               isTr = tr === 'translate(50%, 0) rotate(0deg) scale(1, 1)';
               isTr2 = tr === 'translate(50%, 0px) rotate(0deg) scale(1, 1)';
@@ -838,7 +796,7 @@
             duration: 200,
             onComplete: function() {
               var s, tr;
-              s = byte.el.style;
+              s = byte._positionEl.style;
               tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
               expect(tr).toBe('translate(50px, 50%) rotate(0deg) scale(1, 1)');
               return dfr();
@@ -897,7 +855,7 @@
         byte._render();
         return expect(byte._calcSize).toHaveBeenCalled();
       });
-      return it('should not create new el', function() {
+      it('should not create new el', function() {
         var byte, cnt;
         byte = new Byte({
           radius: 25
@@ -905,6 +863,56 @@
         cnt = document.body.children.length;
         byte._render(true);
         return expect(cnt).toBe(document.body.children.length);
+      });
+      it('should call `_setProgress(0)` if `_isFirstInChain()`', function() {
+        var byte;
+        byte = new Byte;
+        spyOn(byte, '_setProgress');
+        byte.isRendered = false;
+        byte._render();
+        return expect(byte._setProgress).toHaveBeenCalledWith(0);
+      });
+      it('should not call `_setProgress(0)` if not `_isFirstInChain()`', function() {
+        var byte, el;
+        byte = new Byte().then({
+          radius: 0
+        });
+        el = byte._modules[1];
+        spyOn(el, '_setProgress');
+        el.isRendered = false;
+        el._render();
+        return expect(el._setProgress).not.toHaveBeenCalledWith(0);
+      });
+      it('should call `_showPositionEl` if `_isFirstInChain()` and `isShowStart`', function() {
+        var byte;
+        byte = new Byte({
+          isShowStart: true
+        });
+        spyOn(byte, '_showPositionEl');
+        byte._render();
+        return expect(byte._showPositionEl).toHaveBeenCalled();
+      });
+      it('should not call `_showPositionEl` if `_isFirstInChain()` and not `isShowStart`', function() {
+        var byte;
+        byte = new Byte({
+          isShowStart: false
+        });
+        spyOn(byte, '_showPositionEl');
+        byte._render();
+        return expect(byte._showPositionEl).not.toHaveBeenCalled();
+      });
+      return it('should not call `_showPositionEl` if not `_isFirstInChain()` and `isShowStart`', function() {
+        var byte, el;
+        byte = new Byte({
+          isShowStart: true
+        }).then({
+          radius: 20,
+          isShowStart: true
+        });
+        el = byte._modules[1];
+        spyOn(el, '_showPositionEl');
+        el._render();
+        return expect(el._showPositionEl).not.toHaveBeenCalled();
       });
     });
     describe('_draw method ->', function() {
@@ -997,35 +1005,20 @@
       });
     });
     describe('_drawEl method ->', function() {
-      it('should set el positions and transforms', function() {
+      it('should set _positionEl positions and transforms', function() {
         var byte, isTr, isTr2, s, tr;
         byte = new Byte({
           radius: 25,
           top: 10
         });
-        expect(byte.el.style.top).toBe('10px');
-        expect(byte.el.style.opacity).toBe('1');
-        expect(parseInt(byte.el.style.left, 10)).toBe(0);
-        s = byte.el.style;
+        expect(byte._positionEl.style.top).toBe('10px');
+        expect(byte._positionEl.style.opacity).toBe('1');
+        expect(parseInt(byte._positionEl.style.left, 10)).toBe(0);
+        s = byte._positionEl.style;
         tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
         isTr = tr === 'translate(0, 0) rotate(0deg) scale(1, 1)';
         isTr2 = tr === 'translate(0px, 0px) rotate(0deg) scale(1, 1)';
         return expect(isTr || isTr2).toBe(true);
-      });
-      it('should set only opacity if foreign context', function() {
-        var byte, s, tr;
-        byte = new Byte({
-          radius: 25,
-          top: 10,
-          ctx: svg
-        });
-        byte._draw();
-        expect(byte.el.style.opacity).toBe('1');
-        expect(byte.el.style.left).not.toBe('0px');
-        expect(byte.el.style.top).not.toBe('10px');
-        s = byte.el.style;
-        tr = s.transform != null ? s.transform : s["" + mojs.h.prefix.css + "transform"];
-        return expect(tr).toBeFalsy();
       });
       it('should set new values', function() {
         var byte;
@@ -1036,7 +1029,7 @@
         byte._draw();
         byte._props.left = '1px';
         byte._draw();
-        expect(byte.el.style.left).toBe('1px');
+        expect(byte._positionEl.style.left).toBe('1px');
         return expect(byte._lastSet.left.value).toBe('1px');
       });
       it('should not set old values', function() {
@@ -1048,14 +1041,14 @@
         byte._draw();
         byte._draw();
         expect(byte._lastSet.x.value).toBe('0');
-        return expect(parseInt(byte.el.style.left, 10)).toBe(0);
+        return expect(parseInt(byte._positionEl.style.left, 10)).toBe(0);
       });
       it('should return true if there is no el', function() {
         var byte;
         byte = new Byte({
           radius: 25
         });
-        byte.el = null;
+        byte._positionEl = null;
         return expect(byte._drawEl()).toBe(true);
       });
       it('should set transform if angle changed', function() {
@@ -1066,7 +1059,7 @@
         byte._draw();
         byte._props.angle = 26;
         byte._draw();
-        style = byte.el.style;
+        style = byte._positionEl.style;
         tr = style['transform'] || style["" + mojs.h.prefix.css + "transform"];
         isTr = tr === 'translate(0, 0) rotate(26deg) scale(1, 1)';
         isTr2 = tr === 'translate(0px, 0px) rotate(26deg) scale(1, 1)';
@@ -1149,7 +1142,7 @@
         spyOn(byte, '_fillTransform').and.callThrough();
         byte._draw();
         expect(byte._fillTransform).toHaveBeenCalled();
-        style = byte.el.style;
+        style = byte._positionEl.style;
         tr = style['transform'] || style["" + mojs.h.prefix.css + "transform"];
         isTr = tr === 'translate(4px, 0) rotate(0deg) scale(1, 1)';
         isTr2 = tr === 'translate(4px, 0px) rotate(0deg) scale(1, 1)';
@@ -1168,7 +1161,7 @@
         spyOn(byte, '_fillTransform').and.callThrough();
         byte._draw();
         expect(byte._fillTransform).toHaveBeenCalled();
-        style = byte.el.style;
+        style = byte._positionEl.style;
         tr = style['transform'] || style["" + mojs.h.prefix.css + "transform"];
         isTr = tr === 'translate(0, 4px) rotate(0deg) scale(1, 1)';
         isTr2 = tr === 'translate(0px, 4px) rotate(0deg) scale(1, 1)';
@@ -1187,7 +1180,7 @@
         spyOn(byte, '_fillTransform').and.callThrough();
         byte._draw();
         expect(byte._fillTransform).toHaveBeenCalled();
-        style = byte.el.style;
+        style = byte._positionEl.style;
         tr = style['transform'] || style["" + mojs.h.prefix.css + "transform"];
         isTr = tr === 'translate(0, 0) rotate(0deg) scale(3, 3)';
         isTr2 = tr === 'translate(0px, 0px) rotate(0deg) scale(3, 3)';
@@ -1200,7 +1193,7 @@
         });
         byte._drawEl();
         prop = 'transform-origin';
-        style = byte.el.style;
+        style = byte._positionEl.style;
         tr = style[prop] || style["" + mojs.h.prefix.css + prop];
         return expect(tr).toBe('50% 30% ');
       });
@@ -1213,7 +1206,7 @@
         byte._props.origin = byte._parseStrokeDashOption('origin', '50% 40%');
         byte._drawEl();
         prop = 'transform-origin';
-        style = byte.el.style;
+        style = byte._positionEl.style;
         tr = style[prop] || style["" + mojs.h.prefix.css + prop];
         expect(tr).toBe('50% 40% ');
         return expect(byte._fillOrigin).toHaveBeenCalled();
@@ -1828,9 +1821,9 @@
         tr = new Shape({
           prevChainModule: module
         });
-        spyOn(tr._props.prevChainModule, '_hide');
+        spyOn(tr._prevChainModule, '_hide');
         tr._hidePrevChainModule();
-        return expect(tr._props.prevChainModule._hide).toHaveBeenCalled();
+        return expect(tr._prevChainModule._hide).toHaveBeenCalled();
       });
       return it('should not throw', function() {
         var fun, tr;
@@ -1850,9 +1843,9 @@
         tr = new Shape({
           prevChainModule: module
         });
-        spyOn(tr._props.prevChainModule, '_show');
+        spyOn(tr._prevChainModule, '_show');
         tr._showPrevChainModule();
-        return expect(tr._props.prevChainModule._show).toHaveBeenCalled();
+        return expect(tr._prevChainModule._show).toHaveBeenCalled();
       });
       return it('should not throw', function() {
         var fun, tr;
@@ -1863,7 +1856,7 @@
         return expect(fun).not.toThrow();
       });
     });
-    return describe('_hideModuleChain method ->', function() {
+    describe('_hideModuleChain method ->', function() {
       return it('should hide all modules in chain', function() {
         var tr;
         tr = new Shape().then({
@@ -1882,6 +1875,247 @@
         expect(tr._modules[1]._hide).toHaveBeenCalled();
         expect(tr._modules[2]._hide).toHaveBeenCalled();
         return expect(tr._modules[3]._hide).toHaveBeenCalled();
+      });
+    });
+    describe('el creation ->', function() {
+      describe('_positionEl ->', function() {
+        it('should create _positionEl', function() {
+          var byte, style;
+          byte = new Byte({
+            radius: 25
+          });
+          expect(byte._positionEl.tagName.toLowerCase()).toBe('div');
+          style = byte._positionEl.style;
+          expect(style['position']).toBe('absolute');
+          expect(style['width']).toBe('0px');
+          expect(style['height']).toBe('0px');
+          expect(style['display']).toBe('none');
+          return expect(byte._positionEl.getAttribute('data-name')).toBe('mojs-shape');
+        });
+        return it('should set `_o.positionEl` to `_positionEl` if passed', function() {
+          var byte, div;
+          div = document.createElement('div');
+          byte = new Byte({
+            radius: 25,
+            positionEl: div
+          });
+          return expect(byte._positionEl).toBe(div);
+        });
+      });
+      describe('_shiftEl ->', function() {
+        it('should create _shiftEl', function() {
+          var byte, style, tr;
+          byte = new Byte({
+            radius: 25
+          });
+          expect(byte._shiftEl.tagName.toLowerCase()).toBe('div');
+          style = byte._shiftEl.style;
+          expect(byte._shiftEl.getAttribute('data-name')).toBe('mojs-shape-shift');
+          expect(style['position']).toBe('absolute');
+          expect(style['left']).toBe('0px');
+          expect(style['top']).toBe('0px');
+          tr = style['transform'] || style["" + h.prefix.css + "transform"];
+          expect(tr).toBe('translate(-50%, -50%)');
+          return expect(byte._shiftEl.parentNode).toBe(byte._positionEl);
+        });
+        return it('should not create _positionEl if `positionEl` passed', function() {
+          var byte;
+          byte = new Byte({
+            radius: 25,
+            positionEl: document.createElement('div')
+          });
+          return expect(byte._shiftEl).not.toBeDefined();
+        });
+      });
+      describe('el ->', function() {
+        it('should create el', function() {
+          var byte, style;
+          byte = new Byte({
+            radius: 25
+          });
+          expect(byte.el.tagName.toLowerCase()).toBe('div');
+          style = byte.el.style;
+          expect(byte.el.getAttribute('data-name')).toBe('mojs-shape-el');
+          return expect(byte.el.parentNode).toBe(byte._shiftEl);
+        });
+        return it('should not create el if `positionEl` passed', function() {
+          var byte;
+          byte = new Byte({
+            radius: 25,
+            positionEl: document.createElement('div')
+          });
+          return expect(byte.el).not.toBeDefined();
+        });
+      });
+      describe('_moduleEl ->', function() {
+        it('should create _moduleEl', function() {
+          var byte, style;
+          byte = new Byte({
+            radius: 25
+          });
+          expect(byte._moduleEl.tagName.toLowerCase()).toBe('div');
+          style = byte._moduleEl.style;
+          expect(style['width']).toBe('52px');
+          expect(style['height']).toBe('52px');
+          expect(byte._moduleEl.getAttribute('data-name')).toBe('mojs-shape-module-el');
+          expect(byte._moduleEl.parentNode).toBe(byte.el);
+          return expect(byte._isShown).toBe(false);
+        });
+        return it('should set display: block if isShowStart was passed', function() {
+          var byte;
+          byte = new Byte({
+            isShowStart: true
+          });
+          expect(byte._moduleEl.style.display).toBe('block');
+          return expect(byte._isShown).toBe(true);
+        });
+      });
+      describe('context el ->', function() {
+        it('should create context', function() {
+          var byte;
+          byte = new Byte({
+            radius: 25
+          });
+          return expect(byte._moduleEl.firstChild.tagName.toLowerCase()).toBe('svg');
+        });
+        it('should set context styles', function() {
+          var byte;
+          byte = new Byte({
+            radius: 25
+          });
+          svg = byte._moduleEl.firstChild;
+          expect(svg.style.position).toBe('absolute');
+          expect(svg.style.width).toBe('100%');
+          expect(svg.style.height).toBe('100%');
+          expect(parseInt(svg.style.left, 10)).toBe(0);
+          return expect(parseInt(svg.style.top, 10)).toBe(0);
+        });
+        return it('should not create context and el if context was passed', function() {
+          var byte;
+          svg.isSvg = true;
+          byte = new Byte({
+            ctx: svg
+          });
+          expect(byte.el).toBe(byte.bit.el);
+          expect(byte.ctx).toBeDefined();
+          return expect(byte.ctx.isSvg).toBe(true);
+        });
+      });
+      it('should create bit', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        expect(byte.bit).toBeDefined();
+        return expect(byte.bit._o.isDrawLess).toBe(true);
+      });
+      it('should create bit based on shape option or fallback to circle', function() {
+        var byte, byte2;
+        byte = new Byte({
+          radius: 25,
+          shape: 'rect'
+        });
+        byte2 = new Byte({
+          radius: 25
+        });
+        expect(byte.bit._props.shape).toBe('rect');
+        return expect(byte2.bit._props.shape).toBe('ellipse');
+      });
+      return it('should add itself to parent if the option was passed', function() {
+        var byte, div;
+        div = typeof document.createElement === "function" ? document.createElement('div') : void 0;
+        byte = new Byte({
+          radius: 25,
+          parent: div,
+          positionEl: document.createElement('div')
+        });
+        return expect(byte._moduleEl.parentNode).toBe(div);
+      });
+    });
+    describe('_resetMergedFlags method ->', function() {
+      it('should call super', function() {
+        var obj, shape;
+        shape = new Shape;
+        spyOn(Thenable.prototype, '_resetMergedFlags');
+        obj = {};
+        shape._resetMergedFlags(obj);
+        return expect(Thenable.prototype._resetMergedFlags).toHaveBeenCalledWith(obj);
+      });
+      it('should return the same object', function() {
+        var obj, result, shape;
+        shape = new Shape;
+        obj = {};
+        result = shape._resetMergedFlags(obj);
+        return expect(result).toBe(obj);
+      });
+      return it('should set psitionEl to _positionEl', function() {
+        var obj, shape;
+        shape = new Shape;
+        obj = {};
+        shape._resetMergedFlags(obj);
+        return expect(obj.positionEl).toBe(shape._positionEl);
+      });
+    });
+    describe('_hide method ->', function() {
+      it('should set `display` of `_moduleEl` to `none`', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        byte._moduleEl.style['display'] = 'block';
+        byte._hide();
+        return expect(byte._moduleEl.style['display']).toBe('none');
+      });
+      return it('should set `_isShown` to false', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        byte._isShown = true;
+        byte._hide();
+        return expect(byte._isShown).toBe(false);
+      });
+    });
+    describe('_show method ->', function() {
+      it('should set `display` of `_moduleEl` to `block`', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        byte._moduleEl.style['display'] = 'none';
+        byte._show();
+        return expect(byte._moduleEl.style['display']).toBe('block');
+      });
+      return it('should set `_isShown` to true', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        byte._isShown = true;
+        byte._show();
+        return expect(byte._isShown).toBe(true);
+      });
+    });
+    describe('_showPositionEl method ->', function() {
+      return it('should show position el', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        byte._positionEl.style['display'] = 'none';
+        byte._showPositionEl();
+        return expect(byte._positionEl.style['display']).toBe('block');
+      });
+    });
+    return describe('_hidePositionEl method ->', function() {
+      return it('should show position el', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        byte._positionEl.style['display'] = 'block';
+        byte._hidePositionEl();
+        return expect(byte._positionEl.style['display']).toBe('none');
       });
     });
   });
