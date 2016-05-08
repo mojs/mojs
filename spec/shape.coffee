@@ -33,6 +33,12 @@ describe 'Shape ->', ->
       byte._positionEl = null
       byte._vars()
       expect(byte._positionEl).toBe obj
+    it 'should save passed _o.shiftEl to _shiftEl', ->
+      obj = document.createElement 'div'
+      byte = new Byte shiftEl: obj
+      byte._shiftEl = null
+      byte._vars()
+      expect(byte._shiftEl).toBe obj
     it 'should save passed _o.prevChainModule to _prevChainModule', ->
       obj = {}
       byte = new Byte prevChainModule: obj
@@ -476,7 +482,7 @@ describe 'Shape ->', ->
         byte = new Byte
           x: 100
           y: 50
-        s = byte._positionEl.style
+        s = byte._shiftEl.style
         tr = s.transform or s["#{mojs.h.prefix.css}transform"]
         expect(tr).toBe 'translate(100px, 50px) rotate(0deg) scale(1, 1)'
       it 'should animate shift position', (dfr)->
@@ -484,7 +490,7 @@ describe 'Shape ->', ->
           x: {100: '200px'}
           duration: 200
           onComplete:->
-            s = byte._positionEl.style
+            s = byte._shiftEl.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
             isTr  = tr is 'translate(200px, 0) rotate(0deg) scale(1, 1)'
             isTr2 = tr is 'translate(200px, 0px) rotate(0deg) scale(1, 1)'
@@ -496,7 +502,7 @@ describe 'Shape ->', ->
           x: {'20%': '50%'}
           duration: 200
           onComplete:->
-            s = byte._positionEl.style
+            s = byte._shiftEl.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
             isTr = tr is 'translate(50%, 0) rotate(0deg) scale(1, 1)'
             isTr2 = tr is 'translate(50%, 0px) rotate(0deg) scale(1, 1)'
@@ -509,7 +515,7 @@ describe 'Shape ->', ->
           y: { 0    : '50%'  }
           duration: 200
           onComplete:->
-            s = byte._positionEl.style
+            s = byte._shiftEl.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
             expect(tr).toBe 'translate(50px, 50%) rotate(0deg) scale(1, 1)'
             dfr()
@@ -654,12 +660,12 @@ describe 'Shape ->', ->
       byte._setProgress .5
       expect(byte._draw).toHaveBeenCalledWith .5
   describe '_drawEl method ->', ->
-    it 'should set _positionEl positions and transforms', ->
+    it 'should set _shiftEl positions and transforms', ->
       byte = new Byte radius: 25, top: 10
       expect(byte._positionEl.style.top)       .toBe     '10px'
       expect(byte._positionEl.style.opacity)   .toBe     '1'
       expect(parseInt(byte._positionEl.style.left, 10)).toBe 0
-      s = byte._positionEl.style
+      s = byte._shiftEl.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
       isTr  = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
@@ -667,10 +673,10 @@ describe 'Shape ->', ->
     # it 'should set only opacity if foreign context', ->
     #   byte = new Byte radius: 25, top: 10, ctx: svg
     #   byte._draw()
-    #   expect(byte._positionEl.style.opacity)   .toBe         '1'
-    #   expect(byte._positionEl.style.left)      .not.toBe     '0px'
-    #   expect(byte._positionEl.style.top)       .not.toBe     '10px'
-    #   s = byte._positionEl.style
+    #   expect(byte._shiftEl.style.opacity)   .toBe         '1'
+    #   expect(byte._shiftEl.style.left)      .not.toBe     '0px'
+    #   expect(byte._shiftEl.style.top)       .not.toBe     '10px'
+    #   s = byte._shiftEl.style
     #   tr = if s.transform? then s.transform
     #   else s["#{mojs.h.prefix.css}transform"]
     #   expect(tr).toBeFalsy()
@@ -679,24 +685,24 @@ describe 'Shape ->', ->
       byte._draw()
       byte._props.left = '1px'
       byte._draw()
-      expect(byte._positionEl.style.left)      .toBe     '1px'
-      expect(byte._lastSet.left.value) .toBe     '1px'
+      expect(byte._positionEl.style.left).toBe     '1px'
+      expect(byte._lastSet.left.value)   .toBe     '1px'
     it 'should not set old values', ->
       byte = new Byte radius: 25, y: 10
       byte._draw()
       byte._draw()
       expect(byte._lastSet.x.value)   .toBe    '0'
-      expect(parseInt(byte._positionEl.style.left, 10)).toBe 0
+      expect(parseInt(byte._shiftEl.style.left, 10)).toBe 0
     it 'should return true if there is no el', ->
       byte = new Byte radius: 25
-      byte._positionEl = null
+      byte._shiftEl = null
       expect(byte._drawEl()).toBe true
     it 'should set transform if angle changed', ->
       byte = new Byte angle: 25
       byte._draw()
       byte._props.angle = 26
       byte._draw()
-      style = byte._positionEl.style
+      style = byte._shiftEl.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(0, 0) rotate(26deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 0px) rotate(26deg) scale(1, 1)'
@@ -746,7 +752,7 @@ describe 'Shape ->', ->
       spyOn(byte, '_fillTransform').and.callThrough()
       byte._draw()
       expect(byte._fillTransform).toHaveBeenCalled()
-      style = byte._positionEl.style
+      style = byte._shiftEl.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(4px, 0) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(4px, 0px) rotate(0deg) scale(1, 1)'
@@ -758,7 +764,7 @@ describe 'Shape ->', ->
       spyOn(byte, '_fillTransform').and.callThrough()
       byte._draw()
       expect(byte._fillTransform).toHaveBeenCalled()
-      style = byte._positionEl.style
+      style = byte._shiftEl.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(0, 4px) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 4px) rotate(0deg) scale(1, 1)'
@@ -772,7 +778,7 @@ describe 'Shape ->', ->
       expect(byte._fillTransform).toHaveBeenCalled()
       # resultStr = 'scale(3) translate(0, 0) rotate(0deg)'
       # expect(byte.el.style['transform']).toBe resultStr
-      style = byte._positionEl.style
+      style = byte._shiftEl.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(0, 0) rotate(0deg) scale(3, 3)'
       isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(3, 3)'
@@ -782,7 +788,7 @@ describe 'Shape ->', ->
       byte = new Byte origin: '50% 30%'
       byte._drawEl()
       prop = 'transform-origin'
-      style = byte._positionEl.style
+      style = byte._shiftEl.style
       tr = style[ prop ] or style["#{mojs.h.prefix.css}#{prop}"]
       expect(tr).toBe '50% 30% '
 
@@ -792,7 +798,7 @@ describe 'Shape ->', ->
       byte._props.origin = byte._parseStrokeDashOption( 'origin', '50% 40%');
       byte._drawEl()
       prop = 'transform-origin'
-      style = byte._positionEl.style
+      style = byte._shiftEl.style
       tr = style[ prop ] or style["#{mojs.h.prefix.css}#{prop}"]
       expect(tr).toBe '50% 40% '
       expect(byte._fillOrigin).toHaveBeenCalled()
@@ -1194,8 +1200,9 @@ describe 'Shape ->', ->
         expect(style['position']).toBe 'absolute'
         expect(style['left']).toBe '0px'
         expect(style['top']).toBe '0px'
-        tr = style['transform'] or style["#{h.prefix.css}transform"]
-        expect(tr).toBe 'translate(-50%, -50%)'
+        # nope
+        # tr = style['transform'] or style["#{h.prefix.css}transform"]
+        # expect(tr).toBe 'translate(-50%, -50%)'
 
         expect(byte._shiftEl.parentNode).toBe byte._positionEl
 
@@ -1332,11 +1339,17 @@ describe 'Shape ->', ->
       result = shape._resetMergedFlags(obj)
       expect(result).toBe obj
 
-    it 'should set psitionEl to _positionEl', ->
+    it 'should set positionEl to _positionEl', ->
       shape = new Shape
       obj = {}
       shape._resetMergedFlags(obj)
       expect(obj.positionEl).toBe shape._positionEl
+
+    it 'should set shiftEl to _shiftEl', ->
+      shape = new Shape
+      obj = {}
+      shape._resetMergedFlags(obj)
+      expect(obj.shiftEl).toBe shape._shiftEl
 
   describe '_hide method ->' , ->
     it 'should set `display` of `_moduleEl` to `none`', ->
@@ -1363,6 +1376,14 @@ describe 'Shape ->', ->
       byte._isShown = true
       byte._show()
       expect( byte._isShown ).toBe true
+
+    it 'should set translate shift on _positionEl', ->
+      byte = new Byte radius: 25
+      h.setPrefixedStyle( byte._positionEl, 'transform', 'none' )
+      byte._show()
+      style = byte._positionEl.style
+      tr = style[ 'transform' ] or style[ "#{h.prefix.css}transform" ]
+      expect( tr ).toBe 'translate(-26px, -26px)'
 
   describe '_showPositionEl method ->', ->
     it 'should show position el', ->

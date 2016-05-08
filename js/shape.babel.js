@@ -105,6 +105,8 @@ class Shape extends Tunable {
     this._masterModule    = this._o.masterModule;
     // save passed position el from master module
     this._positionEl      = this._o.positionEl;
+    // save passed shift el from master module
+    this._shiftEl         = this._o.shiftEl;
     // save previous module in the chain
     this._prevChainModule = this._o.prevChainModule;
     // should draw on foreign svg canvas
@@ -142,8 +144,8 @@ class Shape extends Tunable {
           // stays the same for all the modules in the `then` chain
           this._positionEl = document.createElement('div');
           this._positionEl.style['position'] = 'absolute';
-          this._positionEl.style['width'] = '0px';
-          this._positionEl.style['height'] = '0px';
+          this._positionEl.style['width']    = '0px';
+          this._positionEl.style['height']   = '0px';
           this._positionEl.setAttribute( 'data-name', 'mojs-shape' );
           this._hidePositionEl();
           // shift el simply shifts el to -50% for both x/y to be sure
@@ -153,8 +155,7 @@ class Shape extends Tunable {
           h.style(this._shiftEl, {
             position:   'absolute',
             left:       '0px',
-            top:        '0px',
-            transform:  'translate(-50%, -50%)',
+            top:        '0px'
           });
           // the `el` element for all the modules in the chain
           this.el = document.createElement('div');
@@ -231,14 +232,15 @@ class Shape extends Tunable {
     @private
   */
   _drawEl () {
-    if (this._positionEl == null) { return true; }
-    var p     = this._props,
-        style = this._positionEl.style;
+    if (this._shiftEl == null) { return true; }
+    var p             = this._props,
+        shiftStyle    = this._shiftEl.style,
+        positionStyle = this._positionEl.style;
 
-    this._isPropChanged('opacity') && (style.opacity = p.opacity);
+    this._isPropChanged('opacity') && (positionStyle.opacity = p.opacity);
     if (!this.isForeign) {
-      this._isPropChanged('left')  && (style.left = p.left);
-      this._isPropChanged('top')   && (style.top = p.top);
+      this._isPropChanged('left')  && (positionStyle.left = p.left);
+      this._isPropChanged('top')   && (positionStyle.top = p.top);
       
       var isX = this._isPropChanged('x'),
           isY = this._isPropChanged('y'),
@@ -251,14 +253,14 @@ class Shape extends Tunable {
 
       if ( isTranslate || isScale || isRotate ) {
         var transform = this._fillTransform();
-        style[`${ h.prefix.css }transform`] = transform;
-        style['transform'] = transform;
+        shiftStyle[`${ h.prefix.css }transform`] = transform;
+        shiftStyle['transform'] = transform;
       }
 
       if ( this._isPropChanged('origin') || this._deltas[ 'origin' ] ) {
         var origin = this._fillOrigin();
-        style[`${ h.prefix.css }transform-origin`] = origin;
-        style['transform-origin'] = origin;
+        shiftStyle[`${ h.prefix.css }transform-origin`] = origin;
+        shiftStyle['transform-origin'] = origin;
       }
     }
   }
@@ -513,6 +515,11 @@ class Shape extends Tunable {
   _show () {
     if ( !this._moduleEl ) { return; }
     this._moduleEl.style.display = 'block';
+    let shift = this._props.size/2;
+    h.setPrefixedStyle(
+      this._positionEl, 'transform',
+      `translate(${-shift}px, ${-shift}px)`);
+
     this._isShown = true;
   }
   /*
@@ -550,6 +557,8 @@ class Shape extends Tunable {
     super._resetMergedFlags(obj);
     // pass the `_positionEl` to the child module
     obj.positionEl = this._positionEl;
+    // pass the `_shiftEl` to the child module
+    obj.shiftEl    = this._shiftEl;
     return obj;
   }
 }
