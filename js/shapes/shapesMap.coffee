@@ -6,6 +6,7 @@ Zigzag    = require './zigzag'
 Rect      = require './rect'
 Polygon   = require './polygon'
 Cross     = require './cross'
+Arc       = require('./arc').default or require('./arc')
 Equal     = require './equal'
 h         = require '../h'
 
@@ -18,6 +19,7 @@ class BitsMap
   polygon:  Polygon
   cross:    Cross
   equal:    Equal
+  arc:      Arc
   getShape:(name)-> @[name] or h.error "no \"#{name}\" shape available yet,
       please choose from this list:", @
 
