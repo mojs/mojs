@@ -48,7 +48,7 @@ describe 'Tween ->', ->
       expect(t._defaults.delay).toBe     0
       expect(t._defaults.yoyo).toBe      false
       expect(t._defaults.speed).toBe     1
-      expect(t._defaults.easing).toBe    'Ease.Out'
+      expect(t._defaults.easing).toBe    'Sin.Out'
       expect(t._defaults.name).toBe      null
       expect(t._defaults.nameBase).toBe  'Tween'
       expect(t._defaults.onStart).toBeDefined()

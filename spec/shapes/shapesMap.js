@@ -14,7 +14,8 @@
       expect(shapesMap.rect).toBeDefined();
       expect(shapesMap.polygon).toBeDefined();
       expect(shapesMap.cross).toBeDefined();
-      return expect(shapesMap.equal).toBeDefined();
+      expect(shapesMap.equal).toBeDefined();
+      return expect(shapesMap.curve).toBeDefined();
     });
     return describe('getShape', function() {
       it('should get bit by string', function() {

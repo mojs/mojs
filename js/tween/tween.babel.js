@@ -29,7 +29,7 @@ class Tween extends Module {
           for now (under consideration). */
       yoyo:                   false,
       /* easing for the tween, could be any easing type [link to easing-types.md] */
-      easing:                 'Ease.Out',
+      easing:                 'Sin.Out',
       /* custom tween's name */
       name:                   null,
       /* custom tween's base name */
@@ -783,7 +783,7 @@ class Tween extends Module {
     var p = this._props,
         isYoyoChanged = p.wasYoyo !== isYoyo;
     this.progress = proc;
-    this.easedProgress = p.easing(this.progress);
+    this.easedProgress = p.easing(proc);
     if ( p.prevEasedProgress !== this.easedProgress || isYoyoChanged ) {
       if (p.onUpdate != null && typeof p.onUpdate === 'function') {
         p.onUpdate.call(

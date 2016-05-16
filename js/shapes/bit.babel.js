@@ -86,7 +86,13 @@ class Bit extends Module {
   }
 
   draw () {
+    // if ( this._state[ 'radius' ] !== this._props[ 'radius' ] ) {
+    //   this._props.length = this.getLength();
+    // }
     this._props.length = this.getLength();
+
+    var state = this._state,
+        props = this._props;
 
     var len = this._drawMapLength;
     while(len--) {
@@ -95,7 +101,6 @@ class Bit extends Module {
         case 'stroke-dasharray':
         case 'stroke-dashoffset':
           this.castStrokeDash(name);
-          // # name is 'stroke-dashoffset' and console.log this._props[name]
       }
       this.setAttrIfChanged( name, this._props[name] );
     }
@@ -114,6 +119,7 @@ class Bit extends Module {
         stroke += `${cast} `;
       }
       p[name] = ( stroke === '0 ' ) ? stroke = '' : stroke;
+      // console.log(`set: ${stroke}`)
       return p[name] = stroke;
     }
     // # if single value
@@ -138,6 +144,7 @@ class Bit extends Module {
 
   setAttrIfChanged (name, value) {
     if ( this._state[name] !== value ) {
+      // this.el.style[name] = value;
       this.el.setAttribute(name, value);
       this._state[name] = value;
     }

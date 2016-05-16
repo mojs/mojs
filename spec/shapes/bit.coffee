@@ -4,7 +4,7 @@ svg   = document.createElementNS?(ns, 'svg')
 bit   = new Bit ctx: svg
 h     = mojs.h
 
-describe 'Bit', ->
+describe 'Bit ->', ->
   describe 'extention ->', ->
     it 'should extend Module', ->
       bit = new Bit ctx: svg
@@ -50,18 +50,20 @@ describe 'Bit', ->
       svg     = document.createElementNS?(ns, 'svg')
       bit     = new Bit
         ctx: svg
+        isIt: 1
         x: 20
         y: 20
         stroke:               '#0f0'
-        'stroke-width':          3
+        'stroke-width':       3
         fill:                 '#0ff'
-        'stroke-dasharray':      100
-        'stroke-dashoffset':     50
+        'stroke-dasharray':   100
+        'stroke-dashoffset':  50
         angle:                45
+
       stroke          = bit.el.getAttribute 'stroke'
       strokeWidth     = bit.el.getAttribute 'stroke-width'
       fill            = bit.el.getAttribute 'fill'
-      strokeDasharray = bit.el.getAttribute 'stroke-dasharray'
+      strokeArray     = bit.el.getAttribute 'stroke-dasharray'
       strokeOffset    = bit.el.getAttribute 'stroke-dashoffset'
       transform       = bit.el.getAttribute 'transform'
       # isTransform     = transform is 'rotate(45, 20, 20)'
@@ -69,7 +71,7 @@ describe 'Bit', ->
       expect(stroke)          .toBe   '#0f0'
       expect(strokeWidth)     .toBe   '3'
       expect(fill)            .toBe   '#0ff'
-      expect(strokeDasharray) .toBe   '100'
+      expect(strokeArray)     .toBe   '100'
       expect(strokeOffset)    .toBe   '50'
       # console.log isTransform
       # expect(isTransform or isIE9Transform).toBe true

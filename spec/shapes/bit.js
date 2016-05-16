@@ -13,7 +13,7 @@
 
   h = mojs.h;
 
-  describe('Bit', function() {
+  describe('Bit ->', function() {
     describe('extention ->', function() {
       return it('should extend Module', function() {
         bit = new Bit({
@@ -76,10 +76,11 @@
     });
     describe('draw method ->', function() {
       it('should set attributes', function() {
-        var fill, stroke, strokeDasharray, strokeOffset, strokeWidth, transform;
+        var fill, stroke, strokeArray, strokeOffset, strokeWidth, transform;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
         bit = new Bit({
           ctx: svg,
+          isIt: 1,
           x: 20,
           y: 20,
           stroke: '#0f0',
@@ -92,13 +93,13 @@
         stroke = bit.el.getAttribute('stroke');
         strokeWidth = bit.el.getAttribute('stroke-width');
         fill = bit.el.getAttribute('fill');
-        strokeDasharray = bit.el.getAttribute('stroke-dasharray');
+        strokeArray = bit.el.getAttribute('stroke-dasharray');
         strokeOffset = bit.el.getAttribute('stroke-dashoffset');
         transform = bit.el.getAttribute('transform');
         expect(stroke).toBe('#0f0');
         expect(strokeWidth).toBe('3');
         expect(fill).toBe('#0ff');
-        expect(strokeDasharray).toBe('100');
+        expect(strokeArray).toBe('100');
         return expect(strokeOffset).toBe('50');
       });
       it('should save its state', function() {

@@ -11,6 +11,7 @@ describe 'shapesMap ->', ->
     expect(shapesMap.polygon)   .toBeDefined()
     expect(shapesMap.cross)     .toBeDefined()
     expect(shapesMap.equal)     .toBeDefined()
+    expect(shapesMap.curve)     .toBeDefined()
   describe 'getShape', ->
     it 'should get bit by string', ->
       expect(shapesMap.getShape('bit')).toBeDefined()

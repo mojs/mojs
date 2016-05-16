@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.235.0', isDebug: true, helpers: h,
+  revision:   '0.236.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -34,6 +34,7 @@ window.mojs = mojs;
 
 // TODO:
 /*
+  swirl then issue
   add isForce3d option
   'rand' angle flick with `then`
   not able to `play()` in `onComplete` callback

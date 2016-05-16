@@ -3,6 +3,9 @@ PathEasing = require './path-easing'
 mix        = require './mix'
 h          = require '../h'
 
+sin = Math.sin
+PI  = Math.PI
+
 class Easing
   bezier:     bezier
   PathEasing: PathEasing
@@ -20,6 +23,10 @@ class Easing
     in:     bezier.apply @, [ 0.42,   0,     1,      1 ]
     out:    bezier.apply @, [ 0,      0,    0.58,    1 ]
     inout:  bezier.apply @, [ 0.42,   0,    0.58,    1 ]
+  sin:
+    in:     (k) -> 1 - Math.cos(k * PI / 2)
+    out:    (k) -> sin k * PI / 2
+    inout:  (k) -> 0.5 * (1 - Math.cos(PI * k))
   quad:
     in:     (k) -> k * k
     out:    (k) -> k * (2 - k)
@@ -44,10 +51,6 @@ class Easing
     inout:  (k) ->
       return 0.5 * k * k * k * k * k  if (k *= 2) < 1
       0.5 * ((k -= 2) * k * k * k * k + 2)
-  sin:
-    in:     (k) -> 1 - Math.cos(k * Math.PI / 2)
-    out:    (k) -> Math.sin k * Math.PI / 2
-    inout:  (k) -> 0.5 * (1 - Math.cos(Math.PI * k))
   expo:
     in:     (k) -> (if k is 0 then 0 else Math.pow(1024, k - 1))
     out:    (k) -> (if k is 1 then 1 else 1 - Math.pow(2, -10 * k))

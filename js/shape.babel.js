@@ -144,6 +144,10 @@ class Shape extends Tunable {
           // stays the same for all the modules in the `then` chain
           this._positionEl = document.createElement('div');
           this._positionEl.style['position'] = 'absolute';
+          // h.setPrefixedStyle(
+          //   this._positionEl, 'transform',
+          //   `translate(-50%, -50%)`
+          // );
           this._positionEl.style['width']    = '0px';
           this._positionEl.style['height']   = '0px';
           this._positionEl.setAttribute( 'data-name', 'mojs-shape' );
@@ -153,6 +157,7 @@ class Shape extends Tunable {
           this._shiftEl = document.createElement('div');
           this._shiftEl.setAttribute( 'data-name', 'mojs-shape-shift' );
           h.style(this._shiftEl, {
+            // 'backface-visibility': 'hidden',
             position:   'absolute',
             left:       '0px',
             top:        '0px'
@@ -237,6 +242,7 @@ class Shape extends Tunable {
         shiftStyle    = this._shiftEl.style,
         positionStyle = this._positionEl.style;
 
+    positionStyle.opacity = p.opacity
     this._isPropChanged('opacity') && (positionStyle.opacity = p.opacity);
     if (!this.isForeign) {
       this._isPropChanged('left')  && (positionStyle.left = p.left);
@@ -515,10 +521,14 @@ class Shape extends Tunable {
   _show () {
     if ( !this._moduleEl ) { return; }
     this._moduleEl.style.display = 'block';
+    
     let shift = this._props.size/2;
-    h.setPrefixedStyle(
-      this._positionEl, 'transform',
-      `translate(${-shift}px, ${-shift}px)`);
+    this._positionEl.style[ 'transform' ] =
+      `translate(${-shift}px, ${-shift}px)`;
+    this._positionEl.style[ `${h.prefix.css}transform` ] =
+      `translate(${-shift}px, ${-shift}px)`;
+    // h.setPrefixedStyle(
+    //   );
 
     this._isShown = true;
   }

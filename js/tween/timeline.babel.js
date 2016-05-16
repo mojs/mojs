@@ -134,7 +134,6 @@ class Timeline extends Tween {
   */
   _setProgress (p, time, isYoyo) {
     Tween.prototype._setProgress.call( this, p, time );
-    // super._setProgress(p, time);
     // we need to pass self previous time to children
     // to prevent initial _wasUnknownUpdate nested waterfall
     // if not yoyo option set, pass the previous time
