@@ -52,7 +52,7 @@
           });
           return expect(zigzag.el.getAttribute('d')).toBeFalsy();
         });
-        return it('should calculate path length', function() {
+        it('should calculate path length', function() {
           var zigzag;
           zigzag = new Zigzag({
             ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
@@ -60,7 +60,90 @@
             points: 10
           });
           zigzag.draw();
-          return expect(zigzag._length).toBe(80);
+          return expect(zigzag._length).toBeCloseTo(184.390, 2);
+        });
+        it('should set `d` attribute', function() {
+          var currentX, currentY, delta, i, length, p, points, radiusX, radiusY, stepX, x, y, yFlip, zigzag, _i, _ref;
+          zigzag = new Zigzag({
+            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+            radius: 20,
+            points: 10
+          });
+          zigzag.draw();
+          p = zigzag._props;
+          radiusX = p.radiusX != null ? p.radiusX : p.radius;
+          radiusY = p.radiusY != null ? p.radiusY : p.radius;
+          x = 1 * p.x;
+          y = 1 * p.y;
+          currentX = x - radiusX;
+          currentY = y;
+          stepX = (2 * radiusX) / (p.points - 1);
+          yFlip = -1;
+          delta = Math.sqrt(stepX * stepX + radiusY * radiusY);
+          length = -delta;
+          points = "M" + currentX + ", " + y + " ";
+          for (i = _i = 0, _ref = p.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+            points += "L" + currentX + ", " + currentY + " ";
+            currentX += stepX;
+            length += delta;
+            currentY = yFlip === -1 ? y - radiusY : y;
+            yFlip = -yFlip;
+          }
+          expect(zigzag.el.getAttribute('d')).toBe(points);
+          expect(zigzag._prevRadiusX).toBe(radiusX);
+          expect(zigzag._prevRadiusY).toBe(radiusY);
+          return expect(zigzag._prevPoints).toBe(p.points);
+        });
+        it('should not set `d` attribute if nothing changed', function() {
+          var zigzag;
+          zigzag = new Zigzag({
+            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+            radius: 20,
+            points: 10
+          });
+          zigzag.draw();
+          spyOn(zigzag.el, 'setAttribute');
+          zigzag.draw();
+          return expect(zigzag.el.setAttribute).not.toHaveBeenCalled();
+        });
+        it('should set `d` attribute if `radiusX` changed', function() {
+          var zigzag;
+          zigzag = new Zigzag({
+            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+            radius: 20,
+            points: 10
+          });
+          zigzag.draw();
+          spyOn(zigzag.el, 'setAttribute');
+          zigzag._props.radiusX = 30;
+          zigzag.draw();
+          return expect(zigzag.el.setAttribute).toHaveBeenCalled();
+        });
+        it('should set `d` attribute if `radiusY` changed', function() {
+          var zigzag;
+          zigzag = new Zigzag({
+            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+            radius: 20,
+            points: 10
+          });
+          zigzag.draw();
+          spyOn(zigzag.el, 'setAttribute');
+          zigzag._props.radiusY = 30;
+          zigzag.draw();
+          return expect(zigzag.el.setAttribute).toHaveBeenCalled();
+        });
+        return it('should set `d` attribute if `points` changed', function() {
+          var zigzag;
+          zigzag = new Zigzag({
+            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+            radius: 20,
+            points: 10
+          });
+          zigzag.draw();
+          spyOn(zigzag.el, 'setAttribute');
+          zigzag._props.points = 30;
+          zigzag.draw();
+          return expect(zigzag.el.setAttribute).toHaveBeenCalled();
         });
       });
     });

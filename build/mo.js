@@ -7112,32 +7112,41 @@
 	  };
 
 	  Zigzag.prototype.draw = function() {
-	    var char, i, iX, iX2, iY, iY2, j, points, radiusX, radiusY, ref, stepX, stepY, strokeWidth, xStart, yStart;
+	    var currentX, currentY, delta, i, isPoints, isRadiusX, isRadiusY, j, length, p, points, radiusX, radiusY, ref, stepX, x, y, yFlip;
+	    Zigzag.__super__.draw.apply(this, arguments);
+	    p = this._props;
 	    if (!this._props.points) {
 	      return;
 	    }
 	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
 	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    points = '';
-	    stepX = 2 * radiusX / this._props.points;
-	    stepY = 2 * radiusY / this._props.points;
-	    strokeWidth = this._props['stroke-width'];
-	    xStart = this._props.x - radiusX - strokeWidth;
-	    yStart = this._props.y - radiusY - strokeWidth;
-	    this._length = 0;
-	    for (i = j = ref = this._props.points; ref <= 0 ? j < 0 : j > 0; i = ref <= 0 ? ++j : --j) {
-	      iX = xStart + i * stepX + strokeWidth;
-	      iY = yStart + i * stepY + strokeWidth;
-	      iX2 = xStart + (i - 1) * stepX + strokeWidth;
-	      iY2 = yStart + (i - 1) * stepY + strokeWidth;
-	      this._length += stepX + stepY;
-	      char = i === this._props.points ? 'M' : 'L';
-	      points += "" + char + iX + "," + iY + " l0, -" + stepY + " l-" + stepX + ", 0";
+	    isRadiusX = radiusX === this._prevRadiusX;
+	    isRadiusY = radiusY === this._prevRadiusY;
+	    isPoints = p.points === this._prevPoints;
+	    if (isRadiusX && isRadiusY && isPoints) {
+	      return;
 	    }
-	    this.setAttr({
-	      d: points
-	    });
-	    return Zigzag.__super__.draw.apply(this, arguments);
+	    x = 1 * p.x;
+	    y = 1 * p.y;
+	    currentX = x - radiusX;
+	    currentY = y;
+	    stepX = (2 * radiusX) / (p.points - 1);
+	    yFlip = -1;
+	    delta = Math.sqrt(stepX * stepX + radiusY * radiusY);
+	    length = -delta;
+	    points = "M" + currentX + ", " + y + " ";
+	    for (i = j = 0, ref = p.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+	      points += "L" + currentX + ", " + currentY + " ";
+	      currentX += stepX;
+	      length += delta;
+	      currentY = yFlip === -1 ? y - radiusY : y;
+	      yFlip = -yFlip;
+	    }
+	    this._length = length;
+	    this.el.setAttribute('d', points);
+	    this._prevPoints = p.points;
+	    this._prevRadiusX = radiusX;
+	    return this._prevRadiusY = radiusY;
 	  };
 
 	  Zigzag.prototype.getLength = function() {
@@ -8145,7 +8154,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.236.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.237.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -9170,26 +9179,6 @@
 	    this._defaults.shape = 'path';
 	  };
 	  /*
-	    Method to copy `_o` options to `_props` object
-	    with fallback to `_defaults`.
-	    @private
-	    @overrides @ Module
-	  */
-
-
-	  Curve.prototype._extendDefaults = function _extendDefaults() {
-	    _Bit.prototype._extendDefaults.call(this);
-	    var p = this._props;
-
-	    if (p.radiusX == null) {
-	      p.radiusX = p.radius;
-	    };
-	    if (p.radiusY == null) {
-	      p.radiusY = p.radius;
-	    };
-	  };
-
-	  /*
 	    Method to draw the module.
 	    @private
 	    @overrides @ Bit
@@ -9199,13 +9188,24 @@
 	  Curve.prototype.draw = function draw() {
 	    _Bit.prototype.draw.call(this);
 	    var p = this._props;
+
+	    var radiusX = p.radiusX != null ? p.radiusX : p.radius;
+	    var radiusY = p.radiusY != null ? p.radiusY : p.radius;
+
+	    var isRadiusX = radiusX === this._prevRadiusX;
+	    var isRadiusY = radiusY === this._prevRadiusY;
+	    var isPoints = p.points === this._prevPoints;
+	    // skip if nothing changed
+	    if (isRadiusX && isRadiusY && isPoints) {
+	      return;
+	    }
+
 	    var x = 1 * p.x;
 	    var y = 1 * p.y;
-	    var x1 = x - p.radiusX;
-	    var x2 = x + p.radiusX;
-	    var y1 = y - p.radiusY;
+	    var x1 = x - radiusX;
+	    var x2 = x + radiusX;
 
-	    var d = 'M' + x1 + ' ' + y + ' Q ' + x + ' ' + (p.y - 2 * p.radiusY) + ' ' + x2 + ' ' + y;
+	    var d = 'M' + x1 + ' ' + y + ' Q ' + x + ' ' + (p.y - 2 * radiusY) + ' ' + x2 + ' ' + y;
 
 	    // don't set the `d` attribute if nothing changed
 	    if (this._prevD === d) {
@@ -9213,14 +9213,20 @@
 	    }
 	    // set the `d` attribute and save it to `_prevD`
 	    this.el.setAttribute('d', d);
-	    this._prevD = d;
+	    // save the properties
+	    this._prevPoints = p.points;
+	    this._prevRadiusX = radiusX;
+	    this._prevRadiusY = radiusY;
 	  };
 
 	  Curve.prototype.getLength = function getLength() {
 	    var p = this._props;
 
-	    var dRadius = p.radiusX + p.radiusY;
-	    var sqrt = Math.sqrt((3 * p.radiusX + p.radiusY) * (p.radiusX + 3 * p.radiusY));
+	    var radiusX = p.radiusX != null ? p.radiusX : p.radius;
+	    var radiusY = p.radiusY != null ? p.radiusY : p.radius;
+
+	    var dRadius = radiusX + radiusY;
+	    var sqrt = Math.sqrt((3 * radiusX + radiusY) * (radiusX + 3 * radiusY));
 
 	    return .5 * Math.PI * (3 * dRadius - sqrt);
 	  };

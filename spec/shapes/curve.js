@@ -27,47 +27,6 @@
         return expect(curve._defaults.shape).toBe('path');
       });
     });
-    describe('_extendDefaults method', function() {
-      it('should call super', function() {
-        spyOn(Bit.prototype, '_extendDefaults');
-        curve._extendDefaults();
-        return expect(Bit.prototype._extendDefaults).toHaveBeenCalled();
-      });
-      it('`radiusX` should fallback to `radius`', function() {
-        curve = new Curve({
-          ctx: svg,
-          radius: 20
-        });
-        curve._extendDefaults();
-        return expect(curve._props.radiusX).toBe(20);
-      });
-      it('`radiusX` should not fallback to `radius` if falsy', function() {
-        curve = new Curve({
-          ctx: svg,
-          radius: 20,
-          radiusX: 0
-        });
-        curve._extendDefaults();
-        return expect(curve._props.radiusX).toBe(0);
-      });
-      it('`radiusY` should fallback to `radius`', function() {
-        curve = new Curve({
-          ctx: svg,
-          radius: 20
-        });
-        curve._extendDefaults();
-        return expect(curve._props.radiusY).toBe(20);
-      });
-      return it('`radiusY` should not fallback to `radius` if falsy', function() {
-        curve = new Curve({
-          ctx: svg,
-          radius: 20,
-          radiusY: 0
-        });
-        curve._extendDefaults();
-        return expect(curve._props.radiusY).toBe(0);
-      });
-    });
     describe('draw method ->', function() {
       it('should call super', function() {
         spyOn(Bit.prototype, 'draw');
@@ -83,17 +42,19 @@
         }, radiusX, radiusY);
         curve.draw();
         p = curve._props;
+        radiusX = p.radiusX != null ? p.radiusX : p.radius;
+        radiusY = p.radiusY != null ? p.radiusY : p.radius;
         x = 1 * p.x;
         y = 1 * p.y;
-        x1 = x - p.radiusX;
+        x1 = x - radiusX;
         x2 = x;
-        x3 = x + p.radiusX;
-        y1 = y - p.radiusY;
+        x3 = x + radiusX;
+        y1 = y - radiusY;
         y2 = y;
-        y3 = y + p.radiusY;
-        return expect(curve.el.getAttribute('d')).toBe("M" + x1 + " " + p.y + " Q " + x2 + " " + (p.y - 2 * p.radiusY) + " " + x3 + " " + p.y);
+        y3 = y + radiusY;
+        return expect(curve.el.getAttribute('d')).toBe("M" + x1 + " " + p.y + " Q " + x2 + " " + (p.y - 2 * radiusY) + " " + x3 + " " + p.y);
       });
-      it('should save `d` to `_d` property', function() {
+      it('should save `radiusX/radiusY/points` properties', function() {
         var p, radiusX, radiusY, x, x1, x2, x3, y, y1, y2, y3;
         radiusX = 20;
         radiusY = 30;
@@ -102,17 +63,21 @@
         }, radiusX, radiusY);
         curve.draw();
         p = curve._props;
+        radiusX = p.radiusX != null ? p.radiusX : p.radius;
+        radiusY = p.radiusY != null ? p.radiusY : p.radius;
         x = 1 * p.x;
         y = 1 * p.y;
-        x1 = x - p.radiusX;
+        x1 = x - radiusX;
         x2 = x;
-        x3 = x + p.radiusX;
-        y1 = y - p.radiusY;
+        x3 = x + radiusX;
+        y1 = y - radiusY;
         y2 = y;
-        y3 = y + p.radiusY;
-        return expect(curve._prevD).toBe("M" + x1 + " " + p.y + " Q " + x2 + " " + (p.y - 2 * p.radiusY) + " " + x3 + " " + p.y);
+        y3 = y + radiusY;
+        expect(curve._prevRadiusX).toBe(radiusX);
+        expect(curve._prevRadiusY).toBe(radiusY);
+        return expect(curve._prevPoints).toBe(p.points);
       });
-      return it('should not set the `d` attribute if nothing changed', function() {
+      it('should not set the `d` attribute if nothing changed', function() {
         var radiusX, radiusY;
         radiusX = 20;
         radiusY = 30;
@@ -124,6 +89,42 @@
         curve.draw();
         return expect(curve.el.setAttribute).not.toHaveBeenCalled();
       });
+      it('should set `d` attribute if `radiusX` changed', function() {
+        curve = new Curve({
+          ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+          radius: 20,
+          points: 10
+        });
+        curve.draw();
+        spyOn(curve.el, 'setAttribute');
+        curve._props.radiusX = 30;
+        curve.draw();
+        return expect(curve.el.setAttribute).toHaveBeenCalled();
+      });
+      it('should set `d` attribute if `radiusY` changed', function() {
+        curve = new Curve({
+          ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+          radius: 20,
+          points: 10
+        });
+        curve.draw();
+        spyOn(curve.el, 'setAttribute');
+        curve._props.radiusY = 30;
+        curve.draw();
+        return expect(curve.el.setAttribute).toHaveBeenCalled();
+      });
+      return it('should set `d` attribute if `points` changed', function() {
+        curve = new Curve({
+          ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+          radius: 20,
+          points: 10
+        });
+        curve.draw();
+        spyOn(curve.el, 'setAttribute');
+        curve._props.points = 30;
+        curve.draw();
+        return expect(curve.el.setAttribute).toHaveBeenCalled();
+      });
     });
     return describe('getLength method', function() {
       return it('should calculate total length of the path', function() {
@@ -134,8 +135,10 @@
           ctx: svg
         }, radiusX, radiusY);
         p = curve._props;
-        dRadius = p.radiusX + p.radiusY;
-        sqrt = Math.sqrt((3 * p.radiusX + p.radiusY) * (p.radiusX + 3 * p.radiusY));
+        radiusX = p.radiusX != null ? p.radiusX : p.radius;
+        radiusY = p.radiusY != null ? p.radiusY : p.radius;
+        dRadius = radiusX + radiusY;
+        sqrt = Math.sqrt((3 * radiusX + radiusY) * (radiusX + 3 * radiusY));
         len = .5 * Math.PI * (3 * dRadius - sqrt);
         return expect(curve.getLength()).toBe(len);
       });

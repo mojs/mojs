@@ -12,20 +12,6 @@ class Curve extends Bit {
     this._defaults.shape = 'path';
   }
   /*
-    Method to copy `_o` options to `_props` object
-    with fallback to `_defaults`.
-    @private
-    @overrides @ Module
-  */
-  _extendDefaults () {
-    super._extendDefaults();
-    var p = this._props;
-
-    if ( p.radiusX == null ) { p.radiusX = p.radius };
-    if ( p.radiusY == null ) { p.radiusY = p.radius };
-  }
-
-  /*
     Method to draw the module.
     @private
     @overrides @ Bit
@@ -33,26 +19,41 @@ class Curve extends Bit {
   draw () {
     super.draw();
     var p  = this._props;
+
+    var radiusX = (p.radiusX != null) ? p.radiusX : p.radius;
+    var radiusY = (p.radiusY != null) ? p.radiusY : p.radius;
+
+    var isRadiusX = radiusX === this._prevRadiusX;
+    var isRadiusY = radiusY === this._prevRadiusY;
+    var isPoints  = p.points === this._prevPoints;
+    // skip if nothing changed
+    if ( isRadiusX && isRadiusY && isPoints ) { return; }
+
     var x  = 1*p.x;
     var y  = 1*p.y;
-    var x1 = x - p.radiusX;
-    var x2 = x + p.radiusX;
-    var y1 = y - p.radiusY;
+    var x1 = x - radiusX;
+    var x2 = x + radiusX;
     
-    var d = `M${x1} ${y} Q ${x} ${ p.y - 2*p.radiusY } ${x2} ${y}`;
+    var d = `M${x1} ${y} Q ${x} ${ p.y - 2*radiusY } ${x2} ${y}`;
 
     // don't set the `d` attribute if nothing changed
     if ( this._prevD === d ) { return; }
     // set the `d` attribute and save it to `_prevD`
     this.el.setAttribute('d', d);
-    this._prevD = d;
+    // save the properties
+    this._prevPoints  = p.points;
+    this._prevRadiusX = radiusX;
+    this._prevRadiusY = radiusY;
   }
 
   getLength () {
     var p = this._props;
 
-    var dRadius = p.radiusX + p.radiusY;
-    var sqrt = Math.sqrt((3*p.radiusX + p.radiusY)*(p.radiusX + 3*p.radiusY));
+    var radiusX = (p.radiusX != null) ? p.radiusX : p.radius;
+    var radiusY = (p.radiusY != null) ? p.radiusY : p.radius;
+
+    var dRadius = radiusX + radiusY;
+    var sqrt = Math.sqrt((3*radiusX + radiusY)*(radiusX + 3*radiusY));
 
     return .5 * Math.PI * ( 3*dRadius - sqrt );
   }

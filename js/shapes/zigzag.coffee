@@ -9,29 +9,47 @@ class Zigzag extends Bit
     @_defaults.shape = 'path';
     # @_defaults.ratio = 1.43;
   draw:->
+    super
+    p = this._props
     return if !@_props.points
+    
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
-    points = ''; stepX = 2*radiusX/@_props.points
-    stepY  = 2*radiusY/@_props.points; strokeWidth = @_props['stroke-width']
+
+    isRadiusX = radiusX is @_prevRadiusX
+    isRadiusY = radiusY is @_prevRadiusY
+    isPoints  = p.points is @_prevPoints
+    # skip if nothing changed
+    return if ( isRadiusX and isRadiusY and isPoints )
+
+    x = 1*p.x
+    y = 1*p.y
+
+    currentX = x-radiusX
+    currentY = y
+    stepX    = (2*radiusX) / (p.points-1)
+    yFlip    = -1
+
+    delta = Math.sqrt(stepX*stepX + radiusY*radiusY)
+    length = -delta
+
+    points = "M#{currentX}, #{y} "
+    for i in [0...p.points]
+      points   += "L#{currentX}, #{currentY} "
+      currentX += stepX
+      length   += delta
+
+      currentY = if yFlip is -1 then y-radiusY else y
+      yFlip    = -yFlip
+
+    @_length = length
+    @el.setAttribute 'd', points
     
-    xStart = @_props.x - radiusX - strokeWidth
-    yStart = @_props.y - radiusY - strokeWidth
-
-    @_length = 0
-
-    for i in [@_props.points...0]
-      iX = xStart + i*stepX + strokeWidth; iY = yStart + i*stepY + strokeWidth
-      iX2 = xStart + (i-1)*stepX + strokeWidth
-      iY2 = yStart + (i-1)*stepY + strokeWidth
-
-      @_length += stepX + stepY
-
-      char = if i is @_props.points then 'M' else 'L'
-      points += "#{char}#{iX},#{iY} l0, -#{stepY} l-#{stepX}, 0"
-
-    @setAttr d: points
-    super
+    # save the properties
+    @_prevPoints  = p.points
+    @_prevRadiusX = radiusX
+    @_prevRadiusY = radiusY
+    
   getLength:-> @_length
 
 module.exports = Zigzag
