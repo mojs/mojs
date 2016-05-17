@@ -89,8 +89,8 @@ module.exports = function(config) {
       'build/h.js',
       'spec/h.js',
       
-      'build/shape.js',
-      'spec/shape.js',
+      // 'build/shape.js',
+      // 'spec/shape.js',
       'build/shape-swirl.js',
       'spec/shape-swirl.js',
       'build/burst.js',
@@ -122,8 +122,8 @@ module.exports = function(config) {
 
       'build/motion-path.js',
       'spec/motion-path.js',
-      // 'build/bits/*.js',
-      // 'spec/bits/*.js'
+      // 'build/shapes/*.js',
+      // 'spec/shapes/*.js'
     ],
 
     // preprocess matching files before serving them to the browser

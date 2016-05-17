@@ -97,7 +97,7 @@
           ctx: document.createElementNS(ns, 'svg'),
           radius: radius
         });
-        return expect(bit._getLength()).toBe(400);
+        return expect(bit._getLength()).toBe(800);
       });
       return it('should calculate total length of the with different radiusX/Y', function() {
         var bit, radiusX, radiusY;
@@ -108,7 +108,7 @@
           radiusX: radiusX,
           radiusY: radiusY
         });
-        return expect(bit._getLength()).toBe(2 * radiusX + 2 * radiusY);
+        return expect(bit._getLength()).toBe(2 * (2 * radiusX + 2 * radiusY));
       });
     });
   });

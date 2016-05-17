@@ -1967,16 +1967,12 @@
 	    this._origin = {};
 	    // save _master module
 	    this._masterModule = this._o.masterModule;
-	    // save passed position el from master module
-	    this._positionEl = this._o.positionEl;
-	    // save passed shift el from master module
-	    this._shiftEl = this._o.shiftEl;
 	    // save previous module in the chain
 	    this._prevChainModule = this._o.prevChainModule;
 	    // should draw on foreign svg canvas
 	    this.isForeign = !!this._o.ctx;
 	    // should take an svg element as self bit
-	    return this.isForeignBit = !!this._o.bit;
+	    return this.isForeignBit = !!this._o.shape;
 	  };
 	  /*
 	    Method to initialize modules presentation.
@@ -1986,63 +1982,16 @@
 
 
 	  Shape.prototype._render = function _render() {
-	    if (!this.isRendered) {
-	      if (!this.isForeign && !this.isForeignBit) {
-	        this.ctx = document.createElementNS(h.NS, 'svg');
-	        h.style(this.ctx, {
-	          position: 'absolute',
-	          width: '100%',
-	          height: '100%',
-	          left: 0,
-	          top: 0
-	        });
-	        // create main element for the module
-	        this._moduleEl = document.createElement('div');
-	        this._moduleEl.appendChild(this.ctx);
-	        this._moduleEl.setAttribute('data-name', 'mojs-shape-module-el');
-
-	        this._createBit();
-	        this._calcSize();
-	        // create stacking context wrapper for all elements in `then` chain
-	        // if the module is the first one in the chain
-	        if (!this._positionEl) {
-	          // position el - element to set all CSS properties on
-	          // stays the same for all the modules in the `then` chain
-	          this._positionEl = document.createElement('div');
-	          this._positionEl.style['position'] = 'absolute';
-	          // h.setPrefixedStyle(
-	          //   this._positionEl, 'transform',
-	          //   `translate(-50%, -50%)`
-	          // );
-	          this._positionEl.style['width'] = '0px';
-	          this._positionEl.style['height'] = '0px';
-	          this._positionEl.setAttribute('data-name', 'mojs-shape');
-	          this._hidePositionEl();
-	          // shift el simply shifts el to -50% for both x/y to be sure
-	          // that the module cooordinates start in the center of the module
-	          this._shiftEl = document.createElement('div');
-	          this._shiftEl.setAttribute('data-name', 'mojs-shape-shift');
-	          h.style(this._shiftEl, {
-	            // 'backface-visibility': 'hidden',
-	            position: 'absolute',
-	            left: '0px',
-	            top: '0px'
-	          });
-	          // the `el` element for all the modules in the chain
-	          this.el = document.createElement('div');
-	          this.el.setAttribute('data-name', 'mojs-shape-el');
-
-	          this._shiftEl.appendChild(this.el);
-	          this.el.appendChild(this._moduleEl);
-	          this._positionEl.appendChild(this._shiftEl);
-	          this._props.parent.appendChild(this._positionEl);
-	        } else {
-	          this._props.parent.appendChild(this._moduleEl);
-	        }
-	      } else {
-	        this.ctx = this._o.ctx;this._createBit();this._calcSize();
-	      }
-	      this.isRendered = true;
+	    if (!this._isRendered) {
+	      // create `mojs` shape element
+	      this.el = document.createElement('div');
+	      this.el.setAttribute('data-name', 'mojs-shape-el');
+	      // create shape module
+	      this._createShape();
+	      // append `el` to parent
+	      this._props.parent.appendChild(this.el);
+	      // set `_isRendered` hatch
+	      this._isRendered = true;
 	    }
 
 	    this._setElStyles();
@@ -2054,9 +2003,9 @@
 	      this._hide();
 	    }
 
-	    if (this._isFirstInChain() && this._props.isShowStart) {
-	      this._showPositionEl();
-	    }
+	    // if ( this._isFirstInChain() && this._props.isShowStart ) {
+	    //   this._showPositionEl();
+	    // }
 	    // set initial position for the first module in the chain
 	    this._isFirstInChain() && this._setProgress(0);
 	    return this;
@@ -2068,17 +2017,20 @@
 
 
 	  Shape.prototype._setElStyles = function _setElStyles() {
-	    if (!this._moduleEl) {
+	    if (!this.el) {
 	      return;
 	    }
-	    if (!this.isForeign) {
-	      var p = this._props,
-	          style = this._moduleEl.style,
-	          size = p.size + 'px';
-	      // style.position = 'absolute';
-	      style.width = size;
-	      style.height = size;
-	    }
+	    // if (!this.isForeign) {
+	    var p = this._props;
+	    var style = this.el.style;
+	    var width = p.shapeWidth;
+	    var height = p.shapeHeight;
+	    style.position = 'absolute';
+	    style.width = width + 'px';
+	    style.height = height + 'px';
+	    style['margin-left'] = -width / 2 + 'px';
+	    style['margin-top'] = -height / 2 + 'px';
+	    // }
 	  };
 	  /*
 	    Method to draw shape.
@@ -2088,7 +2040,7 @@
 
 	  Shape.prototype._draw = function _draw() {
 	    var p = this._props,
-	        bP = this.bit._props;
+	        bP = this.shape._props;
 	    // set props on bit
 	    bP.x = this._origin.x;
 	    bP.y = this._origin.y;
@@ -2107,7 +2059,7 @@
 	    bP.radiusY = p.radiusY;
 	    bP.points = p.points;
 
-	    this.bit._draw();this._drawEl();
+	    this.shape._draw();this._drawEl();
 	  };
 	  /*
 	    Method to set current modules props to main div el.
@@ -2116,18 +2068,17 @@
 
 
 	  Shape.prototype._drawEl = function _drawEl() {
-	    if (this._shiftEl == null) {
+	    if (this.el == null) {
 	      return true;
 	    }
-	    var p = this._props,
-	        shiftStyle = this._shiftEl.style,
-	        positionStyle = this._positionEl.style;
+	    var p = this._props;
+	    var style = this.el.style;
 
-	    positionStyle.opacity = p.opacity;
-	    this._isPropChanged('opacity') && (positionStyle.opacity = p.opacity);
+	    style.opacity = p.opacity;
+	    this._isPropChanged('opacity') && (style.opacity = p.opacity);
 	    if (!this.isForeign) {
-	      this._isPropChanged('left') && (positionStyle.left = p.left);
-	      this._isPropChanged('top') && (positionStyle.top = p.top);
+	      this._isPropChanged('left') && (style.left = p.left);
+	      this._isPropChanged('top') && (style.top = p.top);
 
 	      var isX = this._isPropChanged('x'),
 	          isY = this._isPropChanged('y'),
@@ -2140,14 +2091,14 @@
 
 	      if (isTranslate || isScale || isRotate) {
 	        var transform = this._fillTransform();
-	        shiftStyle[h.prefix.css + 'transform'] = transform;
-	        shiftStyle['transform'] = transform;
+	        style[h.prefix.css + 'transform'] = transform;
+	        style['transform'] = transform;
 	      }
 
 	      if (this._isPropChanged('origin') || this._deltas['origin']) {
 	        var origin = this._fillOrigin();
-	        shiftStyle[h.prefix.css + 'transform-origin'] = origin;
-	        shiftStyle['transform-origin'] = origin;
+	        style[h.prefix.css + 'transform-origin'] = origin;
+	        style['transform-origin'] = origin;
 	      }
 	    }
 	  };
@@ -2207,12 +2158,24 @@
 	  */
 
 
-	  Shape.prototype._calcMaxShapeRadius = function _calcMaxShapeRadius() {
+	  Shape.prototype._calcShapeRadius = function _calcShapeRadius() {
 	    var selfSize, selfSizeX, selfSizeY;
-	    selfSize = this._getRadiusSize({ key: 'radius' });
-	    selfSizeX = this._getRadiusSize({ key: 'radiusX', fallback: selfSize });
-	    selfSizeY = this._getRadiusSize({ key: 'radiusY', fallback: selfSize });
+	    selfSize = this._getRadiusSize('radius');
+	    selfSizeX = this._getRadiusSize('radiusX', selfSize);
+	    selfSizeY = this._getRadiusSize('radiusY', selfSize);
 	    return Math.max(selfSizeX, selfSizeY);
+	  };
+	  /*
+	    Method to get max radiusX value.
+	    @private
+	    @param {String} Radius name.
+	  */
+
+
+	  Shape.prototype._getMaxRadius = function _getMaxRadius(name) {
+	    var selfSize, selfSizeX;
+	    selfSize = this._getRadiusSize('radius');
+	    return this._getRadiusSize(name, selfSize);
 	  };
 	  /*
 	    Method to calculate maximum size of the svg canvas.
@@ -2225,9 +2188,9 @@
 	      return;
 	    }
 	    var p = this._props,
-	        radius = this._calcMaxShapeRadius(),
+	        radius = this._calcShapeRadius(),
 	        dStroke = this._deltas['strokeWidth'],
-	        stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this._props.strokeWidth;
+	        stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : p.strokeWidth;
 	    p.size = 2 * radius + stroke;
 	    this._increaseSizeWithEasing();
 	    this._increaseSizeWithBitRatio();
@@ -2262,7 +2225,7 @@
 
 	  Shape.prototype._increaseSizeWithBitRatio = function _increaseSizeWithBitRatio() {
 	    var p = this._props;
-	    // p.size *= this.bit._props.ratio;
+	    // p.size *= this.shape._props.ratio;
 	    p.size += 2 * p.sizeGap;
 	  };
 	  /*
@@ -2275,17 +2238,19 @@
 	  */
 
 
-	  Shape.prototype._getRadiusSize = function _getRadiusSize(o) {
-	    var delta = this._deltas[o.key];
+	  Shape.prototype._getRadiusSize = function _getRadiusSize(name) {
+	    var fallback = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+
+	    var delta = this._deltas[name];
 	    // if value is delta value
 	    if (delta != null) {
 	      // get maximum number between start and end values of the delta
 	      return Math.max(Math.abs(delta.end), Math.abs(delta.start));
-	    } else if (this._props[o.key] != null) {
+	    } else if (this._props[name] != null) {
 	      // else get the value from props object
-	      return parseFloat(this._props[o.key]);
+	      return parseFloat(this._props[name]);
 	    } else {
-	      return o.fallback || 0;
+	      return fallback;
 	    }
 	  };
 	  /*
@@ -2296,13 +2261,47 @@
 
 	  Shape.prototype._createBit = function _createBit() {
 	    var bitClass = shapesMap.getShape(this._props.shape);
-	    this.bit = new bitClass({ ctx: this.ctx, el: this._o.bit, isDrawLess: true });
+	    this.shape = new bitClass({ ctx: this.ctx, el: this._o.bit, isDrawLess: true });
 	    // if draw on foreign context
 	    // or we are animating an svg element outside the module
 	    if (this.isForeign || this.isForeignBit) {
-	      return this.el = this.bit.el;
+	      return this.el = this.shape.el;
 	    }
 	  };
+	  /*
+	    Method to create shape.
+	    @private
+	  */
+
+
+	  Shape.prototype._createShape = function _createShape() {
+	    var p = this._props;
+	    // get shape's class
+	    var Shape = shapesMap.getShape(this._props.shape);
+	    // get maximum stroke value
+	    var stroke = this._getMaxStroke();
+	    // save shape `width` and `height` to `_props`
+	    p.shapeWidth = 2 * this._getMaxRadius('radiusX') + stroke;
+	    p.shapeHeight = 2 * this._getMaxRadius('radiusY') + stroke;
+	    // create `_shape`
+	    this.shape = new Shape({
+	      width: p.shapeWidth,
+	      height: p.shapeHeight,
+	      parent: this.el
+	    });
+	  };
+	  /*
+	    Method to get max value of the strokeWidth.
+	    @private
+	  */
+
+
+	  Shape.prototype._getMaxStroke = function _getMaxStroke() {
+	    var p = this._props;
+	    var dStroke = this._deltas['stroke'];
+	    return dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : p.strokeWidth;
+	  };
+
 	  /*
 	    Method to draw current progress of the deltas.
 	    @private
@@ -2350,7 +2349,7 @@
 	      onStart: function onStart(isFwd) {
 	        if (isFwd) {
 	          it._show();
-	          it._isFirstInChain() && it._showPositionEl();
+	          // it._isFirstInChain() && it._showPositionEl();
 	          // hide previous module in then chain
 	          it._hidePrevChainModule();
 	          // hide all modules in the chain (for chain parent only)
@@ -2358,7 +2357,7 @@
 	        } else {
 	          if (!p.isShowStart) {
 	            it._hide();
-	            it._isFirstInChain() && it._hidePositionEl();
+	            // it._isFirstInChain() && it._hidePositionEl();
 	          }
 	          // show previous module in then chain
 	          it._showPrevChainModule();
@@ -2368,12 +2367,12 @@
 	        if (isFwd) {
 	          if (!p.isShowEnd) {
 	            it._hide();
-	            it._isLastInChain() && it._hidePositionEl();
+	            // it._isLastInChain() && it._hidePositionEl();
 	          }
 	        } else {
-	          it._show();
-	          it._isLastInChain() && it._showPositionEl();
-	        }
+	            it._show();
+	            // it._isLastInChain() && it._showPositionEl();
+	          }
 	      }
 	    };
 	  };
@@ -2484,26 +2483,18 @@
 	    Method to show `_positionEl` element.
 	    @private
 	  */
-
-
-	  Shape.prototype._showPositionEl = function _showPositionEl() {
-	    if (!this._positionEl) {
-	      return;
-	    }
-	    this._positionEl.style.display = 'block';
-	  };
+	  // _showPositionEl () {
+	  //   if ( !this._positionEl ) { return; }
+	  //   this._positionEl.style.display = 'block';
+	  // }
 	  /*
 	    Method to hide `_positionEl` element.
 	    @private
 	  */
-
-
-	  Shape.prototype._hidePositionEl = function _hidePositionEl() {
-	    if (!this._positionEl) {
-	      return;
-	    }
-	    this._positionEl.style.display = 'none';
-	  };
+	  // _hidePositionEl () {
+	  //   if ( !this._positionEl ) { return; }
+	  //   this._positionEl.style.display = 'none';
+	  // }
 	  /*
 	    Method to reset some flags on merged options object.
 	    @private
@@ -7213,7 +7204,7 @@
 	    var radiusX, radiusY;
 	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
 	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    return 2 * radiusX + 2 * radiusY;
+	    return 2 * (2 * radiusX + 2 * radiusY);
 	  };
 
 	  return Rect;
@@ -8261,7 +8252,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.239.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.241.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8290,7 +8281,25 @@
 	  percentage for radius
 	*/
 
-	var cross = new mojs.shapesMap.line({ width: 100, height: 100, radiusX: 40, radiusY: 20, points: 4 });
+	var cross = new mojs.Shape({
+	  shape: 'rect',
+	  stroke: 'cyan',
+	  isShowStart: 1,
+	  left: '50%',
+	  top: '50%',
+	  radiusX: { 0: 50 },
+	  radiusY: { 0: 20 },
+	  isTimelineLess: 1,
+	  angle: { 0: 200 },
+	  fill: 'none',
+	  strokeDasharray: '100%',
+	  strokeDashoffset: { '-100%': '100%' },
+	  duration: 2000
+	});
+
+	document.addEventListener('click', function () {
+	  cross.replay();
+	});
 
 	// istanbul ignore next
 	if (true) {

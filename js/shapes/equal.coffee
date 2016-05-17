@@ -23,6 +23,7 @@ class Equal extends Bit
       y = "#{i*yStep + yStart}"
       d += "M#{x1}, #{y} L#{x2}, #{y} "
     @el.setAttribute 'd', d
-  _getLength:-> 2*if @_props.radiusX? then @_props.radiusX else @_props.radius
+  _getLength:->
+    2*if @_props.radiusX? then @_props.radiusX else @_props.radius
   
 module.exports = Equal

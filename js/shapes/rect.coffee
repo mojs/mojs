@@ -27,6 +27,6 @@ class Rect extends Bit
   _getLength:->
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
-    2*radiusX + 2*radiusY
+    2*(2*radiusX + 2*radiusY)
 
 module.exports = Rect

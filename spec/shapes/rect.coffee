@@ -67,7 +67,7 @@ describe 'Rect ->', ->
       bit = new Rect
         ctx:    document.createElementNS ns, 'svg'
         radius: radius
-      expect(bit._getLength()).toBe 400
+      expect(bit._getLength()).toBe 800
 
     it 'should calculate total length of the with different radiusX/Y', ->
       radiusX = 100
@@ -76,7 +76,7 @@ describe 'Rect ->', ->
         ctx:    document.createElementNS ns, 'svg'
         radiusX: radiusX
         radiusY: radiusY
-      expect(bit._getLength()).toBe 2*radiusX + 2*radiusY
+      expect(bit._getLength()).toBe 2*(2*radiusX + 2*radiusY)
 
 
 

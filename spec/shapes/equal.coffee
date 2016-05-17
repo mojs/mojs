@@ -44,7 +44,6 @@ describe 'Equal ->', ->
       radiusX = 100
       radiusY = 50
       bit = new Equal
-        ctx:    document.createElementNS ns, 'svg'
         radiusX: radiusX
         radiusY: radiusY
       expect(bit._getLength()).toBe 2*radiusX
