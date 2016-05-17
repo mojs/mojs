@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.238.0', isDebug: true, helpers: h,
+  revision:   '0.239.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -45,6 +45,8 @@ window.mojs = mojs;
   parse rand(stagger(20, 10), 20) values
   percentage for radius
 */
+
+let cross = new mojs.shapesMap.line({ width: 100, height: 100, radiusX: 40, radiusY: 20, points: 4 });
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {

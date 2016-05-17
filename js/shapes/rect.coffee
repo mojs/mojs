@@ -8,19 +8,21 @@ class Rect extends Bit
   # ratio:   1.43
   _declareDefaults:->
     super
-    this._defaults.shape = 'rect'
+    this._defaults.tag = 'rect'
+    this._defaults.rx  = 0
+    this._defaults.ry  = 0
     # this._defaults.ratio = 1.43
   _draw:->
     super
-    radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
-    radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
-    @setAttrsIfChanged
-      width:  2*radiusX
-      height: 2*radiusY
-      x:      parseFloat(@_props.x) - radiusX
-      y:      parseFloat(@_props.y) - radiusY
-      rx:     @_props.rx
-      ry:     @_props.ry
+    p = @_props
+    radiusX = if p.radiusX? then p.radiusX else p.radius
+    radiusY = if p.radiusY? then p.radiusY else p.radius
+    @_setAttrIfChanged 'width', 2*radiusX
+    @_setAttrIfChanged 'height', 2*radiusY
+    @_setAttrIfChanged 'x', (p.width/2) - radiusX
+    @_setAttrIfChanged 'y', (p.height/2) - radiusY
+    @_setAttrIfChanged 'rx', p.rx
+    @_setAttrIfChanged 'ry', p.ry
 
   _getLength:->
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius

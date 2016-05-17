@@ -7031,10 +7031,10 @@
 	    var rx, ry;
 	    rx = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
 	    ry = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    this.setAttrIfChanged('rx', rx);
-	    this.setAttrIfChanged('ry', ry);
-	    this.setAttrIfChanged('cx', this._props.x);
-	    this.setAttrIfChanged('cy', this._props.y);
+	    this._setAttrIfChanged('rx', rx);
+	    this._setAttrIfChanged('ry', ry);
+	    this._setAttrIfChanged('cx', this._props.width / 2);
+	    this._setAttrIfChanged('cy', this._props.height / 2);
 	    return Circle.__super__._draw.apply(this, arguments);
 	  };
 
@@ -7071,15 +7071,20 @@
 	    return Line.__super__.constructor.apply(this, arguments);
 	  }
 
+	  Line.prototype._declareDefaults = function() {
+	    Line.__super__._declareDefaults.apply(this, arguments);
+	    return this._defaults.tag = 'line';
+	  };
+
 	  Line.prototype._draw = function() {
-	    var radiusX;
+	    var radiusX, x, y;
 	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
-	    this.setAttrsIfChanged({
-	      x1: this._props.x - radiusX,
-	      x2: this._props.x + radiusX,
-	      y1: this._props.y,
-	      y2: this._props.y
-	    });
+	    x = this._props.width / 2;
+	    y = this._props.height / 2;
+	    this._setAttrIfChanged('x1', x - radiusX);
+	    this._setAttrIfChanged('x2', x + radiusX);
+	    this._setAttrIfChanged('y1', y);
+	    this._setAttrIfChanged('y2', y);
 	    return Line.__super__._draw.apply(this, arguments);
 	  };
 
@@ -7111,7 +7116,8 @@
 
 	  Zigzag.prototype._declareDefaults = function() {
 	    Zigzag.__super__._declareDefaults.apply(this, arguments);
-	    return this._defaults.shape = 'path';
+	    this._defaults.tag = 'path';
+	    return this._defaults.points = 3;
 	  };
 
 	  Zigzag.prototype._draw = function() {
@@ -7129,8 +7135,8 @@
 	    if (isRadiusX && isRadiusY && isPoints) {
 	      return;
 	    }
-	    x = 1 * p.x;
-	    y = 1 * p.y;
+	    x = p.width / 2;
+	    y = p.height / 2;
 	    currentX = x - radiusX;
 	    currentY = y;
 	    stepX = (2 * radiusX) / (p.points - 1);
@@ -7184,22 +7190,23 @@
 
 	  Rect.prototype._declareDefaults = function() {
 	    Rect.__super__._declareDefaults.apply(this, arguments);
-	    return this._defaults.shape = 'rect';
+	    this._defaults.tag = 'rect';
+	    this._defaults.rx = 0;
+	    return this._defaults.ry = 0;
 	  };
 
 	  Rect.prototype._draw = function() {
-	    var radiusX, radiusY;
+	    var p, radiusX, radiusY;
 	    Rect.__super__._draw.apply(this, arguments);
-	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
-	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    return this.setAttrsIfChanged({
-	      width: 2 * radiusX,
-	      height: 2 * radiusY,
-	      x: parseFloat(this._props.x) - radiusX,
-	      y: parseFloat(this._props.y) - radiusY,
-	      rx: this._props.rx,
-	      ry: this._props.ry
-	    });
+	    p = this._props;
+	    radiusX = p.radiusX != null ? p.radiusX : p.radius;
+	    radiusY = p.radiusY != null ? p.radiusY : p.radius;
+	    this._setAttrIfChanged('width', 2 * radiusX);
+	    this._setAttrIfChanged('height', 2 * radiusY);
+	    this._setAttrIfChanged('x', (p.width / 2) - radiusX);
+	    this._setAttrIfChanged('y', (p.height / 2) - radiusY);
+	    this._setAttrIfChanged('rx', p.rx);
+	    return this._setAttrIfChanged('ry', p.ry);
 	  };
 
 	  Rect.prototype._getLength = function() {
@@ -7237,7 +7244,7 @@
 
 	  Cross.prototype._declareDefaults = function() {
 	    Cross.__super__._declareDefaults.apply(this, arguments);
-	    return this._defaults.shape = 'path';
+	    return this._defaults.tag = 'path';
 	  };
 
 	  Cross.prototype._draw = function() {
@@ -7245,18 +7252,16 @@
 	    Cross.__super__._draw.apply(this, arguments);
 	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
 	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    x = parseInt(this._props.x, 10);
-	    y = parseInt(this._props.y, 10);
+	    x = this._props.width / 2;
+	    y = this._props.height / 2;
 	    x1 = x - radiusX;
 	    x2 = x + radiusX;
-	    line1 = "M" + x1 + "," + this._props.y + " L" + x2 + "," + this._props.y;
+	    line1 = "M" + x1 + "," + y + " L" + x2 + "," + y;
 	    y1 = y - radiusY;
 	    y2 = y + radiusY;
-	    line2 = "M" + this._props.x + "," + y1 + " L" + this._props.x + "," + y2;
+	    line2 = "M" + x + "," + y1 + " L" + x + "," + y2;
 	    d = line1 + " " + line2;
-	    return this.setAttr({
-	      d: d
-	    });
+	    return this.el.setAttribute('d', d);
 	  };
 
 	  Cross.prototype._getLength = function() {
@@ -7315,7 +7320,7 @@
 
 	  Curve.prototype._declareDefaults = function _declareDefaults() {
 	    _Bit.prototype._declareDefaults.call(this);
-	    this._defaults.shape = 'path';
+	    this._defaults.tag = 'path';
 	  };
 	  /*
 	    Method to draw the module.
@@ -7339,17 +7344,13 @@
 	      return;
 	    }
 
-	    var x = 1 * p.x;
-	    var y = 1 * p.y;
+	    var x = p.width / 2;
+	    var y = p.height / 2;
 	    var x1 = x - radiusX;
 	    var x2 = x + radiusX;
 
-	    var d = 'M' + x1 + ' ' + y + ' Q ' + x + ' ' + (p.y - 2 * radiusY) + ' ' + x2 + ' ' + y;
+	    var d = 'M' + x1 + ' ' + y + ' Q ' + x + ' ' + (y - 2 * radiusY) + ' ' + x2 + ' ' + y;
 
-	    // don't set the `d` attribute if nothing changed
-	    if (this._prevD === d) {
-	      return;
-	    }
 	    // set the `d` attribute and save it to `_prevD`
 	    this.el.setAttribute('d', d);
 	    // save the properties
@@ -7397,29 +7398,30 @@
 
 	  Equal.prototype._declareDefaults = function() {
 	    Equal.__super__._declareDefaults.apply(this, arguments);
-	    return this._defaults.shape = 'path';
+	    this._defaults.tag = 'path';
+	    return this._defaults.points = 2;
 	  };
 
 	  Equal.prototype._draw = function() {
-	    var d, i, j, radiusX, radiusY, ref, x1, x2, y, yStart, yStep;
+	    var d, i, j, radiusX, radiusY, ref, x, x1, x2, y, yStart, yStep;
 	    Equal.__super__._draw.apply(this, arguments);
 	    if (!this._props.points) {
 	      return;
 	    }
 	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
 	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    x1 = this._props.x - radiusX;
-	    x2 = this._props.x + radiusX;
+	    x = this._props.width / 2;
+	    y = this._props.height / 2;
+	    x1 = x - radiusX;
+	    x2 = x + radiusX;
 	    d = '';
 	    yStep = 2 * radiusY / (this._props.points - 1);
-	    yStart = this._props.y - radiusY;
+	    yStart = y - radiusY;
 	    for (i = j = 0, ref = this._props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
 	      y = "" + (i * yStep + yStart);
 	      d += "M" + x1 + ", " + y + " L" + x2 + ", " + y + " ";
 	    }
-	    return this.setAttr({
-	      d: d
-	    });
+	    return this.el.setAttribute('d', d);
 	  };
 
 	  Equal.prototype._getLength = function() {
@@ -8259,7 +8261,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.238.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.239.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8287,6 +8289,8 @@
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
 	*/
+
+	var cross = new mojs.shapesMap.line({ width: 100, height: 100, radiusX: 40, radiusY: 20, points: 4 });
 
 	// istanbul ignore next
 	if (true) {

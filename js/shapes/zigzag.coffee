@@ -6,7 +6,8 @@ Bit = require('./bit').default or require('./bit');
 class Zigzag extends Bit
   _declareDefaults:->
     super
-    @_defaults.shape = 'path';
+    @_defaults.tag    = 'path'
+    @_defaults.points = 3
     # @_defaults.ratio = 1.43;
   _draw:->
     super
@@ -22,8 +23,8 @@ class Zigzag extends Bit
     # skip if nothing changed
     return if ( isRadiusX and isRadiusY and isPoints )
 
-    x = 1*p.x
-    y = 1*p.y
+    x = p.width/2
+    y = p.height/2
 
     currentX = x-radiusX
     currentY = y

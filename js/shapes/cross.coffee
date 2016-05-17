@@ -7,18 +7,18 @@ class Cross extends Bit
   # shape: 'path'
   _declareDefaults: ->
     super
-    @_defaults.shape = 'path'
+    @_defaults.tag = 'path'
   _draw:->
     super
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
-    x = parseInt(@_props.x, 10); y = parseInt(@_props.y, 10)
+    x = @_props.width/2; y = @_props.height/2
     x1 = x-radiusX; x2 = x+radiusX
-    line1 = "M#{x1},#{@_props.y} L#{x2},#{@_props.y}"
+    line1 = "M#{x1},#{y} L#{x2},#{y}"
     y1 = y-radiusY; y2 = y+radiusY
-    line2 = "M#{@_props.x},#{y1} L#{@_props.x},#{y2}"
+    line2 = "M#{x},#{y1} L#{x},#{y2}"
     d = "#{line1} #{line2}"
-    @setAttr d: d
+    @el.setAttribute 'd', d
   _getLength:->
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius

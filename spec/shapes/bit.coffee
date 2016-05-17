@@ -11,7 +11,7 @@ describe 'Bit ->', ->
       expect(bit instanceof mojs.Module).toBe true
 
   describe '_defaults', ->
-    it 'shoould have defaults', ->
+    it 'should have defaults', ->
       bit = new Bit
       defaults = bit._defaults
       expect(defaults[ 'ns' ]).toBe 'http://www.w3.org/2000/svg'

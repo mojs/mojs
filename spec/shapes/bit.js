@@ -21,7 +21,7 @@
       });
     });
     describe('_defaults', function() {
-      return it('shoould have defaults', function() {
+      return it('should have defaults', function() {
         var defaults;
         bit = new Bit;
         defaults = bit._defaults;
