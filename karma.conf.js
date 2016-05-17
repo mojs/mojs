@@ -81,10 +81,8 @@ module.exports = function(config) {
       './node_modules/phantomjs-polyfill/bind-polyfill.js',
       // 'dist/**/*.js',
       'build/mo.js',
-      'spec/**/*.js'
-      // 'build/mo.js',
-      // 'build/transit.js',
-      // 'spec/transit.js',
+      'spec/**/*.js',
+      'spec/shapes/*.js'
     ],
     // list of files to exclude
     exclude: [

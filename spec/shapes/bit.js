@@ -117,7 +117,7 @@
         return expect(parseInt(style.height, 10)).toBe(height);
       });
     });
-    return describe('_draw method ->', function() {
+    describe('_draw method ->', function() {
       it('should set attributes', function() {
         var fill, stroke, strokeArray, strokeOffset, strokeWidth, transform;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
@@ -189,6 +189,117 @@
         });
         bit._draw();
         return expect(bit.el.setAttribute).toHaveBeenCalled();
+      });
+    });
+    describe('castStrokeDash method ->', function() {
+      it('should not cast pixel values', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        bit._props['stroke-dashoffset'] = {
+          unit: 'px',
+          value: 100
+        };
+        bit.castStrokeDash('stroke-dashoffset');
+        return expect(bit._props['stroke-dashoffset']).toBe(100);
+      });
+      it('should cast % values', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        bit._props['stroke-dashoffset'] = {
+          unit: '%',
+          value: 100
+        };
+        bit.castStrokeDash('stroke-dashoffset');
+        return expect(bit._props['stroke-dashoffset']).toBe(bit._props.length);
+      });
+      it('should not set 0 value >> ff issue fix', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        bit._props['stroke-dasharray'] = {
+          unit: 'px',
+          value: 0
+        };
+        bit.castStrokeDash('stroke-dasharray');
+        return expect(bit._props['stroke-dasharray']).toBe('');
+      });
+      return it('should not set 0 value >> ff issue fix #2', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        bit._props['stroke-dasharray'] = [
+          {
+            unit: 'px',
+            value: 0
+          }
+        ];
+        bit.castStrokeDash('stroke-dasharray');
+        return expect(bit._props['stroke-dasharray']).toBe('');
+      });
+    });
+    describe('stroke-dash value setting ->', function() {
+      it('should set the property from an array', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        bit._setProp('stroke-dasharray', [
+          {
+            value: 100,
+            unit: 'px'
+          }
+        ]);
+        bit._draw();
+        return expect(bit._props['stroke-dasharray']).toBe('100 ');
+      });
+      it('should cast % values', function() {
+        var dash;
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        bit._setProp('stroke-dasharray', [
+          {
+            value: 100,
+            unit: 'px'
+          }, {
+            value: 50,
+            unit: '%'
+          }
+        ]);
+        bit._draw();
+        dash = (bit._props.length / 100) * 50;
+        return expect(bit._props['stroke-dasharray']).toBe("100 " + dash + " ");
+      });
+      return it('should cast % single values', function() {
+        var dash;
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        bit._setProp('stroke-dasharray', {
+          value: 25,
+          unit: '%'
+        });
+        bit._draw();
+        dash = (bit._props.length / 100) * 25;
+        return expect(bit._props['stroke-dasharray']).toBe(dash);
+      });
+    });
+    return describe('castPercent method ->', function() {
+      return it('should cast % values to pixels', function() {
+        var pixels;
+        bit = new Bit({
+          radius: 100
+        });
+        pixels = bit.castPercent(50);
+        return expect(pixels).toBe((bit._props.length / 100) * 50);
       });
     });
   });

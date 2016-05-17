@@ -6605,10 +6605,6 @@
 
 	exports.__esModule = true;
 
-	var _keys = __webpack_require__(24);
-
-	var _keys2 = _interopRequireDefault(_keys);
-
 	var _typeof2 = __webpack_require__(15);
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
@@ -6799,7 +6795,6 @@
 	    }
 	    return len;
 	  };
-
 	  /*
 	    Method to calculate total sum between points.
 	    @private
@@ -6831,32 +6826,6 @@
 	    var dx = Math.abs(point1.x - point2.x),
 	        dy = Math.abs(point1.y - point2.y);
 	    return Math.sqrt(dx * dx + dy * dy);
-	  };
-
-	  Bit.prototype.setAttr = function setAttr(attr, value) {
-	    if ((typeof attr === 'undefined' ? 'undefined' : (0, _typeof3.default)(attr)) === 'object') {
-	      var keys = (0, _keys2.default)(attr),
-	          len = keys.length,
-	          el = value || this.el;
-
-	      while (len--) {
-	        var key = keys[len],
-	            val = attr[key];
-	        el.setAttribute(key, val);
-	      }
-	    } else {
-	      this.el.setAttribute(attr, value);
-	    }
-	  };
-
-	  Bit.prototype.setAttrsIfChanged = function setAttrsIfChanged(name, value) {
-	    var keys = (0, _keys2.default)(name),
-	        len = keys.length;
-	    while (len--) {
-	      var key = keys[len],
-	          value = name[key];
-	      this._setAttrIfChanged(key, value);
-	    }
 	  };
 
 	  return Bit;
@@ -6967,46 +6936,64 @@
 	    return Polygon.__super__.constructor.apply(this, arguments);
 	  }
 
+
+	  /*
+	    Method to declare defaults.
+	    @overrides @ Bit
+	   */
+
 	  Polygon.prototype._declareDefaults = function() {
 	    Polygon.__super__._declareDefaults.apply(this, arguments);
-	    return this._defaults.shape = 'path';
+	    this._defaults.tag = 'path';
+	    return this._defaults.points = 3;
 	  };
 
+
+	  /*
+	    Method to draw the shape.
+	    @overrides @ Bit
+	   */
+
 	  Polygon.prototype._draw = function() {
-	    var char, d, i, j, k, len, point, ref, ref1, step;
+	    var char, d, i, j, k, len, p, point, ref, ref1, step;
+	    p = this._props;
 	    step = 360 / this._props.points;
-	    if (this.radialPoints == null) {
-	      this.radialPoints = [];
+	    if (this._radialPoints == null) {
+	      this._radialPoints = [];
 	    } else {
-	      this.radialPoints.length = 0;
+	      this._radialPoints.length = 0;
 	    }
 	    for (i = j = 0, ref = this._props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-	      this.radialPoints.push(h.getRadialPoint({
+	      this._radialPoints.push(h.getRadialPoint({
 	        radius: this._props.radius,
 	        radiusX: this._props.radiusX,
 	        radiusY: this._props.radiusY,
 	        angle: i * step,
 	        center: {
-	          x: parseFloat(this._props.x),
-	          y: parseFloat(this._props.y)
+	          x: p.width / 2,
+	          y: p.height / 2
 	        }
 	      }));
 	    }
 	    d = '';
-	    ref1 = this.radialPoints;
+	    ref1 = this._radialPoints;
 	    for (i = k = 0, len = ref1.length; k < len; i = ++k) {
 	      point = ref1[i];
 	      char = i === 0 ? 'M' : 'L';
 	      d += "" + char + (point.x.toFixed(4)) + "," + (point.y.toFixed(4)) + " ";
 	    }
-	    this.setAttr({
-	      d: d += 'z'
-	    });
+	    this.el.setAttribute('d', (d += 'z'));
 	    return Polygon.__super__._draw.apply(this, arguments);
 	  };
 
+
+	  /*
+	    Method to get length of the shape.
+	    @overrides @ Bit
+	   */
+
 	  Polygon.prototype._getLength = function() {
-	    return this._getPointsPerimiter(this.radialPoints);
+	    return this._getPointsPerimiter(this._radialPoints);
 	  };
 
 	  return Polygon;

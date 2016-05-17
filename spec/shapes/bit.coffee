@@ -191,6 +191,78 @@ describe 'Bit ->', ->
       bit._draw()
       expect(bit.el.setAttribute).toHaveBeenCalled()
 
+  describe 'castStrokeDash method ->', ->
+    it 'should not cast pixel values', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+      bit._props['stroke-dashoffset'] = { unit: 'px', value: 100 }
+      bit.castStrokeDash 'stroke-dashoffset'
+      expect(bit._props['stroke-dashoffset']).toBe 100
+    it 'should cast % values', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+      bit._props['stroke-dashoffset'] = { unit: '%', value: 100 }
+      bit.castStrokeDash 'stroke-dashoffset'
+      expect(bit._props['stroke-dashoffset']).toBe bit._props.length
+    
+    it 'should not set 0 value >> ff issue fix', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+        
+      bit._props['stroke-dasharray'] = { unit: 'px', value: 0 }
+      bit.castStrokeDash 'stroke-dasharray'
+      expect(bit._props['stroke-dasharray']).toBe ''
+
+    it 'should not set 0 value >> ff issue fix #2', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+        
+      bit._props['stroke-dasharray'] = [{ unit: 'px', value: 0 }]
+      bit.castStrokeDash 'stroke-dasharray'
+      expect(bit._props['stroke-dasharray']).toBe ''
+
+  describe 'stroke-dash value setting ->', ->
+    it 'should set the property from an array', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+      bit._setProp 'stroke-dasharray', [{ value: 100, unit: 'px' }]
+      bit._draw()
+      expect(bit._props['stroke-dasharray']).toBe '100 '
+
+    it 'should cast % values', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius:  100
+      bit._setProp 'stroke-dasharray', [
+        { value: 100, unit: 'px' }, { value: 50, unit: '%' }
+      ]
+      bit._draw()
+      dash = (bit._props.length/100)*50
+      expect(bit._props['stroke-dasharray']).toBe "100 #{dash} "
+
+    it 'should cast % single values', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius:  100
+      bit._setProp 'stroke-dasharray', { value: 25, unit: '%' }
+      bit._draw()
+      dash = (bit._props.length/100)*25
+      expect(bit._props['stroke-dasharray']).toBe dash
+
+  describe 'castPercent method ->', ->
+    it 'should cast % values to pixels', ->
+      bit = new Bit radius: 100
+      pixels = bit.castPercent 50
+      expect(pixels).toBe (bit._props.length/100) * 50
+
+
+
+  # old
   # describe 'setAttrsIfChanged method ->', ->
   #   it 'should not set attribute if property not changed ->', ->
   #     svg = document.createElementNS?(ns, 'svg')
@@ -251,6 +323,7 @@ describe 'Bit ->', ->
   # #       fill:     '#0000ff'
   # #     expect(bit._props.stroke)  .toBe '#ff0000'
   # #     expect(bit._props.fill)    .toBe '#0000ff'
+  # old
   # describe 'setAttr method ->', ->
   #   it 'should have setAttr method', ->
   #     expect(bit.setAttr).toBeDefined()
@@ -391,120 +464,3 @@ describe 'Bit ->', ->
   #   #   bit.setAttrsIfChanged 'radius', 100
   #   #   bit._draw()
   #   #   expect(bit._getLength).not.toHaveBeenCalled()
-
-
-  # describe 'castPercent method ->', ->
-  #   it 'should cast % values to pixels', ->
-  #     bit = new Bit
-  #       ctx:    document.createElementNS ns, 'svg'
-  #       radius: 100
-  #     pixels = bit.castPercent 50
-  #     expect(pixels).toBe (bit._props.length/100) * 50
-
-  # describe 'castStrokeDash method ->', ->
-  #   it 'should not cast pixel values', ->
-  #     bit = new Bit
-  #       ctx:    document.createElementNS ns, 'svg'
-  #       radius: 100
-  #     bit._props['stroke-dashoffset'] = { unit: 'px', value: 100 }
-  #     bit.castStrokeDash 'stroke-dashoffset'
-  #     expect(bit._props['stroke-dashoffset']).toBe 100
-  #   it 'should cast % values', ->
-  #     bit = new Bit
-  #       ctx:    document.createElementNS ns, 'svg'
-  #       radius: 100
-  #     bit._props['stroke-dashoffset'] = { unit: '%', value: 100 }
-  #     bit.castStrokeDash 'stroke-dashoffset'
-  #     expect(bit._props['stroke-dashoffset']).toBe bit._props.length
-    
-  #   it 'should not set 0 value >> ff issue fix', ->
-  #     bit = new Bit
-  #       ctx:    document.createElementNS ns, 'svg'
-  #       radius: 100
-        
-  #     bit._props['stroke-dasharray'] = { unit: 'px', value: 0 }
-  #     bit.castStrokeDash 'stroke-dasharray'
-  #     expect(bit._props['stroke-dasharray']).toBe ''
-
-  #   it 'should not set 0 value >> ff issue fix #2', ->
-  #     bit = new Bit
-  #       ctx:    document.createElementNS ns, 'svg'
-  #       radius: 100
-        
-  #     bit._props['stroke-dasharray'] = [{ unit: 'px', value: 0 }]
-  #     bit.castStrokeDash 'stroke-dasharray'
-  #     expect(bit._props['stroke-dasharray']).toBe ''
-
-  # # old
-  # # describe 'isChanged method ->', ->
-  # #   it 'should check if attribute was changed', ->
-  # #     bit = new Bit
-  # #       ctx:    document.createElementNS ns, 'svg'
-  # #       stroke: 'deeppink'
-  # #     expect(bit.isChanged('stroke')).toBe false
-  # #     bit._setProp 'stroke', 'green'
-  # #     expect(bit.isChanged('stroke')).toBe true
-
-  # #   it 'should recieve value to set', ->
-  # #     bit = new Bit
-  # #       ctx:    document.createElementNS ns, 'svg'
-  # #       radius: 20
-  # #     expect(bit.isChanged('radius', 30)).toBe true
-
-  # describe 'stroke-dash value setting ->', ->
-  #   it 'should set the property from an array', ->
-  #     bit = new Bit
-  #       ctx:    document.createElementNS ns, 'svg'
-  #       radius: 100
-  #     bit._setProp 'stroke-dasharray', [{ value: 100, unit: 'px' }]
-  #     bit._draw()
-  #     expect(bit._props['stroke-dasharray']).toBe '100 '
-
-  #   it 'should cast % values', ->
-  #     bit = new Bit
-  #       ctx:    document.createElementNS ns, 'svg'
-  #       radius:  100
-  #     bit._setProp 'stroke-dasharray', [
-  #       { value: 100, unit: 'px' }, { value: 50, unit: '%' }
-  #     ]
-  #     bit._draw()
-  #     dash = (bit._props.length/100)*50
-  #     expect(bit._props['stroke-dasharray']).toBe "100 #{dash} "
-
-  #   it 'should cast % single values', ->
-  #     bit = new Bit
-  #       ctx:    document.createElementNS ns, 'svg'
-  #       radius:  100
-  #     bit._setProp 'stroke-dasharray', { value: 25, unit: '%' }
-  #     bit._draw()
-  #     dash = (bit._props.length/100)*25
-  #     expect(bit._props['stroke-dasharray']).toBe dash
-
-  # describe '_pointsDelta method ->', ->
-  #   it 'should return distance between points', ->
-  #     bit = new Bit
-  #       ctx:    document.createElementNS ns, 'svg'
-
-  #     for i in [ 0...50 ]
-  #       point1 = { x: 20*i, y: 120+i }
-  #       point2 = { x: 200+i, y: -120*i }
-  #       dx = Math.abs( point1.x - point2.x )
-  #       dy = Math.abs( point1.y - point2.y )
-  #       expect( bit._pointsDelta( point1, point2 ) )
-  #         .toBe Math.sqrt( dx*dx + dy*dy )
-
-  # describe '_getPointsPerimiter method', ->
-  #   it 'should calculate sum between all points', ->
-  #     bit  = new Bit ctx: svg
-  #     # create points for test
-  #     points = []
-  #     for i in [1...20]
-  #       points.push( {  x: 100*Math.random(), y: 100*Math.random() }  )
-
-  #     sum = 0
-  #     for i in [1...points.length]
-  #       sum += bit._pointsDelta points[i-1], points[i]
-
-  #     sum += bit._pointsDelta points[0], mojs.h.getLastItem points
-
-  #     expect( bit._getPointsPerimiter( points ) ).toBe sum

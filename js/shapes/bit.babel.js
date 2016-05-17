@@ -146,10 +146,6 @@ class Bit extends Module {
     }
     return len;
   }
-
-
-
-
   /*
     Method to calculate total sum between points.
     @private
@@ -178,31 +174,6 @@ class Bit extends Module {
         dy = Math.abs( point1.y - point2.y );
     return Math.sqrt( dx*dx + dy*dy );
   }
-
-   setAttr (attr, value) {
-    if ( typeof attr === 'object' ) {
-      var keys = Object.keys(attr),
-          len  = keys.length,
-          el   = value || this.el;
-
-      while(len--) {
-        var key = keys[len],
-            val = attr[key];
-        el.setAttribute(key, val);
-      }
-    } else { this.el.setAttribute(attr, value); }
-  }
-
-  setAttrsIfChanged (name, value) {
-    var keys = Object.keys(name),
-        len  = keys.length;
-    while(len--) {
-      var key   = keys[len],
-          value = name[key];
-      this._setAttrIfChanged(key, value);
-    }
-  }
-
 }
 
 export default Bit;
