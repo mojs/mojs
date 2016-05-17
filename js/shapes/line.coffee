@@ -4,7 +4,7 @@
 Bit = require('./bit').default or require('./bit');
 
 class Line extends Bit
-  draw:->
+  _draw:->
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     @setAttrsIfChanged
       x1:  @_props.x - radiusX

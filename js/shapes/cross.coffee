@@ -8,7 +8,7 @@ class Cross extends Bit
   _declareDefaults: ->
     super
     @_defaults.shape = 'path'
-  draw:->
+  _draw:->
     super
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
@@ -19,7 +19,7 @@ class Cross extends Bit
     line2 = "M#{@_props.x},#{y1} L#{@_props.x},#{y2}"
     d = "#{line1} #{line2}"
     @setAttr d: d
-  getLength:->
+  _getLength:->
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
     2*(radiusX+radiusY)

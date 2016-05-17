@@ -10,7 +10,7 @@ class Equal extends Bit
     super
     this._defaults.shape = 'path'
     # this._defaults.ratio = 1.43
-  draw:->
+  _draw:->
     super
     return if !@_props.points
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
@@ -22,6 +22,6 @@ class Equal extends Bit
       y = "#{i*yStep + yStart}"
       d += "M#{x1}, #{y} L#{x2}, #{y} "
     @setAttr d: d
-  getLength:-> 2*if @_props.radiusX? then @_props.radiusX else @_props.radius
+  _getLength:-> 2*if @_props.radiusX? then @_props.radiusX else @_props.radius
   
 module.exports = Equal

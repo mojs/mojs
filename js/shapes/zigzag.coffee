@@ -8,7 +8,7 @@ class Zigzag extends Bit
     super
     @_defaults.shape = 'path';
     # @_defaults.ratio = 1.43;
-  draw:->
+  _draw:->
     super
     p = this._props
     return if !@_props.points
@@ -50,6 +50,6 @@ class Zigzag extends Bit
     @_prevRadiusX = radiusX
     @_prevRadiusY = radiusY
     
-  getLength:-> @_length
+  _getLength:-> @_length
 
 module.exports = Zigzag

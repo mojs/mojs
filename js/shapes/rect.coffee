@@ -10,7 +10,7 @@ class Rect extends Bit
     super
     this._defaults.shape = 'rect'
     # this._defaults.ratio = 1.43
-  draw:->
+  _draw:->
     super
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
@@ -22,7 +22,7 @@ class Rect extends Bit
       rx:     @_props.rx
       ry:     @_props.ry
 
-  getLength:->
+  _getLength:->
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
     2*radiusX + 2*radiusY

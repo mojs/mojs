@@ -4,92 +4,78 @@ import h  from '../h';
 class Bit extends Module {
   _declareDefaults () {
     this._defaults = {
-      ns:                   'http://www.w3.org/2000/svg',
-      ctx:                  null,
-
-      shape:                'line',
-      ratio:                1,
-      radius:               50,
-      radiusX:              undefined,
-      radiusY:              undefined,
-      points:               3,
-      x:                    0,
-      y:                    0,
-      rx:                   0,
-      ry:                   0,
-      angle:                0,
-      stroke:               'hotpink',
-      'stroke-width':       2,
-      'stroke-opacity':     1,
-      fill:                 'transparent',
-      'fill-opacity':       1,
+      'ns':                 'http://www.w3.org/2000/svg',
+      'tag':                'ellipse',
+      'parent':             document.body,
+      'ratio':              1,
+      'radius':             50,
+      'radiusX':            null,
+      'radiusY':            null,
+      'stroke':             'hotpink',
       'stroke-dasharray':   '',
       'stroke-dashoffset':  '',
-      'stroke-linecap':     ''
+      'stroke-linecap':     '',
+      'stroke-width':       2,
+      'stroke-opacity':     1,
+      'fill':               'transparent',
+      'fill-opacity':       1,
+      'width':              0,
+      'height':             0,
     }
     this._drawMap = [
       'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill',
       'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform',
     ]
   }
-// 
   _vars () {
-    if (this._o.ctx && this._o.ctx.tagName === 'svg') {
-      this.ctx = this._o.ctx;
-    } else if (!this._o.el) {
-      h.error('You should pass a real context(ctx) to the bit');
-      // # --> COVER return if not ctx and not el
-      return true;
-    }
-    this._state = {}; this._drawMapLength = this._drawMap.length;
-    // this.calcTransform();
+    this._state = {};
+    this._drawMapLength = this._drawMap.length;
   }
-
-  // calcTransform () {
-  //   var p      = this._props,
-  //       rotate = `rotate(${p.angle}, ${p.x}, ${p.y})`;
-  //   p.transform = `${rotate}`;
-  // }
-
-  setAttr (attr, value) {
-    if ( typeof attr === 'object' ) {
-      var keys = Object.keys(attr),
-          len  = keys.length,
-          el   = value || this.el;
-
-      while(len--) {
-        var key = keys[len],
-            val = attr[key];
-        el.setAttribute(key, val);
-      }
-    } else { this.el.setAttribute(attr, value); }
-  }
-
-  setProp (attr, value) {
-    if ( typeof attr === 'object' ) {
-      for ( var key in attr) {
-        var val = attr[key];
-        this._props[key] = val;
-      }
-    } else { this._props[attr] = value; }
-  }
-
+  /*
+    Method for initial render of the shape.
+    @private
+  */
   _render () {
-    this.isRendered = true;
-    if (this._o.el != null) {
-      this.el = this._o.el;
-      this.isForeign = true;
-    } else {
-      this.el = document.createElementNS(this._props.ns, this._props.shape);
-      !this._o.isDrawLess && this.draw(); this.ctx.appendChild(this.el);
-    }
+    if ( this._isRendered ) { return; }
+    // set `_isRendered` hatch
+    this._isRendered = true;
+    // create `SVG` canvas to draw in
+    this._createSVGCanvas();
+    // set canvas size
+    this._setCanvasSize();
+    // draw the initial state
+    this._draw();
+    // append the canvas to the parent from props
+    this._props.parent.appendChild( this._canvas );
   }
-
-  draw () {
-    // if ( this._state[ 'radius' ] !== this._props[ 'radius' ] ) {
-    //   this._props.length = this.getLength();
-    // }
-    this._props.length = this.getLength();
+  /*
+    Method to create `SVG` canvas to draw in.
+    @private
+  */
+  _createSVGCanvas () {
+    var p = this._props;
+    // create canvas - `svg` element to draw in
+    this._canvas = document.createElementNS(p.ns, 'svg');
+    // create the element shape element and add it to the canvas
+    this.el = document.createElementNS(p.ns, p.tag);
+    this._canvas.appendChild( this.el );
+  }
+  /*
+    Method to set size of the _canvas.
+    @private
+  */
+  _setCanvasSize () {
+    let style    = this._canvas.style;
+    style.width  = `${this._props.width}px`;
+    style.height = `${this._props.height}px`;
+  }
+  /*
+    Method to draw the shape.
+    Called on every frame.
+    @private
+  */
+  _draw () {
+    this._props.length = this._getLength();
 
     var state = this._state,
         props = this._props;
@@ -102,7 +88,7 @@ class Bit extends Module {
         case 'stroke-dashoffset':
           this.castStrokeDash(name);
       }
-      this.setAttrIfChanged( name, this._props[name] );
+      this._setAttrIfChanged( name, this._props[name] );
     }
     this._state.radius = this._props.radius;
   }
@@ -131,26 +117,24 @@ class Bit extends Module {
     }
   }
   castPercent (percent) { return percent * (this._props.length/100); }
-  
-  setAttrsIfChanged (name, value) {
-    var keys = Object.keys(name),
-        len  = keys.length;
-    while(len--) {
-      var key   = keys[len],
-          value = name[key];
-      this.setAttrIfChanged(key, value);
-    }
-  }
 
-  setAttrIfChanged (name, value) {
+  /*
+    Method to set props to attributes and cache the values.
+    @private
+  */
+  _setAttrIfChanged (name, value) {
     if ( this._state[name] !== value ) {
       // this.el.style[name] = value;
       this.el.setAttribute(name, value);
       this._state[name] = value;
     }
   }
-
-  getLength () {
+  /*
+    Method to length of the shape.
+    @private
+    @returns {Number} Length of the shape.
+  */
+  _getLength () {
     var p   = this._props,
         len = 0,
         isGetLength = !!( this.el && this.el.getTotalLength );
@@ -162,6 +146,10 @@ class Bit extends Module {
     }
     return len;
   }
+
+
+
+
   /*
     Method to calculate total sum between points.
     @private
@@ -189,6 +177,30 @@ class Bit extends Module {
     let dx = Math.abs( point1.x - point2.x ),
         dy = Math.abs( point1.y - point2.y );
     return Math.sqrt( dx*dx + dy*dy );
+  }
+
+   setAttr (attr, value) {
+    if ( typeof attr === 'object' ) {
+      var keys = Object.keys(attr),
+          len  = keys.length,
+          el   = value || this.el;
+
+      while(len--) {
+        var key = keys[len],
+            val = attr[key];
+        el.setAttribute(key, val);
+      }
+    } else { this.el.setAttribute(attr, value); }
+  }
+
+  setAttrsIfChanged (name, value) {
+    var keys = Object.keys(name),
+        len  = keys.length;
+    while(len--) {
+      var key   = keys[len],
+          value = name[key];
+      this._setAttrIfChanged(key, value);
+    }
   }
 
 }

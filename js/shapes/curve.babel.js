@@ -16,8 +16,8 @@ class Curve extends Bit {
     @private
     @overrides @ Bit
   */
-  draw () {
-    super.draw();
+  _draw () {
+    super._draw();
     var p  = this._props;
 
     var radiusX = (p.radiusX != null) ? p.radiusX : p.radius;
@@ -46,7 +46,7 @@ class Curve extends Bit {
     this._prevRadiusY = radiusY;
   }
 
-  getLength () {
+  _getLength () {
     var p = this._props;
 
     var radiusX = (p.radiusX != null) ? p.radiusX : p.radius;

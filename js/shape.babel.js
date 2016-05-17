@@ -230,7 +230,7 @@ class Shape extends Tunable {
     bP.radiusY              = p.radiusY;
     bP.points               = p.points;
 
-    this.bit.draw(); this._drawEl();
+    this.bit._draw(); this._drawEl();
   }
   /*
     Method to set current modules props to main div el.

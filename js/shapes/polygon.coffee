@@ -8,12 +8,8 @@ class Polygon extends Bit
   _declareDefaults:->
     super
     this._defaults.shape = 'path'
-  draw:->
-    # !@isDraw and @drawShape()
-    @drawShape()
-    super
-  drawShape:->
-    # @_props.points = parseInt(@_props.points)
+  _draw:->
+     # @_props.points = parseInt(@_props.points)
     step = 360/(@_props.points)
 
     # reuse radial points buffer
@@ -33,7 +29,8 @@ class Polygon extends Bit
       d += "#{char}#{point.x.toFixed(4)},#{point.y.toFixed(4)} "
 
     @setAttr d: d += 'z'
+    super
 
-  getLength:-> @_getPointsPerimiter( @radialPoints );
+  _getLength:-> @_getPointsPerimiter( @radialPoints );
 
 module.exports = Polygon

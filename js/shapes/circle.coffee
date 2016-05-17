@@ -7,7 +7,7 @@ class Circle extends Bit
   _declareDefaults: ->
     super
     this._defaults.shape = 'ellipse';
-  draw:->
+  _draw:->
     rx = if @_props.radiusX? then @_props.radiusX else @_props.radius
     ry = if @_props.radiusY? then @_props.radiusY else @_props.radius
     @setAttrIfChanged 'rx', rx
@@ -16,7 +16,7 @@ class Circle extends Bit
     @setAttrIfChanged 'cy', @_props.y
     # @setAttrsIfChanged rx: rx, ry: ry, cx: @_props.x, cy: @_props.y
     super
-  getLength:->
+  _getLength:->
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
     # Math.pow is needed for safari's 6.0.5 odd bug
