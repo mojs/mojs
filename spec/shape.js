@@ -1,5 +1,5 @@
 (function() {
-  var Bit, Byte, Rect, Shape, Thenable, Tweenable, h, ns, svg;
+  var Bit, Byte, Rect, Shape, Thenable, Tunable, Tweenable, h, ns, svg;
 
   Byte = mojs.Shape;
 
@@ -8,6 +8,8 @@
   Bit = mojs.shapesMap.getShape('bit');
 
   Thenable = mojs.Thenable;
+
+  Tunable = mojs.Tunable;
 
   Tweenable = mojs.Tweenable;
 
@@ -1796,7 +1798,7 @@
         return expect(style['margin-top']).toBe('-100px');
       });
     });
-    return describe('then method ->', function() {
+    describe('then method ->', function() {
       it('should call super', function() {
         var obj, shape;
         obj = {};
@@ -1816,6 +1818,29 @@
         shape = new Shape();
         spyOn(shape, '_getMaxSizeInChain');
         shape.then({});
+        return expect(shape._getMaxSizeInChain).toHaveBeenCalled();
+      });
+    });
+    return describe('tune method ->', function() {
+      it('should call super', function() {
+        var obj, shape;
+        obj = {};
+        shape = new Shape();
+        spyOn(Tunable.prototype, 'tune');
+        shape.tune(obj);
+        return expect(Tunable.prototype.tune).toHaveBeenCalledWith(obj);
+      });
+      it('should return this', function() {
+        var result, shape;
+        shape = new Shape();
+        result = shape.tune({});
+        return expect(result).toBe(shape);
+      });
+      return it('should call _getMaxSizeInChain method', function() {
+        var shape;
+        shape = new Shape();
+        spyOn(shape, '_getMaxSizeInChain');
+        shape.tune({});
         return expect(shape._getMaxSizeInChain).toHaveBeenCalled();
       });
     });

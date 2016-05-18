@@ -2,6 +2,7 @@ Byte      = mojs.Shape
 Shape     = mojs.Shape
 Bit       = mojs.shapesMap.getShape('bit')
 Thenable  = mojs.Thenable
+Tunable   = mojs.Tunable
 Tweenable = mojs.Tweenable
 Rect = mojs.shapesMap.getShape('rect')
 h    = mojs.helpers
@@ -1478,4 +1479,22 @@ describe 'Shape ->', ->
       shape.then({})
       expect( shape._getMaxSizeInChain ).toHaveBeenCalled()
 
+  describe 'tune method ->', ->
+    it 'should call super', ->
+      obj = {}
+      shape = new Shape()
+      spyOn Tunable::, 'tune'
+      shape.tune( obj )
+      expect( Tunable::tune  ).toHaveBeenCalledWith obj
+
+    it 'should return this', ->
+      shape = new Shape()
+      result = shape.tune( {} )
+      expect( result  ).toBe shape
+
+    it 'should call _getMaxSizeInChain method', ->
+      shape = new Shape()
+      spyOn shape, '_getMaxSizeInChain'
+      shape.tune({})
+      expect( shape._getMaxSizeInChain ).toHaveBeenCalled()
 

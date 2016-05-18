@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.245.0', isDebug: true, helpers: h,
+  revision:   '0.246.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -34,7 +34,6 @@ window.mojs = mojs;
 
 // TODO:
 /*
-  add dimentions recalc on then
   add dimentions recalc on tune
   swirl then issue
   'rand' angle flick with `then`
@@ -50,25 +49,29 @@ let cross = new mojs.Shape({
   shape: 'rect',
   stroke: 'cyan',
   isShowStart: 1,
-  left:   '50%',
-  top:    '50%',
-  radius: 50,
+  // left:   '50%',
+  // top:    '50%',
+  radius: { 50: 100 },
   // radiusX: { 0: 50 },
   // radiusY: { 0: 20 },
   // isTimelineLess:  1,
   angle: { 0: 200 },
   fill: 'none',
-  x:    { 0: 200 },
+  // x:    { 0: 200 },
   // strokeDasharray:  '100%',
   // strokeDashoffset: {'-100%': '100%'},
   duration: 2000
 }).then({
   x: 0,
-  radius: 200
+  radius: 0
 });
 
-document.addEventListener('click', function () {
-  cross.replay();
+document.addEventListener('click', function (e) {
+  cross.tune({
+    radius: { 10: 50 },
+    x: e.pageX,
+    y: e.pageY,
+  }).replay();
 });
 
 // istanbul ignore next

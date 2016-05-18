@@ -1953,8 +1953,24 @@
 	    };
 	  };
 	  /*
+	    Method to start the animation with optional new options.
+	    @public
+	    @overrides @ Tunable
+	    @param {Object} New options to set on the run.
+	    @returns {Object} this.
+	  */
+
+
+	  Shape.prototype.tune = function tune(o) {
+	    _Tunable.prototype.tune.call(this, o);
+	    // update shapeModule's size to the max in `then` chain
+	    this._getMaxSizeInChain();
+	    return this;
+	  };
+	  /*
 	    Method to create a then record for the module.
 	    @public
+	    @overrides @ Thenable
 	    @param    {Object} Options for the next animation.
 	    @returns  {Object} this.
 	  */
@@ -8212,7 +8228,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.245.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.246.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8229,7 +8245,6 @@
 
 	// TODO:
 	/*
-	  add dimentions recalc on then
 	  add dimentions recalc on tune
 	  swirl then issue
 	  'rand' angle flick with `then`
@@ -8245,25 +8260,29 @@
 	  shape: 'rect',
 	  stroke: 'cyan',
 	  isShowStart: 1,
-	  left: '50%',
-	  top: '50%',
-	  radius: 50,
+	  // left:   '50%',
+	  // top:    '50%',
+	  radius: { 50: 100 },
 	  // radiusX: { 0: 50 },
 	  // radiusY: { 0: 20 },
 	  // isTimelineLess:  1,
 	  angle: { 0: 200 },
 	  fill: 'none',
-	  x: { 0: 200 },
+	  // x:    { 0: 200 },
 	  // strokeDasharray:  '100%',
 	  // strokeDashoffset: {'-100%': '100%'},
 	  duration: 2000
 	}).then({
 	  x: 0,
-	  radius: 200
+	  radius: 0
 	});
 
-	document.addEventListener('click', function () {
-	  cross.replay();
+	document.addEventListener('click', function (e) {
+	  cross.tune({
+	    radius: { 10: 50 },
+	    x: e.pageX,
+	    y: e.pageY
+	  }).replay();
 	});
 
 	// istanbul ignore next

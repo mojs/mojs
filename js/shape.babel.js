@@ -93,8 +93,22 @@ class Shape extends Tunable {
     }
   }
   /*
+    Method to start the animation with optional new options.
+    @public
+    @overrides @ Tunable
+    @param {Object} New options to set on the run.
+    @returns {Object} this.
+  */
+  tune (o) {
+    super.tune( o );
+    // update shapeModule's size to the max in `then` chain
+    this._getMaxSizeInChain();
+    return this;
+  }
+  /*
     Method to create a then record for the module.
     @public
+    @overrides @ Thenable
     @param    {Object} Options for the next animation.
     @returns  {Object} this.
   */
