@@ -114,7 +114,10 @@
         style.height = '';
         bit._setCanvasSize();
         expect(style.width).toBe('100%');
-        return expect(style.width).toBe('100%');
+        expect(style.width).toBe('100%');
+        expect(style.left).toBe('0px');
+        expect(style.top).toBe('0px');
+        return expect(style.display).toBe('block');
       });
     });
     describe('_draw method ->', function() {

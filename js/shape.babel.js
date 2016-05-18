@@ -113,6 +113,7 @@ class Shape extends Tunable {
     @returns  {Object} this.
   */
   then (o) {
+    // this._makeTimeline()
     super.then( o );
     // update shapeModule's size to the max in `then` chain
     this._getMaxSizeInChain();
@@ -138,6 +139,7 @@ class Shape extends Tunable {
     this._isChained       = !!this._masterModule;
     // should draw on foreign svg canvas
     this.isForeign        = !!this._o.ctx;
+    // this._o.isTimelineLess = true;
     // should take an svg element as self bit
     return this.isForeignBit = !!this._o.shape;
   }

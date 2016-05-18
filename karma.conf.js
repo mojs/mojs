@@ -98,8 +98,8 @@ module.exports = function(config) {
 
       'build/module.js',
       'spec/module.js',
-      'build/tween/tweenable.js',
-      'spec/tween/tweenable.js',
+      // 'build/tween/tweenable.js',
+      // 'spec/tween/tweenable.js',
       'build/tunable.js',
       'spec/tunable.js',
       // 'build/thenable.js',

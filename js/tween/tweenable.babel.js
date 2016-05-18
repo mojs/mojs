@@ -141,6 +141,8 @@ class Tweenable extends Module {
     this._o.timeline = this._o.timeline || {};
     this._o.timeline.callbacksContext = this._o.callbacksContext || this;
     this.timeline = new Timeline( this._o.timeline );
+    // set the flag to indicate that real timeline is present
+    this._isTimeline = true;
     // if tween exist - add it to the timeline there is some
     // modules like burst and stagger that have no tween
     this.tween && this.timeline.add( this.tween );

@@ -59,6 +59,15 @@ describe 'tweenable ->', ->
         _makeTween:->
       tw = new TweenableExtention
       expect(tw.timeline._timelines[0]).not.toBeDefined()
+
+    it 'should set _isTimeine ->',->
+      tw = new Tweenable
+      expect(tw._isTimeline).toBe true
+
+    it 'should not set _isTimeine if isTimelineLess ->',->
+      tw = new Tweenable isTimelineLess: true
+      expect(tw._isTimeline).toBe undefined
+
   describe 'play method ->', ->
     it 'should call timeline\'s play method', ->
       tw = new Tweenable

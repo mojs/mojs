@@ -68,8 +68,11 @@ class Bit extends Module {
     const p     = this._props,
           style = this._canvas.style;
 
-    style.width  = '100%';
-    style.height = '100%';
+    style.display = 'block';
+    style.width   = '100%';
+    style.height  = '100%';
+    style.left    = '0px';
+    style.top     = '0px';
   }
   /*
     Method to draw the shape.

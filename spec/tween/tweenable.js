@@ -100,7 +100,7 @@
         tw = new Tweenable;
         return expect(tw.timeline._timelines[0]).toBe(tw.tween);
       });
-      return it('should not add tween if there is no one ->', function() {
+      it('should not add tween if there is no one ->', function() {
         var TweenableExtention, tw;
         TweenableExtention = (function(_super) {
           __extends(TweenableExtention, _super);
@@ -116,6 +116,18 @@
         })(Tweenable);
         tw = new TweenableExtention;
         return expect(tw.timeline._timelines[0]).not.toBeDefined();
+      });
+      it('should set _isTimeine ->', function() {
+        var tw;
+        tw = new Tweenable;
+        return expect(tw._isTimeline).toBe(true);
+      });
+      return it('should not set _isTimeine if isTimelineLess ->', function() {
+        var tw;
+        tw = new Tweenable({
+          isTimelineLess: true
+        });
+        return expect(tw._isTimeline).toBe(void 0);
       });
     });
     describe('play method ->', function() {

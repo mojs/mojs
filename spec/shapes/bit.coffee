@@ -93,8 +93,11 @@ describe 'Bit ->', ->
       style.width = ''
       style.height = ''
       bit._setCanvasSize()
-      expect( style.width ).toBe '100%'
-      expect( style.width ).toBe '100%'
+      expect( style.width ).toBe   '100%'
+      expect( style.width ).toBe   '100%'
+      expect( style.left ).toBe    '0px'
+      expect( style.top ).toBe     '0px'
+      expect( style.display ).toBe 'block'
   # old
   # describe '_render method ->', ->
   #   it 'should have _render method', ->
@@ -487,7 +490,7 @@ describe 'Bit ->', ->
   #   #   bit = new Bit
   #   #     ctx:    document.createElementNS ns, 'svg'
   #   #     radius: 100
-  #   #     
+  #   #
   #   #   bit.setAttrsIfChanged 'radius', 100
   #   #   bit._draw()
   #   #   spyOn bit, '_getLength'
