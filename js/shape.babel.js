@@ -42,6 +42,10 @@ class Shape extends Tunable {
       fill:             'deeppink',
       // ∆ :: Possible values: [ 0..1 ]
       fillOpacity:      1,
+      // {Boolean} - if should hide module with `opacity` instead of `display`
+      isSoftHide:       true,
+      // {Boolean} - if should trigger composite layer for the `el`
+      isForce3d:        false,
       // ∆ :: Units :: Possible values: [ number, string ]
       left:             0,
       // ∆ :: Units :: Possible values: [ number, string ]
@@ -441,8 +445,12 @@ class Shape extends Tunable {
     @private
   */
   _show () {
+    var p = this._props;
     if ( !this.el ) { return; }
-    this.el.style.display = 'block';
+
+    if ( p.isSoftHide ) { this.el.style.opacity = p.opacity; }
+    else { this.el.style.display = 'block'; }
+
     this._isShown = true;
   }
   /*
@@ -451,7 +459,10 @@ class Shape extends Tunable {
   */
   _hide () {
     if ( !this.el ) { return; }
-    this.el.style.display = 'none';
+    
+    if ( this._props.isSoftHide ) { this.el.style.opacity = 0; }
+    else { this.el.style.display = 'none'; }
+    
     this._isShown = false;
   }
 }

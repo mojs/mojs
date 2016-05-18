@@ -1904,6 +1904,10 @@
 	      fill: 'deeppink',
 	      // ∆ :: Possible values: [ 0..1 ]
 	      fillOpacity: 1,
+	      // {Boolean} - if should hide module with `opacity` instead of `display`
+	      isSoftHide: true,
+	      // {Boolean} - if should trigger composite layer for the `el`
+	      isForce3d: false,
 	      // ∆ :: Units :: Possible values: [ number, string ]
 	      left: 0,
 	      // ∆ :: Units :: Possible values: [ number, string ]
@@ -2377,10 +2381,17 @@
 
 
 	  Shape.prototype._show = function _show() {
+	    var p = this._props;
 	    if (!this.el) {
 	      return;
 	    }
-	    this.el.style.display = 'block';
+
+	    if (p.isSoftHide) {
+	      this.el.style.opacity = p.opacity;
+	    } else {
+	      this.el.style.display = 'block';
+	    }
+
 	    this._isShown = true;
 	  };
 	  /*
@@ -2393,7 +2404,13 @@
 	    if (!this.el) {
 	      return;
 	    }
-	    this.el.style.display = 'none';
+
+	    if (this._props.isSoftHide) {
+	      this.el.style.opacity = 0;
+	    } else {
+	      this.el.style.display = 'none';
+	    }
+
 	    this._isShown = false;
 	  };
 
@@ -8134,7 +8151,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.242.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.243.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default

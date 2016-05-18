@@ -98,6 +98,8 @@
         expect(byte._defaults.strokeDashoffset).toBe(0);
         expect(byte._defaults.fill).toBe('deeppink');
         expect(byte._defaults.fillOpacity).toBe(1);
+        expect(byte._defaults.isSoftHide).toBe(true);
+        expect(byte._defaults.isForce3d).toBe(false);
         expect(byte._defaults.left).toBe(0);
         expect(byte._defaults.top).toBe(0);
         expect(byte._defaults.x).toBe(0);
@@ -416,7 +418,8 @@
       it('should set opacity with respect to units', function() {
         var byte;
         byte = new Byte({
-          opacity: .5
+          opacity: .5,
+          isShowStart: true
         });
         return expect(byte.el.style.opacity).toBe('0.5');
       });
@@ -848,7 +851,8 @@
         var byte, isTr, isTr2, s, tr;
         byte = new Byte({
           radius: 25,
-          top: 10
+          top: 10,
+          isShowStart: true
         });
         expect(byte.el.style.top).toBe('10px');
         expect(byte.el.style.opacity).toBe('1');
@@ -1548,40 +1552,69 @@
       it('should set `display` of `el` to `none`', function() {
         var byte;
         byte = new Byte({
-          radius: 25
+          radius: 25,
+          isSoftHide: false
         });
         byte.el.style['display'] = 'block';
         byte._hide();
         return expect(byte.el.style['display']).toBe('none');
       });
-      return it('should set `_isShown` to false', function() {
+      it('should set `_isShown` to false', function() {
         var byte;
         byte = new Byte({
-          radius: 25
+          radius: 25,
+          isSoftHide: false
         });
         byte._isShown = true;
         byte._hide();
         return expect(byte._isShown).toBe(false);
+      });
+      return describe('isSoftHide option ->', function() {
+        return it('should set `opacity` of `el` to `0`', function() {
+          var byte;
+          byte = new Byte({
+            radius: 25,
+            isSoftHide: true
+          });
+          byte.el.style['opacity'] = '.5';
+          byte._hide();
+          return expect(byte.el.style['opacity']).toBe('0');
+        });
       });
     });
     describe('_show method ->', function() {
       it('should set `display` of `el` to `block`', function() {
         var byte;
         byte = new Byte({
-          radius: 25
+          radius: 25,
+          isSoftHide: false
         });
         byte.el.style['display'] = 'none';
         byte._show();
         return expect(byte.el.style['display']).toBe('block');
       });
-      return it('should set `_isShown` to true', function() {
+      it('should set `_isShown` to true', function() {
         var byte;
         byte = new Byte({
-          radius: 25
+          radius: 25,
+          isSoftHide: false
         });
         byte._isShown = true;
         byte._show();
         return expect(byte._isShown).toBe(true);
+      });
+      return describe('isSoftHide option ->', function() {
+        return it('should set `opacity` of `el` to `_props.opacity`', function() {
+          var byte;
+          byte = new Byte({
+            radius: 25,
+            isSoftHide: true,
+            opacity: .2
+          });
+          byte.el.style['opacity'] = '0';
+          byte._show();
+          return expect(byte.el.style['opacity']).toBe("" + byte._props.opacity);
+        });
       });
     });
     describe('_createShape method', function() {

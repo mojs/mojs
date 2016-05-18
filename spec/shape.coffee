@@ -82,6 +82,8 @@ describe 'Shape ->', ->
       expect(byte._defaults.strokeDashoffset).toBe 0
       expect(byte._defaults.fill).toBe             'deeppink'
       expect(byte._defaults.fillOpacity).toBe      1
+      expect(byte._defaults.isSoftHide).toBe       true
+      expect(byte._defaults.isForce3d).toBe        false
       expect(byte._defaults.left).toBe             0
       expect(byte._defaults.top).toBe              0
       expect(byte._defaults.x).toBe                0
@@ -406,7 +408,7 @@ describe 'Shape ->', ->
 
   describe 'opacity set ->', ->
     it 'should set opacity with respect to units', ->
-      byte = new Byte opacity: .5
+      byte = new Byte opacity: .5, isShowStart: true
       expect(byte.el.style.opacity).toBe '0.5'
     it 'should animate opacity', (dfr)->
       byte = new Byte
@@ -708,7 +710,7 @@ describe 'Shape ->', ->
       expect(byte._draw).toHaveBeenCalledWith .5
   describe '_drawEl method ->', ->
     it 'should set el positions and transforms', ->
-      byte = new Byte radius: 25, top: 10
+      byte = new Byte radius: 25, top: 10, isShowStart: true
       expect(byte.el.style.top)       .toBe     '10px'
       expect(byte.el.style.opacity)   .toBe     '1'
       expect(parseInt(byte.el.style.left, 10)).toBe 0
@@ -1259,29 +1261,43 @@ describe 'Shape ->', ->
 
   describe '_hide method ->' , ->
     it 'should set `display` of `el` to `none`', ->
-      byte = new Byte radius: 25
+      byte = new Byte radius: 25, isSoftHide: false
       byte.el.style[ 'display' ] = 'block'
       byte._hide()
       expect( byte.el.style[ 'display' ] ).toBe 'none'
 
     it 'should set `_isShown` to false', ->
-      byte = new Byte radius: 25
+      byte = new Byte radius: 25, isSoftHide: false
       byte._isShown = true
       byte._hide()
       expect( byte._isShown ).toBe false
 
+    describe 'isSoftHide option ->', ->
+      it 'should set `opacity` of `el` to `0`', ->
+        byte = new Byte radius: 25, isSoftHide: true
+        byte.el.style[ 'opacity' ] = '.5'
+        byte._hide()
+        expect( byte.el.style[ 'opacity' ] ).toBe '0'
+
   describe '_show method ->' , ->
     it 'should set `display` of `el` to `block`', ->
-      byte = new Byte radius: 25
+      byte = new Byte radius: 25, isSoftHide: false
       byte.el.style[ 'display' ] = 'none'
       byte._show()
       expect( byte.el.style[ 'display' ] ).toBe 'block'
 
     it 'should set `_isShown` to true', ->
-      byte = new Byte radius: 25
+      byte = new Byte radius: 25, isSoftHide: false
       byte._isShown = true
       byte._show()
       expect( byte._isShown ).toBe true
+
+    describe 'isSoftHide option ->', ->
+      it 'should set `opacity` of `el` to `_props.opacity`', ->
+        byte = new Byte radius: 25, isSoftHide: true, opacity: .2
+        byte.el.style[ 'opacity' ] = '0'
+        byte._show()
+        expect( byte.el.style[ 'opacity' ] ).toBe "#{byte._props.opacity}"
 
   describe '_createShape method', ->
     it 'should create shape module based on `_props` shape', ->
