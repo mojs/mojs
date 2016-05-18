@@ -92,6 +92,18 @@ class Shape extends Tunable {
       callbacksContext: this
     }
   }
+  /*
+    Method to create a then record for the module.
+    @public
+    @param    {Object} Options for the next animation.
+    @returns  {Object} this.
+  */
+  then (o) {
+    super.then( o );
+    // update shapeModule's size to the max in `then` chain
+    this._getMaxSizeInChain();
+    return this;
+  }
 
   // ^ PUBLIC  METHOD(S) ^
   // v PRIVATE METHOD(S) v
@@ -159,10 +171,7 @@ class Shape extends Tunable {
           height = p.shapeHeight;
 
       style.position = 'absolute';
-      style.width    = `${ width }px`;
-      style.height   = `${ height }px`;
-      style[ 'margin-left' ] = `${ - width/2 }px`;
-      style[ 'margin-top' ]  = `${ - height/2 }px`;
+      this._setElSizeStyles( width, height );
 
       if ( p.isForce3d ) {
         let name = 'backface-visibility';
@@ -170,6 +179,18 @@ class Shape extends Tunable {
         style[ `${h.prefix.css}${name}` ] = 'hidden';
       }
     // }
+  }
+  /*
+    Method to set `width`/`height`/`margins` to the `el` styles.
+    @param {Number} Width.
+    @param {height} Height.
+  */
+  _setElSizeStyles ( width, height ) {
+    var style  = this.el.style;
+    style.width  = `${ width }px`;
+    style.height = `${ height }px`;
+    style[ 'margin-left' ] = `${ - width/2 }px`;
+    style[ 'margin-top' ]  = `${ - height/2 }px`;
   }
   /*
     Method to draw shape.
@@ -323,6 +344,18 @@ class Shape extends Tunable {
     } else { return fallback; }
   }
   /*
+    Method to get max shape canvas size and save it to _props.
+    @private
+  */
+  _getShapeSize () {
+    var p      = this._props,
+        // get maximum stroke value
+        stroke = this._getMaxStroke();
+    // save shape `width` and `height` to `_props`
+    p.shapeWidth  = 2*this._getMaxRadius( 'radiusX' ) + stroke;
+    p.shapeHeight = 2*this._getMaxRadius( 'radiusY' ) + stroke;
+  }
+  /*
     Method to create shape.
     @private
   */
@@ -330,17 +363,32 @@ class Shape extends Tunable {
     var p      = this._props;
     // get shape's class
     var Shape  = shapesMap.getShape(this._props.shape);
-    // get maximum stroke value
-    var stroke = this._getMaxStroke();
-    // save shape `width` and `height` to `_props`
-    p.shapeWidth  = 2*this._getMaxRadius( 'radiusX' ) + stroke;
-    p.shapeHeight = 2*this._getMaxRadius( 'radiusY' ) + stroke;
+    // calculate max shape canvas size and set to _props
+    this._getShapeSize();
     // create `_shape` module
     this.shapeModule = new Shape({
       width:  p.shapeWidth,
       height: p.shapeHeight,
       parent: this.el
     });
+  }
+  /*
+    Method to get max size in `then` chain
+    @private
+  */
+  _getMaxSizeInChain () {
+    let p    = this._props,
+        maxW = 0,
+        maxH = 0;
+
+    for (var i = 0; i < this._modules.length; i++) {
+      this._modules[i]._getShapeSize();
+      maxW = Math.max( maxW, this._modules[i]._props.shapeWidth );
+      maxH = Math.max( maxH, this._modules[i]._props.shapeHeight );
+    }
+
+    this.shapeModule._setSize( maxW, maxH );
+    this._setElSizeStyles( maxW, maxH );
   }
   /*
     Method to get max value of the strokeWidth.
@@ -423,29 +471,14 @@ class Shape extends Tunable {
     return str;
   }
   /*
-    Method to hide previousChainModule.
-    @private
-  */
-  // _hidePrevChainModule () {
-  //   var p = this._props;
-  //   this._prevChainModule && this._prevChainModule._hide();
-  // }
-  /*
-    Method to show previousChainModule.
-    @private
-  */
-  // _showPrevChainModule () {
-  //   this._prevChainModule && this._prevChainModule._show();
-  // }
-  /*
     Method to hide all modules in then chain.
     @private
   */
-  _hideModuleChain () {
-    for (var i = 1; i < this._modules.length; i++ ) {
-      this._modules[i]._hide();
-    }
-  }
+  // _hideModuleChain () {
+  //   for (var i = 1; i < this._modules.length; i++ ) {
+  //     this._modules[i]._hide();
+  //   }
+  // }
   /*
     Method to show element.
     @private

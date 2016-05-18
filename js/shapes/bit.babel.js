@@ -65,9 +65,11 @@ class Bit extends Module {
     @private
   */
   _setCanvasSize () {
-    let style    = this._canvas.style;
-    style.width  = `${this._props.width}px`;
-    style.height = `${this._props.height}px`;
+    const p     = this._props,
+          style = this._canvas.style;
+
+    style.width  = '100%';
+    style.height = '100%';
   }
   /*
     Method to draw the shape.
@@ -173,6 +175,18 @@ class Bit extends Module {
     let dx = Math.abs( point1.x - point2.x ),
         dy = Math.abs( point1.y - point2.y );
     return Math.sqrt( dx*dx + dy*dy );
+  }
+  /*
+    Method to set module's size.
+    @private
+    @param {Number} Module width.
+    @param {Number} Module height.
+  */
+  _setSize ( width, height ) {
+    const p = this._props;
+    p.width  = width;
+    p.height = height;
+    this._draw();
   }
 }
 

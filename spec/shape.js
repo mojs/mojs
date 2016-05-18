@@ -1520,27 +1520,6 @@
         return expect(tr._fillOrigin()).toBe('25% 100% ');
       });
     });
-    describe('_hideModuleChain method ->', function() {
-      return it('should hide all modules in chain', function() {
-        var tr;
-        tr = new Shape().then({
-          fill: 'orange'
-        }).then({
-          fill: 'cyan'
-        }).then({
-          fill: 'yellow'
-        });
-        spyOn(tr._modules[0], '_hide');
-        spyOn(tr._modules[1], '_hide');
-        spyOn(tr._modules[2], '_hide');
-        spyOn(tr._modules[3], '_hide');
-        tr._hideModuleChain();
-        expect(tr._modules[0]._hide).not.toHaveBeenCalled();
-        expect(tr._modules[1]._hide).toHaveBeenCalled();
-        expect(tr._modules[2]._hide).toHaveBeenCalled();
-        return expect(tr._modules[3]._hide).toHaveBeenCalled();
-      });
-    });
     describe('el creation ->', function() {
       describe('el ->', function() {
         return it('should create el', function() {
@@ -1696,7 +1675,7 @@
         return expect(byte._getRadiusSize).toHaveBeenCalledWith('radiusX', 50);
       });
     });
-    return describe('_getMaxStroke method ->', function() {
+    describe('_getMaxStroke method ->', function() {
       it('should get maximum value of the strokeWidth if delta', function() {
         var byte;
         byte = new Byte({
@@ -1722,6 +1701,122 @@
           strokeWidth: 10
         });
         return expect(byte._getMaxStroke()).toBe(10);
+      });
+    });
+    describe('_getShapeSize method', function() {
+      it('should call _getMaxStroke method', function() {
+        var byte;
+        byte = new Byte;
+        spyOn(byte, '_getMaxStroke');
+        byte._getShapeSize();
+        return expect(byte._getMaxStroke).toHaveBeenCalled();
+      });
+      it('should call _getMaxRadius method', function() {
+        var byte;
+        byte = new Byte;
+        spyOn(byte, '_getMaxRadius');
+        byte._getShapeSize();
+        return expect(byte._getMaxRadius).toHaveBeenCalledWith('radiusX');
+      });
+      it('should call _getMaxRadius method', function() {
+        var byte;
+        byte = new Byte;
+        spyOn(byte, '_getMaxRadius');
+        byte._getShapeSize();
+        return expect(byte._getMaxRadius).toHaveBeenCalledWith('radiusY');
+      });
+      return it('should save size to the _props', function() {
+        var byte, p, stroke;
+        byte = new Byte;
+        byte._props.shapeWidth = 0;
+        byte._props.shapeHeight = 0;
+        byte._getShapeSize();
+        p = byte._props;
+        stroke = byte._getMaxStroke();
+        expect(p.shapeWidth).toBe(2 * byte._getMaxRadius('radiusX') + stroke);
+        return expect(p.shapeHeight).toBe(2 * byte._getMaxRadius('radiusY') + stroke);
+      });
+    });
+    describe('_getMaxSizeInChain method ->', function() {
+      it('should call _getShapeSize on every module', function() {
+        var ms, shape;
+        shape = new Shape().then({
+          radius: 0
+        }).then({
+          radius: 100
+        });
+        ms = shape._modules;
+        spyOn(ms[0], '_getShapeSize');
+        spyOn(ms[1], '_getShapeSize');
+        spyOn(ms[2], '_getShapeSize');
+        shape._getMaxSizeInChain();
+        expect(ms[0]._getShapeSize).toHaveBeenCalled();
+        expect(ms[1]._getShapeSize).toHaveBeenCalled();
+        return expect(ms[2]._getShapeSize).toHaveBeenCalled();
+      });
+      it('should set the largest size to shapeModule', function() {
+        var largest, shape, shapeModule;
+        shape = new Shape().then({
+          radius: 0
+        }).then({
+          radius: 100
+        });
+        largest = shape._modules[2];
+        shapeModule = shape.shapeModule;
+        spyOn(shapeModule, '_setSize');
+        shape._getMaxSizeInChain();
+        return expect(shapeModule._setSize).toHaveBeenCalledWith(largest._props.shapeWidth, largest._props.shapeHeight);
+      });
+      return it('should call _setElSizeStyles method', function() {
+        var largest, shape;
+        shape = new Shape().then({
+          radius: 0
+        }).then({
+          radius: 100
+        });
+        largest = shape._modules[2];
+        spyOn(shape, '_setElSizeStyles');
+        shape._getMaxSizeInChain();
+        return expect(shape._setElSizeStyles).toHaveBeenCalledWith(largest._props.shapeWidth, largest._props.shapeHeight);
+      });
+    });
+    describe('_setElSizeStyles method ->', function() {
+      return it('should set `width`, `height` and `margins` to the `el` styles', function() {
+        var shape, style;
+        shape = new Shape();
+        style = shape.el.style;
+        style['width'] = '0px';
+        style['height'] = '0px';
+        style['margin-left'] = '0px';
+        style['margin-right'] = '0px';
+        shape._setElSizeStyles(100, 200);
+        expect(style['width']).toBe('100px');
+        expect(style['height']).toBe('200px');
+        expect(style['margin-left']).toBe('-50px');
+        return expect(style['margin-top']).toBe('-100px');
+      });
+    });
+    return describe('then method ->', function() {
+      it('should call super', function() {
+        var obj, shape;
+        obj = {};
+        shape = new Shape();
+        spyOn(Thenable.prototype, 'then');
+        shape.then(obj);
+        return expect(Thenable.prototype.then).toHaveBeenCalledWith(obj);
+      });
+      it('should return this', function() {
+        var result, shape;
+        shape = new Shape();
+        result = shape.then({});
+        return expect(result).toBe(shape);
+      });
+      return it('should call _getMaxSizeInChain method', function() {
+        var shape;
+        shape = new Shape();
+        spyOn(shape, '_getMaxSizeInChain');
+        shape.then({});
+        return expect(shape._getMaxSizeInChain).toHaveBeenCalled();
       });
     });
   });

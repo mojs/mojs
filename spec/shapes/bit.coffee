@@ -93,8 +93,8 @@ describe 'Bit ->', ->
       style.width = ''
       style.height = ''
       bit._setCanvasSize()
-      expect(parseInt( style.width, 10 )).toBe width
-      expect(parseInt( style.height, 10 )).toBe height
+      expect( style.width ).toBe '100%'
+      expect( style.width ).toBe '100%'
   # old
   # describe '_render method ->', ->
   #   it 'should have _render method', ->
@@ -259,6 +259,36 @@ describe 'Bit ->', ->
       bit = new Bit radius: 100
       pixels = bit.castPercent 50
       expect(pixels).toBe (bit._props.length/100) * 50
+
+
+  describe 'setSize method ->', ->
+    it 'should set width and height of the module', ->
+      bit = new Bit radius: 100
+      bit._setSize 200, 100
+
+      p = bit._props
+      expect( p.width ).toBe 200
+      expect( p.height ).toBe 100
+
+    it 'should call _draw method', ->
+      bit = new Bit radius: 100
+
+      spyOn bit, '_draw'
+      bit._setSize 200, 100
+      expect( bit._draw ).toHaveBeenCalled()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

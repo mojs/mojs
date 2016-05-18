@@ -113,8 +113,8 @@
         style.width = '';
         style.height = '';
         bit._setCanvasSize();
-        expect(parseInt(style.width, 10)).toBe(width);
-        return expect(parseInt(style.height, 10)).toBe(height);
+        expect(style.width).toBe('100%');
+        return expect(style.width).toBe('100%');
       });
     });
     describe('_draw method ->', function() {
@@ -292,7 +292,7 @@
         return expect(bit._props['stroke-dasharray']).toBe(dash);
       });
     });
-    return describe('castPercent method ->', function() {
+    describe('castPercent method ->', function() {
       return it('should cast % values to pixels', function() {
         var pixels;
         bit = new Bit({
@@ -300,6 +300,26 @@
         });
         pixels = bit.castPercent(50);
         return expect(pixels).toBe((bit._props.length / 100) * 50);
+      });
+    });
+    return describe('setSize method ->', function() {
+      it('should set width and height of the module', function() {
+        var p;
+        bit = new Bit({
+          radius: 100
+        });
+        bit._setSize(200, 100);
+        p = bit._props;
+        expect(p.width).toBe(200);
+        return expect(p.height).toBe(100);
+      });
+      return it('should call _draw method', function() {
+        bit = new Bit({
+          radius: 100
+        });
+        spyOn(bit, '_draw');
+        bit._setSize(200, 100);
+        return expect(bit._draw).toHaveBeenCalled();
       });
     });
   });

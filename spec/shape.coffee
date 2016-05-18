@@ -1180,24 +1180,25 @@ describe 'Shape ->', ->
   #     fun = -> tr._showPrevChainModule()
   #     expect(fun).not.toThrow()
 
-  describe '_hideModuleChain method ->', ->
-    it 'should hide all modules in chain', ->
-      tr = new Shape()
-        .then( fill: 'orange' )
-        .then( fill: 'cyan' )
-        .then( fill: 'yellow' )
+  # old
+  # describe '_hideModuleChain method ->', ->
+  #   it 'should hide all modules in chain', ->
+  #     tr = new Shape()
+  #       .then( fill: 'orange' )
+  #       .then( fill: 'cyan' )
+  #       .then( fill: 'yellow' )
 
-      spyOn tr._modules[0], '_hide'
-      spyOn tr._modules[1], '_hide'
-      spyOn tr._modules[2], '_hide'
-      spyOn tr._modules[3], '_hide'
+  #     spyOn tr._modules[0], '_hide'
+  #     spyOn tr._modules[1], '_hide'
+  #     spyOn tr._modules[2], '_hide'
+  #     spyOn tr._modules[3], '_hide'
 
-      tr._hideModuleChain()
+  #     tr._hideModuleChain()
 
-      expect(tr._modules[0]._hide).not.toHaveBeenCalled()
-      expect(tr._modules[1]._hide).toHaveBeenCalled()
-      expect(tr._modules[2]._hide).toHaveBeenCalled()
-      expect(tr._modules[3]._hide).toHaveBeenCalled()
+  #     expect(tr._modules[0]._hide).not.toHaveBeenCalled()
+  #     expect(tr._modules[1]._hide).toHaveBeenCalled()
+  #     expect(tr._modules[2]._hide).toHaveBeenCalled()
+  #     expect(tr._modules[3]._hide).toHaveBeenCalled()
 
   describe 'el creation ->', ->
 
@@ -1375,31 +1376,106 @@ describe 'Shape ->', ->
 
       expect( byte._getMaxStroke() ).toBe 10
 
-  # old
-  # describe '_resetMergedFlags method ->', ->
-  #   it 'should call super', ->
-  #     obj = {}
-  #     byte = new Byte
-  #       shape:    'rect',
-  #       radius:   {50: 0},
-  #       radiusY:  75,
-  #       strokeWidth: 10
+  describe '_getShapeSize method', ->
+    it 'should call _getMaxStroke method', ->
+      byte = new Byte
+      spyOn byte, '_getMaxStroke'
+      byte._getShapeSize()
+      expect( byte._getMaxStroke ).toHaveBeenCalled()
+    it 'should call _getMaxRadius method', ->
+      byte = new Byte
+      spyOn byte, '_getMaxRadius'
+      byte._getShapeSize()
+      expect( byte._getMaxRadius ).toHaveBeenCalledWith 'radiusX'
+    it 'should call _getMaxRadius method', ->
+      byte = new Byte
+      spyOn byte, '_getMaxRadius'
+      byte._getShapeSize()
+      expect( byte._getMaxRadius ).toHaveBeenCalledWith 'radiusY'
 
-  #     spyOn Thenable::, '_resetMergedFlags'
-  #     byte._resetMergedFlags(obj)
-  #     expect(Thenable::_resetMergedFlags).toHaveBeenCalledWidth obj
+    it 'should save size to the _props', ->
+      byte = new Byte
+      byte._props.shapeWidth  = 0
+      byte._props.shapeHeight = 0
 
-  #   it 'should pass el and shape', ->
-  #     obj = {}
-  #     byte = new Byte
-  #       shape:    'rect',
-  #       radius:   {50: 0},
-  #       radiusY:  75,
-  #       strokeWidth: 10
+      byte._getShapeSize()
+      p = byte._props
+      stroke = byte._getMaxStroke()
+      expect( p.shapeWidth ).toBe 2*byte._getMaxRadius( 'radiusX' ) + stroke
+      expect( p.shapeHeight ).toBe 2*byte._getMaxRadius( 'radiusY' ) + stroke
 
-  #     byte._resetMergedFlags(obj)
-  #     expect(obj.el).toBe byte.el
-  #     expect(obj.shape).toBe byte.shapeModule
+  describe '_getMaxSizeInChain method ->', ->
+    it 'should call _getShapeSize on every module', ->
+      shape = new Shape().then( radius: 0 ).then( radius: 100 )
 
+      ms = shape._modules
+      spyOn ms[0], '_getShapeSize'
+      spyOn ms[1], '_getShapeSize'
+      spyOn ms[2], '_getShapeSize'
+
+      shape._getMaxSizeInChain()
+
+      expect( ms[0]._getShapeSize ).toHaveBeenCalled()
+      expect( ms[1]._getShapeSize ).toHaveBeenCalled()
+      expect( ms[2]._getShapeSize ).toHaveBeenCalled()
+
+    it 'should set the largest size to shapeModule', ->
+      shape = new Shape().then( radius: 0 ).then( radius: 100 )
+
+      largest = shape._modules[2]
+      shapeModule = shape.shapeModule
+      spyOn shapeModule, '_setSize'
+
+      shape._getMaxSizeInChain()
+
+      expect( shapeModule._setSize )
+        .toHaveBeenCalledWith largest._props.shapeWidth, largest._props.shapeHeight
+
+    it 'should call _setElSizeStyles method', ->
+      shape = new Shape().then( radius: 0 ).then( radius: 100 )
+
+      largest = shape._modules[2]
+
+      spyOn shape, '_setElSizeStyles'
+      shape._getMaxSizeInChain()
+      expect( shape._setElSizeStyles )
+        .toHaveBeenCalledWith largest._props.shapeWidth, largest._props.shapeHeight
+
+
+  describe '_setElSizeStyles method ->', ->
+    it 'should set `width`, `height` and `margins` to the `el` styles', ->
+      shape = new Shape()
+
+      style = shape.el.style
+      style[ 'width' ] = '0px'
+      style[ 'height' ] = '0px'
+      style[ 'margin-left' ] = '0px'
+      style[ 'margin-right' ] = '0px'
+
+      shape._setElSizeStyles( 100, 200 )
+      expect( style[ 'width' ] ).toBe '100px'
+      expect( style[ 'height' ] ).toBe '200px'
+      expect( style[ 'margin-left' ] ).toBe '-50px'
+      expect( style[ 'margin-top' ] ).toBe '-100px'
+
+
+  describe 'then method ->', ->
+    it 'should call super', ->
+      obj = {}
+      shape = new Shape()
+      spyOn Thenable::, 'then'
+      shape.then( obj )
+      expect( Thenable::then  ).toHaveBeenCalledWith obj
+
+    it 'should return this', ->
+      shape = new Shape()
+      result = shape.then( {} )
+      expect( result  ).toBe shape
+
+    it 'should call _getMaxSizeInChain method', ->
+      shape = new Shape()
+      spyOn shape, '_getMaxSizeInChain'
+      shape.then({})
+      expect( shape._getMaxSizeInChain ).toHaveBeenCalled()
 
 
