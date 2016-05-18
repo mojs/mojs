@@ -153,16 +153,22 @@ class Shape extends Tunable {
   _setElStyles () {
     if ( !this.el ) { return; }
     // if (!this.isForeign) {
-      var p      = this._props;
-      var style  = this.el.style;
-      var width  = p.shapeWidth;
-      var height = p.shapeHeight;
+      var p      = this._props,
+          style  = this.el.style,
+          width  = p.shapeWidth,
+          height = p.shapeHeight;
+
       style.position = 'absolute';
       style.width    = `${ width }px`;
       style.height   = `${ height }px`;
       style[ 'margin-left' ] = `${ - width/2 }px`;
       style[ 'margin-top' ]  = `${ - height/2 }px`;
-      style[ 'backface-visibility' ]  = 'hidden';
+
+      if ( p.isForce3d ) {
+        let name = 'backface-visibility';
+        style[ `${name}` ] = 'hidden';
+        style[ `${h.prefix.css}${name}` ] = 'hidden';
+      }
     // }
   }
   /*

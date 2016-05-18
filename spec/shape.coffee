@@ -645,6 +645,19 @@ describe 'Shape ->', ->
         .toBe "-#{byte._props.shapeWidth/2}px"
       expect( byte.el.style[ 'margin-top' ] )
         .toBe "-#{byte._props.shapeHeight/2}px"
+    it 'should set `backface-visibility` if `isForce3d`', ->
+      byte = new Byte radius: 25, isForce3d: true
+      style = byte.el.style
+      bv = style[ 'backface-visibility' ]
+      prefixedBv = style[ "#{mojs.h.prefix.css}backface-visibility" ]
+      expect( bv or prefixedBv ).toBe 'hidden'
+
+    it 'should not set `backface-visibility` if `isForce3d`', ->
+      byte = new Byte radius: 25
+      style = byte.el.style
+      bv = style[ 'backface-visibility' ]
+      prefixedBv = style[ "#{mojs.h.prefix.css}backface-visibility" ]
+      expect( bv or prefixedBv ).not.toBe 'hidden'
 
   describe '_draw method ->', ->
     # nope

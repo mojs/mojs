@@ -760,7 +760,7 @@
       });
     });
     describe('_setElStyles method ->', function() {
-      return it('should set dimentions and position of the `el`', function() {
+      it('should set dimentions and position of the `el`', function() {
         var byte;
         byte = new Byte({
           radius: 25
@@ -776,6 +776,27 @@
         expect(byte.el.style.height).toBe("" + byte._props.shapeHeight + "px");
         expect(byte.el.style['margin-left']).toBe("-" + (byte._props.shapeWidth / 2) + "px");
         return expect(byte.el.style['margin-top']).toBe("-" + (byte._props.shapeHeight / 2) + "px");
+      });
+      it('should set `backface-visibility` if `isForce3d`', function() {
+        var bv, byte, prefixedBv, style;
+        byte = new Byte({
+          radius: 25,
+          isForce3d: true
+        });
+        style = byte.el.style;
+        bv = style['backface-visibility'];
+        prefixedBv = style["" + mojs.h.prefix.css + "backface-visibility"];
+        return expect(bv || prefixedBv).toBe('hidden');
+      });
+      return it('should not set `backface-visibility` if `isForce3d`', function() {
+        var bv, byte, prefixedBv, style;
+        byte = new Byte({
+          radius: 25
+        });
+        style = byte.el.style;
+        bv = style['backface-visibility'];
+        prefixedBv = style["" + mojs.h.prefix.css + "backface-visibility"];
+        return expect(bv || prefixedBv).not.toBe('hidden');
       });
     });
     describe('_draw method ->', function() {

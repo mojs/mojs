@@ -2027,16 +2027,22 @@
 	      return;
 	    }
 	    // if (!this.isForeign) {
-	    var p = this._props;
-	    var style = this.el.style;
-	    var width = p.shapeWidth;
-	    var height = p.shapeHeight;
+	    var p = this._props,
+	        style = this.el.style,
+	        width = p.shapeWidth,
+	        height = p.shapeHeight;
+
 	    style.position = 'absolute';
 	    style.width = width + 'px';
 	    style.height = height + 'px';
 	    style['margin-left'] = -width / 2 + 'px';
 	    style['margin-top'] = -height / 2 + 'px';
-	    style['backface-visibility'] = 'hidden';
+
+	    if (p.isForce3d) {
+	      var name = 'backface-visibility';
+	      style['' + name] = 'hidden';
+	      style['' + h.prefix.css + name] = 'hidden';
+	    }
 	    // }
 	  };
 	  /*
@@ -8151,7 +8157,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.243.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.244.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
