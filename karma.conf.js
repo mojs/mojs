@@ -91,10 +91,10 @@ module.exports = function(config) {
       
       // 'build/shape.js',
       // 'spec/shape.js',
-      'build/shape-swirl.js',
-      'spec/shape-swirl.js',
-      'build/burst.js',
-      'spec/burst.js',
+      // 'build/shape-swirl.js',
+      // 'spec/shape-swirl.js',
+      // 'build/burst.js',
+      // 'spec/burst.js',
 
       'build/module.js',
       'spec/module.js',
@@ -102,8 +102,8 @@ module.exports = function(config) {
       'spec/tween/tweenable.js',
       'build/tunable.js',
       'spec/tunable.js',
-      'build/thenable.js',
-      'spec/thenable.js',
+      // 'build/thenable.js',
+      // 'spec/thenable.js',
       
       'build/spriter.js',
       'spec/spriter.js',

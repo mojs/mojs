@@ -113,7 +113,7 @@ class ShapeSwirl extends Shape {
     this._progress = proc;
     this._calcCurrentProps(proc);
     this._calcSwirlXY( proc );
-    this._calcOrigin();
+    // this._calcOrigin();
     this._draw(proc);
   }
   /*

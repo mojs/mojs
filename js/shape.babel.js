@@ -100,13 +100,14 @@ class Shape extends Tunable {
     // call _vars method on Thenable
     super._vars();
     this._lastSet = {};
-    this._origin  = {};
     // save _master module
     this._masterModule    = this._o.masterModule;
     // save previous module in the chain
     this._prevChainModule = this._o.prevChainModule;
+    // set isChained flag based on prevChainModule option
+    this._isChained       = !!this._masterModule;
     // should draw on foreign svg canvas
-    this.isForeign = !!this._o.ctx;
+    this.isForeign        = !!this._o.ctx;
     // should take an svg element as self bit
     return this.isForeignBit = !!this._o.shape;
   }
@@ -116,28 +117,29 @@ class Shape extends Tunable {
     @overrides Module
   */
   _render () {
-    if (!this._isRendered) {
+    if (!this._isRendered && !this._isChained) {
       // create `mojs` shape element
       this.el = document.createElement('div');
-      this.el.setAttribute( 'data-name', 'mojs-shape-el' );
+      // set name on the div
+      this.el.setAttribute( 'data-name', 'mojs-shape' );
       // create shape module
       this._createShape();
       // append `el` to parent
       this._props.parent.appendChild( this.el );
+      // set position styles on the el
+      this._setElStyles();
+      // set initial position for the first module in the chain
+      this._setProgress(0);
+      // show at start if `isShowStart`
+      if (this._props.isShowStart) { this._show(); } else { this._hide(); }
       // set `_isRendered` hatch
       this._isRendered = true;
+    } else if ( this._isChained ) {
+      // save elements from master module
+      this.el = this._masterModule.el;
+      this.shapeModule = this._masterModule.shapeModule;
     }
 
-    this._setElStyles();
-
-    // if (this.el != null) { this.el.style.opacity = this._props.opacity; }
-    if (this._props.isShowStart) { this._show(); } else { this._hide(); }
-
-    // if ( this._isFirstInChain() && this._props.isShowStart ) {
-    //   this._showPositionEl();
-    // }
-    // set initial position for the first module in the chain
-    this._isFirstInChain() && this._setProgress(0);
     return this;
   }
   /*
@@ -156,6 +158,7 @@ class Shape extends Tunable {
       style.height   = `${ height }px`;
       style[ 'margin-left' ] = `${ - width/2 }px`;
       style[ 'margin-top' ]  = `${ - height/2 }px`;
+      style[ 'backface-visibility' ]  = 'hidden';
     // }
   }
   /*
@@ -164,10 +167,10 @@ class Shape extends Tunable {
   */
   _draw () {
     var p  = this._props,
-        bP = this.shape._props;
+        bP = this.shapeModule._props;
     // set props on bit
-    bP.x                    = this._origin.x;
-    bP.y                    = this._origin.y;
+    // bP.x                    = this._origin.x;
+    // bP.y                    = this._origin.y;
     bP.rx                   = p.rx;
     bP.ry                   = p.ry;
     bP.stroke               = p.stroke;
@@ -183,7 +186,8 @@ class Shape extends Tunable {
     bP.radiusY              = p.radiusY;
     bP.points               = p.points;
 
-    this.shape._draw(); this._drawEl();
+    this.shapeModule._draw();
+    this._drawEl();
   }
   /*
     Method to set current modules props to main div el.
@@ -237,14 +241,6 @@ class Shape extends Tunable {
     } else { return false; }
   }
   /*
-    Method to create shape's transform string.
-    @private
-    @returns {String} Transform string for the shape.
-  */
-  _calcShapeTransform () {
-    return `rotate(${this._props.angle}, ${this._origin.x}, ${this._origin.y})`;
-  }
-  /*
     Method to tune new option on run.
     @private
     @override @ Module
@@ -256,20 +252,8 @@ class Shape extends Tunable {
     // return if empty object
     if ( !((o != null) && Object.keys(o).length) ) { return 1; }
 
-    this._calcSize();
+    // this._calcSize();
     this._setElStyles();
-  }
-  /*
-    Method to calculate maximum shape's radius.
-    @private
-    @returns {Number} Maximum raduis.
-  */
-  _calcShapeRadius () {
-    var selfSize, selfSizeX, selfSizeY;
-    selfSize  = this._getRadiusSize('radius');
-    selfSizeX = this._getRadiusSize('radiusX', selfSize );
-    selfSizeY = this._getRadiusSize('radiusY', selfSize );
-    return Math.max(selfSizeX, selfSizeY);
   }
   /*
     Method to get max radiusX value.
@@ -277,24 +261,9 @@ class Shape extends Tunable {
     @param {String} Radius name.
   */
   _getMaxRadius( name ) {
-    var selfSize, selfSizeX
+    var selfSize, selfSizeX;
     selfSize  = this._getRadiusSize('radius');
     return this._getRadiusSize(name, selfSize );
-  }
-  /*
-    Method to calculate maximum size of the svg canvas.
-    @private
-  */
-  _calcSize () {
-    if (this._o.size) { return; }
-    var p = this._props,
-        radius  = this._calcShapeRadius(),
-        dStroke = this._deltas['strokeWidth'],
-        stroke  = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : p.strokeWidth;
-    p.size = 2 * radius + stroke;
-    this._increaseSizeWithEasing();
-    this._increaseSizeWithBitRatio();
-    return p.center = p.size / 2;
   }
   /*
     Method to increase calculated size based on easing.
@@ -344,17 +313,6 @@ class Shape extends Tunable {
     } else { return fallback; }
   }
   /*
-    Method to find the shape and initialize it.
-    @private
-  */
-  _createBit () {
-    var bitClass = shapesMap.getShape(this._props.shape);
-    this.shape = new bitClass({ ctx: this.ctx, el: this._o.bit, isDrawLess: true });
-    // if draw on foreign context
-    // or we are animating an svg element outside the module
-    if (this.isForeign || this.isForeignBit) { return this.el = this.shape.el; }
-  }
-  /*
     Method to create shape.
     @private
   */
@@ -367,8 +325,8 @@ class Shape extends Tunable {
     // save shape `width` and `height` to `_props`
     p.shapeWidth  = 2*this._getMaxRadius( 'radiusX' ) + stroke;
     p.shapeHeight = 2*this._getMaxRadius( 'radiusY' ) + stroke;
-    // create `_shape`
-    this.shape = new Shape({
+    // create `_shape` module
+    this.shapeModule = new Shape({
       width:  p.shapeWidth,
       height: p.shapeHeight,
       parent: this.el
@@ -385,7 +343,6 @@ class Shape extends Tunable {
       ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end))
       : p.strokeWidth;
   }
-
   /*
     Method to draw current progress of the deltas.
     @private
@@ -395,21 +352,8 @@ class Shape extends Tunable {
   _setProgress ( progress ) {
     // call the super on Module
     Module.prototype._setProgress.call(this, progress);
-    // super._setProgress( progress );
-    this._calcOrigin();
+    // draw current progress
     this._draw(progress);
-  }
-  /*
-    Method to calculate transform origin for the element.
-    @private
-  */
-  _calcOrigin () {
-    var p = this._props;
-    // if drawing context was passed
-    // set origin to x and y of the module
-    // otherwise set the origin to the center
-    this._origin.x = this._o.ctx ? parseFloat(p.x) : p.center;
-    this._origin.y = this._o.ctx ? parseFloat(p.y) : p.center;
   }
   /*
     Method to add callback overrides to passed object.
@@ -423,32 +367,16 @@ class Shape extends Tunable {
     obj.callbackOverrides = {
       onUpdate: function (pe) { return it._setProgress(pe); },
       onStart:  function (isFwd) {
-        if ( isFwd ) {
-          it._show();
-          // it._isFirstInChain() && it._showPositionEl();
-          // hide previous module in then chain
-          it._hidePrevChainModule();
-          // hide all modules in the chain (for chain parent only)
-          it._hideModuleChain();
-        } else {
-          if ( !p.isShowStart ) {
-            it._hide();
-            // it._isFirstInChain() && it._hidePositionEl();
-          }
-          // show previous module in then chain
-          it._showPrevChainModule();
-        }
+        // don't touch main `el` onStart in chained elements
+        if ( it._isChained ) { return };
+        if ( isFwd ) { it._show(); }
+        else { if ( !p.isShowStart ) { it._hide(); } }
       },
       onComplete: function (isFwd) {
-        if ( isFwd ) {
-          if ( !p.isShowEnd ) {
-            it._hide();
-            // it._isLastInChain() && it._hidePositionEl();
-          }
-        } else {
-          it._show();
-          // it._isLastInChain() && it._showPositionEl();
-        }
+        // don't touch main `el` if not the last in `then` chain
+        if ( !it._isLastInChain() ) { return; }
+        if ( isFwd ) { if ( !p.isShowEnd ) { it._hide(); } }
+        else { it._show(); }
       }
     }
   }
@@ -488,17 +416,17 @@ class Shape extends Tunable {
     Method to hide previousChainModule.
     @private
   */
-  _hidePrevChainModule () {
-    var p = this._props;
-    this._prevChainModule && this._prevChainModule._hide();
-  }
+  // _hidePrevChainModule () {
+  //   var p = this._props;
+  //   this._prevChainModule && this._prevChainModule._hide();
+  // }
   /*
     Method to show previousChainModule.
     @private
   */
-  _showPrevChainModule () {
-    this._prevChainModule && this._prevChainModule._show();
-  }
+  // _showPrevChainModule () {
+  //   this._prevChainModule && this._prevChainModule._show();
+  // }
   /*
     Method to hide all modules in then chain.
     @private
@@ -513,17 +441,8 @@ class Shape extends Tunable {
     @private
   */
   _show () {
-    if ( !this._moduleEl ) { return; }
-    this._moduleEl.style.display = 'block';
-    
-    let shift = this._props.size/2;
-    this._positionEl.style[ 'transform' ] =
-      `translate(${-shift}px, ${-shift}px)`;
-    this._positionEl.style[ `${h.prefix.css}transform` ] =
-      `translate(${-shift}px, ${-shift}px)`;
-    // h.setPrefixedStyle(
-    //   );
-
+    if ( !this.el ) { return; }
+    this.el.style.display = 'block';
     this._isShown = true;
   }
   /*
@@ -531,40 +450,9 @@ class Shape extends Tunable {
     @private
   */
   _hide () {
-    if ( !this._moduleEl ) { return; }
-    this._moduleEl.style.display = 'none';
+    if ( !this.el ) { return; }
+    this.el.style.display = 'none';
     this._isShown = false;
-  }
-  /*
-    Method to show `_positionEl` element.
-    @private
-  */
-  // _showPositionEl () {
-  //   if ( !this._positionEl ) { return; }
-  //   this._positionEl.style.display = 'block';
-  // }
-  /*
-    Method to hide `_positionEl` element.
-    @private
-  */
-  // _hidePositionEl () {
-  //   if ( !this._positionEl ) { return; }
-  //   this._positionEl.style.display = 'none';
-  // }
-  /*
-    Method to reset some flags on merged options object.
-    @private
-    @overrides @ Thenable
-    @param   {Object} Options object.
-    @returns {Object} Options object.
-  */
-  _resetMergedFlags (obj) {
-    super._resetMergedFlags(obj);
-    // pass the `_positionEl` to the child module
-    obj.positionEl = this._positionEl;
-    // pass the `_shiftEl` to the child module
-    obj.shiftEl    = this._shiftEl;
-    return obj;
   }
 }
 

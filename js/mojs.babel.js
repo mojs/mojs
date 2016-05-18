@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.241.0', isDebug: true, helpers: h,
+  revision:   '0.242.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -46,25 +46,30 @@ window.mojs = mojs;
   percentage for radius
 */
 
-let cross = new mojs.Shape({
-  shape: 'rect',
-  stroke: 'cyan',
-  isShowStart: 1,
-  left:   '50%',
-  top:    '50%',
-  radiusX: { 0: 50 },
-  radiusY: { 0: 20 },
-  isTimelineLess:  1,
-  angle: { 0: 200 },
-  fill: 'none',
-  strokeDasharray:  '100%',
-  strokeDashoffset: {'-100%': '100%'},
-  duration: 2000
-});
+// let cross = new mojs.Shape({
+//   shape: 'rect',
+//   stroke: 'cyan',
+//   isShowStart: 1,
+//   left:   '50%',
+//   top:    '50%',
+//   radius: 50,
+//   // radiusX: { 0: 50 },
+//   // radiusY: { 0: 20 },
+//   // isTimelineLess:  1,
+//   angle: { 0: 200 },
+//   fill: 'none',
+//   x:    { 0: 200 },
+//   // strokeDasharray:  '100%',
+//   // strokeDashoffset: {'-100%': '100%'},
+//   duration: 2000
+// }).then({
+//   x: 0,
+//   radius: 200
+// });
 
-document.addEventListener('click', function () {
-  cross.replay();
-});
+// document.addEventListener('click', function () {
+//   cross.replay();
+// });
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {

@@ -698,7 +698,6 @@
         expect(obj.isShowStart).toBe(false);
         expect(obj.prevChainModule).toBe(th._modules[th._modules.length - 1]);
         expect(obj.callbacksContext).toBe(th._props.callbacksContext);
-        expect(obj.parent).toBe(th.el);
         return expect(obj.masterModule).toBe(th);
       });
     });
