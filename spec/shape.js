@@ -91,6 +91,7 @@
         byte = new Byte;
         expect(byte._defaults).toBeDefined();
         expect(byte._defaults.parent).toBe(document.body);
+        expect(byte._defaults.className).toBe('');
         expect(byte._defaults.shape).toBe('circle');
         expect(byte._defaults.stroke).toBe('transparent');
         expect(byte._defaults.strokeOpacity).toBe(1);
@@ -1524,7 +1525,7 @@
     });
     describe('el creation ->', function() {
       describe('el ->', function() {
-        return it('should create el', function() {
+        it('should create el', function() {
           var byte, style;
           byte = new Byte({
             radius: 25
@@ -1535,6 +1536,15 @@
           expect(style['width']).toBe('52px');
           expect(style['height']).toBe('52px');
           return expect(byte.el.getAttribute('data-name')).toBe('mojs-shape');
+        });
+        return it('should add `class` to `el`', function() {
+          var byte, className;
+          className = 'some-class';
+          byte = new Byte({
+            radius: 25,
+            className: className
+          });
+          return expect(byte.el.getAttribute('class')).toBe(className);
         });
       });
       return it('should create bit based on shape option or fallback to circle', function() {

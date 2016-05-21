@@ -24,6 +24,8 @@ class Shape extends Tunable {
     this._defaults = {
       // where to append the module to [selector, HTMLElement]
       parent:           document.body,
+      // class name for the `el`
+      className:            '',
       // Possible values: [circle, line, zigzag, rect, polygon, cross, equal ]
       shape:            'circle',
       // ∆ :: Possible values: [color name, rgb, rgba, hex]
@@ -152,8 +154,10 @@ class Shape extends Tunable {
     if (!this._isRendered && !this._isChained) {
       // create `mojs` shape element
       this.el = document.createElement('div');
-      // set name on the div
+      // set name on the `el`
       this.el.setAttribute( 'data-name', 'mojs-shape' );
+      // set class on the `el`
+      this.el.setAttribute( 'class', this._props.className );
       // create shape module
       this._createShape();
       // append `el` to parent

@@ -393,7 +393,6 @@ class Helpers
         type:   'array'
     ## plain numeric value ##
     else
-      # console.log start, end
       ## filter tween-related properties
       # defined in helpers.chainOptionMap
       # because tween-related props shouldn't

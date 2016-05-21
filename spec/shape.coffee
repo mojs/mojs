@@ -74,6 +74,7 @@ describe 'Shape ->', ->
       byte = new Byte
       expect(byte._defaults).toBeDefined()
       expect(byte._defaults.parent).toBe           document.body
+      expect(byte._defaults.className).toBe        ''
       expect(byte._defaults.shape).toBe            'circle'
       expect(byte._defaults.stroke).toBe           'transparent'
       expect(byte._defaults.strokeOpacity).toBe    1
@@ -1152,55 +1153,6 @@ describe 'Shape ->', ->
       tr.setProgress .5
       expect(tr._fillOrigin()).toBe '25% 100% '
 
-  # not now
-  # describe '_hidePrevChainModule method ->', ->
-  #   it 'should hide prevChainModule', ->
-  #     module = new Shape
-  #     tr = new Shape prevChainModule: module
-
-  #     spyOn tr._prevChainModule, '_hide'
-  #     tr._hidePrevChainModule()
-  #     expect(tr._prevChainModule._hide).toHaveBeenCalled()
-
-  #   it 'should not throw', ->
-  #     tr = new Shape
-  #     fun = -> tr._hidePrevChainModule()
-  #     expect(fun).not.toThrow()
-  # not now
-  # describe '_showPrevChainModule method ->', ->
-  #   it 'should hide prevChainModule', ->
-  #     module = { _show: -> }
-  #     tr = new Shape prevChainModule: module
-
-  #     spyOn tr._prevChainModule, '_show'
-  #     tr._showPrevChainModule()
-  #     expect(tr._prevChainModule._show).toHaveBeenCalled()
-
-  #   it 'should not throw', ->
-  #     tr = new Shape
-  #     fun = -> tr._showPrevChainModule()
-  #     expect(fun).not.toThrow()
-
-  # old
-  # describe '_hideModuleChain method ->', ->
-  #   it 'should hide all modules in chain', ->
-  #     tr = new Shape()
-  #       .then( fill: 'orange' )
-  #       .then( fill: 'cyan' )
-  #       .then( fill: 'yellow' )
-
-  #     spyOn tr._modules[0], '_hide'
-  #     spyOn tr._modules[1], '_hide'
-  #     spyOn tr._modules[2], '_hide'
-  #     spyOn tr._modules[3], '_hide'
-
-  #     tr._hideModuleChain()
-
-  #     expect(tr._modules[0]._hide).not.toHaveBeenCalled()
-  #     expect(tr._modules[1]._hide).toHaveBeenCalled()
-  #     expect(tr._modules[2]._hide).toHaveBeenCalled()
-  #     expect(tr._modules[3]._hide).toHaveBeenCalled()
-
   describe 'el creation ->', ->
 
     describe 'el ->', ->
@@ -1214,16 +1166,10 @@ describe 'Shape ->', ->
         # expect(style[ 'display' ]).toBe 'none'
         # expect(byte.el.style.opacity)     .toBe 1
         expect(byte.el.getAttribute('data-name')).toBe('mojs-shape')
-
-      # it 'should set `_o.positionEl` to `el` if passed', ->
-      #   div = document.createElement 'div'
-      #   byte = new Byte radius: 25, positionEl: div
-      #   expect(byte.el).toBe div
-      #   expect(byte.el.parentNode).toBe byte.el
-
-      # it 'should not create el if `positionEl` passed', ->
-      #   byte = new Byte radius: 25, positionEl: document.createElement 'div'
-      #   expect(byte.el).not.toBeDefined()
+      it 'should add `class` to `el`', ->
+        className = 'some-class'
+        byte = new Byte radius: 25, className: className
+        expect(byte.el.getAttribute('class')).toBe className
 
     it 'should create bit based on shape option or fallback to circle', ->
       byte = new Byte
@@ -1232,47 +1178,6 @@ describe 'Shape ->', ->
       byte2 = new Byte radius: 25
       expect(byte.shapeModule._props.tag).toBe  'rect'
       expect(byte2.shapeModule._props.tag).toBe 'ellipse'
-
-    # # it 'should skip props if foreign context', ->
-    # #   byte = new Byte
-    # #     radius:       25
-    # #     strokeWidth:  2
-    # #     x:            10
-    # #     y:            20
-    # #     ctx: svg
-    # #   expect(byte.el.style.display)               .toBe 'none'
-    # #   expect(byte.el.style.opacity)               .toBe '1'
-    # #   expect(byte.el.style.position)              .not.toBe 'absolute'
-    # #   expect(byte.el.style.width)                 .not.toBe '54px'
-    # #   expect(byte.el.style.height)                .not.toBe '54px'
-    # #   expect(byte.el.style['margin-left'])        .not.toBe '-26px'
-    # #   expect(byte.el.style['margin-top'])         .not.toBe '-26px'
-    # #   expect(byte.el.style['marginLeft'])         .not.toBe '-26px'
-    # #   expect(byte.el.style['marginTop'])          .not.toBe '-26px'
-    # #   # expect(byte.el.style['backface-visibility']).not.toBe 'hidden'
-    # #   # prefixedProp = "#{h.prefix.css}backface-visibility"
-    # #   # expect(byte.el.style[prefixedProp]).not.toBe 'hidden'
-    # #   expect(byte._isShown).toBe false
-    # # it 'should set el size', ->
-    # # # it 'should set el size based on remBase', ->
-    # #   byte = new Byte
-    # #     radius:       25
-    # #     strokeWidth:  2
-    # #     x:            10
-    # #     y:            20
-    # #   byte._isRendered = false
-    # #   h.remBase = 8
-    # #   byte._render()
-    # #   h.remBase = 16
-    # #   expect(byte.el.style.position)              .toBe 'absolute'
-    # #   expect(byte.el.style.width)                 .toBe '52px'
-    # #   expect(byte.el.style.height)                .toBe '52px'
-    # #   expect(byte.el.style['margin-left'])        .toBe '-26px'
-    # #   expect(byte.el.style['margin-top'])         .toBe '-26px'
-    # #   expect(byte.el.style['marginLeft'])         .toBe '-26px'
-    # #   expect(byte.el.style['marginTop'])          .toBe '-26px'
-    # #   #expect(byte.el.style['backface-visibility']).toBe 'hidden'
-    # #   #expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
 
   describe '_hide method ->' , ->
     it 'should set `display` of `el` to `none`', ->
