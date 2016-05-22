@@ -86,32 +86,32 @@ module.exports = function(config) {
     ],
     // list of files to exclude
     exclude: [
-      // 'build/h.js',
-      // 'spec/h.js',
+      'build/h.js',
+      'spec/h.js',
       
-      // // 'build/shape.js',
-      // // 'spec/shape.js',
-      // // 'build/shape-swirl.js',
-      // // 'spec/shape-swirl.js',
-      // // 'build/burst.js',
-      // // 'spec/burst.js',
+      'build/shape.js',
+      'spec/shape.js',
+      'build/shape-swirl.js',
+      'spec/shape-swirl.js',
+      'build/burst.js',
+      'spec/burst.js',
 
-      // 'build/module.js',
-      // 'spec/module.js',
-      // // 'build/tween/tweenable.js',
-      // // 'spec/tween/tweenable.js',
-      // 'build/tunable.js',
-      // 'spec/tunable.js',
-      // // 'build/thenable.js',
-      // // 'spec/thenable.js',
+      'build/module.js',
+      'spec/module.js',
+      // 'build/tween/tweenable.js',
+      // 'spec/tween/tweenable.js',
+      'build/tunable.js',
+      'spec/tunable.js',
+      'build/thenable.js',
+      'spec/thenable.js',
       
-      // 'build/spriter.js',
-      // 'spec/spriter.js',
-      // 'build/stagger.js',
-      // 'spec/stagger.js',
+      'build/spriter.js',
+      'spec/spriter.js',
+      'build/stagger.js',
+      'spec/stagger.js',
 
-      // 'build/easing/easing.js',
-      // 'spec/easing/easing.js',
+      'build/easing/easing.js',
+      'spec/easing/easing.js',
 
       // 'build/tween/timeline.js',
       // 'spec/tween/timeline.js',
@@ -120,10 +120,10 @@ module.exports = function(config) {
       // 'build/tween/tweener.js',
       // 'spec/tween/tweener.js',
 
-      // 'build/motion-path.js',
-      // 'spec/motion-path.js',
-      // // 'build/shapes/*.js',
-      // // 'spec/shapes/*.js'
+      'build/motion-path.js',
+      'spec/motion-path.js',
+      'build/shapes/*.js',
+      'spec/shapes/*.js'
     ],
 
     // preprocess matching files before serving them to the browser

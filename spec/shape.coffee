@@ -178,7 +178,6 @@ describe 'Shape ->', ->
         expect(tr._show).toHaveBeenCalled()
       it 'should not call _show if _isChained', ->
         tr = new Shape
-          isIt: 1
           masterModule: new Shape
         obj = {}
         tr._applyCallbackOverrides( obj )
@@ -409,7 +408,7 @@ describe 'Shape ->', ->
   #     expect(byte._props.center) .toBe(byte._props.size/2)
 
   describe 'opacity set ->', ->
-    it 'should set opacity with respect to units', ->
+    it 'should set opacity regarding units', ->
       byte = new Byte opacity: .5, isShowStart: true
       expect(byte.el.style.opacity).toBe '0.5'
     it 'should animate opacity', (dfr)->
@@ -423,7 +422,7 @@ describe 'Shape ->', ->
 
   describe 'position set ->', ->
     describe 'x/y coordinates ->', ->
-      it 'should set a position with respect to units', ->
+      it 'should set position regarding units', ->
         byte = new Byte left: 100, top: 50
         expect(byte.el.style.left).toBe '100px'
         expect(byte.el.style.top) .toBe '50px'
@@ -443,7 +442,7 @@ describe 'Shape ->', ->
         byte = new Byte left: {100: '200px'}, ctx: svg
         byte.play()
         expect(console.warn).not.toHaveBeenCalled()
-      it 'should animate position with respect to units', (dfr)->
+      it 'should animate position regarding units', (dfr)->
         byte = new Byte
           left: {'20%': '50%'}
           duration: 100
@@ -465,10 +464,11 @@ describe 'Shape ->', ->
           duration: 200
           onComplete:-> expect(byte.el.style.left).toBe('50px'); dfr()
         byte.play()
-      it 'should set a position with respect to units', ->
+      it 'should set position regarding units', ->
         byte = new Byte
           x: 100
-          y: 50
+          y: 50,
+          isShowStart: true
         s = byte.el.style
         tr = s.transform or s["#{mojs.h.prefix.css}transform"]
         expect(tr).toBe 'translate(100px, 50px) rotate(0deg) scale(1, 1)'
@@ -484,7 +484,7 @@ describe 'Shape ->', ->
             expect(isTr or isTr2).toBe true
             dfr()
         byte.play()
-      it 'should animate position with respect to units', (dfr)->
+      it 'should animate position regarding units', (dfr)->
         byte = new Byte
           x: {'20%': '50%'}
           duration: 200
@@ -1199,6 +1199,15 @@ describe 'Shape ->', ->
         byte._hide()
         expect( byte.el.style[ 'opacity' ] ).toBe '0'
 
+      it 'should set scale to 0', ->
+        byte = new Byte
+          radius:     25,
+          isSoftHide: true
+        byte._hide()
+        style = byte.el.style
+        tr = style[ 'transform' ] || style[ "#{h.prefix.css}transform" ]
+        expect( tr ).toBe 'scale(0)'
+
   describe '_show method ->' , ->
     it 'should set `display` of `el` to `block`', ->
       byte = new Byte radius: 25, isSoftHide: false
@@ -1218,6 +1227,15 @@ describe 'Shape ->', ->
         byte.el.style[ 'opacity' ] = '0'
         byte._show()
         expect( byte.el.style[ 'opacity' ] ).toBe "#{byte._props.opacity}"
+
+      it 'should set `transform` to normal', ->
+        byte = new Byte radius: 25, isSoftHide: true, opacity: .2
+        byte.el.style[ 'opacity' ] = '0'
+        byte.el.style[ 'transform' ] = 'none'
+        byte._show()
+        style = byte.el.style
+        tr = style[ 'transform' ] || style[ "#{h.prefix.css}transform" ]
+        expect( tr ).toBe byte._fillTransform()
 
   describe '_createShape method', ->
     it 'should create shape module based on `_props` shape', ->

@@ -41,7 +41,6 @@ describe 'Tween ->', ->
       expect(t._progressTime) .toBe 0
       expect(t.progress)      .toBe 0
       expect(t._state)        .toBe 'stop'
-      # expect(t._globalName)   .toBe '_Tweens'
     it 'should have defaults', ->
       t = new Tween
       expect(t._defaults.duration).toBe  350
@@ -49,6 +48,7 @@ describe 'Tween ->', ->
       expect(t._defaults.yoyo).toBe      false
       expect(t._defaults.speed).toBe     1
       expect(t._defaults.easing).toBe    'Sin.Out'
+      expect(t._defaults.backwardEasing).toBe 'Sin.In'
       expect(t._defaults.name).toBe      null
       expect(t._defaults.nameBase).toBe  'Tween'
       expect(t._defaults.onStart).toBeDefined()
@@ -720,7 +720,8 @@ describe 'Tween ->', ->
           easedProgress = ep
           progress = p
 
-      t._setProgress .5
+      t.setProgress 0
+      t.setProgress .5
       expect(easedProgress).toBe mojs.easing.cubic.out progress
 
     it 'should run with right context', ->
@@ -1654,9 +1655,10 @@ describe 'Tween ->', ->
       repeatStartDirection = null; repeatCompleteDirection = null
       duration = 50; updateValue = null; updateDirection = null
       t = new Tween
-        repeat:     2
-        duration:   duration
-        easing:     'Linear.None'
+        repeat:         2
+        duration:       duration
+        easing:         'Linear.None'
+        backwardEasing: 'Linear.None'
         onUpdate:(p, ep, isForward)->
           updateDirection = isForward
           updateValue = p
@@ -1889,6 +1891,7 @@ describe 'Tween ->', ->
         repeat:     2
         duration:   duration
         easing:     'Linear.None'
+        backwardEasing: 'Linear.None'
         onUpdate:(p, pe, isForward)->
           updateDirection = isForward
           updateValue = p
@@ -2168,6 +2171,7 @@ describe 'Tween ->', ->
         duration:   duration
         delay:      delay
         easing:     'Linear.None'
+        backwardEasing: 'Linear.None'
         onUpdate:(p, pe, isForward)->
           updateDirection = isForward
           updateValue = p
@@ -2398,6 +2402,7 @@ describe 'Tween ->', ->
         duration:   duration
         delay:      delay
         easing:     'Linear.None'
+        backwardEasing: 'Linear.None'
         onUpdate:(p, pe, isForward)->
           updateDirection = isForward
           updateValue = p
@@ -2658,6 +2663,7 @@ describe 'Tween ->', ->
         yoyo:       true
         duration:   duration
         easing:     'Linear.None'
+        backwardEasing: 'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward
@@ -2846,6 +2852,7 @@ describe 'Tween ->', ->
         yoyo:       true
         duration:   duration
         easing:     'Linear.None'
+        backwardEasing: 'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward
@@ -3067,6 +3074,7 @@ describe 'Tween ->', ->
         duration:   duration
         delay:      delay
         easing:     'Linear.None'
+        backwardEasing: 'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward
@@ -3400,6 +3408,7 @@ describe 'Tween ->', ->
         duration:   duration
         delay:      delay
         easing:     'Linear.None'
+        backwardEasing: 'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward
@@ -3724,7 +3733,7 @@ describe 'Tween ->', ->
         yoyo:       true
         duration:   duration
         easing:     'Linear.None'
-        #delay:      delay
+        backwardEasing: 'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward
@@ -4005,6 +4014,7 @@ describe 'Tween ->', ->
         yoyo:       true
         duration:   duration
         easing:     'Linear.None'
+        backwardEasing: 'Linear.None'
         #delay:      delay
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
@@ -4348,6 +4358,7 @@ describe 'Tween ->', ->
         duration:   duration
         delay:      delay
         easing:     'Linear.None'
+        backwardEasing: 'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward
@@ -4628,6 +4639,7 @@ describe 'Tween ->', ->
         duration:   duration
         delay:      delay
         easing:     'Linear.None'
+        backwardEasing: 'Linear.None'
         onUpdate:(p, ep, isForward, isYoyo)->
           updateYoyo = isYoyo
           updateDirection = isForward
@@ -5335,12 +5347,56 @@ describe 'Tween ->', ->
       t._update t._props.startTime + 40
       setTimeout (-> expect(easings.one).toHaveBeenCalled(); dfr()), 50
 
+    describe 'backward easing ->', ->
+      it 'should parse backward easing', ->
+        spyOn(easing, 'parseEasing').and.callThrough()
+        easingStr = 'cubic.out'
+        t = new Tween backwardEasing: easingStr
+
+        expect( easing.parseEasing ).toHaveBeenCalledWith easingStr
+        expect( t._props.backwardEasing ).toBe mojs.easing.cubic.out
+
   describe '_setProgress method ->', ->
     it 'should set the current progress', ->
-      t = new Tween(easing: 'Bounce.Out')
-      t._setProgress .75
+      t = new Tween( easing: 'Bounce.Out' )
+
+      t._setStartTime()
+      t._prevTime = t._props.startTime
+      t._setProgress .75, t._prevTime + 1
+
       expect(t.progress).toBe .75
-      expect(t.easedProgress.toFixed(2)).toBe '0.97'
+      eased = mojs.easing.bounce.out(.75)
+      expect(t.easedProgress.toFixed(2)).toBe eased.toFixed(2)
+
+    it 'should set the eased progress if yoyo', ->
+      t = new Tween( easing: 'Bounce.Out', backwardEasing: 'cubic.in' )
+      t._setStartTime()
+      t._prevTime = t._props.startTime + t._props.repeatTime
+      t._setProgress .75, t._prevTime + 1, true
+      expect(t.progress).toBe .75
+      eased = mojs.easing.cubic.in(.75)
+      expect(t.easedProgress.toFixed(2)).toBe eased.toFixed(2)
+
+    it 'should set the eased progress if backward', ->
+      t = new Tween(easing: 'Bounce.Out', backwardEasing: 'cubic.in')
+      t._setStartTime()
+      t._prevTime = t._props.startTime + t._props.repeatTime
+      t._setProgress .75, t._prevTime - 1
+      expect(t.progress).toBe .75
+      eased = mojs.easing.cubic.in(.75)
+      expect(t.easedProgress.toFixed(2)).toBe eased.toFixed(2)
+
+    it 'should set the current progress if backward and yoyo', ->
+      t = new Tween( easing: 'Bounce.Out', isIt: 1 )
+
+      t._setStartTime()
+      t._prevTime = t._props.startTime
+      t._setProgress .75, t._prevTime - 1, true
+
+      expect(t.progress).toBe .75
+      eased = mojs.easing.bounce.out(.75)
+      expect(t.easedProgress.toFixed(2)).toBe eased.toFixed(2)
+
     it 'should set return self', ->
       t = new Tween(easing: 'Bounce.Out')
       obj = t._setProgress .75

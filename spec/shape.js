@@ -210,7 +210,6 @@
         it('should not call _show if _isChained', function() {
           var obj, tr;
           tr = new Shape({
-            isIt: 1,
             masterModule: new Shape
           });
           obj = {};
@@ -418,7 +417,7 @@
       });
     });
     describe('opacity set ->', function() {
-      it('should set opacity with respect to units', function() {
+      it('should set opacity regarding units', function() {
         var byte;
         byte = new Byte({
           opacity: .5,
@@ -443,7 +442,7 @@
     });
     describe('position set ->', function() {
       return describe('x/y coordinates ->', function() {
-        it('should set a position with respect to units', function() {
+        it('should set position regarding units', function() {
           var byte;
           byte = new Byte({
             left: 100,
@@ -489,7 +488,7 @@
           byte.play();
           return expect(console.warn).not.toHaveBeenCalled();
         });
-        it('should animate position with respect to units', function(dfr) {
+        it('should animate position regarding units', function(dfr) {
           var byte;
           byte = new Byte({
             left: {
@@ -529,11 +528,12 @@
           });
           return byte.play();
         });
-        it('should set a position with respect to units', function() {
+        it('should set position regarding units', function() {
           var byte, s, tr;
           byte = new Byte({
             x: 100,
-            y: 50
+            y: 50,
+            isShowStart: true
           });
           s = byte.el.style;
           tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
@@ -558,7 +558,7 @@
           });
           return byte.play();
         });
-        it('should animate position with respect to units', function(dfr) {
+        it('should animate position regarding units', function(dfr) {
           var byte;
           byte = new Byte({
             x: {
@@ -1582,7 +1582,7 @@
         return expect(byte._isShown).toBe(false);
       });
       return describe('isSoftHide option ->', function() {
-        return it('should set `opacity` of `el` to `0`', function() {
+        it('should set `opacity` of `el` to `0`', function() {
           var byte;
           byte = new Byte({
             radius: 25,
@@ -1591,6 +1591,17 @@
           byte.el.style['opacity'] = '.5';
           byte._hide();
           return expect(byte.el.style['opacity']).toBe('0');
+        });
+        return it('should set scale to 0', function() {
+          var byte, style, tr;
+          byte = new Byte({
+            radius: 25,
+            isSoftHide: true
+          });
+          byte._hide();
+          style = byte.el.style;
+          tr = style['transform'] || style["" + h.prefix.css + "transform"];
+          return expect(tr).toBe('scale(0)');
         });
       });
     });
@@ -1616,7 +1627,7 @@
         return expect(byte._isShown).toBe(true);
       });
       return describe('isSoftHide option ->', function() {
-        return it('should set `opacity` of `el` to `_props.opacity`', function() {
+        it('should set `opacity` of `el` to `_props.opacity`', function() {
           var byte;
           byte = new Byte({
             radius: 25,
@@ -1626,6 +1637,20 @@
           byte.el.style['opacity'] = '0';
           byte._show();
           return expect(byte.el.style['opacity']).toBe("" + byte._props.opacity);
+        });
+        return it('should set `transform` to normal', function() {
+          var byte, style, tr;
+          byte = new Byte({
+            radius: 25,
+            isSoftHide: true,
+            opacity: .2
+          });
+          byte.el.style['opacity'] = '0';
+          byte.el.style['transform'] = 'none';
+          byte._show();
+          style = byte.el.style;
+          tr = style['transform'] || style["" + h.prefix.css + "transform"];
+          return expect(tr).toBe(byte._fillTransform());
         });
       });
     });

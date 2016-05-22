@@ -30,6 +30,12 @@ class Tween extends Module {
       yoyo:                   false,
       /* easing for the tween, could be any easing type [link to easing-types.md] */
       easing:                 'Sin.Out',
+      /*
+        Easing for backward direction of the tweenthe tween,
+        if `null` - fallbacks to `easing` property.
+        forward direction in `yoyo` period is treated as backward for the easing.
+      */
+      backwardEasing:         'Sin.In',
       /* custom tween's name */
       name:                   null,
       /* custom tween's base name */
@@ -346,7 +352,10 @@ class Tween extends Module {
     delete this._o.callbackOverrides;
     // call the _extendDefaults @ Module
     super._extendDefaults();
-    this._props.easing = easing.parseEasing(this._props.easing);
+
+    var p = this._props;
+    p.easing         = easing.parseEasing(p.easing);
+    p.backwardEasing = easing.parseEasing(p.backwardEasing);
   }
   /*
     Method for setting start and end time to props.
@@ -780,16 +789,26 @@ class Tween extends Module {
     @returns {Object} Self.
   */
   _setProgress ( proc, time, isYoyo ) {
-    var p = this._props,
-        isYoyoChanged = p.wasYoyo !== isYoyo;
+    var p             = this._props,
+        isYoyoChanged = p.wasYoyo !== isYoyo,
+        isForward     = time > this._prevTime;
+
     this.progress = proc;
-    this.easedProgress = p.easing(proc);
+
+    // get the current easing for `forward` direction regarding `yoyo`
+    if ( (isForward && !isYoyo) || ( !isForward && isYoyo )  ) {
+      this.easedProgress = p.easing(proc);
+    // get the current easing for `backward` direction regarding `yoyo`
+    } else if ( (!isForward && !isYoyo) || ( isForward && isYoyo ) ) {
+      this.easedProgress = p.backwardEasing(proc);
+    }
+
     if ( p.prevEasedProgress !== this.easedProgress || isYoyoChanged ) {
       if (p.onUpdate != null && typeof p.onUpdate === 'function') {
         p.onUpdate.call(
           p.callbacksContext || this,
           this.easedProgress, this.progress,
-          time > this._prevTime, isYoyo
+          isForward, isYoyo
         );
       }
     }
