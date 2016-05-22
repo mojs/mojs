@@ -3464,6 +3464,7 @@
 	    // remove default
 	    this._defaults.duration = 0;
 	    this._defaults.easing = 'Linear.None';
+	    this._defaults.backwardEasing = 'Linear.None';
 	    this._defaults.nameBase = 'Timeline';
 	  };
 
@@ -8251,7 +8252,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.250.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.251.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default

@@ -89,6 +89,7 @@
         expect(t._defaults.nameBase).toBe('Timeline');
         expect(t._defaults.yoyo).toBe(false);
         expect(t._defaults.easing).toBe('Linear.None');
+        expect(t._defaults.backwardEasing).toBe('Linear.None');
         expect(t._defaults.onStart).toBe(null);
         expect(t._defaults.onComplete).toBe(null);
         expect(t._defaults.onRepeatStart).toBe(null);

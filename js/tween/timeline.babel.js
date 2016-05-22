@@ -233,6 +233,7 @@ class Timeline extends Tween {
     // remove default 
     this._defaults.duration = 0;
     this._defaults.easing   = 'Linear.None';
+    this._defaults.backwardEasing   = 'Linear.None';
     this._defaults.nameBase = 'Timeline';
   }
 
