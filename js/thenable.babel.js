@@ -148,40 +148,8 @@ class Thenable extends Tweenable {
       }
 
       o[key] = this._mergeThenProperty( key, startValue, endValue );
-      // // if one of the properties is array - merge
-      // // with array, - else merge two plain properties
-      // if ( h.isArray( startValue ) || h.isArray( endValue ) ) {
-      //   o[key] = this._mergeThenArrays( key, startValue, endValue );
-      // } else {
-      //   o[key] = this._mergeThenProperty( key, startValue, endValue );
-      // }
     }
   }
-  // /*
-  //   Method to merge two arrays for then chain.
-  //   @private
-  //   @param {String} Property name.
-  //   @param {Array} Start array.
-  //   @param {Array} End array.
-  //   @returns the merged array.
-  // */
-  // _mergeThenArrays( key, arr1, arr2 ) {
-  //   var arr = [],
-  //       // get maximum length for 2 arrays
-  //       max = Math.max(
-  //         this._getArrayLength(arr1),
-  //         this._getArrayLength(arr2)
-  //       );
-  //   // loop thru the max length of the 2 arrays
-  //   for (var i = 0; i < max; i++ ) {
-  //     // if property is array - get the current property
-  //     // in it ( by mod ) else take the property itself
-  //     var startVal = ( h.isArray( arr1 ) ? arr1[i % arr1.length] : arr1 ),
-  //         endVal   = ( h.isArray( arr2 ) ? arr2[i % arr2.length] : arr2 );
-  //     arr.push( this._mergeThenProperty( key, startVal, endVal ) );
-  //   }
-  //   return arr;
-  // }
   /*
     Method to merge `start` and `end` for a property in then record.
     @private
@@ -191,8 +159,15 @@ class Thenable extends Tweenable {
   */
   _mergeThenProperty ( key, startValue, endValue ) {
     // if isnt tween property
-    var isBoolean = typeof endValue === 'boolean';
+    var isBoolean = typeof endValue === 'boolean',
+        easing;
     if ( !h.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean ) {
+
+      if ( h.isObject( endValue ) && endValue.value != null ) {
+        easing   = endValue.easing;
+        endValue = endValue.value;
+      }
+
       // if end value is delta - just save it
       if ( this._isDelta(endValue) ) {
         return this._parseDeltaValues(key, endValue);
@@ -202,9 +177,9 @@ class Thenable extends Tweenable {
         if ( this._isDelta(startValue) ) {
           // if start value is delta - take the end value
           // as start value of the new delta
-          return { [ h.getDeltaEnd(startValue) ] : parsedEndValue };
+          return { [ h.getDeltaEnd(startValue) ]: parsedEndValue, easing };
         // if both start and end value are not ∆ - make ∆
-        } else { return { [ startValue ] : parsedEndValue }; }
+        } else { return { [ startValue ]: parsedEndValue, easing }; }
       }
     // copy the tween values unattended
     } else { return endValue; }

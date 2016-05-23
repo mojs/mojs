@@ -429,7 +429,7 @@
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(mergedOpton.left['10px']).toBe('100px');
       });
-      return it('should just copy parent option', function() {
+      it('should just copy parent option', function() {
         var byte, end, mergedOpton, parent, start;
         byte = new Byte;
         parent = {};
@@ -443,6 +443,48 @@
         byte._vars();
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(mergedOpton.parent).toBe(parent);
+      });
+      return describe('easing based property', function() {
+        it('should parse easing', function() {
+          var byte, end, mergedOpton, start;
+          byte = new Byte;
+          byte.isIt = 1;
+          start = {
+            radius: 10
+          };
+          end = {
+            radius: {
+              value: 20,
+              easing: 'cubic.out'
+            }
+          };
+          byte._defaults = {};
+          byte._vars();
+          mergedOpton = byte._mergeThenOptions(start, end);
+          expect(mergedOpton.radius[10]).toBe(20);
+          return expect(mergedOpton.radius.easing).toBe('cubic.out');
+        });
+        return it('should parse easing if both ∆s', function() {
+          var byte, end, mergedOpton, start;
+          byte = new Byte;
+          byte.isIt = 1;
+          start = {
+            radius: {
+              10: 0
+            }
+          };
+          end = {
+            radius: {
+              value: 20,
+              easing: 'cubic.out'
+            }
+          };
+          byte._defaults = {};
+          byte._vars();
+          mergedOpton = byte._mergeThenOptions(start, end);
+          expect(mergedOpton.radius[0]).toBe(20);
+          return expect(mergedOpton.radius.easing).toBe('cubic.out');
+        });
       });
     });
     describe('_isDelta method ->', function() {

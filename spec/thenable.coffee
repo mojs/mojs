@@ -209,10 +209,6 @@ describe 'thenable ->', ->
       expect(mergedOpton.radiusX[10]).toBe 200
       expect(mergedOpton.radiusY[20]).toBe 100
 
-
-
-
-
     it 'should fallback to radius for scaleX/scaleY props', ->
       byte = new Byte
       start = scale: 10
@@ -233,12 +229,6 @@ describe 'thenable ->', ->
       mergedOpton = byte._mergeThenOptions start, end
       expect(mergedOpton.scaleX[10]).toBe 200
       expect(mergedOpton.scaleY[20]).toBe 100
-
-
-
-
-
-
 
     it "should always take sub radius values", ->
       byte = new Byte
@@ -279,6 +269,32 @@ describe 'thenable ->', ->
       byte._vars()
       mergedOpton = byte._mergeThenOptions start, end
       expect(mergedOpton.parent).toBe parent
+
+    describe 'easing based property', ->
+      it 'should parse easing', ->
+        byte = new Byte
+        byte.isIt = 1
+        start = radius: 10
+        end = radius: { value: 20, easing: 'cubic.out' }
+
+        byte._defaults = {}
+        byte._vars()
+        mergedOpton = byte._mergeThenOptions start, end
+        expect(mergedOpton.radius[10]).toBe 20
+        expect(mergedOpton.radius.easing).toBe 'cubic.out'
+
+      it 'should parse easing if both ∆s', ->
+        byte = new Byte
+        byte.isIt = 1
+        start = radius: { 10 : 0 }
+        end = radius: { value: 20, easing: 'cubic.out' }
+
+        byte._defaults = {}
+        byte._vars()
+        mergedOpton = byte._mergeThenOptions start, end
+        expect(mergedOpton.radius[0]).toBe 20
+        expect(mergedOpton.radius.easing).toBe 'cubic.out'
+
     # nope
     # it 'should not push merged options to the history if !isPush', ->
     #   byte = new Byte
