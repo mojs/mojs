@@ -145,14 +145,15 @@
           return expect(typeof obj.callbackOverrides.onUpdate).toBe('function');
         });
         it('should call _setProgress ', function() {
-          var obj, progress, tr;
+          var easedProgress, obj, progress, tr;
           tr = new Shape;
           obj = {};
           tr._applyCallbackOverrides(obj);
           spyOn(tr, '_setProgress');
-          progress = .25;
-          obj.callbackOverrides.onUpdate(progress);
-          return expect(tr._setProgress).toHaveBeenCalledWith(progress);
+          easedProgress = .25;
+          progress = .2;
+          obj.callbackOverrides.onUpdate(easedProgress, progress);
+          return expect(tr._setProgress).toHaveBeenCalledWith(easedProgress, progress);
         });
         it('should not override onUpdate function if exists', function() {
           var args, isRightScope, options, tr;
@@ -662,7 +663,7 @@
         spyOn(byte, '_setProgress');
         byte._isRendered = false;
         byte._render();
-        return expect(byte._setProgress).toHaveBeenCalledWith(0);
+        return expect(byte._setProgress).toHaveBeenCalledWith(0, 0);
       });
       it('should not call `_setProgress(0)` if not `_isFirstInChain()`', function() {
         var byte, byte0;
@@ -1284,8 +1285,8 @@
           }
         });
         spyOn(byte, '_calcCurrentProps');
-        byte._setProgress(.5);
-        return expect(byte._calcCurrentProps).toHaveBeenCalledWith(.5);
+        byte._setProgress(.5, .35);
+        return expect(byte._calcCurrentProps).toHaveBeenCalledWith(.5, .35);
       });
       it('not to thow', function() {
         var byte;

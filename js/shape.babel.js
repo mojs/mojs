@@ -165,7 +165,7 @@ class Shape extends Tunable {
       // set position styles on the el
       this._setElStyles();
       // set initial position for the first module in the chain
-      this._setProgress(0);
+      this._setProgress(0, 0);
       // show at start if `isShowStart`
       if (this._props.isShowStart) { this._show(); } else { this._hide(); }
       // set `_isRendered` hatch
@@ -425,13 +425,14 @@ class Shape extends Tunable {
     Method to draw current progress of the deltas.
     @private
     @override @ Module
+    @param   {Number}  EasedProgress to set - [0..1].
     @param   {Number}  Progress to set - [0..1].
   */
-  _setProgress ( progress ) {
+  _setProgress ( easedProgress, progress ) {
     // call the super on Module
-    Module.prototype._setProgress.call(this, progress);
+    Module.prototype._setProgress.call(this, easedProgress, progress);
     // draw current progress
-    this._draw(progress);
+    this._draw(easedProgress);
   }
   /*
     Method to add callback overrides to passed object.
@@ -443,7 +444,7 @@ class Shape extends Tunable {
         p  = this._props;
     // specify control functions for the module
     obj.callbackOverrides = {
-      onUpdate: function (pe) { return it._setProgress(pe); },
+      onUpdate: function (ep, p) { return it._setProgress(ep, p); },
       onStart:  function (isFwd) {
         // don't touch main `el` onStart in chained elements
         if ( it._isChained ) { return };

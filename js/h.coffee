@@ -1,4 +1,3 @@
-
 # Utils methods and map objects
 #
 # @class Helpers
@@ -355,6 +354,11 @@ class Helpers
     else str
   # if delta object was passed: like { 20: 75 }
   parseDelta:(key, value, index)->
+    # parse delta easing
+    easing = value.easing
+    if easing? then easing = mojs.easing.parseEasing( easing )
+    delete value.easing
+
     start = Object.keys(value)[0]
     end   = value[start]
     delta = start: start
@@ -368,9 +372,10 @@ class Helpers
       startColorObj = @makeColorObj start
       endColorObj   = @makeColorObj end
       delta  =
-        start:  startColorObj
-        end:    endColorObj
-        type:   'color'
+        start:    startColorObj
+        end:      endColorObj
+        type:     'color'
+        easing:   easing
         delta:
           r: endColorObj.r - startColorObj.r
           g: endColorObj.g - startColorObj.g
@@ -387,10 +392,11 @@ class Helpers
         @mergeUnits start, end, key
 
       delta =
-        start:  startArr
-        end:    endArr
-        delta:  @calcArrDelta startArr, endArr
-        type:   'array'
+        start:    startArr
+        end:      endArr
+        delta:    @calcArrDelta startArr, endArr
+        easing:   easing
+        type:     'array'
     ## plain numeric value ##
     else
       ## filter tween-related properties
@@ -404,19 +410,21 @@ class Helpers
           start = @parseUnit @parseStringOption start, index
           @mergeUnits start, end, key
           delta =
-            start:  start
-            end:    end
-            delta:  end.value - start.value
-            type:   'unit'
+            start:    start
+            end:      end
+            delta:    end.value - start.value
+            easing:   easing
+            type:     'unit'
         else
           # not position but numeric values
           end   = parseFloat @parseStringOption  end,   index
           start = parseFloat @parseStringOption  start, index
           delta =
-            start:  start
-            end:    end
-            delta:  end - start
-            type:   'number'
+            start:    start
+            end:      end
+            delta:    end - start
+            easing:   easing
+            type:     'number'
     delta
 
   mergeUnits:(start, end, key)->

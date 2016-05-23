@@ -174,6 +174,16 @@ describe 'Helpers ->', ->
           expect(delta.start)   .toBe   25
           expect(delta.delta)   .toBe   50
           expect(delta.type)    .toBe   'number'
+
+        it 'should parse numeric easing', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          delta = h.parseDelta 'radius', { 25: 75, easing: 'cubic.out' }
+          expect(delta.start)   .toBe   25
+          expect(delta.delta)   .toBe   50
+          expect(delta.type)    .toBe   'number'
+          expect(delta.easing)  .toBe   mojs.easing.cubic.out
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith 'cubic.out'
+
         it 'should calculate delta with string arguments', ->
           delta = h.parseDelta 'radius', {25: 75}
           expect(delta.start)   .toBe   25
@@ -191,6 +201,8 @@ describe 'Helpers ->', ->
           expect(delta.start)   .toBe   25.5
           expect(delta.end)     .toBe   -75.5
           expect(delta.delta)   .toBe   -101
+
+      describe 'unit values ->', ->
 
         it 'should fallback to declared units if one of them is not defined', ->
           delta = h.parseDelta 'x',  {'25.50%': -75.50}
@@ -214,6 +226,22 @@ describe 'Helpers ->', ->
           expect(delta.end.value)   .toBe   -75.5
           expect(delta.end.string)  .toBe   '-75.5%'
 
+        it 'should parse unit values easing', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          delta = h.parseDelta 'x',  {'25.50': '-75.50%', easing: 'cubic.out'}
+
+          expect(delta.start.unit)    .toBe   '%'
+          expect(delta.start.value)   .toBe   25.5
+          expect(delta.start.string)  .toBe   '25.5%'
+
+          expect(delta.end.unit)    .toBe   '%'
+          expect(delta.end.value)   .toBe   -75.5
+          expect(delta.end.string)  .toBe   '-75.5%'
+
+          expect(delta.easing)  .toBe   mojs.easing.cubic.out
+
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith 'cubic.out'
+
         it 'should fallback to end units if two units undefined and warn', ->
           spyOn h, 'warn'
           delta = h.parseDelta 'x',  {'25.50%': '-75.50px'}
@@ -231,6 +259,8 @@ describe 'Helpers ->', ->
           spyOn h, 'warn'
           delta = h.parseDelta 'x',  {'25.50%': '-75.50%'}
           expect(h.warn).not.toHaveBeenCalled()
+
+      describe 'strokeDash.. deltas', ->
 
         it 'should work with strokeDash.. properties', ->
           delta = h.parseDelta 'strokeDashoffset',  {'25.50': '-75.50%'}
@@ -252,6 +282,21 @@ describe 'Helpers ->', ->
           expect(delta.end[0].unit)    .toBe   '%'
           expect(delta.end[0].value)   .toBe   -75.5
           expect(delta.end[0].string)  .toBe   '-75.5%'
+
+        it 'should parse strokeDash values easing', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          delta = h.parseDelta 'strokeDashoffset',  {'25.50%': '-75.50', easing: 'cubic.out'}
+          expect(delta.start[0].unit)    .toBe   '%'
+          expect(delta.start[0].value)   .toBe   25.5
+          expect(delta.start[0].string)  .toBe   '25.5%'
+
+          expect(delta.end[0].unit)    .toBe   '%'
+          expect(delta.end[0].value)   .toBe   -75.5
+          expect(delta.end[0].string)  .toBe   '-75.5%'
+
+          expect(delta.easing)  .toBe   mojs.easing.cubic.out
+
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith 'cubic.out'
         
         it 'should work with strokeDash.. properties #3', ->
           delta = h.parseDelta 'strokeDashoffset',  {'25.50%': '-75.50px'}
@@ -278,6 +323,20 @@ describe 'Helpers ->', ->
             .not.toThrow()
           expect(console.warn).toHaveBeenCalled()
           expect(delta.type).not.toBeDefined()
+
+        it 'should parse color easing values', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          delta = h.parseDelta 'stroke',  {'#000': 'rgb(255,255,255)', easing: 'cubic.out'}
+          expect(delta.start.r)    .toBe   0
+          expect(delta.end.r)      .toBe   255
+          expect(delta.delta.r)    .toBe   255
+          expect(delta.type)       .toBe   'color'
+
+          expect(delta.easing)  .toBe   mojs.easing.cubic.out
+
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith 'cubic.out'
+          
+
       describe 'array values ->', ->
         it 'should calculate array delta', ->
           delta = h.parseDelta 'strokeDasharray', { '200 100%': '300' }

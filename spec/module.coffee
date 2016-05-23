@@ -5,33 +5,33 @@ oldFun = Module::_declareDefaults
 describe 'module class ->', ->
   it 'set the _defaults up', ->
     defaults = {
-        stroke:           'transparent',
-        strokeOpacity:    1,
-        strokeLinecap:    '',
-        strokeWidth:      2,
-        strokeDasharray:  0,
-        strokeDashoffset: 0,
-        fill:             'deeppink',
-        fillOpacity:      1,
-        left:             0,
-        top:              0,
-        x:                0,
-        y:                0,
-        rx:               0,
-        ry:               0,
-        angle:            0,
-        scale:            1,
-        opacity:          1,
-        points:           3,
-        radius:           { 0: 50 },
-        radiusX:          null,
-        radiusY:          null,
-        isShowStart:      false,
-        isShowEnd:        false,
-        size:             null,
-        sizeGap:          0,
-        callbacksContext: null
-      }
+      stroke:           'transparent',
+      strokeOpacity:    1,
+      strokeLinecap:    '',
+      strokeWidth:      2,
+      strokeDasharray:  0,
+      strokeDashoffset: 0,
+      fill:             'deeppink',
+      fillOpacity:      1,
+      left:             0,
+      top:              0,
+      x:                0,
+      y:                0,
+      rx:               0,
+      ry:               0,
+      angle:            0,
+      scale:            1,
+      opacity:          1,
+      points:           3,
+      radius:           { 0: 50 },
+      radiusX:          null,
+      radiusY:          null,
+      isShowStart:      false,
+      isShowEnd:        false,
+      size:             null,
+      sizeGap:          0,
+      callbacksContext: null
+    }
 
     Module::_declareDefaults = -> this._defaults = defaults
 
@@ -93,7 +93,7 @@ describe 'module class ->', ->
       expect(md._defaults).toBe md._defaults
 
   describe '_vars method ->', ->
-    it 'should set _progress proprty to 0', ->
+    it 'should set _progress property to 0', ->
       md = new Module
       expect(md._progress).toBe 0
     it 'should create _strokeDasharrayBuffer array', ->
@@ -323,8 +323,8 @@ describe 'module class ->', ->
     it 'should call _calcCurrentProps', ->
       byte = new Module radius:  {'25': 75}
       spyOn byte, '_calcCurrentProps'
-      byte._setProgress .5
-      expect(byte._calcCurrentProps).toHaveBeenCalledWith .5
+      byte._setProgress .5, .35
+      expect(byte._calcCurrentProps).toHaveBeenCalledWith .5, .35
     it 'should set color value progress and only int', ->
       byte = new Module stroke:  {'#000': 'rgb(255,255,255)'}
       colorDelta = byte._deltas.stroke
@@ -430,7 +430,7 @@ describe 'module class ->', ->
       md._parseProperty( key, value )
       expect(md._parsePreArrayProperty).toHaveBeenCalledWith key, value
 
-    it 'should pass results of the prev call to _parseStrokeDashOption method', ->
+    it 'should pass results of prev call to _parseStrokeDashOption method', ->
       md = new Module
       key = 'left'; value = 'stagger(200, 100)'
       spyOn(md, '_parseStrokeDashOption').and.callThrough()

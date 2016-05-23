@@ -296,11 +296,17 @@ class Module {
   /*
     Method to calculate current progress of the deltas.
     @private
+    @param {Number} Eased progress to calculate - [0..1].
     @param {Number} Progress to calculate - [0..1].
   */
-  _calcCurrentProps ( p ) {
+  _calcCurrentProps ( ep, p ) {
+
     for (var key in this._deltas) {
+
       var value = this._deltas[key];
+
+      // get eased progress from delta easing if defined
+      if ( value.easing != null ) { ep = value.easing( p ); } 
 
       if ( value.type === 'array' ) {
         var arr;
@@ -312,7 +318,7 @@ class Module {
 
         for ( var i = 0; i < value.delta.length; i++ ) {
           var item = value.delta[i],
-              dash = value.start[i].value + p * item.value;
+              dash = value.start[i].value + ep * item.value;
           arr.push({
             string: `${dash}${item.unit}`,
             value:  dash,
@@ -323,15 +329,15 @@ class Module {
         this._props[key] = arr;
 
       } else if ( value.type === 'number' ) {
-        this._props[key] = value.start + value.delta * p;
+        this._props[key] = value.start + value.delta * ep;
       } else if ( value.type === 'unit' ) {
         this._props[key] =
-          `${value.start.value + p*value.delta}${value.end.unit}`;
+          `${value.start.value + ep*value.delta}${value.end.unit}`;
       } else if ( value.type === 'color' ) {
-        var r = parseInt(value.start.r + p * value.delta.r, 10),
-            g = parseInt(value.start.g + p * value.delta.g, 10),
-            b = parseInt(value.start.b + p * value.delta.b, 10),
-            a = parseInt(value.start.a + p * value.delta.a, 10);
+        var r = parseInt(value.start.r + ep * value.delta.r, 10),
+            g = parseInt(value.start.g + ep * value.delta.g, 10),
+            b = parseInt(value.start.b + ep * value.delta.b, 10),
+            a = parseInt(value.start.a + ep * value.delta.a, 10);
         this._props[key] = `rgba(${r},${g},${b},${a})`;
       }
     }
@@ -339,11 +345,12 @@ class Module {
   /*
     Method to calculate current progress and probably draw it in children.
     @private
+    @param {Number} Eased progress to set - [0..1].
     @param {Number} Progress to set - [0..1].
   */
-  _setProgress ( progress ) {
-    this._progress = progress;
-    this._calcCurrentProps(progress);
+  _setProgress ( easedProgress, progress ) {
+    this._progress = easedProgress;
+    this._calcCurrentProps( easedProgress, progress );
   }
 }
 

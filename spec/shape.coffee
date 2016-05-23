@@ -129,9 +129,11 @@ describe 'Shape ->', ->
         obj = {}
         tr._applyCallbackOverrides(obj)
         spyOn tr, '_setProgress'
-        progress = .25
-        obj.callbackOverrides.onUpdate progress
-        expect(tr._setProgress).toHaveBeenCalledWith progress
+        easedProgress = .25
+        progress = .2
+        obj.callbackOverrides.onUpdate easedProgress, progress
+        expect(tr._setProgress).toHaveBeenCalledWith easedProgress, progress
+
       it 'should not override onUpdate function if exists', ->
         isRightScope = null; args = null
         options = {
@@ -551,7 +553,7 @@ describe 'Shape ->', ->
       spyOn byte, '_setProgress'
       byte._isRendered = false
       byte._render()
-      expect(byte._setProgress).toHaveBeenCalledWith(0)
+      expect(byte._setProgress).toHaveBeenCalledWith(0, 0)
 
     it 'should not call `_setProgress(0)` if not `_isFirstInChain()`', ->
       byte0 = new Byte
@@ -967,8 +969,8 @@ describe 'Shape ->', ->
     it 'should call _calcCurrentProps', ->
       byte = new Byte radius:  {'25': 75}
       spyOn byte, '_calcCurrentProps'
-      byte._setProgress .5
-      expect(byte._calcCurrentProps).toHaveBeenCalledWith .5
+      byte._setProgress .5, .35
+      expect(byte._calcCurrentProps).toHaveBeenCalledWith .5, .35
     it 'not to thow', ->
       byte = new Byte radius:  {'25': 75}, ctx: svg
       expect(-> byte._show()).not.toThrow()

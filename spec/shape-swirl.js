@@ -329,8 +329,8 @@
           ]
         });
         spyOn(swirl, '_calcCurrentProps').and.callThrough();
-        swirl._setProgress(.5);
-        return expect(swirl._calcCurrentProps).toHaveBeenCalledWith(.5);
+        swirl._setProgress(.5, .35);
+        return expect(swirl._calcCurrentProps).toHaveBeenCalledWith(.5, .35);
       });
       it('should call _draw method', function() {
         var swirl;

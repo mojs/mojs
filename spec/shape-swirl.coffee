@@ -133,14 +133,8 @@ describe 'ShapeSwirl ->', ->
     it 'should call _calcCurrentProps method', ->
       swirl = new ShapeSwirl radius: [{ 20: 50 }, 20]
       spyOn(swirl, '_calcCurrentProps').and.callThrough()
-      swirl._setProgress .5
-      expect(swirl._calcCurrentProps).toHaveBeenCalledWith .5
-    # old
-    # it 'should call _calcOrigin method', ->
-    #   swirl = new ShapeSwirl radius: [{ 20: 50 }, 20]
-    #   spyOn(swirl, '_calcOrigin').and.callThrough()
-    #   swirl._setProgress .5
-    #   expect(swirl._calcOrigin).toHaveBeenCalled()
+      swirl._setProgress .5, .35
+      expect(swirl._calcCurrentProps).toHaveBeenCalledWith .5, .35
     it 'should call _draw method', ->
       swirl = new ShapeSwirl radius: [{ 20: 50 }, 20]
       spyOn(swirl, '_draw').and.callThrough()

@@ -107,14 +107,15 @@ class ShapeSwirl extends Shape {
     Method to calculate the progress of the Swirl.
     @private
     @overrides @ Shape
+    @param {Numer} Eased progress of the Swirl in range of [0..1]
     @param {Numer} Progress of the Swirl in range of [0..1]
   */
-  _setProgress ( proc ) {
-    this._progress = proc;
-    this._calcCurrentProps(proc);
-    this._calcSwirlXY( proc );
+  _setProgress ( easedProgress, progress ) {
+    this._progress = easedProgress;
+    this._calcCurrentProps( easedProgress, progress );
+    this._calcSwirlXY( easedProgress );
     // this._calcOrigin();
-    this._draw(proc);
+    this._draw(easedProgress);
   }
   /*
     Method to calculate x/y for Swirl's progress

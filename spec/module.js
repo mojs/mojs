@@ -121,7 +121,7 @@
       });
     });
     describe('_vars method ->', function() {
-      it('should set _progress proprty to 0', function() {
+      it('should set _progress property to 0', function() {
         var md;
         md = new Module;
         return expect(md._progress).toBe(0);
@@ -482,8 +482,8 @@
           }
         });
         spyOn(byte, '_calcCurrentProps');
-        byte._setProgress(.5);
-        return expect(byte._calcCurrentProps).toHaveBeenCalledWith(.5);
+        byte._setProgress(.5, .35);
+        return expect(byte._calcCurrentProps).toHaveBeenCalledWith(.5, .35);
       });
       it('should set color value progress and only int', function() {
         var byte, colorDelta;
@@ -652,7 +652,7 @@
         md._parseProperty(key, value);
         return expect(md._parsePreArrayProperty).toHaveBeenCalledWith(key, value);
       });
-      it('should pass results of the prev call to _parseStrokeDashOption method', function() {
+      it('should pass results of prev call to _parseStrokeDashOption method', function() {
         var key, md, value;
         md = new Module;
         key = 'left';

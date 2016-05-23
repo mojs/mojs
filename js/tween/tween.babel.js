@@ -794,7 +794,6 @@ class Tween extends Module {
         isForward     = time > this._prevTime;
 
     this.progress = proc;
-
     // get the current easing for `forward` direction regarding `yoyo`
     if ( (isForward && !isYoyo) || ( !isForward && isYoyo )  ) {
       this.easedProgress = p.easing(proc);
