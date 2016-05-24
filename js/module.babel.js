@@ -299,14 +299,15 @@ class Module {
     @param {Number} Eased progress to calculate - [0..1].
     @param {Number} Progress to calculate - [0..1].
   */
-  _calcCurrentProps ( ep, p ) {
+  _calcCurrentProps ( easedProgress, p ) {
 
     for (var key in this._deltas) {
 
       var value = this._deltas[key];
 
       // get eased progress from delta easing if defined
-      if ( value.easing != null ) { ep = value.easing( p ); } 
+      var ep = ( value.easing != null )
+        ? value.easing( p ) : easedProgress;
 
       if ( value.type === 'array' ) {
         var arr;
