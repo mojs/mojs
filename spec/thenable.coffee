@@ -273,9 +273,8 @@ describe 'thenable ->', ->
     describe 'easing based property', ->
       it 'should parse easing', ->
         byte = new Byte
-        byte.isIt = 1
         start = radius: 10
-        end = radius: { value: 20, easing: 'cubic.out' }
+        end = radius: { to: 20, easing: 'cubic.out' }
 
         byte._defaults = {}
         byte._vars()
@@ -285,15 +284,39 @@ describe 'thenable ->', ->
 
       it 'should parse easing if both ∆s', ->
         byte = new Byte
-        byte.isIt = 1
         start = radius: { 10 : 0 }
-        end = radius: { value: 20, easing: 'cubic.out' }
+        end = radius: { to: 20, easing: 'cubic.out' }
 
         byte._defaults = {}
         byte._vars()
         mergedOpton = byte._mergeThenOptions start, end
         expect(mergedOpton.radius[0]).toBe 20
         expect(mergedOpton.radius.easing).toBe 'cubic.out'
+
+    describe 'curve based property', ->
+      curve = "M0,100 L100, 0"
+      it 'should parse easing', ->
+        byte = new Byte
+        start = radius: 10
+        end = radius: { to: 20, curve: curve }
+
+        byte._defaults = {}
+        byte._vars()
+        mergedOpton = byte._mergeThenOptions start, end
+        expect(mergedOpton.radius[10]).toBe 20
+        expect(mergedOpton.radius.curve).toBe curve
+
+      it 'should parse easing if both ∆s', ->
+        byte = new Byte
+        start = radius: { 10 : 0 }
+        end = radius: { to: 20, curve: curve }
+
+        byte._defaults = {}
+        byte._vars()
+        mergedOpton = byte._mergeThenOptions start, end
+        expect(mergedOpton.radius[0]).toBe 20
+        expect(mergedOpton.radius.curve).toBe curve
+
 
     # nope
     # it 'should not push merged options to the history if !isPush', ->
@@ -355,7 +378,7 @@ describe 'thenable ->', ->
       expect(byte._isDelta(45))    .toBe false
       expect(byte._isDelta('45'))  .toBe false
       expect(byte._isDelta(['45'])).toBe false
-      expect(byte._isDelta({ unit: 'px', value: 20 })).toBe false
+      expect(byte._isDelta({ unit: 'px', to: 20 })).toBe false
       expect(byte._isDelta({ 20: 30 })).toBe true
 
   describe 'then method ->', ->

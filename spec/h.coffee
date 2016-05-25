@@ -167,6 +167,8 @@ describe 'Helpers ->', ->
       it 'should work with float numbers', ->
         expect(h.rand(.2, .9)).toBeGreaterThan      .1
         expect(h.rand(.2, .9)).not.toBeGreaterThan  .9
+    
+
     describe 'parseDelta method ->', ->
       describe 'numeric values ->', ->
         it 'should calculate delta', ->
@@ -183,6 +185,18 @@ describe 'Helpers ->', ->
           expect(delta.type)    .toBe   'number'
           expect(delta.easing)  .toBe   mojs.easing.cubic.out
           expect(mojs.easing.parseEasing).toHaveBeenCalledWith 'cubic.out'
+
+        it 'should parse numeric curve', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          curve = "M0,100 L100,0"
+          delta = h.parseDelta 'radius', { 25: 75, curve: curve }
+          expect(delta.start)   .toBe   25
+          expect(delta.delta)   .toBe   50
+          expect(delta.type)    .toBe   'number'
+          
+          expect(typeof delta.curve).toBe 'function'
+          expect(delta.curve(.5)).toBeCloseTo .5, 2
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
 
         it 'should calculate delta with string arguments', ->
           delta = h.parseDelta 'radius', {25: 75}
@@ -242,6 +256,24 @@ describe 'Helpers ->', ->
 
           expect(mojs.easing.parseEasing).toHaveBeenCalledWith 'cubic.out'
 
+        it 'should parse unit values curve', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          curve = "M0,100 L100,0"
+          delta = h.parseDelta 'x',  {'25.50': '-75.50%', curve: curve }
+
+          expect(delta.start.unit)    .toBe   '%'
+          expect(delta.start.value)   .toBe   25.5
+          expect(delta.start.string)  .toBe   '25.5%'
+
+          expect(delta.end.unit)    .toBe   '%'
+          expect(delta.end.value)   .toBe   -75.5
+          expect(delta.end.string)  .toBe   '-75.5%'
+
+          expect(typeof delta.curve).toBe   'function'
+          expect( delta.curve( .5 ) ).toBeCloseTo .5, 2
+
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
+
         it 'should fallback to end units if two units undefined and warn', ->
           spyOn h, 'warn'
           delta = h.parseDelta 'x',  {'25.50%': '-75.50px'}
@@ -297,6 +329,23 @@ describe 'Helpers ->', ->
           expect(delta.easing)  .toBe   mojs.easing.cubic.out
 
           expect(mojs.easing.parseEasing).toHaveBeenCalledWith 'cubic.out'
+
+        it 'should parse strokeDash values curve', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          curve = "M0,100 L100,0"
+          delta = h.parseDelta 'strokeDashoffset',  {'25.50%': '-75.50', curve: curve }
+          expect(delta.start[0].unit)    .toBe   '%'
+          expect(delta.start[0].value)   .toBe   25.5
+          expect(delta.start[0].string)  .toBe   '25.5%'
+
+          expect(delta.end[0].unit)    .toBe   '%'
+          expect(delta.end[0].value)   .toBe   -75.5
+          expect(delta.end[0].string)  .toBe   '-75.5%'
+
+          expect(typeof delta.curve)   .toBe   'function'
+          expect(delta.curve(.5)).toBeCloseTo .5, 2
+
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
         
         it 'should work with strokeDash.. properties #3', ->
           delta = h.parseDelta 'strokeDashoffset',  {'25.50%': '-75.50px'}
@@ -335,6 +384,20 @@ describe 'Helpers ->', ->
           expect(delta.easing)  .toBe   mojs.easing.cubic.out
 
           expect(mojs.easing.parseEasing).toHaveBeenCalledWith 'cubic.out'
+
+        it 'should parse color curve values', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          curve = "M0,100 L100,0"
+          delta = h.parseDelta 'stroke', {'#000': 'rgb(255,255,255)', curve: curve }
+          expect(delta.start.r)    .toBe   0
+          expect(delta.end.r)      .toBe   255
+          expect(delta.delta.r)    .toBe   255
+          expect(delta.type)       .toBe   'color'
+
+          expect(typeof delta.curve).toBe   'function'
+          expect(delta.curve(.5))   .toBeCloseTo  .5, 2
+
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
           
 
       describe 'array values ->', ->

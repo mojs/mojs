@@ -160,12 +160,14 @@ class Thenable extends Tweenable {
   _mergeThenProperty ( key, startValue, endValue ) {
     // if isnt tween property
     var isBoolean = typeof endValue === 'boolean',
+        curve,
         easing;
     if ( !h.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean ) {
 
-      if ( h.isObject( endValue ) && endValue.value != null ) {
+      if ( h.isObject( endValue ) && endValue.to != null ) {
+        curve    = endValue.curve;
         easing   = endValue.easing;
-        endValue = endValue.value;
+        endValue = endValue.to;
       }
 
       // if end value is delta - just save it
@@ -177,9 +179,11 @@ class Thenable extends Tweenable {
         if ( this._isDelta(startValue) ) {
           // if start value is delta - take the end value
           // as start value of the new delta
-          return { [ h.getDeltaEnd(startValue) ]: parsedEndValue, easing };
+          return {
+            [ h.getDeltaEnd(startValue) ]: parsedEndValue, easing, curve
+          };
         // if both start and end value are not ∆ - make ∆
-        } else { return { [ startValue ]: parsedEndValue, easing }; }
+        } else { return { [ startValue ]: parsedEndValue, easing, curve }; }
       }
     // copy the tween values unattended
     } else { return endValue; }

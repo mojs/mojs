@@ -444,17 +444,16 @@
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(mergedOpton.parent).toBe(parent);
       });
-      return describe('easing based property', function() {
+      describe('easing based property', function() {
         it('should parse easing', function() {
           var byte, end, mergedOpton, start;
           byte = new Byte;
-          byte.isIt = 1;
           start = {
             radius: 10
           };
           end = {
             radius: {
-              value: 20,
+              to: 20,
               easing: 'cubic.out'
             }
           };
@@ -467,7 +466,6 @@
         return it('should parse easing if both ∆s', function() {
           var byte, end, mergedOpton, start;
           byte = new Byte;
-          byte.isIt = 1;
           start = {
             radius: {
               10: 0
@@ -475,7 +473,7 @@
           };
           end = {
             radius: {
-              value: 20,
+              to: 20,
               easing: 'cubic.out'
             }
           };
@@ -484,6 +482,48 @@
           mergedOpton = byte._mergeThenOptions(start, end);
           expect(mergedOpton.radius[0]).toBe(20);
           return expect(mergedOpton.radius.easing).toBe('cubic.out');
+        });
+      });
+      return describe('curve based property', function() {
+        var curve;
+        curve = "M0,100 L100, 0";
+        it('should parse easing', function() {
+          var byte, end, mergedOpton, start;
+          byte = new Byte;
+          start = {
+            radius: 10
+          };
+          end = {
+            radius: {
+              to: 20,
+              curve: curve
+            }
+          };
+          byte._defaults = {};
+          byte._vars();
+          mergedOpton = byte._mergeThenOptions(start, end);
+          expect(mergedOpton.radius[10]).toBe(20);
+          return expect(mergedOpton.radius.curve).toBe(curve);
+        });
+        return it('should parse easing if both ∆s', function() {
+          var byte, end, mergedOpton, start;
+          byte = new Byte;
+          start = {
+            radius: {
+              10: 0
+            }
+          };
+          end = {
+            radius: {
+              to: 20,
+              curve: curve
+            }
+          };
+          byte._defaults = {};
+          byte._vars();
+          mergedOpton = byte._mergeThenOptions(start, end);
+          expect(mergedOpton.radius[0]).toBe(20);
+          return expect(mergedOpton.radius.curve).toBe(curve);
         });
       });
     });
@@ -501,7 +541,7 @@
         expect(byte._isDelta(['45'])).toBe(false);
         expect(byte._isDelta({
           unit: 'px',
-          value: 20
+          to: 20
         })).toBe(false);
         return expect(byte._isDelta({
           20: 30

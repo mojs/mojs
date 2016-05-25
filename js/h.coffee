@@ -358,6 +358,10 @@ class Helpers
     easing = value.easing
     if easing? then easing = mojs.easing.parseEasing( easing )
     delete value.easing
+    # parse delta curve
+    curve = value.curve
+    if curve? then curve = mojs.easing.parseEasing( curve )
+    delete value.curve
 
     start = Object.keys(value)[0]
     end   = value[start]
@@ -372,10 +376,11 @@ class Helpers
       startColorObj = @makeColorObj start
       endColorObj   = @makeColorObj end
       delta  =
+        type:     'color'
         start:    startColorObj
         end:      endColorObj
-        type:     'color'
         easing:   easing
+        curve:    curve
         delta:
           r: endColorObj.r - startColorObj.r
           g: endColorObj.g - startColorObj.g
@@ -392,11 +397,12 @@ class Helpers
         @mergeUnits start, end, key
 
       delta =
+        type:     'array'
         start:    startArr
         end:      endArr
         delta:    @calcArrDelta startArr, endArr
         easing:   easing
-        type:     'array'
+        curve:    curve
     ## plain numeric value ##
     else
       ## filter tween-related properties
@@ -410,21 +416,23 @@ class Helpers
           start = @parseUnit @parseStringOption start, index
           @mergeUnits start, end, key
           delta =
+            type:     'unit'
             start:    start
             end:      end
             delta:    end.value - start.value
             easing:   easing
-            type:     'unit'
+            curve:    curve
         else
           # not position but numeric values
           end   = parseFloat @parseStringOption  end,   index
           start = parseFloat @parseStringOption  start, index
           delta =
+            type:     'number'
             start:    start
             end:      end
             delta:    end - start
             easing:   easing
-            type:     'number'
+            curve:    curve
     delta
 
   mergeUnits:(start, end, key)->

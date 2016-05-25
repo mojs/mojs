@@ -305,8 +305,9 @@ class Module {
 
       var value = this._deltas[key];
 
-      // get eased progress from delta easing if defined
-      var ep = ( value.easing != null )
+      // get eased progress from delta easing if defined and not curve
+      var isCurve = !!value.curve;
+      var ep = ( value.easing != null && !isCurve )
         ? value.easing( p ) : easedProgress;
 
       if ( value.type === 'array' ) {
@@ -317,9 +318,15 @@ class Module {
           arr.length = 0;
         } else { arr = []; }
 
+        // just optimization to prevent curve
+        // calculations on every array item
+        var proc = (isCurve) ? value.curve(p) : null;
+
         for ( var i = 0; i < value.delta.length; i++ ) {
           var item = value.delta[i],
-              dash = value.start[i].value + ep * item.value;
+              dash = (!isCurve)
+                    ? value.start[i].value + ep * item.value
+                    : proc * (value.start[i].value + p * item.value);
           arr.push({
             string: `${dash}${item.unit}`,
             value:  dash,
@@ -330,15 +337,29 @@ class Module {
         this._props[key] = arr;
 
       } else if ( value.type === 'number' ) {
-        this._props[key] = value.start + value.delta * ep;
+        this._props[key] = (!isCurve)
+          ? value.start + ep * value.delta
+          : value.curve(p) * ( value.start + p * value.delta );
       } else if ( value.type === 'unit' ) {
-        this._props[key] =
-          `${value.start.value + ep*value.delta}${value.end.unit}`;
+        var currentValue = ( !isCurve )
+          ? value.start.value + ep*value.delta
+          : value.curve(p) * ( value.start.value + p * value.delta );
+        
+        this._props[key] = `${currentValue}${value.end.unit}`;
+
       } else if ( value.type === 'color' ) {
-        var r = parseInt(value.start.r + ep * value.delta.r, 10),
-            g = parseInt(value.start.g + ep * value.delta.g, 10),
-            b = parseInt(value.start.b + ep * value.delta.b, 10),
-            a = parseInt(value.start.a + ep * value.delta.a, 10);
+        var r, g, b, a;
+        if ( !isCurve ) {
+          r = parseInt(value.start.r + ep * value.delta.r, 10);
+          g = parseInt(value.start.g + ep * value.delta.g, 10);
+          b = parseInt(value.start.b + ep * value.delta.b, 10);
+          a = parseInt(value.start.a + ep * value.delta.a, 10);
+        } else {
+          r = parseInt(value.curve(p) * (value.start.r + p*value.delta.r), 10);
+          g = parseInt(value.curve(p) * (value.start.g + p*value.delta.g), 10);
+          b = parseInt(value.curve(p) * (value.start.b + p*value.delta.b), 10);
+          a = parseInt(value.curve(p) * (value.start.a + p*value.delta.a), 10);
+        }
         this._props[key] = `rgba(${r},${g},${b},${a})`;
       }
     }

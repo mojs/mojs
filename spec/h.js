@@ -248,6 +248,21 @@
             expect(delta.easing).toBe(mojs.easing.cubic.out);
             return expect(mojs.easing.parseEasing).toHaveBeenCalledWith('cubic.out');
           });
+          it('should parse numeric curve', function() {
+            var curve, delta;
+            spyOn(mojs.easing, 'parseEasing').and.callThrough();
+            curve = "M0,100 L100,0";
+            delta = h.parseDelta('radius', {
+              25: 75,
+              curve: curve
+            });
+            expect(delta.start).toBe(25);
+            expect(delta.delta).toBe(50);
+            expect(delta.type).toBe('number');
+            expect(typeof delta.curve).toBe('function');
+            expect(delta.curve(.5)).toBeCloseTo(.5, 2);
+            return expect(mojs.easing.parseEasing).toHaveBeenCalledWith(curve);
+          });
           it('should calculate delta with string arguments', function() {
             var delta;
             delta = h.parseDelta('radius', {
@@ -323,6 +338,24 @@
             expect(delta.easing).toBe(mojs.easing.cubic.out);
             return expect(mojs.easing.parseEasing).toHaveBeenCalledWith('cubic.out');
           });
+          it('should parse unit values curve', function() {
+            var curve, delta;
+            spyOn(mojs.easing, 'parseEasing').and.callThrough();
+            curve = "M0,100 L100,0";
+            delta = h.parseDelta('x', {
+              '25.50': '-75.50%',
+              curve: curve
+            });
+            expect(delta.start.unit).toBe('%');
+            expect(delta.start.value).toBe(25.5);
+            expect(delta.start.string).toBe('25.5%');
+            expect(delta.end.unit).toBe('%');
+            expect(delta.end.value).toBe(-75.5);
+            expect(delta.end.string).toBe('-75.5%');
+            expect(typeof delta.curve).toBe('function');
+            expect(delta.curve(.5)).toBeCloseTo(.5, 2);
+            return expect(mojs.easing.parseEasing).toHaveBeenCalledWith(curve);
+          });
           it('should fallback to end units if two units undefined and warn', function() {
             var delta;
             spyOn(h, 'warn');
@@ -387,6 +420,24 @@
             expect(delta.easing).toBe(mojs.easing.cubic.out);
             return expect(mojs.easing.parseEasing).toHaveBeenCalledWith('cubic.out');
           });
+          it('should parse strokeDash values curve', function() {
+            var curve, delta;
+            spyOn(mojs.easing, 'parseEasing').and.callThrough();
+            curve = "M0,100 L100,0";
+            delta = h.parseDelta('strokeDashoffset', {
+              '25.50%': '-75.50',
+              curve: curve
+            });
+            expect(delta.start[0].unit).toBe('%');
+            expect(delta.start[0].value).toBe(25.5);
+            expect(delta.start[0].string).toBe('25.5%');
+            expect(delta.end[0].unit).toBe('%');
+            expect(delta.end[0].value).toBe(-75.5);
+            expect(delta.end[0].string).toBe('-75.5%');
+            expect(typeof delta.curve).toBe('function');
+            expect(delta.curve(.5)).toBeCloseTo(.5, 2);
+            return expect(mojs.easing.parseEasing).toHaveBeenCalledWith(curve);
+          });
           return it('should work with strokeDash.. properties #3', function() {
             var delta;
             delta = h.parseDelta('strokeDashoffset', {
@@ -425,7 +476,7 @@
             expect(console.warn).toHaveBeenCalled();
             return expect(delta.type).not.toBeDefined();
           });
-          return it('should parse color easing values', function() {
+          it('should parse color easing values', function() {
             var delta;
             spyOn(mojs.easing, 'parseEasing').and.callThrough();
             delta = h.parseDelta('stroke', {
@@ -438,6 +489,22 @@
             expect(delta.type).toBe('color');
             expect(delta.easing).toBe(mojs.easing.cubic.out);
             return expect(mojs.easing.parseEasing).toHaveBeenCalledWith('cubic.out');
+          });
+          return it('should parse color curve values', function() {
+            var curve, delta;
+            spyOn(mojs.easing, 'parseEasing').and.callThrough();
+            curve = "M0,100 L100,0";
+            delta = h.parseDelta('stroke', {
+              '#000': 'rgb(255,255,255)',
+              curve: curve
+            });
+            expect(delta.start.r).toBe(0);
+            expect(delta.end.r).toBe(255);
+            expect(delta.delta.r).toBe(255);
+            expect(delta.type).toBe('color');
+            expect(typeof delta.curve).toBe('function');
+            expect(delta.curve(.5)).toBeCloseTo(.5, 2);
+            return expect(mojs.easing.parseEasing).toHaveBeenCalledWith(curve);
           });
         });
         describe('array values ->', function() {
