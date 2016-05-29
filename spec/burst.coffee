@@ -760,4 +760,92 @@ describe 'Burst ->', ->
     #   expect( b._timelineOptions ).toBe null
 
 
+  describe '_addBurstProperties method', ->
+    it 'should calculate bit angle', ->
+      b = new Burst
+      angle = 20
+      obj = { angle: angle }
+      b._addBurstProperties( obj, 1 )
+      expect( obj.angle ).toBe b._getBitAngle( angle, 1 )
+
+    it 'should calculate bit x and y', ->
+      index = 1
+      b = new Burst
+      obj = {}
+      b._addBurstProperties( obj, index )
+
+      p           = b._props
+      degreeCnt   = if (p.degree % 360 is 0) then p.count else p.count-1 || 1;
+      step        = p.degree/degreeCnt;
+      pointStart  = b._getSidePoint('start', index*step );
+      pointEnd    = b._getSidePoint('end',   index*step );
+
+      expect( obj.x ).toEqual b._getDeltaFromPoints('x', pointStart, pointEnd)
+      expect( obj.y ).toEqual b._getDeltaFromPoints('y', pointStart, pointEnd)
+
+    it 'should set degreeShift to 0', ->
+      b = new Burst
+      angle = 20
+      obj = { degreeShift: angle }
+      b._addBurstProperties( obj, 1 )
+      expect( obj.degreeShift ).toBe 0
+
+    it 'should calculate bit x/y and angle regarding degreeShift', ->
+      index = 1
+      angle = 20
+      degreeShifts = [ 0, 10, 20 ]
+      b = new Burst isIt: 1, childOptions: { degreeShift: degreeShifts }
+      # put degreeShift value back since we override it to `0`
+      # in `_addBurstProperties` method
+      obj = { angle: angle, degreeShift: degreeShifts[index]  }
+      b._addBurstProperties( obj, index )
+
+      p           = b._props
+      degreeCnt   = if (p.degree % 360 is 0) then p.count else p.count-1 || 1;
+      step        = p.degree/degreeCnt;
+      pointStart  = b._getSidePoint('start', index*step + degreeShifts[ index ] );
+      pointEnd    = b._getSidePoint('end',   index*step + degreeShifts[ index ] );
+
+      expect( obj.x ).toEqual b._getDeltaFromPoints('x', pointStart, pointEnd)
+      expect( obj.y ).toEqual b._getDeltaFromPoints('y', pointStart, pointEnd)
+      expect( obj.angle ).toEqual b._getBitAngle( angle + degreeShifts[ index ], index )
+
+    it 'should calculate bit x/y and angle regarding stagger', ->
+      index = 2
+      angle = 20
+      b = new Burst isIt: 1, childOptions: { degreeShift: 'stagger(200)' }
+      # put degreeShift value back since we override it to `0`
+      # in `_addBurstProperties` method
+      obj = { angle: angle, degreeShift: 'stagger(200)'  }
+      b._addBurstProperties( obj, index )
+
+      p           = b._props
+      degreeCnt   = if (p.degree % 360 is 0) then p.count else p.count-1 || 1;
+      step        = p.degree/degreeCnt;
+      pointStart  = b._getSidePoint('start', index*step + 400 );
+      pointEnd    = b._getSidePoint('end',   index*step + 400 );
+
+      expect( obj.x ).toEqual b._getDeltaFromPoints('x', pointStart, pointEnd)
+      expect( obj.y ).toEqual b._getDeltaFromPoints('y', pointStart, pointEnd)
+      expect( obj.angle ).toEqual b._getBitAngle( angle + 400, index )
+
+    it 'should fallback to 0 for angle', ->
+      index = 2
+      b = new Burst isIt: 1, childOptions: { degreeShift: 'stagger(200)' }
+      # put degreeShift value back since we override it to `0`
+      # in `_addBurstProperties` method
+      obj = { degreeShift: 'stagger(200)'  }
+      b._addBurstProperties( obj, index )
+
+      p           = b._props
+      degreeCnt   = if (p.degree % 360 is 0) then p.count else p.count-1 || 1;
+      step        = p.degree/degreeCnt;
+      pointStart  = b._getSidePoint('start', index*step + 400 );
+      pointEnd    = b._getSidePoint('end',   index*step + 400 );
+
+      expect( obj.angle ).toEqual b._getBitAngle( 0 + 400, index );
+
+
+
+
 

@@ -1019,7 +1019,7 @@
         return _results;
       });
     });
-    return describe('_saveTimelineOptions method ->', function() {
+    describe('_saveTimelineOptions method ->', function() {
       return it('should save timeline options to _timelineOptions', function() {
         var b, opts, timeline;
         b = new Burst;
@@ -1030,6 +1030,111 @@
         b._saveTimelineOptions(opts);
         expect(b._timelineOptions).toBe(timeline);
         return expect(opts.timeline).not.toBeDefined();
+      });
+    });
+    return describe('_addBurstProperties method', function() {
+      it('should calculate bit angle', function() {
+        var angle, b, obj;
+        b = new Burst;
+        angle = 20;
+        obj = {
+          angle: angle
+        };
+        b._addBurstProperties(obj, 1);
+        return expect(obj.angle).toBe(b._getBitAngle(angle, 1));
+      });
+      it('should calculate bit x and y', function() {
+        var b, degreeCnt, index, obj, p, pointEnd, pointStart, step;
+        index = 1;
+        b = new Burst;
+        obj = {};
+        b._addBurstProperties(obj, index);
+        p = b._props;
+        degreeCnt = p.degree % 360 === 0 ? p.count : p.count - 1 || 1;
+        step = p.degree / degreeCnt;
+        pointStart = b._getSidePoint('start', index * step);
+        pointEnd = b._getSidePoint('end', index * step);
+        expect(obj.x).toEqual(b._getDeltaFromPoints('x', pointStart, pointEnd));
+        return expect(obj.y).toEqual(b._getDeltaFromPoints('y', pointStart, pointEnd));
+      });
+      it('should set degreeShift to 0', function() {
+        var angle, b, obj;
+        b = new Burst;
+        angle = 20;
+        obj = {
+          degreeShift: angle
+        };
+        b._addBurstProperties(obj, 1);
+        return expect(obj.degreeShift).toBe(0);
+      });
+      it('should calculate bit x/y and angle regarding degreeShift', function() {
+        var angle, b, degreeCnt, degreeShifts, index, obj, p, pointEnd, pointStart, step;
+        index = 1;
+        angle = 20;
+        degreeShifts = [0, 10, 20];
+        b = new Burst({
+          isIt: 1,
+          childOptions: {
+            degreeShift: degreeShifts
+          }
+        });
+        obj = {
+          angle: angle,
+          degreeShift: degreeShifts[index]
+        };
+        b._addBurstProperties(obj, index);
+        p = b._props;
+        degreeCnt = p.degree % 360 === 0 ? p.count : p.count - 1 || 1;
+        step = p.degree / degreeCnt;
+        pointStart = b._getSidePoint('start', index * step + degreeShifts[index]);
+        pointEnd = b._getSidePoint('end', index * step + degreeShifts[index]);
+        expect(obj.x).toEqual(b._getDeltaFromPoints('x', pointStart, pointEnd));
+        expect(obj.y).toEqual(b._getDeltaFromPoints('y', pointStart, pointEnd));
+        return expect(obj.angle).toEqual(b._getBitAngle(angle + degreeShifts[index], index));
+      });
+      it('should calculate bit x/y and angle regarding stagger', function() {
+        var angle, b, degreeCnt, index, obj, p, pointEnd, pointStart, step;
+        index = 2;
+        angle = 20;
+        b = new Burst({
+          isIt: 1,
+          childOptions: {
+            degreeShift: 'stagger(200)'
+          }
+        });
+        obj = {
+          angle: angle,
+          degreeShift: 'stagger(200)'
+        };
+        b._addBurstProperties(obj, index);
+        p = b._props;
+        degreeCnt = p.degree % 360 === 0 ? p.count : p.count - 1 || 1;
+        step = p.degree / degreeCnt;
+        pointStart = b._getSidePoint('start', index * step + 400);
+        pointEnd = b._getSidePoint('end', index * step + 400);
+        expect(obj.x).toEqual(b._getDeltaFromPoints('x', pointStart, pointEnd));
+        expect(obj.y).toEqual(b._getDeltaFromPoints('y', pointStart, pointEnd));
+        return expect(obj.angle).toEqual(b._getBitAngle(angle + 400, index));
+      });
+      return it('should fallback to 0 for angle', function() {
+        var b, degreeCnt, index, obj, p, pointEnd, pointStart, step;
+        index = 2;
+        b = new Burst({
+          isIt: 1,
+          childOptions: {
+            degreeShift: 'stagger(200)'
+          }
+        });
+        obj = {
+          degreeShift: 'stagger(200)'
+        };
+        b._addBurstProperties(obj, index);
+        p = b._props;
+        degreeCnt = p.degree % 360 === 0 ? p.count : p.count - 1 || 1;
+        step = p.degree / degreeCnt;
+        pointStart = b._getSidePoint('start', index * step + 400);
+        pointEnd = b._getSidePoint('end', index * step + 400);
+        return expect(obj.angle).toEqual(b._getBitAngle(0 + 400, index));
       });
     });
   });

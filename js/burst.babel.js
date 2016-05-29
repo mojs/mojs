@@ -301,17 +301,28 @@ class Burst extends Tunable {
     @param {Object} Options to add the properties to.
     @param {Number} Index of the Swirl.
   */
-  _addBurstProperties (options, index) {
-    var p          = this._props,
-        points     = p.count,
-        degreeCnt  = (p.degree % 360 === 0) ? points : points-1 || 1,
-        step       = p.degree/degreeCnt,
-        pointStart = this._getSidePoint('start', index*step ),
-        pointEnd   = this._getSidePoint('end',   index*step );
+  _addBurstProperties (options, index) { 
+    // save index of the module
+    var mainIndex = this._index;
+    // temporary change the index to parse index based properties like stagger
+    this._index = index;
+    // parse degree shift for the bit
+    var degreeShift = this._parseProperty('degreeShift', options.degreeShift || 0 );
+    // put the index of the module back
+    this._index = mainIndex;
+
+    var p           = this._props,
+        degreeCnt   = (p.degree % 360 === 0) ? p.count : p.count-1 || 1,
+        step        = p.degree/degreeCnt,
+        pointStart  = this._getSidePoint('start', index*step + degreeShift ),
+        pointEnd    = this._getSidePoint('end',   index*step + degreeShift );
 
     options.x     = this._getDeltaFromPoints('x', pointStart, pointEnd);
     options.y     = this._getDeltaFromPoints('y', pointStart, pointEnd);
-    options.angle = this._getBitAngle( options.angle, index );
+    options.angle = this._getBitAngle( (options.angle || 0) + degreeShift, index );
+    // reset degreeeShift which will be send to child swirls since
+    // burst controls `x`, `y`, `angle` and `degreeShift` of child swirls
+    options.degreeShift = 0;
   }
   /* 
     Method to get shapes angle in burst so

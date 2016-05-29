@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.254.0', isDebug: true, helpers: h,
+  revision:   '0.254.1', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -34,6 +34,13 @@ window.mojs = mojs;
 
 // TODO:
 /*
+  backwardEasing should fallback to easing if not defined,
+  defaults of the swirl/burst shape
+  timeline issues
+  h.force3d
+  custom shapes
+  h.hideEl/h.showEl ?
+
   generate for timelineless shape/swirl
   swirl then issue
   'rand' angle flick with `then`
@@ -44,6 +51,7 @@ window.mojs = mojs;
   parse rand(stagger(20, 10), 20) values
   percentage for radius
 */
+
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {
