@@ -116,7 +116,16 @@ describe 'ShapeSwirl ->', ->
       expect(swirl._defaults.degreeShift).toBe 0
     it 'should modify radius default', ->
       swirl = new ShapeSwirl fill: 'cyan'
-      expect(swirl._defaults.radius[5]).toBe 0
+      expect(swirl._defaults.radius).toBe 5
+    it 'should modify scale default', ->
+      swirl = new ShapeSwirl fill: 'cyan'
+      expect(swirl._defaults.scale[1]).toBe 0
+    it 'should modify x default', ->
+      swirl = new ShapeSwirl fill: 'cyan'
+      expect(swirl._defaults.x[0]).toBe 100
+    it 'should modify x default', ->
+      swirl = new ShapeSwirl fill: 'cyan'
+      expect(swirl._defaults.y[0]).toBe 100
     it 'should add direction default', ->
       swirl = new ShapeSwirl radius: [{ 20: 50 }, 20]
       expect(swirl._defaults.direction).toBe 1

@@ -59,7 +59,7 @@ class Shape extends Tunable {
       // ∆ :: Possible values: [ number ]
       angle:            0,
       // ∆ :: Possible values: [ number ]
-      scale:            1,
+      scale:            { 0 : 1 },
       // ∆ :: Possible values: [ number ] Fallbacks to `scale`.
       scaleX:           null,
       // ∆ :: Possible values: [ number ] Fallbacks to `scale`.
@@ -75,7 +75,7 @@ class Shape extends Tunable {
       // ∆ :: Possible values: [ number ]
       points:           3,
       // ∆ :: Possible values: [ number ]
-      radius:           { 0: 50 },
+      radius:           50,
       // ∆ :: Possible values: [ number ]
       radiusX:          null,
       // ∆ :: Possible values: [ number ]

@@ -91,7 +91,7 @@ describe 'Shape ->', ->
       expect(byte._defaults.x).toBe                0
       expect(byte._defaults.y).toBe                0
       expect(byte._defaults.angle).toBe            0
-      expect(byte._defaults.scale).toBe            1
+      expect(byte._defaults.scale).toEqual         { 0 : 1 }
       expect(byte._defaults.scaleX).toBe           null
       expect(byte._defaults.scaleY).toBe           null
       expect(byte._defaults.origin).toBe           '50% 50%'
@@ -100,7 +100,7 @@ describe 'Shape ->', ->
       expect(byte._defaults.opacity).toBe          1
       expect(byte._defaults.points).toBe           3
       expect(byte._defaults.duration).toBe         400
-      expect(byte._defaults.radius[0]).toBe        50
+      expect(byte._defaults.radius).toBe        50
       expect(byte._defaults.radiusX).toBe          null
       expect(byte._defaults.radiusY).toBe          null
       expect(byte._defaults.isShowEnd).toBe        true
@@ -474,7 +474,7 @@ describe 'Shape ->', ->
           isShowStart: true
         s = byte.el.style
         tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-        expect(tr).toBe 'translate(100px, 50px) rotate(0deg) scale(1, 1)'
+        expect(tr).toBe 'translate(100px, 50px) rotate(0deg) scale(0, 0)'
       it 'should animate shift position', (dfr)->
         byte = new Byte
           x: {100: '200px'}
@@ -734,19 +734,9 @@ describe 'Shape ->', ->
       expect(parseInt(byte.el.style.left, 10)).toBe 0
       s = byte.el.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-      isTr  = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
-      isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
+      isTr  = tr is 'translate(0, 0) rotate(0deg) scale(0, 0)'
+      isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(0, 0)'
       expect(isTr or isTr2).toBe true
-    # it 'should set only opacity if foreign context', ->
-    #   byte = new Byte radius: 25, top: 10, ctx: svg
-    #   byte._draw()
-    #   expect(byte.el.style.opacity)   .toBe         '1'
-    #   expect(byte.el.style.left)      .not.toBe     '0px'
-    #   expect(byte.el.style.top)       .not.toBe     '10px'
-    #   s = byte.el.style
-    #   tr = if s.transform? then s.transform
-    #   else s["#{mojs.h.prefix.css}transform"]
-    #   expect(tr).toBeFalsy()
     it 'should set new values', ->
       byte = new Byte radius: 25, top: 10
       byte._draw()
@@ -771,11 +761,11 @@ describe 'Shape ->', ->
       byte._draw()
       style = byte.el.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
-      isTr = tr is 'translate(0, 0) rotate(26deg) scale(1, 1)'
-      isTr2 = tr is 'translate(0px, 0px) rotate(26deg) scale(1, 1)'
+      isTr = tr is 'translate(0, 0) rotate(26deg) scale(0, 0)'
+      isTr2 = tr is 'translate(0px, 0px) rotate(26deg) scale(0, 0)'
       expect(isTr or isTr2).toBe true
       # expect(byte.el.style["#{h.prefix.css}transform"]).toBe resultStr
-    it 'should not set transform if angle changed', ->
+    it 'should not set transform if angle changed #2', ->
       byte = new Byte angle: 25
       byte._draw()
       spyOn byte, '_fillTransform'
@@ -821,8 +811,8 @@ describe 'Shape ->', ->
       expect(byte._fillTransform).toHaveBeenCalled()
       style = byte.el.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
-      isTr = tr is 'translate(4px, 0) rotate(0deg) scale(1, 1)'
-      isTr2 = tr is 'translate(4px, 0px) rotate(0deg) scale(1, 1)'
+      isTr = tr is 'translate(4px, 0) rotate(0deg) scale(0, 0)'
+      isTr2 = tr is 'translate(4px, 0px) rotate(0deg) scale(0, 0)'
       expect(isTr or isTr2).toBe true
 
     it 'should set transform if x changed #2', ->
@@ -833,8 +823,8 @@ describe 'Shape ->', ->
       expect(byte._fillTransform).toHaveBeenCalled()
       style = byte.el.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
-      isTr = tr is 'translate(0, 4px) rotate(0deg) scale(1, 1)'
-      isTr2 = tr is 'translate(0px, 4px) rotate(0deg) scale(1, 1)'
+      isTr = tr is 'translate(0, 4px) rotate(0deg) scale(0, 0)'
+      isTr2 = tr is 'translate(0px, 4px) rotate(0deg) scale(0, 0)'
       expect(isTr or isTr2).toBe true
 
     it 'should set transform if x changed #3', ->

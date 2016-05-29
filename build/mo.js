@@ -1954,7 +1954,7 @@
 	      // ∆ :: Possible values: [ number ]
 	      angle: 0,
 	      // ∆ :: Possible values: [ number ]
-	      scale: 1,
+	      scale: { 0: 1 },
 	      // ∆ :: Possible values: [ number ] Fallbacks to `scale`.
 	      scaleX: null,
 	      // ∆ :: Possible values: [ number ] Fallbacks to `scale`.
@@ -1970,7 +1970,7 @@
 	      // ∆ :: Possible values: [ number ]
 	      points: 3,
 	      // ∆ :: Possible values: [ number ]
-	      radius: { 0: 50 },
+	      radius: 50,
 	      // ∆ :: Possible values: [ number ]
 	      radiusX: null,
 	      // ∆ :: Possible values: [ number ]
@@ -2590,7 +2590,13 @@
 	    /* ∆ :: [number] :: Degree shift for the sinusoidal path. */
 	    this._defaults.degreeShift = 0;
 	    /* ∆ :: [number] :: Radius of the shape. */
-	    this._defaults.radius = { 5: 0 };
+	    this._defaults.radius = 5;
+	    // ∆ :: Units :: Possible values: [ number, string ]
+	    this._defaults.x = { 0: 100 };
+	    // ∆ :: Units :: Possible values: [ number, string ]
+	    this._defaults.y = { 0: 100 };
+	    // ∆ :: Possible values: [ number ]
+	    this._defaults.scale = { 1: 0 };
 	    /* [number: -1, 1] :: Directon of Swirl. */
 	    this._defaults.direction = 1;
 	  };
@@ -2638,6 +2644,9 @@
 	    var x = this._getPosValue('x'),
 	        y = this._getPosValue('y'),
 	        angle = 90 + Math.atan(y.delta / x.delta || 0) * _h2.default.RAD_TO_DEG;
+
+	    // console.log('x:', x);
+	    // console.log('y:', y);
 
 	    this._posData = {
 	      radius: Math.sqrt(x.delta * x.delta + y.delta * y.delta),
@@ -8294,7 +8303,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.254.2', isDebug: true, helpers: _h2.default,
+	  revision: '0.255.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8313,13 +8322,13 @@
 	/*
 	  backwardEasing should fallback to easing if not defined,
 	  defaults of the swirl/burst shape
+	  swirl generate issue
 	  timeline issues
 	  add el to the burst
 	  h.force3d
 	  custom shapes
 	  h.hideEl/h.showEl ?
 
-	  generate for timelineless shape/swirl
 	  swirl then issue
 	  'rand' angle flick with `then`
 	  not able to `play()` in `onComplete` callback
@@ -8330,25 +8339,35 @@
 	  percentage for radius
 	*/
 
-	var sw = new mojs.Burst({
+	var sw = new mojs.Shape({
 	  left: '50%', top: '50%',
 	  degree: 90,
 	  isSwirl: true,
-	  radius: { 0: 'rand(0, 500)' },
-	  isIt: 1,
-	  childOptions: {
-	    // shape: 'line',
-	    // stroke: 'cyan',
-	    // radius: 20,
-	    radius: 'rand(5, 20)',
-	    scaleX: { 1: 0 },
-	    duration: 2000,
-	    // pathScale: 'rand(.5, 1)',
-	    degreeShift: 'rand(0, 360)'
-	  }
+	  // y: 0,
+	  // x:  { 0: 100 },
+	  // y:  { 0: 'rand(0, 200)' },
+	  duration: 2000
 	});
 
-	// angle: 45
+	// const sw = new mojs.Burst({
+	//   left: '50%', top: '50%',
+	//   degree: 90,
+	//   isSwirl: true,
+	//   radius: { 0 : 'rand(0, 500)' },
+	//   isIt: 1,
+	//   childOptions: {
+	//     // shape: 'line',
+	//     // stroke: 'cyan',
+	//     // radius: 20,
+	//     radius: 'rand(5, 20)',
+	//     scaleX: { 1 : 0 },
+	//     duration: 2000,
+	//     // pathScale: 'rand(.5, 1)',
+	//     degreeShift: 'rand(0, 360)',
+	//     // angle: 45
+	//   }
+	// });
+
 	sw.play();
 
 	document.body.addEventListener('click', function () {
