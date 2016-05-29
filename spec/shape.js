@@ -124,6 +124,7 @@
         expect(byte._defaults.isShowStart).toBe(false);
         expect(byte._defaults.size).toBe(null);
         expect(byte._defaults.sizeGap).toBe(0);
+        expect(byte._defaults.isWithShape).toBe(true);
         return expect(byte._defaults.callbacksContext).toBe(byte);
       });
     });
@@ -1664,6 +1665,16 @@
         byte.shapeModule = null;
         byte._createShape();
         return expect(byte.shapeModule instanceof mojs.shapesMap.rect).toBe(true);
+      });
+      it('should not create if !isWithShape', function() {
+        var byte;
+        byte = new Byte({
+          shape: 'rect',
+          isWithShape: false
+        });
+        byte.shapeModule = null;
+        byte._createShape();
+        return expect(byte.shapeModule).toBeFalsy();
       });
       it('should send `width` and `height` to the `shape` module', function() {
         var byte;

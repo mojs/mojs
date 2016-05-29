@@ -58,16 +58,22 @@ class Burst extends Tunable {
     // and delete the timeline options on o
     // cuz masterSwirl should not get them
     this._saveTimelineOptions( o );
+
     // add new timeline properties to timeline
     this.timeline._setProp( this._timelineOptions );
+
     // remove tween options (not callbacks)
     this._removeTweenProperties( o );
+
     // tune _props
     this._tuneNewOptions( o );
+
     // tune master swirl
     this.masterSwirl.tune( o );
+
     // tune child swirls
     this._tuneSwirls( o );
+
     // recalc time for modules
     this._recalcModulesTime();
     return this;
@@ -132,6 +138,7 @@ class Burst extends Tunable {
     for (var i = 0; i < pack0.length; i++ ) {
       var swirl  = pack0[i],
           option = this._getChildOption( o || {}, i );
+
       this._addBurstProperties( option, i );
       swirl.tune( option );
     }
@@ -188,9 +195,7 @@ class Burst extends Tunable {
   _render () {
     this._o.isWithShape      = false;
     this._o.isSwirl          = this._props.isSwirl;
-    this._o.radius           = 0;
     this._o.callbacksContext = this;
-
     // save timeline options and remove from _o
     // cuz the master swirl should not get them
     this._saveTimelineOptions( this._o );
@@ -320,6 +325,7 @@ class Burst extends Tunable {
     options.x     = this._getDeltaFromPoints('x', pointStart, pointEnd);
     options.y     = this._getDeltaFromPoints('y', pointStart, pointEnd);
     options.angle = this._getBitAngle( (options.angle || 0) + degreeShift, index );
+
     // reset degreeeShift which will be send to child swirls since
     // burst controls `x`, `y`, `angle` and `degreeShift` of child swirls
     options.degreeShift = 0;

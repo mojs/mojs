@@ -272,9 +272,8 @@ class Module {
   */
   _parseDeltaValues (name, delta) {
     for (var key in delta) {
-      var value = delta[key];
-      // delete the old key
-      delete delta[key];
+      var value = delta[key],
+          delta = {};
       // add parsed properties
       var newEnd = this._parsePreArrayProperty(name, value);
       delta[this._parsePreArrayProperty(name, key)] = newEnd;

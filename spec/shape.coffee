@@ -107,6 +107,7 @@ describe 'Shape ->', ->
       expect(byte._defaults.isShowStart).toBe      false
       expect(byte._defaults.size).toBe             null
       expect(byte._defaults.sizeGap).toBe          0
+      expect(byte._defaults.isWithShape).toBe      true
       expect(byte._defaults.callbacksContext).toBe byte
 
   describe '_applyCallbackOverrides ->', ->
@@ -1246,6 +1247,13 @@ describe 'Shape ->', ->
       byte.shapeModule = null
       byte._createShape()
       expect(byte.shapeModule instanceof mojs.shapesMap.rect).toBe true
+
+    it 'should not create if !isWithShape', ->
+      byte = new Byte shape: 'rect', isWithShape: false
+
+      byte.shapeModule = null
+      byte._createShape()
+      expect(byte.shapeModule).toBeFalsy()
 
     it 'should send `width` and `height` to the `shape` module', ->
       byte = new Byte

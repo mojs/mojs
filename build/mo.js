@@ -1401,16 +1401,22 @@
 	    // and delete the timeline options on o
 	    // cuz masterSwirl should not get them
 	    this._saveTimelineOptions(o);
+
 	    // add new timeline properties to timeline
 	    this.timeline._setProp(this._timelineOptions);
+
 	    // remove tween options (not callbacks)
 	    this._removeTweenProperties(o);
+
 	    // tune _props
 	    this._tuneNewOptions(o);
+
 	    // tune master swirl
 	    this.masterSwirl.tune(o);
+
 	    // tune child swirls
 	    this._tuneSwirls(o);
+
 	    // recalc time for modules
 	    this._recalcModulesTime();
 	    return this;
@@ -1483,6 +1489,7 @@
 	    for (var i = 0; i < pack0.length; i++) {
 	      var swirl = pack0[i],
 	          option = this._getChildOption(o || {}, i);
+
 	      this._addBurstProperties(option, i);
 	      swirl.tune(option);
 	    }
@@ -1547,9 +1554,7 @@
 	  Burst.prototype._render = function _render() {
 	    this._o.isWithShape = false;
 	    this._o.isSwirl = this._props.isSwirl;
-	    this._o.radius = 0;
 	    this._o.callbacksContext = this;
-
 	    // save timeline options and remove from _o
 	    // cuz the master swirl should not get them
 	    this._saveTimelineOptions(this._o);
@@ -1696,6 +1701,7 @@
 	    options.x = this._getDeltaFromPoints('x', pointStart, pointEnd);
 	    options.y = this._getDeltaFromPoints('y', pointStart, pointEnd);
 	    options.angle = this._getBitAngle((options.angle || 0) + degreeShift, index);
+
 	    // reset degreeeShift which will be send to child swirls since
 	    // burst controls `x`, `y`, `angle` and `degreeShift` of child swirls
 	    options.degreeShift = 0;
@@ -1976,9 +1982,13 @@
 	      // Possible values: [ number > 0 ]
 	      duration: 400,
 	      // Possible values: [ number ]
+
+	      /* technical ones: */
 	      size: null,
 	      // Possible values: [ number ]
 	      sizeGap: 0,
+	      /* [boolean] :: If should have child shape. */
+	      isWithShape: true,
 	      // context for all the callbacks
 	      callbacksContext: this
 	    };
@@ -2126,6 +2136,9 @@
 
 
 	  Shape.prototype._draw = function _draw() {
+	    if (!this.shapeModule) {
+	      return;
+	    }
 	    var p = this._props,
 	        bP = this.shapeModule._props;
 	    // set props on bit
@@ -2320,6 +2333,9 @@
 
 
 	  Shape.prototype._createShape = function _createShape() {
+	    if (!this._props.isWithShape) {
+	      return;
+	    }
 	    var p = this._props;
 	    // get shape's class
 	    var Shape = shapesMap.getShape(this._props.shape);
@@ -2349,7 +2365,7 @@
 	      maxH = Math.max(maxH, this._modules[i]._props.shapeHeight);
 	    }
 
-	    this.shapeModule._setSize(maxW, maxH);
+	    this.shapeModule && this.shapeModule._setSize(maxW, maxH);
 	    this._setElSizeStyles(maxW, maxH);
 	  };
 	  /*
@@ -2577,9 +2593,6 @@
 	    this._defaults.radius = { 5: 0 };
 	    /* [number: -1, 1] :: Directon of Swirl. */
 	    this._defaults.direction = 1;
-	    /* technical ones: */
-	    /* [boolean] :: If should have child shape. */
-	    this._defaults.isWithShape = true;
 	  };
 
 	  // ^ PUBLIC  METHOD(S) ^
@@ -4784,9 +4797,8 @@
 
 	  Module.prototype._parseDeltaValues = function _parseDeltaValues(name, delta) {
 	    for (var key in delta) {
-	      var value = delta[key];
-	      // delete the old key
-	      delete delta[key];
+	      var value = delta[key],
+	          delta = {};
 	      // add parsed properties
 	      var newEnd = this._parsePreArrayProperty(name, value);
 	      delta[this._parsePreArrayProperty(name, key)] = newEnd;
@@ -8282,7 +8294,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.254.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.254.2', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8302,6 +8314,7 @@
 	  backwardEasing should fallback to easing if not defined,
 	  defaults of the swirl/burst shape
 	  timeline issues
+	  add el to the burst
 	  h.force3d
 	  custom shapes
 	  h.hideEl/h.showEl ?
@@ -8316,6 +8329,31 @@
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
 	*/
+
+	var sw = new mojs.Burst({
+	  left: '50%', top: '50%',
+	  degree: 90,
+	  isSwirl: true,
+	  radius: { 0: 'rand(0, 500)' },
+	  isIt: 1,
+	  childOptions: {
+	    // shape: 'line',
+	    // stroke: 'cyan',
+	    // radius: 20,
+	    radius: 'rand(5, 20)',
+	    scaleX: { 1: 0 },
+	    duration: 2000,
+	    // pathScale: 'rand(.5, 1)',
+	    degreeShift: 'rand(0, 360)'
+	  }
+	});
+
+	// angle: 45
+	sw.play();
+
+	document.body.addEventListener('click', function () {
+	  sw.generate().replay();
+	});
 
 	// istanbul ignore next
 	if (true) {

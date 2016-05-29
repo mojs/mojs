@@ -79,12 +79,6 @@
         burst = new Burst(opts);
         return expect(burst.masterSwirl._o.isWithShape).toBe(false);
       });
-      it('should pass radius option to master swirl', function() {
-        var burst, opts;
-        opts = {};
-        burst = new Burst(opts);
-        return expect(burst.masterSwirl._o.radius).toBe(0);
-      });
       it('should self as callbacksContext', function() {
         var burst, opts;
         opts = {};
@@ -1073,7 +1067,6 @@
         angle = 20;
         degreeShifts = [0, 10, 20];
         b = new Burst({
-          isIt: 1,
           childOptions: {
             degreeShift: degreeShifts
           }
@@ -1097,7 +1090,6 @@
         index = 2;
         angle = 20;
         b = new Burst({
-          isIt: 1,
           childOptions: {
             degreeShift: 'stagger(200)'
           }
@@ -1120,7 +1112,6 @@
         var b, degreeCnt, index, obj, p, pointEnd, pointStart, step;
         index = 2;
         b = new Burst({
-          isIt: 1,
           childOptions: {
             degreeShift: 'stagger(200)'
           }

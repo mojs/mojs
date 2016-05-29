@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.254.1', isDebug: true, helpers: h,
+  revision:   '0.254.2', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -37,6 +37,7 @@ window.mojs = mojs;
   backwardEasing should fallback to easing if not defined,
   defaults of the swirl/burst shape
   timeline issues
+  add el to the burst
   h.force3d
   custom shapes
   h.hideEl/h.showEl ?
@@ -52,6 +53,33 @@ window.mojs = mojs;
   percentage for radius
 */
 
+
+const sw = new mojs.Burst({
+  left: '50%', top: '50%',
+  degree: 90,
+  isSwirl: true,
+  radius: { 0 : 'rand(0, 500)' },
+  isIt: 1,
+  childOptions: {
+    // shape: 'line',
+    // stroke: 'cyan',
+    // radius: 20,
+    radius: 'rand(5, 20)',
+    scaleX: { 1 : 0 },
+    duration: 2000,
+    // pathScale: 'rand(.5, 1)',
+    degreeShift: 'rand(0, 360)',
+    // angle: 45
+  }
+});
+
+sw.play();
+
+document.body.addEventListener( 'click', function () {
+  sw
+    .generate()
+    .replay();
+});
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {

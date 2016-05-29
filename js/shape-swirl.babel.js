@@ -33,9 +33,6 @@ class ShapeSwirl extends Shape {
     this._defaults.radius         = { 5 : 0};
     /* [number: -1, 1] :: Directon of Swirl. */
     this._defaults.direction      = 1;
-    /* technical ones: */
-    /* [boolean] :: If should have child shape. */
-    this._defaults.isWithShape    = true;
   }
 
   // ^ PUBLIC  METHOD(S) ^

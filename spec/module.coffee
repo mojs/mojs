@@ -457,7 +457,6 @@ describe 'module class ->', ->
       delta = { 'stagger(100, 0)': 200 }
       deltaResult = md._parseDeltaValues( 'left', delta )
       expect(deltaResult).toEqual { '100px': '200px' }
-      expect(deltaResult).toBe delta
 
     it 'should not arr values parse delta values', ->
       md = new Module
@@ -465,15 +464,14 @@ describe 'module class ->', ->
       delta = { 'stagger(100, 0)': 200 }
       deltaResult = md._parseDeltaValues( 'strokeDasharray', delta )
       expect(deltaResult).toEqual { '100': 200 }
-      expect(deltaResult).toBe delta
 
-    it 'should not delete key if parsed is the same', ->
+    it 'should create new delta object', ->
       md = new Module
 
       delta = { 2: 1 }
       deltaResult = md._parseDeltaValues( 'opacity', delta )
       expect(deltaResult).toEqual { 2: 1 }
-      expect(deltaResult).toBe delta
+      expect(deltaResult).not.toBe delta
 
   describe '_preparsePropValue ->', ->
     it 'should parse non ∆ values', ->

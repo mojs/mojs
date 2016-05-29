@@ -87,9 +87,13 @@ class Shape extends Tunable {
       // Possible values: [ number > 0 ]
       duration:         400,
       // Possible values: [ number ]
+
+      /* technical ones: */
       size:             null,
       // Possible values: [ number ]
       sizeGap:          0,
+      /* [boolean] :: If should have child shape. */
+      isWithShape:      true,
       // context for all the callbacks
       callbacksContext: this
     }
@@ -217,6 +221,7 @@ class Shape extends Tunable {
     @private
   */
   _draw () {
+    if (!this.shapeModule) { return; }
     var p  = this._props,
         bP = this.shapeModule._props;
     // set props on bit
@@ -380,6 +385,7 @@ class Shape extends Tunable {
     @private
   */
   _createShape () {
+    if ( !this._props.isWithShape ) { return; }
     var p      = this._props;
     // get shape's class
     var Shape  = shapesMap.getShape(this._props.shape);
@@ -407,7 +413,7 @@ class Shape extends Tunable {
       maxH = Math.max( maxH, this._modules[i]._props.shapeHeight );
     }
 
-    this.shapeModule._setSize( maxW, maxH );
+    this.shapeModule && this.shapeModule._setSize( maxW, maxH );
     this._setElSizeStyles( maxW, maxH );
   }
   /*

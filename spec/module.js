@@ -682,10 +682,9 @@
           'stagger(100, 0)': 200
         };
         deltaResult = md._parseDeltaValues('left', delta);
-        expect(deltaResult).toEqual({
+        return expect(deltaResult).toEqual({
           '100px': '200px'
         });
-        return expect(deltaResult).toBe(delta);
       });
       it('should not arr values parse delta values', function() {
         var delta, deltaResult, md;
@@ -694,12 +693,11 @@
           'stagger(100, 0)': 200
         };
         deltaResult = md._parseDeltaValues('strokeDasharray', delta);
-        expect(deltaResult).toEqual({
+        return expect(deltaResult).toEqual({
           '100': 200
         });
-        return expect(deltaResult).toBe(delta);
       });
-      return it('should not delete key if parsed is the same', function() {
+      return it('should create new delta object', function() {
         var delta, deltaResult, md;
         md = new Module;
         delta = {
@@ -709,7 +707,7 @@
         expect(deltaResult).toEqual({
           2: 1
         });
-        return expect(deltaResult).toBe(delta);
+        return expect(deltaResult).not.toBe(delta);
       });
     });
     describe('_preparsePropValue ->', function() {
