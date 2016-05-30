@@ -118,6 +118,9 @@ class Tween extends Module {
   stop ( progress ) {
     if ( this._state === 'stop' ) { return this; }
 
+    
+    this._wasUknownUpdate  = undefined;
+
     var stopProc = (progress != null) ? progress
       /* if no progress passsed - set 1 if tween
          is playingBackward, otherwise set to 0 */
@@ -606,6 +609,9 @@ class Tween extends Module {
           this._repeatStart( time, isYoyo );
           this._firstUpdate( time, isYoyo );
         }
+        // console.log( this._prevTime, time, this._props.startTime, this._props. )
+        // if backward direction and 
+        // if ( time < this._prevTime && time !== this._props.startTime ) {
         if ( time < this._prevTime ) {
           this._complete( time, isYoyo );
           this._repeatComplete( time, isYoyo );

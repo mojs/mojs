@@ -5003,6 +5003,22 @@ describe 'Tween ->', ->
       tm._update tm._props.endTime - .0000000000001
       expect(tw._props.onRepeatComplete).not.toHaveBeenCalled()
       expect(tw._props.onComplete).not.toHaveBeenCalled()
+  
+  describe 'specific _complete behaviour', ->
+    it 'should not fire on immediate stop', (dfr)->
+      tw = new mojs.Tween
+
+      spyOn tw, '_complete'
+      spyOn tw, '_repeatComplete'
+
+      tw.play()
+      setTimeout ->
+        tw.stop()
+        expect( tw._repeatComplete ).not.toHaveBeenCalled()
+        expect( tw._complete ).not.toHaveBeenCalled()
+        dfr()
+      , 1
+
       
   describe '_getPeriod method ->', ->
     it 'should get current period', ->
@@ -5767,6 +5783,20 @@ describe 'Tween ->', ->
       result = t.stop()
       expect(t._props.isReversed).toBe true
       expect(result).toBe t
+
+    it 'should set `_wasUknownUpdate` to undefined',->
+      t = new Tween isIt: 1
+      t.play()
+      # spy on reset just to make it not working because
+      # it resets _wasUknowUpdate also, but we need to test the
+      # stop method itself
+      spyOn t, 'reset'
+      # same for the setProgress
+      spyOn t, 'setProgress'
+      
+      t._wasUknownUpdate = true
+      t.stop()
+      expect(t._wasUknownUpdate).not.toBeDefined()
 
   describe 'reset method ->', ->
     it 'should call removeFromTweener method with self',->

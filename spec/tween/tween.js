@@ -4478,6 +4478,21 @@
         return expect(tw._props.onComplete).not.toHaveBeenCalled();
       });
     });
+    describe('specific _complete behaviour', function() {
+      return it('should not fire on immediate stop', function(dfr) {
+        var tw;
+        tw = new mojs.Tween;
+        spyOn(tw, '_complete');
+        spyOn(tw, '_repeatComplete');
+        tw.play();
+        return setTimeout(function() {
+          tw.stop();
+          expect(tw._repeatComplete).not.toHaveBeenCalled();
+          expect(tw._complete).not.toHaveBeenCalled();
+          return dfr();
+        }, 1);
+      });
+    });
     describe('_getPeriod method ->', function() {
       it('should get current period', function() {
         var delay, duration, t, timeShift;
@@ -5523,7 +5538,7 @@
         tw.stop(.5);
         return expect(tw.setProgress).toHaveBeenCalledWith(.5);
       });
-      return it('should return immediately if already stopped', function() {
+      it('should return immediately if already stopped', function() {
         var result, t;
         t = new Tween;
         t.stop();
@@ -5531,6 +5546,18 @@
         result = t.stop();
         expect(t._props.isReversed).toBe(true);
         return expect(result).toBe(t);
+      });
+      return it('should set `_wasUknownUpdate` to undefined', function() {
+        var t;
+        t = new Tween({
+          isIt: 1
+        });
+        t.play();
+        spyOn(t, 'reset');
+        spyOn(t, 'setProgress');
+        t._wasUknownUpdate = true;
+        t.stop();
+        return expect(t._wasUknownUpdate).not.toBeDefined();
       });
     });
     describe('reset method ->', function() {
