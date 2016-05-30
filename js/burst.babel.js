@@ -202,6 +202,7 @@ class Burst extends Tunable {
 
     this.masterSwirl    = new ShapeSwirl( this._o );
     this._masterSwirls  = [ this.masterSwirl ];
+    this.el             = this.masterSwirl.el;
 
     this._renderSwirls();
   }

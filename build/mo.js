@@ -1561,6 +1561,7 @@
 
 	    this.masterSwirl = new _shapeSwirl2.default(this._o);
 	    this._masterSwirls = [this.masterSwirl];
+	    this.el = this.masterSwirl.el;
 
 	    this._renderSwirls();
 	  };
@@ -5638,6 +5639,19 @@
 	    return el;
 	  };
 
+
+	  /*
+	    Method force compositor layer on HTMLElement.
+	    @private
+	    @param {Object} HTMLElement.
+	    @returns {Object} HTMLElement.
+	   */
+
+	  Helpers.prototype.force3d = function(el) {
+	    this.setPrefixedStyle(el, 'backface-visibility', 'hidden');
+	    return el;
+	  };
+
 	  return Helpers;
 
 	})();
@@ -8303,7 +8317,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.255.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.257.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8320,14 +8334,9 @@
 
 	// TODO:
 	/*
-	  backwardEasing should fallback to easing if not defined,
-	  defaults of the swirl/burst shape
+	  custom shapes
 	  swirl generate issue
 	  timeline issues
-	  add el to the burst
-	  h.force3d
-	  custom shapes
-	  h.hideEl/h.showEl ?
 
 	  swirl then issue
 	  'rand' angle flick with `then`

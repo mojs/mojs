@@ -1122,6 +1122,21 @@ describe 'Helpers ->', ->
       expect( h.parseEl( document.body ) ).toBe document.body
       expect( h.parseEl( el ) ).toBe el
 
+  describe 'force3d method ->', ->
+    it 'should set backface-visibility to hidden on el', ->
+
+      el = document.createElement 'div'
+      h.force3d el
+
+      bfv = el.style[ 'backface-visibility' ] or el.style[ "#{h.prefix.css}backface-visibility" ]
+      expect( bfv ).toBe 'hidden'
+
+    it 'should return el', ->
+
+      el = document.createElement 'div'
+      result = h.force3d el
+
+      expect( result ).toBe el
     
 
 

@@ -65,6 +65,11 @@
         burst._render();
         return expect(burst.masterSwirl instanceof ShapeSwirl).toBe(true);
       });
+      it('should set el of master swirl as el', function() {
+        var burst;
+        burst = new Burst;
+        return expect(burst.el).toBe(burst.masterSwirl.el);
+      });
       it('should pass options to master swirl', function() {
         var burst, opts;
         opts = {};

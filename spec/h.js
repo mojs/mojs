@@ -1512,7 +1512,7 @@
         return expect(h.getLastItem([1])).toBe(1);
       });
     });
-    return describe('parseEl method ->', function() {
+    describe('parseEl method ->', function() {
       it('should find an element if `string` passed ', function() {
         return expect(h.parseEl('body')).toBe(document.body);
       });
@@ -1527,6 +1527,21 @@
         el = document.createElement('div');
         expect(h.parseEl(document.body)).toBe(document.body);
         return expect(h.parseEl(el)).toBe(el);
+      });
+    });
+    return describe('force3d method ->', function() {
+      it('should set backface-visibility to hidden on el', function() {
+        var bfv, el;
+        el = document.createElement('div');
+        h.force3d(el);
+        bfv = el.style['backface-visibility'] || el.style["" + h.prefix.css + "backface-visibility"];
+        return expect(bfv).toBe('hidden');
+      });
+      return it('should return el', function() {
+        var el, result;
+        el = document.createElement('div');
+        result = h.force3d(el);
+        return expect(result).toBe(el);
       });
     });
   });

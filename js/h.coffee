@@ -567,6 +567,15 @@ class Helpers
     
     if ( el == null ) then h.error( "Can't parse HTML element: ", el );
     el
+  ###
+    Method force compositor layer on HTMLElement.
+    @private
+    @param {Object} HTMLElement.
+    @returns {Object} HTMLElement.
+  ###
+  force3d: ( el )->
+    this.setPrefixedStyle el, 'backface-visibility', 'hidden'
+    el
 
 h = new Helpers
 module.exports = h

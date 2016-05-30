@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.255.0', isDebug: true, helpers: h,
+  revision:   '0.257.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -34,14 +34,9 @@ window.mojs = mojs;
 
 // TODO:
 /*
-  backwardEasing should fallback to easing if not defined,
-  defaults of the swirl/burst shape
+  custom shapes
   swirl generate issue
   timeline issues
-  add el to the burst
-  h.force3d
-  custom shapes
-  h.hideEl/h.showEl ?
 
   swirl then issue
   'rand' angle flick with `then`
@@ -62,7 +57,6 @@ const sw = new mojs.Shape({
   // y:  { 0: 'rand(0, 200)' },
   duration: 2000,
 });
-
 
 // const sw = new mojs.Burst({
 //   left: '50%', top: '50%',

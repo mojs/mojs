@@ -45,6 +45,10 @@ describe 'Burst ->', ->
       burst._render()
       expect(burst.masterSwirl instanceof ShapeSwirl).toBe true
 
+    it 'should set el of master swirl as el', ->
+      burst = new Burst
+      expect(burst.el).toBe burst.masterSwirl.el
+
     it 'should pass options to master swirl', ->
       opts = {}
       burst = new Burst opts
