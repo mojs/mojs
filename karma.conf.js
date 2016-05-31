@@ -89,10 +89,10 @@ module.exports = function(config) {
       // 'build/h.js',
       // 'spec/h.js',
       
-      'build/shape.js',
-      'spec/shape.js',
-      'build/shape-swirl.js',
-      'spec/shape-swirl.js',
+      // 'build/shape.js',
+      // 'spec/shape.js',
+      // 'build/shape-swirl.js',
+      // 'spec/shape-swirl.js',
       // 'build/burst.js',
       // 'spec/burst.js',
 
@@ -115,15 +115,15 @@ module.exports = function(config) {
 
       'build/tween/timeline.js',
       'spec/tween/timeline.js',
-      // 'build/tween/tween.js',
-      // 'spec/tween/tween.js',
+      'build/tween/tween.js',
+      'spec/tween/tween.js',
       'build/tween/tweener.js',
       'spec/tween/tweener.js',
 
       'build/motion-path.js',
       'spec/motion-path.js',
-      'build/shapes/*.js',
-      'spec/shapes/*.js'
+      // 'build/shapes/*.js',
+      // 'spec/shapes/*.js'
     ],
 
     // preprocess matching files before serving them to the browser

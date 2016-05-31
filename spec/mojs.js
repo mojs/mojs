@@ -15,6 +15,12 @@
     it('should expose h.delta mojs', function() {
       return expect(mojs.delta).toBe(mojs.helpers.delta);
     });
+    it('should expose shapesMap.addShape mojs', function() {
+      return expect(mojs.addShape).toBe(mojs.shapesMap.addShape);
+    });
+    it('should expose shapesMap.customShape mojs', function() {
+      return expect(mojs.CustomShape).toBe(mojs.shapesMap.custom);
+    });
     it('should have Burst', function() {
       return expect(mojs.Burst).toBeDefined();
     });

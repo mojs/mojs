@@ -9,6 +9,10 @@ describe 'mojs ->', ->
     expect(mojs.h).toBe mojs.helpers
   it 'should expose h.delta mojs', ->
     expect(mojs.delta).toBe mojs.helpers.delta
+  it 'should expose shapesMap.addShape mojs', ->
+    expect(mojs.addShape).toBe mojs.shapesMap.addShape
+  it 'should expose shapesMap.customShape mojs', ->
+    expect(mojs.CustomShape).toBe mojs.shapesMap.custom
   it 'should have Burst', ->
     expect(mojs.Burst).toBeDefined()
   it 'should have Shape', ->

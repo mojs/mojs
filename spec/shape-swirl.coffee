@@ -8,11 +8,6 @@ describe 'ShapeSwirl ->', ->
     it 'should extend Shape class', ->
       swirl = new ShapeSwirl
       expect(swirl instanceof Shape).toBe true
-    # nope
-    # it 'should have _skipPropsDelta', ->
-    #   swirl = new ShapeSwirl
-    #   expect(swirl._skipPropsDelta.x).toBe 1
-    #   expect(swirl._skipPropsDelta.y).toBe 1
     it 'should have degreeShift value', ->
       swirl = new ShapeSwirl
         x: {0:10}, y: {0:10}

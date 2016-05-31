@@ -2,6 +2,10 @@ import Module from '../module';
 import h  from '../h';
 
 class Bit extends Module {
+  /*
+    Method to declare module's defaults.
+    @private
+  */
   _declareDefaults () {
     this._defaults = {
       'ns':                 'http://www.w3.org/2000/svg',

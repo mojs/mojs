@@ -17,15 +17,18 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.257.1', isDebug: true, helpers: h,
+  revision:   '0.258.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
 }
 
 // functions alias
-mojs.h       = mojs.helpers;
-mojs.delta   = mojs.h.delta;
+mojs.h        = mojs.helpers;
+mojs.delta    = mojs.h.delta;
+// custom shape add function and class
+mojs.addShape    = mojs.shapesMap.addShape;
+mojs.CustomShape = mojs.shapesMap.custom;
 // module alias
 mojs.Transit = mojs.Shape;
 mojs.Swirl   = mojs.ShapeSwirl;
@@ -34,8 +37,7 @@ window.mojs = mojs;
 
 // TODO:
 /*
-  custom shapes
-  timeline issues
+  fix size calculation with strokeWidth: { 0: 10 }
   swirl generate issue
 
   swirl then issue
