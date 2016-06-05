@@ -29,16 +29,19 @@ describe 'Line', ->
         line     = new Line
           ctx:    svg
           radius: 20
+
+        line._draw()
         attr1 = parseInt line.el.getAttribute('x1'), 10
         attr2 = parseInt line.el.getAttribute('x2'), 10
         delta = attr2 - attr1
         expect(delta).toBe(40)
       it 'should work with radiusX', ->
-        svg     = document.createElementNS?(ns, "svg")
+        # svg     = document.createElementNS?(ns, "svg")
         line     = new Line
-          ctx:    svg
+          # ctx:    svg
           radius:  20
           radiusX: 40
+        line._draw()
         attr1 = parseInt line.el.getAttribute('x1'), 10
         attr2 = parseInt line.el.getAttribute('x2'), 10
         delta = attr2 - attr1

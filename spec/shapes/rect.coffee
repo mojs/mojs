@@ -24,12 +24,14 @@ describe 'Rect ->', ->
       expect(rect._defaults.ry).toBe 0
   describe '_draw method ->', ->
     it 'should add properties to el', ->
-      svg     = document.createElementNS?(ns, "svg")
+      # svg     = document.createElementNS?(ns, "svg")
       rect    = new Rect
         radius: 20,
         x: 50,     y: 100,
         rx: 10,    ry: 20
         width: 50, height: 50
+
+      rect._draw()
 
       width   = rect.el.getAttribute 'width'
       height  = rect.el.getAttribute 'height'
@@ -44,9 +46,10 @@ describe 'Rect ->', ->
       expect(rx).toBe       '10px'
       expect(ry).toBe       '20px'
     it 'should work with radiusX/radiusY props', ->
-      svg     = document.createElementNS?(ns, "svg")
+      # svg     = document.createElementNS?(ns, "svg")
       rect    = new Rect
         radiusY: 50, radiusX: 40, width: 100, height: 200
+      rect._draw()
       width   = rect.el.getAttribute 'width'
       height  = rect.el.getAttribute 'height'
       expect(width) .toBe   '80'

@@ -48,7 +48,7 @@ class Bit extends Module {
     // set canvas size
     this._setCanvasSize();
     // draw the initial state
-    this._draw();
+    // this._draw();
     // append the canvas to the parent from props
     this._props.parent.appendChild( this._canvas );
   }
@@ -114,7 +114,6 @@ class Bit extends Module {
         stroke += `${cast} `;
       }
       p[name] = ( stroke === '0 ' ) ? stroke = '' : stroke;
-      // console.log(`set: ${stroke}`)
       return p[name] = stroke;
     }
     // # if single value

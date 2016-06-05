@@ -34,23 +34,69 @@
         return expect(equal._defaults.points).toBe(2);
       });
     });
-    describe('methods ->', function() {
-      return describe('_draw method ->', function() {
-        it('should define points', function() {
-          var equal;
-          equal = new Equal({
-            radius: 20
-          });
-          return expect(equal.el.getAttribute('d')).toBeTruthy();
+    describe('_draw method ->', function() {
+      it('should define points', function() {
+        var equal;
+        equal = new Equal({
+          radius: 20
         });
-        return it('should not work with 0 points', function() {
-          var equal;
-          equal = new Equal({
-            radius: 20,
-            points: 0
-          });
-          return expect(equal.el.getAttribute('points')).toBeFalsy();
+        equal._draw();
+        return expect(equal.el.getAttribute('d')).toBeTruthy();
+      });
+      it('should not work with 0 points', function() {
+        var equal;
+        equal = new Equal({
+          radius: 20,
+          points: 0
         });
+        return expect(equal.el.getAttribute('points')).toBeFalsy();
+      });
+      it('should not set `d` attribute if nothing changed', function() {
+        var equal;
+        equal = new Equal({
+          radius: 20,
+          points: 10
+        });
+        equal._draw();
+        spyOn(equal.el, 'setAttribute');
+        equal._draw();
+        return expect(equal.el.setAttribute).not.toHaveBeenCalled();
+      });
+      it('should set `d` attribute if `radiusX` changed', function() {
+        var equal;
+        equal = new Equal({
+          radius: 20,
+          points: 10
+        });
+        equal._draw();
+        spyOn(equal.el, 'setAttribute');
+        equal._props.radiusX = 30;
+        equal._draw();
+        return expect(equal.el.setAttribute).toHaveBeenCalled();
+      });
+      it('should set `d` attribute if `radiusY` changed', function() {
+        var equal;
+        equal = new Equal({
+          radius: 20,
+          points: 10
+        });
+        equal._draw();
+        spyOn(equal.el, 'setAttribute');
+        equal._props.radiusY = 30;
+        equal._draw();
+        return expect(equal.el.setAttribute).toHaveBeenCalled();
+      });
+      return it('should set `d` attribute if `points` changed', function() {
+        var equal;
+        equal = new Equal({
+          radius: 20,
+          points: 10
+        });
+        equal._draw();
+        spyOn(equal.el, 'setAttribute');
+        equal._props.points = 30;
+        equal._draw();
+        return expect(equal.el.setAttribute).toHaveBeenCalled();
       });
     });
     return describe('getLength method', function() {

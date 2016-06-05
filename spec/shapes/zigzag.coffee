@@ -24,25 +24,26 @@ describe 'Zigzag ->', ->
       zigzag = new Zigzag
       expect(zigzag._defaults.points).toBe 3
   describe 'methods ->', ->
-    describe 'draw method ->', ->
+    describe '_draw method ->', ->
       it 'should add properties to el', ->
         zigzag = new Zigzag
-          ctx:    document.createElementNS?(ns, "svg")
+          # ctx:    document.createElementNS?(ns, "svg")
           radius: 20
       it 'should define points', ->
         zigzag = new Zigzag
-          ctx:    document.createElementNS?(ns, "svg")
+          # ctx:    document.createElementNS?(ns, "svg")
           radius: 20
+        zigzag._draw()
         expect(zigzag.el.getAttribute('d')).toBeTruthy()
       it 'should not work with 0 points', ->
         zigzag = new Zigzag
-          ctx:    document.createElementNS?(ns, "svg")
+          # ctx:    document.createElementNS?(ns, "svg")
           radius: 20
           points: 0
         expect(zigzag.el.getAttribute('d')).toBeFalsy()
       it 'should calculate path length', ->
         zigzag = new Zigzag
-          ctx:    document.createElementNS?(ns, "svg")
+          # ctx:    document.createElementNS?(ns, "svg")
           radius: 20
           points: 10
         zigzag._draw()
@@ -50,7 +51,7 @@ describe 'Zigzag ->', ->
 
       it 'should set `d` attribute', ->
         zigzag = new Zigzag
-          ctx:    document.createElementNS?(ns, "svg")
+          # ctx:    document.createElementNS?(ns, "svg")
           radius: 20
           points: 10
         zigzag._draw()

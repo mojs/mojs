@@ -9,18 +9,19 @@ describe 'Circle ->', ->
     expect(circle instanceof Bit).toBe(true)
   describe '_draw method ->', ->
     it 'should add properties to el', ->
-      svg   = document.createElementNS?(ns, "svg")
-      cross = new Circle
+      # svg   = document.createElementNS?(ns, "svg")
+      circle = new Circle
         radius:   20
         radiusX:  40
         radiusY:  35
         y:        50
         width:    100
         height:   100
-      rx = cross.el.getAttribute('rx')
-      ry = cross.el.getAttribute('ry')
-      cx = cross.el.getAttribute('cx')
-      cy = cross.el.getAttribute('cy')
+      circle._draw()
+      rx = circle.el.getAttribute('rx')
+      ry = circle.el.getAttribute('ry')
+      cx = circle.el.getAttribute('cx')
+      cy = circle.el.getAttribute('cy')
       expect(rx).toBe('40')
       expect(ry).toBe('35')
       expect(cx).toBe('50')
@@ -28,11 +29,14 @@ describe 'Circle ->', ->
 
     it 'should fallback to radius', ->
       svg   = document.createElementNS?(ns, "svg")
-      cross = new Circle
+      circle = new Circle
         radius:   20
         radiusY:  35
-      rx = cross.el.getAttribute('rx')
-      ry = cross.el.getAttribute('ry')
+
+      circle._draw()
+
+      rx = circle.el.getAttribute('rx')
+      ry = circle.el.getAttribute('ry')
       expect(rx).toBe('20')
       expect(ry).toBe('35')
 

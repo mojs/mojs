@@ -65,12 +65,13 @@ describe 'Bit ->', ->
       expect(bit._props.parent.appendChild).toHaveBeenCalledWith bit._canvas
       expect(bit._canvas.parentNode).toBe bit._props.parent
 
-    it 'should call `_draw` method', ->
-      bit = new Bit
-      bit._isRendered = false
-      spyOn bit, '_draw'
-      bit._render()
-      expect(bit._draw).toHaveBeenCalled()
+    # nope
+    # it 'should call `_draw` method', ->
+    #   bit = new Bit
+    #   bit._isRendered = false
+    #   spyOn bit, '_draw'
+    #   bit._render()
+    #   expect(bit._draw).toHaveBeenCalled()
 
   describe '_createSVGCanvas method ->', ->
     it 'should create _canvas', ->
@@ -141,6 +142,8 @@ describe 'Bit ->', ->
         'stroke-dashoffset':    50
         'angle':                45
 
+      bit._draw()
+
       stroke          = bit.el.getAttribute 'stroke'
       strokeWidth     = bit.el.getAttribute 'stroke-width'
       fill            = bit.el.getAttribute 'fill'
@@ -182,6 +185,7 @@ describe 'Bit ->', ->
     it 'should not set attribute if property not changed ->', ->
       svg = document.createElementNS?(ns, 'svg')
       bit = new Bit ctx: svg, 'stroke-width': 3
+      bit._draw()
       spyOn bit.el, 'setAttribute'
       bit._draw()
       expect(bit.el.setAttribute).not.toHaveBeenCalled()
@@ -204,8 +208,9 @@ describe 'Bit ->', ->
       expect(bit._props['stroke-dashoffset']).toBe 100
     it 'should cast % values', ->
       bit = new Bit
-        ctx:    document.createElementNS ns, 'svg'
+        # ctx:    document.createElementNS ns, 'svg'
         radius: 100
+      bit._draw()
       bit._props['stroke-dashoffset'] = { unit: '%', value: 100 }
       bit.castStrokeDash 'stroke-dashoffset'
       expect(bit._props['stroke-dashoffset']).toBe bit._props.length
@@ -241,6 +246,7 @@ describe 'Bit ->', ->
       bit = new Bit
         ctx:    document.createElementNS ns, 'svg'
         radius:  100
+      bit._draw()
       bit._setProp 'stroke-dasharray', [
         { value: 100, unit: 'px' }, { value: 50, unit: '%' }
       ]
@@ -260,6 +266,7 @@ describe 'Bit ->', ->
   describe 'castPercent method ->', ->
     it 'should cast % values to pixels', ->
       bit = new Bit radius: 100
+      bit._draw()
       pixels = bit.castPercent 50
       expect(pixels).toBe (bit._props.length/100) * 50
 
@@ -279,10 +286,6 @@ describe 'Bit ->', ->
       spyOn bit, '_draw'
       bit._setSize 200, 100
       expect( bit._draw ).toHaveBeenCalled()
-
-
-
-
 
 
 

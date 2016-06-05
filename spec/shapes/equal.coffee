@@ -22,16 +22,55 @@ describe 'Equal ->', ->
       equal = new Equal
       expect(equal._defaults.points).toBe 2
 
-  describe 'methods ->', ->
-    describe '_draw method ->', ->
-      it 'should define points', ->
-        equal = new Equal radius: 20
-        expect(equal.el.getAttribute('d')).toBeTruthy()
-      it 'should not work with 0 points', ->
-        equal = new Equal
-          radius: 20
-          points: 0
-        expect(equal.el.getAttribute('points')).toBeFalsy()
+  describe '_draw method ->', ->
+    it 'should define points', ->
+      equal = new Equal radius: 20
+      equal._draw()
+      expect(equal.el.getAttribute('d')).toBeTruthy()
+    it 'should not work with 0 points', ->
+      equal = new Equal
+        radius: 20
+        points: 0
+      expect(equal.el.getAttribute('points')).toBeFalsy()
+
+    it 'should not set `d` attribute if nothing changed', ->
+      equal = new Equal
+        radius: 20
+        points: 10
+      equal._draw()
+      spyOn equal.el, 'setAttribute'
+      equal._draw()
+      expect( equal.el.setAttribute ).not.toHaveBeenCalled()
+
+    it 'should set `d` attribute if `radiusX` changed', ->
+      equal = new Equal
+        radius: 20
+        points: 10
+      equal._draw()
+      spyOn equal.el, 'setAttribute'
+      equal._props.radiusX = 30
+      equal._draw()
+      expect( equal.el.setAttribute ).toHaveBeenCalled()
+
+    it 'should set `d` attribute if `radiusY` changed', ->
+      equal = new Equal
+        radius: 20
+        points: 10
+      equal._draw()
+      spyOn equal.el, 'setAttribute'
+      equal._props.radiusY = 30
+      equal._draw()
+      expect( equal.el.setAttribute ).toHaveBeenCalled()
+
+    it 'should set `d` attribute if `points` changed', ->
+      equal = new Equal
+        radius: 20
+        points: 10
+      equal._draw()
+      spyOn equal.el, 'setAttribute'
+      equal._props.points = 30
+      equal._draw()
+      expect( equal.el.setAttribute ).toHaveBeenCalled()
 
   describe 'getLength method', ->
     it 'should calculate total length of the path', ->

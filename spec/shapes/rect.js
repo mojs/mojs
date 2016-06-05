@@ -40,7 +40,6 @@
     describe('_draw method ->', function() {
       it('should add properties to el', function() {
         var height, rx, ry, width, x, y;
-        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
         rect = new Rect({
           radius: 20,
           x: 50,
@@ -50,6 +49,7 @@
           width: 50,
           height: 50
         });
+        rect._draw();
         width = rect.el.getAttribute('width');
         height = rect.el.getAttribute('height');
         x = rect.el.getAttribute('x');
@@ -65,13 +65,13 @@
       });
       it('should work with radiusX/radiusY props', function() {
         var height, width, x, y;
-        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
         rect = new Rect({
           radiusY: 50,
           radiusX: 40,
           width: 100,
           height: 200
         });
+        rect._draw();
         width = rect.el.getAttribute('width');
         height = rect.el.getAttribute('height');
         expect(width).toBe('80');

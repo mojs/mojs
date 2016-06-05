@@ -27,10 +27,7 @@ describe 'Polygon ->', ->
     expect(tri._props.points).toBe 8
   it 'should calculate _radialPoints', ->
     tri = new Polygon
-    expect(tri._radialPoints).toBeDefined()
-    expect(tri._radialPoints.length).toBe tri._props.points
-  it 'should calculate _radialPoints', ->
-    tri = new Polygon
+    tri._draw()
     expect(tri._radialPoints).toBeDefined()
     expect(tri._radialPoints.length).toBe tri._props.points
 
@@ -38,6 +35,8 @@ describe 'Polygon ->', ->
     it 'should add properties to el', ->
       tri = new Polygon
         radius:   20
+
+      tri._draw()
       d   = tri.el.getAttribute('d')
       d2  = 'M0.0000,-20.0000 L17.3205,10.0000 L-17.3205,10.0000 z'
       isD = d is d2
@@ -45,11 +44,12 @@ describe 'Polygon ->', ->
       expect(isD or isIE9D).toBe true
 
     it 'should work with radiusX and fallback to radius', ->
-      svg = document.createElementNS?(ns, "svg")
+      # svg = document.createElementNS?(ns, "svg")
       tri = new Polygon
-        ctx:      svg
+        # ctx:      svg
         radius:   20
         radiusX:  40
+      tri._draw()
       d   = tri.el.getAttribute('d')
       d2  = 'M0.0000,-20.0000 L34.6410,10.0000 L-34.6410,10.0000 z'
       isD = d is d2
@@ -57,22 +57,63 @@ describe 'Polygon ->', ->
       expect(isD or isIE9D).toBe true
 
     it 'should work with radiusY and fallback to radius', ->
-      svg = document.createElementNS?(ns, "svg")
+      # svg = document.createElementNS?(ns, "svg")
       tri = new Polygon
-        ctx:      svg
+        # ctx:      svg
         radius:   20
         radiusY:  40
+
+      tri._draw()
+
       d   = tri.el.getAttribute('d')
       d2  = 'M0.0000,-40.0000 L17.3205,20.0000 L-17.3205,20.0000 z'
       isD = d is d2
       isIE9D = d is 'M 0 -40 L 17.3205 20 L -17.3205 20 Z'
       expect(isD or isIE9D).toBe true
     it 'should call super method', ->
-      svg     = document.createElementNS?(ns, "svg")
       polygon  = new Polygon
       spyOn(Polygon.__super__, '_draw')
       polygon._draw()
       expect(Polygon.__super__._draw).toHaveBeenCalled()
+
+    it 'should not set `d` attribute if nothing changed', ->
+      polygon = new Polygon
+        radius: 20
+        points: 10
+      polygon._draw()
+      spyOn polygon.el, 'setAttribute'
+      polygon._draw()
+      expect( polygon.el.setAttribute ).not.toHaveBeenCalled()
+
+    it 'should set `d` attribute if `radiusX` changed', ->
+      polygon = new Polygon
+        radius: 20
+        points: 10
+      polygon._draw()
+      spyOn polygon.el, 'setAttribute'
+      polygon._props.radiusX = 30
+      polygon._draw()
+      expect( polygon.el.setAttribute ).toHaveBeenCalled()
+
+    it 'should set `d` attribute if `radiusY` changed', ->
+      polygon = new Polygon
+        radius: 20
+        points: 10
+      polygon._draw()
+      spyOn polygon.el, 'setAttribute'
+      polygon._props.radiusY = 30
+      polygon._draw()
+      expect( polygon.el.setAttribute ).toHaveBeenCalled()
+
+    it 'should set `d` attribute if `points` changed', ->
+      polygon = new Polygon
+        radius: 20
+        points: 10
+      polygon._draw()
+      spyOn polygon.el, 'setAttribute'
+      polygon._props.points = 30
+      polygon._draw()
+      expect( polygon.el.setAttribute ).toHaveBeenCalled()
 
   describe 'getLength method', ->
     it 'should calculate sum between all points', ->

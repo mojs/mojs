@@ -46,26 +46,24 @@
       });
     });
     describe('methods ->', function() {
-      return describe('draw method ->', function() {
+      return describe('_draw method ->', function() {
         it('should add properties to el', function() {
           var zigzag;
           return zigzag = new Zigzag({
-            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
             radius: 20
           });
         });
         it('should define points', function() {
           var zigzag;
           zigzag = new Zigzag({
-            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
             radius: 20
           });
+          zigzag._draw();
           return expect(zigzag.el.getAttribute('d')).toBeTruthy();
         });
         it('should not work with 0 points', function() {
           var zigzag;
           zigzag = new Zigzag({
-            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
             radius: 20,
             points: 0
           });
@@ -74,7 +72,6 @@
         it('should calculate path length', function() {
           var zigzag;
           zigzag = new Zigzag({
-            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
             radius: 20,
             points: 10
           });
@@ -84,7 +81,6 @@
         it('should set `d` attribute', function() {
           var currentX, currentY, delta, i, length, p, points, radiusX, radiusY, stepX, x, y, yFlip, zigzag, _i, _ref;
           zigzag = new Zigzag({
-            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
             radius: 20,
             points: 10
           });

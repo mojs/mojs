@@ -48,6 +48,7 @@
             ctx: svg,
             radius: 20
           });
+          line._draw();
           attr1 = parseInt(line.el.getAttribute('x1'), 10);
           attr2 = parseInt(line.el.getAttribute('x2'), 10);
           delta = attr2 - attr1;
@@ -55,12 +56,11 @@
         });
         it('should work with radiusX', function() {
           var attr1, attr2, delta;
-          svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
           line = new Line({
-            ctx: svg,
             radius: 20,
             radiusX: 40
           });
+          line._draw();
           attr1 = parseInt(line.el.getAttribute('x1'), 10);
           attr2 = parseInt(line.el.getAttribute('x2'), 10);
           delta = attr2 - attr1;

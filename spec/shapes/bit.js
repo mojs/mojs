@@ -69,20 +69,13 @@
         bit._render();
         return expect(bit._setCanvasSize).toHaveBeenCalled();
       });
-      it('should append `_canvas` to the `parent`', function() {
+      return it('should append `_canvas` to the `parent`', function() {
         bit = new Bit;
         bit._isRendered = false;
         spyOn(bit._props.parent, 'appendChild').and.callThrough();
         bit._render();
         expect(bit._props.parent.appendChild).toHaveBeenCalledWith(bit._canvas);
         return expect(bit._canvas.parentNode).toBe(bit._props.parent);
-      });
-      return it('should call `_draw` method', function() {
-        bit = new Bit;
-        bit._isRendered = false;
-        spyOn(bit, '_draw');
-        bit._render();
-        return expect(bit._draw).toHaveBeenCalled();
       });
     });
     describe('_createSVGCanvas method ->', function() {
@@ -132,6 +125,7 @@
           'stroke-dashoffset': 50,
           'angle': 45
         });
+        bit._draw();
         stroke = bit.el.getAttribute('stroke');
         strokeWidth = bit.el.getAttribute('stroke-width');
         fill = bit.el.getAttribute('fill');
@@ -176,6 +170,7 @@
           ctx: svg,
           'stroke-width': 3
         });
+        bit._draw();
         spyOn(bit.el, 'setAttribute');
         bit._draw();
         return expect(bit.el.setAttribute).not.toHaveBeenCalled();
@@ -209,9 +204,9 @@
       });
       it('should cast % values', function() {
         bit = new Bit({
-          ctx: document.createElementNS(ns, 'svg'),
           radius: 100
         });
+        bit._draw();
         bit._props['stroke-dashoffset'] = {
           unit: '%',
           value: 100
@@ -267,6 +262,7 @@
           ctx: document.createElementNS(ns, 'svg'),
           radius: 100
         });
+        bit._draw();
         bit._setProp('stroke-dasharray', [
           {
             value: 100,
@@ -301,6 +297,7 @@
         bit = new Bit({
           radius: 100
         });
+        bit._draw();
         pixels = bit.castPercent(50);
         return expect(pixels).toBe((bit._props.length / 100) * 50);
       });

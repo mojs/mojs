@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.258.1', isDebug: true, helpers: h,
+  revision:   '0.258.2', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -37,7 +37,6 @@ window.mojs = mojs;
 
 // TODO:
 /*
-  polygon _draw hatch
   stroke dash array for custom shapes
   immutable delta parsing
   swirl generate issue
@@ -51,6 +50,7 @@ window.mojs = mojs;
   parse rand(stagger(20, 10), 20) values
   percentage for radius
 */
+
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {

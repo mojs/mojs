@@ -19,9 +19,8 @@
     });
     describe('_draw method ->', function() {
       it('should add properties to el', function() {
-        var cross, cx, cy, rx, ry;
-        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
-        cross = new Circle({
+        var cx, cy, rx, ry;
+        circle = new Circle({
           radius: 20,
           radiusX: 40,
           radiusY: 35,
@@ -29,24 +28,26 @@
           width: 100,
           height: 100
         });
-        rx = cross.el.getAttribute('rx');
-        ry = cross.el.getAttribute('ry');
-        cx = cross.el.getAttribute('cx');
-        cy = cross.el.getAttribute('cy');
+        circle._draw();
+        rx = circle.el.getAttribute('rx');
+        ry = circle.el.getAttribute('ry');
+        cx = circle.el.getAttribute('cx');
+        cy = circle.el.getAttribute('cy');
         expect(rx).toBe('40');
         expect(ry).toBe('35');
         expect(cx).toBe('50');
         return expect(cy).toBe('50');
       });
       it('should fallback to radius', function() {
-        var cross, rx, ry;
+        var rx, ry;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
-        cross = new Circle({
+        circle = new Circle({
           radius: 20,
           radiusY: 35
         });
-        rx = cross.el.getAttribute('rx');
-        ry = cross.el.getAttribute('ry');
+        circle._draw();
+        rx = circle.el.getAttribute('rx');
+        ry = circle.el.getAttribute('ry');
         expect(rx).toBe('20');
         return expect(ry).toBe('35');
       });
