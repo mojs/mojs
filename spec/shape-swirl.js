@@ -298,14 +298,14 @@
         swirl = new ShapeSwirl({
           fill: 'cyan'
         });
-        return expect(swirl._defaults.x[0]).toBe(100);
+        return expect(swirl._defaults.x).toBe(0);
       });
       it('should modify x default', function() {
         var swirl;
         swirl = new ShapeSwirl({
           fill: 'cyan'
         });
-        return expect(swirl._defaults.y[0]).toBe(100);
+        return expect(swirl._defaults.y).toBe(0);
       });
       it('should add direction default', function() {
         var swirl;

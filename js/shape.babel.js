@@ -59,7 +59,7 @@ class Shape extends Tunable {
       // ∆ :: Possible values: [ number ]
       angle:            0,
       // ∆ :: Possible values: [ number ]
-      scale:            { 0 : 1 },
+      scale:            1,
       // ∆ :: Possible values: [ number ] Fallbacks to `scale`.
       scaleX:           null,
       // ∆ :: Possible values: [ number ] Fallbacks to `scale`.
@@ -422,9 +422,10 @@ class Shape extends Tunable {
   */
   _getMaxStroke () {
     var p = this._props;
-    var dStroke  = this._deltas[ 'stroke' ];
+    var dStroke  = this._deltas[ 'strokeWidth' ];
+    this._o.isIt && console.log( dStroke );
     return (dStroke != null)
-      ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end))
+      ? Math.max(dStroke.start, dStroke.end)
       : p.strokeWidth;
   }
   /*

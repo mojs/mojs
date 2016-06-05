@@ -32,9 +32,9 @@ class ShapeSwirl extends Shape {
     /* ∆ :: [number] :: Radius of the shape. */
     this._defaults.radius         = 5;
     // ∆ :: Units :: Possible values: [ number, string ]
-    this._defaults.x              = { 0: 100 };
+    this._defaults.x              = 0;
     // ∆ :: Units :: Possible values: [ number, string ]
-    this._defaults.y              = { 0: 100 };
+    this._defaults.y              = 0;
     // ∆ :: Possible values: [ number ]
     this._defaults.scale          = { 1 : 0 };
     /* [number: -1, 1] :: Directon of Swirl. */

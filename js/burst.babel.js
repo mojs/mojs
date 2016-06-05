@@ -21,6 +21,8 @@ class Burst extends Tunable {
       radiusX:  null,
       /* ∆ :: [number > 0] :: Y radius of the Burst. */
       radiusY:  null,
+      // ∆ :: Possible values: [ number ]
+      scale:    1,
       /* [string] :: Easing for the main module (not children). */
       easing:  'linear.none',
       /* [boolean] :: If Burst itself should follow sinusoidal path. */
@@ -200,6 +202,9 @@ class Burst extends Tunable {
     // cuz the master swirl should not get them
     this._saveTimelineOptions( this._o );
 
+    // cover!
+    // this._o.scale = ( this._o != null ) ? this._o : 1;
+
     this.masterSwirl    = new ShapeSwirl( this._o );
     this._masterSwirls  = [ this.masterSwirl ];
     this.el             = this.masterSwirl.el;
@@ -216,6 +221,9 @@ class Burst extends Tunable {
 
     for ( var i = 0; i < p.count; i++ ) {
       var option = this._getChildOption( this._o, i );
+
+      // !COVER!
+      option.scale = option.scale != null ? option.scale : { 1: 0 };
       pack.push( new ShapeSwirl( this._addOptionalProps( option, i ) ));
     }
     this._swirls = { 0: pack };

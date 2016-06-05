@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.258.0', isDebug: true, helpers: h,
+  revision:   '0.258.1', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -37,7 +37,9 @@ window.mojs = mojs;
 
 // TODO:
 /*
-  fix size calculation with strokeWidth: { 0: 10 }
+  polygon _draw hatch
+  stroke dash array for custom shapes
+  immutable delta parsing
   swirl generate issue
 
   swirl then issue
