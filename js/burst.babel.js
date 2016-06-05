@@ -203,7 +203,8 @@ class Burst extends Tunable {
     this._saveTimelineOptions( this._o );
 
     // cover!
-    // this._o.scale = ( this._o != null ) ? this._o : 1;
+    this._o.scale = ( this._o.scale != null ) ? this._o.scale : 1;
+    // console.log(this._o.scale)
 
     this.masterSwirl    = new ShapeSwirl( this._o );
     this._masterSwirls  = [ this.masterSwirl ];

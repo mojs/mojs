@@ -273,15 +273,16 @@ class Module {
   _parseDeltaValues (name, delta) {
     // return h.parseDelta( name, delta, this._index );
 
+    var d = {};
     for (var key in delta) {
-      var value = delta[key];//delta = {};
+      var value = delta[key];
 
-      delete delta[key];
+      // delete delta[key];
       // add parsed properties
       var newEnd = this._parsePreArrayProperty(name, value);
-      delta[this._parsePreArrayProperty(name, key)] = newEnd;
+      d[this._parsePreArrayProperty(name, key)] = newEnd;
     }
-    return delta;
+    return d;
   }
   /*
     Method to parse delta and nondelta properties.

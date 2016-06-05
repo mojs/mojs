@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.258.4', isDebug: true, helpers: h,
+  revision:   '0.258.5', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -37,7 +37,6 @@ window.mojs = mojs;
 
 // TODO:
 /*
-  immutable delta parsing
   swirl generate issue
 
   swirl then issue
@@ -49,6 +48,37 @@ window.mojs = mojs;
   parse rand(stagger(20, 10), 20) values
   percentage for radius
 */
+
+// const burst = new mojs.Burst({
+//   radius: { 0: 200 },
+//   left: '50%', top: '50%',
+//   // scale: 1,
+//   childOptions: {
+//     duration: 2000
+//   }
+// });
+
+// // const rect = new mojs.Shape({
+// //   shape: 'polygon',
+// //   left: '50%', top: '50%',
+// //   // angle: 'rand(90, 180)',
+// //   angle: { 0: 'rand(90, 180)' },
+// //   duration: 2000
+// // });
+
+// // console.log(rect._o.angle);
+
+// document.addEventListener('click', function () {
+
+//   burst.replay();
+//   // console.log(burst._deltas.radius)
+//   // rect
+//   //   .generate()
+//   //   .replay();
+
+//   // console.log(rect._deltas.angle);
+//   // console.log(rect._o.angle);
+// });
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {
