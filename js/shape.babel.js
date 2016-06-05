@@ -222,6 +222,7 @@ class Shape extends Tunable {
   */
   _draw () {
     if (!this.shapeModule) { return; }
+
     var p  = this._props,
         bP = this.shapeModule._props;
     // set props on bit
@@ -235,7 +236,7 @@ class Shape extends Tunable {
     bP['stroke-dasharray']  = p.strokeDasharray;
     bP['stroke-dashoffset'] = p.strokeDashoffset;
     bP['stroke-linecap']    = p.strokeLinecap;
-    bP.fill                 = p.fill;
+    bP['fill']              = p.fill;
     bP['fill-opacity']      = p.fillOpacity;
     bP.radius               = p.radius;
     bP.radiusX              = p.radiusX;

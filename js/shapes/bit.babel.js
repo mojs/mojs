@@ -97,6 +97,7 @@ class Bit extends Module {
         case 'stroke-dashoffset':
           this.castStrokeDash(name);
       }
+      // console.log(name, this._props[name]);
       this._setAttrIfChanged( name, this._props[name] );
     }
     this._state.radius = this._props.radius;

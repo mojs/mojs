@@ -27,32 +27,32 @@ class Polygon extends Bit
     isRadiusY = radiusY is @_prevRadiusY
     isPoints  = p.points is @_prevPoints
     # skip if nothing changed
-    return if ( isRadiusX and isRadiusY and isPoints )
+    if ( !( isRadiusX and isRadiusY and isPoints) )
 
-    step = 360/(@_props.points)
-    # reuse radial points buffer
-    if !@_radialPoints? then @_radialPoints = []
-    else @_radialPoints.length = 0
+      step = 360/(@_props.points)
+      # reuse radial points buffer
+      if !@_radialPoints? then @_radialPoints = []
+      else @_radialPoints.length = 0
 
-    for i in [0...@_props.points]
-      @_radialPoints.push h.getRadialPoint
-        radius:   @_props.radius
-        radiusX:  @_props.radiusX
-        radiusY:  @_props.radiusY
-        angle:    (i*step)
-        center:   x: p.width/2, y: p.height/2
+      for i in [0...@_props.points]
+        @_radialPoints.push h.getRadialPoint
+          radius:   @_props.radius
+          radiusX:  @_props.radiusX
+          radiusY:  @_props.radiusY
+          angle:    (i*step)
+          center:   x: p.width/2, y: p.height/2
 
-    d = ''
-    for point, i in @_radialPoints
-      char = if i is 0 then 'M' else 'L'
-      d += "#{char}#{point.x.toFixed(4)},#{point.y.toFixed(4)} "
+      d = ''
+      for point, i in @_radialPoints
+        char = if i is 0 then 'M' else 'L'
+        d += "#{char}#{point.x.toFixed(4)},#{point.y.toFixed(4)} "
 
-    # save the properties
-    @_prevPoints  = p.points
-    @_prevRadiusX = radiusX
-    @_prevRadiusY = radiusY
+      # save the properties
+      @_prevPoints  = p.points
+      @_prevRadiusX = radiusX
+      @_prevRadiusY = radiusY
 
-    @el.setAttribute 'd', (d += 'z')
+      @el.setAttribute 'd', (d += 'z')
     super
     
   ###

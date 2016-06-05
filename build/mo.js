@@ -2155,6 +2155,7 @@
 	    if (!this.shapeModule) {
 	      return;
 	    }
+
 	    var p = this._props,
 	        bP = this.shapeModule._props;
 	    // set props on bit
@@ -2168,7 +2169,7 @@
 	    bP['stroke-dasharray'] = p.strokeDasharray;
 	    bP['stroke-dashoffset'] = p.strokeDashoffset;
 	    bP['stroke-linecap'] = p.strokeLinecap;
-	    bP.fill = p.fill;
+	    bP['fill'] = p.fill;
 	    bP['fill-opacity'] = p.fillOpacity;
 	    bP.radius = p.radius;
 	    bP.radiusX = p.radiusX;
@@ -6815,6 +6816,7 @@
 	        case 'stroke-dashoffset':
 	          this.castStrokeDash(name);
 	      }
+	      // console.log(name, this._props[name]);
 	      this._setAttrIfChanged(name, this._props[name]);
 	    }
 	    this._state.radius = this._props.radius;
@@ -8132,38 +8134,37 @@
 	    isRadiusX = radiusX === this._prevRadiusX;
 	    isRadiusY = radiusY === this._prevRadiusY;
 	    isPoints = p.points === this._prevPoints;
-	    if (isRadiusX && isRadiusY && isPoints) {
-	      return;
+	    if (!(isRadiusX && isRadiusY && isPoints)) {
+	      step = 360 / this._props.points;
+	      if (this._radialPoints == null) {
+	        this._radialPoints = [];
+	      } else {
+	        this._radialPoints.length = 0;
+	      }
+	      for (i = j = 0, ref = this._props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+	        this._radialPoints.push(h.getRadialPoint({
+	          radius: this._props.radius,
+	          radiusX: this._props.radiusX,
+	          radiusY: this._props.radiusY,
+	          angle: i * step,
+	          center: {
+	            x: p.width / 2,
+	            y: p.height / 2
+	          }
+	        }));
+	      }
+	      d = '';
+	      ref1 = this._radialPoints;
+	      for (i = k = 0, len = ref1.length; k < len; i = ++k) {
+	        point = ref1[i];
+	        char = i === 0 ? 'M' : 'L';
+	        d += "" + char + (point.x.toFixed(4)) + "," + (point.y.toFixed(4)) + " ";
+	      }
+	      this._prevPoints = p.points;
+	      this._prevRadiusX = radiusX;
+	      this._prevRadiusY = radiusY;
+	      this.el.setAttribute('d', (d += 'z'));
 	    }
-	    step = 360 / this._props.points;
-	    if (this._radialPoints == null) {
-	      this._radialPoints = [];
-	    } else {
-	      this._radialPoints.length = 0;
-	    }
-	    for (i = j = 0, ref = this._props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-	      this._radialPoints.push(h.getRadialPoint({
-	        radius: this._props.radius,
-	        radiusX: this._props.radiusX,
-	        radiusY: this._props.radiusY,
-	        angle: i * step,
-	        center: {
-	          x: p.width / 2,
-	          y: p.height / 2
-	        }
-	      }));
-	    }
-	    d = '';
-	    ref1 = this._radialPoints;
-	    for (i = k = 0, len = ref1.length; k < len; i = ++k) {
-	      point = ref1[i];
-	      char = i === 0 ? 'M' : 'L';
-	      d += "" + char + (point.x.toFixed(4)) + "," + (point.y.toFixed(4)) + " ";
-	    }
-	    this._prevPoints = p.points;
-	    this._prevRadiusX = radiusX;
-	    this._prevRadiusY = radiusY;
-	    this.el.setAttribute('d', (d += 'z'));
 	    return Polygon.__super__._draw.apply(this, arguments);
 	  };
 
