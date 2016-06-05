@@ -149,13 +149,22 @@
         custom._render();
         return expect(custom._isRendered).toBe(true);
       });
-      return it('should render just once', function() {
+      it('should render just once', function() {
         custom = new Custom({
           parent: parent
         });
         custom._props.parent.innerHTML = '';
         custom._render();
         return expect(custom._props.parent.innerHTML).toBe('');
+      });
+      return it('should set _length', function() {
+        custom = new Custom({
+          parent: parent
+        });
+        custom._isRendered = false;
+        custom._length = null;
+        custom._render();
+        return expect(custom._length).toBe(custom.getLength());
       });
     });
     describe('_getScale method ->', function() {

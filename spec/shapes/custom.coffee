@@ -99,6 +99,13 @@ describe 'Custom ->', ->
       custom._render()
       expect(custom._props.parent.innerHTML).toBe ''
 
+    it 'should set _length', ->
+      custom = new Custom parent: parent
+      custom._isRendered = false
+      custom._length = null
+      custom._render()
+      expect(custom._length).toBe custom.getLength()
+
   describe '_getScale method ->', ->
     it 'should calculate x scale', ->
       radiusX = 25

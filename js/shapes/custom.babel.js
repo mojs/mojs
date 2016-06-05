@@ -13,6 +13,7 @@ class Custom extends Bit {
     this._defaults.parent = null;
 
     // remove `stroke-width` from `_drawMap`
+    // because we need to recal strokeWidth size regarding scale
     for (var i = 0; i < this._drawMap.length; i++) {
       if ( this._drawMap[i] === 'stroke-width' ) {
         this._drawMap.splice( i, 1 );
@@ -65,7 +66,7 @@ class Custom extends Bit {
     if ( this._isRendered ) { return; }
     this._isRendered = true;
 
-    this.getLength();
+    this._length = this.getLength();
 
     var p = this._props;
     p.parent.innerHTML = `<svg id="js-mojs-shape-canvas" xmlns=\"http://www.w3.org/2000/svg\" xlink=\"http://www.w3.org/1999/xlink\"><g id=\"js-mojs-shape-el\">${this.getShape()}</g></svg>`;

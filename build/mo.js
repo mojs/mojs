@@ -7808,6 +7808,7 @@
 	    this._defaults.parent = null;
 
 	    // remove `stroke-width` from `_drawMap`
+	    // because we need to recal strokeWidth size regarding scale
 	    for (var i = 0; i < this._drawMap.length; i++) {
 	      if (this._drawMap[i] === 'stroke-width') {
 	        this._drawMap.splice(i, 1);
@@ -7874,7 +7875,7 @@
 	    }
 	    this._isRendered = true;
 
-	    this.getLength();
+	    this._length = this.getLength();
 
 	    var p = this._props;
 	    p.parent.innerHTML = '<svg id="js-mojs-shape-canvas" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink"><g id="js-mojs-shape-el">' + this.getShape() + '</g></svg>';
@@ -8546,7 +8547,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.258.2', isDebug: true, helpers: _h2.default,
+	  revision: '0.258.4', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8566,7 +8567,6 @@
 
 	// TODO:
 	/*
-	  stroke dash array for custom shapes
 	  immutable delta parsing
 	  swirl generate issue
 
