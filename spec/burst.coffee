@@ -102,7 +102,7 @@ describe 'Burst ->', ->
 
     it 'should set time on tween of masterSwirl', ->
       burst = new Burst
-        childOptions:
+        swirls:
           duration: 'stagger(500, 1000)'
           repeat: 2
       burst.masterSwirl.tween._props.duration = null
@@ -113,7 +113,7 @@ describe 'Burst ->', ->
 
     it 'should set isSwirl to false by default', ->
       burst = new Burst
-        childOptions:
+        swirls:
           duration: 'stagger(500, 1000)'
           repeat: 2
 
@@ -122,7 +122,7 @@ describe 'Burst ->', ->
     it 'should work with isSwirl option', ->
       burst = new Burst
         isSwirl: true
-        childOptions:
+        swirls:
           duration: 'stagger(500, 1000)'
           repeat: 2
 
@@ -151,7 +151,7 @@ describe 'Burst ->', ->
       count = 5; fills = [ 'cyan', 'yellow', 'blue' ]
       burst = new Burst
         count: count
-        childOptions:
+        swirls:
           fill: fills
       pack = burst._swirls[0]
       expect( pack[0]._o.fill ).toBe fills[0]
@@ -164,7 +164,7 @@ describe 'Burst ->', ->
       count = 5
       burst = new Burst
         count: count
-        # childOptions: {}
+        # swirls: {}
 
       pack = burst._swirls[0]
       expect( pack[0]._o.parent ).toBe burst.masterSwirl.el
@@ -174,13 +174,13 @@ describe 'Burst ->', ->
       expect( pack[4]._o.parent ).toBe burst.masterSwirl.el
 
   describe '_getChildOption method ->', ->
-    it 'should get options from childOptions', ->
+    it 'should get options from swirls', ->
       b = new Burst count: 2
-      o = { childOptions: { fill: [ 'yellow', 'cyan', 'blue' ] } }
+      o = { swirls: { fill: [ 'yellow', 'cyan', 'blue' ] } }
       result = b._getChildOption( o, 1 )
       expect(result.fill).toBe 'cyan'
 
-      it 'should not throw if there is no childOptions', ->
+      it 'should not throw if there is no swirls', ->
         b = new Burst count: 2
         o = { }
         result = b._getChildOption( o, 1 )
@@ -189,32 +189,32 @@ describe 'Burst ->', ->
   describe '_getPropByMod method ->', ->
     it 'should fallback to empty object', ->
       burst = new Burst
-        childOptions: radius: [ { 20: 50}, 20, '500' ]
+        swirls: radius: [ { 20: 50}, 20, '500' ]
       opt0 = burst._getPropByMod 'radius', 0
       expect(opt0).toBe undefined
     it 'should return the prop from passed object based on index ->', ->
       burst = new Burst
-        childOptions: radius: [ { 20: 50}, 20, '500' ]
-      opt0 = burst._getPropByMod 'radius', 0, burst._o.childOptions
-      opt1 = burst._getPropByMod 'radius', 1, burst._o.childOptions
-      opt2 = burst._getPropByMod 'radius', 2, burst._o.childOptions
-      opt8 = burst._getPropByMod 'radius', 8, burst._o.childOptions
+        swirls: radius: [ { 20: 50}, 20, '500' ]
+      opt0 = burst._getPropByMod 'radius', 0, burst._o.swirls
+      opt1 = burst._getPropByMod 'radius', 1, burst._o.swirls
+      opt2 = burst._getPropByMod 'radius', 2, burst._o.swirls
+      opt8 = burst._getPropByMod 'radius', 8, burst._o.swirls
       expect(opt0[20]).toBe 50
       expect(opt1)    .toBe 20
       expect(opt2)    .toBe '500'
       expect(opt8)    .toBe '500'
     it 'should the same prop if not an array ->', ->
-      burst = new Burst childOptions: radius: 20
-      opt0 = burst._getPropByMod 'radius', 0, burst._o.childOptions
-      opt1 = burst._getPropByMod 'radius', 1, burst._o.childOptions
-      opt8 = burst._getPropByMod 'radius', 8, burst._o.childOptions
+      burst = new Burst swirls: radius: 20
+      opt0 = burst._getPropByMod 'radius', 0, burst._o.swirls
+      opt1 = burst._getPropByMod 'radius', 1, burst._o.swirls
+      opt8 = burst._getPropByMod 'radius', 8, burst._o.swirls
       expect(opt0).toBe 20
       expect(opt1).toBe 20
       expect(opt8).toBe 20
     it 'should work with another options object ->', ->
       burst = new Burst
         fill: 'cyan'
-        childOptions: radius: 20
+        swirls: radius: 20
 
       from = burst._o
       opt0 = burst._getPropByMod 'fill', 0, from
@@ -489,7 +489,7 @@ describe 'Burst ->', ->
       spyOn pack[0], 'then'
       spyOn pack[1], 'then'
 
-      o = { childOptions: { radius: [ 10, 20 ] } }
+      o = { swirls: { radius: [ 10, 20 ] } }
       b._childThen(o, b._masterThen(o))
 
       option0 = b._getChildOption( o, 0 )
@@ -503,7 +503,7 @@ describe 'Burst ->', ->
     it 'should save new swirls to _swirls', ->
       b = new Burst count: 2
         
-      o = { childOptions: { radius: [ 10, 20 ] } }
+      o = { swirls: { radius: [ 10, 20 ] } }
 
       b._childThen(o, b._masterThen(o))
 
@@ -514,7 +514,7 @@ describe 'Burst ->', ->
     it 'should return the new pack', ->
       b = new Burst count: 2
         
-      o = { childOptions: { radius: [ 10, 20 ] } }
+      o = { swirls: { radius: [ 10, 20 ] } }
 
       result = b._childThen(o, b._masterThen(o))
 
@@ -556,7 +556,7 @@ describe 'Burst ->', ->
     it 'should set duration on new master swirl', ->
       b = new Burst count: 2
       spyOn(b, '_setSwirlDuration').and.callThrough()
-      b.then({ childOptions: { duration: 50 } })
+      b.then({ swirls: { duration: 50 } })
       time = b._calcPackTime( b._swirls[1] )
 
       expect(b._setSwirlDuration.calls.count()).toBe 1
@@ -569,7 +569,7 @@ describe 'Burst ->', ->
       b = new Burst count: 2
   
       spyOn b.timeline, '_recalcTotalDuration'      
-      b.then({ childOptions: { radius: [ 10, 20 ] } })
+      b.then({ swirls: { radius: [ 10, 20 ] } })
 
       expect(b.timeline._recalcTotalDuration).toHaveBeenCalled()
 
@@ -665,8 +665,8 @@ describe 'Burst ->', ->
       spyOn pack0[3], 'tune'
       spyOn pack0[4], 'tune'
 
-      childOptions = { x: 200, fill: ['cyan', 'yellow'] }
-      options = { childOptions: childOptions }
+      swirls = { x: 200, fill: ['cyan', 'yellow'] }
+      options = { swirls: swirls }
       b.tune( options )
 
       option0 = b._getChildOption options, 0
@@ -799,7 +799,7 @@ describe 'Burst ->', ->
       index = 1
       angle = 20
       degreeShifts = [ 0, 10, 20 ]
-      b = new Burst childOptions: { degreeShift: degreeShifts }
+      b = new Burst swirls: { degreeShift: degreeShifts }
       # put degreeShift value back since we override it to `0`
       # in `_addBurstProperties` method
       obj = { angle: angle, degreeShift: degreeShifts[index]  }
@@ -818,7 +818,7 @@ describe 'Burst ->', ->
     it 'should calculate bit x/y and angle regarding stagger', ->
       index = 2
       angle = 20
-      b = new Burst childOptions: { degreeShift: 'stagger(200)' }
+      b = new Burst swirls: { degreeShift: 'stagger(200)' }
       # put degreeShift value back since we override it to `0`
       # in `_addBurstProperties` method
       obj = { angle: angle, degreeShift: 'stagger(200)'  }
@@ -836,7 +836,7 @@ describe 'Burst ->', ->
 
     it 'should fallback to 0 for angle', ->
       index = 2
-      b = new Burst childOptions: { degreeShift: 'stagger(200)' }
+      b = new Burst swirls: { degreeShift: 'stagger(200)' }
       # put degreeShift value back since we override it to `0`
       # in `_addBurstProperties` method
       obj = { degreeShift: 'stagger(200)'  }

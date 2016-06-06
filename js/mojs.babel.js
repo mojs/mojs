@@ -47,37 +47,23 @@ window.mojs = mojs;
   percentage for radius
 */
 
-// const swirl = new mojs.Shape({
-//   shape: 'polygon',
-//   left: '50%', top: '50%',
-//   // y: { 0: -200 },
-//   // angle: 'rand(90, 180)',
-//   angle: { 0: 'rand(90, 180)' },
-//   duration: 2000,
-//   scale: 5
-// }).then({
-//   angle: 0
-// });
+const burst = new mojs.Burst({
+  left: '50%', top: '50%',
+  radius: { 0: 150 },
+  swirls: {
+    duration: 2000,
+    isForce3d: 1
+  }
+});
 
-// console.log( swirl._history[0].angle );
-// console.log( swirl._deltas.angle );
-// // console.log( swirl._history[1].angle );
 
-// // console.log(rect._o.angle);
+document.addEventListener('click', function () {
 
-// document.addEventListener('click', function () {
+  burst
+    // .generate()
+    .replay();
 
-//   swirl
-//     .generate()
-//     .replay();
-//   // console.log(burst._deltas.radius)
-//   // rect
-//   //   .generate()
-//   //   .replay();
-
-//   // console.log(rect._deltas.angle);
-//   // console.log(rect._o.angle);
-// });
+});
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {

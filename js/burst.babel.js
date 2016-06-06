@@ -275,8 +275,8 @@ class Burst extends Tunable {
   */
   _getChildOption (obj, i) {
     var options = {};
-    for ( var key in obj.childOptions ) {
-      options[key] = this._getPropByMod( key, i, obj.childOptions);
+    for ( var key in obj.swirls ) {
+      options[key] = this._getPropByMod( key, i, obj.swirls);
     }
     return options;
   }

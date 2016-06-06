@@ -1659,8 +1659,8 @@
 
 	  Burst.prototype._getChildOption = function _getChildOption(obj, i) {
 	    var options = {};
-	    for (var key in obj.childOptions) {
-	      options[key] = this._getPropByMod(key, i, obj.childOptions);
+	    for (var key in obj.swirls) {
+	      options[key] = this._getPropByMod(key, i, obj.swirls);
 	    }
 	    return options;
 	  };
@@ -8588,37 +8588,21 @@
 	  percentage for radius
 	*/
 
-	// const swirl = new mojs.Shape({
-	//   shape: 'polygon',
-	//   left: '50%', top: '50%',
-	//   // y: { 0: -200 },
-	//   // angle: 'rand(90, 180)',
-	//   angle: { 0: 'rand(90, 180)' },
-	//   duration: 2000,
-	//   scale: 5
-	// }).then({
-	//   angle: 0
-	// });
+	var burst = new mojs.Burst({
+	  left: '50%', top: '50%',
+	  radius: { 0: 150 },
+	  swirls: {
+	    duration: 2000,
+	    isForce3d: 1
+	  }
+	});
 
-	// console.log( swirl._history[0].angle );
-	// console.log( swirl._deltas.angle );
-	// // console.log( swirl._history[1].angle );
+	document.addEventListener('click', function () {
 
-	// // console.log(rect._o.angle);
-
-	// document.addEventListener('click', function () {
-
-	//   swirl
-	//     .generate()
-	//     .replay();
-	//   // console.log(burst._deltas.radius)
-	//   // rect
-	//   //   .generate()
-	//   //   .replay();
-
-	//   // console.log(rect._deltas.angle);
-	//   // console.log(rect._o.angle);
-	// });
+	  burst
+	  // .generate()
+	  .replay();
+	});
 
 	// istanbul ignore next
 	if (true) {
