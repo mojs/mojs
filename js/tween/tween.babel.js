@@ -35,7 +35,7 @@ class Tween extends Module {
         if `null` - fallbacks to `easing` property.
         forward direction in `yoyo` period is treated as backward for the easing.
       */
-      backwardEasing:         'Sin.In',
+      backwardEasing:         null,
       /* custom tween's name */
       name:                   null,
       /* custom tween's base name */
@@ -358,7 +358,12 @@ class Tween extends Module {
 
     var p = this._props;
     p.easing         = easing.parseEasing(p.easing);
-    p.backwardEasing = easing.parseEasing(p.backwardEasing);
+
+    // parse only present backward easing to prevent parsing as `linear.none`
+    // because we need to fallback to `easing` in `_setProgress` method
+    if ( p.backwardEasing != null ) {
+      p.backwardEasing = easing.parseEasing(p.backwardEasing);
+    }
   }
   /*
     Method for setting start and end time to props.
@@ -805,7 +810,12 @@ class Tween extends Module {
       this.easedProgress = p.easing(proc);
     // get the current easing for `backward` direction regarding `yoyo`
     } else if ( (!isForward && !isYoyo) || ( isForward && isYoyo ) ) {
-      this.easedProgress = p.backwardEasing(proc);
+      // this._o.isIt && console.log(p.backwardEasing)
+      var easing = ( p.backwardEasing != null )
+        ? p.backwardEasing
+        : p.easing;
+      
+      this.easedProgress = easing(proc);
     }
 
     if ( p.prevEasedProgress !== this.easedProgress || isYoyoChanged ) {

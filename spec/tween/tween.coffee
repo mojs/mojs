@@ -48,7 +48,7 @@ describe 'Tween ->', ->
       expect(t._defaults.yoyo).toBe      false
       expect(t._defaults.speed).toBe     1
       expect(t._defaults.easing).toBe    'Sin.Out'
-      expect(t._defaults.backwardEasing).toBe 'Sin.In'
+      expect(t._defaults.backwardEasing).toBe null
       expect(t._defaults.name).toBe      null
       expect(t._defaults.nameBase).toBe  'Tween'
       expect(t._defaults.onStart).toBeDefined()
@@ -5384,7 +5384,7 @@ describe 'Tween ->', ->
       eased = mojs.easing.bounce.out(.75)
       expect(t.easedProgress.toFixed(2)).toBe eased.toFixed(2)
 
-    it 'should set the eased progress if yoyo', ->
+    it 'should set the backward eased progress if yoyo', ->
       t = new Tween( easing: 'Bounce.Out', backwardEasing: 'cubic.in' )
       t._setStartTime()
       t._prevTime = t._props.startTime + t._props.repeatTime
@@ -5393,7 +5393,7 @@ describe 'Tween ->', ->
       eased = mojs.easing.cubic.in(.75)
       expect(t.easedProgress.toFixed(2)).toBe eased.toFixed(2)
 
-    it 'should set the eased progress if backward', ->
+    it 'should set the backward eased progress if backward', ->
       t = new Tween(easing: 'Bounce.Out', backwardEasing: 'cubic.in')
       t._setStartTime()
       t._prevTime = t._props.startTime + t._props.repeatTime
@@ -5403,11 +5403,22 @@ describe 'Tween ->', ->
       expect(t.easedProgress.toFixed(2)).toBe eased.toFixed(2)
 
     it 'should set the current progress if backward and yoyo', ->
-      t = new Tween( easing: 'Bounce.Out', isIt: 1 )
+      t = new Tween( easing: 'Bounce.Out' )
 
       t._setStartTime()
       t._prevTime = t._props.startTime
       t._setProgress .75, t._prevTime - 1, true
+
+      expect(t.progress).toBe .75
+      eased = mojs.easing.bounce.out(.75)
+      expect(t.easedProgress.toFixed(2)).toBe eased.toFixed(2)
+
+    it 'should set fallback to easing if backwardEasing wasnt defined', ->
+      t = new Tween( easing: 'Bounce.Out', isIt: 1 )
+
+      t._setStartTime()
+      t._prevTime = t._props.startTime
+      t._setProgress .75, t._prevTime - 1
 
       expect(t.progress).toBe .75
       eased = mojs.easing.bounce.out(.75)
@@ -6990,6 +7001,15 @@ describe 'Tween ->', ->
       tw._props.easing = 'ease.in'
       tw._extendDefaults()
       expect(typeof tw._props.easing).toBe 'function'
+
+    it 'should parse backwardEasing', ->
+      tw = new Tween backwardEasing: 'ease.in'
+      expect(typeof tw._props.backwardEasing).toBe 'function'
+      expect(tw._props.backwardEasing).toBe easing.ease.in
+
+    it 'should not parse backwardEasing if `null`', ->
+      tw = new Tween
+      expect(tw._props.backwardEasing).toBe null
 
   describe '_callbackOverrides object ->', ->
     it 'should receive _callbackOverrides object', ->

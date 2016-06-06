@@ -113,10 +113,10 @@ module.exports = function(config) {
       'build/easing/easing.js',
       'spec/easing/easing.js',
 
-      'build/tween/timeline.js',
-      'spec/tween/timeline.js',
-      'build/tween/tween.js',
-      'spec/tween/tween.js',
+      // 'build/tween/timeline.js',
+      // 'spec/tween/timeline.js',
+      // 'build/tween/tween.js',
+      // 'spec/tween/tween.js',
       'build/tween/tweener.js',
       'spec/tween/tweener.js',
 

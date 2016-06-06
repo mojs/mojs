@@ -20,6 +20,7 @@ class Thenable extends Tweenable {
         prevModule = this._modules[ this._modules.length - 1 ],
         merged     = this._mergeThenOptions( prevRecord, o );
 
+    // console.log(merged.angle);
     this._resetMergedFlags( merged );
     // reset isShowEnd flag on prev module
     // prevModule._setProp && prevModule._setProp('isShowEnd', false);

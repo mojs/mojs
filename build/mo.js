@@ -130,7 +130,7 @@
 	        if `null` - fallbacks to `easing` property.
 	        forward direction in `yoyo` period is treated as backward for the easing.
 	      */
-	      backwardEasing: 'Sin.In',
+	      backwardEasing: null,
 	      /* custom tween's name */
 	      name: null,
 	      /* custom tween's base name */
@@ -516,7 +516,12 @@
 
 	    var p = this._props;
 	    p.easing = _easing2.default.parseEasing(p.easing);
-	    p.backwardEasing = _easing2.default.parseEasing(p.backwardEasing);
+
+	    // parse only present backward easing to prevent parsing as `linear.none`
+	    // because we need to fallback to `easing` in `_setProgress` method
+	    if (p.backwardEasing != null) {
+	      p.backwardEasing = _easing2.default.parseEasing(p.backwardEasing);
+	    }
 	  };
 	  /*
 	    Method for setting start and end time to props.
@@ -1001,7 +1006,10 @@
 	      this.easedProgress = p.easing(proc);
 	      // get the current easing for `backward` direction regarding `yoyo`
 	    } else if (!isForward && !isYoyo || isForward && isYoyo) {
-	        this.easedProgress = p.backwardEasing(proc);
+	        // this._o.isIt && console.log(p.backwardEasing)
+	        var easing = p.backwardEasing != null ? p.backwardEasing : p.easing;
+
+	        this.easedProgress = easing(proc);
 	      }
 
 	    if (p.prevEasedProgress !== this.easedProgress || isYoyoChanged) {
@@ -3961,6 +3969,7 @@
 	        prevModule = this._modules[this._modules.length - 1],
 	        merged = this._mergeThenOptions(prevRecord, o);
 
+	    // console.log(merged.angle);
 	    this._resetMergedFlags(merged);
 	    // reset isShowEnd flag on prev module
 	    // prevModule._setProp && prevModule._setProp('isShowEnd', false);
@@ -8549,7 +8558,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.258.5', isDebug: true, helpers: _h2.default,
+	  revision: '0.257.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8569,8 +8578,6 @@
 
 	// TODO:
 	/*
-	  swirl generate issue
-
 	  swirl then issue
 	  'rand' angle flick with `then`
 	  not able to `play()` in `onComplete` callback
@@ -8581,28 +8588,29 @@
 	  percentage for radius
 	*/
 
-	// const burst = new mojs.Burst({
-	//   radius: { 0: 200 },
+	// const swirl = new mojs.Shape({
+	//   shape: 'polygon',
 	//   left: '50%', top: '50%',
-	//   // scale: 1,
-	//   childOptions: {
-	//     duration: 2000
-	//   }
+	//   // y: { 0: -200 },
+	//   // angle: 'rand(90, 180)',
+	//   angle: { 0: 'rand(90, 180)' },
+	//   duration: 2000,
+	//   scale: 5
+	// }).then({
+	//   angle: 0
 	// });
 
-	// // const rect = new mojs.Shape({
-	// //   shape: 'polygon',
-	// //   left: '50%', top: '50%',
-	// //   // angle: 'rand(90, 180)',
-	// //   angle: { 0: 'rand(90, 180)' },
-	// //   duration: 2000
-	// // });
+	// console.log( swirl._history[0].angle );
+	// console.log( swirl._deltas.angle );
+	// // console.log( swirl._history[1].angle );
 
 	// // console.log(rect._o.angle);
 
 	// document.addEventListener('click', function () {
 
-	//   burst.replay();
+	//   swirl
+	//     .generate()
+	//     .replay();
 	//   // console.log(burst._deltas.radius)
 	//   // rect
 	//   //   .generate()

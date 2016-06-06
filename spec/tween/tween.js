@@ -70,7 +70,7 @@
         expect(t._defaults.yoyo).toBe(false);
         expect(t._defaults.speed).toBe(1);
         expect(t._defaults.easing).toBe('Sin.Out');
-        expect(t._defaults.backwardEasing).toBe('Sin.In');
+        expect(t._defaults.backwardEasing).toBe(null);
         expect(t._defaults.name).toBe(null);
         expect(t._defaults.nameBase).toBe('Tween');
         expect(t._defaults.onStart).toBeDefined();
@@ -5005,7 +5005,7 @@
         eased = mojs.easing.bounce.out(.75);
         return expect(t.easedProgress.toFixed(2)).toBe(eased.toFixed(2));
       });
-      it('should set the eased progress if yoyo', function() {
+      it('should set the backward eased progress if yoyo', function() {
         var eased, t;
         t = new Tween({
           easing: 'Bounce.Out',
@@ -5018,7 +5018,7 @@
         eased = mojs.easing.cubic["in"](.75);
         return expect(t.easedProgress.toFixed(2)).toBe(eased.toFixed(2));
       });
-      it('should set the eased progress if backward', function() {
+      it('should set the backward eased progress if backward', function() {
         var eased, t;
         t = new Tween({
           easing: 'Bounce.Out',
@@ -5034,12 +5034,24 @@
       it('should set the current progress if backward and yoyo', function() {
         var eased, t;
         t = new Tween({
+          easing: 'Bounce.Out'
+        });
+        t._setStartTime();
+        t._prevTime = t._props.startTime;
+        t._setProgress(.75, t._prevTime - 1, true);
+        expect(t.progress).toBe(.75);
+        eased = mojs.easing.bounce.out(.75);
+        return expect(t.easedProgress.toFixed(2)).toBe(eased.toFixed(2));
+      });
+      it('should set fallback to easing if backwardEasing wasnt defined', function() {
+        var eased, t;
+        t = new Tween({
           easing: 'Bounce.Out',
           isIt: 1
         });
         t._setStartTime();
         t._prevTime = t._props.startTime;
-        t._setProgress(.75, t._prevTime - 1, true);
+        t._setProgress(.75, t._prevTime - 1);
         expect(t.progress).toBe(.75);
         eased = mojs.easing.bounce.out(.75);
         return expect(t.easedProgress.toFixed(2)).toBe(eased.toFixed(2));
@@ -7242,12 +7254,25 @@
         tw._extendDefaults();
         return expect(Module.prototype._extendDefaults).toHaveBeenCalled();
       });
-      return it('should parse easing', function() {
+      it('should parse easing', function() {
         var tw;
         tw = new Tween;
         tw._props.easing = 'ease.in';
         tw._extendDefaults();
         return expect(typeof tw._props.easing).toBe('function');
+      });
+      it('should parse backwardEasing', function() {
+        var tw;
+        tw = new Tween({
+          backwardEasing: 'ease.in'
+        });
+        expect(typeof tw._props.backwardEasing).toBe('function');
+        return expect(tw._props.backwardEasing).toBe(easing.ease["in"]);
+      });
+      return it('should not parse backwardEasing if `null`', function() {
+        var tw;
+        tw = new Tween;
+        return expect(tw._props.backwardEasing).toBe(null);
       });
     });
     describe('_callbackOverrides object ->', function() {

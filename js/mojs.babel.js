@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.258.5', isDebug: true, helpers: h,
+  revision:   '0.257.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -37,8 +37,6 @@ window.mojs = mojs;
 
 // TODO:
 /*
-  swirl generate issue
-
   swirl then issue
   'rand' angle flick with `then`
   not able to `play()` in `onComplete` callback
@@ -49,28 +47,29 @@ window.mojs = mojs;
   percentage for radius
 */
 
-// const burst = new mojs.Burst({
-//   radius: { 0: 200 },
+// const swirl = new mojs.Shape({
+//   shape: 'polygon',
 //   left: '50%', top: '50%',
-//   // scale: 1,
-//   childOptions: {
-//     duration: 2000
-//   }
+//   // y: { 0: -200 },
+//   // angle: 'rand(90, 180)',
+//   angle: { 0: 'rand(90, 180)' },
+//   duration: 2000,
+//   scale: 5
+// }).then({
+//   angle: 0
 // });
 
-// // const rect = new mojs.Shape({
-// //   shape: 'polygon',
-// //   left: '50%', top: '50%',
-// //   // angle: 'rand(90, 180)',
-// //   angle: { 0: 'rand(90, 180)' },
-// //   duration: 2000
-// // });
+// console.log( swirl._history[0].angle );
+// console.log( swirl._deltas.angle );
+// // console.log( swirl._history[1].angle );
 
 // // console.log(rect._o.angle);
 
 // document.addEventListener('click', function () {
 
-//   burst.replay();
+//   swirl
+//     .generate()
+//     .replay();
 //   // console.log(burst._deltas.radius)
 //   // rect
 //   //   .generate()
