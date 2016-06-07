@@ -404,6 +404,52 @@ describe 'Burst ->', ->
       expect(radiusX).toBe 10
       expect(radiusY).toBe 20
 
+    it 'should return the key\'s radius of the last master module // plain', ->
+      burst = new Burst(
+          radius: 5, radiusX: 10, radiusY: 30
+        ).then(
+          radius: 25, radiusX: 20, radiusY: 40
+        )
+      radiusS  = burst._getRadiusByKey('radius',  'start')
+      radiusXS = burst._getRadiusByKey('radiusX', 'start')
+      radiusYS = burst._getRadiusByKey('radiusY', 'start')
+      radiusE  = burst._getRadiusByKey('radius',  'end')
+      radiusXE = burst._getRadiusByKey('radiusX', 'end')
+      radiusYE = burst._getRadiusByKey('radiusY', 'end')
+
+      expect(radiusS).toBe   5
+      expect(radiusXS).toBe 10
+      expect(radiusYS).toBe 30
+
+      expect(radiusE).toBe  25
+      expect(radiusXE).toBe 20
+      expect(radiusYE).toBe 40
+
+
+    # it 'should return the key\'s radius of the last master module // deltas', ->
+    #   burst = new Burst(
+    #       isIt: 1
+    #       radius: 5, radiusX: 10, radiusY: 30
+    #     ).then(
+    #       radius: { 10 : 25},
+    #       radiusX: { 30 : 20},
+    #       radiusY: { 25 : 30 }
+    #     )
+    #   radiusS  = burst._getRadiusByKey('radius',  'start')
+    #   radiusXS = burst._getRadiusByKey('radiusX', 'start')
+    #   radiusYS = burst._getRadiusByKey('radiusX', 'start')
+    #   radiusE  = burst._getRadiusByKey('radius',  'end')
+    #   radiusXE = burst._getRadiusByKey('radiusX', 'end')
+    #   radiusYE = burst._getRadiusByKey('radiusX', 'end')
+
+    #   expect(radiusS).toBe  10
+    #   expect(radiusXS).toBe 30
+    #   expect(radiusYS).toBe 25
+
+    #   expect(radiusE).toBe  25
+    #   expect(radiusXE).toBe 20
+    #   expect(radiusYE).toBe 30
+
   describe '_getDeltaFromPoints method ->', ->
     it 'should return the delta', ->
       burst = new Burst
@@ -505,7 +551,9 @@ describe 'Burst ->', ->
         
       o = { swirls: { radius: [ 10, 20 ] } }
 
-      b._childThen(o, b._masterThen(o))
+      b._masterThen(o)
+
+      b._childThen(o)
 
       expect(b._swirls[1].length).toBe 2
       expect(b._swirls[1][0] instanceof ShapeSwirl).toBe true
@@ -516,7 +564,8 @@ describe 'Burst ->', ->
         
       o = { swirls: { radius: [ 10, 20 ] } }
 
-      result = b._childThen(o, b._masterThen(o))
+      b._masterThen(o)
+      result = b._childThen(o)
 
       expect(result).toBe b._swirls[1]
 
@@ -545,13 +594,10 @@ describe 'Burst ->', ->
       options = {}
       b.then options
 
-      # expect( b._childThen )
-      #   .toHaveBeenCalledWith options, h.getLastItem b._masterSwirls
-
       expect(b._childThen.calls.count()).toBe 1
       expect(b._childThen.calls.first().args[0]).toBe options
-      expect(b._childThen.calls.first().args[1])
-        .toBe h.getLastItem b._masterSwirls
+      # expect(b._childThen.calls.first().args[1])
+      #   .toBe h.getLastItem b._masterSwirls
 
     it 'should set duration on new master swirl', ->
       b = new Burst count: 2

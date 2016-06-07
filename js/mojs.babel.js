@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.257.0', isDebug: true, helpers: h,
+  revision:   '0.258.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -47,23 +47,6 @@ window.mojs = mojs;
   percentage for radius
 */
 
-const burst = new mojs.Burst({
-  left: '50%', top: '50%',
-  radius: { 0: 150 },
-  swirls: {
-    duration: 2000,
-    isForce3d: 1
-  }
-});
-
-
-document.addEventListener('click', function () {
-
-  burst
-    // .generate()
-    .replay();
-
-});
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {

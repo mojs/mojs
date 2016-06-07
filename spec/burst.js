@@ -558,7 +558,7 @@
       });
     });
     describe('_getRadiusByKey method ->', function() {
-      return it('should return the key\'s radius', function() {
+      it('should return the key\'s radius', function() {
         var burst, radius, radiusX, radiusY;
         burst = new Burst({
           radius: {
@@ -577,6 +577,30 @@
         expect(radius).toBe(5);
         expect(radiusX).toBe(10);
         return expect(radiusY).toBe(20);
+      });
+      return it('should return the key\'s radius of the last master module // plain', function() {
+        var burst, radiusE, radiusS, radiusXE, radiusXS, radiusYE, radiusYS;
+        burst = new Burst({
+          radius: 5,
+          radiusX: 10,
+          radiusY: 30
+        }).then({
+          radius: 25,
+          radiusX: 20,
+          radiusY: 40
+        });
+        radiusS = burst._getRadiusByKey('radius', 'start');
+        radiusXS = burst._getRadiusByKey('radiusX', 'start');
+        radiusYS = burst._getRadiusByKey('radiusY', 'start');
+        radiusE = burst._getRadiusByKey('radius', 'end');
+        radiusXE = burst._getRadiusByKey('radiusX', 'end');
+        radiusYE = burst._getRadiusByKey('radiusY', 'end');
+        expect(radiusS).toBe(5);
+        expect(radiusXS).toBe(10);
+        expect(radiusYS).toBe(30);
+        expect(radiusE).toBe(25);
+        expect(radiusXE).toBe(20);
+        return expect(radiusYE).toBe(40);
       });
     });
     describe('_getDeltaFromPoints method ->', function() {
@@ -722,7 +746,8 @@
             radius: [10, 20]
           }
         };
-        b._childThen(o, b._masterThen(o));
+        b._masterThen(o);
+        b._childThen(o);
         expect(b._swirls[1].length).toBe(2);
         expect(b._swirls[1][0] instanceof ShapeSwirl).toBe(true);
         return expect(b._swirls[1][1] instanceof ShapeSwirl).toBe(true);
@@ -737,7 +762,8 @@
             radius: [10, 20]
           }
         };
-        result = b._childThen(o, b._masterThen(o));
+        b._masterThen(o);
+        result = b._childThen(o);
         return expect(result).toBe(b._swirls[1]);
       });
     });
@@ -778,8 +804,7 @@
         options = {};
         b.then(options);
         expect(b._childThen.calls.count()).toBe(1);
-        expect(b._childThen.calls.first().args[0]).toBe(options);
-        return expect(b._childThen.calls.first().args[1]).toBe(h.getLastItem(b._masterSwirls));
+        return expect(b._childThen.calls.first().args[0]).toBe(options);
       });
       it('should set duration on new master swirl', function() {
         var b, time;

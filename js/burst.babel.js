@@ -41,7 +41,7 @@ class Burst extends Tunable {
     this._removeTweenProperties( o );
 
     var newMaster = this._masterThen( o ),
-        newSwirls = this._childThen( o, newMaster );
+        newSwirls = this._childThen( o );
 
     this._setSwirlDuration( newMaster, this._calcPackTime(newSwirls) );
 
@@ -161,10 +161,9 @@ class Burst extends Tunable {
   /*
     Method to call then on child swilrs.
     @param {Object} Then options.
-    @param {Object} Current master Swirl.
     @return {Array} Array of new Swirls.
   */
-  _childThen (o, newMasterSwirl) {
+  _childThen (o) {
     var pack    = this._swirls[0],
         newPack = [];
 
@@ -172,7 +171,7 @@ class Burst extends Tunable {
       // get option by modulus
       var options = this._getChildOption( o, i );
       // add new Master Swirl as parent of new childswirl
-      options.parent = newMasterSwirl.el;
+      options.parent = this.el;
       pack[i].then( options );
       // save the new item in `then` chain
       newPack.push( h.getLastItem(pack[i]._modules) );
@@ -409,9 +408,13 @@ class Burst extends Tunable {
     @param {String} Key name.
     @param {String} Side name - [start, end].
   */
-  _getRadiusByKey (key, side) {
-    if ( this._deltas[key] != null ) { return this._deltas[key][side]; }
-    else if ( this._props[key] != null ) { return this._props[key]; }
+  _getRadiusByKey (key, side ) {
+    var swirl  = h.getLastItem(this._masterSwirls),
+        deltas = swirl._deltas,
+        props  = swirl._props;
+
+    if ( deltas[key] != null ) { return deltas[key][side]; }
+    else if ( props[key] != null ) { return props[key]; }
   }
   /*
     Method to get delta from start and end position points.
