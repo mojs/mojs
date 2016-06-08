@@ -1376,7 +1376,9 @@
 	      /* [string] :: Easing for the main module (not children). */
 	      easing: 'linear.none',
 	      /* [boolean] :: If Burst itself should follow sinusoidal path. */
-	      isSwirl: false
+	      isSwirl: false,
+	      // use paintless hide method
+	      isSoftHide: true
 	    };
 	  };
 	  /*
@@ -1416,6 +1418,8 @@
 	    // and delete the timeline options on o
 	    // cuz masterSwirl should not get them
 	    this._saveTimelineOptions(o);
+
+	    o.isSoftHide = true;
 
 	    // add new timeline properties to timeline
 	    this.timeline._setProp(this._timelineOptions);
@@ -1507,6 +1511,24 @@
 
 	      this._addBurstProperties(option, i);
 	      swirl.tune(option);
+	      this._refreshBurstOptions(swirl._modules, i);
+	    }
+	  };
+	  /*
+	    Method to refresh burst x/y/angle options on further chained 
+	    swirls, because they will be overriden after `tune` call on
+	    very first swirl.
+	    @param {Array} Chained modules array
+	    param {Number} Index of the first swirl in the chain.
+	  */
+
+
+	  Burst.prototype._refreshBurstOptions = function _refreshBurstOptions(modules, i) {
+	    for (var j = 1; j < modules.length; j++) {
+	      var module = modules[j],
+	          options = {};
+	      this._addBurstProperties(options, i, j);
+	      // module._tuneNewOptions( options );
 	    }
 	  };
 	  /*
@@ -1575,7 +1597,6 @@
 
 	    // cover!
 	    this._o.scale = this._o.scale != null ? this._o.scale : 1;
-	    // console.log(this._o.scale)
 
 	    this.masterSwirl = new _shapeSwirl2.default(this._o);
 	    this._masterSwirls = [this.masterSwirl];
@@ -1701,10 +1722,11 @@
 	    @private
 	    @param {Object} Options to add the properties to.
 	    @param {Number} Index of the Swirl.
+	    @param {Number} Index of the main swirl.
 	  */
 
 
-	  Burst.prototype._addBurstProperties = function _addBurstProperties(options, index) {
+	  Burst.prototype._addBurstProperties = function _addBurstProperties(options, index, i) {
 	    // save index of the module
 	    var mainIndex = this._index;
 	    // temporary change the index to parse index based properties like stagger
@@ -1717,8 +1739,8 @@
 	    var p = this._props,
 	        degreeCnt = p.degree % 360 === 0 ? p.count : p.count - 1 || 1,
 	        step = p.degree / degreeCnt,
-	        pointStart = this._getSidePoint('start', index * step + degreeShift),
-	        pointEnd = this._getSidePoint('end', index * step + degreeShift);
+	        pointStart = this._getSidePoint('start', index * step + degreeShift, i),
+	        pointEnd = this._getSidePoint('end', index * step + degreeShift, i);
 
 	    options.x = this._getDeltaFromPoints('x', pointStart, pointEnd);
 	    options.y = this._getDeltaFromPoints('y', pointStart, pointEnd);
@@ -1769,13 +1791,14 @@
 	    @private
 	    @param {String} Name of the side - [start, end].
 	    @param {Number} Angle of the radial point.
+	    @param {Number} Index of the main swirl.
 	    @returns radial point.
 	  */
 
 
-	  Burst.prototype._getSidePoint = function _getSidePoint(side, angle) {
+	  Burst.prototype._getSidePoint = function _getSidePoint(side, angle, i) {
 	    var p = this._props,
-	        sideRadius = this._getSideRadius(side);
+	        sideRadius = this._getSideRadius(side, i);
 
 	    return _h2.default.getRadialPoint({
 	      radius: sideRadius.radius,
@@ -1790,15 +1813,16 @@
 	    Method to get radius of the side.
 	    @private
 	    @param {String} Name of the side - [start, end].
+	    @param {Number} Index of the main swirl.
 	    @returns {Object} Radius.
 	  */
 
 
-	  Burst.prototype._getSideRadius = function _getSideRadius(side) {
+	  Burst.prototype._getSideRadius = function _getSideRadius(side, i) {
 	    return {
-	      radius: this._getRadiusByKey('radius', side),
-	      radiusX: this._getRadiusByKey('radiusX', side),
-	      radiusY: this._getRadiusByKey('radiusY', side)
+	      radius: this._getRadiusByKey('radius', side, i),
+	      radiusX: this._getRadiusByKey('radiusX', side, i),
+	      radiusY: this._getRadiusByKey('radiusY', side, i)
 	    };
 	  };
 	  /*
@@ -1806,11 +1830,15 @@
 	    @private
 	    @param {String} Key name.
 	    @param {String} Side name - [start, end].
+	    @param {Number} Index of the main swirl.
+	    @returns {Number} Radius value.
 	  */
 
 
 	  Burst.prototype._getRadiusByKey = function _getRadiusByKey(key, side) {
-	    var swirl = _h2.default.getLastItem(this._masterSwirls),
+	    var i = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+
+	    var swirl = this._masterSwirls[i],
 	        deltas = swirl._deltas,
 	        props = swirl._props;
 
@@ -2404,7 +2432,6 @@
 	  Shape.prototype._getMaxStroke = function _getMaxStroke() {
 	    var p = this._props;
 	    var dStroke = this._deltas['strokeWidth'];
-	    this._o.isIt && console.log(dStroke);
 	    return dStroke != null ? Math.max(dStroke.start, dStroke.end) : p.strokeWidth;
 	  };
 	  /*
@@ -2504,47 +2531,6 @@
 	      str += p.origin[i].string + ' ';
 	    }
 	    return str;
-	  };
-	  /*
-	    Method to show element.
-	    @private
-	  */
-
-
-	  Shape.prototype._show = function _show() {
-	    var p = this._props;
-	    if (!this.el) {
-	      return;
-	    }
-
-	    if (p.isSoftHide) {
-	      this.el.style.opacity = p.opacity;
-	      h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
-	    } else {
-	      this.el.style.display = 'block';
-	    }
-
-	    this._isShown = true;
-	  };
-	  /*
-	    Method to hide element.
-	    @private
-	  */
-
-
-	  Shape.prototype._hide = function _hide() {
-	    if (!this.el) {
-	      return;
-	    }
-
-	    if (this._props.isSoftHide) {
-	      this.el.style.opacity = 0;
-	      h.setPrefixedStyle(this.el, 'transform', 'scale(0)');
-	    } else {
-	      this.el.style.display = 'none';
-	    }
-
-	    this._isShown = false;
 	  };
 
 	  return Shape;
@@ -4599,30 +4585,45 @@
 	    this._props[key] = value;
 	  };
 	  /*
-	    Method to show the main div el.
+	    Method to show element.
 	    @private
 	  */
 
 
 	  Module.prototype._show = function _show() {
-	    if (this._isShown || this.el == null) {
+	    var p = this._props;
+	    if (!this.el) {
 	      return;
 	    }
-	    this.el.style.display = 'block';
+
+	    if (p.isSoftHide) {
+	      this.el.style.opacity = p.opacity;
+	      _h2.default.setPrefixedStyle(this.el, 'transform', this._fillTransform());
+	    } else {
+	      this.el.style.display = 'block';
+	    }
+
 	    this._isShown = true;
 	  };
 	  /*
-	    Method to hide the main div el.
+	    Method to hide element.
 	    @private
 	  */
 
 
 	  Module.prototype._hide = function _hide() {
-	    if (this._isShown === false || this.el == null) {
+	    if (!this.el) {
 	      return;
 	    }
-	    this.el.style.display = 'none';
-	    return this._isShown = false;
+
+	    if (this._props.isSoftHide) {
+	      this.el.style.opacity = 0;
+	      _h2.default.setPrefixedStyle(this.el, 'transform', 'scale(0)');
+	    } else {
+	      this.el.style.display = 'none';
+	    }
+
+	    this._isShown = false;
 	  };
 	  /*
 	    Method to parse option string.
@@ -8560,7 +8561,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.258.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.258.1', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8589,6 +8590,36 @@
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
 	*/
+
+	var burst = new mojs.Burst({
+	  isIt: 1,
+	  // left: '50%', top: '50%',
+	  radius: { 0: 150 },
+	  swirls: {
+	    duration: 2000,
+	    isForce3d: 1
+	  }
+	}).then({
+	  radius: 50,
+	  angle: 90,
+	  swirls: {
+	    scale: 1
+	  }
+	});
+
+	document.addEventListener('click', function (e) {
+
+	  burst.tune({
+	    x: e.pageX,
+	    y: e.pageY,
+	    radius: { 250: 0 },
+	    swirls: {
+	      duration: 1000
+	    }
+	  })
+	  // .generate()
+	  .replay();
+	});
 
 	// istanbul ignore next
 	if (true) {

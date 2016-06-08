@@ -26,7 +26,9 @@ class Burst extends Tunable {
       /* [string] :: Easing for the main module (not children). */
       easing:  'linear.none',
       /* [boolean] :: If Burst itself should follow sinusoidal path. */
-      isSwirl:  false
+      isSwirl:  false,
+      // use paintless hide method
+      isSoftHide: true
     }
   }
   /*
@@ -60,6 +62,8 @@ class Burst extends Tunable {
     // and delete the timeline options on o
     // cuz masterSwirl should not get them
     this._saveTimelineOptions( o );
+
+    o.isSoftHide = true;
 
     // add new timeline properties to timeline
     this.timeline._setProp( this._timelineOptions );
@@ -143,7 +147,23 @@ class Burst extends Tunable {
 
       this._addBurstProperties( option, i );
       swirl.tune( option );
+      this._refreshBurstOptions( swirl._modules, i );
     }
+  }
+  /*
+    Method to refresh burst x/y/angle options on further chained 
+    swirls, because they will be overriden after `tune` call on
+    very first swirl.
+    @param {Array} Chained modules array
+    param {Number} Index of the first swirl in the chain.
+  */
+  _refreshBurstOptions (modules, i) {
+    for ( var j = 1; j < modules.length; j++ ) {
+        var module  = modules[j],
+            options = {};
+        this._addBurstProperties( options, i, j );
+        // module._tuneNewOptions( options );
+      }
   }
   /*
     Method to call then on masterSwirl.
@@ -203,7 +223,6 @@ class Burst extends Tunable {
 
     // cover!
     this._o.scale = ( this._o.scale != null ) ? this._o.scale : 1;
-    // console.log(this._o.scale)
 
     this.masterSwirl    = new ShapeSwirl( this._o );
     this._masterSwirls  = [ this.masterSwirl ];
@@ -314,8 +333,9 @@ class Burst extends Tunable {
     @private
     @param {Object} Options to add the properties to.
     @param {Number} Index of the Swirl.
+    @param {Number} Index of the main swirl.
   */
-  _addBurstProperties (options, index) { 
+  _addBurstProperties (options, index, i) { 
     // save index of the module
     var mainIndex = this._index;
     // temporary change the index to parse index based properties like stagger
@@ -328,8 +348,8 @@ class Burst extends Tunable {
     var p           = this._props,
         degreeCnt   = (p.degree % 360 === 0) ? p.count : p.count-1 || 1,
         step        = p.degree/degreeCnt,
-        pointStart  = this._getSidePoint('start', index*step + degreeShift ),
-        pointEnd    = this._getSidePoint('end',   index*step + degreeShift );
+        pointStart  = this._getSidePoint('start', index*step + degreeShift, i ),
+        pointEnd    = this._getSidePoint('end',   index*step + degreeShift, i );
 
     options.x     = this._getDeltaFromPoints('x', pointStart, pointEnd);
     options.y     = this._getDeltaFromPoints('y', pointStart, pointEnd);
@@ -374,11 +394,12 @@ class Burst extends Tunable {
     @private
     @param {String} Name of the side - [start, end].
     @param {Number} Angle of the radial point.
+    @param {Number} Index of the main swirl.
     @returns radial point.
   */
-  _getSidePoint (side, angle) {
+  _getSidePoint (side, angle, i) {
     var p          = this._props,
-        sideRadius = this._getSideRadius(side);
+        sideRadius = this._getSideRadius(side, i);
 
     return h.getRadialPoint({
       radius:  sideRadius.radius,
@@ -393,13 +414,14 @@ class Burst extends Tunable {
     Method to get radius of the side.
     @private
     @param {String} Name of the side - [start, end].
+    @param {Number} Index of the main swirl.
     @returns {Object} Radius.
   */
-  _getSideRadius ( side ) {
+  _getSideRadius ( side, i ) {
     return {
-      radius:  this._getRadiusByKey('radius',  side),
-      radiusX: this._getRadiusByKey('radiusX', side),
-      radiusY: this._getRadiusByKey('radiusY', side)
+      radius:  this._getRadiusByKey('radius',  side, i),
+      radiusX: this._getRadiusByKey('radiusX', side, i),
+      radiusY: this._getRadiusByKey('radiusY', side, i)
     }
   }
   /*
@@ -407,9 +429,11 @@ class Burst extends Tunable {
     @private
     @param {String} Key name.
     @param {String} Side name - [start, end].
+    @param {Number} Index of the main swirl.
+    @returns {Number} Radius value.
   */
-  _getRadiusByKey (key, side ) {
-    var swirl  = h.getLastItem(this._masterSwirls),
+  _getRadiusByKey (key, side, i = 0 ) {
+    var swirl  = this._masterSwirls[i],
         deltas = swirl._deltas,
         props  = swirl._props;
 

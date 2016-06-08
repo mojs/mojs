@@ -424,7 +424,6 @@ class Shape extends Tunable {
   _getMaxStroke () {
     var p = this._props;
     var dStroke  = this._deltas[ 'strokeWidth' ];
-    this._o.isIt && console.log( dStroke );
     return (dStroke != null)
       ? Math.max(dStroke.start, dStroke.end)
       : p.strokeWidth;
@@ -498,35 +497,6 @@ class Shape extends Tunable {
       str += `${ p.origin[i].string } `;
     }
     return str;
-  }
-  /*
-    Method to show element.
-    @private
-  */
-  _show () {
-    var p = this._props;
-    if ( !this.el ) { return; }
-
-    if ( p.isSoftHide ) {
-      this.el.style.opacity = p.opacity;
-      h.setPrefixedStyle( this.el, 'transform', this._fillTransform() );
-    } else { this.el.style.display = 'block'; }
-
-    this._isShown = true;
-  }
-  /*
-    Method to hide element.
-    @private
-  */
-  _hide () {
-    if ( !this.el ) { return; }
-    
-    if ( this._props.isSoftHide ) {
-      this.el.style.opacity = 0;
-      h.setPrefixedStyle( this.el, 'transform', 'scale(0)' );
-    } else { this.el.style.display = 'none'; }
-    
-    this._isShown = false;
   }
 }
 

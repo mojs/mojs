@@ -35,6 +35,7 @@
         radiusX: null,
         radiusY: null,
         isShowStart: false,
+        isSoftHide: true,
         isShowEnd: false,
         size: null,
         sizeGap: 0,
@@ -165,55 +166,51 @@
         return expect(t._props.duration).toBe(1000);
       });
     });
-    describe('_show method ->', function() {
-      it('should set display: block to el', function() {
-        var md;
-        md = new Module;
-        md.el = document.createElement('div');
-        md._show();
-        expect(md.el.style.display).toBe('block');
-        return expect(md._isShown).toBe(true);
-      });
-      it('should return if isShow is already true', function() {
-        var md;
-        md = new Module;
-        md.el = document.createElement('div');
-        md._show();
-        md.el.style.display = 'inline';
-        md._show();
-        return expect(md.el.style.display).toBe('inline');
-      });
-      return it('not to throw', function() {
-        var byte;
-        byte = new Module({
-          radius: {
-            '25': 75
-          }
-        });
-        return expect(function() {
-          return byte._show();
-        }).not.toThrow();
-      });
-    });
     describe('_hide method ->', function() {
-      it('should set display: block to el', function() {
-        var md;
-        md = new Module;
-        md.el = document.createElement('div');
-        md._hide();
-        expect(md.el.style.display).toBe('none');
-        return expect(md._isShown).toBe(false);
-      });
-      return it('not to throw', function() {
+      it('should set `display` of `el` to `none`', function() {
         var byte;
         byte = new Module({
-          radius: {
-            '25': 75
-          }
+          isSoftHide: false
         });
-        return expect(function() {
-          return byte._hide();
-        }).not.toThrow();
+        byte.el = document.createElement('div');
+        byte.el.style['display'] = 'block';
+        byte._hide();
+        return expect(byte.el.style['display']).toBe('none');
+      });
+      it('should set `_isShown` to false', function() {
+        var byte;
+        byte = new Module({
+          isSoftHide: false
+        });
+        byte.el = document.createElement('div');
+        byte._isShown = true;
+        byte._hide();
+        return expect(byte._isShown).toBe(false);
+      });
+      return describe('isSoftHide option ->', function() {
+        it('should set `opacity` of `el` to `0`', function() {
+          var byte;
+          byte = new Module({
+            radius: 25,
+            isSoftHide: true
+          });
+          byte.el = document.createElement('div');
+          byte.el.style['opacity'] = '.5';
+          byte._hide();
+          return expect(byte.el.style['opacity']).toBe('0');
+        });
+        return it('should set scale to 0', function() {
+          var byte, style, tr;
+          byte = new Module({
+            radius: 25,
+            isSoftHide: true
+          });
+          byte.el = document.createElement('div');
+          byte._hide();
+          style = byte.el.style;
+          tr = style['transform'] || style["" + h.prefix.css + "transform"];
+          return expect(tr).toBe('scale(0)');
+        });
       });
     });
     describe('_parseOptionString method ->', function() {

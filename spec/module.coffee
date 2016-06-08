@@ -27,6 +27,7 @@ describe 'module class ->', ->
       radiusX:          null,
       radiusY:          null,
       isShowStart:      false,
+      isSoftHide:       true,
       isShowEnd:        false,
       size:             null,
       sizeGap:          0,
@@ -118,33 +119,103 @@ describe 'module class ->', ->
       t._setProp 'duration', 1000
       expect(t._props.duration).toBe 1000
 
-  describe '_show method ->', ->
-    it 'should set display: block to el', ->
-      md = new Module
-      md.el = document.createElement 'div'
-      md._show()
-      expect(md.el.style.display).toBe 'block'
-      expect(md._isShown).toBe true
-    it 'should return if isShow is already true', ->
-      md = new Module
-      md.el = document.createElement 'div'
-      md._show()
-      md.el.style.display = 'inline'
-      md._show()
-      expect(md.el.style.display).toBe 'inline'
-    it 'not to throw', ->
-      byte = new Module radius:  {'25': 75}
-      expect(-> byte._show()).not.toThrow()
-  describe '_hide method ->', ->
-    it 'should set display: block to el', ->
-      md = new Module
-      md.el = document.createElement 'div'
-      md._hide()
-      expect(md.el.style.display).toBe 'none'
-      expect(md._isShown).toBe false
-    it 'not to throw', ->
-      byte = new Module radius:  {'25': 75}
-      expect(-> byte._hide()).not.toThrow()
+  describe '_hide method ->' , ->
+    it 'should set `display` of `el` to `none`', ->
+      byte = new Module isSoftHide: false
+      byte.el = document.createElement 'div'
+      byte.el.style[ 'display' ] = 'block'
+      byte._hide()
+      expect( byte.el.style[ 'display' ] ).toBe 'none'
+
+    it 'should set `_isShown` to false', ->
+      byte = new Module isSoftHide: false
+      byte.el = document.createElement 'div'
+      byte._isShown = true
+      byte._hide()
+      expect( byte._isShown ).toBe false
+
+    describe 'isSoftHide option ->', ->
+      it 'should set `opacity` of `el` to `0`', ->
+        byte = new Module radius: 25, isSoftHide: true
+        byte.el = document.createElement 'div'
+        byte.el.style[ 'opacity' ] = '.5'
+        byte._hide()
+        expect( byte.el.style[ 'opacity' ] ).toBe '0'
+
+      it 'should set scale to 0', ->
+        byte = new Module
+          radius:     25,
+          isSoftHide: true
+        byte.el = document.createElement 'div'
+        byte._hide()
+        style = byte.el.style
+        tr = style[ 'transform' ] || style[ "#{h.prefix.css}transform" ]
+        expect( tr ).toBe 'scale(0)'
+
+  # describe '_show method ->' , ->
+  #   it 'should set `display` of `el` to `block`', ->
+  #     byte = new Module radius: 25, isSoftHide: false
+  #     byte.el.style[ 'display' ] = 'none'
+  #     byte._show()
+  #     expect( byte.el.style[ 'display' ] ).toBe 'block'
+
+  #   it 'should set `_isShown` to true', ->
+  #     byte = new Module radius: 25, isSoftHide: false
+  #     byte._isShown = true
+  #     byte._show()
+  #     expect( byte._isShown ).toBe true
+
+  #   describe 'isSoftHide option ->', ->
+  #     it 'should set `opacity` of `el` to `_props.opacity`', ->
+  #       byte = new Module radius: 25, isSoftHide: true, opacity: .2
+  #       byte.el.style[ 'opacity' ] = '0'
+  #       byte._show()
+  #       expect( byte.el.style[ 'opacity' ] ).toBe "#{byte._props.opacity}"
+
+  #     it 'should set `transform` to normal', ->
+  #       byte = new Module radius: 25, isSoftHide: true, opacity: .2
+  #       byte.el.style[ 'opacity' ] = '0'
+  #       byte.el.style[ 'transform' ] = 'none'
+  #       byte._show()
+  #       style = byte.el.style
+  #       tr = style[ 'transform' ] || style[ "#{h.prefix.css}transform" ]
+  #       expect( tr ).toBe byte._fillTransform()
+
+
+
+
+
+
+  # old
+  # describe '_show method ->', ->
+  #   it 'should set display: block to el', ->
+  #     md = new Module
+  #     md.el = document.createElement 'div'
+  #     md._show()
+  #     expect(md.el.style.display).toBe 'block'
+  #     expect(md._isShown).toBe true
+  #   it 'should return if isShow is already true', ->
+  #     md = new Module
+  #     md.el = document.createElement 'div'
+  #     md._show()
+  #     md.el.style.display = 'inline'
+  #     md._show()
+  #     expect(md.el.style.display).toBe 'inline'
+  #   it 'not to throw', ->
+  #     byte = new Module radius:  {'25': 75}
+  #     expect(-> byte._show()).not.toThrow()
+  
+  # old
+  # describe '_hide method ->', ->
+  #   it 'should set display: block to el', ->
+  #     md = new Module
+  #     md.el = document.createElement 'div'
+  #     md._hide()
+  #     expect(md.el.style.display).toBe 'none'
+  #     expect(md._isShown).toBe false
+  #   it 'not to throw', ->
+  #     byte = new Module radius:  {'25': 75}
+  #     expect(-> byte._hide()).not.toThrow()
 
   describe '_parseOptionString method ->', ->
     tr = new Module

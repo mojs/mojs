@@ -71,22 +71,33 @@ class Module {
     this._props[key] = value;
   }
   /*
-    Method to show the main div el.
+    Method to show element.
     @private
   */
   _show () {
-    if (this._isShown || (this.el == null)) { return; }
-    this.el.style.display = 'block';
+    var p = this._props;
+    if ( !this.el ) { return; }
+
+    if ( p.isSoftHide ) {
+      this.el.style.opacity = p.opacity;
+      h.setPrefixedStyle( this.el, 'transform', this._fillTransform() );
+    } else { this.el.style.display = 'block'; }
+
     this._isShown = true;
   }
   /*
-    Method to hide the main div el.
+    Method to hide element.
     @private
   */
   _hide () {
-    if ((this._isShown === false) || (this.el == null)) { return; }
-    this.el.style.display = 'none';
-    return this._isShown = false;
+    if ( !this.el ) { return; }
+    
+    if ( this._props.isSoftHide ) {
+      this.el.style.opacity = 0;
+      h.setPrefixedStyle( this.el, 'transform', 'scale(0)' );
+    } else { this.el.style.display = 'none'; }
+    
+    this._isShown = false;
   }
   /*
     Method to parse option string.

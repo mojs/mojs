@@ -24,6 +24,7 @@ describe 'Burst ->', ->
       expect(burst._defaults.radiusY).toEqual null
       expect(burst._defaults.easing).toEqual 'linear.none'
       expect(burst._defaults.isSwirl).toEqual false
+      expect(burst._defaults.isSoftHide).toEqual true
 
   describe '_extendDefaults method ->', ->
     it 'should call _removeTweenProperties method', ->
@@ -107,7 +108,6 @@ describe 'Burst ->', ->
           repeat: 2
       burst.masterSwirl.tween._props.duration = null
       burst._renderSwirls()
-      # console.log burst.masterSwirl.tween._props.duration
       expect(burst.masterSwirl.tween._props.duration)
         .toBe burst._calcPackTime burst._swirls[0]
 
@@ -382,9 +382,21 @@ describe 'Burst ->', ->
   describe '_getSidePoint method ->', ->
     it 'should return the side\'s point', ->
       burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:10}
-      point = burst._getSidePoint('start', 0)
-      expect(point.x).toBeDefined()
-      expect(point.y).toBeDefined()
+      point0 = burst._getSidePoint('start', 0)
+      expect(point0.x).toBeDefined()
+      expect(point0.y).toBeDefined()
+    it 'should return the side\'s point by i', ->
+      burst = new Burst(radius: {5:25}, radiusX: {10:20}, radiusY: {30:10})
+        .then(radius: {5:25}, radiusX: {10:20}, radiusY: {30:10})
+      spyOn(burst, '_getSideRadius').and.callThrough()
+
+      point0 = burst._getSidePoint('start', 0, 0)
+      expect(burst._getSideRadius).toHaveBeenCalledWith 'start', 0
+      expect(burst._getSideRadius.calls.count()).toBe 1
+      
+      point1 = burst._getSidePoint('start', 0, 1)
+      expect(burst._getSideRadius).toHaveBeenCalledWith 'start', 1
+      expect(burst._getSideRadius.calls.count()).toBe 2
 
   describe '_getSideRadius method ->', ->
     it 'should return the side\'s radius, radiusX and radiusY', ->
@@ -393,6 +405,28 @@ describe 'Burst ->', ->
       expect(sides.radius) .toBe 5
       expect(sides.radiusX).toBe 10
       expect(sides.radiusY).toBe 30
+
+    it 'should return the side\'s radius, radiusX and radiusY by i', ->
+      burst = new Burst(radius: {5:25}, radiusX: {10:20}, radiusY: {30:10})
+        .then( radius: {20:40}, radiusX: { 50:10 }, radiusY: { 10:20 } )
+      sidesS = burst._getSideRadius('start')
+      sidesE = burst._getSideRadius('end')
+      expect(sidesS.radius) .toBe 5
+      expect(sidesS.radiusX).toBe 10
+      expect(sidesS.radiusY).toBe 30
+      expect(sidesE.radius) .toBe 25
+      expect(sidesE.radiusX).toBe 20
+      expect(sidesE.radiusY).toBe 10
+
+      sidesS = burst._getSideRadius('start', 1)
+      sidesE = burst._getSideRadius('end', 1)
+      expect(sidesS.radius) .toBe 20
+      expect(sidesS.radiusX).toBe 50
+      expect(sidesS.radiusY).toBe 10
+
+      expect(sidesE.radius) .toBe 40
+      expect(sidesE.radiusX).toBe 10
+      expect(sidesE.radiusY).toBe 20
 
   describe '_getRadiusByKey method ->', ->
     it 'should return the key\'s radius', ->
@@ -410,12 +444,12 @@ describe 'Burst ->', ->
         ).then(
           radius: 25, radiusX: 20, radiusY: 40
         )
-      radiusS  = burst._getRadiusByKey('radius',  'start')
-      radiusXS = burst._getRadiusByKey('radiusX', 'start')
-      radiusYS = burst._getRadiusByKey('radiusY', 'start')
-      radiusE  = burst._getRadiusByKey('radius',  'end')
-      radiusXE = burst._getRadiusByKey('radiusX', 'end')
-      radiusYE = burst._getRadiusByKey('radiusY', 'end')
+      radiusS  = burst._getRadiusByKey('radius',  'start', 1)
+      radiusXS = burst._getRadiusByKey('radiusX', 'start', 1)
+      radiusYS = burst._getRadiusByKey('radiusY', 'start', 1)
+      radiusE  = burst._getRadiusByKey('radius',  'end', 1)
+      radiusXE = burst._getRadiusByKey('radiusX', 'end', 1)
+      radiusYE = burst._getRadiusByKey('radiusY', 'end', 1)
 
       expect(radiusS).toBe   5
       expect(radiusXS).toBe 10
@@ -426,29 +460,29 @@ describe 'Burst ->', ->
       expect(radiusYE).toBe 40
 
 
-    # it 'should return the key\'s radius of the last master module // deltas', ->
-    #   burst = new Burst(
-    #       isIt: 1
-    #       radius: 5, radiusX: 10, radiusY: 30
-    #     ).then(
-    #       radius: { 10 : 25},
-    #       radiusX: { 30 : 20},
-    #       radiusY: { 25 : 30 }
-    #     )
-    #   radiusS  = burst._getRadiusByKey('radius',  'start')
-    #   radiusXS = burst._getRadiusByKey('radiusX', 'start')
-    #   radiusYS = burst._getRadiusByKey('radiusX', 'start')
-    #   radiusE  = burst._getRadiusByKey('radius',  'end')
-    #   radiusXE = burst._getRadiusByKey('radiusX', 'end')
-    #   radiusYE = burst._getRadiusByKey('radiusX', 'end')
+    it 'should return the key\'s radius of the last master module // deltas', ->
+      burst = new Burst(
+          isIt: 1
+          radius: 5, radiusX: 10, radiusY: 30
+        ).then(
+          radius: { 10 : 25},
+          radiusX: { 30 : 20},
+          radiusY: { 25 : 30 }
+        )
+      radiusS  = burst._getRadiusByKey('radius',  'start', 1)
+      radiusXS = burst._getRadiusByKey('radiusX', 'start', 1)
+      radiusYS = burst._getRadiusByKey('radiusY', 'start', 1)
+      radiusE  = burst._getRadiusByKey('radius',  'end', 1)
+      radiusXE = burst._getRadiusByKey('radiusX', 'end', 1)
+      radiusYE = burst._getRadiusByKey('radiusY', 'end', 1)
 
-    #   expect(radiusS).toBe  10
-    #   expect(radiusXS).toBe 30
-    #   expect(radiusYS).toBe 25
+      expect(radiusS).toBe  10
+      expect(radiusXS).toBe 30
+      expect(radiusYS).toBe 25
 
-    #   expect(radiusE).toBe  25
-    #   expect(radiusXE).toBe 20
-    #   expect(radiusYE).toBe 30
+      expect(radiusE).toBe  25
+      expect(radiusXE).toBe 20
+      expect(radiusYE).toBe 30
 
   describe '_getDeltaFromPoints method ->', ->
     it 'should return the delta', ->
@@ -896,7 +930,49 @@ describe 'Burst ->', ->
 
       expect( obj.angle ).toEqual b._getBitAngle( 0 + 400, index );
 
+    it 'should call _getSidePoint with passed index', ->
+      b = new Burst count: 2
+        .then radius: 20
+      spyOn(b, '_getSidePoint').and.callThrough()
+      obj = { }
+      b._addBurstProperties( obj, 2, 1 )
+
+      expect(b._getSidePoint).toHaveBeenCalledWith 'start', 360, 1
+      expect(b._getSidePoint).toHaveBeenCalledWith 'end', 360, 1
 
 
+  describe '_refreshBurstOptions method ->', ->
+    it 'should call _tuneNewOptions with results of _addBurstProperties', ->
+      b = new Burst count: 4
+        .then radius: 20
+        .then radius: 30
+
+      modules = b._swirls[0][0]._modules
+
+      b._refreshBurstOptions modules, 1
+      for j in [1...modules.length]
+        module  = modules[j]
+        spyOn(module, '_tuneNewOptions').and.callThrough()
+        
+        options = {}
+
+        arg0 = module._tuneNewOptions.calls.argsFor(j-1)[0]
+
+        expect(arg0).toBe b._addBurstProperties {}, 1, j
+
+  describe '_tuneSwirls method', ->
+    it 'should call _refreshBurstOptions with modules and i', ->
+      b = new Burst count: 4
+        .then radius: 20
+        .then radius: 30
+
+      spyOn b, '_refreshBurstOptions'
+      b._tuneSwirls({})
+
+      pack0 = b._swirls[0]
+      for i in [0...pack0.length]
+        swirl = pack0[i]
+        expect( b._refreshBurstOptions )
+          .toHaveBeenCalledWith swirl._modules, i
 
 
