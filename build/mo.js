@@ -1528,7 +1528,7 @@
 	      var module = modules[j],
 	          options = {};
 	      this._addBurstProperties(options, i, j);
-	      // module._tuneNewOptions( options );
+	      module._tuneNewOptions(options);
 	    }
 	  };
 	  /*
@@ -8561,7 +8561,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.258.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.258.2', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8590,36 +8590,6 @@
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
 	*/
-
-	var burst = new mojs.Burst({
-	  isIt: 1,
-	  // left: '50%', top: '50%',
-	  radius: { 0: 150 },
-	  swirls: {
-	    duration: 2000,
-	    isForce3d: 1
-	  }
-	}).then({
-	  radius: 50,
-	  angle: 90,
-	  swirls: {
-	    scale: 1
-	  }
-	});
-
-	document.addEventListener('click', function (e) {
-
-	  burst.tune({
-	    x: e.pageX,
-	    y: e.pageY,
-	    radius: { 250: 0 },
-	    swirls: {
-	      duration: 1000
-	    }
-	  })
-	  // .generate()
-	  .replay();
-	});
 
 	// istanbul ignore next
 	if (true) {

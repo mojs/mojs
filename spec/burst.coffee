@@ -949,16 +949,17 @@ describe 'Burst ->', ->
 
       modules = b._swirls[0][0]._modules
 
-      b._refreshBurstOptions modules, 1
       for j in [1...modules.length]
         module  = modules[j]
         spyOn(module, '_tuneNewOptions').and.callThrough()
-        
+      
+      b._refreshBurstOptions modules, 1
+
+      for j in [1...modules.length]
+        module  = modules[j]
         options = {}
-
-        arg0 = module._tuneNewOptions.calls.argsFor(j-1)[0]
-
-        expect(arg0).toBe b._addBurstProperties {}, 1, j
+        b._addBurstProperties options, 1, j
+        expect(module._tuneNewOptions).toHaveBeenCalledWith options
 
   describe '_tuneSwirls method', ->
     it 'should call _refreshBurstOptions with modules and i', ->

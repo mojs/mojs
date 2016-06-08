@@ -1276,7 +1276,7 @@
     });
     describe('_refreshBurstOptions method ->', function() {
       return it('should call _tuneNewOptions with results of _addBurstProperties', function() {
-        var arg0, b, j, module, modules, options, _i, _ref, _results;
+        var b, j, module, modules, options, _i, _j, _ref, _ref1, _results;
         b = new Burst({
           count: 4
         }).then({
@@ -1285,14 +1285,17 @@
           radius: 30
         });
         modules = b._swirls[0][0]._modules;
-        b._refreshBurstOptions(modules, 1);
-        _results = [];
         for (j = _i = 1, _ref = modules.length; 1 <= _ref ? _i < _ref : _i > _ref; j = 1 <= _ref ? ++_i : --_i) {
           module = modules[j];
           spyOn(module, '_tuneNewOptions').and.callThrough();
+        }
+        b._refreshBurstOptions(modules, 1);
+        _results = [];
+        for (j = _j = 1, _ref1 = modules.length; 1 <= _ref1 ? _j < _ref1 : _j > _ref1; j = 1 <= _ref1 ? ++_j : --_j) {
+          module = modules[j];
           options = {};
-          arg0 = module._tuneNewOptions.calls.argsFor(j - 1)[0];
-          _results.push(expect(arg0).toBe(b._addBurstProperties({}, 1, j)));
+          b._addBurstProperties(options, 1, j);
+          _results.push(expect(module._tuneNewOptions).toHaveBeenCalledWith(options));
         }
         return _results;
       });

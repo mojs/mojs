@@ -162,7 +162,7 @@ class Burst extends Tunable {
         var module  = modules[j],
             options = {};
         this._addBurstProperties( options, i, j );
-        // module._tuneNewOptions( options );
+        module._tuneNewOptions( options );
       }
   }
   /*
