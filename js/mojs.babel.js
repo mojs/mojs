@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.258.2', isDebug: true, helpers: h,
+  revision:   '0.258.3', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -37,6 +37,11 @@ window.mojs = mojs;
 
 // TODO:
 /*
+  stagger in deltas for burst controlled properties
+  fix safari in _calcSwirlXY
+  rename swirls to children for burst
+  burst should be of radius 0
+  ---
   swirl then issue
   'rand' angle flick with `then`
   not able to `play()` in `onComplete` callback

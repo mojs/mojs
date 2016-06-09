@@ -145,6 +145,7 @@ class ShapeSwirl extends Shape {
     var x = point.x, y = point.y;
     p.x = ( this._o.ctx ) ? x : x+this._posData.x.units;
     p.y = ( this._o.ctx ) ? y : y+this._posData.y.units;
+    // console.log(p.x)
   }
   /*
     Method to get progress of the swirl.

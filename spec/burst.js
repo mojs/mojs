@@ -124,7 +124,7 @@
       it('should set time on tween of masterSwirl', function() {
         var burst;
         burst = new Burst({
-          swirls: {
+          children: {
             duration: 'stagger(500, 1000)',
             repeat: 2
           }
@@ -136,7 +136,7 @@
       it('should set isSwirl to false by default', function() {
         var burst;
         burst = new Burst({
-          swirls: {
+          children: {
             duration: 'stagger(500, 1000)',
             repeat: 2
           }
@@ -147,7 +147,7 @@
         var burst;
         burst = new Burst({
           isSwirl: true,
-          swirls: {
+          children: {
             duration: 'stagger(500, 1000)',
             repeat: 2
           }
@@ -183,7 +183,7 @@
         fills = ['cyan', 'yellow', 'blue'];
         burst = new Burst({
           count: count,
-          swirls: {
+          children: {
             fill: fills
           }
         });
@@ -215,7 +215,7 @@
           count: 2
         });
         o = {
-          swirls: {
+          children: {
             fill: ['yellow', 'cyan', 'blue']
           }
         };
@@ -235,7 +235,7 @@
       it('should fallback to empty object', function() {
         var burst, opt0;
         burst = new Burst({
-          swirls: {
+          children: {
             radius: [
               {
                 20: 50
@@ -249,7 +249,7 @@
       it('should return the prop from passed object based on index ->', function() {
         var burst, opt0, opt1, opt2, opt8;
         burst = new Burst({
-          swirls: {
+          children: {
             radius: [
               {
                 20: 50
@@ -257,10 +257,10 @@
             ]
           }
         });
-        opt0 = burst._getPropByMod('radius', 0, burst._o.swirls);
-        opt1 = burst._getPropByMod('radius', 1, burst._o.swirls);
-        opt2 = burst._getPropByMod('radius', 2, burst._o.swirls);
-        opt8 = burst._getPropByMod('radius', 8, burst._o.swirls);
+        opt0 = burst._getPropByMod('radius', 0, burst._o.children);
+        opt1 = burst._getPropByMod('radius', 1, burst._o.children);
+        opt2 = burst._getPropByMod('radius', 2, burst._o.children);
+        opt8 = burst._getPropByMod('radius', 8, burst._o.children);
         expect(opt0[20]).toBe(50);
         expect(opt1).toBe(20);
         expect(opt2).toBe('500');
@@ -269,13 +269,13 @@
       it('should the same prop if not an array ->', function() {
         var burst, opt0, opt1, opt8;
         burst = new Burst({
-          swirls: {
+          children: {
             radius: 20
           }
         });
-        opt0 = burst._getPropByMod('radius', 0, burst._o.swirls);
-        opt1 = burst._getPropByMod('radius', 1, burst._o.swirls);
-        opt8 = burst._getPropByMod('radius', 8, burst._o.swirls);
+        opt0 = burst._getPropByMod('radius', 0, burst._o.children);
+        opt1 = burst._getPropByMod('radius', 1, burst._o.children);
+        opt8 = burst._getPropByMod('radius', 8, burst._o.children);
         expect(opt0).toBe(20);
         expect(opt1).toBe(20);
         return expect(opt8).toBe(20);
@@ -284,7 +284,7 @@
         var burst, from, opt0, opt1, opt8;
         burst = new Burst({
           fill: 'cyan',
-          swirls: {
+          children: {
             radius: 20
           }
         });
@@ -827,7 +827,7 @@
         spyOn(pack[0], 'then');
         spyOn(pack[1], 'then');
         o = {
-          swirls: {
+          children: {
             radius: [10, 20]
           }
         };
@@ -845,7 +845,7 @@
           count: 2
         });
         o = {
-          swirls: {
+          children: {
             radius: [10, 20]
           }
         };
@@ -861,7 +861,7 @@
           count: 2
         });
         o = {
-          swirls: {
+          children: {
             radius: [10, 20]
           }
         };
@@ -916,7 +916,7 @@
         });
         spyOn(b, '_setSwirlDuration').and.callThrough();
         b.then({
-          swirls: {
+          children: {
             duration: 50
           }
         });
@@ -932,7 +932,7 @@
         });
         spyOn(b.timeline, '_recalcTotalDuration');
         b.then({
-          swirls: {
+          children: {
             radius: [10, 20]
           }
         });
@@ -1051,7 +1051,7 @@
           fill: ['cyan', 'yellow']
         };
         options = {
-          swirls: swirls
+          children: swirls
         };
         b.tune(options);
         option0 = b._getChildOption(options, 0);
@@ -1200,7 +1200,7 @@
         angle = 20;
         degreeShifts = [0, 10, 20];
         b = new Burst({
-          swirls: {
+          children: {
             degreeShift: degreeShifts
           }
         });
@@ -1223,7 +1223,7 @@
         index = 2;
         angle = 20;
         b = new Burst({
-          swirls: {
+          children: {
             degreeShift: 'stagger(200)'
           }
         });
@@ -1245,7 +1245,7 @@
         var b, degreeCnt, index, obj, p, pointEnd, pointStart, step;
         index = 2;
         b = new Burst({
-          swirls: {
+          children: {
             degreeShift: 'stagger(200)'
           }
         });

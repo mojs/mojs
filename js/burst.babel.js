@@ -63,8 +63,6 @@ class Burst extends Tunable {
     // cuz masterSwirl should not get them
     this._saveTimelineOptions( o );
 
-    o.isSoftHide = true;
-
     // add new timeline properties to timeline
     this.timeline._setProp( this._timelineOptions );
 
@@ -224,6 +222,7 @@ class Burst extends Tunable {
     // cover!
     this._o.scale = ( this._o.scale != null ) ? this._o.scale : 1;
 
+    // this._o.size = 0;
     this.masterSwirl    = new ShapeSwirl( this._o );
     this._masterSwirls  = [ this.masterSwirl ];
     this.el             = this.masterSwirl.el;
@@ -293,8 +292,8 @@ class Burst extends Tunable {
   */
   _getChildOption (obj, i) {
     var options = {};
-    for ( var key in obj.swirls ) {
-      options[key] = this._getPropByMod( key, i, obj.swirls);
+    for ( var key in obj.children ) {
+      options[key] = this._getPropByMod( key, i, obj.children);
     }
     return options;
   }
@@ -318,8 +317,8 @@ class Burst extends Tunable {
   */
   _addOptionalProps (options, index) {
     options.index   = index;
-    options.left    = '50%';
-    options.top     = '50%';
+    options.left    = (options.left != null) ? options.left : '50%';
+    options.top     = (options.top != null) ? options.top : '50%';
     options.parent  = this.masterSwirl.el;
     options.isSwirl = (options.isSwirl == null)
                         ? false : options.isSwirl;

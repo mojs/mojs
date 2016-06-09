@@ -482,7 +482,6 @@ class Shape extends Tunable {
         scaleX = ( p.scaleX != null ) ? p.scaleX : p.scale,
         scaleY = ( p.scaleY != null ) ? p.scaleY : p.scale,
         scale  = `${ scaleX }, ${scaleY}`;
-
     return `translate(${p.x}, ${p.y}) rotate(${p.angle}deg) scale(${scale})`;
   }
   /*
