@@ -264,6 +264,7 @@ class Burst extends Tunable {
 
       maxTime = Math.max( p.repeatTime/p.speed, maxTime );
     }
+
     return maxTime;
   }
   /*
@@ -478,7 +479,8 @@ class ChildSwirl extends ShapeSwirl {
   _declareDefaults () {
     super._declareDefaults();
     this._defaults.isSwirl  = false;
-    this._defaults.duration = 700;
+    this._o.duration = (this._o.duration != null)
+      ? this._o.duration : 700;
   } 
 }
 

@@ -1324,8 +1324,19 @@
       it('should override defaults', function() {
         var child;
         child = new ChildSwirl;
-        expect(child._defaults.isSwirl).toBe(false);
-        return expect(child._defaults.duration).toBe(700);
+        return expect(child._defaults.isSwirl).toBe(false);
+      });
+      it('should override duration to 700', function() {
+        var child;
+        child = new ChildSwirl;
+        return expect(child._o.duration).toBe(700);
+      });
+      it('should not override duration to 700 if defined', function() {
+        var child;
+        child = new ChildSwirl({
+          duration: 0
+        });
+        return expect(child._o.duration).toBe(0);
       });
       return it('should be used as children swirl', function() {
         var burst;

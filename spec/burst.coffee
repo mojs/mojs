@@ -1005,7 +1005,14 @@ describe 'Burst ->', ->
     it 'should override defaults', ->
       child = new ChildSwirl
       expect(child._defaults.isSwirl).toBe false
-      expect(child._defaults.duration).toBe 700
+
+    it 'should override duration to 700', ->
+      child = new ChildSwirl
+      expect(child._o.duration).toBe 700
+
+    it 'should not override duration to 700 if defined', ->
+      child = new ChildSwirl duration: 0
+      expect(child._o.duration).toBe 0
 
     it 'should be used as children swirl', ->
       burst = new Burst
