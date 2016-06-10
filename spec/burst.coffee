@@ -22,9 +22,9 @@ describe 'Burst ->', ->
       expect(burst._defaults.radius).toEqual { 0 : 50 }
       expect(burst._defaults.radiusX).toEqual null
       expect(burst._defaults.radiusY).toEqual null
-      expect(burst._defaults.easing).toEqual 'linear.none'
-      expect(burst._defaults.isSwirl).toEqual false
-      expect(burst._defaults.isSoftHide).toEqual true
+      # expect(burst._defaults.isSwirl).toEqual false
+      # expect(burst._defaults.easing).toEqual 'linear.none'
+      # expect(burst._defaults.isSoftHide).toEqual true
 
   describe '_extendDefaults method ->', ->
     it 'should call _removeTweenProperties method', ->
@@ -119,14 +119,15 @@ describe 'Burst ->', ->
 
       expect(burst.masterSwirl._props.isSwirl).toBe false
 
-    it 'should work with isSwirl option', ->
-      burst = new Burst
-        isSwirl: true
-        children:
-          duration: 'stagger(500, 1000)'
-          repeat: 2
+    # nope
+    # it 'should work with isSwirl option', ->
+    #   burst = new Burst
+    #     isSwirl: true
+    #     children:
+    #       duration: 'stagger(500, 1000)'
+    #       repeat: 2
 
-      expect(burst.masterSwirl._props.isSwirl).toBe true
+    #   expect(burst.masterSwirl._props.isSwirl).toBe true
 
   describe '_renderSwirls method', ->
     it 'should create _swirls object', ->
@@ -274,22 +275,24 @@ describe 'Burst ->', ->
       expect(result.index).toBe 0
       expect(result.parent).toBe burst.masterSwirl.el
 
-    it 'should set isSiwrl to false by default', ->
-      burst = new Burst
-      obj = { }
-      result = burst._addOptionalProps obj, 0
-      expect(result.isSwirl).toBe false
+    # nope
+    # it 'should set isSiwrl to false by default', ->
+    #   burst = new Burst
+    #   obj = { }
+    #   result = burst._addOptionalProps obj, 0
+    #   expect(result.isSwirl).toBe false
 
-      obj = { isSwirl: true }
-      result = burst._addOptionalProps obj, 0
-      expect(result.isSwirl).toBe true
+    #   obj = { isSwirl: true }
+    #   result = burst._addOptionalProps obj, 0
+    #   expect(result.isSwirl).toBe true
 
-    it 'should hard rewrite `left` and `top` properties to 50%', ->
-      burst = new Burst
-      obj = {}
-      result = burst._addOptionalProps obj, 0
-      expect(result.left).toBe '50%'
-      expect(result.top).toBe '50%'
+    # nope
+    # it 'should hard rewrite `left` and `top` properties to 50%', ->
+    #   burst = new Burst
+    #   obj = {}
+    #   result = burst._addOptionalProps obj, 0
+    #   expect(result.left).toBe '50%'
+    #   expect(result.top).toBe '50%'
 
     it 'should add x/y', ->
       burst = new Burst
@@ -330,51 +333,68 @@ describe 'Burst ->', ->
   describe '_getBitAngle method ->', ->
     it 'should get angle by i', ->
       burst = new Burst radius: { 'rand(10,20)': 100 }
-      expect(burst._getBitAngle(0, 0)).toBe 90
-      expect(burst._getBitAngle(0, 1)).toBe 162
-      expect(burst._getBitAngle(0, 2)).toBe 234
-      expect(burst._getBitAngle(90, 2)).toBe 234 + 90
-      expect(burst._getBitAngle(0, 3)).toBe 306
-      expect(burst._getBitAngle(90, 3)).toBe 306 + 90
-      expect(burst._getBitAngle(0, 4)).toBe 378
-      expect(burst._getBitAngle(50, 4)).toBe 378 + 50
+      expect(burst._getBitAngle(0,  0, 0)).toBe 90
+      expect(burst._getBitAngle(0,  0, 1)).toBe 162
+      expect(burst._getBitAngle(0,  0, 2)).toBe 234
+      expect(burst._getBitAngle(90, 0, 2)).toBe 234 + 90
+      expect(burst._getBitAngle(0,  0, 3)).toBe 306
+      expect(burst._getBitAngle(90, 0, 3)).toBe 306 + 90
+      expect(burst._getBitAngle(0,  0, 4)).toBe 378
+      expect(burst._getBitAngle(50, 0, 4)).toBe 378 + 50
+
+    it 'should add with angleShift', ->
+      burst = new Burst radius: { 'rand(10,20)': 100 }
+      expect(burst._getBitAngle(0,  0, 0)).toBe 90
+      expect(burst._getBitAngle(0,  10, 1)).toBe 162 + 10
+      expect(burst._getBitAngle(0,  30, 2)).toBe 234 + 30
+      expect(burst._getBitAngle(90, 40, 2)).toBe 234 + 90 + 40
+      expect(burst._getBitAngle(0,  20, 3)).toBe 306 + 20
+      expect(burst._getBitAngle(90, 25, 3)).toBe 306 + 90 + 25
+      expect(burst._getBitAngle(0,  10, 4)).toBe 378 + 10
+      expect(burst._getBitAngle(50, 60, 4)).toBe 378 + 50 + 60
     it 'should fallback to 0', ->
       burst = new Burst radius: { 'rand(10,20)': 100 }
-      expect(burst._getBitAngle(undefined, 0)).toBe 90
-      expect(burst._getBitAngle(undefined, 1)).toBe 162
-      expect(burst._getBitAngle(undefined, 2)).toBe 234
+      expect(burst._getBitAngle(undefined, 0, 0)).toBe 90
+      expect(burst._getBitAngle(undefined, 0, 1)).toBe 162
+      expect(burst._getBitAngle(undefined, 0, 2)).toBe 234
     it 'should get delta angle by i', ->
       burst = new Burst radius: { 'rand(10,20)': 100 }
-      expect(burst._getBitAngle({180:0}, 0)[270]).toBe 90
-      expect(burst._getBitAngle({50:20}, 3)[356]).toBe 326
-      expect(burst._getBitAngle({50:20}, 4)[428]).toBe 398
+      expect(burst._getBitAngle({180:0}, 0, 0)[270]).toBe 90
+      expect(burst._getBitAngle({50:20}, 0, 3)[356]).toBe 326
+      expect(burst._getBitAngle({50:20}, 0, 4)[428]).toBe 398
+
+    it 'should add angleShift to deltas', ->
+      burst = new Burst radius: { 'rand(10,20)': 100 }
+      expect(burst._getBitAngle({180:0}, 20, 0)[270 + 20]).toBe 90 + 20
+      expect(burst._getBitAngle({50:20}, 30, 3)[356 + 30]).toBe 326 + 30
+      expect(burst._getBitAngle({50:20}, 50, 4)[428 + 50]).toBe 398 + 50
 
     it 'should work with `stagger` values', ->
       burst = new Burst count: 2
       
-      expect(burst._getBitAngle({'stagger(20, 10)':0}, 0)[110]).toBe 90
-      expect(burst._getBitAngle({'stagger(20, 10)':0}, 1)[300]).toBe 270
+      expect(burst._getBitAngle({'stagger(20, 10)':0}, 0, 0)[110]).toBe 90
+      expect(burst._getBitAngle({'stagger(20, 10)':0}, 0, 1)[300]).toBe 270
 
-      expect(burst._getBitAngle({0:'stagger(20, 10)'}, 1)[270]).toBe 300
+      expect(burst._getBitAngle({0:'stagger(20, 10)'}, 0, 1)[270]).toBe 300
 
     it 'should work with `random` values', ->
       burst = new Burst count: 2
       
-      angle = burst._getBitAngle({'rand(10, 20)':0}, 0)
+      angle = burst._getBitAngle({'rand(10, 20)':0}, 0, 0)
       for key, value in angle
         baseAngle = 90
         expect(parseInt(key)).toBeGreaterThan  baseAngle + 10
         expect(parseInt(key)).not.toBeGreaterThan baseAngle + 20
         expect(parseInt(value)).toBe baseAngle
 
-      angle = burst._getBitAngle({'rand(10, 20)':0}, 1)
+      angle = burst._getBitAngle({'rand(10, 20)':0}, 0, 1)
       for key, value in angle
         baseAngle = 270
         expect(parseInt(key)).toBeGreaterThan  baseAngle + 10
         expect(parseInt(key)).not.toBeGreaterThan baseAngle + 20
         expect(parseInt(value)).toBe baseAngle
 
-      angle = burst._getBitAngle({0:'rand(10, 20)'}, 1)
+      angle = burst._getBitAngle({0:'rand(10, 20)'}, 0, 1)
       for key, value in angle
         baseAngle = 270
         expect(parseInt(key)).toBe baseAngle
@@ -464,7 +484,6 @@ describe 'Burst ->', ->
 
     it 'should return the key\'s radius of the last master module // deltas', ->
       burst = new Burst(
-          isIt: 1
           radius: 5, radiusX: 10, radiusY: 30
         ).then(
           radius: { 10 : 25},
@@ -822,13 +841,12 @@ describe 'Burst ->', ->
       b._removeTweenProperties(o)
 
       for key of h.tweenOptionMap
-        if key isnt 'easing'
-          expect(o[key]).not.toBeDefined()
+        expect(o[key]).not.toBeDefined()
       
-      expect(o['easing']).toBe 1
-
-      for key of b._defaults
-        expect(o[key]).toBe 1
+      # nope      
+      # expect(o['easing']).toBe 1
+      # for key of b._defaults
+      #   expect(o[key]).toBe 1
 
   describe '_saveTimelineOptions method ->', ->
     it 'should save timeline options to _timelineOptions', ->
@@ -847,13 +865,13 @@ describe 'Burst ->', ->
     #   expect( b._timelineOptions ).toBe null
 
 
-  describe '_addBurstProperties method', ->
+  describe '_addBurstProperties method ->', ->
     it 'should calculate bit angle', ->
       b = new Burst
       angle = 20
       obj = { angle: angle }
       b._addBurstProperties( obj, 1 )
-      expect( obj.angle ).toBe b._getBitAngle( angle, 1 )
+      expect( obj.angle ).toBe b._getBitAngle( angle, 0, 1 )
 
     it 'should calculate bit x and y', ->
       index = 1
@@ -895,7 +913,7 @@ describe 'Burst ->', ->
 
       expect( obj.x ).toEqual b._getDeltaFromPoints('x', pointStart, pointEnd)
       expect( obj.y ).toEqual b._getDeltaFromPoints('y', pointStart, pointEnd)
-      expect( obj.angle ).toEqual b._getBitAngle( angle + degreeShifts[ index ], index )
+      expect( obj.angle ).toEqual b._getBitAngle( angle + degreeShifts[ index ], 0, index )
 
     it 'should calculate bit x/y and angle regarding stagger', ->
       index = 2
@@ -914,7 +932,7 @@ describe 'Burst ->', ->
 
       expect( obj.x ).toEqual b._getDeltaFromPoints('x', pointStart, pointEnd)
       expect( obj.y ).toEqual b._getDeltaFromPoints('y', pointStart, pointEnd)
-      expect( obj.angle ).toEqual b._getBitAngle( angle + 400, index )
+      expect( obj.angle ).toEqual b._getBitAngle( angle + 400, 0, index )
 
     it 'should fallback to 0 for angle', ->
       index = 2
@@ -930,7 +948,7 @@ describe 'Burst ->', ->
       pointStart  = b._getSidePoint('start', index*step + 400 );
       pointEnd    = b._getSidePoint('end',   index*step + 400 );
 
-      expect( obj.angle ).toEqual b._getBitAngle( 0 + 400, index );
+      expect( obj.angle ).toEqual b._getBitAngle( 0, 400, index );
 
     it 'should call _getSidePoint with passed index', ->
       b = new Burst count: 2
@@ -977,5 +995,53 @@ describe 'Burst ->', ->
         swirl = pack0[i]
         expect( b._refreshBurstOptions )
           .toHaveBeenCalledWith swirl._modules, i
+
+  describe 'ChildSwirl ->', ->
+    ChildSwirl = Burst.ChildSwirl
+    it 'should extend ShapeSwirl', ->
+      child = new ChildSwirl
+      expect(child instanceof ShapeSwirl).toBe true
+
+    it 'should override defaults', ->
+      child = new ChildSwirl
+      expect(child._defaults.isSwirl).toBe false
+      expect(child._defaults.duration).toBe 700
+
+    it 'should be used as children swirl', ->
+      burst = new Burst
+      # 0 pack 0 swirl
+      expect(burst._swirls[0][0] instanceof ChildSwirl).toBe true
+
+  describe 'MainSwirl ->', ->
+    ChildSwirl = Burst.ChildSwirl
+    MainSwirl  = Burst.MainSwirl
+    it 'should extend ChildSwirl', ->
+      child = new MainSwirl
+      expect(child instanceof ChildSwirl).toBe true
+
+    it 'should override defaults', ->
+      child = new MainSwirl
+      expect(child._defaults.scale).toBe 1
+      expect(child._defaults.width).toBe 0
+      expect(child._defaults.height).toBe 0
+      expect(child._defaults.isSwirl).toBe false
+
+    it 'should be used as main swirl', ->
+      burst = new Burst
+      expect(burst.masterSwirl instanceof MainSwirl).toBe true
+
+  describe '_hide method ->', ->
+    it 'should not call super', ->
+      burst = new Burst
+      spyOn mojs.Module::, '_hide'
+      burst._hide()
+      expect(mojs.Module::_hide).not.toHaveBeenCalled()
+
+  describe '_show method ->', ->
+    it 'should not call super', ->
+      burst = new Burst
+      spyOn mojs.Module::, '_show'
+      burst._show()
+      expect(mojs.Module::_show).not.toHaveBeenCalled()
 
 

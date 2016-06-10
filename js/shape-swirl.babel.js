@@ -140,12 +140,19 @@ class ShapeSwirl extends Shape {
             y: this._posData.y.start
           }
         });
-
     // if foreign svg canvas - set position without units
-    var x = point.x, y = point.y;
-    p.x = ( this._o.ctx ) ? x : x+this._posData.x.units;
-    p.y = ( this._o.ctx ) ? y : y+this._posData.y.units;
-    // console.log(p.x)
+    var x = point.x,
+        y = point.y,
+        smallNumber = 0.000001;
+
+    // remove very small numbers to prevent exponential forms
+    if ( x > 0 && x < smallNumber ) { x = smallNumber; }
+    if ( y > 0 && y < smallNumber ) { y = smallNumber; }
+    if ( x < 0 && x > -smallNumber ) { x = -smallNumber; }
+    if ( y < 0 && y > -smallNumber ) { y = -smallNumber; }
+
+    p.x = ( this._o.ctx ) ? x : `${x}${this._posData.x.units}`;
+    p.y = ( this._o.ctx ) ? y : `${y}${this._posData.y.units}`;
   }
   /*
     Method to get progress of the swirl.

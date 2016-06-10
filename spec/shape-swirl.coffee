@@ -236,5 +236,23 @@ describe 'ShapeSwirl ->', ->
       expect(Shape::_drawEl).toHaveBeenCalled()
 
 
+  describe '_calcSwirlXY method ->', ->
+    it 'should set values without exponintail values', ->
+      swirl = new ShapeSwirl x: { 0: 250 }, y: { 0: 250 }
+
+      swirl._calcSwirlXY( .000000001 )
+      swirl._calcSwirlXY( .000000001 )
+      # console.log swirl._props.x
+      expect(swirl._props.x).not.toMatch /e/
+      expect(swirl._props.y).not.toMatch /e/
+
+    it 'should set negative values without exponintail values', ->
+      swirl = new ShapeSwirl x: { 0: -250 }, y: { 0: -250 }
+
+      swirl._calcSwirlXY( .000000001 )
+      swirl._calcSwirlXY( .000000001 )
+      # console.log swirl._props.x
+      expect(swirl._props.x).not.toMatch /e/
+      expect(swirl._props.y).not.toMatch /e/
 
 

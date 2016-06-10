@@ -103,8 +103,8 @@
         expect(byte._defaults.fillOpacity).toBe(1);
         expect(byte._defaults.isSoftHide).toBe(true);
         expect(byte._defaults.isForce3d).toBe(false);
-        expect(byte._defaults.left).toBe(0);
-        expect(byte._defaults.top).toBe(0);
+        expect(byte._defaults.left).toBe('50%');
+        expect(byte._defaults.top).toBe('50%');
         expect(byte._defaults.x).toBe(0);
         expect(byte._defaults.y).toBe(0);
         expect(byte._defaults.angle).toBe(0);
@@ -122,8 +122,8 @@
         expect(byte._defaults.radiusY).toBe(null);
         expect(byte._defaults.isShowEnd).toBe(true);
         expect(byte._defaults.isShowStart).toBe(false);
-        expect(byte._defaults.size).toBe(null);
-        expect(byte._defaults.sizeGap).toBe(0);
+        expect(byte._defaults.width).toBe(null);
+        expect(byte._defaults.height).toBe(null);
         expect(byte._defaults.isWithShape).toBe(true);
         return expect(byte._defaults.callbacksContext).toBe(byte);
       });
@@ -416,6 +416,19 @@
           radius: 20
         });
         return expect(byte._history.length).toBe(1);
+      });
+    });
+    describe('size calculations ->', function() {
+      return it('should not calculate size el size if size was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 10,
+          strokeWidth: 5,
+          width: 400,
+          height: 200
+        });
+        expect(byte._props.shapeWidth).toBe(400);
+        return expect(byte._props.shapeHeight).toBe(200);
       });
     });
     describe('opacity set ->', function() {
@@ -882,7 +895,7 @@
         });
         expect(byte.el.style.top).toBe('10px');
         expect(byte.el.style.opacity).toBe('1');
-        expect(parseInt(byte.el.style.left, 10)).toBe(0);
+        expect(byte.el.style.left).toBe('50%');
         s = byte.el.style;
         tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
         isTr = tr === 'translate(0, 0) rotate(0deg) scale(1, 1)';
@@ -909,8 +922,7 @@
         });
         byte._draw();
         byte._draw();
-        expect(byte._lastSet.x.value).toBe('0');
-        return expect(parseInt(byte.el.style.left, 10)).toBe(0);
+        return expect(byte._lastSet.x.value).toBe('0');
       });
       it('should return true if there is no el', function() {
         var byte;
@@ -1431,28 +1443,6 @@
         tr._props.size = 1;
         tr._increaseSizeWithEasing();
         return expect(tr._props.size).toBe(1.1);
-      });
-    });
-    describe('_increaseSizeWithBitRatio method ->', function() {
-      it('should increase size based on bit ratio', function() {
-        var tr;
-        tr = new Shape({
-          shape: 'equal'
-        });
-        tr._props.size = 1;
-        tr._increaseSizeWithBitRatio();
-        return expect(tr._props.size).toBe(tr.shapeModule._props.ratio);
-      });
-      return it('should increase size based 2 gap sizes', function() {
-        var gap, tr;
-        gap = 20;
-        tr = new Shape({
-          shape: 'equal',
-          sizeGap: gap
-        });
-        tr._props.size = 1;
-        tr._increaseSizeWithBitRatio();
-        return expect(tr._props.size).toBe(tr.shapeModule._props.ratio + 2 * gap);
       });
     });
     describe('callbacksContext option ->', function() {

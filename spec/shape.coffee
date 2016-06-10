@@ -86,8 +86,8 @@ describe 'Shape ->', ->
       expect(byte._defaults.fillOpacity).toBe      1
       expect(byte._defaults.isSoftHide).toBe       true
       expect(byte._defaults.isForce3d).toBe        false
-      expect(byte._defaults.left).toBe             0
-      expect(byte._defaults.top).toBe              0
+      expect(byte._defaults.left).toBe             '50%'
+      expect(byte._defaults.top).toBe              '50%'
       expect(byte._defaults.x).toBe                0
       expect(byte._defaults.y).toBe                0
       expect(byte._defaults.angle).toBe            0
@@ -105,8 +105,11 @@ describe 'Shape ->', ->
       expect(byte._defaults.radiusY).toBe          null
       expect(byte._defaults.isShowEnd).toBe        true
       expect(byte._defaults.isShowStart).toBe      false
-      expect(byte._defaults.size).toBe             null
-      expect(byte._defaults.sizeGap).toBe          0
+      # nope
+      # expect(byte._defaults.size).toBe             null
+      expect(byte._defaults.width).toBe            null
+      expect(byte._defaults.height).toBe           null
+      # expect(byte._defaults.sizeGap).toBe          0
       expect(byte._defaults.isWithShape).toBe      true
       expect(byte._defaults.callbacksContext).toBe byte
 
@@ -318,97 +321,15 @@ describe 'Shape ->', ->
       byte = new Byte radius: 20
       expect(byte._history.length).toBe 1
 
-  # old
-  # describe 'size calculations ->', ->
-  #   it 'should calculate size el size depending on largest value', ->
-  #     byte = new Byte
-  #       radius:       { 25: -100 }
-  #       strokeWidth:  { 6:  4    }
-  #     expect(byte._props.size).toBe(206)
-  #   it 'should calculate size el size based on radiusX/Y', ->
-  #     byte = new Byte
-  #       radius:       { 25: -100 }
-  #       radiusX:      200
-  #       strokeWidth:  { 6:  4    }
-  #     expect(byte._props.size).toBe(406)
-  #   it 'should calculate size el size based on radiusX/Y', ->
-  #     byte = new Byte
-  #       radius:       { 25: -100 }
-  #       radiusX:      200
-  #       radiusY:      300
-  #       strokeWidth:  { 6:  4    }
-  #     expect(byte._props.size).toBe(606)
-  #   it 'should calculate size el size based on radiusX/Y', ->
-  #     byte = new Byte
-  #       radius:       { 25: -100 }
-  #       radiusY:      30
-  #       strokeWidth:  { 6:  4    }
-  #     expect(byte._props.size).toBe(206)
-  #   it 'should calculate size el size based on radiusX/Y', ->
-  #     byte = new Byte
-  #       radius:       50
-  #       radiusY:      30
-  #       strokeWidth:  { 6:  4 }
-  #     expect(byte._props.size).toBe(106)
-  #   it 'should have sizeGap option', ->
-  #     byte = new Byte
-  #       radius:       { 25: -100 }
-  #       strokeWidth:  { 6:  4    }
-  #       sizeGap: 40
-  #     expect(byte._props.size).toBe(286)
-  #   it 'should calculate size el size depending on shape\'s ratio', ->
-  #     byte = new Byte
-  #       radius:       { 25: -100 }
-  #       strokeWidth:  { 6:  4    }
-  #       shape:        'rect'
-  #     svg = document.createElementNS ns, 'svg'
-  #     rect  = new Rect ctx: svg
-  #     expect(byte._props.size).toBe(206)
-  #   it 'should not calculate size el size if size was passed', ->
-  #     byte = new Byte
-  #       radius:       100
-  #       strokeWidth:  5
-  #       size: 400
-  #     expect(byte._props.size).toBe(400)
-  #   it 'should not calculate size el size if external context was passed', ->
-  #     byte = new Byte
-  #       radius:       100
-  #       strokeWidth:  5
-  #       size:         400
-  #       ctx:          svg
-  #     expect(byte._props.size).toBe(400)
-  #   it 'should calculate center based on el size', ->
-  #     byte = new Byte
-  #       radius:       { 25: -100 }
-  #       strokeWidth:  { 4:  6    }
-  #     expect(byte._props.size)   .toBe(206)
-  #     expect(byte._props.center) .toBe(103)
-  #   it 'should increase size if elastic.out/inout easing', ->
-  #     byte = new Byte
-  #       radius:       { 25: -100 }
-  #       strokeWidth:  { 4:  6    }
-  #       easing: 'Elastic.Out'
-  #     expect(byte._props.size)   .toBe(206*1.25)
-  #     expect(byte._props.center) .toBe(byte._props.size/2)
-  #     byte = new Byte
-  #       radius:       { 25: -100 }
-  #       strokeWidth:  { 4:  6    }
-  #       easing: 'Elastic.InOut'
-  #     expect(byte._props.size)   .toBe(206*1.25)
-  #     expect(byte._props.center) .toBe(byte._props.size/2)
-  #   it 'should increase size if back.out/inout easing', ->
-  #     byte = new Byte
-  #       radius:       { 25: -100 }
-  #       strokeWidth:  { 4:  6 }
-  #       easing: 'back.Out'
-  #     expect(byte._props.size)   .toBe(206*1.1)
-  #     expect(byte._props.center) .toBe(byte._props.size/2)
-  #     byte = new Byte
-  #       radius:       { 25: -100 }
-  #       strokeWidth:  { 4:  6    }
-  #       easing: 'Back.InOut'
-  #     expect(byte._props.size)   .toBe(206*1.1)
-  #     expect(byte._props.center) .toBe(byte._props.size/2)
+  describe 'size calculations ->', ->
+    it 'should not calculate size el size if size was passed', ->
+      byte = new Byte
+        radius:       10
+        strokeWidth:  5
+        width:        400
+        height:       200
+      expect(byte._props.shapeWidth).toBe(400)
+      expect(byte._props.shapeHeight).toBe(200)
 
   describe 'opacity set ->', ->
     it 'should set opacity regarding units', ->
@@ -731,7 +652,7 @@ describe 'Shape ->', ->
       byte = new Byte radius: 25, top: 10, isShowStart: true
       expect(byte.el.style.top)       .toBe     '10px'
       expect(byte.el.style.opacity)   .toBe     '1'
-      expect(parseInt(byte.el.style.left, 10)).toBe 0
+      expect(byte.el.style.left).toBe '50%'
       s = byte.el.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
       isTr  = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
@@ -749,7 +670,6 @@ describe 'Shape ->', ->
       byte._draw()
       byte._draw()
       expect(byte._lastSet.x.value)   .toBe    '0'
-      expect(parseInt(byte.el.style.left, 10)).toBe 0
     it 'should return true if there is no el', ->
       byte = new Byte radius: 25
       byte.el = null
@@ -1087,21 +1007,22 @@ describe 'Shape ->', ->
       tr._increaseSizeWithEasing()
       expect(tr._props.size).toBe 1.1
 
-  describe '_increaseSizeWithBitRatio method ->', ->
-    it 'should increase size based on bit ratio', ->
-      tr = new Shape shape: 'equal'
+  # nope
+  # describe '_increaseSizeWithBitRatio method ->', ->
+  #   it 'should increase size based on bit ratio', ->
+  #     tr = new Shape shape: 'equal'
 
-      tr._props.size = 1
-      tr._increaseSizeWithBitRatio()
-      expect(tr._props.size).toBe tr.shapeModule._props.ratio
+  #     tr._props.size = 1
+  #     tr._increaseSizeWithBitRatio()
+  #     expect(tr._props.size).toBe tr.shapeModule._props.ratio
 
-    it 'should increase size based 2 gap sizes', ->
-      gap = 20
-      tr = new Shape shape: 'equal', sizeGap: gap
+  #   it 'should increase size based 2 gap sizes', ->
+  #     gap = 20
+  #     tr = new Shape shape: 'equal', sizeGap: gap
 
-      tr._props.size = 1
-      tr._increaseSizeWithBitRatio()
-      expect(tr._props.size).toBe tr.shapeModule._props.ratio + 2*gap
+  #     tr._props.size = 1
+  #     tr._increaseSizeWithBitRatio()
+  #     expect(tr._props.size).toBe tr.shapeModule._props.ratio + 2*gap
 
   describe 'callbacksContext option ->', ->
     it 'should pass the options to the tween', ->

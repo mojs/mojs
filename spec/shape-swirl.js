@@ -507,7 +507,7 @@
         return expect(swirl1).toBe(sign * swirl._props.swirlSize * freq);
       });
     });
-    return describe('_draw method ->', function() {
+    describe('_draw method ->', function() {
       it('should call super', function() {
         var swirl;
         swirl = new ShapeSwirl;
@@ -525,6 +525,38 @@
         swirl._draw();
         expect(Shape.prototype._draw).not.toHaveBeenCalled();
         return expect(Shape.prototype._drawEl).toHaveBeenCalled();
+      });
+    });
+    return describe('_calcSwirlXY method ->', function() {
+      it('should set values without exponintail values', function() {
+        var swirl;
+        swirl = new ShapeSwirl({
+          x: {
+            0: 250
+          },
+          y: {
+            0: 250
+          }
+        });
+        swirl._calcSwirlXY(.000000001);
+        swirl._calcSwirlXY(.000000001);
+        expect(swirl._props.x).not.toMatch(/e/);
+        return expect(swirl._props.y).not.toMatch(/e/);
+      });
+      return it('should set negative values without exponintail values', function() {
+        var swirl;
+        swirl = new ShapeSwirl({
+          x: {
+            0: -250
+          },
+          y: {
+            0: -250
+          }
+        });
+        swirl._calcSwirlXY(.000000001);
+        swirl._calcSwirlXY(.000000001);
+        expect(swirl._props.x).not.toMatch(/e/);
+        return expect(swirl._props.y).not.toMatch(/e/);
       });
     });
   });

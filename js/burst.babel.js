@@ -22,13 +22,13 @@ class Burst extends Tunable {
       /* ∆ :: [number > 0] :: Y radius of the Burst. */
       radiusY:  null,
       // ∆ :: Possible values: [ number ]
-      scale:    1,
+      // scale:    1,
       /* [string] :: Easing for the main module (not children). */
-      easing:  'linear.none',
+      // easing:  'linear.none',
       /* [boolean] :: If Burst itself should follow sinusoidal path. */
-      isSwirl:  false,
+      // isSwirl:  false,
       // use paintless hide method
-      isSoftHide: true
+      // isSoftHide: true
     }
   }
   /*
@@ -218,12 +218,8 @@ class Burst extends Tunable {
     // save timeline options and remove from _o
     // cuz the master swirl should not get them
     this._saveTimelineOptions( this._o );
-
-    // cover!
-    this._o.scale = ( this._o.scale != null ) ? this._o.scale : 1;
-
-    // this._o.size = 0;
-    this.masterSwirl    = new ShapeSwirl( this._o );
+    
+    this.masterSwirl    = new MainSwirl( this._o );
     this._masterSwirls  = [ this.masterSwirl ];
     this.el             = this.masterSwirl.el;
 
@@ -239,10 +235,7 @@ class Burst extends Tunable {
 
     for ( var i = 0; i < p.count; i++ ) {
       var option = this._getChildOption( this._o, i );
-
-      // !COVER!
-      option.scale = option.scale != null ? option.scale : { 1: 0 };
-      pack.push( new ShapeSwirl( this._addOptionalProps( option, i ) ));
+      pack.push( new ChildSwirl( this._addOptionalProps( option, i ) ));
     }
     this._swirls = { 0: pack };
     this._setSwirlDuration( this.masterSwirl, this._calcPackTime(pack) );
@@ -317,11 +310,10 @@ class Burst extends Tunable {
   */
   _addOptionalProps (options, index) {
     options.index   = index;
-    options.left    = (options.left != null) ? options.left : '50%';
-    options.top     = (options.top != null) ? options.top : '50%';
     options.parent  = this.masterSwirl.el;
-    options.isSwirl = (options.isSwirl == null)
-                        ? false : options.isSwirl;
+    // options.isSwirl = (options.isSwirl != null) ? options.isSwirl : false;
+    // options.left    = (options.left != null) ? options.left : '50%';
+    // options.top     = (options.top != null) ? options.top : '50%';
 
     this._addBurstProperties( options, index );
 
@@ -352,8 +344,8 @@ class Burst extends Tunable {
 
     options.x     = this._getDeltaFromPoints('x', pointStart, pointEnd);
     options.y     = this._getDeltaFromPoints('y', pointStart, pointEnd);
-    options.angle = this._getBitAngle( (options.angle || 0) + degreeShift, index );
 
+    options.angle = this._getBitAngle( (options.angle || 0), degreeShift, index );
     // reset degreeeShift which will be send to child swirls since
     // burst controls `x`, `y`, `angle` and `degreeShift` of child swirls
     options.degreeShift = 0;
@@ -363,14 +355,17 @@ class Burst extends Tunable {
     it will follow circular shape.
      
      @param    {Number, Object} Base angle.
+     @param    {Number}         Angle shift for the bit
      @param    {Number}         Shape's index in burst.
      @returns  {Number}         Angle in burst.
   */ 
-  _getBitAngle ( angleProperty = 0, i ) {
+  _getBitAngle ( angleProperty = 0, angleShift = 0, i ) {
     var p      = this._props,
         degCnt = ( p.degree % 360 === 0 ) ? p.count : p.count-1 || 1,
         step   = p.degree/degCnt,
         angle  = i*step + 90;
+
+    angle += angleShift;
     // if not delta option
     if ( !this._isDelta(angleProperty) ) { angleProperty += angle; }
     else {
@@ -471,6 +466,33 @@ class Burst extends Tunable {
     @override @ Tweenable
   */
   _makeTween () { /* don't create any tween */ }
+  /*
+    Override `_hide` and `_show` methods on module
+    since we don't have to hide nor show on the module.
+  */
+  _hide () { /* do nothing */ }
+  _show () { /* do nothing */ }
 }
+
+class ChildSwirl extends ShapeSwirl {
+  _declareDefaults () {
+    super._declareDefaults();
+    this._defaults.isSwirl  = false;
+    this._defaults.duration = 700;
+  } 
+}
+
+class MainSwirl extends ChildSwirl {
+  _declareDefaults () {
+    super._declareDefaults();
+    this._defaults.scale = 1;
+    this._defaults.width = 0;
+    this._defaults.height = 0;
+    // this._defaults.duration = 2000;
+  }
+}
+
+Burst.ChildSwirl = ChildSwirl;
+Burst.MainSwirl  = MainSwirl;
 
 export default Burst;

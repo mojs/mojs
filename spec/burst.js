@@ -36,10 +36,7 @@
           0: 50
         });
         expect(burst._defaults.radiusX).toEqual(null);
-        expect(burst._defaults.radiusY).toEqual(null);
-        expect(burst._defaults.easing).toEqual('linear.none');
-        expect(burst._defaults.isSwirl).toEqual(false);
-        return expect(burst._defaults.isSoftHide).toEqual(true);
+        return expect(burst._defaults.radiusY).toEqual(null);
       });
     });
     describe('_extendDefaults method ->', function() {
@@ -133,7 +130,7 @@
         burst._renderSwirls();
         return expect(burst.masterSwirl.tween._props.duration).toBe(burst._calcPackTime(burst._swirls[0]));
       });
-      it('should set isSwirl to false by default', function() {
+      return it('should set isSwirl to false by default', function() {
         var burst;
         burst = new Burst({
           children: {
@@ -142,17 +139,6 @@
           }
         });
         return expect(burst.masterSwirl._props.isSwirl).toBe(false);
-      });
-      return it('should work with isSwirl option', function() {
-        var burst;
-        burst = new Burst({
-          isSwirl: true,
-          children: {
-            duration: 'stagger(500, 1000)',
-            repeat: 2
-          }
-        });
-        return expect(burst.masterSwirl._props.isSwirl).toBe(true);
       });
     });
     describe('_renderSwirls method', function() {
@@ -356,26 +342,6 @@
         expect(result.index).toBe(0);
         return expect(result.parent).toBe(burst.masterSwirl.el);
       });
-      it('should set isSiwrl to false by default', function() {
-        var burst, obj, result;
-        burst = new Burst;
-        obj = {};
-        result = burst._addOptionalProps(obj, 0);
-        expect(result.isSwirl).toBe(false);
-        obj = {
-          isSwirl: true
-        };
-        result = burst._addOptionalProps(obj, 0);
-        return expect(result.isSwirl).toBe(true);
-      });
-      it('should hard rewrite `left` and `top` properties to 50%', function() {
-        var burst, obj, result;
-        burst = new Burst;
-        obj = {};
-        result = burst._addOptionalProps(obj, 0);
-        expect(result.left).toBe('50%');
-        return expect(result.top).toBe('50%');
-      });
       it('should add x/y', function() {
         var burst, eps, isClose, isZero, obj0, obj1, result0, result1;
         burst = new Burst({
@@ -428,14 +394,30 @@
             'rand(10,20)': 100
           }
         });
-        expect(burst._getBitAngle(0, 0)).toBe(90);
-        expect(burst._getBitAngle(0, 1)).toBe(162);
-        expect(burst._getBitAngle(0, 2)).toBe(234);
-        expect(burst._getBitAngle(90, 2)).toBe(234 + 90);
-        expect(burst._getBitAngle(0, 3)).toBe(306);
-        expect(burst._getBitAngle(90, 3)).toBe(306 + 90);
-        expect(burst._getBitAngle(0, 4)).toBe(378);
-        return expect(burst._getBitAngle(50, 4)).toBe(378 + 50);
+        expect(burst._getBitAngle(0, 0, 0)).toBe(90);
+        expect(burst._getBitAngle(0, 0, 1)).toBe(162);
+        expect(burst._getBitAngle(0, 0, 2)).toBe(234);
+        expect(burst._getBitAngle(90, 0, 2)).toBe(234 + 90);
+        expect(burst._getBitAngle(0, 0, 3)).toBe(306);
+        expect(burst._getBitAngle(90, 0, 3)).toBe(306 + 90);
+        expect(burst._getBitAngle(0, 0, 4)).toBe(378);
+        return expect(burst._getBitAngle(50, 0, 4)).toBe(378 + 50);
+      });
+      it('should add with angleShift', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            'rand(10,20)': 100
+          }
+        });
+        expect(burst._getBitAngle(0, 0, 0)).toBe(90);
+        expect(burst._getBitAngle(0, 10, 1)).toBe(162 + 10);
+        expect(burst._getBitAngle(0, 30, 2)).toBe(234 + 30);
+        expect(burst._getBitAngle(90, 40, 2)).toBe(234 + 90 + 40);
+        expect(burst._getBitAngle(0, 20, 3)).toBe(306 + 20);
+        expect(burst._getBitAngle(90, 25, 3)).toBe(306 + 90 + 25);
+        expect(burst._getBitAngle(0, 10, 4)).toBe(378 + 10);
+        return expect(burst._getBitAngle(50, 60, 4)).toBe(378 + 50 + 60);
       });
       it('should fallback to 0', function() {
         var burst;
@@ -444,9 +426,9 @@
             'rand(10,20)': 100
           }
         });
-        expect(burst._getBitAngle(void 0, 0)).toBe(90);
-        expect(burst._getBitAngle(void 0, 1)).toBe(162);
-        return expect(burst._getBitAngle(void 0, 2)).toBe(234);
+        expect(burst._getBitAngle(void 0, 0, 0)).toBe(90);
+        expect(burst._getBitAngle(void 0, 0, 1)).toBe(162);
+        return expect(burst._getBitAngle(void 0, 0, 2)).toBe(234);
       });
       it('should get delta angle by i', function() {
         var burst;
@@ -457,13 +439,30 @@
         });
         expect(burst._getBitAngle({
           180: 0
-        }, 0)[270]).toBe(90);
+        }, 0, 0)[270]).toBe(90);
         expect(burst._getBitAngle({
           50: 20
-        }, 3)[356]).toBe(326);
+        }, 0, 3)[356]).toBe(326);
         return expect(burst._getBitAngle({
           50: 20
-        }, 4)[428]).toBe(398);
+        }, 0, 4)[428]).toBe(398);
+      });
+      it('should add angleShift to deltas', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            'rand(10,20)': 100
+          }
+        });
+        expect(burst._getBitAngle({
+          180: 0
+        }, 20, 0)[270 + 20]).toBe(90 + 20);
+        expect(burst._getBitAngle({
+          50: 20
+        }, 30, 3)[356 + 30]).toBe(326 + 30);
+        return expect(burst._getBitAngle({
+          50: 20
+        }, 50, 4)[428 + 50]).toBe(398 + 50);
       });
       it('should work with `stagger` values', function() {
         var burst;
@@ -472,13 +471,13 @@
         });
         expect(burst._getBitAngle({
           'stagger(20, 10)': 0
-        }, 0)[110]).toBe(90);
+        }, 0, 0)[110]).toBe(90);
         expect(burst._getBitAngle({
           'stagger(20, 10)': 0
-        }, 1)[300]).toBe(270);
+        }, 0, 1)[300]).toBe(270);
         return expect(burst._getBitAngle({
           0: 'stagger(20, 10)'
-        }, 1)[270]).toBe(300);
+        }, 0, 1)[270]).toBe(300);
       });
       return it('should work with `random` values', function() {
         var angle, baseAngle, burst, key, value, _i, _j, _k, _len, _len1, _len2, _results;
@@ -487,7 +486,7 @@
         });
         angle = burst._getBitAngle({
           'rand(10, 20)': 0
-        }, 0);
+        }, 0, 0);
         for (value = _i = 0, _len = angle.length; _i < _len; value = ++_i) {
           key = angle[value];
           baseAngle = 90;
@@ -497,7 +496,7 @@
         }
         angle = burst._getBitAngle({
           'rand(10, 20)': 0
-        }, 1);
+        }, 0, 1);
         for (value = _j = 0, _len1 = angle.length; _j < _len1; value = ++_j) {
           key = angle[value];
           baseAngle = 270;
@@ -507,7 +506,7 @@
         }
         angle = burst._getBitAngle({
           0: 'rand(10, 20)'
-        }, 1);
+        }, 0, 1);
         _results = [];
         for (value = _k = 0, _len2 = angle.length; _k < _len2; value = ++_k) {
           key = angle[value];
@@ -677,7 +676,6 @@
       return it('should return the key\'s radius of the last master module // deltas', function() {
         var burst, radiusE, radiusS, radiusXE, radiusXS, radiusYE, radiusYS;
         burst = new Burst({
-          isIt: 1,
           radius: 5,
           radiusX: 10,
           radiusY: 30
@@ -1133,15 +1131,9 @@
           o[key] = 1;
         }
         b._removeTweenProperties(o);
-        for (key in h.tweenOptionMap) {
-          if (key !== 'easing') {
-            expect(o[key]).not.toBeDefined();
-          }
-        }
-        expect(o['easing']).toBe(1);
         _results = [];
-        for (key in b._defaults) {
-          _results.push(expect(o[key]).toBe(1));
+        for (key in h.tweenOptionMap) {
+          _results.push(expect(o[key]).not.toBeDefined());
         }
         return _results;
       });
@@ -1159,7 +1151,7 @@
         return expect(opts.timeline).not.toBeDefined();
       });
     });
-    describe('_addBurstProperties method', function() {
+    describe('_addBurstProperties method ->', function() {
       it('should calculate bit angle', function() {
         var angle, b, obj;
         b = new Burst;
@@ -1168,7 +1160,7 @@
           angle: angle
         };
         b._addBurstProperties(obj, 1);
-        return expect(obj.angle).toBe(b._getBitAngle(angle, 1));
+        return expect(obj.angle).toBe(b._getBitAngle(angle, 0, 1));
       });
       it('should calculate bit x and y', function() {
         var b, degreeCnt, index, obj, p, pointEnd, pointStart, step;
@@ -1216,7 +1208,7 @@
         pointEnd = b._getSidePoint('end', index * step + degreeShifts[index]);
         expect(obj.x).toEqual(b._getDeltaFromPoints('x', pointStart, pointEnd));
         expect(obj.y).toEqual(b._getDeltaFromPoints('y', pointStart, pointEnd));
-        return expect(obj.angle).toEqual(b._getBitAngle(angle + degreeShifts[index], index));
+        return expect(obj.angle).toEqual(b._getBitAngle(angle + degreeShifts[index], 0, index));
       });
       it('should calculate bit x/y and angle regarding stagger', function() {
         var angle, b, degreeCnt, index, obj, p, pointEnd, pointStart, step;
@@ -1239,7 +1231,7 @@
         pointEnd = b._getSidePoint('end', index * step + 400);
         expect(obj.x).toEqual(b._getDeltaFromPoints('x', pointStart, pointEnd));
         expect(obj.y).toEqual(b._getDeltaFromPoints('y', pointStart, pointEnd));
-        return expect(obj.angle).toEqual(b._getBitAngle(angle + 400, index));
+        return expect(obj.angle).toEqual(b._getBitAngle(angle + 400, 0, index));
       });
       it('should fallback to 0 for angle', function() {
         var b, degreeCnt, index, obj, p, pointEnd, pointStart, step;
@@ -1258,7 +1250,7 @@
         step = p.degree / degreeCnt;
         pointStart = b._getSidePoint('start', index * step + 400);
         pointEnd = b._getSidePoint('end', index * step + 400);
-        return expect(obj.angle).toEqual(b._getBitAngle(0 + 400, index));
+        return expect(obj.angle).toEqual(b._getBitAngle(0, 400, index));
       });
       return it('should call _getSidePoint with passed index', function() {
         var b, obj;
@@ -1300,7 +1292,7 @@
         return _results;
       });
     });
-    return describe('_tuneSwirls method', function() {
+    describe('_tuneSwirls method', function() {
       return it('should call _refreshBurstOptions with modules and i', function() {
         var b, i, pack0, swirl, _i, _ref, _results;
         b = new Burst({
@@ -1319,6 +1311,67 @@
           _results.push(expect(b._refreshBurstOptions).toHaveBeenCalledWith(swirl._modules, i));
         }
         return _results;
+      });
+    });
+    describe('ChildSwirl ->', function() {
+      var ChildSwirl;
+      ChildSwirl = Burst.ChildSwirl;
+      it('should extend ShapeSwirl', function() {
+        var child;
+        child = new ChildSwirl;
+        return expect(child instanceof ShapeSwirl).toBe(true);
+      });
+      it('should override defaults', function() {
+        var child;
+        child = new ChildSwirl;
+        expect(child._defaults.isSwirl).toBe(false);
+        return expect(child._defaults.duration).toBe(700);
+      });
+      return it('should be used as children swirl', function() {
+        var burst;
+        burst = new Burst;
+        return expect(burst._swirls[0][0] instanceof ChildSwirl).toBe(true);
+      });
+    });
+    describe('MainSwirl ->', function() {
+      var ChildSwirl, MainSwirl;
+      ChildSwirl = Burst.ChildSwirl;
+      MainSwirl = Burst.MainSwirl;
+      it('should extend ChildSwirl', function() {
+        var child;
+        child = new MainSwirl;
+        return expect(child instanceof ChildSwirl).toBe(true);
+      });
+      it('should override defaults', function() {
+        var child;
+        child = new MainSwirl;
+        expect(child._defaults.scale).toBe(1);
+        expect(child._defaults.width).toBe(0);
+        expect(child._defaults.height).toBe(0);
+        return expect(child._defaults.isSwirl).toBe(false);
+      });
+      return it('should be used as main swirl', function() {
+        var burst;
+        burst = new Burst;
+        return expect(burst.masterSwirl instanceof MainSwirl).toBe(true);
+      });
+    });
+    describe('_hide method ->', function() {
+      return it('should not call super', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(mojs.Module.prototype, '_hide');
+        burst._hide();
+        return expect(mojs.Module.prototype._hide).not.toHaveBeenCalled();
+      });
+    });
+    return describe('_show method ->', function() {
+      return it('should not call super', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(mojs.Module.prototype, '_show');
+        burst._show();
+        return expect(mojs.Module.prototype._show).not.toHaveBeenCalled();
       });
     });
   });

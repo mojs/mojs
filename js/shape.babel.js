@@ -25,7 +25,7 @@ class Shape extends Tunable {
       // where to append the module to [selector, HTMLElement]
       parent:           document.body,
       // class name for the `el`
-      className:            '',
+      className:        '',
       // Possible values: [circle, line, zigzag, rect, polygon, cross, equal ]
       shape:            'circle',
       // ∆ :: Possible values: [color name, rgb, rgba, hex]
@@ -49,9 +49,9 @@ class Shape extends Tunable {
       // {Boolean} - if should trigger composite layer for the `el`
       isForce3d:        false,
       // ∆ :: Units :: Possible values: [ number, string ]
-      left:             0,
+      left:             '50%',
       // ∆ :: Units :: Possible values: [ number, string ]
-      top:              0,
+      top:              '50%',
       // ∆ :: Units :: Possible values: [ number, string ]
       x:                0,
       // ∆ :: Units :: Possible values: [ number, string ]
@@ -89,9 +89,12 @@ class Shape extends Tunable {
       // Possible values: [ number ]
 
       /* technical ones: */
-      size:             null,
+      // explicit width of the module canvas
+      width:            null,
+      // explicit height of the module canvas
+      height:           null,
       // Possible values: [ number ]
-      sizeGap:          0,
+      // sizeGap:          0,
       /* [boolean] :: If should have child shape. */
       isWithShape:      true,
       // context for all the callbacks
@@ -345,11 +348,11 @@ class Shape extends Tunable {
     Method to increase calculated size based on bit ratio.
     @private
   */
-  _increaseSizeWithBitRatio () {
-    var p   = this._props;
-    // p.size *= this.shape._props.ratio;
-    p.size += 2 * p.sizeGap;
-  }
+  // _increaseSizeWithBitRatio () {
+  //   var p   = this._props;
+  //   // p.size *= this.shape._props.ratio;
+  //   p.size += 2 * p.sizeGap;
+  // }
   /*
     Method to get maximum radius size with optional fallback.
     @private
@@ -378,8 +381,13 @@ class Shape extends Tunable {
         // get maximum stroke value
         stroke = this._getMaxStroke();
     // save shape `width` and `height` to `_props`
-    p.shapeWidth  = 2*this._getMaxRadius( 'radiusX' ) + stroke;
-    p.shapeHeight = 2*this._getMaxRadius( 'radiusY' ) + stroke;
+    p.shapeWidth = (p.width != null)
+      ? p.width
+      : 2*this._getMaxRadius( 'radiusX' ) + stroke;
+
+    p.shapeHeight = (p.height != null)
+      ? p.height
+      : 2*this._getMaxRadius( 'radiusY' ) + stroke;
   }
   /*
     Method to create shape.

@@ -777,7 +777,7 @@ describe 'Helpers ->', ->
       #   expect(-> h.calcArrDelta [200, 300, 100]).toThrow()
       #   expect(-> h.calcArrDelta()).toThrow()
       
-    describe 'getRadialPoint', ->
+    describe 'getRadialPoint method ->', ->
       it 'should calculate radial point', ->
         point = h.getRadialPoint
           radius: 50
@@ -801,21 +801,32 @@ describe 'Helpers ->', ->
           center: x: 50, y: 50
         expect(point.x).toBe 50
         expect(point.y).toBe -50
-      it 'should return false if 1 of 3 options missed', ->
-        point = h.getRadialPoint
-          radius: 50
-          angle:  90
-        expect(point).toBeFalsy()
-      it 'should return false only if 1 of 3 options missed but not falsy', ->
+      # nope
+      # it 'should return false if 1 of 3 options missed', ->
+      #   point = h.getRadialPoint
+      #     radius: 50
+      #     angle:  90
+      #   expect(point).toBeFalsy()
+      it 'should return false only if param is 0', ->
         point = h.getRadialPoint
           radius: 0
           angle:  90
           center: x: 0, y: 0
         expect(point).toBeTruthy()
-      it 'options should have default empty object', ->
-        point = h.getRadialPoint()
-        expect(point).toBeFalsy()
-        expect(h.getRadialPoint).not.toThrow()
+      # nope
+      # it 'should not return exponential forms', ->
+      #   point = h.getRadialPoint
+      #     radius: 0.00000001
+      #     angle:  90
+      #     center: x: 0.00000001, y: 0.00000001
+      #   console.log point
+      #   expect(point.x).not.toMatch /e/
+      #   expect(point.y).not.toMatch /e/
+      # nope
+      # it 'options should have default empty object', ->
+      #   point = h.getRadialPoint()
+      #   expect(point).toBeFalsy()
+      #   expect(h.getRadialPoint).not.toThrow()
 
     describe 'cloneObj method', ->
       it 'should clone object', ->
