@@ -9,6 +9,8 @@
 - Spriter(soon)
 - Radial Spring(soon)
 - Spring Wave(soon)
+- Goo Transfroms(soon)
+- Broom(soon)
 
 ## Tweens
 

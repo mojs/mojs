@@ -1,6 +1,7 @@
 # Tween
-[back](./)
 
+- [Timeline](./timeline.md)
+- [back](./index.md)
 
 ```javascript
 const tween = new mojs.Tween({
@@ -113,3 +114,6 @@ const tween = new mojs.Tween({
   reset ( speed ) {}
 
 ```
+
+- [Timeline](./timeline.md)
+- [back](./index.md)
