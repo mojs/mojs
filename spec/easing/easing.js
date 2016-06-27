@@ -235,7 +235,7 @@
         });
       });
     });
-    return describe('splitEasing method ->', function() {
+    describe('splitEasing method ->', function() {
       it('should split easing string to array', function() {
         expect(easing._splitEasing('Linear.None')[0]).toBe('linear');
         return expect(easing._splitEasing('Linear.None')[1]).toBe('none');
@@ -262,6 +262,11 @@
           return console.log('function');
         };
         return expect(easing._splitEasing(fun) + '').toBe(fun + '');
+      });
+    });
+    return describe('approximate object', function() {
+      return it('should de defined', function() {
+        return expect(easing.approximate).toBeDefined();
       });
     });
   });

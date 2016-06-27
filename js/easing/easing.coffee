@@ -1,7 +1,8 @@
-bezier     = require './bezier-easing'
-PathEasing = require './path-easing'
-mix        = require './mix'
-h          = require '../h'
+bezier      = require './bezier-easing'
+PathEasing  = require './path-easing'
+mix         = require './mix'
+h           = require '../h'
+approximate = require('./approximate').default or require('./approximate');
 
 sin = Math.sin
 PI  = Math.PI
@@ -10,6 +11,7 @@ class Easing
   bezier:     bezier
   PathEasing: PathEasing
   path:       (new PathEasing 'creator').create
+  approximate: approximate
   # ---
 
   # Method to inverse the easing value
@@ -181,6 +183,8 @@ class Easing
       [ firstPart, secondPart ]
     else ['linear', 'none']
 
-easing = new Easing; easing.mix = mix easing
+easing = new Easing;
+
+easing.mix = mix easing
 
 module.exports = easing

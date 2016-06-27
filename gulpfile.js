@@ -132,7 +132,8 @@ gulp.task('default', function(){
   gulp.watch(paths.src.tests,['coffee:tests']);
   gulp.watch(paths.src.css,  ['stylus']);
   // gulp.watch(paths.src.js,   ['coffeeify', 'coffee-lint', 'docs', 'lib']);
-  gulp.watch(paths.src.js,   [ 'lib', 'babel-lib' ]);
+  // gulp.watch(paths.src.js,   [ 'lib', 'babel-lib' ]);
+  // gulp.watch(paths.src.babel,   [ 'lib', 'babel-lib' ]);
   gulp.watch(distMoFile,   [ 'minify-mo' ]);
   // gulp.watch(paths.src.index,['index:jade']);
   gulp.watch('package.json', ['update-version']);

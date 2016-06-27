@@ -186,7 +186,9 @@ describe 'easing ->', ->
       fun = -> console.log 'function'
       expect(easing._splitEasing(fun)+'').toBe fun+''
 
-
+  describe 'approximate object', ->
+    it 'should de defined', ->
+      expect(easing.approximate).toBeDefined();
 
     
 
