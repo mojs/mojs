@@ -96,8 +96,8 @@ module.exports = function(config) {
       // 'build/burst.js',
       // 'spec/burst.js',
 
-      // 'build/module.js',
-      // 'spec/module.js',
+      // // 'build/module.js',
+      // // 'spec/module.js',
       // 'build/tween/tweenable.js',
       // 'spec/tween/tweenable.js',
       // 'build/tunable.js',

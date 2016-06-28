@@ -304,6 +304,7 @@ class Helpers
           g: parseInt(result[2],10)
           b: parseInt(result[3],10)
           a: if alpha? and !isNaN(alpha) then alpha else 1
+
     colorObj
 
   computedStyle:(el)-> getComputedStyle el

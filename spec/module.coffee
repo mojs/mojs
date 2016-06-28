@@ -562,6 +562,18 @@ describe 'module class ->', ->
       expect(md._parseDeltaValues).toHaveBeenCalledWith key, delta
       expect(result['20px']).toBe '100px'
 
+  describe '_calcCurrentProps method', ->
+    it 'should calc color with alpha', ->
+      md = new Module isIt: 1
+
+      md._deltas = {
+        fill: h.parseDelta( 'fill', { 'rgba(0,0,0,0)' : 'rgba(0,0,0,1)' }, 0 )
+      }
+
+      md._calcCurrentProps .5, .5
+
+      expect( md._props.fill ).toBe 'rgba(0,0,0,0.5)'
+
   it 'clean the _defaults  up', ->
     Module::_declareDefaults = oldFun
 

@@ -731,6 +731,21 @@
         return expect(result['20px']).toBe('100px');
       });
     });
+    describe('_calcCurrentProps method', function() {
+      return it('should calc color with alpha', function() {
+        var md;
+        md = new Module({
+          isIt: 1
+        });
+        md._deltas = {
+          fill: h.parseDelta('fill', {
+            'rgba(0,0,0,0)': 'rgba(0,0,0,1)'
+          }, 0)
+        };
+        md._calcCurrentProps(.5, .5);
+        return expect(md._props.fill).toBe('rgba(0,0,0,0.5)');
+      });
+    });
     return it('clean the _defaults  up', function() {
       return Module.prototype._declareDefaults = oldFun;
     });
