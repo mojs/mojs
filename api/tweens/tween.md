@@ -1,7 +1,10 @@
 # Tween
 
+- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx)
 - [Timeline](./timeline.md)
 - [back](./index.md)
+
+Full API reference:
 
 ```javascript
 const tween = new mojs.Tween({
@@ -115,5 +118,6 @@ const tween = new mojs.Tween({
 
 ```
 
+- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx)
 - [Timeline](./timeline.md)
 - [back](./index.md)
