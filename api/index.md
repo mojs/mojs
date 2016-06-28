@@ -24,3 +24,9 @@
 - [Path Easing](./easing/path-easing.md)
 - Transforms
 - Mixes
+
+## Syntax
+- [Stagger Strings](./syntax/stagger.md)
+- [Rand Strings](./syntax/rand.md)
+- [Property Maps](./property-maps.md)
+
