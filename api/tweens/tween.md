@@ -1,6 +1,6 @@
 # Tween
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx)
+- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0010)
 - [Timeline](./timeline.md)
 - [back](././index.md)
 
@@ -118,6 +118,6 @@ const tween = new mojs.Tween({
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx)
+- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0010)
 - [Timeline](./timeline.md)
 - [back](././index.md)

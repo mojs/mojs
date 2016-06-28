@@ -1,6 +1,6 @@
 # Rand Strings Syntax
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/QEpKwP)
+- [CodePen Example](http://codepen.io/sol0mka/pen/QEpKwP?editors=0010)
 - [back](././index.md)
 
 `Rand` string was designed to express random numeric values. Can be unit based (percents, pixels, rems etc.).
@@ -15,5 +15,5 @@ Full API reference:
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/QEpKwP)
+- [CodePen Example](http://codepen.io/sol0mka/pen/QEpKwP?editors=0010)
 - [back](././index.md)

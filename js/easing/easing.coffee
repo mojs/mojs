@@ -20,7 +20,7 @@ class Easing
   inverse:(p)-> 1 - p
 
   # EASINGS
-  linear: none: (k) -> k
+  linear:   none: (k) -> k
   ease:
     in:     bezier.apply @, [ 0.42,   0,     1,      1 ]
     out:    bezier.apply @, [ 0,      0,    0.58,    1 ]

@@ -1,6 +1,6 @@
 # Shape
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/XKMKjQ)
+- [CodePen Example](http://codepen.io/sol0mka/pen/XKMKjQ?editors=0010)
 - [Tween API](./tweens/tween.md)
 - [back](./index.md)
 
@@ -134,6 +134,6 @@ const shape = new mojs.Shape({
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/XKMKjQ)
+- [CodePen Example](http://codepen.io/sol0mka/pen/XKMKjQ?editors=0010)
 - [Tween API](./tweens/tween.md)
 - [back](./index.md)

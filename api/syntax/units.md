@@ -1,6 +1,6 @@
 # Available Units
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/QEpKwP)
+- [CodePen Example](http://codepen.io/sol0mka/pen/JKWRYW?editors=0010)
 - [back](././index.md)
 
 
@@ -12,11 +12,11 @@ Usage with properties:
 
 ```javascript
   // ...
-  property :  { '10%' : '100%' },
-  property2 : '20rem',
+  property :   '20rem',
+  property2 :  { '10%' : '100%' },
   // ...
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/QEpKwP)
+- [CodePen Example](http://codepen.io/sol0mka/pen/JKWRYW?editors=0010)
 - [back](././index.md)
