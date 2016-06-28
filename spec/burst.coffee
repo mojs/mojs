@@ -1032,6 +1032,7 @@ describe 'Burst ->', ->
       expect(child._defaults.width).toBe 0
       expect(child._defaults.height).toBe 0
       expect(child._defaults.isSwirl).toBe false
+      expect(child._defaults.radius[25]).toBe 75
 
     it 'should be used as main swirl', ->
       burst = new Burst

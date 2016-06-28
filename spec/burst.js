@@ -1359,7 +1359,8 @@
         expect(child._defaults.scale).toBe(1);
         expect(child._defaults.width).toBe(0);
         expect(child._defaults.height).toBe(0);
-        return expect(child._defaults.isSwirl).toBe(false);
+        expect(child._defaults.isSwirl).toBe(false);
+        return expect(child._defaults.radius[25]).toBe(75);
       });
       return it('should be used as main swirl', function() {
         var burst;

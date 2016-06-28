@@ -490,6 +490,7 @@ class MainSwirl extends ChildSwirl {
     this._defaults.scale = 1;
     this._defaults.width = 0;
     this._defaults.height = 0;
+    this._defaults.radius = { 25: 75 };
     // this._defaults.duration = 2000;
   }
 }
