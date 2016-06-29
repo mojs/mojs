@@ -143,7 +143,20 @@ class Burst extends Tunable {
       var swirl  = pack0[i],
           option = this._getChildOption( o || {}, i );
 
+      // since the `degreeShift` participate in
+      // children position calculations, we need to keep
+      // the old `degreeShift` value if new not set
+      const isDegreeShift = ( option.degreeShift != null );
+      if ( !isDegreeShift ) {
+        option.degreeShift = this._swirls[0][i]._props.degreeShift;
+      }
+
       this._addBurstProperties( option, i );
+
+      // after burst position calculation - delete the old `degreeShift`
+      // from the options, since anyways we have copied it from the swirl
+      if ( !isDegreeShift ) { delete option.degreeShift; }
+      
       swirl.tune( option );
       this._refreshBurstOptions( swirl._modules, i );
     }
@@ -337,6 +350,8 @@ class Burst extends Tunable {
     // put the index of the module back
     this._index = mainIndex;
 
+    // console.log( degreeShift, options.degreeShift );
+
     var p           = this._props,
         degreeCnt   = (p.degree % 360 === 0) ? p.count : p.count-1 || 1,
         step        = p.degree/degreeCnt,
@@ -349,7 +364,7 @@ class Burst extends Tunable {
     options.angle = this._getBitAngle( (options.angle || 0), degreeShift, index );
     // reset degreeeShift which will be send to child swirls since
     // burst controls `x`, `y`, `angle` and `degreeShift` of child swirls
-    options.degreeShift = 0;
+    // options.degreeShift = 0;
   }
   /* 
     Method to get shapes angle in burst so
@@ -481,7 +496,17 @@ class ChildSwirl extends ShapeSwirl {
     this._defaults.isSwirl  = false;
     this._o.duration = (this._o.duration != null)
       ? this._o.duration : 700;
-  } 
+  }
+
+  
+  _calcSwirlXY (proc) {
+    const degreeShift = this._props.degreeShift;
+
+    this._props.degreeShift = 0;
+    super._calcSwirlXY(proc);
+    this._props.degreeShift = degreeShift;
+
+  }
 }
 
 class MainSwirl extends ChildSwirl {

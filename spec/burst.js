@@ -1176,16 +1176,6 @@
         expect(obj.x).toEqual(b._getDeltaFromPoints('x', pointStart, pointEnd));
         return expect(obj.y).toEqual(b._getDeltaFromPoints('y', pointStart, pointEnd));
       });
-      it('should set degreeShift to 0', function() {
-        var angle, b, obj;
-        b = new Burst;
-        angle = 20;
-        obj = {
-          degreeShift: angle
-        };
-        b._addBurstProperties(obj, 1);
-        return expect(obj.degreeShift).toBe(0);
-      });
       it('should calculate bit x/y and angle regarding degreeShift', function() {
         var angle, b, degreeCnt, degreeShifts, index, obj, p, pointEnd, pointStart, step;
         index = 1;
@@ -1293,7 +1283,7 @@
       });
     });
     describe('_tuneSwirls method', function() {
-      return it('should call _refreshBurstOptions with modules and i', function() {
+      it('should call _refreshBurstOptions with modules and i', function() {
         var b, i, pack0, swirl, _i, _ref, _results;
         b = new Burst({
           count: 4
@@ -1311,6 +1301,55 @@
           _results.push(expect(b._refreshBurstOptions).toHaveBeenCalledWith(swirl._modules, i));
         }
         return _results;
+      });
+      it('should add Burst properties to options', function() {
+        var b, options;
+        b = new Burst({
+          children: {
+            degreeShift: 10
+          }
+        });
+        options = {
+          x: 200
+        };
+        spyOn(b, '_addBurstProperties');
+        b._tuneSwirls(options);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 0);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 1);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 2);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 3);
+        return expect(b._addBurstProperties).toHaveBeenCalledWith({}, 4);
+      });
+      return it('should not override the new degreeShift', function() {
+        var b, options;
+        b = new Burst({
+          children: {
+            degreeShift: 10
+          }
+        });
+        options = {
+          x: 200,
+          children: {
+            degreeShift: 20
+          }
+        };
+        spyOn(b, '_addBurstProperties');
+        b._tuneSwirls(options);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({
+          degreeShift: 20
+        }, 0);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({
+          degreeShift: 20
+        }, 1);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({
+          degreeShift: 20
+        }, 2);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({
+          degreeShift: 20
+        }, 3);
+        return expect(b._addBurstProperties).toHaveBeenCalledWith({
+          degreeShift: 20
+        }, 4);
       });
     });
     describe('ChildSwirl ->', function() {

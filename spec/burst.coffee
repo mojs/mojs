@@ -888,12 +888,13 @@ describe 'Burst ->', ->
       expect( obj.x ).toEqual b._getDeltaFromPoints('x', pointStart, pointEnd)
       expect( obj.y ).toEqual b._getDeltaFromPoints('y', pointStart, pointEnd)
 
-    it 'should set degreeShift to 0', ->
-      b = new Burst
-      angle = 20
-      obj = { degreeShift: angle }
-      b._addBurstProperties( obj, 1 )
-      expect( obj.degreeShift ).toBe 0
+    # nope
+    # it 'should set degreeShift to 0', ->
+    #   b = new Burst
+    #   angle = 20
+    #   obj = { degreeShift: angle }
+    #   b._addBurstProperties( obj, 1 )
+    #   expect( obj.degreeShift ).toBe 0
 
     it 'should calculate bit x/y and angle regarding degreeShift', ->
       index = 1
@@ -995,6 +996,28 @@ describe 'Burst ->', ->
         swirl = pack0[i]
         expect( b._refreshBurstOptions )
           .toHaveBeenCalledWith swirl._modules, i
+
+    it 'should add Burst properties to options', ->
+      b = new Burst children: { degreeShift: 10 }
+      options = { x: 200 }
+      spyOn b, '_addBurstProperties'
+      b._tuneSwirls(options)
+      expect(b._addBurstProperties).toHaveBeenCalledWith { }, 0
+      expect(b._addBurstProperties).toHaveBeenCalledWith { }, 1
+      expect(b._addBurstProperties).toHaveBeenCalledWith { }, 2
+      expect(b._addBurstProperties).toHaveBeenCalledWith { }, 3
+      expect(b._addBurstProperties).toHaveBeenCalledWith { }, 4
+
+    it 'should not override the new degreeShift', ->
+      b = new Burst children: { degreeShift: 10 }
+      options = { x: 200, children: { degreeShift: 20 } }
+      spyOn b, '_addBurstProperties'
+      b._tuneSwirls(options)
+      expect(b._addBurstProperties).toHaveBeenCalledWith { degreeShift: 20 }, 0
+      expect(b._addBurstProperties).toHaveBeenCalledWith { degreeShift: 20 }, 1
+      expect(b._addBurstProperties).toHaveBeenCalledWith { degreeShift: 20 }, 2
+      expect(b._addBurstProperties).toHaveBeenCalledWith { degreeShift: 20 }, 3
+      expect(b._addBurstProperties).toHaveBeenCalledWith { degreeShift: 20 }, 4
 
   describe 'ChildSwirl ->', ->
     ChildSwirl = Burst.ChildSwirl
