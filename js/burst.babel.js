@@ -21,6 +21,9 @@ class Burst extends Tunable {
       radiusX:  null,
       /* ∆ :: [number > 0] :: Y radius of the Burst. */
       radiusY:  null,
+
+      width:    0,
+      height:   0
       // ∆ :: Possible values: [ number ]
       // scale:    1,
       /* [string] :: Easing for the main module (not children). */
@@ -497,15 +500,13 @@ class ChildSwirl extends ShapeSwirl {
     this._o.duration = (this._o.duration != null)
       ? this._o.duration : 700;
   }
-
-  
+  // disable degreeshift calculations
   _calcSwirlXY (proc) {
     const degreeShift = this._props.degreeShift;
 
     this._props.degreeShift = 0;
     super._calcSwirlXY(proc);
     this._props.degreeShift = degreeShift;
-
   }
 }
 

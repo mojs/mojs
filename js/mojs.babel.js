@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.261.3', isDebug: true, helpers: h,
+  revision:   '0.262.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -37,6 +37,7 @@ window.mojs = mojs;
 
 // TODO:
 /*
+  isTimelineLess throws if you tune
   swirl then issue
   'rand' angle flick with `then`
   not able to `play()` in `onComplete` callback

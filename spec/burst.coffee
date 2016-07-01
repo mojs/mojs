@@ -1039,8 +1039,15 @@ describe 'Burst ->', ->
 
     it 'should be used as children swirl', ->
       burst = new Burst
-      # 0 pack 0 swirl
       expect(burst._swirls[0][0] instanceof ChildSwirl).toBe true
+
+    it 'should not regard degreeShift in xy calculations', ->
+      child1 = new ChildSwirl degreeShift: 0,   x: { 0: 200 }
+      child2 = new ChildSwirl degreeShift: 20,  x: { 0: 200 }
+      child1.setProgress( .45 ); child1.setProgress( .5 )
+      child2.setProgress( .45 ); child2.setProgress( .5 )
+      expect(child1._props.x).toBe child2._props.x
+      expect(child1._props.y).toBe child2._props.y
 
   describe 'MainSwirl ->', ->
     ChildSwirl = Burst.ChildSwirl

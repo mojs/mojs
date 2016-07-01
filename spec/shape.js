@@ -1568,9 +1568,11 @@
           shape: 'rect',
           isWithShape: false
         });
+        spyOn(byte, '_getShapeSize');
         byte.shapeModule = null;
         byte._createShape();
-        return expect(byte.shapeModule).toBeFalsy();
+        expect(byte.shapeModule).toBeFalsy();
+        return expect(byte._getShapeSize).toHaveBeenCalled();
       });
       it('should send `width` and `height` to the `shape` module', function() {
         var byte;

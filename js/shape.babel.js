@@ -394,12 +394,14 @@ class Shape extends Tunable {
     @private
   */
   _createShape () {
+    // calculate max shape canvas size and set to _props
+    this._getShapeSize();
+    // don't create actual shape if !`isWithShape`
     if ( !this._props.isWithShape ) { return; }
+    
     var p      = this._props;
     // get shape's class
     var Shape  = shapesMap.getShape(this._props.shape);
-    // calculate max shape canvas size and set to _props
-    this._getShapeSize();
     // create `_shape` module
     this.shapeModule = new Shape({
       width:  p.shapeWidth,

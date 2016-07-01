@@ -1377,10 +1377,31 @@
         });
         return expect(child._o.duration).toBe(0);
       });
-      return it('should be used as children swirl', function() {
+      it('should be used as children swirl', function() {
         var burst;
         burst = new Burst;
         return expect(burst._swirls[0][0] instanceof ChildSwirl).toBe(true);
+      });
+      return it('should not regard degreeShift in xy calculations', function() {
+        var child1, child2;
+        child1 = new ChildSwirl({
+          degreeShift: 0,
+          x: {
+            0: 200
+          }
+        });
+        child2 = new ChildSwirl({
+          degreeShift: 20,
+          x: {
+            0: 200
+          }
+        });
+        child1.setProgress(.45);
+        child1.setProgress(.5);
+        child2.setProgress(.45);
+        child2.setProgress(.5);
+        expect(child1._props.x).toBe(child2._props.x);
+        return expect(child1._props.y).toBe(child2._props.y);
       });
     });
     describe('MainSwirl ->', function() {

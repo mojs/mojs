@@ -1162,9 +1162,11 @@ describe 'Shape ->', ->
     it 'should not create if !isWithShape', ->
       byte = new Byte shape: 'rect', isWithShape: false
 
+      spyOn byte, '_getShapeSize'
       byte.shapeModule = null
       byte._createShape()
       expect(byte.shapeModule).toBeFalsy()
+      expect(byte._getShapeSize).toHaveBeenCalled()
 
     it 'should send `width` and `height` to the `shape` module', ->
       byte = new Byte
