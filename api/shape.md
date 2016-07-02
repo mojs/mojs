@@ -111,7 +111,6 @@ const shape = new mojs.Shape({
 
   /* (+) TWEEN CALLBACKS - see Tween API */
 
-
 })
   /*
     Creates next state transition chain.
