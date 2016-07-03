@@ -8777,6 +8777,7 @@
 
 	// TODO:
 	/*
+	  add stopAll timeline method
 	  burst children angle after tune
 	  burst pathScale after tune
 	  swirl then issue
