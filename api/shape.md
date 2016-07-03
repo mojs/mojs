@@ -129,7 +129,43 @@ const shape = new mojs.Shape({
   */
   .generate()
 
-  /* (+) TWEEN PUBLIC METHODS - see Tween API */
+  /*
+    Starts playback.
+    @param shift {Number} Start progress shift in milliseconds.
+  */
+  .play( shift = 0 )
+  /*
+    Starts playback in backward direction.
+    @param shift {Number} Start progress shift in milliseconds.
+  */
+  .playBackward( shift = 0 )
+  /*
+    Pauses playback.
+  */
+  .pause()
+  /*
+    Restarts playback.
+    @param shift {Number} Start progress shift in milliseconds.
+  */
+  .replay( shift = 0 )
+  /*
+    Restarts playback in backward direction.
+    @param shift {Number} Start progress shift in milliseconds.
+  */
+  .replayBackward( shift = 0 )
+  /*
+    Sets progress of the tween.
+    @param progress {Number} Progress to set [ 0..1 ].
+  */
+  .setProgress( progress )
+  /*
+    Sets speed of the tween.
+    @param speed {Number} Progress to set [ 0..∞ ].
+  */
+  setSpeed ( speed )
+
+  /* Stops and resets the tween. */
+  reset ( speed )
 
 ```
 
