@@ -4526,6 +4526,11 @@
 	        shift = 0,
 	        tweens = this.timeline._timelines;
 
+	    // if `isTimelineLess` return
+	    if (tweens == null) {
+	      return;
+	    }
+
 	    for (var i = 0; i < tweens.length; i++) {
 	      var tween = tweens[i],
 	          prevTween = tweens[i - 1];
@@ -8752,7 +8757,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.262.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.262.2', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8774,7 +8779,6 @@
 	/*
 	  burst children angle after tune
 	  burst pathScale after tune
-	  isTimelineLess throws if you tune
 	  swirl then issue
 	  'rand' angle flick with `then`
 	  not able to `play()` in `onComplete` callback

@@ -173,6 +173,9 @@ class Tuneable extends Thenable {
         shift  = 0,
         tweens = this.timeline._timelines;
 
+    // if `isTimelineLess` return
+    if ( tweens == null ) { return; }
+
     for (var i = 0; i < tweens.length; i++ ) {
       var tween     = tweens[i],
           prevTween = tweens[i-1];

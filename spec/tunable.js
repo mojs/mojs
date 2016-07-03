@@ -374,7 +374,7 @@
         tr._resetTweens();
         return expect(tr.timeline._setProp).toHaveBeenCalledWith(timeline);
       });
-      return it('should call _recalcTotalDuration on the timeline', function() {
+      it('should call _recalcTotalDuration on the timeline', function() {
         var tr;
         tr = new Tunable().then({
           fill: 'cyan'
@@ -384,6 +384,19 @@
         spyOn(tr.timeline, '_recalcTotalDuration');
         tr._resetTweens();
         return expect(tr.timeline._recalcTotalDuration).toHaveBeenCalled();
+      });
+      return it('should not throw if `isTimelineLess`', function() {
+        var fun, tr;
+        tr = new Tunable().then({
+          fill: 'cyan'
+        }).then({
+          fill: 'yellow'
+        });
+        tr.timeline = tr.tween;
+        fun = function() {
+          return tr._resetTweens();
+        };
+        return expect(fun).not.toThrow();
       });
     });
     describe('tune method ->', function() {

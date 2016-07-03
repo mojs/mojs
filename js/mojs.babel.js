@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.262.1', isDebug: true, helpers: h,
+  revision:   '0.262.2', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -39,7 +39,6 @@ window.mojs = mojs;
 /*
   burst children angle after tune
   burst pathScale after tune
-  isTimelineLess throws if you tune
   swirl then issue
   'rand' angle flick with `then`
   not able to `play()` in `onComplete` callback

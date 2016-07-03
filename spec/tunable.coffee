@@ -322,6 +322,16 @@ describe 'Tunable ->', ->
       expect(tr.timeline._recalcTotalDuration)
         .toHaveBeenCalled()
 
+    it 'should not throw if `isTimelineLess`', ->
+      tr = new Tunable()
+        .then({ fill: 'cyan' })
+        .then({ fill: 'yellow' })
+
+      tr.timeline = tr.tween
+      fun = -> tr._resetTweens()
+      expect(fun)
+        .not.toThrow()
+
   describe 'tune method ->', ->
     it 'should extend defaults with passed object', ->
       byte = new Tunable(strokeWidth: {10: 5})
