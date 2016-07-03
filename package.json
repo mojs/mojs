@@ -1,7 +1,7 @@
 {
   "name": "mo-js",
   "description": "motion graphics toolbelt for the web",
-  "version": "0.262.0",
+  "version": "0.262.1",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -43,6 +43,7 @@
     "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
+    "babel-preset-stage-2": "^6.11.0",
     "brfs": "^1.2.0",
     "browserify": "^6.2.0",
     "browserify-istanbul": "^0.1.2",

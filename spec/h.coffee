@@ -177,19 +177,24 @@ describe 'Helpers ->', ->
           expect(delta.delta)   .toBe   50
           expect(delta.type)    .toBe   'number'
 
-        it 'should parse numeric easing', ->
+        it 'should parse easing', ->
           spyOn(mojs.easing, 'parseEasing').and.callThrough()
-          delta = h.parseDelta 'radius', { 25: 75, easing: 'cubic.out' }
+          easing = 'cubic.out'
+          startDelta = { 25: 75, easing: easing }
+          delta = h.parseDelta 'radius', startDelta
           expect(delta.start)   .toBe   25
           expect(delta.delta)   .toBe   50
           expect(delta.type)    .toBe   'number'
           expect(delta.easing)  .toBe   mojs.easing.cubic.out
-          expect(mojs.easing.parseEasing).toHaveBeenCalledWith 'cubic.out'
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith easing
+          
+          expect(startDelta.easing).toBe easing
 
-        it 'should parse numeric curve', ->
+        it 'should parse curve', ->
           spyOn(mojs.easing, 'parseEasing').and.callThrough()
           curve = "M0,100 L100,0"
-          delta = h.parseDelta 'radius', { 25: 75, curve: curve }
+          startDelta = { 25: 75, curve: curve }
+          delta = h.parseDelta 'radius', startDelta
           expect(delta.start)   .toBe   25
           expect(delta.delta)   .toBe   50
           expect(delta.type)    .toBe   'number'
@@ -197,6 +202,8 @@ describe 'Helpers ->', ->
           expect(typeof delta.curve).toBe 'function'
           expect(delta.curve(.5)).toBeCloseTo .5, 2
           expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
+          
+          expect(startDelta.curve).toBe curve
 
         it 'should calculate delta with string arguments', ->
           delta = h.parseDelta 'radius', {25: 75}
@@ -317,7 +324,8 @@ describe 'Helpers ->', ->
 
         it 'should parse strokeDash values easing', ->
           spyOn(mojs.easing, 'parseEasing').and.callThrough()
-          delta = h.parseDelta 'strokeDashoffset',  {'25.50%': '-75.50', easing: 'cubic.out'}
+          startDelta = {'25.50%': '-75.50', easing: 'cubic.out'}
+          delta = h.parseDelta 'strokeDashoffset', startDelta
           expect(delta.start[0].unit)    .toBe   '%'
           expect(delta.start[0].value)   .toBe   25.5
           expect(delta.start[0].string)  .toBe   '25.5%'
@@ -333,7 +341,8 @@ describe 'Helpers ->', ->
         it 'should parse strokeDash values curve', ->
           spyOn(mojs.easing, 'parseEasing').and.callThrough()
           curve = "M0,100 L100,0"
-          delta = h.parseDelta 'strokeDashoffset',  {'25.50%': '-75.50', curve: curve }
+          startDelta = {'25.50%': '-75.50', curve: curve }
+          delta = h.parseDelta 'strokeDashoffset', startDelta
           expect(delta.start[0].unit)    .toBe   '%'
           expect(delta.start[0].value)   .toBe   25.5
           expect(delta.start[0].string)  .toBe   '25.5%'
@@ -375,7 +384,8 @@ describe 'Helpers ->', ->
 
         it 'should parse color easing values', ->
           spyOn(mojs.easing, 'parseEasing').and.callThrough()
-          delta = h.parseDelta 'stroke',  {'#000': 'rgb(255,255,255)', easing: 'cubic.out'}
+          startDelta = {'#000': 'rgb(255,255,255)', easing: 'cubic.out'}
+          delta = h.parseDelta 'stroke', startDelta
           expect(delta.start.r)    .toBe   0
           expect(delta.end.r)      .toBe   255
           expect(delta.delta.r)    .toBe   255
@@ -388,7 +398,8 @@ describe 'Helpers ->', ->
         it 'should parse color curve values', ->
           spyOn(mojs.easing, 'parseEasing').and.callThrough()
           curve = "M0,100 L100,0"
-          delta = h.parseDelta 'stroke', {'#000': 'rgb(255,255,255)', curve: curve }
+          startDelta = {'#000': 'rgb(255,255,255)', curve: curve }
+          delta = h.parseDelta 'stroke', startDelta
           expect(delta.start.r)    .toBe   0
           expect(delta.end.r)      .toBe   255
           expect(delta.delta.r)    .toBe   255
@@ -399,7 +410,6 @@ describe 'Helpers ->', ->
 
           expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
           
-
       describe 'array values ->', ->
         it 'should calculate array delta', ->
           delta = h.parseDelta 'strokeDasharray', { '200 100%': '300' }
@@ -460,11 +470,13 @@ describe 'Helpers ->', ->
           expect(delta.start.value).toBe 60
           expect(delta.end.value).toBe 0
         it 'should calculate stagger values', ->
-          delta = h.parseDelta 'radius', { 'stagger(20, 20)': 'stagger(20, -10)' }, 2
+          startDelta = { 'stagger(20, 20)': 'stagger(20, -10)' }
+          delta = h.parseDelta 'radius', startDelta, 2
           expect(delta.start).toBe 60
           expect(delta.end).toBe 0
         it 'should use 0 index as a fallback', ->
-          delta = h.parseDelta 'radius', { 'stagger(20, 20)': 'stagger(20, -10)' }
+          startDelta = { 'stagger(20, 20)': 'stagger(20, -10)' }
+          delta = h.parseDelta 'radius', startDelta
           expect(delta.start).toBe 20
           expect(delta.end).toBe 20
 
@@ -1139,7 +1151,9 @@ describe 'Helpers ->', ->
       el = document.createElement 'div'
       h.force3d el
 
-      bfv = el.style[ 'backface-visibility' ] or el.style[ "#{h.prefix.css}backface-visibility" ]
+      bv = el.style[ 'backface-visibility' ]
+      pbv = el.style[ "#{h.prefix.css}backface-visibility" ]
+      bfv = bv or pbv
       expect( bfv ).toBe 'hidden'
 
     it 'should return el', ->

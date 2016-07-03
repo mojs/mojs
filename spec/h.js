@@ -235,33 +235,38 @@
             expect(delta.delta).toBe(50);
             return expect(delta.type).toBe('number');
           });
-          it('should parse numeric easing', function() {
-            var delta;
+          it('should parse easing', function() {
+            var delta, easing, startDelta;
             spyOn(mojs.easing, 'parseEasing').and.callThrough();
-            delta = h.parseDelta('radius', {
+            easing = 'cubic.out';
+            startDelta = {
               25: 75,
-              easing: 'cubic.out'
-            });
+              easing: easing
+            };
+            delta = h.parseDelta('radius', startDelta);
             expect(delta.start).toBe(25);
             expect(delta.delta).toBe(50);
             expect(delta.type).toBe('number');
             expect(delta.easing).toBe(mojs.easing.cubic.out);
-            return expect(mojs.easing.parseEasing).toHaveBeenCalledWith('cubic.out');
+            expect(mojs.easing.parseEasing).toHaveBeenCalledWith(easing);
+            return expect(startDelta.easing).toBe(easing);
           });
-          it('should parse numeric curve', function() {
-            var curve, delta;
+          it('should parse curve', function() {
+            var curve, delta, startDelta;
             spyOn(mojs.easing, 'parseEasing').and.callThrough();
             curve = "M0,100 L100,0";
-            delta = h.parseDelta('radius', {
+            startDelta = {
               25: 75,
               curve: curve
-            });
+            };
+            delta = h.parseDelta('radius', startDelta);
             expect(delta.start).toBe(25);
             expect(delta.delta).toBe(50);
             expect(delta.type).toBe('number');
             expect(typeof delta.curve).toBe('function');
             expect(delta.curve(.5)).toBeCloseTo(.5, 2);
-            return expect(mojs.easing.parseEasing).toHaveBeenCalledWith(curve);
+            expect(mojs.easing.parseEasing).toHaveBeenCalledWith(curve);
+            return expect(startDelta.curve).toBe(curve);
           });
           it('should calculate delta with string arguments', function() {
             var delta;
@@ -405,12 +410,13 @@
             return expect(delta.end[0].string).toBe('-75.5%');
           });
           it('should parse strokeDash values easing', function() {
-            var delta;
+            var delta, startDelta;
             spyOn(mojs.easing, 'parseEasing').and.callThrough();
-            delta = h.parseDelta('strokeDashoffset', {
+            startDelta = {
               '25.50%': '-75.50',
               easing: 'cubic.out'
-            });
+            };
+            delta = h.parseDelta('strokeDashoffset', startDelta);
             expect(delta.start[0].unit).toBe('%');
             expect(delta.start[0].value).toBe(25.5);
             expect(delta.start[0].string).toBe('25.5%');
@@ -421,13 +427,14 @@
             return expect(mojs.easing.parseEasing).toHaveBeenCalledWith('cubic.out');
           });
           it('should parse strokeDash values curve', function() {
-            var curve, delta;
+            var curve, delta, startDelta;
             spyOn(mojs.easing, 'parseEasing').and.callThrough();
             curve = "M0,100 L100,0";
-            delta = h.parseDelta('strokeDashoffset', {
+            startDelta = {
               '25.50%': '-75.50',
               curve: curve
-            });
+            };
+            delta = h.parseDelta('strokeDashoffset', startDelta);
             expect(delta.start[0].unit).toBe('%');
             expect(delta.start[0].value).toBe(25.5);
             expect(delta.start[0].string).toBe('25.5%');
@@ -477,12 +484,13 @@
             return expect(delta.type).not.toBeDefined();
           });
           it('should parse color easing values', function() {
-            var delta;
+            var delta, startDelta;
             spyOn(mojs.easing, 'parseEasing').and.callThrough();
-            delta = h.parseDelta('stroke', {
+            startDelta = {
               '#000': 'rgb(255,255,255)',
               easing: 'cubic.out'
-            });
+            };
+            delta = h.parseDelta('stroke', startDelta);
             expect(delta.start.r).toBe(0);
             expect(delta.end.r).toBe(255);
             expect(delta.delta.r).toBe(255);
@@ -491,13 +499,14 @@
             return expect(mojs.easing.parseEasing).toHaveBeenCalledWith('cubic.out');
           });
           return it('should parse color curve values', function() {
-            var curve, delta;
+            var curve, delta, startDelta;
             spyOn(mojs.easing, 'parseEasing').and.callThrough();
             curve = "M0,100 L100,0";
-            delta = h.parseDelta('stroke', {
+            startDelta = {
               '#000': 'rgb(255,255,255)',
               curve: curve
-            });
+            };
+            delta = h.parseDelta('stroke', startDelta);
             expect(delta.start.r).toBe(0);
             expect(delta.end.r).toBe(255);
             expect(delta.delta.r).toBe(255);
@@ -597,18 +606,20 @@
             return expect(delta.end.value).toBe(0);
           });
           it('should calculate stagger values', function() {
-            var delta;
-            delta = h.parseDelta('radius', {
+            var delta, startDelta;
+            startDelta = {
               'stagger(20, 20)': 'stagger(20, -10)'
-            }, 2);
+            };
+            delta = h.parseDelta('radius', startDelta, 2);
             expect(delta.start).toBe(60);
             return expect(delta.end).toBe(0);
           });
           return it('should use 0 index as a fallback', function() {
-            var delta;
-            delta = h.parseDelta('radius', {
+            var delta, startDelta;
+            startDelta = {
               'stagger(20, 20)': 'stagger(20, -10)'
-            });
+            };
+            delta = h.parseDelta('radius', startDelta);
             expect(delta.start).toBe(20);
             return expect(delta.end).toBe(20);
           });
@@ -1517,10 +1528,12 @@
     });
     return describe('force3d method ->', function() {
       it('should set backface-visibility to hidden on el', function() {
-        var bfv, el;
+        var bfv, bv, el, pbv;
         el = document.createElement('div');
         h.force3d(el);
-        bfv = el.style['backface-visibility'] || el.style["" + h.prefix.css + "backface-visibility"];
+        bv = el.style['backface-visibility'];
+        pbv = el.style["" + h.prefix.css + "backface-visibility"];
+        bfv = bv || pbv;
         return expect(bfv).toBe('hidden');
       });
       return it('should return el', function() {

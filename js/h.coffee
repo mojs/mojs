@@ -356,6 +356,8 @@ class Helpers
     else str
   # if delta object was passed: like { 20: 75 }
   parseDelta:(key, value, index)->
+    # clone the delta object before proceed
+    value = @cloneObj value
     # parse delta easing
     easing = value.easing
     if easing? then easing = mojs.easing.parseEasing( easing )

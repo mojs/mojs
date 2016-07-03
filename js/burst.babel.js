@@ -21,17 +21,10 @@ class Burst extends Tunable {
       radiusX:  null,
       /* ∆ :: [number > 0] :: Y radius of the Burst. */
       radiusY:  null,
-
+      /* [number >= 0] :: width of the main swirl. */
       width:    0,
+      /* [number >= 0] :: height of the main swirl. */
       height:   0
-      // ∆ :: Possible values: [ number ]
-      // scale:    1,
-      /* [string] :: Easing for the main module (not children). */
-      // easing:  'linear.none',
-      /* [boolean] :: If Burst itself should follow sinusoidal path. */
-      // isSwirl:  false,
-      // use paintless hide method
-      // isSoftHide: true
     }
   }
   /*
@@ -328,9 +321,6 @@ class Burst extends Tunable {
   _addOptionalProps (options, index) {
     options.index   = index;
     options.parent  = this.masterSwirl.el;
-    // options.isSwirl = (options.isSwirl != null) ? options.isSwirl : false;
-    // options.left    = (options.left != null) ? options.left : '50%';
-    // options.top     = (options.top != null) ? options.top : '50%';
 
     this._addBurstProperties( options, index );
 
@@ -365,9 +355,6 @@ class Burst extends Tunable {
     options.y     = this._getDeltaFromPoints('y', pointStart, pointEnd);
 
     options.angle = this._getBitAngle( (options.angle || 0), degreeShift, index );
-    // reset degreeeShift which will be send to child swirls since
-    // burst controls `x`, `y`, `angle` and `degreeShift` of child swirls
-    // options.degreeShift = 0;
   }
   /* 
     Method to get shapes angle in burst so
