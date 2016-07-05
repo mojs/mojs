@@ -36,9 +36,9 @@ class Timeline extends Tween {
     @param   {Number} Progress [0..1] to set when stopped.
     @returns {Object} Self.
   */
-  stop () {
-    super.stop();
-    this._stopChildren();
+  stop ( progress ) {
+    super.stop( progress );
+    this._stopChildren( progress );
     return this;
   }
   /*
@@ -64,10 +64,11 @@ class Timeline extends Tween {
   /*
     Method to call `stop` method on all children.
     @private
+    @param   {Number} Progress [0..1] to set when stopped.
   */
-  _stopChildren () {
+  _stopChildren ( progress ) {
     for ( var i = 0; i < this._timelines.length; i++ ) {
-      this._timelines[i].stop();
+      this._timelines[i].stop( progress );
     }
   }
   /*

@@ -124,7 +124,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.262.3', isDebug: true, helpers: _h2.default,
+	  revision: '0.262.4', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -156,6 +156,30 @@
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
 	*/
+
+	// const tm = new mojs.Timeline;
+	// for (var i = 0; i < 100; i++) {
+	//   tm.add( new Shape({ opacity: { 0: 1 }, fill: { 'cyan': 'yellow' } }) )
+	// }
+
+	// var suite = new Benchmark.Suite;
+
+	// let p = 0;
+	// // add tests
+	// suite.add('tween', function() {
+	//   tm.setProgress( p );
+	//   p += 0.001;
+	//   if ( p > 1 ) { p = 0 };
+	// })
+	// // add listeners
+	// .on('cycle', function(event) {
+	//   console.log(String(event.target));
+	// })
+	// .on('complete', function() {
+	//   console.log('Fastest is ' + this.filter('fastest').map('name'));
+	// })
+	// // run async
+	// .run({ 'async': true });
 
 	// istanbul ignore next
 	if (true) {
@@ -3483,9 +3507,9 @@
 	  */
 
 
-	  Timeline.prototype.stop = function stop() {
-	    _Tween.prototype.stop.call(this);
-	    this._stopChildren();
+	  Timeline.prototype.stop = function stop(progress) {
+	    _Tween.prototype.stop.call(this, progress);
+	    this._stopChildren(progress);
 	    return this;
 	  };
 	  /*
@@ -3515,12 +3539,13 @@
 	  /*
 	    Method to call `stop` method on all children.
 	    @private
+	    @param   {Number} Progress [0..1] to set when stopped.
 	  */
 
 
-	  Timeline.prototype._stopChildren = function _stopChildren() {
+	  Timeline.prototype._stopChildren = function _stopChildren(progress) {
 	    for (var i = 0; i < this._timelines.length; i++) {
-	      this._timelines[i].stop();
+	      this._timelines[i].stop(progress);
 	    }
 	  };
 	  /*

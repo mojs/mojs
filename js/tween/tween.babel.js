@@ -117,7 +117,6 @@ class Tween extends Module {
   */
   stop ( progress ) {
     if ( this._state === 'stop' ) { return this; }
-
     
     this._wasUknownUpdate  = undefined;
 

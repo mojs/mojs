@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.262.3', isDebug: true, helpers: h,
+  revision:   '0.262.4', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -50,6 +50,30 @@ window.mojs = mojs;
   percentage for radius
 */
 
+
+// const tm = new mojs.Timeline;
+// for (var i = 0; i < 100; i++) {
+//   tm.add( new Shape({ opacity: { 0: 1 }, fill: { 'cyan': 'yellow' } }) )
+// }
+
+// var suite = new Benchmark.Suite;
+
+// let p = 0;
+// // add tests
+// suite.add('tween', function() {
+//   tm.setProgress( p );
+//   p += 0.001;
+//   if ( p > 1 ) { p = 0 };
+// })
+// // add listeners
+// .on('cycle', function(event) {
+//   console.log(String(event.target));
+// })
+// .on('complete', function() {
+//   console.log('Fastest is ' + this.filter('fastest').map('name'));
+// })
+// // run async
+// .run({ 'async': true });
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {

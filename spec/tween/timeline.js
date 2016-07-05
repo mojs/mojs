@@ -907,18 +907,20 @@
     });
     describe('stop method ->', function() {
       it('should call super', function() {
-        var tm;
+        var p, tm;
+        p = .5;
         tm = new mojs.Timeline;
         spyOn(Tween.prototype, 'stop');
-        tm.stop();
-        return expect(Tween.prototype.stop).toHaveBeenCalled();
+        tm.stop(p);
+        return expect(Tween.prototype.stop).toHaveBeenCalledWith(p);
       });
       it('should call stop on child timelines', function() {
-        var tm;
+        var p, tm;
+        p = .5;
         tm = new mojs.Timeline;
         spyOn(tm, '_stopChildren');
-        tm.stop();
-        return expect(tm._stopChildren).toHaveBeenCalled();
+        tm.stop(p);
+        return expect(tm._stopChildren).toHaveBeenCalledWith(p);
       });
       return it('should return this', function() {
         var result, tm;
@@ -929,16 +931,17 @@
     });
     return describe('_stopChildren method ->', function() {
       return it('should call stop on child timelines', function() {
-        var tm, tw1, tw2;
+        var p, tm, tw1, tw2;
         tm = new mojs.Timeline;
         tw1 = new mojs.Tween;
         tw2 = new mojs.Tween;
         tm.add(tw1, tw2);
         spyOn(tw1, 'stop');
         spyOn(tw2, 'stop');
-        tm._stopChildren();
-        expect(tw1.stop).toHaveBeenCalled();
-        return expect(tw2.stop).toHaveBeenCalled();
+        p = .5;
+        tm._stopChildren(p);
+        expect(tw1.stop).toHaveBeenCalledWith(p);
+        return expect(tw2.stop).toHaveBeenCalledWith(p);
       });
     });
   });
