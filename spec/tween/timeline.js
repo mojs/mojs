@@ -87,7 +87,7 @@
         expect(t._defaults.delay).toBe(0);
         expect(t._defaults.duration).toBe(0);
         expect(t._defaults.nameBase).toBe('Timeline');
-        expect(t._defaults.yoyo).toBe(false);
+        expect(t._defaults.isYoyo).toBe(false);
         expect(t._defaults.easing).toBe('Linear.None');
         expect(t._defaults.backwardEasing).toBe('Linear.None');
         expect(t._defaults.onStart).toBe(null);
@@ -246,7 +246,7 @@
       it('should save previous yoyo value', function() {
         var progress, t, time;
         t = new Timeline({
-          yoyo: true,
+          isYoyo: true,
           repeat: 1
         });
         progress = .75;
@@ -290,7 +290,7 @@
       it('should call _update method on every timeline forward yoyo', function() {
         var progress, t, time, tw1, tw2;
         t = new Timeline({
-          yoyo: true
+          isYoyo: true
         });
         tw1 = new Tween;
         tw2 = new Tween;
@@ -308,7 +308,7 @@
       return it('should call _update method on every timeline backward yoyo', function() {
         var progress, t, time, tw1, tw2;
         t = new Timeline({
-          yoyo: true
+          isYoyo: true
         });
         tw1 = new Tween;
         tw2 = new Tween;
@@ -842,7 +842,7 @@
       return it('should update children in forward direction || yoyo ->', function() {
         var firstUpdated, isReact, tm, tw1, tw2;
         tm = new Timeline({
-          yoyo: true,
+          isYoyo: true,
           repeat: 1
         });
         isReact = null;

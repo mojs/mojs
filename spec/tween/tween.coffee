@@ -45,7 +45,7 @@ describe 'Tween ->', ->
       t = new Tween
       expect(t._defaults.duration).toBe  350
       expect(t._defaults.delay).toBe     0
-      expect(t._defaults.yoyo).toBe      false
+      expect(t._defaults.isYoyo).toBe      false
       expect(t._defaults.speed).toBe     1
       expect(t._defaults.easing).toBe    'Sin.Out'
       expect(t._defaults.backwardEasing).toBe null
@@ -418,7 +418,7 @@ describe 'Tween ->', ->
       expect( t._timelines[1]._update ).toHaveBeenCalledWith 20, 10, false, 1
 
     it 'should call callbacks if on edge "+1" + was yoyo', ->
-      tm = new mojs.Timeline repeat: 2, yoyo: true
+      tm = new mojs.Timeline repeat: 2, isYoyo: true
       duration = 1000
       t = new Tween
         duration: duration
@@ -447,7 +447,7 @@ describe 'Tween ->', ->
       expect(t._props.onRepeatStart).toHaveBeenCalledWith false, false
 
     it 'should call callbacks if on edge "+1" + wasnt yoyo', ->
-      tm = new mojs.Timeline repeat: 2#, yoyo: true
+      tm = new mojs.Timeline repeat: 2#, isYoyo: true
       duration = 1000
       t = new Tween
         duration: duration
@@ -476,7 +476,7 @@ describe 'Tween ->', ->
       expect(t._props.onComplete).toHaveBeenCalledWith true, false
     
     it 'should call callbacks if on edge "-1" + was yoyo', ->
-      tm = new mojs.Timeline repeat: 1, yoyo: true
+      tm = new mojs.Timeline repeat: 1, isYoyo: true
       duration = 1000
       t = new Tween
         duration: duration
@@ -507,7 +507,7 @@ describe 'Tween ->', ->
       expect(t._props.onComplete).toHaveBeenCalledWith true, false
 
     it 'should call callbacks if on edge "-1" + wasnt yoyo', ->
-      tm = new mojs.Timeline repeat: 1#, yoyo: true
+      tm = new mojs.Timeline repeat: 1#, isYoyo: true
       duration = 1000
       t = new Tween
         duration: duration
@@ -534,7 +534,7 @@ describe 'Tween ->', ->
 
     it "should call callbacks if on edge '-1' + wasnt yoyo
         but only if prevTime was active", ->
-      tm = new mojs.Timeline repeat: 1#, yoyo: true
+      tm = new mojs.Timeline repeat: 1#, isYoyo: true
       t1 = new Tween
         onStart:->
         onRepeatStart:->
@@ -583,10 +583,10 @@ describe 'Tween ->', ->
 
   
   it 'should call callbacks if on edge "-1" + was yoyo', ->
-      tm = new mojs.Timeline repeat: 1, yoyo: true
+      tm = new mojs.Timeline repeat: 1, isYoyo: true
       duration = 1000
       t = new Tween
-        yoyo: true
+        isYoyo: true
         duration: duration
         onStart:->
         onRepeatStart:->
@@ -610,11 +610,11 @@ describe 'Tween ->', ->
       expect(t._props.onComplete).toHaveBeenCalledWith true, false
 
   it 'should call callbacks if on edge "+1" + wasn\'t yoyo', ->
-      tm = new mojs.Timeline repeat: 2, yoyo: true
+      tm = new mojs.Timeline repeat: 2, isYoyo: true
       duration = 1000
       t = new Tween
         repeat: 2
-        yoyo: true
+        isYoyo: true
         speed: .5
         duration: duration
         delay: duration/2
@@ -643,11 +643,11 @@ describe 'Tween ->', ->
       expect(t._props.onComplete).toHaveBeenCalledWith true, false
 
   it 'should call callbacks if on edge "+1" + wasn\'t yoyo', ->
-      tm = new mojs.Timeline repeat: 2, yoyo: true
+      tm = new mojs.Timeline repeat: 2, isYoyo: true
       duration = 1000
       t = new Tween
         repeat: 2
-        yoyo: true
+        isYoyo: true
         speed: 2
         duration: duration
         delay: duration/2
@@ -2660,7 +2660,7 @@ describe 'Tween ->', ->
       duration = 500
       t = new Tween
         repeat:     1
-        yoyo:       true
+        isYoyo:       true
         duration:   duration
         easing:     'Linear.None'
         backwardEasing: 'Linear.None'
@@ -2849,7 +2849,7 @@ describe 'Tween ->', ->
       duration = 50
       t = new Tween
         repeat:     1
-        yoyo:       true
+        isYoyo:       true
         duration:   duration
         easing:     'Linear.None'
         backwardEasing: 'Linear.None'
@@ -3070,7 +3070,7 @@ describe 'Tween ->', ->
       duration = 50; delay = 20
       t = new Tween
         repeat:     2
-        yoyo:       true
+        isYoyo:       true
         duration:   duration
         delay:      delay
         easing:     'Linear.None'
@@ -3404,7 +3404,7 @@ describe 'Tween ->', ->
       duration = 50; delay = 20
       t = new Tween
         repeat:     1
-        yoyo:       true
+        isYoyo:       true
         duration:   duration
         delay:      delay
         easing:     'Linear.None'
@@ -3730,7 +3730,7 @@ describe 'Tween ->', ->
       duration = 50#; delay = 20
       t = new Tween
         repeat:     2
-        yoyo:       true
+        isYoyo:       true
         duration:   duration
         easing:     'Linear.None'
         backwardEasing: 'Linear.None'
@@ -4011,7 +4011,7 @@ describe 'Tween ->', ->
       duration = 50#; delay = 20
       t = new Tween
         repeat:     2
-        yoyo:       true
+        isYoyo:       true
         duration:   duration
         easing:     'Linear.None'
         backwardEasing: 'Linear.None'
@@ -4354,7 +4354,7 @@ describe 'Tween ->', ->
       duration = 500; delay = 200
       t = new Tween
         repeat:     2
-        yoyo:       true
+        isYoyo:       true
         duration:   duration
         delay:      delay
         easing:     'Linear.None'
@@ -4635,7 +4635,7 @@ describe 'Tween ->', ->
       duration = 500; delay = 200
       t = new Tween
         repeat:     2
-        yoyo:       true
+        isYoyo:       true
         duration:   duration
         delay:      delay
         easing:     'Linear.None'
@@ -4942,7 +4942,7 @@ describe 'Tween ->', ->
 
   describe 'specific _update behaviour', ->
     it 'should call repeatComplete if immediately returned inside Timeline', ()->
-      tm = new Timeline repeat: 1, yoyo: true
+      tm = new Timeline repeat: 1, isYoyo: true
       t = new Tween
         onStart:(isForward, isYoyo)->
         onRepeatStart:(isForward, isYoyo)->
@@ -4964,7 +4964,7 @@ describe 'Tween ->', ->
 
     it 'should call repeatComplete only once when in delay', ()->
       duration = 2000; delay = 1000
-      t = new Tween repeat: 1, yoyo: true, duration: duration, delay: delay
+      t = new Tween repeat: 1, isYoyo: true, duration: duration, delay: delay
       spyOn t._props, 'onRepeatComplete'
       t.setProgress 1
       t.setProgress .85
@@ -4975,7 +4975,7 @@ describe 'Tween ->', ->
       expect(t._props.onRepeatComplete.calls.count()).toBe 2
 
     it 'should not call onComplete and onRepeatComplete on start', ->
-      tm = new mojs.Timeline repeat: 1, yoyo: true
+      tm = new mojs.Timeline repeat: 1, isYoyo: true
 
       tw = new mojs.Tween
         duration: 2000
@@ -5335,8 +5335,8 @@ describe 'Tween ->', ->
 
   describe 'yoyo option ->', ->
     it 'should receive yoyo option', ->
-      t = new Tween yoyo: true
-      expect(t._props.yoyo).toBe true
+      t = new Tween isYoyo: true
+      expect(t._props.isYoyo).toBe true
 
   describe 'easing ->', ->
     it 'should parse easing string', ->

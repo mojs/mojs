@@ -27,7 +27,7 @@ class Tween extends Module {
       /*  flip onUpdate's progress on each even period.
           note that callbacks order won't flip at least
           for now (under consideration). */
-      yoyo:                   false,
+      isYoyo:                   false,
       /* easing for the tween, could be any easing type [link to easing-types.md] */
       easing:                 'Sin.Out',
       /*
@@ -435,7 +435,7 @@ class Tween extends Module {
     // if parent is onEdge but not very start nor very end
     if ( onEdge && wasYoyo != null ) {
       var T        = this._getPeriod(time),
-          isYoyo   = !!(p.yoyo && this._props.repeat && (T % 2 === 1));
+          isYoyo   = !!(p.isYoyo && this._props.repeat && (T % 2 === 1));
 
       // for timeline
       // notify children about edge jump
@@ -534,7 +534,7 @@ class Tween extends Module {
       this._progress( 1, time );
       // get period number
       var T      = this._getPeriod( p.endTime ),
-          isYoyo = p.yoyo && (T % 2 === 0);
+          isYoyo = p.isYoyo && (T % 2 === 0);
 
       this._setProgress( (isYoyo) ? 0 : 1, time, isYoyo );
       this._repeatComplete( time, isYoyo );
@@ -570,8 +570,8 @@ class Tween extends Module {
         TPrevValue    = this._delayT;
 
     // "zero" and "one" value regarding yoyo and it's period
-    var isYoyo      = props.yoyo && (T % 2 === 1),
-        isYoyoPrev  = props.yoyo && (prevT % 2 === 1),
+    var isYoyo      = props.isYoyo && (T % 2 === 1),
+        isYoyoPrev  = props.isYoyo && (prevT % 2 === 1),
         yoyoZero    = (isYoyo) ? 1 : 0,
         yoyoOne     = 1-yoyoZero;
 
@@ -579,7 +579,7 @@ class Tween extends Module {
       this._wasUknownUpdate = false;
       // if `time` is equal to `endTime`, T represents the next period,
       // so we need to decrement T and calculate "one" value regarding yoyo
-      var isYoyo = (props.yoyo && ((T-1) % 2 === 1));
+      var isYoyo = (props.isYoyo && ((T-1) % 2 === 1));
       this._setProgress( (isYoyo ? 0 : 1), time, isYoyo );
       if ( time > this._prevTime ) { this._isRepeatCompleted = false; }
       this._repeatComplete( time, isYoyo );
@@ -633,7 +633,7 @@ class Tween extends Module {
         // 1 and onRepeatComplete in delay gap
         if (this.progress !== 1) {
           // prevT
-          var isThisYoyo = props.yoyo && ((T-1) % 2 === 1);
+          var isThisYoyo = props.isYoyo && ((T-1) % 2 === 1);
           this._repeatComplete( time, isThisYoyo );
         }
         // if on edge but not at very start
@@ -721,7 +721,7 @@ class Tween extends Module {
       // decrement period if forward direction of update
       isGrows && t--;
       // calculate normalized yoyoZero value
-      yoyoZero = ((props.yoyo && (t % 2 === 1)) ? 1 : 0);
+      yoyoZero = ((props.isYoyo && (t % 2 === 1)) ? 1 : 0);
       // if was in active area and previous time was larger
       // |---=====|---=====|---=====| <<<
       //   ^2 ^1    ^2 ^1    ^2 ^1

@@ -124,7 +124,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.262.4', isDebug: true, helpers: _h2.default,
+	  revision: '0.263.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -144,7 +144,6 @@
 
 	// TODO:
 	/*
-	  yoyo -> isTimeline
 	  burst children angle after tune
 	  burst pathScale after tune
 	  swirl then issue
@@ -266,7 +265,7 @@
 	      /*  flip onUpdate's progress on each even period.
 	          note that callbacks order won't flip at least
 	          for now (under consideration). */
-	      yoyo: false,
+	      isYoyo: false,
 	      /* easing for the tween, could be any easing type [link to easing-types.md] */
 	      easing: 'Sin.Out',
 	      /*
@@ -745,7 +744,7 @@
 	    // if parent is onEdge but not very start nor very end
 	    if (onEdge && wasYoyo != null) {
 	      var T = this._getPeriod(time),
-	          isYoyo = !!(p.yoyo && this._props.repeat && T % 2 === 1);
+	          isYoyo = !!(p.isYoyo && this._props.repeat && T % 2 === 1);
 
 	      // for timeline
 	      // notify children about edge jump
@@ -853,7 +852,7 @@
 	      this._progress(1, time);
 	      // get period number
 	      var T = this._getPeriod(p.endTime),
-	          isYoyo = p.yoyo && T % 2 === 0;
+	          isYoyo = p.isYoyo && T % 2 === 0;
 
 	      this._setProgress(isYoyo ? 0 : 1, time, isYoyo);
 	      this._repeatComplete(time, isYoyo);
@@ -891,8 +890,8 @@
 	        TPrevValue = this._delayT;
 
 	    // "zero" and "one" value regarding yoyo and it's period
-	    var isYoyo = props.yoyo && T % 2 === 1,
-	        isYoyoPrev = props.yoyo && prevT % 2 === 1,
+	    var isYoyo = props.isYoyo && T % 2 === 1,
+	        isYoyoPrev = props.isYoyo && prevT % 2 === 1,
 	        yoyoZero = isYoyo ? 1 : 0,
 	        yoyoOne = 1 - yoyoZero;
 
@@ -900,7 +899,7 @@
 	      this._wasUknownUpdate = false;
 	      // if `time` is equal to `endTime`, T represents the next period,
 	      // so we need to decrement T and calculate "one" value regarding yoyo
-	      var isYoyo = props.yoyo && (T - 1) % 2 === 1;
+	      var isYoyo = props.isYoyo && (T - 1) % 2 === 1;
 	      this._setProgress(isYoyo ? 0 : 1, time, isYoyo);
 	      if (time > this._prevTime) {
 	        this._isRepeatCompleted = false;
@@ -956,7 +955,7 @@
 	        // 1 and onRepeatComplete in delay gap
 	        if (this.progress !== 1) {
 	          // prevT
-	          var isThisYoyo = props.yoyo && (T - 1) % 2 === 1;
+	          var isThisYoyo = props.isYoyo && (T - 1) % 2 === 1;
 	          this._repeatComplete(time, isThisYoyo);
 	        }
 	        // if on edge but not at very start
@@ -1053,7 +1052,7 @@
 	        // decrement period if forward direction of update
 	        isGrows && t--;
 	        // calculate normalized yoyoZero value
-	        yoyoZero = props.yoyo && t % 2 === 1 ? 1 : 0;
+	        yoyoZero = props.isYoyo && t % 2 === 1 ? 1 : 0;
 	        // if was in active area and previous time was larger
 	        // |---=====|---=====|---=====| <<<
 	        //   ^2 ^1    ^2 ^1    ^2 ^1
@@ -3662,7 +3661,7 @@
 
 	  Timeline.prototype._updateChildren = function _updateChildren(p, time, isYoyo) {
 	    var coef = time > this._prevTime ? -1 : 1;
-	    if (this._props.yoyo && isYoyo) {
+	    if (this._props.isYoyo && isYoyo) {
 	      coef *= -1;
 	    }
 	    var timeToTimelines = this._props.startTime + p * this._props.duration,

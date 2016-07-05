@@ -163,7 +163,7 @@ class Timeline extends Tween {
 
   _updateChildren ( p, time, isYoyo ) {
     var coef = ( time > this._prevTime ) ? -1 : 1;
-    if ( this._props.yoyo && isYoyo ) { coef *= -1; }
+    if ( this._props.isYoyo && isYoyo ) { coef *= -1; }
     var timeToTimelines     = this._props.startTime + p*(this._props.duration),
         prevTimeToTimelines = timeToTimelines + coef,
         len = this._timelines.length;

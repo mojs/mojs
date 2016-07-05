@@ -56,7 +56,7 @@ describe 'Timeline ->', ->
       expect(t._defaults.delay)           .toBe 0
       expect(t._defaults.duration)        .toBe 0
       expect(t._defaults.nameBase)        .toBe 'Timeline'
-      expect(t._defaults.yoyo)            .toBe false
+      expect(t._defaults.isYoyo)          .toBe false
       expect(t._defaults.easing)          .toBe 'Linear.None'
       expect(t._defaults.backwardEasing)  .toBe 'Linear.None'
       expect(t._defaults.onStart)         .toBe null
@@ -158,7 +158,7 @@ describe 'Timeline ->', ->
       t._setProgress 1, 2
       expect(Tween.prototype._setProgress).toHaveBeenCalledWith 1, 2
     it 'should save previous yoyo value', ->
-      t = new Timeline yoyo: true, repeat: 1
+      t = new Timeline isYoyo: true, repeat: 1
       progress = .75; time = 2
       t._setProgress progress - .1, time, true
       t._setProgress progress, time, true
@@ -191,7 +191,7 @@ describe 'Timeline ->', ->
       expect(tw2._update).toHaveBeenCalledWith time, time+1, undefined, 0
 
     it 'should call _update method on every timeline forward yoyo', ->
-      t = new Timeline yoyo: true
+      t = new Timeline isYoyo: true
       tw1 = new Tween
       tw2 = new Tween
       t.add tw1, tw2
@@ -204,7 +204,7 @@ describe 'Timeline ->', ->
       expect(tw2._update).toHaveBeenCalledWith time, time-1, undefined, 0
 
     it 'should call _update method on every timeline backward yoyo', ->
-      t = new Timeline yoyo: true
+      t = new Timeline isYoyo: true
       tw1 = new Tween
       tw2 = new Tween
       t.add tw1, tw2
@@ -539,7 +539,7 @@ describe 'Timeline ->', ->
       expect(firstUpdated).toBe 'tween 2'
 
     it 'should update children in forward direction || yoyo ->', ->
-      tm = new Timeline yoyo: true, repeat: 1
+      tm = new Timeline isYoyo: true, repeat: 1
       isReact = null; firstUpdated = null
       tw1 = new Tween onUpdate:(p)-> isReact and (firstUpdated ?= 'tween 1')
       tw2 = new Tween onUpdate:(p)-> isReact and (firstUpdated ?= 'tween 2')

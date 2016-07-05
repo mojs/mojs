@@ -67,7 +67,7 @@
         t = new Tween;
         expect(t._defaults.duration).toBe(350);
         expect(t._defaults.delay).toBe(0);
-        expect(t._defaults.yoyo).toBe(false);
+        expect(t._defaults.isYoyo).toBe(false);
         expect(t._defaults.speed).toBe(1);
         expect(t._defaults.easing).toBe('Sin.Out');
         expect(t._defaults.backwardEasing).toBe(null);
@@ -658,7 +658,7 @@
         var duration, t, tm;
         tm = new mojs.Timeline({
           repeat: 2,
-          yoyo: true
+          isYoyo: true
         });
         duration = 1000;
         t = new Tween({
@@ -713,7 +713,7 @@
         var duration, t, tm;
         tm = new mojs.Timeline({
           repeat: 1,
-          yoyo: true
+          isYoyo: true
         });
         duration = 1000;
         t = new Tween({
@@ -815,11 +815,11 @@
       var duration, t, tm;
       tm = new mojs.Timeline({
         repeat: 1,
-        yoyo: true
+        isYoyo: true
       });
       duration = 1000;
       t = new Tween({
-        yoyo: true,
+        isYoyo: true,
         duration: duration,
         onStart: function() {},
         onRepeatStart: function() {},
@@ -842,12 +842,12 @@
       var duration, t, tm;
       tm = new mojs.Timeline({
         repeat: 2,
-        yoyo: true
+        isYoyo: true
       });
       duration = 1000;
       t = new Tween({
         repeat: 2,
-        yoyo: true,
+        isYoyo: true,
         speed: .5,
         duration: duration,
         delay: duration / 2,
@@ -876,12 +876,12 @@
       var duration, t, tm;
       tm = new mojs.Timeline({
         repeat: 2,
-        yoyo: true
+        isYoyo: true
       });
       duration = 1000;
       t = new Tween({
         repeat: 2,
-        yoyo: true,
+        isYoyo: true,
         speed: 2,
         duration: duration,
         delay: duration / 2,
@@ -2541,7 +2541,7 @@
         duration = 500;
         t = new Tween({
           repeat: 1,
-          yoyo: true,
+          isYoyo: true,
           duration: duration,
           easing: 'Linear.None',
           backwardEasing: 'Linear.None',
@@ -2713,7 +2713,7 @@
         duration = 50;
         t = new Tween({
           repeat: 1,
-          yoyo: true,
+          isYoyo: true,
           duration: duration,
           easing: 'Linear.None',
           backwardEasing: 'Linear.None',
@@ -2908,7 +2908,7 @@
         delay = 20;
         t = new Tween({
           repeat: 2,
-          yoyo: true,
+          isYoyo: true,
           duration: duration,
           delay: delay,
           easing: 'Linear.None',
@@ -3187,7 +3187,7 @@
         delay = 20;
         t = new Tween({
           repeat: 1,
-          yoyo: true,
+          isYoyo: true,
           duration: duration,
           delay: delay,
           easing: 'Linear.None',
@@ -3403,7 +3403,7 @@
         duration = 50;
         t = new Tween({
           repeat: 2,
-          yoyo: true,
+          isYoyo: true,
           duration: duration,
           easing: 'Linear.None',
           backwardEasing: 'Linear.None',
@@ -3641,7 +3641,7 @@
         duration = 50;
         t = new Tween({
           repeat: 2,
-          yoyo: true,
+          isYoyo: true,
           duration: duration,
           easing: 'Linear.None',
           backwardEasing: 'Linear.None',
@@ -3925,7 +3925,7 @@
         delay = 200;
         t = new Tween({
           repeat: 2,
-          yoyo: true,
+          isYoyo: true,
           duration: duration,
           delay: delay,
           easing: 'Linear.None',
@@ -4164,7 +4164,7 @@
         delay = 200;
         t = new Tween({
           repeat: 2,
-          yoyo: true,
+          isYoyo: true,
           duration: duration,
           delay: delay,
           easing: 'Linear.None',
@@ -4405,7 +4405,7 @@
         var t, tm;
         tm = new Timeline({
           repeat: 1,
-          yoyo: true
+          isYoyo: true
         });
         t = new Tween({
           onStart: function(isForward, isYoyo) {},
@@ -4432,7 +4432,7 @@
         delay = 1000;
         t = new Tween({
           repeat: 1,
-          yoyo: true,
+          isYoyo: true,
           duration: duration,
           delay: delay
         });
@@ -4449,7 +4449,7 @@
         var et, st, tm, tw;
         tm = new mojs.Timeline({
           repeat: 1,
-          yoyo: true
+          isYoyo: true
         });
         tw = new mojs.Tween({
           duration: 2000,
@@ -4921,9 +4921,9 @@
       return it('should receive yoyo option', function() {
         var t;
         t = new Tween({
-          yoyo: true
+          isYoyo: true
         });
-        return expect(t._props.yoyo).toBe(true);
+        return expect(t._props.isYoyo).toBe(true);
       });
     });
     describe('easing ->', function() {

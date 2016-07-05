@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.262.4', isDebug: true, helpers: h,
+  revision:   '0.263.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -37,7 +37,6 @@ window.mojs = mojs;
 
 // TODO:
 /*
-  yoyo -> isTimeline
   burst children angle after tune
   burst pathScale after tune
   swirl then issue
