@@ -582,3 +582,36 @@ describe 'Timeline ->', ->
       tm._resetChildren()
       expect(tw1.reset).toHaveBeenCalled()
       expect(tw2.reset).toHaveBeenCalled()
+
+  describe 'stop method ->' , ->
+    it 'should call super', ->
+      tm = new mojs.Timeline
+      spyOn Tween.prototype, 'stop'
+      tm.stop()
+      expect(Tween.prototype.stop).toHaveBeenCalled()
+    it 'should call stop on child timelines', ->
+      tm = new mojs.Timeline
+      spyOn tm, '_stopChildren'
+      tm.stop()
+      expect( tm._stopChildren ).toHaveBeenCalled()
+    it 'should return this', ->
+      tm = new mojs.Timeline
+      result = tm.stop()
+      expect(result).toBe tm
+
+
+  describe '_stopChildren method ->' , ->
+    it 'should call stop on child timelines', ->
+      tm = new mojs.Timeline
+      tw1 = new mojs.Tween
+      tw2 = new mojs.Tween
+      tm.add tw1, tw2
+      spyOn tw1, 'stop'
+      spyOn tw2, 'stop'
+      tm._stopChildren()
+      expect(tw1.stop).toHaveBeenCalled()
+      expect(tw2.stop).toHaveBeenCalled()
+
+
+
+

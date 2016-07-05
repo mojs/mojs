@@ -891,7 +891,7 @@
         return expect(result).toBe(tm);
       });
     });
-    return describe('_resetChildren method ->', function() {
+    describe('_resetChildren method ->', function() {
       return it('should call reset on child timelines', function() {
         var tm, tw1, tw2;
         tm = new mojs.Timeline;
@@ -903,6 +903,42 @@
         tm._resetChildren();
         expect(tw1.reset).toHaveBeenCalled();
         return expect(tw2.reset).toHaveBeenCalled();
+      });
+    });
+    describe('stop method ->', function() {
+      it('should call super', function() {
+        var tm;
+        tm = new mojs.Timeline;
+        spyOn(Tween.prototype, 'stop');
+        tm.stop();
+        return expect(Tween.prototype.stop).toHaveBeenCalled();
+      });
+      it('should call stop on child timelines', function() {
+        var tm;
+        tm = new mojs.Timeline;
+        spyOn(tm, '_stopChildren');
+        tm.stop();
+        return expect(tm._stopChildren).toHaveBeenCalled();
+      });
+      return it('should return this', function() {
+        var result, tm;
+        tm = new mojs.Timeline;
+        result = tm.stop();
+        return expect(result).toBe(tm);
+      });
+    });
+    return describe('_stopChildren method ->', function() {
+      return it('should call stop on child timelines', function() {
+        var tm, tw1, tw2;
+        tm = new mojs.Timeline;
+        tw1 = new mojs.Tween;
+        tw2 = new mojs.Tween;
+        tm.add(tw1, tw2);
+        spyOn(tw1, 'stop');
+        spyOn(tw2, 'stop');
+        tm._stopChildren();
+        expect(tw1.stop).toHaveBeenCalled();
+        return expect(tw2.stop).toHaveBeenCalled();
       });
     });
   });

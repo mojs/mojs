@@ -30,7 +30,17 @@ class Timeline extends Tween {
     }
     return this;
   }
-
+  /*
+    API method to stop the Tween.
+    @public
+    @param   {Number} Progress [0..1] to set when stopped.
+    @returns {Object} Self.
+  */
+  stop () {
+    super.stop();
+    this._stopChildren();
+    return this;
+  }
   /*
     Method to reset tween's state and properties.
     @public
@@ -49,6 +59,15 @@ class Timeline extends Tween {
   _resetChildren () {
     for ( var i = 0; i < this._timelines.length; i++ ) {
       this._timelines[i].reset();
+    }
+  }
+  /*
+    Method to call `stop` method on all children.
+    @private
+  */
+  _stopChildren () {
+    for ( var i = 0; i < this._timelines.length; i++ ) {
+      this._timelines[i].stop();
     }
   }
   /*
