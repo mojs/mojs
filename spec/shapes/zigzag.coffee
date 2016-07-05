@@ -82,7 +82,10 @@ describe 'Zigzag ->', ->
           yFlip    = -yFlip
 
 
-        expect( zigzag.el.getAttribute( 'd' ) ).toBe points
+        isP1 = zigzag.el.getAttribute( 'd' ) is points
+        isP2 = zigzag.el.getAttribute( 'd' ) is 'M -20 0 L -20 0 L -15.5556 -20 L -11.1111 0 L -6.66667 -20 L -2.22222 0 L 2.22222 -20 L 6.66667 0 L 11.1111 -20 L 15.5556 0 L 20 -20'
+
+        expect( isP1 or isP2 ).toBe true
         expect( zigzag._prevRadiusX ).toBe radiusX
         expect( zigzag._prevRadiusY ).toBe radiusY
         expect( zigzag._prevPoints ).toBe p.points

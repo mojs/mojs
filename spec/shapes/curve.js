@@ -34,7 +34,7 @@
         return expect(Bit.prototype._draw).toHaveBeenCalled();
       });
       it('should call `el.setAttribute` for `d` attribute ', function() {
-        var p, radiusX, radiusY, x, x1, x2, x3, y, y1, y2, y3;
+        var d, isD1, isD2, p, radiusX, radiusY, x, x1, x2, x3, y, y1, y2, y3;
         radiusX = 20;
         radiusY = 30;
         curve = new Curve({
@@ -52,7 +52,10 @@
         y1 = y - radiusY;
         y2 = y;
         y3 = y + radiusY;
-        return expect(curve.el.getAttribute('d')).toBe("M" + x1 + " " + y + " Q " + x2 + " " + (y - 2 * radiusY) + " " + x3 + " " + y);
+        d = curve.el.getAttribute('d');
+        isD1 = d === ("M" + x1 + " " + y + " Q " + x2 + " " + (y - 2 * radiusY) + " " + x3 + " " + y);
+        isD2 = d === ("M " + x1 + " " + y + " Q " + x2 + " " + (y - 2 * radiusY) + " " + x3 + " " + y);
+        return expect(isD1 || isD2).toBe(true);
       });
       it('should save `radiusX/radiusY/points` properties', function() {
         var p, radiusX, radiusY, x, x1, x2, x3, y, y1, y2, y3;

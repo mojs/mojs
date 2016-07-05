@@ -37,6 +37,10 @@ window.mojs = mojs;
 
 // TODO:
 /*
+  rand for direction
+  stop should show/hide the module
+  performance
+
   burst children angle after tune
   burst pathScale after tune
   swirl then issue
@@ -49,30 +53,16 @@ window.mojs = mojs;
   percentage for radius
 */
 
+const shapeSwirl = new mojs.ShapeSwirl({
+  x: { 0 : 200 },
+  duration: 4000,
+  direction: 'rand(-2,2)',
+  swirlSize: 10
+});
 
-// const tm = new mojs.Timeline;
-// for (var i = 0; i < 100; i++) {
-//   tm.add( new Shape({ opacity: { 0: 1 }, fill: { 'cyan': 'yellow' } }) )
-// }
-
-// var suite = new Benchmark.Suite;
-
-// let p = 0;
-// // add tests
-// suite.add('tween', function() {
-//   tm.setProgress( p );
-//   p += 0.001;
-//   if ( p > 1 ) { p = 0 };
-// })
-// // add listeners
-// .on('cycle', function(event) {
-//   console.log(String(event.target));
-// })
-// .on('complete', function() {
-//   console.log('Fastest is ' + this.filter('fastest').map('name'));
-// })
-// // run async
-// .run({ 'async': true });
+document.addEventListener('click', function () {
+  shapeSwirl.replay();
+});
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {

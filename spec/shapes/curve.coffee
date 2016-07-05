@@ -65,8 +65,10 @@ describe 'Curve ->', ->
       y2 = y
       y3 = y + radiusY
 
-      expect( curve.el.getAttribute('d') )
-        .toBe "M#{x1} #{y} Q #{x2} #{ y - 2*radiusY } #{x3} #{y}"
+      d = curve.el.getAttribute('d')
+      isD1 = d is "M#{x1} #{y} Q #{x2} #{ y - 2*radiusY } #{x3} #{y}"
+      isD2 = d is "M #{x1} #{y} Q #{x2} #{ y - 2*radiusY } #{x3} #{y}"
+      expect( isD1 or isD2 ).toBe true
 
     it 'should save `radiusX/radiusY/points` properties', ->
       radiusX = 20; radiusY = 30

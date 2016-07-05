@@ -70,9 +70,9 @@
         return _results;
       });
     });
-    describe('_render method', function() {
+    describe('_render method ->', function() {
       it('should set innerHtml of parent with the string', function() {
-        var Shape;
+        var Shape, g, path, svg;
         Shape = (function(_super) {
           __extends(Shape, _super);
 
@@ -81,7 +81,7 @@
           }
 
           Shape.prototype.getShape = function() {
-            return '<line />';
+            return '<path />';
           };
 
           return Shape;
@@ -94,7 +94,14 @@
         custom._props.parent.innerHTML = '';
         spyOn(custom, '_setCanvasSize');
         custom._render();
-        return expect(custom._props.parent.innerHTML).toBe("<svg id=\"js-mojs-shape-canvas\" xmlns=\"http://www.w3.org/2000/svg\" xlink=\"http://www.w3.org/1999/xlink\"><g id=\"js-mojs-shape-el\"><line></line></g></svg>");
+        svg = custom._props.parent.firstChild;
+        g = svg.firstChild;
+        path = g.firstChild;
+        expect(svg.tagName.toLowerCase()).toBe('svg');
+        expect(svg.getAttribute('id').toLowerCase()).toBe('js-mojs-shape-canvas');
+        expect(g.tagName.toLowerCase()).toBe('g');
+        expect(g.getAttribute('id').toLowerCase()).toBe('js-mojs-shape-el');
+        return expect(path.tagName.toLowerCase()).toBe('path');
       });
       it('should find el', function() {
         var Shape;
@@ -303,7 +310,7 @@
         return expect(Bit.prototype._draw).toHaveBeenCalled();
       });
       it('should set transform on el', function() {
-        var height, width;
+        var height, isTr1, isTr2, width;
         width = 100;
         height = 200;
         custom = new Custom({
@@ -313,7 +320,9 @@
         });
         custom.el.setAttribute('transform', '');
         custom._draw();
-        return expect(custom.el.getAttribute('transform')).toBe(custom._getScale());
+        isTr1 = custom.el.getAttribute('transform') === 'translate(0, 50) scale(1, 1)';
+        isTr2 = custom.el.getAttribute('transform') === 'translate(0 50) scale(1)';
+        return expect(isTr1 || isTr2).toBe(true);
       });
       it('should not set transform on el if nothing changed', function() {
         var height, width;

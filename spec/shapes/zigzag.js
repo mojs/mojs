@@ -79,7 +79,7 @@
           return expect(zigzag._length).toBeCloseTo(184.390, 2);
         });
         it('should set `d` attribute', function() {
-          var currentX, currentY, delta, i, length, p, points, radiusX, radiusY, stepX, x, y, yFlip, zigzag, _i, _ref;
+          var currentX, currentY, delta, i, isP1, isP2, length, p, points, radiusX, radiusY, stepX, x, y, yFlip, zigzag, _i, _ref;
           zigzag = new Zigzag({
             radius: 20,
             points: 10
@@ -104,7 +104,9 @@
             currentY = yFlip === -1 ? y - radiusY : y;
             yFlip = -yFlip;
           }
-          expect(zigzag.el.getAttribute('d')).toBe(points);
+          isP1 = zigzag.el.getAttribute('d') === points;
+          isP2 = zigzag.el.getAttribute('d') === 'M -20 0 L -20 0 L -15.5556 -20 L -11.1111 0 L -6.66667 -20 L -2.22222 0 L 2.22222 -20 L 6.66667 0 L 11.1111 -20 L 15.5556 0 L 20 -20';
+          expect(isP1 || isP2).toBe(true);
           expect(zigzag._prevRadiusX).toBe(radiusX);
           expect(zigzag._prevRadiusY).toBe(radiusY);
           return expect(zigzag._prevPoints).toBe(p.points);

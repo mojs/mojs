@@ -388,14 +388,19 @@ describe 'Shape ->', ->
           duration: 200
           onComplete:-> expect(byte.el.style.left).toBe('50px'); dfr()
         byte.play()
-      it 'should set position regarding units', ->
+      it 'should set position regarding units #2', ->
         byte = new Byte
           x: 100
           y: 50,
           isShowStart: true
         s = byte.el.style
         tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-        expect(tr).toBe 'translate(100px, 50px) rotate(0deg) scale(1, 1)'
+
+        isNormal = tr is 'translate(100px, 50px) rotate(0deg) scale(1, 1)'
+        isIE = tr is 'translate(100px, 50px) rotate(0deg) scale(1)'
+
+        expect(isNormal or isIE).toBe true
+
       it 'should animate shift position', (dfr)->
         byte = new Byte
           x: {100: '200px'}
@@ -405,10 +410,11 @@ describe 'Shape ->', ->
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
             isTr  = tr is 'translate(200px, 0) rotate(0deg) scale(1, 1)'
             isTr2 = tr is 'translate(200px, 0px) rotate(0deg) scale(1, 1)'
-            expect(isTr or isTr2).toBe true
+            isTr3 = tr is 'translate(200px, 0px) rotate(0deg) scale(1)'
+            expect(isTr or isTr2 or isTr3).toBe true
             dfr()
         byte.play()
-      it 'should animate position regarding units', (dfr)->
+      it 'should animate position regarding units #3', (dfr)->
         byte = new Byte
           x: {'20%': '50%'}
           duration: 200
@@ -417,7 +423,8 @@ describe 'Shape ->', ->
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
             isTr = tr is 'translate(50%, 0) rotate(0deg) scale(1, 1)'
             isTr2 = tr is 'translate(50%, 0px) rotate(0deg) scale(1, 1)'
-            expect(isTr or isTr2).toBe true
+            isTr3 = tr is 'translate(50%, 0px) rotate(0deg) scale(1)'
+            expect(isTr or isTr2 or isTr3).toBe true
             dfr()
         byte.play()
       it 'should fallback to end units if units are differnt', (dfr)->
@@ -428,7 +435,9 @@ describe 'Shape ->', ->
           onComplete:->
             s = byte.el.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-            expect(tr).toBe 'translate(50px, 50%) rotate(0deg) scale(1, 1)'
+            isTr1 = tr is 'translate(50px, 50%) rotate(0deg) scale(1, 1)'
+            isTr2 = tr is 'translate(50px, 50%) rotate(0deg) scale(1)'
+            expect(isTr1 or isTr2).toBe true
             dfr()
         byte.play()
   
@@ -657,7 +666,8 @@ describe 'Shape ->', ->
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
       isTr  = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
-      expect(isTr or isTr2).toBe true
+      isTr3 = tr is 'translate(0px, 0px) rotate(0deg) scale(1)'
+      expect(isTr or isTr2 or isTr3).toBe true
     it 'should set new values', ->
       byte = new Byte radius: 25, top: 10
       byte._draw()
@@ -683,7 +693,8 @@ describe 'Shape ->', ->
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(0, 0) rotate(26deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 0px) rotate(26deg) scale(1, 1)'
-      expect(isTr or isTr2).toBe true
+      isTr3 = tr is 'translate(0px, 0px) rotate(26deg) scale(1)'
+      expect(isTr or isTr2 or isTr3).toBe true
       # expect(byte.el.style["#{h.prefix.css}transform"]).toBe resultStr
     it 'should not set transform if angle changed #2', ->
       byte = new Byte angle: 25
@@ -733,7 +744,8 @@ describe 'Shape ->', ->
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(4px, 0) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(4px, 0px) rotate(0deg) scale(1, 1)'
-      expect(isTr or isTr2).toBe true
+      isTr3 = tr is 'translate(4px, 0px) rotate(0deg) scale(1)'
+      expect(isTr or isTr2 or isTr3).toBe true
 
     it 'should set transform if x changed #2', ->
       byte = new Byte radius: 25, top: 10, y: { 0: 10 }
@@ -745,7 +757,8 @@ describe 'Shape ->', ->
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(0, 4px) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 4px) rotate(0deg) scale(1, 1)'
-      expect(isTr or isTr2).toBe true
+      isTr3 = tr is 'translate(0px, 4px) rotate(0deg) scale(1)'
+      expect(isTr or isTr2 or isTr3).toBe true
 
     it 'should set transform if x changed #3', ->
       byte = new Byte radius: 25, top: 10, scale: { 0: 10 }
@@ -759,7 +772,8 @@ describe 'Shape ->', ->
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(0, 0) rotate(0deg) scale(3, 3)'
       isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(3, 3)'
-      expect(isTr or isTr2).toBe true
+      isTr3 = tr is 'translate(0px, 0px) rotate(0deg) scale(3)'
+      expect(isTr or isTr2 or isTr3).toBe true
 
     it 'should set `transform-origin` if `origin`', ->
       byte = new Byte origin: '50% 30%'
@@ -767,7 +781,9 @@ describe 'Shape ->', ->
       prop = 'transform-origin'
       style = byte.el.style
       tr = style[ prop ] or style["#{mojs.h.prefix.css}#{prop}"]
-      expect(tr).toBe '50% 30% '
+      isOr1 = tr is '50% 30% '
+      isOr2 = tr is '50% 30%'
+      expect(isOr1 or isOr2).toBe true
 
     it 'should set `transform-origin` if `origin` changed', ->
       byte = new Byte origin: '50% 30%'
@@ -777,7 +793,9 @@ describe 'Shape ->', ->
       prop = 'transform-origin'
       style = byte.el.style
       tr = style[ prop ] or style["#{mojs.h.prefix.css}#{prop}"]
-      expect(tr).toBe '50% 40% '
+      isOr1 = tr is '50% 40% '
+      isOr2 = tr is '50% 40%'
+      expect(isOr1 or isOr2).toBe true
       expect(byte._fillOrigin).toHaveBeenCalled()
 
     it 'should not set `transform-origin` if `origin`', ->

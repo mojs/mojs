@@ -39,11 +39,11 @@ describe 'Custom ->', ->
       for item in custom._drawMap
         expect( item ).not.toBe 'stroke-width'
 
-  describe '_render method', ->
+  describe '_render method ->', ->
     it 'should set innerHtml of parent with the string', ->
 
       class Shape extends Custom
-        getShape: -> return '<line />'
+        getShape: -> return '<path />'
 
       custom = new Shape parent: parent
       custom._isRendered = false
@@ -54,8 +54,16 @@ describe 'Custom ->', ->
 
       custom._render()
 
-      expect(custom._props.parent.innerHTML)
-        .toBe "<svg id=\"js-mojs-shape-canvas\" xmlns=\"http://www.w3.org/2000/svg\" xlink=\"http://www.w3.org/1999/xlink\"><g id=\"js-mojs-shape-el\"><line></line></g></svg>"
+      svg   = custom._props.parent.firstChild
+      g     = svg.firstChild
+      path  = g.firstChild
+      expect(svg.tagName.toLowerCase()).toBe 'svg'
+      expect(svg.getAttribute('id').toLowerCase()).toBe 'js-mojs-shape-canvas'
+      expect(g.tagName.toLowerCase()).toBe 'g'
+      expect(g.getAttribute('id').toLowerCase()).toBe 'js-mojs-shape-el'
+      expect(path.tagName.toLowerCase()).toBe 'path'
+      # expect(custom._props.parent.innerHTML)
+      #   .toBe "<svg id=\"js-mojs-shape-canvas\" xmlns=\"http://www.w3.org/2000/svg\" xlink=\"http://www.w3.org/1999/xlink\"><g id=\"js-mojs-shape-el\"><line></line></g></svg>"
 
     it 'should find el', ->
       class Shape extends Custom
@@ -184,7 +192,6 @@ describe 'Custom ->', ->
       expect( custom._getScale())
         .toBe "translate(#{p.shiftX}, #{p.shiftY}) scale(#{p.scaleX}, #{p.scaleY})"
 
-
   describe '_draw method ->', ->
     it 'should call super', ->
       custom = new Custom parent: parent
@@ -197,7 +204,10 @@ describe 'Custom ->', ->
       custom = new Custom width: width, height: height, parent: parent
       custom.el.setAttribute 'transform', ''
       custom._draw()
-      expect( custom.el.getAttribute('transform') ).toBe custom._getScale()
+
+      isTr1 = custom.el.getAttribute('transform') is 'translate(0, 50) scale(1, 1)'
+      isTr2 = custom.el.getAttribute('transform') is 'translate(0 50) scale(1)'
+      expect( isTr1 or isTr2 ).toBe true
 
     it 'should not set transform on el if nothing changed', ->
       width  = 100
