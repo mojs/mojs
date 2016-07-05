@@ -1079,7 +1079,7 @@
         return expect(isTr || isTr2 || isTr3).toBe(true);
       });
       it('should set `transform-origin` if `origin`', function() {
-        var byte, isOr1, isOr2, prop, style, tr;
+        var byte, isOr1, isOr2, isOr3, prop, style, tr;
         byte = new Byte({
           origin: '50% 30%'
         });
@@ -1089,10 +1089,11 @@
         tr = style[prop] || style["" + mojs.h.prefix.css + prop];
         isOr1 = tr === '50% 30% ';
         isOr2 = tr === '50% 30%';
-        return expect(isOr1 || isOr2).toBe(true);
+        isOr3 = tr === '50% 30% 0px';
+        return expect(isOr1 || isOr2 || isOr3).toBe(true);
       });
       it('should set `transform-origin` if `origin` changed', function() {
-        var byte, isOr1, isOr2, prop, style, tr;
+        var byte, isOr1, isOr2, isOr3, prop, style, tr;
         byte = new Byte({
           origin: '50% 30%'
         });
@@ -1104,7 +1105,8 @@
         tr = style[prop] || style["" + mojs.h.prefix.css + prop];
         isOr1 = tr === '50% 40% ';
         isOr2 = tr === '50% 40%';
-        expect(isOr1 || isOr2).toBe(true);
+        isOr3 = tr === '50% 40% 0px';
+        expect(isOr1 || isOr2 || isOr3).toBe(true);
         return expect(byte._fillOrigin).toHaveBeenCalled();
       });
       it('should not set `transform-origin` if `origin`', function() {

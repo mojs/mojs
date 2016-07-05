@@ -783,7 +783,8 @@ describe 'Shape ->', ->
       tr = style[ prop ] or style["#{mojs.h.prefix.css}#{prop}"]
       isOr1 = tr is '50% 30% '
       isOr2 = tr is '50% 30%'
-      expect(isOr1 or isOr2).toBe true
+      isOr3 = tr is '50% 30% 0px'
+      expect(isOr1 or isOr2 or isOr3).toBe true
 
     it 'should set `transform-origin` if `origin` changed', ->
       byte = new Byte origin: '50% 30%'
@@ -795,7 +796,8 @@ describe 'Shape ->', ->
       tr = style[ prop ] or style["#{mojs.h.prefix.css}#{prop}"]
       isOr1 = tr is '50% 40% '
       isOr2 = tr is '50% 40%'
-      expect(isOr1 or isOr2).toBe true
+      isOr3 = tr is '50% 40% 0px'
+      expect(isOr1 or isOr2 or isOr3).toBe true
       expect(byte._fillOrigin).toHaveBeenCalled()
 
     it 'should not set `transform-origin` if `origin`', ->

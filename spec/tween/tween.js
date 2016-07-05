@@ -5186,7 +5186,7 @@
             now = performance.now();
             progressTime = t._progressTime;
             t.playBackward().pause();
-            expect(t._progressTime).toBe(t._props.repeatTime - progressTime);
+            expect(t._progressTime).toBeCloseTo(t._props.repeatTime - progressTime, 5);
             return dfr();
           }, 200);
         });
@@ -5199,7 +5199,7 @@
             now = performance.now();
             progressTime = t._progressTime;
             t.playBackward().pause();
-            expect(t._progressTime).toBe(t._props.repeatTime - progressTime);
+            expect(t._progressTime).toBeCloseTo(t._props.repeatTime - progressTime, 5);
             return dfr();
           }, 200);
         });
@@ -5213,7 +5213,7 @@
             now = performance.now();
             progressTime = t._progressTime;
             t.play().pause();
-            expect(t._progressTime).toBe(t._props.repeatTime - progressTime);
+            expect(t._progressTime).toBeCloseTo(t._props.repeatTime - progressTime, 5);
             return dfr();
           }, 200);
         });

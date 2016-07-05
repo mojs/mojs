@@ -5530,7 +5530,7 @@ describe 'Tween ->', ->
           now = performance.now()
           progressTime = t._progressTime
           t.playBackward().pause()
-          expect( t._progressTime ).toBe t._props.repeatTime - progressTime
+          expect( t._progressTime ).toBeCloseTo (t._props.repeatTime - progressTime), 5
           dfr()
         , 200
       it 'should flip _progressTime if changing direction #pauseless 1', (dfr)->
@@ -5540,7 +5540,7 @@ describe 'Tween ->', ->
           now = performance.now()
           progressTime = t._progressTime
           t.playBackward().pause()
-          expect( t._progressTime ).toBe t._props.repeatTime - progressTime
+          expect( t._progressTime ).toBeCloseTo (t._props.repeatTime - progressTime), 5
           dfr()
         , 200
       it 'should flip _progressTime if changing direction', (dfr)->
@@ -5551,7 +5551,7 @@ describe 'Tween ->', ->
           now = performance.now()
           progressTime = t._progressTime
           t.play().pause()
-          expect( t._progressTime ).toBe t._props.repeatTime - progressTime
+          expect( t._progressTime ).toBeCloseTo (t._props.repeatTime - progressTime), 5
           dfr()
         , 200
       it 'should flip _progressTime if changing direction #pauseless 2', (dfr)->
@@ -5561,7 +5561,7 @@ describe 'Tween ->', ->
           now = performance.now()
           progressTime = t._progressTime
           t.play().pause()
-          expect( t._progressTime ).toBe t._props.repeatTime - progressTime
+          expect( t._progressTime ).toBeCloseTo (t._props.repeatTime - progressTime), 5
           dfr()
         , 200
 
