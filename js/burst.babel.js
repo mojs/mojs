@@ -199,7 +199,11 @@ class Burst extends Tunable {
       var options = this._getChildOption( o, i );
       // add new Master Swirl as parent of new childswirl
       options.parent = this.el;
+
+      this._addBurstProperties( options, i, this._masterSwirls.length-1 );
+
       pack[i].then( options );
+
       // save the new item in `then` chain
       newPack.push( h.getLastItem(pack[i]._modules) );
     }
@@ -342,8 +346,6 @@ class Burst extends Tunable {
     var degreeShift = this._parseProperty('degreeShift', options.degreeShift || 0 );
     // put the index of the module back
     this._index = mainIndex;
-
-    // console.log( degreeShift, options.degreeShift );
 
     var p           = this._props,
         degreeCnt   = (p.degree % 360 === 0) ? p.count : p.count-1 || 1,

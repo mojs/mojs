@@ -832,10 +832,32 @@
         b._childThen(o, b._masterThen(o));
         option0 = b._getChildOption(o, 0);
         option0.parent = b._masterSwirls[1].el;
+        b._addBurstProperties(option0, 0, 1);
         expect(pack[0].then).toHaveBeenCalledWith(option0);
         option1 = b._getChildOption(o, 1);
         option1.parent = b._masterSwirls[1].el;
+        b._addBurstProperties(option1, 1, 1);
         return expect(pack[1].then).toHaveBeenCalledWith(option1);
+      });
+      it('should call _addBurstProperties with the latest main swirl', function() {
+        var b, o, option0, option1, pack;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b, '_addBurstProperties');
+        pack = b._swirls[0];
+        o = {
+          children: {
+            radius: [10, 20]
+          }
+        };
+        b._childThen(o, b._masterThen(o));
+        option0 = b._getChildOption(o, 0);
+        option0.parent = b._masterSwirls[1].el;
+        expect(b._addBurstProperties).toHaveBeenCalledWith(option0, 0, 1);
+        option1 = b._getChildOption(o, 1);
+        option1.parent = b._masterSwirls[1].el;
+        return expect(b._addBurstProperties).toHaveBeenCalledWith(option1, 1, 1);
       });
       it('should save new swirls to _swirls', function() {
         var b, o;
