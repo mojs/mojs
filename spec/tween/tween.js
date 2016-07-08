@@ -1011,6 +1011,21 @@
         t.setProgress(.1);
         return expect(isRightContext).toBe(true);
       });
+      it('should not fire when completed and return to "-" inactive area', function() {
+        var contextObj, isRightContext, t;
+        isRightContext = null;
+        contextObj = {};
+        t = new Tween({
+          onUpdate: function() {}
+        });
+        t._setStartTime();
+        t._update(t._props.startTime);
+        t._update(t._props.startTime + t._props.duration / 2);
+        t._update(t._props.startTime + t._props.duration);
+        spyOn(t, '_setProgress');
+        t._update(t._props.startTime - 10);
+        return expect(t._setProgress).not.toHaveBeenCalled();
+      });
 
       /*
         TWEEN IN NORMAL DIRECTION
@@ -4730,6 +4745,7 @@
         var startCnt, t;
         startCnt = 0;
         t = new Tween({
+          isIt: 1,
           onStart: function() {
             return startCnt++;
           }
@@ -4742,9 +4758,9 @@
         t._update(t._props.startTime + t._props.duration);
         expect(startCnt).toBe(1);
         t._update(t._props.startTime - 10);
-        expect(startCnt).toBe(2);
+        expect(startCnt).toBe(1);
         t._update(t._props.startTime + t._props.duration / 2);
-        return expect(startCnt).toBe(3);
+        return expect(startCnt).toBe(2);
       });
       it('should run before onComplete if tween ended', function() {
         var callback, startCnt, t;
@@ -5226,7 +5242,7 @@
             now = performance.now();
             progressTime = t._progressTime;
             t.play().pause();
-            expect(t._progressTime).toBe(t._props.repeatTime - progressTime);
+            expect(t._progressTime).toBeCloseTo(t._props.repeatTime - progressTime, 5);
             return dfr();
           }, 200);
         });

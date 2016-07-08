@@ -67,7 +67,7 @@ class Timeline extends Tween {
     @param   {Number} Progress [0..1] to set when stopped.
   */
   _stopChildren ( progress ) {
-    for ( var i = 0; i < this._timelines.length; i++ ) {
+    for ( var i = this._timelines.length-1; i >= 0; i-- ) {
       this._timelines[i].stop( progress );
     }
   }

@@ -254,11 +254,12 @@ class Shape extends Tunable {
     @private
   */
   _drawEl () {
+    // return;
     if (this.el == null) { return true; }
     var p     = this._props;
     var style = this.el.style;
 
-    style.opacity = p.opacity
+    // style.opacity = p.opacity;
     this._isPropChanged('opacity') && (style.opacity = p.opacity);
     if (!this.isForeign) {
       this._isPropChanged('left')  && (style.left = p.left);

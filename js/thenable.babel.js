@@ -25,7 +25,7 @@ class Thenable extends Tweenable {
     // reset isShowEnd flag on prev module
     // prevModule._setProp && prevModule._setProp('isShowEnd', false);
     // create a submodule of the same type as the master module
-    var module  = new this.constructor( merged );
+    var module = new this.constructor( merged );
     // set `this` as amster module of child module
     module._masterModule = this;
     // save the modules to the _modules array

@@ -197,15 +197,17 @@ class Burst extends Tunable {
     for (var i = 0; i < pack.length; i++) {
       // get option by modulus
       var options = this._getChildOption( o, i );
+      const swirl = pack[i];
+      const lastSwirl = h.getLastItem(swirl._modules);
       // add new Master Swirl as parent of new childswirl
       options.parent = this.el;
 
       this._addBurstProperties( options, i, this._masterSwirls.length-1 );
 
-      pack[i].then( options );
+      swirl.then( options );
 
       // save the new item in `then` chain
-      newPack.push( h.getLastItem(pack[i]._modules) );
+      newPack.push( h.getLastItem(swirl._modules) );
     }
     // save the pack to _swirls object
     this._swirls[this._masterSwirls.length-1] = newPack;

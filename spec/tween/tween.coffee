@@ -742,6 +742,22 @@ describe 'Tween ->', ->
       t.setProgress .1
       expect(isRightContext).toBe true
 
+    it 'should not fire when completed and return to "-" inactive area', ->
+      isRightContext = null; contextObj = {}
+      t = new Tween onUpdate: ->
+
+      t._setStartTime()
+
+
+      t._update t._props.startTime
+      t._update t._props.startTime + t._props.duration/2
+      t._update t._props.startTime + t._props.duration
+      spyOn t, '_setProgress'
+
+      t._update t._props.startTime - 10
+
+      expect( t._setProgress ).not.toHaveBeenCalled()
+
     ###
       TWEEN IN NORMAL DIRECTION
     ###
@@ -5203,7 +5219,9 @@ describe 'Tween ->', ->
 
     it 'should restart if tween was completed', ->
       startCnt = 0
-      t = new Tween onStart: -> startCnt++
+      t = new Tween
+        isIt: 1
+        onStart: -> startCnt++
 
       t._setStartTime()
       t._update t._props.startTime + t._props.duration/2
@@ -5213,9 +5231,9 @@ describe 'Tween ->', ->
       t._update t._props.startTime + t._props.duration
       expect(startCnt).toBe 1
       t._update t._props.startTime - 10
-      expect(startCnt).toBe 2
+      expect(startCnt).toBe 1
       t._update t._props.startTime + t._props.duration/2
-      expect(startCnt).toBe 3
+      expect(startCnt).toBe 2
 
     it 'should run before onComplete if tween ended', ->
       startCnt = 0; callback = null

@@ -541,7 +541,7 @@ class Tween extends Module {
       this._complete( time, isYoyo );
     }
     // if was active and went to - inactive area "-"
-    if ( time < this._prevTime && time < p.startTime && !this._isStarted ) {
+    if ( time < this._prevTime && time < p.startTime && !this._isStarted && !this._isCompleted) {
       // if was in active area and didn't fire onStart callback
       this._progress( 0, time, false );
       this._setProgress( 0, time, false );
