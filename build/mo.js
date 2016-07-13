@@ -693,7 +693,7 @@
 	      } else if (!this._isRefreshed) {
 	        // onRefresh callback
 	        // before startTime
-	        if (time < p.startTime) {
+	        if (time < p.startTime && this.progress !== 0) {
 	          this._refresh(true);
 	          this._isRefreshed = true;
 	          // after endTime
@@ -8838,7 +8838,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.265.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.265.1', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -8872,30 +8872,6 @@
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
 	*/
-
-	// document.addEventListener('click', function (e) {
-	//   shape.replay();
-	// });
-
-	// var suite = new Benchmark.Suite;
-
-	// let p = 0;
-
-	// // add tests
-	// suite.add('shape', function() {
-	//   shape.setProgress( p );
-	//   p += 0.0001;
-	//   if ( p > 1 ) { p = 0; }
-	// })
-	// // add listeners
-	// .on('cycle', function(event) {
-	//   console.log(String(event.target));
-	// })
-	// .on('complete', function() {
-	//   console.log('Fastest is ' + this.filter('fastest').map('name'));
-	// })
-	// // run async
-	// .run({ 'async': true });
 
 	// istanbul ignore next
 	if (true) {

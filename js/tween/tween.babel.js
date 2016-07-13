@@ -524,7 +524,7 @@ class Tween extends Module {
       else if ( !this._isRefreshed ) {
         // onRefresh callback
         // before startTime
-        if ( time < p.startTime ) {
+        if ( time < p.startTime && this.progress !== 0 ) {
           this._refresh( true );
           this._isRefreshed = true;
         // after endTime

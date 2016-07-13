@@ -7490,6 +7490,25 @@
           expect(tw._refresh).toHaveBeenCalledWith(true);
           return expect(tw._refresh.calls.count()).toBe(1);
         });
+        it('should be called only if progress !== 0', function() {
+          var delay, p, tw;
+          delay = 200;
+          tw = new Tween({
+            delay: delay,
+            onRefresh: function() {}
+          });
+          tw._setStartTime();
+          p = tw._props;
+          tw._update(p.startTime);
+          tw._update(p.startTime + p.repeatTime / 2);
+          tw._update(p.endTime);
+          spyOn(tw, '_refresh');
+          tw._update(p.endTime + 20);
+          tw.progress = 0;
+          tw._update(p.startTime - 20);
+          tw._update(p.startTime - 10);
+          return expect(tw._refresh).not.toHaveBeenCalledWith(true);
+        });
         return it('should be called after another play', function() {
           var delay, p, tw;
           delay = 200;

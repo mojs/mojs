@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.265.0', isDebug: true, helpers: h,
+  revision:   '0.265.1', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -51,31 +51,6 @@ window.mojs = mojs;
   parse rand(stagger(20, 10), 20) values
   percentage for radius
 */
-
-
-// document.addEventListener('click', function (e) {
-//   shape.replay();
-// });
-
-// var suite = new Benchmark.Suite;
-
-// let p = 0;
-
-// // add tests
-// suite.add('shape', function() {
-//   shape.setProgress( p );
-//   p += 0.0001;
-//   if ( p > 1 ) { p = 0; }
-// })
-// // add listeners
-// .on('cycle', function(event) {
-//   console.log(String(event.target));
-// })
-// .on('complete', function() {
-//   console.log('Fastest is ' + this.filter('fastest').map('name'));
-// })
-// // run async
-// .run({ 'async': true });
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {
