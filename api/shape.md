@@ -104,6 +104,9 @@ const shape = new mojs.Shape({
   // If should stay shown after animation ends. {Boolean}
   isShowEnd:        true,
 
+  // If refresh state on subsequent plays. {Boolean}
+  isRefreshState:   true,
+
   // Context callbacks will be called with. {Object}
   callbacksContext: this
   

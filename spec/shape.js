@@ -122,6 +122,7 @@
         expect(byte._defaults.radiusY).toBe(null);
         expect(byte._defaults.isShowEnd).toBe(true);
         expect(byte._defaults.isShowStart).toBe(false);
+        expect(byte._defaults.isRefreshState).toBe(true);
         expect(byte._defaults.width).toBe(null);
         expect(byte._defaults.height).toBe(null);
         expect(byte._defaults.isWithShape).toBe(true);
@@ -252,7 +253,7 @@
           return expect(tr._hide).not.toHaveBeenCalled();
         });
       });
-      return describe('onComplete callback override ->', function() {
+      describe('onComplete callback override ->', function() {
         it('should override this._o.onComplete', function() {
           var obj, tr;
           tr = new Shape;
@@ -364,6 +365,44 @@
           spyOn(tr, '_hide');
           obj.callbackOverrides.onComplete(true);
           return expect(tr._hide).not.toHaveBeenCalled();
+        });
+      });
+      return describe('onRefresh callback override ->', function() {
+        it('should override this._o.onRefresh', function() {
+          var obj, tr;
+          tr = new Shape;
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          return expect(typeof obj.callbackOverrides.onRefresh).toBe('function');
+        });
+        it('should call _refreshBefore if isBefore', function() {
+          var obj, tr;
+          tr = new Shape;
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_refreshBefore');
+          obj.callbackOverrides.onRefresh(true);
+          return expect(tr._refreshBefore).toHaveBeenCalled();
+        });
+        it('should not call _refreshBefore if !isBefore', function() {
+          var obj, tr;
+          tr = new Shape;
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_refreshBefore');
+          obj.callbackOverrides.onRefresh(false);
+          return expect(tr._refreshBefore).not.toHaveBeenCalled();
+        });
+        return it('should not call _refreshBefore if !isRefreshState', function() {
+          var obj, tr;
+          tr = new Shape({
+            isRefreshState: false
+          });
+          obj = {};
+          tr._applyCallbackOverrides(obj);
+          spyOn(tr, '_refreshBefore');
+          obj.callbackOverrides.onRefresh(true);
+          return expect(tr._refreshBefore).not.toHaveBeenCalled();
         });
       });
     });
@@ -1797,7 +1836,7 @@
         return expect(shape._getMaxSizeInChain).toHaveBeenCalled();
       });
     });
-    return describe('tune method ->', function() {
+    describe('tune method ->', function() {
       it('should call super', function() {
         var obj, shape;
         obj = {};
@@ -1818,6 +1857,31 @@
         spyOn(shape, '_getMaxSizeInChain');
         shape.tune({});
         return expect(shape._getMaxSizeInChain).toHaveBeenCalled();
+      });
+    });
+    return describe('_refreshBefore method ->', function() {
+      it('should call `_show` method is `isShowStart`', function() {
+        var shape;
+        shape = new Shape({
+          isShowStart: true
+        });
+        spyOn(shape, '_show');
+        shape._refreshBefore();
+        return expect(shape._show).toHaveBeenCalled();
+      });
+      it('should call `_hide` method is not `isShowStart`', function() {
+        var shape;
+        shape = new Shape;
+        spyOn(shape, '_hide');
+        shape._refreshBefore();
+        return expect(shape._hide).toHaveBeenCalled();
+      });
+      return it('should call `_setProgress` with `0`', function() {
+        var shape;
+        shape = new Shape;
+        spyOn(shape, '_setProgress');
+        shape._refreshBefore();
+        return expect(shape._setProgress).toHaveBeenCalledWith(0);
       });
     });
   });

@@ -84,6 +84,8 @@ class Shape extends Tunable {
       isShowStart:      false,
       // Possible values: [ boolean ]
       isShowEnd:        true,
+      // Possible values: [ boolean ]
+      isRefreshState:   true,
       // Possible values: [ number > 0 ]
       duration:         400,
       // Possible values: [ number ]
@@ -474,6 +476,9 @@ class Shape extends Tunable {
         if ( !it._isLastInChain() ) { return; }
         if ( isFwd ) { if ( !p.isShowEnd ) { it._hide(); } }
         else { it._show(); }
+      },
+      onRefresh: function (isBefore) {
+        p.isRefreshState && isBefore && it._refreshBefore();
       }
     }
   }
@@ -507,6 +512,14 @@ class Shape extends Tunable {
       str += `${ p.origin[i].string } `;
     }
     return str;
+  }
+  /*
+    Method to refresh state befor startTime.
+    @private
+  */
+  _refreshBefore () {
+    this._setProgress( 0 );
+    if ( this._props.isShowStart ) { this._show(); } else { this._hide(); }
   }
 }
 

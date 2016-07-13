@@ -83,6 +83,9 @@ const burst = new mojs.Burst({
   // If should stay shown after animation ends. {Boolean}
   isShowEnd:        true,
 
+  // If refresh state on subsequent plays. {Boolean}
+  isRefreshState:   true,
+
   /*
     Options for each children ShapeSwirl element. {Object}
     Supports `Stagger` strings for numeric values and `Property Maps` overall.

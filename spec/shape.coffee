@@ -105,6 +105,7 @@ describe 'Shape ->', ->
       expect(byte._defaults.radiusY).toBe          null
       expect(byte._defaults.isShowEnd).toBe        true
       expect(byte._defaults.isShowStart).toBe      false
+      expect(byte._defaults.isRefreshState).toBe   true
       # nope
       # expect(byte._defaults.size).toBe             null
       expect(byte._defaults.width).toBe            null
@@ -291,6 +292,35 @@ describe 'Shape ->', ->
         spyOn tr, '_hide'
         obj.callbackOverrides.onComplete true
         expect(tr._hide).not.toHaveBeenCalled()
+
+    describe 'onRefresh callback override ->', ->
+      it 'should override this._o.onRefresh', ->
+        tr = new Shape
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        expect(typeof obj.callbackOverrides.onRefresh).toBe 'function'
+      it 'should call _refreshBefore if isBefore', ->
+        tr = new Shape
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_refreshBefore'
+        obj.callbackOverrides.onRefresh true
+        expect(tr._refreshBefore).toHaveBeenCalled()
+      it 'should not call _refreshBefore if !isBefore', ->
+        tr = new Shape
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_refreshBefore'
+        obj.callbackOverrides.onRefresh false
+        expect(tr._refreshBefore).not.toHaveBeenCalled()
+
+      it 'should not call _refreshBefore if !isRefreshState', ->
+        tr = new Shape isRefreshState: false
+        obj = {}
+        tr._applyCallbackOverrides( obj )
+        spyOn tr, '_refreshBefore'
+        obj.callbackOverrides.onRefresh true
+        expect(tr._refreshBefore).not.toHaveBeenCalled()
 
   describe '_transformTweenOptions method', ->
     it 'should call _applyCallbackOverrides with _o', ->
@@ -1372,4 +1402,38 @@ describe 'Shape ->', ->
       spyOn shape, '_getMaxSizeInChain'
       shape.tune({})
       expect( shape._getMaxSizeInChain ).toHaveBeenCalled()
+
+  describe '_refreshBefore method ->', ->
+    it 'should call `_show` method is `isShowStart`', ->
+      shape = new Shape isShowStart: true
+
+      spyOn shape, '_show'
+      shape._refreshBefore()
+
+      expect( shape._show ).toHaveBeenCalled()
+
+    it 'should call `_hide` method is not `isShowStart`', ->
+      shape = new Shape
+
+      spyOn shape, '_hide'
+      shape._refreshBefore()
+
+      expect( shape._hide ).toHaveBeenCalled()
+
+    it 'should call `_setProgress` with `0`', ->
+      shape = new Shape
+
+      spyOn shape, '_setProgress'
+      shape._refreshBefore()
+
+      expect( shape._setProgress ).toHaveBeenCalledWith 0
+
+
+
+
+
+
+
+
+
 
