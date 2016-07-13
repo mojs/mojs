@@ -51,6 +51,7 @@ describe 'Tween ->', ->
       expect(t._defaults.backwardEasing).toBe null
       expect(t._defaults.name).toBe      null
       expect(t._defaults.nameBase).toBe  'Tween'
+      expect(t._defaults.onRefresh).toBe null
       expect(t._defaults.onStart).toBeDefined()
       expect(t._defaults.onRepeatStart).toBeDefined()
       expect(t._defaults.onFirstUpdate).toBeDefined()
@@ -7189,7 +7190,91 @@ describe 'Tween ->', ->
         tw._setResumeTime( 'reverse' )
         expect(tw._prevTime).toBe tw._props.endTime - tw._progressTime
 
+    describe 'onRefresh callback ->', ->
+      it 'should be called if time is less then startTime', ->
+        delay = 200
+        tw = new Tween
+          delay: delay
+          onRefresh: ->
+        tw._setStartTime()
 
+        p = tw._props
+        tw._update p.startTime
+        tw._update p.startTime + p.repeatTime/2
+        tw._update p.endTime
+
+        spyOn tw, '_refresh'
+
+        tw._update p.endTime + 20
+        tw._update p.startTime - 20
+        tw._update p.startTime - 10
+
+        expect( tw._refresh ).toHaveBeenCalledWith true
+        expect( tw._refresh.calls.count() ).toBe 1
+
+      it 'should be called after another play', ->
+        delay = 200
+        tw = new Tween
+          delay: delay
+          onRefresh: ->
+        tw._setStartTime()
+
+        p = tw._props
+        tw._update p.startTime
+        tw._update p.startTime + p.repeatTime/2
+        tw._update p.endTime
+
+        tw._update p.endTime + 20
+        tw._update p.startTime - 20
+        tw._update p.startTime - 10
+
+        # new play
+
+        spyOn tw, '_refresh'
+
+        tw._update p.startTime
+        tw._update p.startTime + p.repeatTime/2
+        tw._update p.endTime
+
+        tw._update p.endTime + 20
+        tw._update p.startTime - 20
+        tw._update p.startTime - 10
+
+        expect( tw._refresh ).toHaveBeenCalledWith true
+        expect( tw._refresh.calls.count() ).toBe 1
+
+
+    describe '_refresh method ->', ->
+      it 'should call onRefresh callback if defined', ->
+        tw = new Tween onRefresh: ->
+
+        spyOn tw._props, 'onRefresh'
+        tw._refresh true
+        expect( tw._props.onRefresh ).toHaveBeenCalledWith true
+
+      it 'should not throw if no callback set', ->
+        tw = new Tween
+        expect( -> tw._refresh true ).not.toThrow()
+
+      it 'should call onRefresh callback with right context', ->
+        context = {}
+        isRightContext = null
+        tw = new Tween
+          callbacksContext: context
+          onRefresh: -> isRightContext = @ is context
+
+        tw._refresh true
+        expect( isRightContext ).toBe true
+
+
+  describe '_updateInActiveArea method ->', -> 
+    it 'should refresh _isRefreshed flag', ->
+      tw = new Tween
+
+      tw._isRefreshed = true
+      tw._updateInActiveArea 0
+
+      expect( tw._isRefreshed ).toBe false
 
     
 

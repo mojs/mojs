@@ -93,8 +93,8 @@ module.exports = function(config) {
       'spec/shape.js',
       'build/shape-swirl.js',
       'spec/shape-swirl.js',
-      // 'build/burst.js',
-      // 'spec/burst.js',
+      'build/burst.js',
+      'spec/burst.js',
 
       'build/module.js',
       'spec/module.js',

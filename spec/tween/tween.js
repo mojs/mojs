@@ -73,6 +73,7 @@
         expect(t._defaults.backwardEasing).toBe(null);
         expect(t._defaults.name).toBe(null);
         expect(t._defaults.nameBase).toBe('Tween');
+        expect(t._defaults.onRefresh).toBe(null);
         expect(t._defaults.onStart).toBeDefined();
         expect(t._defaults.onRepeatStart).toBeDefined();
         expect(t._defaults.onFirstUpdate).toBeDefined();
@@ -7429,7 +7430,7 @@
         return expect(tr._overrideCallback).toHaveBeenCalledWith(null, controlCallback);
       });
     });
-    return describe('_setResumeTime method ->', function() {
+    describe('_setResumeTime method ->', function() {
       it('should call _setStartTime method', function() {
         var shift, time, tw;
         tw = new Tween;
@@ -7447,7 +7448,7 @@
         time = tw._resumeTime - Math.abs(0) - tw._progressTime;
         return expect(tw._setStartTime).toHaveBeenCalledWith(time, false);
       });
-      return describe('_prevTime normalization ->', function() {
+      describe('_prevTime normalization ->', function() {
         it('should not set _prevTime if it is undefined', function() {
           var tw;
           tw = new Tween;
@@ -7468,6 +7469,92 @@
           tw._setResumeTime('reverse');
           return expect(tw._prevTime).toBe(tw._props.endTime - tw._progressTime);
         });
+      });
+      describe('onRefresh callback ->', function() {
+        it('should be called if time is less then startTime', function() {
+          var delay, p, tw;
+          delay = 200;
+          tw = new Tween({
+            delay: delay,
+            onRefresh: function() {}
+          });
+          tw._setStartTime();
+          p = tw._props;
+          tw._update(p.startTime);
+          tw._update(p.startTime + p.repeatTime / 2);
+          tw._update(p.endTime);
+          spyOn(tw, '_refresh');
+          tw._update(p.endTime + 20);
+          tw._update(p.startTime - 20);
+          tw._update(p.startTime - 10);
+          expect(tw._refresh).toHaveBeenCalledWith(true);
+          return expect(tw._refresh.calls.count()).toBe(1);
+        });
+        return it('should be called after another play', function() {
+          var delay, p, tw;
+          delay = 200;
+          tw = new Tween({
+            delay: delay,
+            onRefresh: function() {}
+          });
+          tw._setStartTime();
+          p = tw._props;
+          tw._update(p.startTime);
+          tw._update(p.startTime + p.repeatTime / 2);
+          tw._update(p.endTime);
+          tw._update(p.endTime + 20);
+          tw._update(p.startTime - 20);
+          tw._update(p.startTime - 10);
+          spyOn(tw, '_refresh');
+          tw._update(p.startTime);
+          tw._update(p.startTime + p.repeatTime / 2);
+          tw._update(p.endTime);
+          tw._update(p.endTime + 20);
+          tw._update(p.startTime - 20);
+          tw._update(p.startTime - 10);
+          expect(tw._refresh).toHaveBeenCalledWith(true);
+          return expect(tw._refresh.calls.count()).toBe(1);
+        });
+      });
+      return describe('_refresh method ->', function() {
+        it('should call onRefresh callback if defined', function() {
+          var tw;
+          tw = new Tween({
+            onRefresh: function() {}
+          });
+          spyOn(tw._props, 'onRefresh');
+          tw._refresh(true);
+          return expect(tw._props.onRefresh).toHaveBeenCalledWith(true);
+        });
+        it('should not throw if no callback set', function() {
+          var tw;
+          tw = new Tween;
+          return expect(function() {
+            return tw._refresh(true);
+          }).not.toThrow();
+        });
+        return it('should call onRefresh callback with right context', function() {
+          var context, isRightContext, tw;
+          context = {};
+          isRightContext = null;
+          tw = new Tween({
+            callbacksContext: context,
+            onRefresh: function() {
+              return isRightContext = this === context;
+            }
+          });
+          tw._refresh(true);
+          return expect(isRightContext).toBe(true);
+        });
+      });
+    });
+    return describe('_updateInActiveArea method ->', function() {
+      return it('should refresh _isRefreshed flag', function() {
+        var tw;
+        tw = new Tween;
+        tw._isRefreshed = true;
+        tw._updateInActiveArea(0);
+        return expect(tw._isRefreshed).toBe(false);
       });
     });
   });

@@ -29,6 +29,13 @@ const tween = new mojs.Tween({
   /* CALLBACKS (in order of firing) */
 
   /*
+    Fires on every when progress needs an update. For instance when tween was finished an remains in `1` progress state, and you will play it again - it will stay in the `1` state until first sufficient update after delay. So the `onRefresh` callback serves you to `refresh` the `1` state with `0` update.
+    
+    @param isBefore {Boolean} If `true` - the refresh is before start time.
+  */
+  onRefresh (p, isForward, isYoyo) {},
+
+  /*
     Fires on every update of the tween in any period (including delay periods). You probably want to use `onUpdate` method instead.
     @param p {Number} Normal (not eased) progress.
     @param isForward {Boolean} Direction of the progress.

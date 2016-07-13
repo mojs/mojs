@@ -57,6 +57,7 @@ class Tween extends Module {
                           `false` for backward direction(tween runs in reverse).
       */
       onStart:                null,
+      onRefresh:              null,
       onComplete:             null,
       onRepeatStart:          null,
       onRepeatComplete:       null,
@@ -516,7 +517,21 @@ class Tween extends Module {
     */
     if ((time >= p.startTime) && (time <= p.endTime)) {
       this._updateInActiveArea( time );
-    } else { (this._isInActiveArea) && this._updateInInactiveArea( time ); }
+    } else {
+      // if was in active area - update in inactive area but just once -
+      // right after the active area
+      if (this._isInActiveArea) { this._updateInInactiveArea( time ); }
+      else if ( !this._isRefreshed ) {
+        // onRefresh callback
+        // before startTime
+        if ( time < p.startTime ) {
+          this._refresh( true );
+          this._isRefreshed = true;
+        // after endTime
+        }
+        // else if ( time > p.endTime ) { }
+      }
+    }
     
     this._prevTime = time;
     return (time >= p.endTime) || (time <= startPoint);
@@ -588,6 +603,7 @@ class Tween extends Module {
 
     // reset callback flags
     this._isCompleted = false;
+    this._isRefreshed = false;
     // if time is inside the duration area of the tween
     if ( startPoint + elapsed >= props.startTime ) {
       this._isInActiveArea = true; this._isRepeatCompleted = false;
@@ -963,6 +979,18 @@ class Tween extends Module {
     var p = this._props;
     if (p.onProgress != null && typeof p.onProgress === 'function') {
       p.onProgress.call( p.callbacksContext || this, progress, time > this._prevTime );
+    }
+  }
+  /*
+    Method to launch onRefresh callback.
+    @method _refresh
+    @private
+    @param {Boolean} If refresh even before start time.
+  */
+  _refresh ( isBefore ) {
+    var p = this._props;
+    if ( p.onRefresh != null ) {
+      p.onRefresh.call( p.callbacksContext || this, isBefore );
     }
   }
   /*
