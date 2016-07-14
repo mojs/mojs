@@ -7441,18 +7441,14 @@
 	    return this._defaults.shape = 'ellipse';
 	  };
 
-	  Circle.prototype._render = function() {
-	    Circle.__super__._render.apply(this, arguments);
-	    this._setAttrIfChanged('cx', this._props.width / 2);
-	    return this._setAttrIfChanged('cy', this._props.height / 2);
-	  };
-
 	  Circle.prototype._draw = function() {
 	    var rx, ry;
 	    rx = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
 	    ry = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
 	    this._setAttrIfChanged('rx', rx);
 	    this._setAttrIfChanged('ry', ry);
+	    this._setAttrIfChanged('cx', this._props.width / 2);
+	    this._setAttrIfChanged('cy', this._props.height / 2);
 	    return Circle.__super__._draw.apply(this, arguments);
 	  };
 
@@ -8862,7 +8858,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.265.5', isDebug: true, helpers: _h2.default,
+	  revision: '0.265.6', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default

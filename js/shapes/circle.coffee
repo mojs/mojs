@@ -7,18 +7,14 @@ class Circle extends Bit
   _declareDefaults: ->
     super
     @_defaults.shape = 'ellipse'
-
-  # COVER
-  _render:->
-    super
-    @_setAttrIfChanged 'cx', @_props.width/2
-    @_setAttrIfChanged 'cy', @_props.height/2
     
   _draw:->
     rx = if @_props.radiusX? then @_props.radiusX else @_props.radius
     ry = if @_props.radiusY? then @_props.radiusY else @_props.radius
     @_setAttrIfChanged 'rx', rx
     @_setAttrIfChanged 'ry', ry
+    @_setAttrIfChanged 'cx', @_props.width/2
+    @_setAttrIfChanged 'cy', @_props.height/2
     # @_setAttrIfChanged 'cx', @_props.width/2
     # @_setAttrIfChanged 'cy', @_props.height/2
     # @setAttrsIfChanged rx: rx, ry: ry, cx: @_props.x, cy: @_props.y
