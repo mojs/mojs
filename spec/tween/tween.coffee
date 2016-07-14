@@ -409,6 +409,28 @@ describe 'Tween ->', ->
       expect(t._updateInActiveArea).toHaveBeenCalled()
       expect(t._props.onStart).toHaveBeenCalledWith(true, false)
 
+    it 'should recalc received _prevTime if speed is present', ->
+      tm = new Timeline
+      t = new Tween(
+        duration: 1000,
+        speed:    .5,
+        onStart:->
+        onComplete:->
+      )
+      tm.add t
+
+      # spyOn( t, '_updateInActiveArea').and.callThrough()
+      spyOn t._props, 'onStart'
+      spyOn t._props, 'onComplete'
+
+      tm._setStartTime()
+      tm._update tm._props.startTime
+      tm._update tm._props.startTime + 10
+
+      # expect(t._updateInActiveArea).toHaveBeenCalled()
+      expect(t._props.onStart).toHaveBeenCalledWith(true, false)
+      expect(t._props.onComplete).not.toHaveBeenCalled()
+
     it 'should update all children timelines if onEdge', ->
       t = new Timeline
       t.add new Tween, new Tween

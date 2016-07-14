@@ -645,6 +645,24 @@
         expect(t._updateInActiveArea).toHaveBeenCalled();
         return expect(t._props.onStart).toHaveBeenCalledWith(true, false);
       });
+      it('should recalc received _prevTime if speed is present', function() {
+        var t, tm;
+        tm = new Timeline;
+        t = new Tween({
+          duration: 1000,
+          speed: .5,
+          onStart: function() {},
+          onComplete: function() {}
+        });
+        tm.add(t);
+        spyOn(t._props, 'onStart');
+        spyOn(t._props, 'onComplete');
+        tm._setStartTime();
+        tm._update(tm._props.startTime);
+        tm._update(tm._props.startTime + 10);
+        expect(t._props.onStart).toHaveBeenCalledWith(true, false);
+        return expect(t._props.onComplete).not.toHaveBeenCalled();
+      });
       it('should update all children timelines if onEdge', function() {
         var t;
         t = new Timeline;

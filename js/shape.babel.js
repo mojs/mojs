@@ -518,7 +518,9 @@ class Shape extends Tunable {
     @private
   */
   _refreshBefore () {
-    this._setProgress( 0 );
+    // call setProgress with eased and normal progress
+    this._setProgress( this.tween._props.easing(0), 0 );
+
     if ( this._props.isShowStart ) { this._show(); } else { this._hide(); }
   }
 }

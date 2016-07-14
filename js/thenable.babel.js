@@ -48,7 +48,9 @@ class Thenable extends Tweenable {
     // set the submodule to be without timeline for perf reasons
     obj.isTimelineLess   = true;
     // reset isShowStart flag for the submodules
-    obj.isShowStart      = false;    
+    obj.isShowStart      = false;
+    // reset isRefreshState flag for the submodules
+    obj.isRefreshState   = false;
     // set the submodule callbacks context
     obj.callbacksContext = this._props.callbacksContext;
     // set previous module

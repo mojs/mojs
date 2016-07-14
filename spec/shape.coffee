@@ -1420,13 +1420,21 @@ describe 'Shape ->', ->
 
       expect( shape._hide ).toHaveBeenCalled()
 
-    it 'should call `_setProgress` with `0`', ->
+    it 'should call `_setProgress` with `0, 0`', ->
       shape = new Shape
 
       spyOn shape, '_setProgress'
       shape._refreshBefore()
 
-      expect( shape._setProgress ).toHaveBeenCalledWith 0
+      expect( shape._setProgress ).toHaveBeenCalledWith 0, 0
+
+    it 'should call `_setProgress` with tweens eased progress', ->
+      shape = new Shape easing: (k)-> return 1
+
+      spyOn shape, '_setProgress'
+      shape._refreshBefore()
+
+      expect( shape._setProgress ).toHaveBeenCalledWith 1, 0
 
 
 

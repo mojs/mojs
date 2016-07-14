@@ -272,6 +272,7 @@ class PathEasing
   # @return {Object} easing y
   create:(path, o)->
     handler = new PathEasing(path, o)
-    handler.sample.path = handler.path; handler.sample
+    handler.sample.path = handler.path;
+    handler.sample
 
 module.exports = PathEasing

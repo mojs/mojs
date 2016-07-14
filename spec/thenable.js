@@ -778,6 +778,7 @@
         th._resetMergedFlags(obj);
         expect(obj.isTimelineLess).toBe(true);
         expect(obj.isShowStart).toBe(false);
+        expect(obj.isRefreshState).toBe(false);
         expect(obj.prevChainModule).toBe(th._modules[th._modules.length - 1]);
         expect(obj.callbacksContext).toBe(th._props.callbacksContext);
         return expect(obj.masterModule).toBe(th);

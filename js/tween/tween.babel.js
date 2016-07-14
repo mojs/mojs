@@ -415,10 +415,16 @@ class Tween extends Module {
     // set _prevTime to passed one and pretent that there was unknown
     // update to not to block start/complete callbacks
     if ( this._prevTime == null && timelinePrevTime != null ) {
-      this._prevTime = timelinePrevTime;
+
+      if ( this._props.speed && this._playTime ) {
+        // play point + ( speed * delta )
+        this._prevTime = this._playTime + ( this._props.speed * ( timelinePrevTime - this._playTime ) );
+      }
+      // this._prevTime = timelinePrevTime;
       this._wasUknownUpdate = true;
     }
 
+    // var before = time;
     // cache vars
     var startPoint = p.startTime - p.delay;
     // if speed param was defined - calculate
@@ -445,7 +451,6 @@ class Tween extends Module {
           this._timelines[i]._update( time, timelinePrevTime, wasYoyo, onEdge );
         }
       }
-
       // forward edge direction
       if ( onEdge === 1 ) {
         // jumped from yoyo period?
@@ -563,7 +568,6 @@ class Tween extends Module {
       this._isRepeatStart = false;
       this._repeatStart( time, false );
       this._start( time, false );
-      // this._o.isIt && console.log('here');
     }
     this._isInActiveArea = false;
   }
@@ -629,7 +633,6 @@ class Tween extends Module {
           this._repeatStart( time, isYoyo );
           this._firstUpdate( time, isYoyo );
         }
-        // console.log( this._prevTime, time, this._props.startTime, this._props. )
         // if backward direction and 
         // if ( time < this._prevTime && time !== this._props.startTime ) {
         if ( time < this._prevTime ) {
@@ -825,7 +828,6 @@ class Tween extends Module {
       this.easedProgress = p.easing(proc);
     // get the current easing for `backward` direction regarding `yoyo`
     } else if ( (!isForward && !isYoyo) || ( isForward && isYoyo ) ) {
-      // this._o.isIt && console.log(p.backwardEasing)
       var easing = ( p.backwardEasing != null )
         ? p.backwardEasing
         : p.easing;

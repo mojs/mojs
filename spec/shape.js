@@ -1876,12 +1876,23 @@
         shape._refreshBefore();
         return expect(shape._hide).toHaveBeenCalled();
       });
-      return it('should call `_setProgress` with `0`', function() {
+      it('should call `_setProgress` with `0, 0`', function() {
         var shape;
         shape = new Shape;
         spyOn(shape, '_setProgress');
         shape._refreshBefore();
-        return expect(shape._setProgress).toHaveBeenCalledWith(0);
+        return expect(shape._setProgress).toHaveBeenCalledWith(0, 0);
+      });
+      return it('should call `_setProgress` with tweens eased progress', function() {
+        var shape;
+        shape = new Shape({
+          easing: function(k) {
+            return 1;
+          }
+        });
+        spyOn(shape, '_setProgress');
+        shape._refreshBefore();
+        return expect(shape._setProgress).toHaveBeenCalledWith(1, 0);
       });
     });
   });
