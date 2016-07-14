@@ -3662,6 +3662,22 @@
 	    }
 	  };
 	  /*
+	    Method to launch onRefresh callback.
+	    @method _refresh
+	    @private
+	    @overrides @ Tween
+	    @param {Boolean} If refresh even before start time.
+	  */
+
+
+	  Timeline.prototype._refresh = function _refresh(isBefore) {
+	    _Tween.prototype._refresh.call(this, isBefore);
+	    var len = this._timelines.length;
+	    for (var i = 0; i < len; i++) {
+	      this._timelines[i]._refresh(isBefore);
+	    }
+	  };
+	  /*
 	    Method do declare defaults by this._defaults object
 	    @private
 	  */
@@ -8846,7 +8862,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.265.4', isDebug: true, helpers: _h2.default,
+	  revision: '0.265.5', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default

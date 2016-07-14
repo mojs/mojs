@@ -614,6 +614,37 @@ describe 'Timeline ->', ->
       expect(tw1.stop).toHaveBeenCalledWith p
       expect(tw2.stop).toHaveBeenCalledWith p
 
+  describe '_refresh method ->', ->
+    it 'should call super', ->
+
+      tm = new mojs.Timeline
+      spyOn Tween::, '_refresh'
+
+      tm._refresh true
+
+      expect( Tween::_refresh ).toHaveBeenCalledWith true
+
+    it 'should update all children', ->
+
+      tm = new mojs.Timeline
+
+      tm._setStartTime()
+      tm._prevTime = 1
+
+      tw1 = new Tween
+      tw2 = new Tween
+      tw3 = new Tween
+      tm.add tw1, tw2, tw3
+
+      spyOn tw1, '_refresh'
+      spyOn tw2, '_refresh'
+      spyOn tw3, '_refresh'
+
+      tm._refresh true
+
+      expect( tw1._refresh ).toHaveBeenCalledWith true
+      expect( tw2._refresh ).toHaveBeenCalledWith true
+      expect( tw3._refresh ).toHaveBeenCalledWith true
 
 
 

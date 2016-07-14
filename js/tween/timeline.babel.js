@@ -243,6 +243,20 @@ class Timeline extends Tween {
     }
   }
   /*
+    Method to launch onRefresh callback.
+    @method _refresh
+    @private
+    @overrides @ Tween
+    @param {Boolean} If refresh even before start time.
+  */
+  _refresh ( isBefore ) {
+    super._refresh( isBefore );
+    const len = this._timelines.length;
+    for (var i = 0; i < len; i++) {
+      this._timelines[i]._refresh( isBefore );
+    }
+  }
+  /*
     Method do declare defaults by this._defaults object
     @private
   */
