@@ -1,6 +1,14 @@
 ## TODO
 ---
 
+- check imediately return onRepeatComplete issue
+- check timeline + tween again
+- check callbacks order - onProgress should fire first
+
+- cover COVER labels at tweener
+- reafctor
+- remove clamp for setProgress on tween
+
 - fix coverage
 - release
   - docs
@@ -8,7 +16,6 @@
 
 - easing
   - add spring handler
-- fix gc
 - add meta balls
 - add layers
 - add states

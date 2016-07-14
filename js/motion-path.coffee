@@ -4,8 +4,8 @@
 # @class MotionPath
 h         = require './h'
 resize    = require './vendor/resize'
-Tween     = require './tween/tween'
-Timeline  = require './tween/timeline'
+Tween     = require('./tween/tween').default
+Timeline  = require('./tween/timeline').default
 
 class MotionPath
   # ---
@@ -99,6 +99,35 @@ class MotionPath
     # 
     # @codepen http://codepen.io/sol0mka/pen/gbVEbb/
     yoyo:             false
+    # ---
+
+    # Callback **onStart** fires once if animation was started.
+    # 
+    # @property   onStart
+    # @type       {Function}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/VYoRRe/
+    onStart:          null
+    # ---
+
+    # Callback **onComplete** fires once if animation was completed.
+    # 
+    # @property   onComplete
+    # @type       {Function}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/ZYgPPm/
+    onComplete:       null
+    # ---
+
+    # Callback **onUpdate** fires every raf frame on motion
+    # path update. Recieves **progress** of type **Number**
+    # in range *[0,1]* as argument.
+    # 
+    # @property   onUpdate
+    # @type       {Function}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/YPmgMq/
+    onUpdate:         null
     # ---
 
     # Defines additional horizontal offset from center of path, *px*
@@ -230,35 +259,6 @@ class MotionPath
     # 
     # @codepen http://codepen.io/sol0mka/pen/EaqMOJ/
     isPresetPosition: true
-    # ---
-
-    # Callback **onStart** fires once if animation was started.
-    # 
-    # @property   onStart
-    # @type       {Function}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/VYoRRe/
-    onStart:          null
-    # ---
-
-    # Callback **onComplete** fires once if animation was completed.
-    # 
-    # @property   onComplete
-    # @type       {Function}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/ZYgPPm/
-    onComplete:       null
-    # ---
-
-    # Callback **onUpdate** fires every raf frame on motion
-    # path update. Recieves **progress** of type **Number**
-    # in range *[0,1]* as argument.
-    # 
-    # @property   onUpdate
-    # @type       {Function}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/YPmgMq/
-    onUpdate:         null
   # ---
   # ### Class body docs
   # ---
@@ -383,7 +383,8 @@ class MotionPath
   parseEl:(el)->
     return document.querySelector el if typeof el is 'string'
     return el if el instanceof HTMLElement
-    if el.setProp? then @isModule = true; return el
+    if el._setProp? then @isModule = true; return el
+
   getPath:->
     path = h.parsePath(@props.path); return path if path
     
@@ -447,13 +448,14 @@ class MotionPath
           blur: {x: 0, y: 0}, offset: {x: 0, y: 0}
         @props.onComplete?.apply @
       onUpdate:  (p)=> @setProgress(p)
-      onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
+      onFirstUpdate:(isForward, isYoyo)=>
+        if !isForward then @history.length > 1 and @tuneOptions @history[0]
     @timeline = new Timeline# onUpdate:(p)=> @o.onChainUpdate?(p)
     @timeline.add(@tween)
     !@props.isRunLess and @startTween()
     @props.isPresetPosition and @setProgress(0, true)
 
-  startTween:-> setTimeout (=> @timeline?.start()), 1
+  startTween:-> setTimeout (=> @timeline?.play()), 1
 
   setProgress:(p, isInit)->
     len = @startLen+if !@props.isReverse then p*@slicedLen else (1-p)*@slicedLen
@@ -471,8 +473,8 @@ class MotionPath
     transform = "translate(#{x}px,#{y}px) #{rotate} #{composite}"
     h.setPrefixedStyle @el, 'transform', transform
   setModulePosition:(x, y)->
-    @el.setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
-    @el.draw()
+    @el._setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
+    @el._draw()
   _getCurrentAngle:(point, len, p)->
     isTransformFunOrigin = typeof @props.transformOrigin is 'function'
     if @props.isAngle or @props.angleOffset? or isTransformFunOrigin

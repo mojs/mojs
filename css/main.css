@@ -3,8 +3,7 @@
   height: 7.5em;
   background: #aaa;
   position: absolute;
-  left: 50%;
-  top: 50%;
+  left: 0;
   -webkit-transform-origin: center bottom;
   -ms-transform-origin: center bottom;
   transform-origin: center bottom;

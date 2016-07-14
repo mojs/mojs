@@ -1,12 +1,17 @@
-bezier     = require './bezier-easing'
-PathEasing = require './path-easing'
-mix        = require './mix'
-h          = require '../h'
+bezier      = require './bezier-easing'
+PathEasing  = require './path-easing'
+mix         = require './mix'
+h           = require '../h'
+approximate = require('./approximate').default or require('./approximate');
+
+sin = Math.sin
+PI  = Math.PI
 
 class Easing
   bezier:     bezier
   PathEasing: PathEasing
   path:       (new PathEasing 'creator').create
+  approximate: approximate
   # ---
 
   # Method to inverse the easing value
@@ -15,11 +20,15 @@ class Easing
   inverse:(p)-> 1 - p
 
   # EASINGS
-  linear: none: (k) -> k
+  linear:   none: (k) -> k
   ease:
-    in:     bezier.apply @, [ 0.42,   0,     1,      1   ]
-    out:    bezier.apply @, [ 0,      0,    0.58,    1   ]
-    inout:  bezier.apply @, [ 0.42,   0,    0.58,    1   ]
+    in:     bezier.apply @, [ 0.42,   0,     1,      1 ]
+    out:    bezier.apply @, [ 0,      0,    0.58,    1 ]
+    inout:  bezier.apply @, [ 0.42,   0,    0.58,    1 ]
+  sin:
+    in:     (k) -> 1 - Math.cos(k * PI / 2)
+    out:    (k) -> sin k * PI / 2
+    inout:  (k) -> 0.5 * (1 - Math.cos(PI * k))
   quad:
     in:     (k) -> k * k
     out:    (k) -> k * (2 - k)
@@ -44,10 +53,6 @@ class Easing
     inout:  (k) ->
       return 0.5 * k * k * k * k * k  if (k *= 2) < 1
       0.5 * ((k -= 2) * k * k * k * k + 2)
-  sin:
-    in:     (k) -> 1 - Math.cos(k * Math.PI / 2)
-    out:    (k) -> Math.sin k * Math.PI / 2
-    inout:  (k) -> 0.5 * (1 - Math.cos(Math.PI * k))
   expo:
     in:     (k) -> (if k is 0 then 0 else Math.pow(1024, k - 1))
     out:    (k) -> (if k is 1 then 1 else 1 - Math.pow(2, -10 * k))
@@ -144,6 +149,9 @@ class Easing
   #
   # @return {Function}
   parseEasing:(easing)->
+
+    if !easing? then easing = 'linear.none'
+    
     type = typeof easing
     if type is 'string'
       return if easing.charAt(0).toLowerCase() is 'm'
@@ -156,8 +164,7 @@ class Easing
                     fallback to \"linear.none\" instead"
           return @['linear']['none']
         easingParent[easing[1]]
-    if h.isArray(easing)
-      return @bezier.apply(@, easing)
+    if h.isArray(easing) then return @bezier.apply(@, easing)
     if 'function' then return easing
   # ---
 
@@ -176,6 +183,8 @@ class Easing
       [ firstPart, secondPart ]
     else ['linear', 'none']
 
-easing = new Easing; easing.mix = mix easing
+easing = new Easing;
+
+easing.mix = mix easing
 
 module.exports = easing

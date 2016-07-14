@@ -1,273 +1,227 @@
 (function() {
-  var Burst, Swirl, Transit, t;
+  var Burst, Shape, ShapeSwirl, Tunable, h, t;
 
-  Transit = mojs.Transit;
+  Shape = mojs.Shape;
 
-  Swirl = mojs.Swirl;
+  ShapeSwirl = mojs.ShapeSwirl;
 
   Burst = mojs.Burst;
 
+  Tunable = mojs.Tunable;
+
+  Tunable = mojs.Tunable;
+
   t = mojs.tweener;
+
+  h = mojs.h;
 
   describe('Burst ->', function() {
     beforeEach(function() {
       return t.removeAll();
     });
     describe('extension ->', function() {
-      it('should extend Transit class', function() {
+      return it('should extend Shape class', function() {
         var burst;
         burst = new Burst;
-        return expect(burst instanceof Transit).toBe(true);
-      });
-      it('should have its own defaults', function() {
-        var burst;
-        burst = new Burst;
-        expect(burst.skipProps.childOptions).toBe(1);
-        expect(burst.defaults.degree).toBe(360);
-        expect(burst.defaults.count).toBe(5);
-        expect(burst.defaults.opacity).toBe(1);
-        expect(burst.defaults.randomAngle).toBe(0);
-        expect(burst.defaults.randomRadius).toBe(0);
-        expect(burst.defaults.x).toBe(100);
-        expect(burst.defaults.y).toBe(100);
-        expect(burst.defaults.shiftX).toBe(0);
-        expect(burst.defaults.shiftY).toBe(0);
-        expect(burst.defaults.radius[25]).toBe(75);
-        expect(burst.defaults.angle).toBe(0);
-        expect(burst.defaults.size).toBe(null);
-        expect(burst.defaults.sizeGap).toBe(0);
-        expect(burst.defaults.onStart).toBe(null);
-        expect(burst.defaults.onComplete).toBe(null);
-        expect(burst.defaults.onCompleteChain).toBe(null);
-        return expect(burst.defaults.onUpdate).toBe(null);
-      });
-      it('should have childDefaults', function() {
-        var burst;
-        burst = new Burst;
-        expect(burst.childDefaults.radius[7]).toBe(0);
-        expect(burst.childDefaults.points).toBe(3);
-        expect(burst.childDefaults.angle).toBe(0);
-        expect(burst.childDefaults.onStart).toBe(null);
-        expect(burst.childDefaults.onComplete).toBe(null);
-        expect(burst.childDefaults.onUpdate).toBe(null);
-        expect(burst.childDefaults.duration).toBe(500);
-        expect(burst.childDefaults.delay).toBe(0);
-        expect(burst.childDefaults.repeat).toBe(0);
-        expect(burst.childDefaults.yoyo).toBe(false);
-        expect(burst.childDefaults.easing).toBe('Linear.None');
-        expect(burst.childDefaults.type).toBe('circle');
-        expect(burst.childDefaults.fill).toBe('deeppink');
-        expect(burst.childDefaults.fillOpacity).toBe(1);
-        expect(burst.childDefaults.stroke).toBe('transparent');
-        expect(burst.childDefaults.strokeWidth).toBe(0);
-        expect(burst.childDefaults.strokeDasharray).toBe('');
-        expect(burst.childDefaults.strokeDashoffset).toBe('');
-        expect(burst.childDefaults.strokeLinecap).toBe(null);
-        expect(burst.childDefaults.isSwirl).toBe(false);
-        expect(burst.childDefaults.swirlSize).toBe(10);
-        return expect(burst.childDefaults.swirlFrequency).toBe(3);
-      });
-      return it('should have optionsIntersection object', function() {
-        var burst;
-        burst = new Burst;
-        expect(burst.optionsIntersection.radius).toBe(1);
-        expect(burst.optionsIntersection.radiusX).toBe(1);
-        expect(burst.optionsIntersection.radiusY).toBe(1);
-        expect(burst.optionsIntersection.opacity).toBe(1);
-        expect(burst.optionsIntersection.angle).toBe(1);
-        expect(burst.optionsIntersection.onUpdate).toBe(1);
-        expect(burst.optionsIntersection.onStart).toBe(1);
-        expect(burst.optionsIntersection.onComplete).toBe(1);
-        return expect(Object.keys(burst.optionsIntersection).length).toBe(8);
+        return expect(burst instanceof Tunable).toBe(true);
       });
     });
-    describe('initialization ->', function() {
-      it('should create transits', function() {
+    describe('_defaults ->', function() {
+      return it('should have Burst\'s defaults', function() {
         var burst;
         burst = new Burst;
-        expect(burst.transits.length).toBe(5);
-        return expect(burst.transits[0] instanceof Swirl).toBe(true);
+        expect(burst._defaults.count).toBe(5);
+        expect(burst._defaults.degree).toBe(360);
+        expect(burst._defaults.radius).toEqual({
+          0: 50
+        });
+        expect(burst._defaults.radiusX).toEqual(null);
+        return expect(burst._defaults.radiusY).toEqual(null);
       });
-      it('should pass indexes to transits', function() {
+    });
+    describe('_extendDefaults method ->', function() {
+      it('should call _removeTweenProperties method', function() {
+        var b;
+        b = new Burst;
+        spyOn(b, '_removeTweenProperties');
+        b._extendDefaults();
+        return expect(b._removeTweenProperties).toHaveBeenCalledWith(b._o);
+      });
+      return it('should call super', function() {
         var burst;
         burst = new Burst;
-        expect(burst.transits.length).toBe(5);
-        expect(burst.transits[0].o.index).toBe(0);
-        expect(burst.transits[1].o.index).toBe(1);
-        expect(burst.transits[2].o.index).toBe(2);
-        expect(burst.transits[3].o.index).toBe(3);
-        return expect(burst.transits[4].o.index).toBe(4);
+        spyOn(mojs.Module.prototype, '_extendDefaults');
+        burst._extendDefaults();
+        return expect(mojs.Module.prototype._extendDefaults).toHaveBeenCalled();
       });
-      it('should pass properties to transits', function() {
+    });
+    describe('_render method ->', function() {
+      it('should create master swirl', function() {
+        var burst;
+        burst = new Burst;
+        burst.masterSwirl = void 0;
+        burst._render();
+        return expect(burst.masterSwirl instanceof ShapeSwirl).toBe(true);
+      });
+      it('should set el of master swirl as el', function() {
+        var burst;
+        burst = new Burst;
+        return expect(burst.el).toBe(burst.masterSwirl.el);
+      });
+      it('should pass options to master swirl', function() {
+        var burst, opts;
+        opts = {};
+        burst = new Burst(opts);
+        burst.masterSwirl = void 0;
+        burst._render();
+        return expect(burst.masterSwirl._o).toBe(opts);
+      });
+      it('should pass isWithShape option to master swirl', function() {
+        var burst, opts;
+        opts = {};
+        burst = new Burst(opts);
+        return expect(burst.masterSwirl._o.isWithShape).toBe(false);
+      });
+      it('should self as callbacksContext', function() {
+        var burst, opts;
+        opts = {};
+        burst = new Burst(opts);
+        return expect(burst.masterSwirl._o.callbacksContext).toBe(burst);
+      });
+      it('should call _saveTimelineOptions method', function() {
+        var b, opts;
+        opts = {};
+        b = new Burst(opts);
+        spyOn(b, '_saveTimelineOptions');
+        b._render();
+        return expect(b._saveTimelineOptions).toHaveBeenCalledWith(b._o);
+      });
+      it('should call _renderSwirls method', function() {
+        var burst, opts;
+        opts = {};
+        burst = new Burst(opts);
+        spyOn(burst, '_renderSwirls');
+        burst._render();
+        return expect(burst._renderSwirls).toHaveBeenCalled();
+      });
+      it('should create _masterSwirls object', function() {
+        var burst;
+        burst = new Burst;
+        expect(burst._masterSwirls[0]).toBe(burst.masterSwirl);
+        expect(typeof burst._masterSwirls).toBe('object');
+        return expect(burst._masterSwirls).toBe(burst._masterSwirls);
+      });
+      it('should add optional properties to option', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(burst, '_addOptionalProps');
+        burst._renderSwirls();
+        return expect(burst._addOptionalProps.calls.count()).toBe(5);
+      });
+      it('should set time on tween of masterSwirl', function() {
         var burst;
         burst = new Burst({
-          stroke: 'red',
-          strokeWidth: {
-            10: 0
-          },
-          strokeOpacity: {
-            1: 0
-          },
-          strokeDasharray: '200 10 0',
-          strokeDashoffset: '50',
-          strokeLinecap: 'round',
-          fill: 'deeppink',
-          fillOpacity: .5,
-          type: 'rect',
-          swirlSize: 20,
-          swirlFrequency: 'rand(10,20)',
-          count: 6,
-          isSwirl: true,
-          radius: {
-            'rand(10,20)': 100
-          },
-          childOptions: {
-            stroke: ['deeppink', 'yellow', null],
-            strokeWidth: [null, null, 20],
-            strokeOpacity: [null, 1, null],
-            fill: ['#fff', null],
-            type: ['circle', null, 'polygon'],
-            swirlSize: [10, null],
-            swirlFrequency: [null, 3],
-            radius: [
-              {
-                20: 50
-              }, 20, '500'
-            ],
-            strokeDasharray: [
-              '10 20', null, {
-                '40': '10'
-              }
-            ],
-            strokeDashoffset: ['200', null, null],
-            fillOpacity: [null, 1],
-            strokeLinecap: ['butt', null],
-            points: [10, null, 10]
+          children: {
+            duration: 'stagger(500, 1000)',
+            repeat: 2
           }
         });
-        expect(burst.transits[0].o.radius[20]).toBe(50);
-        expect(burst.transits[1].o.radius).toBe(20);
-        expect(burst.transits[2].o.radius).toBe('500');
-        expect(burst.transits[3].o.radius[20]).toBe(50);
-        expect(burst.transits[4].o.radius).toBe(20);
-        expect(burst.transits[1].o.stroke).toBe('yellow');
-        expect(burst.transits[2].o.stroke).toBe('red');
-        expect(burst.transits[3].o.stroke).toBe('deeppink');
-        expect(burst.transits[3].o.strokeWidth[10]).toBe(0);
-        expect(burst.transits[1].o.strokeWidth[10]).toBe(0);
-        expect(burst.transits[2].o.strokeWidth).toBe(20);
-        expect(burst.transits[0].o.fill).toBe('#fff');
-        expect(burst.transits[1].o.fill).toBe('deeppink');
-        expect(burst.transits[0].o.fillOpacity).toBe(.5);
-        expect(burst.transits[1].o.fillOpacity).toBe(1);
-        expect(burst.transits[0].o.isSwirl).toBe(true);
-        expect(burst.transits[0].o.swirlSize).toBe(10);
-        expect(burst.transits[1].o.swirlSize).toBe(20);
-        expect(burst.transits[0].o.swirlFrequency).toBe('rand(10,20)');
-        expect(burst.transits[1].o.swirlFrequency).toBe(3);
-        expect(burst.transits[0].o.type).toBe('circle');
-        expect(burst.transits[1].o.type).toBe('rect');
-        expect(burst.transits[2].o.type).toBe('polygon');
-        expect(burst.transits[0].o.strokeOpacity[1]).toBe(0);
-        expect(burst.transits[1].o.strokeOpacity).toBe(1);
-        expect(burst.transits[2].o.strokeOpacity[1]).toBe(0);
-        expect(burst.transits[0].o.strokeDasharray).toBe('10 20');
-        expect(burst.transits[1].o.strokeDasharray).toBe('200 10 0');
-        expect(burst.transits[2].o.strokeDasharray['40']).toBe('10');
-        expect(burst.transits[0].o.strokeDashoffset).toBe('200');
-        expect(burst.transits[1].o.strokeDashoffset).toBe('50');
-        expect(burst.transits[2].o.strokeDashoffset).toBe('50');
-        expect(burst.transits[0].o.strokeLinecap).toBe('butt');
-        expect(burst.transits[1].o.strokeLinecap).toBe('round');
-        expect(burst.transits[2].o.strokeLinecap).toBe('butt');
-        expect(burst.transits[0].o.points).toBe(10);
-        expect(burst.transits[1].o.points).toBe(3);
-        return expect(burst.transits[2].o.points).toBe(10);
+        burst.masterSwirl.tween._props.duration = null;
+        burst._renderSwirls();
+        return expect(burst.masterSwirl.tween._props.duration).toBe(burst._calcPackTime(burst._swirls[0]));
       });
-      it('should keep the bit angle', function() {
+      return it('should set isSwirl to false by default', function() {
         var burst;
         burst = new Burst({
-          cound: 2,
-          childOptions: {
-            angle: [10, null]
+          children: {
+            duration: 'stagger(500, 1000)',
+            repeat: 2
           }
         });
-        expect(burst.transits[0].o.angle).toBe(100);
-        return expect(burst.transits[1].o.angle).toBe(162);
+        return expect(burst.masterSwirl._props.isSwirl).toBe(false);
       });
-      it('should keep the bit angle if delta passed', function() {
+    });
+    describe('_renderSwirls method', function() {
+      it('should create _swirls object', function() {
         var burst;
+        burst = new Burst;
+        expect(typeof burst._swirls).toBe('object');
+        return expect(burst._swirls).toBe(burst._swirls);
+      });
+      it('should create _swirls pack', function() {
+        var burst, count, pack;
+        count = 5;
         burst = new Burst({
-          cound: 2,
-          childOptions: {
-            angle: [
-              {
-                200: 10
-              }, null
-            ]
+          count: count
+        });
+        pack = burst._swirls[0];
+        expect(h.isArray(pack)).toBe(true);
+        expect(pack.length).toBe(count);
+        expect(pack[0] instanceof ShapeSwirl).toBe(true);
+        expect(pack[1] instanceof ShapeSwirl).toBe(true);
+        expect(pack[2] instanceof ShapeSwirl).toBe(true);
+        expect(pack[3] instanceof ShapeSwirl).toBe(true);
+        return expect(pack[4] instanceof ShapeSwirl).toBe(true);
+      });
+      it('should pass options to swirls', function() {
+        var burst, count, fills, pack;
+        count = 5;
+        fills = ['cyan', 'yellow', 'blue'];
+        burst = new Burst({
+          count: count,
+          children: {
+            fill: fills
           }
         });
-        expect(burst.transits[0].o.angle[290]).toBe(100);
-        return expect(burst.transits[1].o.angle).toBe(162);
+        pack = burst._swirls[0];
+        expect(pack[0]._o.fill).toBe(fills[0]);
+        expect(pack[1]._o.fill).toBe(fills[1]);
+        expect(pack[2]._o.fill).toBe(fills[2]);
+        expect(pack[3]._o.fill).toBe(fills[0]);
+        return expect(pack[4]._o.fill).toBe(fills[1]);
       });
-      it('should not keep the bit angle if isResetAngles is passed', function() {
-        var burst;
+      return it('should parent to swirls', function() {
+        var burst, count, pack;
+        count = 5;
         burst = new Burst({
-          cound: 2,
-          isResetAngles: true,
-          childOptions: {
-            angle: [
-              {
-                200: 10
-              }, null
-            ]
-          }
+          count: count
         });
-        expect(burst.transits[0].o.angle[200]).toBe(10);
-        return expect(burst.transits[1].o.angle).toBe(0);
+        pack = burst._swirls[0];
+        expect(pack[0]._o.parent).toBe(burst.masterSwirl.el);
+        expect(pack[1]._o.parent).toBe(burst.masterSwirl.el);
+        expect(pack[2]._o.parent).toBe(burst.masterSwirl.el);
+        expect(pack[3]._o.parent).toBe(burst.masterSwirl.el);
+        return expect(pack[4]._o.parent).toBe(burst.masterSwirl.el);
       });
-      return it('should pass x/y to transits', function() {
-        var burst, center;
-        burst = new Burst({
-          radius: {
-            50: 75
-          },
+    });
+    describe('_getChildOption method ->', function() {
+      return it('should get options from swirls', function() {
+        var b, o, result;
+        b = new Burst({
           count: 2
         });
-        center = burst.props.center;
-        expect(burst.transits[0].o.x).toBe(center);
-        expect(burst.transits[0].o.y[center - 50]).toBe(center - 75);
-        expect(burst.transits[1].o.x).toBe(center);
-        return expect(burst.transits[1].o.y[center + 50]).toBe(center + 75);
-      });
-    });
-    describe('fillTransform method ->', function() {
-      return it('return tranform string of the el', function() {
-        var burst;
-        burst = new Burst({
-          shiftX: 100,
-          shiftY: 100,
-          angle: 50
+        o = {
+          children: {
+            fill: ['yellow', 'cyan', 'blue']
+          }
+        };
+        result = b._getChildOption(o, 1);
+        expect(result.fill).toBe('cyan');
+        return it('should not throw if there is no swirls', function() {
+          b = new Burst({
+            count: 2
+          });
+          o = {};
+          result = b._getChildOption(o, 1);
+          return expect(result).toEqual({});
         });
-        return expect(burst.fillTransform()).toBe('rotate(50deg) translate(100px, 100px)');
       });
     });
-    describe('isNeedsTransform method ->', function() {
-      return it('return boolean if fillTransform needed', function() {
-        var burst;
+    describe('_getPropByMod method ->', function() {
+      it('should fallback to empty object', function() {
+        var burst, opt0;
         burst = new Burst({
-          shiftX: 100,
-          shiftY: 100,
-          angle: 50
-        });
-        return expect(burst.isNeedsTransform()).toBe(true);
-      });
-    });
-    describe('getOption method ->', function() {
-      it('should return an option obj based on i ->', function() {
-        var burst, option0, option1, option7;
-        burst = new Burst({
-          childOptions: {
+          children: {
             radius: [
               {
                 20: 50
@@ -275,140 +229,13 @@
             ]
           }
         });
-        option0 = burst.getOption(0);
-        option1 = burst.getOption(1);
-        option7 = burst.getOption(7);
-        expect(option0.radius[20]).toBe(50);
-        expect(option1.radius).toBe(20);
-        return expect(option7.radius).toBe(20);
+        opt0 = burst._getPropByMod('radius', 0);
+        return expect(opt0).toBe(void 0);
       });
-      it('should try to fallback to childDefaiults first ->', function() {
-        var burst, option0, option1, option7, option8;
-        burst = new Burst({
-          duration: 2000,
-          childOptions: {
-            radius: [200, null, '500']
-          }
-        });
-        option0 = burst.getOption(0);
-        option1 = burst.getOption(1);
-        option7 = burst.getOption(7);
-        option8 = burst.getOption(8);
-        expect(option0.radius).toBe(200);
-        expect(option1.radius[7]).toBe(0);
-        expect(option7.radius[7]).toBe(0);
-        return expect(option8.radius).toBe('500');
-      });
-      it('should fallback to parent prop if defined  ->', function() {
-        var burst, option0, option1, option7, option8;
-        burst = new Burst({
-          duration: 2000,
-          childOptions: {
-            duration: [200, null, '500']
-          }
-        });
-        option0 = burst.getOption(0);
-        option1 = burst.getOption(1);
-        option7 = burst.getOption(7);
-        option8 = burst.getOption(8);
-        expect(option0.duration).toBe(200);
-        expect(option1.duration).toBe(2000);
-        expect(option7.duration).toBe(2000);
-        return expect(option8.duration).toBe('500');
-      });
-      it('should fallback to parent default ->', function() {
-        var burst, option0, option1, option7, option8;
-        burst = new Burst({
-          childOptions: {
-            duration: [200, null, '500']
-          }
-        });
-        option0 = burst.getOption(0);
-        option1 = burst.getOption(1);
-        option7 = burst.getOption(7);
-        option8 = burst.getOption(8);
-        expect(option0.duration).toBe(200);
-        expect(option1.duration).toBe(500);
-        expect(option7.duration).toBe(500);
-        return expect(option8.duration).toBe('500');
-      });
-      it('should have all the props filled ->', function() {
-        var burst, option0, option1, option7, option8;
-        burst = new Burst({
-          childOptions: {
-            duration: [200, null, '500']
-          }
-        });
-        option0 = burst.getOption(0);
-        option1 = burst.getOption(1);
-        option7 = burst.getOption(7);
-        option8 = burst.getOption(8);
-        expect(option0.radius[7]).toBe(0);
-        expect(option1.radius[7]).toBe(0);
-        expect(option7.radius[7]).toBe(0);
-        return expect(option8.radius[7]).toBe(0);
-      });
-      return it('should have parent only options ->', function() {
-        var burst, option0;
-        burst = new Burst({
-          radius: {
-            'rand(10,20)': 100
-          },
-          angle: {
-            50: 0
-          },
-          onUpdate: function() {},
-          onStart: function() {},
-          onComplete: function() {}
-        });
-        option0 = burst.getOption(0);
-        expect(option0.radius[7]).toBe(0);
-        expect(option0.angle).toBe(0);
-        expect(option0.onUpdate).toBe(null);
-        expect(option0.onStart).toBe(null);
-        return expect(option0.onComplete).toBe(null);
-      });
-    });
-    describe('getBitAngle method ->', function() {
-      it('should get angle by i', function() {
-        var burst;
-        burst = new Burst({
-          radius: {
-            'rand(10,20)': 100
-          }
-        });
-        expect(burst.getBitAngle(0, 0)).toBe(90);
-        expect(burst.getBitAngle(0, 1)).toBe(162);
-        expect(burst.getBitAngle(0, 2)).toBe(234);
-        expect(burst.getBitAngle(90, 2)).toBe(234 + 90);
-        expect(burst.getBitAngle(0, 3)).toBe(306);
-        expect(burst.getBitAngle(90, 3)).toBe(306 + 90);
-        expect(burst.getBitAngle(0, 4)).toBe(378);
-        return expect(burst.getBitAngle(50, 4)).toBe(378 + 50);
-      });
-      return it('should get delta angle by i', function() {
-        var burst;
-        burst = new Burst({
-          radius: {
-            'rand(10,20)': 100
-          }
-        });
-        expect(burst.getBitAngle({
-          180: 0
-        }, 0)[270]).toBe(90);
-        expect(burst.getBitAngle({
-          50: 20
-        }, 3)[356]).toBe(326);
-        return expect(burst.getBitAngle({
-          50: 20
-        }, 4)[428]).toBe(398);
-      });
-    });
-    describe('getPropByMod method ->', function() {
-      it('should return the prop from @o based on i ->', function() {
+      it('should return the prop from passed object based on index ->', function() {
         var burst, opt0, opt1, opt2, opt8;
         burst = new Burst({
-          childOptions: {
+          children: {
             radius: [
               {
                 20: 50
@@ -416,22 +243,10 @@
             ]
           }
         });
-        opt0 = burst.getPropByMod({
-          key: 'radius',
-          i: 0
-        });
-        opt1 = burst.getPropByMod({
-          key: 'radius',
-          i: 1
-        });
-        opt2 = burst.getPropByMod({
-          key: 'radius',
-          i: 2
-        });
-        opt8 = burst.getPropByMod({
-          key: 'radius',
-          i: 8
-        });
+        opt0 = burst._getPropByMod('radius', 0, burst._o.children);
+        opt1 = burst._getPropByMod('radius', 1, burst._o.children);
+        opt2 = burst._getPropByMod('radius', 2, burst._o.children);
+        opt8 = burst._getPropByMod('radius', 8, burst._o.children);
         expect(opt0[20]).toBe(50);
         expect(opt1).toBe(20);
         expect(opt2).toBe('500');
@@ -440,22 +255,13 @@
       it('should the same prop if not an array ->', function() {
         var burst, opt0, opt1, opt8;
         burst = new Burst({
-          childOptions: {
+          children: {
             radius: 20
           }
         });
-        opt0 = burst.getPropByMod({
-          key: 'radius',
-          i: 0
-        });
-        opt1 = burst.getPropByMod({
-          key: 'radius',
-          i: 1
-        });
-        opt8 = burst.getPropByMod({
-          key: 'radius',
-          i: 8
-        });
+        opt0 = burst._getPropByMod('radius', 0, burst._o.children);
+        opt1 = burst._getPropByMod('radius', 1, burst._o.children);
+        opt8 = burst._getPropByMod('radius', 8, burst._o.children);
         expect(opt0).toBe(20);
         expect(opt1).toBe(20);
         return expect(opt8).toBe(20);
@@ -463,691 +269,307 @@
       return it('should work with another options object ->', function() {
         var burst, from, opt0, opt1, opt8;
         burst = new Burst({
-          radius: 40,
-          childOptions: {
+          fill: 'cyan',
+          children: {
             radius: 20
           }
         });
-        from = burst.o;
-        opt0 = burst.getPropByMod({
-          key: 'radius',
-          i: 0,
-          from: from
-        });
-        opt1 = burst.getPropByMod({
-          key: 'radius',
-          i: 1,
-          from: from
-        });
-        opt8 = burst.getPropByMod({
-          key: 'radius',
-          i: 8,
-          from: from
-        });
-        expect(opt0).toBe(40);
-        expect(opt1).toBe(40);
-        return expect(opt8).toBe(40);
+        from = burst._o;
+        opt0 = burst._getPropByMod('fill', 0, from);
+        opt1 = burst._getPropByMod('fill', 1, from);
+        opt8 = burst._getPropByMod('fill', 8, from);
+        expect(opt0).toBe('cyan');
+        expect(opt1).toBe('cyan');
+        return expect(opt8).toBe('cyan');
       });
     });
-    describe('randomness ->', function() {
-      describe('random angle ->', function() {
-        it('should have randomAngle option ->', function() {
-          var burst;
-          burst = new Burst;
-          expect(burst.props.randomAngle).toBeDefined();
-          return expect(burst.props.randomAngle).toBe(0);
-        });
-        return it('should calculate angleRand for every transit ->', function() {
-          var burst;
-          burst = new Burst({
-            randomAngle: true
-          });
-          expect(burst.transits[0].o.angleShift).toBeDefined();
-          return expect(burst.transits[1].o.angleShift).toBeDefined();
-        });
-      });
-      return describe('random radius ->', function() {
-        it('should have randomRadius option ->', function() {
-          var burst;
-          burst = new Burst;
-          expect(burst.props.randomRadius).toBeDefined();
-          return expect(burst.props.randomRadius).toBe(0);
-        });
-        return it('should calculate radiusRand for every transit ->', function() {
-          var burst;
-          burst = new Burst({
-            randomRadius: true
-          });
-          expect(burst.transits[0].o.radiusScale).toBeDefined();
-          return expect(burst.transits[1].o.radiusScale).toBeDefined();
-        });
+    describe('_makeTween method ->', function() {
+      return it('should override parent', function() {
+        var bs;
+        bs = new Burst;
+        spyOn(mojs.Tweenable.prototype, '_makeTween');
+        bs._makeTween();
+        return expect(mojs.Tweenable.prototype._makeTween).not.toHaveBeenCalled();
       });
     });
-    describe('size calculations calcSize method ->', function() {
-      it('should calculate size based on largest transit + self radius', function() {
-        var burst;
-        burst = new Burst({
-          radius: 50,
-          childOptions: {
-            radius: [
-              {
-                20: 50
-              }, 20
-            ],
-            strokeWidth: 20
-          }
+    describe('_makeTimeline method ->', function() {
+      it('should restore timeline options on _o', function() {
+        var bs, timeline;
+        timeline = {};
+        bs = new Burst({
+          timeline: timeline
         });
-        expect(burst.props.size).toBe(240);
-        return expect(burst.props.center).toBe(120);
+        bs._makeTimeline();
+        return expect(bs._o.timeline).toBe(timeline);
       });
-      it('should calculate size based on largest transit + self radius #2', function() {
-        var burst;
-        burst = new Burst({
-          radius: 50,
-          radiusX: 100,
-          childOptions: {
-            radius: [
-              {
-                20: 50
-              }, 20
-            ],
-            strokeWidth: 20
-          }
+      it('should call super', function() {
+        var bs;
+        bs = new Burst;
+        spyOn(mojs.Tweenable.prototype, '_makeTimeline');
+        bs._makeTimeline();
+        return expect(mojs.Tweenable.prototype._makeTimeline).toHaveBeenCalled();
+      });
+      it('should add masterSwirl to the timeline', function() {
+        var bs;
+        bs = new Burst;
+        return expect(bs.timeline._timelines[0]).toBe(bs.masterSwirl.timeline);
+      });
+      return it('should add swirls to the timeline', function() {
+        var bs;
+        bs = new Burst({
+          count: 5
         });
-        expect(burst.props.size).toBe(340);
-        return expect(burst.props.center).toBe(170);
+        expect(bs.timeline._timelines[1]).toBe(bs._swirls[0][0].timeline);
+        expect(bs.timeline._timelines[2]).toBe(bs._swirls[0][1].timeline);
+        expect(bs.timeline._timelines[3]).toBe(bs._swirls[0][2].timeline);
+        expect(bs.timeline._timelines[4]).toBe(bs._swirls[0][3].timeline);
+        return expect(bs.timeline._timelines[5]).toBe(bs._swirls[0][4].timeline);
       });
-      it('should calculate size based on largest transit + self radius #3', function() {
-        var burst;
-        burst = new Burst({
-          radius: {
-            20: 50
-          },
-          radiusX: 20,
-          childOptions: {
-            radius: [
-              {
-                20: 50
-              }, 20
-            ],
-            strokeWidth: 20
-          }
-        });
-        expect(burst.props.size).toBe(240);
-        return expect(burst.props.center).toBe(120);
-      });
-      it('should calculate size based on largest transit + self radius #4', function() {
-        var burst;
-        burst = new Burst({
-          radius: 50,
-          radiusY: {
-            20: 100
-          },
-          childOptions: {
-            radius: [
-              {
-                20: 50
-              }, 20
-            ],
-            strokeWidth: 20
-          }
-        });
-        expect(burst.props.size).toBe(340);
-        return expect(burst.props.center).toBe(170);
-      });
-      it('should calculate size based on largest transit + self radius #5', function() {
-        var burst;
-        burst = new Burst({
-          childOptions: {
-            radius: [
-              {
-                20: 50
-              }, 20
-            ],
-            strokeWidth: 20
-          }
-        });
-        expect(burst.props.size).toBe(290);
-        return expect(burst.props.center).toBe(145);
-      });
-      it('should call the calcSize of every transit', function() {
-        var burst;
-        burst = new Burst({
-          childOptions: {
-            radius: [
-              {
-                20: 50
-              }, 20
-            ],
-            strokeWidth: 20
-          }
-        });
-        spyOn(burst.transits[0], 'calcSize');
-        spyOn(burst.transits[1], 'calcSize');
-        burst.calcSize();
-        expect(burst.transits[0].calcSize).toHaveBeenCalled();
-        return expect(burst.transits[1].calcSize).toHaveBeenCalled();
-      });
-      it('should call addBitOptions method', function() {
-        var burst;
+    });
+    describe('_addOptionalProps method ->', function() {
+      it('should return the passed object', function() {
+        var burst, obj, result;
         burst = new Burst;
-        spyOn(burst, 'addBitOptions');
-        burst.calcSize();
-        return expect(burst.addBitOptions).toHaveBeenCalled();
+        obj = {};
+        result = burst._addOptionalProps(obj, 0);
+        return expect(result).toBe(obj);
       });
-      return it('should work with sizeGap', function() {
-        var burst;
-        burst = new Burst({
-          sizeGap: 20,
-          childOptions: {
-            radius: [
-              {
-                20: 50
-              }, 20
-            ],
-            strokeWidth: 20
-          }
-        });
-        expect(burst.props.size).toBe(330);
-        return expect(burst.props.center).toBe(burst.props.size / 2);
+      it('should add parent, index', function() {
+        var burst, obj, result;
+        burst = new Burst;
+        obj = {};
+        result = burst._addOptionalProps(obj, 0);
+        expect(result.index).toBe(0);
+        return expect(result.parent).toBe(burst.masterSwirl.el);
       });
-    });
-    describe('addBitOptions method ->', function() {
-      it('should set x/y on every transit', function() {
-        var burst;
+      it('should add x/y', function() {
+        var burst, eps, isClose, isZero, obj0, obj1, result0, result1;
         burst = new Burst({
           radius: {
-            0: 120
-          }
-        });
-        return expect(typeof burst.transits[1].o.x).toBe('object');
-      });
-      it('should work if end radius is 0', function() {
-        var burst, keys, x;
-        burst = new Burst({
-          radius: {
-            120: 0
-          }
-        });
-        x = burst.transits[1].o.x;
-        keys = Object.keys(x);
-        return expect(x[keys[0]] + '').not.toBe(keys[0]);
-      });
-      it('should work with radiusX', function() {
-        var burst;
-        burst = new Burst({
-          radius: {
-            120: 0
+            0: 100
           },
-          radiusX: 30
+          count: 2,
+          size: 0
         });
-        return expect(parseInt(burst.transits[1].o.x, 10)).toBe(155);
+        obj0 = {};
+        obj1 = {};
+        result0 = burst._addOptionalProps(obj0, 0);
+        result1 = burst._addOptionalProps(obj1, 1);
+        eps = 0.00001;
+        isClose = obj0.x[0] - 0 < eps;
+        isZero = obj0.x === 0;
+        expect(isClose || isZero).toBe(true);
+        expect(obj0.y[0]).toBeCloseTo(-100, 5);
+        eps = 0.00001;
+        isClose = obj1.x[0] - 0 < eps;
+        isZero = obj1.x === 0;
+        expect(isClose || isZero).toBe(true);
+        return expect(obj1.y[0]).toBeCloseTo(100, 5);
       });
-      it('should work with radiusY', function() {
-        var burst, center, keys;
+      return it('should add angles ->', function() {
+        var burst, obj0, obj1, result0, result1;
         burst = new Burst({
           radius: {
-            120: 0
-          },
-          radiusY: {
-            30: 0
-          }
-        });
-        keys = Object.keys(burst.transits[1].o.y);
-        center = burst.props.center;
-        return expect(burst.transits[1].o.y[keys[0]]).toBe(center);
-      });
-      it('should increase angle and position delta on angleShift', function() {
-        var burst1, burst2;
-        burst1 = new Burst({
-          radius: {
-            120: 0
+            0: 100
           },
           count: 2
         });
-        burst2 = new Burst({
-          radius: {
-            120: 0
-          },
-          count: 2,
-          randomAngle: .5
-        });
-        return expect(burst2.transits[1].o.angle).toBe(burst1.transits[1].o.angle + burst2.transits[1].props.angleShift);
-      });
-      it('should increase angle and position delta on angleShift for deltas', function() {
-        var burst1, burst2, end1, end2, start1, start2;
-        burst1 = new Burst({
-          radius: {
-            120: 0
-          },
-          count: 2,
-          childOptions: {
-            angle: {
-              25: 50
-            }
-          }
-        });
-        burst2 = new Burst({
-          radius: {
-            120: 0
-          },
-          count: 2,
-          randomAngle: 1,
-          childOptions: {
-            angle: {
-              25: 50
-            }
-          }
-        });
-        start2 = burst2.transits[1].deltas.angle.start;
-        end2 = burst2.transits[1].deltas.angle.start;
-        start1 = burst1.transits[1].deltas.angle.start;
-        end1 = burst1.transits[1].deltas.angle.start;
-        expect(start2).toBe(start1 + burst2.transits[1].props.angleShift);
-        return expect(end2).toBe(end1 + burst2.transits[1].props.angleShift);
-      });
-      it('should increase position', function() {
-        var burst1, burst2;
-        burst1 = new Burst({
-          radius: 50,
-          count: 2
-        });
-        burst2 = new Burst({
-          radius: 50,
-          count: 2,
-          randomAngle: .5
-        });
-        expect(burst2.transits[1].o.x).not.toBe(burst1.transits[1].o.x);
-        return expect(burst2.transits[1].o.y).not.toBe(burst1.transits[1].o.y);
-      });
-      return it('should keep degreeCnt not less than 1', function() {
-        var burst;
-        burst = new Burst({
-          radius: {
-            0: 120
-          },
-          degree: 270,
-          count: 1
-        });
-        return expect(burst.degreeCnt).toBe(1);
-      });
-    });
-    describe('createTween method ->', function() {
-      it('should create tween', function() {
-        var burst;
-        burst = new Burst;
-        return expect(burst.timeline).toBeDefined();
-      });
-      it('should add tweens to timeline', function() {
-        var burst;
-        burst = new Burst;
-        return expect(burst.timeline.timelines.length).toBe(6);
-      });
-      it('should call startTween method', function() {
-        var burst;
-        burst = new Burst;
-        spyOn(burst, 'startTween');
-        burst.createTween();
-        return expect(burst.startTween).toHaveBeenCalled();
-      });
-      return it('should not call startTween method if isRunLess', function() {
-        var burst;
-        burst = new Burst({
-          isRunLess: true
-        });
-        spyOn(burst, 'startTween');
-        burst.createTween();
-        return expect(burst.startTween).not.toHaveBeenCalled();
-      });
-    });
-    describe('onStart callback ->', function() {
-      it('should run onStart callback', function(dfr) {
-        var burst;
-        burst = new Burst({
-          isRunLess: true,
-          onStart: function() {}
-        });
-        spyOn(burst.props, 'onStart');
-        burst.run();
-        return setTimeout(function() {
-          expect(burst.props.onStart).toHaveBeenCalled();
-          return dfr();
-        }, 300);
-      });
-      return it('should have the scope of burst', function(dfr) {
-        var burst, isRightScope;
-        isRightScope = null;
-        burst = new Burst({
-          onStart: function() {
-            return isRightScope = this instanceof Burst;
-          }
-        });
-        return setTimeout(function() {
-          expect(isRightScope).toBe(true);
-          return dfr();
-        }, 300);
-      });
-    });
-    describe('onComplete callback ->', function() {
-      it('should run onComplete callback', function(dfr) {
-        var burst;
-        t.removeAll();
-        return burst = new Burst({
-          duration: 20,
-          onComplete: function() {
-            expect(true).toBe(true);
-            return dfr();
-          }
-        });
-      });
-      return it('should have the scope of burst', function(dfr) {
-        var burst, isRightScope;
-        t.removeAll();
-        isRightScope = false;
-        burst = new Burst({
-          duration: 20,
-          onComplete: function() {
-            return isRightScope = this instanceof Burst;
-          }
-        });
-        return setTimeout(function() {
-          expect(isRightScope).toBe(true);
-          return dfr();
-        }, 300);
-      });
-    });
-    describe('onUpdate callback ->', function() {
-      t.removeAll();
-      it('should run onUpdate callback', function(dfr) {
-        var burst;
-        burst = new Burst({
-          isRunLess: true,
-          duration: 20,
-          onUpdate: function() {}
-        });
-        spyOn(burst, 'onUpdate');
-        burst.run();
-        return setTimeout(function() {
-          expect(burst.onUpdate).toHaveBeenCalledWith(1);
-          return dfr();
-        }, 300);
-      });
-      return it('should have the scope of burst', function(dfr) {
-        var burst, isRightScope;
-        t.removeAll();
-        isRightScope = false;
-        burst = new Burst({
-          duration: 20,
-          onUpdate: function() {
-            return isRightScope = this instanceof Burst;
-          }
-        });
-        burst.run();
-        return setTimeout((function() {
-          expect(isRightScope).toBe(true);
-          return dfr();
-        }), 300);
-      });
-    });
-    describe('then method ->', function() {
-      return it('should call the h.error method', function() {
-        var burst;
-        burst = new Burst;
-        spyOn(burst.h, 'error');
-        burst.then();
-        return expect(burst.h.error).toHaveBeenCalled();
-      });
-    });
-    describe('run method ->', function() {
-      it('should call extendDefaults', function() {
-        var burst, o;
-        burst = new Burst({
-          radius: {
-            20: 50
-          }
-        });
-        spyOn(burst, 'extendDefaults');
-        o = {
-          radius: 10
+        obj0 = {
+          angle: 0
         };
-        burst.run(o);
-        return expect(burst.extendDefaults).toHaveBeenCalledWith(o);
+        obj1 = {
+          angle: 0
+        };
+        result0 = burst._addOptionalProps(obj0, 0);
+        result1 = burst._addOptionalProps(obj1, 1);
+        expect(obj0.angle).toBe(90);
+        return expect(obj1.angle).toBe(270);
       });
-      it('should not call extendDefaults if no obj passed', function() {
+    });
+    describe('_getBitAngle method ->', function() {
+      it('should get angle by i', function() {
         var burst;
         burst = new Burst({
           radius: {
-            20: 50
+            'rand(10,20)': 100
           }
         });
-        spyOn(burst, 'extendDefaults');
-        burst.run();
-        return expect(burst.extendDefaults).not.toHaveBeenCalled();
+        expect(burst._getBitAngle(0, 0, 0)).toBe(90);
+        expect(burst._getBitAngle(0, 0, 1)).toBe(162);
+        expect(burst._getBitAngle(0, 0, 2)).toBe(234);
+        expect(burst._getBitAngle(90, 0, 2)).toBe(234 + 90);
+        expect(burst._getBitAngle(0, 0, 3)).toBe(306);
+        expect(burst._getBitAngle(90, 0, 3)).toBe(306 + 90);
+        expect(burst._getBitAngle(0, 0, 4)).toBe(378);
+        return expect(burst._getBitAngle(50, 0, 4)).toBe(378 + 50);
       });
-      it('should recieve new options', function() {
+      it('should add with angleShift', function() {
         var burst;
         burst = new Burst({
           radius: {
-            20: 50
+            'rand(10,20)': 100
           }
         });
-        burst.run({
-          radius: 10
-        });
-        expect(burst.props.radius).toBe(10);
-        return expect(burst.deltas.radius).not.toBeDefined();
+        expect(burst._getBitAngle(0, 0, 0)).toBe(90);
+        expect(burst._getBitAngle(0, 10, 1)).toBe(162 + 10);
+        expect(burst._getBitAngle(0, 30, 2)).toBe(234 + 30);
+        expect(burst._getBitAngle(90, 40, 2)).toBe(234 + 90 + 40);
+        expect(burst._getBitAngle(0, 20, 3)).toBe(306 + 20);
+        expect(burst._getBitAngle(90, 25, 3)).toBe(306 + 90 + 25);
+        expect(burst._getBitAngle(0, 10, 4)).toBe(378 + 10);
+        return expect(burst._getBitAngle(50, 60, 4)).toBe(378 + 50 + 60);
       });
-      it('should recieve new child options', function() {
+      it('should fallback to 0', function() {
         var burst;
         burst = new Burst({
           radius: {
-            20: 50
+            'rand(10,20)': 100
+          }
+        });
+        expect(burst._getBitAngle(void 0, 0, 0)).toBe(90);
+        expect(burst._getBitAngle(void 0, 0, 1)).toBe(162);
+        return expect(burst._getBitAngle(void 0, 0, 2)).toBe(234);
+      });
+      it('should get delta angle by i', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            'rand(10,20)': 100
+          }
+        });
+        expect(burst._getBitAngle({
+          180: 0
+        }, 0, 0)[270]).toBe(90);
+        expect(burst._getBitAngle({
+          50: 20
+        }, 0, 3)[356]).toBe(326);
+        return expect(burst._getBitAngle({
+          50: 20
+        }, 0, 4)[428]).toBe(398);
+      });
+      it('should add angleShift to deltas', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            'rand(10,20)': 100
+          }
+        });
+        expect(burst._getBitAngle({
+          180: 0
+        }, 20, 0)[270 + 20]).toBe(90 + 20);
+        expect(burst._getBitAngle({
+          50: 20
+        }, 30, 3)[356 + 30]).toBe(326 + 30);
+        return expect(burst._getBitAngle({
+          50: 20
+        }, 50, 4)[428 + 50]).toBe(398 + 50);
+      });
+      it('should work with `stagger` values', function() {
+        var burst;
+        burst = new Burst({
+          count: 2
+        });
+        expect(burst._getBitAngle({
+          'stagger(20, 10)': 0
+        }, 0, 0)[110]).toBe(90);
+        expect(burst._getBitAngle({
+          'stagger(20, 10)': 0
+        }, 0, 1)[300]).toBe(270);
+        return expect(burst._getBitAngle({
+          0: 'stagger(20, 10)'
+        }, 0, 1)[270]).toBe(300);
+      });
+      return it('should work with `random` values', function() {
+        var angle, baseAngle, burst, key, value, _i, _j, _k, _len, _len1, _len2, _results;
+        burst = new Burst({
+          count: 2
+        });
+        angle = burst._getBitAngle({
+          'rand(10, 20)': 0
+        }, 0, 0);
+        for (value = _i = 0, _len = angle.length; _i < _len; value = ++_i) {
+          key = angle[value];
+          baseAngle = 90;
+          expect(parseInt(key)).toBeGreaterThan(baseAngle + 10);
+          expect(parseInt(key)).not.toBeGreaterThan(baseAngle + 20);
+          expect(parseInt(value)).toBe(baseAngle);
+        }
+        angle = burst._getBitAngle({
+          'rand(10, 20)': 0
+        }, 0, 1);
+        for (value = _j = 0, _len1 = angle.length; _j < _len1; value = ++_j) {
+          key = angle[value];
+          baseAngle = 270;
+          expect(parseInt(key)).toBeGreaterThan(baseAngle + 10);
+          expect(parseInt(key)).not.toBeGreaterThan(baseAngle + 20);
+          expect(parseInt(value)).toBe(baseAngle);
+        }
+        angle = burst._getBitAngle({
+          0: 'rand(10, 20)'
+        }, 0, 1);
+        _results = [];
+        for (value = _k = 0, _len2 = angle.length; _k < _len2; value = ++_k) {
+          key = angle[value];
+          baseAngle = 270;
+          expect(parseInt(key)).toBe(baseAngle);
+          expect(parseInt(value)).toBeGreaterThan(baseAngle + 10);
+          _results.push(expect(parseInt(value)).not.toBeGreaterThan(baseAngle + 20));
+        }
+        return _results;
+      });
+    });
+    describe('_getSidePoint method ->', function() {
+      it('should return the side\'s point', function() {
+        var burst, point0;
+        burst = new Burst({
+          radius: {
+            5: 25
           },
-          duration: 400
-        });
-        burst.run({
-          duration: 500,
-          childOptions: {
-            duration: [null, 1000, null]
+          radiusX: {
+            10: 20
+          },
+          radiusY: {
+            30: 10
           }
         });
-        expect(burst.o.childOptions).toBeDefined();
-        expect(burst.transits[0].o.duration).toBe(500);
-        expect(burst.transits[1].o.duration).toBe(1000);
-        return expect(burst.transits[2].o.duration).toBe(500);
+        point0 = burst._getSidePoint('start', 0);
+        expect(point0.x).toBeDefined();
+        return expect(point0.y).toBeDefined();
       });
-      it('should extend old childOptions', function() {
-        var burst, newDuration;
+      return it('should return the side\'s point by i', function() {
+        var burst, point0, point1;
         burst = new Burst({
-          duration: 400,
-          childOptions: {
-            fill: 'deeppink'
+          radius: {
+            5: 25
+          },
+          radiusX: {
+            10: 20
+          },
+          radiusY: {
+            30: 10
+          }
+        }).then({
+          radius: {
+            5: 25
+          },
+          radiusX: {
+            10: 20
+          },
+          radiusY: {
+            30: 10
           }
         });
-        newDuration = [null, 1000, null];
-        burst.run({
-          duration: 500,
-          childOptions: {
-            duration: newDuration
-          }
-        });
-        expect(burst.o.childOptions.fill).toBe('deeppink');
-        return expect(burst.o.childOptions.duration).toBe(newDuration);
-      });
-      it('should call recalcDuration on tween', function() {
-        var burst, newDuration;
-        burst = new Burst({
-          duration: 400,
-          childOptions: {
-            fill: 'deeppink'
-          }
-        });
-        newDuration = [null, 1000, null];
-        spyOn(burst.timeline, 'recalcDuration');
-        burst.run({
-          duration: 500,
-          childOptions: {
-            duration: newDuration
-          }
-        });
-        return expect(burst.timeline.recalcDuration).toHaveBeenCalled();
-      });
-      it('should start timeline', function() {
-        var burst;
-        burst = new Burst;
-        spyOn(burst, 'startTween');
-        burst.run({
-          duration: 500
-        });
-        return expect(burst.startTween).toHaveBeenCalled();
-      });
-      it('should call generateRandomAngle method if randomAngle was passed', function() {
-        var burst;
-        burst = new Burst({
-          randomAngle: .1
-        });
-        spyOn(burst, 'generateRandomAngle');
-        burst.run();
-        return expect(burst.generateRandomAngle).toHaveBeenCalled();
-      });
-      it('should not call generateRandomAngle method', function() {
-        var burst;
-        burst = new Burst;
-        spyOn(burst, 'generateRandomAngle');
-        burst.run();
-        return expect(burst.generateRandomAngle).not.toHaveBeenCalled();
-      });
-      it('should call generateRandomRadius method if randomAngle was passed', function() {
-        var burst;
-        burst = new Burst({
-          randomRadius: .1
-        });
-        spyOn(burst, 'generateRandomRadius');
-        burst.run();
-        return expect(burst.generateRandomRadius).toHaveBeenCalled();
-      });
-      it('should not call generateRandomRadius method', function() {
-        var burst;
-        burst = new Burst;
-        spyOn(burst, 'generateRandomRadius');
-        burst.run();
-        return expect(burst.generateRandomRadius).not.toHaveBeenCalled();
-      });
-      it('should warn if count was passed', function() {
-        var burst;
-        burst = new Burst;
-        spyOn(burst.h, 'warn');
-        burst.run({
-          count: 10
-        });
-        return expect(burst.h.warn).toHaveBeenCalled();
-      });
-      it('should keep angles on run', function() {
-        var burst;
-        burst = new Burst({
-          isRunLess: true
-        });
-        burst.run({
-          count: 10
-        });
-        return expect(burst.transits[3].o.angle).toBe(306);
-      });
-      it('should recieve new angle options', function() {
-        var burst;
-        burst = new Burst({
-          isRunLess: true
-        });
-        burst.run({
-          childOptions: {
-            angle: 90
-          }
-        });
-        expect(burst.transits[3].o.angle).toBe(396);
-        return expect(burst.transits[4].o.angle).toBe(468);
-      });
-      it('should recieve new angle delta options', function() {
-        var burst;
-        burst = new Burst({
-          isRunLess: true
-        });
-        burst.run({
-          childOptions: {
-            angle: {
-              90: 0
-            }
-          }
-        });
-        expect(burst.transits[3].o.angle[396]).toBe(306);
-        return expect(burst.transits[4].o.angle[468]).toBe(378);
-      });
-      return it('should skip circular shape angle on isResetAngles', function() {
-        var burst;
-        burst = new Burst({
-          isRunLess: true
-        });
-        burst.run({
-          isResetAngles: true,
-          childOptions: {
-            angle: {
-              90: 0
-            }
-          }
-        });
-        expect(burst.transits[3].o.angle[90]).toBe(0);
-        return expect(burst.transits[4].o.angle[90]).toBe(0);
+        spyOn(burst, '_getSideRadius').and.callThrough();
+        point0 = burst._getSidePoint('start', 0, 0);
+        expect(burst._getSideRadius).toHaveBeenCalledWith('start', 0);
+        expect(burst._getSideRadius.calls.count()).toBe(1);
+        point1 = burst._getSidePoint('start', 0, 1);
+        expect(burst._getSideRadius).toHaveBeenCalledWith('start', 1);
+        return expect(burst._getSideRadius.calls.count()).toBe(2);
       });
     });
-    describe('generateRandomAngle method ->', function() {
-      it('should generate random angle based on randomness', function() {
-        var angle, burst;
-        burst = new Burst({
-          randomAngle: .5
-        });
-        angle = burst.generateRandomAngle();
-        expect(angle).toBeGreaterThan(-1);
-        return expect(angle).not.toBeGreaterThan(180);
-      });
-      return it('should generate random angle based on randomness #2', function() {
-        var angle, burst;
-        burst = new Burst({
-          randomAngle: .75
-        });
-        angle = burst.generateRandomAngle();
-        expect(angle).toBeGreaterThan(-1);
-        return expect(angle).not.toBeGreaterThan(270);
-      });
-    });
-    describe('generateRandomRadius method ->', function() {
-      return it('should generate random radius based on randomness', function() {
-        var burst, radius;
-        burst = new Burst({
-          randomRadius: .75
-        });
-        radius = burst.generateRandomRadius();
-        expect(radius).toBeGreaterThan(.24);
-        return expect(radius).not.toBeGreaterThan(1);
-      });
-    });
-    describe('draw method ->', function() {
-      it('should not call drawEl method', function() {
-        var burst;
-        burst = new Burst;
-        spyOn(burst, 'drawEl');
-        burst.draw();
-        return expect(burst.drawEl).toHaveBeenCalled();
-      });
-      return it('should call fillTransform method', function() {
-        var burst;
-        burst = new Burst({
-          radius: 25
-        });
-        spyOn(burst, 'fillTransform');
-        burst.draw();
-        return expect(burst.fillTransform).toHaveBeenCalled();
-      });
-    });
-    describe('getSideRadius method ->', function() {
-      return it('should return the side\'s radius, radiusX and radiusY', function() {
+    describe('_getSideRadius method ->', function() {
+      it('should return the side\'s radius, radiusX and radiusY', function() {
         var burst, sides;
         burst = new Burst({
           radius: {
@@ -1160,15 +582,13 @@
             30: 10
           }
         });
-        sides = burst.getSideRadius('start');
+        sides = burst._getSideRadius('start');
         expect(sides.radius).toBe(5);
         expect(sides.radiusX).toBe(10);
         return expect(sides.radiusY).toBe(30);
       });
-    });
-    describe('getSidePoint method ->', function() {
-      return it('should return the side\'s point', function() {
-        var burst, point;
+      return it('should return the side\'s radius, radiusX and radiusY by i', function() {
+        var burst, sidesE, sidesS;
         burst = new Burst({
           radius: {
             5: 25
@@ -1179,14 +599,37 @@
           radiusY: {
             30: 10
           }
+        }).then({
+          radius: {
+            20: 40
+          },
+          radiusX: {
+            50: 10
+          },
+          radiusY: {
+            10: 20
+          }
         });
-        point = burst.getSidePoint('start', 0);
-        expect(point.x).toBeDefined();
-        return expect(point.y).toBeDefined();
+        sidesS = burst._getSideRadius('start');
+        sidesE = burst._getSideRadius('end');
+        expect(sidesS.radius).toBe(5);
+        expect(sidesS.radiusX).toBe(10);
+        expect(sidesS.radiusY).toBe(30);
+        expect(sidesE.radius).toBe(25);
+        expect(sidesE.radiusX).toBe(20);
+        expect(sidesE.radiusY).toBe(10);
+        sidesS = burst._getSideRadius('start', 1);
+        sidesE = burst._getSideRadius('end', 1);
+        expect(sidesS.radius).toBe(20);
+        expect(sidesS.radiusX).toBe(50);
+        expect(sidesS.radiusY).toBe(10);
+        expect(sidesE.radius).toBe(40);
+        expect(sidesE.radiusX).toBe(10);
+        return expect(sidesE.radiusY).toBe(20);
       });
     });
-    describe('getRadiusByKey method ->', function() {
-      return it('should return the key\'s radius', function() {
+    describe('_getRadiusByKey method ->', function() {
+      it('should return the key\'s radius', function() {
         var burst, radius, radiusX, radiusY;
         burst = new Burst({
           radius: {
@@ -1199,19 +642,73 @@
             30: 20
           }
         });
-        radius = burst.getRadiusByKey('radius', 'start');
-        radiusX = burst.getRadiusByKey('radiusX', 'start');
-        radiusY = burst.getRadiusByKey('radiusX', 'end');
+        radius = burst._getRadiusByKey('radius', 'start');
+        radiusX = burst._getRadiusByKey('radiusX', 'start');
+        radiusY = burst._getRadiusByKey('radiusX', 'end');
         expect(radius).toBe(5);
         expect(radiusX).toBe(10);
         return expect(radiusY).toBe(20);
       });
+      it('should return the key\'s radius of the last master module // plain', function() {
+        var burst, radiusE, radiusS, radiusXE, radiusXS, radiusYE, radiusYS;
+        burst = new Burst({
+          radius: 5,
+          radiusX: 10,
+          radiusY: 30
+        }).then({
+          radius: 25,
+          radiusX: 20,
+          radiusY: 40
+        });
+        radiusS = burst._getRadiusByKey('radius', 'start', 1);
+        radiusXS = burst._getRadiusByKey('radiusX', 'start', 1);
+        radiusYS = burst._getRadiusByKey('radiusY', 'start', 1);
+        radiusE = burst._getRadiusByKey('radius', 'end', 1);
+        radiusXE = burst._getRadiusByKey('radiusX', 'end', 1);
+        radiusYE = burst._getRadiusByKey('radiusY', 'end', 1);
+        expect(radiusS).toBe(5);
+        expect(radiusXS).toBe(10);
+        expect(radiusYS).toBe(30);
+        expect(radiusE).toBe(25);
+        expect(radiusXE).toBe(20);
+        return expect(radiusYE).toBe(40);
+      });
+      return it('should return the key\'s radius of the last master module // deltas', function() {
+        var burst, radiusE, radiusS, radiusXE, radiusXS, radiusYE, radiusYS;
+        burst = new Burst({
+          radius: 5,
+          radiusX: 10,
+          radiusY: 30
+        }).then({
+          radius: {
+            10: 25
+          },
+          radiusX: {
+            30: 20
+          },
+          radiusY: {
+            25: 30
+          }
+        });
+        radiusS = burst._getRadiusByKey('radius', 'start', 1);
+        radiusXS = burst._getRadiusByKey('radiusX', 'start', 1);
+        radiusYS = burst._getRadiusByKey('radiusY', 'start', 1);
+        radiusE = burst._getRadiusByKey('radius', 'end', 1);
+        radiusXE = burst._getRadiusByKey('radiusX', 'end', 1);
+        radiusYE = burst._getRadiusByKey('radiusY', 'end', 1);
+        expect(radiusS).toBe(10);
+        expect(radiusXS).toBe(30);
+        expect(radiusYS).toBe(25);
+        expect(radiusE).toBe(25);
+        expect(radiusXE).toBe(20);
+        return expect(radiusYE).toBe(30);
+      });
     });
-    return describe('getDeltaFromPoints method ->', function() {
+    describe('_getDeltaFromPoints method ->', function() {
       it('should return the delta', function() {
         var burst, delta;
         burst = new Burst;
-        delta = burst.getDeltaFromPoints('x', {
+        delta = burst._getDeltaFromPoints('x', {
           x: 10,
           y: 20
         }, {
@@ -1223,7 +720,7 @@
       return it('should return one value if start and end positions are equal', function() {
         var burst, delta;
         burst = new Burst;
-        delta = burst.getDeltaFromPoints('x', {
+        delta = burst._getDeltaFromPoints('x', {
           x: 10,
           y: 20
         }, {
@@ -1231,6 +728,744 @@
           y: 40
         });
         return expect(delta).toBe(10);
+      });
+    });
+    describe('_vars method ->', function() {
+      it('should call super', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(mojs.Thenable.prototype, '_vars');
+        burst._vars();
+        return expect(mojs.Thenable.prototype._vars).toHaveBeenCalled();
+      });
+      return it('should create _bufferTimeline', function() {
+        var burst;
+        burst = new Burst;
+        burst._bufferTimeline = null;
+        burst._vars();
+        return expect(burst._bufferTimeline instanceof mojs.Timeline).toBe(true);
+      });
+    });
+    describe('_recalcModulesTime method', function() {
+      it('should set duration on every moddules tween', function() {
+        var b, modules, shiftTime, time;
+        b = new Burst({
+          fill: 'cyan'
+        }).then({
+          'fill': 'yellow'
+        });
+        shiftTime = 0;
+        modules = b.masterSwirl._modules;
+        spyOn(b, '_calcPackTime').and.callThrough();
+        b._recalcModulesTime();
+        expect(b._calcPackTime).toHaveBeenCalledWith(b._swirls[0]);
+        time = b._calcPackTime(b._swirls[0]);
+        expect(modules[0].tween._props.duration).toBe(time);
+        expect(modules[0].tween._props.shiftTime).toBe(shiftTime);
+        shiftTime += time;
+        expect(b._calcPackTime).toHaveBeenCalledWith(b._swirls[1]);
+        time = b._calcPackTime(b._swirls[1]);
+        expect(modules[1].tween._props.duration).toBe(time);
+        expect(modules[1].tween._props.shiftTime).toBe(shiftTime);
+        return shiftTime += time;
+      });
+      return it('should call _recalcTotalDuration on main timeline', function() {
+        var b;
+        b = new Burst({
+          fill: 'cyan'
+        }).then({
+          'fill': 'yellow'
+        });
+        spyOn(b.timeline, '_recalcTotalDuration');
+        b._recalcModulesTime();
+        return expect(b.timeline._recalcTotalDuration).toHaveBeenCalled();
+      });
+    });
+    describe('_masterThen method ->', function() {
+      it('should pass options to masterSwirl', function() {
+        var b, o;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b.masterSwirl, 'then');
+        o = {
+          opacity: .5
+        };
+        b._masterThen(o);
+        return expect(b.masterSwirl.then).toHaveBeenCalledWith(o);
+      });
+      it('should save the new master swirl', function() {
+        var b;
+        b = new Burst({
+          count: 2
+        });
+        b._masterThen({
+          opacity: .5
+        });
+        return expect(b._masterSwirls.length).toBe(2);
+      });
+      return it('should return the new swirl', function() {
+        var b, result;
+        b = new Burst({
+          count: 2
+        });
+        result = b._masterThen({
+          opacity: .5
+        });
+        return expect(result).toBe(b._masterSwirls[b._masterSwirls.length - 1]);
+      });
+    });
+    describe('_childThen method ->', function() {
+      it('should pass options to swirls', function() {
+        var b, o, option0, option1, pack;
+        b = new Burst({
+          count: 2
+        });
+        pack = b._swirls[0];
+        spyOn(pack[0], 'then');
+        spyOn(pack[1], 'then');
+        o = {
+          children: {
+            radius: [10, 20]
+          }
+        };
+        b._childThen(o, b._masterThen(o));
+        option0 = b._getChildOption(o, 0);
+        option0.parent = b._masterSwirls[1].el;
+        b._addBurstProperties(option0, 0, 1);
+        expect(pack[0].then).toHaveBeenCalledWith(option0);
+        option1 = b._getChildOption(o, 1);
+        option1.parent = b._masterSwirls[1].el;
+        b._addBurstProperties(option1, 1, 1);
+        return expect(pack[1].then).toHaveBeenCalledWith(option1);
+      });
+      it('should call _addBurstProperties with the latest main swirl', function() {
+        var b, o, option0, option1, pack;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b, '_addBurstProperties');
+        pack = b._swirls[0];
+        o = {
+          children: {
+            radius: [10, 20]
+          }
+        };
+        b._childThen(o, b._masterThen(o));
+        option0 = b._getChildOption(o, 0);
+        option0.parent = b._masterSwirls[1].el;
+        expect(b._addBurstProperties).toHaveBeenCalledWith(option0, 0, 1);
+        option1 = b._getChildOption(o, 1);
+        option1.parent = b._masterSwirls[1].el;
+        return expect(b._addBurstProperties).toHaveBeenCalledWith(option1, 1, 1);
+      });
+      it('should save new swirls to _swirls', function() {
+        var b, o;
+        b = new Burst({
+          count: 2
+        });
+        o = {
+          children: {
+            radius: [10, 20]
+          }
+        };
+        b._masterThen(o);
+        b._childThen(o);
+        expect(b._swirls[1].length).toBe(2);
+        expect(b._swirls[1][0] instanceof ShapeSwirl).toBe(true);
+        return expect(b._swirls[1][1] instanceof ShapeSwirl).toBe(true);
+      });
+      return it('should return the new pack', function() {
+        var b, o, result;
+        b = new Burst({
+          count: 2
+        });
+        o = {
+          children: {
+            radius: [10, 20]
+          }
+        };
+        b._masterThen(o);
+        result = b._childThen(o);
+        return expect(result).toBe(b._swirls[1]);
+      });
+    });
+    describe('then method ->', function() {
+      it('should return this', function() {
+        var b;
+        b = new Burst({
+          count: 2
+        });
+        return expect(b.then({})).toBe(b);
+      });
+      it('should call _removeTweenProperties method', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b, '_removeTweenProperties');
+        options = {
+          x: 200
+        };
+        b.then(options);
+        return expect(b._removeTweenProperties).toHaveBeenCalledWith(options);
+      });
+      it('should call _masterThen method', function() {
+        var b, options;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b, '_masterThen').and.callThrough();
+        options = {};
+        b.then(options);
+        return expect(b._masterThen).toHaveBeenCalledWith(options);
+      });
+      it('should call _childThen method', function() {
+        var b, options;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b, '_childThen').and.callThrough();
+        options = {};
+        b.then(options);
+        expect(b._childThen.calls.count()).toBe(1);
+        return expect(b._childThen.calls.first().args[0]).toBe(options);
+      });
+      it('should set duration on new master swirl', function() {
+        var b, time;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b, '_setSwirlDuration').and.callThrough();
+        b.then({
+          children: {
+            duration: 50
+          }
+        });
+        time = b._calcPackTime(b._swirls[1]);
+        expect(b._setSwirlDuration.calls.count()).toBe(1);
+        expect(b._setSwirlDuration.calls.first().args[0]).toBe(b._masterSwirls[1]);
+        return expect(b._setSwirlDuration.calls.first().args[1]).toBe(time);
+      });
+      return it('should call _recalcTotalDuration method', function() {
+        var b;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(b.timeline, '_recalcTotalDuration');
+        b.then({
+          children: {
+            radius: [10, 20]
+          }
+        });
+        return expect(b.timeline._recalcTotalDuration).toHaveBeenCalled();
+      });
+    });
+    describe('_calcPackTime method ->', function() {
+      return it('should calculate time of swirls array', function() {
+        var b, i, maxTime, p, pack, sw, swirl, tm, tween, _i, _len;
+        sw = new ShapeSwirl;
+        sw.timeline._props.shiftTime = 200000;
+        pack = [
+          sw, new ShapeSwirl({
+            duration: 2000
+          }), new ShapeSwirl({
+            duration: 1800,
+            delay: 400
+          }), new ShapeSwirl({
+            duration: 4000,
+            speed: 3
+          })
+        ];
+        b = new Burst;
+        tm = new mojs.Timeline;
+        maxTime = 0;
+        for (i = _i = 0, _len = pack.length; _i < _len; i = ++_i) {
+          swirl = pack[i];
+          tween = swirl.tween;
+          p = tween._props;
+          maxTime = Math.max(p.repeatTime / p.speed, maxTime);
+        }
+        return expect(b._calcPackTime(pack)).toBe(maxTime);
+      });
+    });
+    describe('_setSwirlDuration method ->', function() {
+      it('should set tweens time', function() {
+        var b, duration, sw;
+        b = new Burst;
+        sw = new ShapeSwirl;
+        spyOn(sw.tween, '_setProp');
+        spyOn(sw.timeline, '_recalcTotalDuration');
+        duration = 10;
+        b._setSwirlDuration(sw, duration);
+        expect(sw.tween._setProp).toHaveBeenCalledWith('duration', duration);
+        return expect(sw.timeline._recalcTotalDuration).toHaveBeenCalled();
+      });
+      return it('should not throw if Swirl has no timeline', function() {
+        var b, set, sw;
+        b = new Burst;
+        sw = new ShapeSwirl;
+        sw.timeline = sw.tween;
+        set = function() {
+          return b._setSwirlDuration(sw, 10);
+        };
+        return expect(set).not.toThrow();
+      });
+    });
+    describe('tune method ->', function() {
+      it('should return `this`', function() {
+        var b;
+        b = new Burst;
+        return expect(b.tune({
+          x: 200
+        })).toBe(b);
+      });
+      it('should call _tuneNewOptions method', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b, '_tuneNewOptions');
+        options = {
+          x: 200
+        };
+        b.tune(options);
+        return expect(b._tuneNewOptions).toHaveBeenCalledWith(options);
+      });
+      it('should not call _tuneNewOptions method if no options', function() {
+        var b, options, result;
+        b = new Burst;
+        spyOn(b, '_tuneNewOptions');
+        options = null;
+        result = b.tune(options);
+        expect(b._tuneNewOptions).not.toHaveBeenCalledWith(options);
+        return expect(result).toBe(b);
+      });
+      it('should call tune on masterSwirl', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b.masterSwirl, 'tune');
+        options = {
+          x: 200
+        };
+        b.tune(options);
+        return expect(b.masterSwirl.tune).toHaveBeenCalledWith(options);
+      });
+      it('should call _tuneSwirls method', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b, '_tuneSwirls');
+        options = {
+          x: 200
+        };
+        b.tune(options);
+        return expect(b._tuneSwirls).toHaveBeenCalledWith(options);
+      });
+      it('should call tune 0 pack swirls', function() {
+        var args, b, option0, option1, option2, option3, option4, options, pack0, swirls;
+        b = new Burst;
+        pack0 = b._swirls[0];
+        spyOn(pack0[0], 'tune');
+        spyOn(pack0[1], 'tune');
+        spyOn(pack0[2], 'tune');
+        spyOn(pack0[3], 'tune');
+        spyOn(pack0[4], 'tune');
+        swirls = {
+          x: 200,
+          fill: ['cyan', 'yellow']
+        };
+        options = {
+          children: swirls
+        };
+        b.tune(options);
+        option0 = b._getChildOption(options, 0);
+        b._addBurstProperties(option0, 0);
+        args = pack0[0].tune.calls.first().args;
+        expect(args[0]).toEqual(option0);
+        option1 = b._getChildOption(options, 1);
+        b._addBurstProperties(option1, 1);
+        args = pack0[1].tune.calls.first().args;
+        expect(args[0]).toEqual(option1);
+        option2 = b._getChildOption(options, 2);
+        b._addBurstProperties(option2, 2);
+        args = pack0[2].tune.calls.first().args;
+        expect(args[0]).toEqual(option2);
+        option3 = b._getChildOption(options, 3);
+        b._addBurstProperties(option3, 3);
+        args = pack0[3].tune.calls.first().args;
+        expect(args[0]).toEqual(option3);
+        option4 = b._getChildOption(options, 4);
+        b._addBurstProperties(option4, 4);
+        args = pack0[4].tune.calls.first().args;
+        return expect(args[0]).toEqual(option4);
+      });
+      it('should add Burst properties to options', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b.masterSwirl, 'tune');
+        options = {
+          x: 200
+        };
+        spyOn(b, '_addBurstProperties');
+        b.tune(options);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 0);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 1);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 2);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 3);
+        return expect(b._addBurstProperties).toHaveBeenCalledWith({}, 4);
+      });
+      it('should call _recalcModulesTime method', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b, '_recalcModulesTime');
+        options = {
+          x: 200
+        };
+        b.tune(options);
+        return expect(b._recalcModulesTime).toHaveBeenCalled();
+      });
+      it('should call _saveTimelineOptions method', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b, '_saveTimelineOptions');
+        options = {
+          x: 200
+        };
+        b.tune(options);
+        return expect(b._saveTimelineOptions).toHaveBeenCalledWith(options);
+      });
+      return it('should set new options on timeline', function() {
+        var b, options;
+        b = new Burst;
+        spyOn(b.timeline, '_setProp');
+        options = {
+          x: 200
+        };
+        b.tune(options);
+        return expect(b.timeline._setProp).toHaveBeenCalledWith(b._timelineOptions);
+      });
+    });
+    describe('_removeTweenProperties method ->', function() {
+      return it('should remove all tween props from passed object', function() {
+        var b, key, o, _results;
+        b = new Burst;
+        o = {};
+        for (key in h.tweenOptionMap) {
+          o[key] = 1;
+        }
+        for (key in b._defaults) {
+          o[key] = 1;
+        }
+        b._removeTweenProperties(o);
+        _results = [];
+        for (key in h.tweenOptionMap) {
+          _results.push(expect(o[key]).not.toBeDefined());
+        }
+        return _results;
+      });
+    });
+    describe('_saveTimelineOptions method ->', function() {
+      return it('should save timeline options to _timelineOptions', function() {
+        var b, opts, timeline;
+        b = new Burst;
+        timeline = {};
+        opts = {
+          timeline: timeline
+        };
+        b._saveTimelineOptions(opts);
+        expect(b._timelineOptions).toBe(timeline);
+        return expect(opts.timeline).not.toBeDefined();
+      });
+    });
+    describe('_addBurstProperties method ->', function() {
+      it('should calculate bit angle', function() {
+        var angle, b, obj;
+        b = new Burst;
+        angle = 20;
+        obj = {
+          angle: angle
+        };
+        b._addBurstProperties(obj, 1);
+        return expect(obj.angle).toBe(b._getBitAngle(angle, 0, 1));
+      });
+      it('should calculate bit x and y', function() {
+        var b, degreeCnt, index, obj, p, pointEnd, pointStart, step;
+        index = 1;
+        b = new Burst;
+        obj = {};
+        b._addBurstProperties(obj, index);
+        p = b._props;
+        degreeCnt = p.degree % 360 === 0 ? p.count : p.count - 1 || 1;
+        step = p.degree / degreeCnt;
+        pointStart = b._getSidePoint('start', index * step);
+        pointEnd = b._getSidePoint('end', index * step);
+        expect(obj.x).toEqual(b._getDeltaFromPoints('x', pointStart, pointEnd));
+        return expect(obj.y).toEqual(b._getDeltaFromPoints('y', pointStart, pointEnd));
+      });
+      it('should calculate bit x/y and angle regarding degreeShift', function() {
+        var angle, b, degreeCnt, degreeShifts, index, obj, p, pointEnd, pointStart, step;
+        index = 1;
+        angle = 20;
+        degreeShifts = [0, 10, 20];
+        b = new Burst({
+          children: {
+            degreeShift: degreeShifts
+          }
+        });
+        obj = {
+          angle: angle,
+          degreeShift: degreeShifts[index]
+        };
+        b._addBurstProperties(obj, index);
+        p = b._props;
+        degreeCnt = p.degree % 360 === 0 ? p.count : p.count - 1 || 1;
+        step = p.degree / degreeCnt;
+        pointStart = b._getSidePoint('start', index * step + degreeShifts[index]);
+        pointEnd = b._getSidePoint('end', index * step + degreeShifts[index]);
+        expect(obj.x).toEqual(b._getDeltaFromPoints('x', pointStart, pointEnd));
+        expect(obj.y).toEqual(b._getDeltaFromPoints('y', pointStart, pointEnd));
+        return expect(obj.angle).toEqual(b._getBitAngle(angle + degreeShifts[index], 0, index));
+      });
+      it('should calculate bit x/y and angle regarding stagger', function() {
+        var angle, b, degreeCnt, index, obj, p, pointEnd, pointStart, step;
+        index = 2;
+        angle = 20;
+        b = new Burst({
+          children: {
+            degreeShift: 'stagger(200)'
+          }
+        });
+        obj = {
+          angle: angle,
+          degreeShift: 'stagger(200)'
+        };
+        b._addBurstProperties(obj, index);
+        p = b._props;
+        degreeCnt = p.degree % 360 === 0 ? p.count : p.count - 1 || 1;
+        step = p.degree / degreeCnt;
+        pointStart = b._getSidePoint('start', index * step + 400);
+        pointEnd = b._getSidePoint('end', index * step + 400);
+        expect(obj.x).toEqual(b._getDeltaFromPoints('x', pointStart, pointEnd));
+        expect(obj.y).toEqual(b._getDeltaFromPoints('y', pointStart, pointEnd));
+        return expect(obj.angle).toEqual(b._getBitAngle(angle + 400, 0, index));
+      });
+      it('should fallback to 0 for angle', function() {
+        var b, degreeCnt, index, obj, p, pointEnd, pointStart, step;
+        index = 2;
+        b = new Burst({
+          children: {
+            degreeShift: 'stagger(200)'
+          }
+        });
+        obj = {
+          degreeShift: 'stagger(200)'
+        };
+        b._addBurstProperties(obj, index);
+        p = b._props;
+        degreeCnt = p.degree % 360 === 0 ? p.count : p.count - 1 || 1;
+        step = p.degree / degreeCnt;
+        pointStart = b._getSidePoint('start', index * step + 400);
+        pointEnd = b._getSidePoint('end', index * step + 400);
+        return expect(obj.angle).toEqual(b._getBitAngle(0, 400, index));
+      });
+      return it('should call _getSidePoint with passed index', function() {
+        var b, obj;
+        b = new Burst({
+          count: 2
+        }).then({
+          radius: 20
+        });
+        spyOn(b, '_getSidePoint').and.callThrough();
+        obj = {};
+        b._addBurstProperties(obj, 2, 1);
+        expect(b._getSidePoint).toHaveBeenCalledWith('start', 360, 1);
+        return expect(b._getSidePoint).toHaveBeenCalledWith('end', 360, 1);
+      });
+    });
+    describe('_refreshBurstOptions method ->', function() {
+      return it('should call _tuneNewOptions with results of _addBurstProperties', function() {
+        var b, j, module, modules, options, _i, _j, _ref, _ref1, _results;
+        b = new Burst({
+          count: 4
+        }).then({
+          radius: 20
+        }).then({
+          radius: 30
+        });
+        modules = b._swirls[0][0]._modules;
+        for (j = _i = 1, _ref = modules.length; 1 <= _ref ? _i < _ref : _i > _ref; j = 1 <= _ref ? ++_i : --_i) {
+          module = modules[j];
+          spyOn(module, '_tuneNewOptions').and.callThrough();
+        }
+        b._refreshBurstOptions(modules, 1);
+        _results = [];
+        for (j = _j = 1, _ref1 = modules.length; 1 <= _ref1 ? _j < _ref1 : _j > _ref1; j = 1 <= _ref1 ? ++_j : --_j) {
+          module = modules[j];
+          options = {};
+          b._addBurstProperties(options, 1, j);
+          _results.push(expect(module._tuneNewOptions).toHaveBeenCalledWith(options));
+        }
+        return _results;
+      });
+    });
+    describe('_tuneSwirls method', function() {
+      it('should call _refreshBurstOptions with modules and i', function() {
+        var b, i, pack0, swirl, _i, _ref, _results;
+        b = new Burst({
+          count: 4
+        }).then({
+          radius: 20
+        }).then({
+          radius: 30
+        });
+        spyOn(b, '_refreshBurstOptions');
+        b._tuneSwirls({});
+        pack0 = b._swirls[0];
+        _results = [];
+        for (i = _i = 0, _ref = pack0.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+          swirl = pack0[i];
+          _results.push(expect(b._refreshBurstOptions).toHaveBeenCalledWith(swirl._modules, i));
+        }
+        return _results;
+      });
+      it('should add Burst properties to options', function() {
+        var b, options;
+        b = new Burst({
+          children: {
+            degreeShift: 10
+          }
+        });
+        options = {
+          x: 200
+        };
+        spyOn(b, '_addBurstProperties');
+        b._tuneSwirls(options);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 0);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 1);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 2);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({}, 3);
+        return expect(b._addBurstProperties).toHaveBeenCalledWith({}, 4);
+      });
+      return it('should not override the new degreeShift', function() {
+        var b, options;
+        b = new Burst({
+          children: {
+            degreeShift: 10
+          }
+        });
+        options = {
+          x: 200,
+          children: {
+            degreeShift: 20
+          }
+        };
+        spyOn(b, '_addBurstProperties');
+        b._tuneSwirls(options);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({
+          degreeShift: 20
+        }, 0);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({
+          degreeShift: 20
+        }, 1);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({
+          degreeShift: 20
+        }, 2);
+        expect(b._addBurstProperties).toHaveBeenCalledWith({
+          degreeShift: 20
+        }, 3);
+        return expect(b._addBurstProperties).toHaveBeenCalledWith({
+          degreeShift: 20
+        }, 4);
+      });
+    });
+    describe('ChildSwirl ->', function() {
+      var ChildSwirl;
+      ChildSwirl = Burst.ChildSwirl;
+      it('should extend ShapeSwirl', function() {
+        var child;
+        child = new ChildSwirl;
+        return expect(child instanceof ShapeSwirl).toBe(true);
+      });
+      it('should override defaults', function() {
+        var child;
+        child = new ChildSwirl;
+        return expect(child._defaults.isSwirl).toBe(false);
+      });
+      it('should override duration to 700', function() {
+        var child;
+        child = new ChildSwirl;
+        return expect(child._o.duration).toBe(700);
+      });
+      it('should not override duration to 700 if defined', function() {
+        var child;
+        child = new ChildSwirl({
+          duration: 0
+        });
+        return expect(child._o.duration).toBe(0);
+      });
+      it('should be used as children swirl', function() {
+        var burst;
+        burst = new Burst;
+        return expect(burst._swirls[0][0] instanceof ChildSwirl).toBe(true);
+      });
+      return it('should not regard degreeShift in xy calculations', function() {
+        var child1, child2;
+        child1 = new ChildSwirl({
+          degreeShift: 0,
+          x: {
+            0: 200
+          }
+        });
+        child2 = new ChildSwirl({
+          degreeShift: 20,
+          x: {
+            0: 200
+          }
+        });
+        child1.setProgress(.45);
+        child1.setProgress(.5);
+        child2.setProgress(.45);
+        child2.setProgress(.5);
+        expect(child1._props.x).toBe(child2._props.x);
+        return expect(child1._props.y).toBe(child2._props.y);
+      });
+    });
+    describe('MainSwirl ->', function() {
+      var ChildSwirl, MainSwirl;
+      ChildSwirl = Burst.ChildSwirl;
+      MainSwirl = Burst.MainSwirl;
+      it('should extend ChildSwirl', function() {
+        var child;
+        child = new MainSwirl;
+        return expect(child instanceof ChildSwirl).toBe(true);
+      });
+      it('should override defaults', function() {
+        var child;
+        child = new MainSwirl;
+        expect(child._defaults.scale).toBe(1);
+        expect(child._defaults.width).toBe(0);
+        expect(child._defaults.height).toBe(0);
+        expect(child._defaults.isSwirl).toBe(false);
+        return expect(child._defaults.radius[25]).toBe(75);
+      });
+      return it('should be used as main swirl', function() {
+        var burst;
+        burst = new Burst;
+        return expect(burst.masterSwirl instanceof MainSwirl).toBe(true);
+      });
+    });
+    describe('_hide method ->', function() {
+      return it('should not call super', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(mojs.Module.prototype, '_hide');
+        burst._hide();
+        return expect(mojs.Module.prototype._hide).not.toHaveBeenCalled();
+      });
+    });
+    return describe('_show method ->', function() {
+      return it('should not call super', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(mojs.Module.prototype, '_show');
+        burst._show();
+        return expect(mojs.Module.prototype._show).not.toHaveBeenCalled();
       });
     });
   });

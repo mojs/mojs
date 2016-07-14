@@ -18,16 +18,13 @@
     it('should have remBase', function() {
       return expect(typeof h.remBase).toBe('number');
     });
-    it('should have posPropsMap map', function() {
-      expect(h.posPropsMap.x).toBe(1);
-      expect(h.posPropsMap.y).toBe(1);
-      expect(h.posPropsMap.shiftX).toBe(1);
-      return expect(h.posPropsMap.shiftY).toBe(1);
-    });
-    it('should have strokeDashPropsMap map', function() {
-      expect(h.strokeDashPropsMap.strokeDasharray).toBe(1);
-      expect(h.strokeDashPropsMap.strokeDashoffset).toBe(1);
-      return expect(Object.keys(h.strokeDashPropsMap).length).toBe(2);
+    it('should have unitOptionMap map', function() {
+      expect(h.unitOptionMap.left).toBe(1);
+      expect(h.unitOptionMap.top).toBe(1);
+      expect(h.unitOptionMap.x).toBe(1);
+      expect(h.unitOptionMap.y).toBe(1);
+      expect(h.unitOptionMap.rx).toBe(1);
+      return expect(h.unitOptionMap.ry).toBe(1);
     });
     it('should have initial uniqIDs props', function() {
       return expect(h.uniqIDs).toBe(-1);
@@ -53,19 +50,7 @@
     });
     describe('tween related map ->', function() {
       return it('should be a map of tween related options ->', function() {
-        var mapLen;
-        expect(h.chainOptionMap.duration).toBe(1);
-        expect(h.chainOptionMap.delay).toBe(1);
-        expect(h.chainOptionMap.repeat).toBe(1);
-        expect(h.chainOptionMap.easing).toBe(1);
-        expect(h.chainOptionMap.yoyo).toBe(1);
-        expect(h.chainOptionMap.onStart).toBe(1);
-        expect(h.chainOptionMap.onComplete).toBe(1);
-        expect(h.chainOptionMap.onCompleteChain).toBe(1);
-        expect(h.chainOptionMap.onUpdate).toBe(1);
-        expect(h.chainOptionMap.points).toBe(1);
-        mapLen = Object.keys(h.chainOptionMap).length;
-        return expect(mapLen).toBe(10);
+        return expect(Object.keys(h.chainOptionMap).length).toBe(0);
       });
     });
     describe('pure tween props ->', function() {
@@ -75,7 +60,10 @@
         expect(h.tweenOptionMap.repeat).toBe(1);
         expect(h.tweenOptionMap.easing).toBe(1);
         expect(h.tweenOptionMap.yoyo).toBe(1);
-        return expect(Object.keys(h.tweenOptionMap).length).toBe(5);
+        expect(h.tweenOptionMap.shiftTime).toBe(1);
+        expect(h.tweenOptionMap.isReversed).toBe(1);
+        expect(h.tweenOptionMap.speed).toBe(1);
+        return expect(Object.keys(h.tweenOptionMap).length).toBe(8);
       });
     });
     describe('pure callbacks props ->', function() {
@@ -83,8 +71,11 @@
         expect(h.callbacksMap.onStart).toBe(1);
         expect(h.callbacksMap.onUpdate).toBe(1);
         expect(h.callbacksMap.onComplete).toBe(1);
-        expect(h.callbacksMap.onCompleteChain).toBe(1);
-        return expect(Object.keys(h.callbacksMap).length).toBe(4);
+        expect(h.callbacksMap.onProgress).toBe(1);
+        expect(h.callbacksMap.onFirstUpdate).toBe(1);
+        expect(h.callbacksMap.onRepeatStart).toBe(1);
+        expect(h.callbacksMap.onRepeatComplete).toBe(1);
+        return expect(Object.keys(h.callbacksMap).length).toBe(7);
       });
     });
     describe('methods ->', function() {
@@ -233,7 +224,7 @@
           return expect(h.rand(.2, .9)).not.toBeGreaterThan(.9);
         });
       });
-      describe('getDelta method ->', function() {
+      describe('parseDelta method ->', function() {
         describe('numeric values ->', function() {
           it('should calculate delta', function() {
             var delta;
@@ -243,6 +234,39 @@
             expect(delta.start).toBe(25);
             expect(delta.delta).toBe(50);
             return expect(delta.type).toBe('number');
+          });
+          it('should parse easing', function() {
+            var delta, easing, startDelta;
+            spyOn(mojs.easing, 'parseEasing').and.callThrough();
+            easing = 'cubic.out';
+            startDelta = {
+              25: 75,
+              easing: easing
+            };
+            delta = h.parseDelta('radius', startDelta);
+            expect(delta.start).toBe(25);
+            expect(delta.delta).toBe(50);
+            expect(delta.type).toBe('number');
+            expect(delta.easing).toBe(mojs.easing.cubic.out);
+            expect(mojs.easing.parseEasing).toHaveBeenCalledWith(easing);
+            return expect(startDelta.easing).toBe(easing);
+          });
+          it('should parse curve', function() {
+            var curve, delta, startDelta;
+            spyOn(mojs.easing, 'parseEasing').and.callThrough();
+            curve = "M0,100 L100,0";
+            startDelta = {
+              25: 75,
+              curve: curve
+            };
+            delta = h.parseDelta('radius', startDelta);
+            expect(delta.start).toBe(25);
+            expect(delta.delta).toBe(50);
+            expect(delta.type).toBe('number');
+            expect(typeof delta.curve).toBe('function');
+            expect(delta.curve(.5)).toBeCloseTo(.5, 2);
+            expect(mojs.easing.parseEasing).toHaveBeenCalledWith(curve);
+            return expect(startDelta.curve).toBe(curve);
           });
           it('should calculate delta with string arguments', function() {
             var delta;
@@ -268,7 +292,7 @@
             expect(delta.start).toBe(-25.5);
             return expect(delta.delta).toBe(101);
           });
-          it('should calculate delta with negative end arguments', function() {
+          return it('should calculate delta with negative end arguments', function() {
             var delta;
             delta = h.parseDelta('radius', {
               '25.50': -75.50
@@ -277,6 +301,8 @@
             expect(delta.end).toBe(-75.5);
             return expect(delta.delta).toBe(-101);
           });
+        });
+        describe('unit values ->', function() {
           it('should fallback to declared units if one of them is not defined', function() {
             var delta;
             delta = h.parseDelta('x', {
@@ -301,6 +327,40 @@
             expect(delta.end.value).toBe(-75.5);
             return expect(delta.end.string).toBe('-75.5%');
           });
+          it('should parse unit values easing', function() {
+            var delta;
+            spyOn(mojs.easing, 'parseEasing').and.callThrough();
+            delta = h.parseDelta('x', {
+              '25.50': '-75.50%',
+              easing: 'cubic.out'
+            });
+            expect(delta.start.unit).toBe('%');
+            expect(delta.start.value).toBe(25.5);
+            expect(delta.start.string).toBe('25.5%');
+            expect(delta.end.unit).toBe('%');
+            expect(delta.end.value).toBe(-75.5);
+            expect(delta.end.string).toBe('-75.5%');
+            expect(delta.easing).toBe(mojs.easing.cubic.out);
+            return expect(mojs.easing.parseEasing).toHaveBeenCalledWith('cubic.out');
+          });
+          it('should parse unit values curve', function() {
+            var curve, delta;
+            spyOn(mojs.easing, 'parseEasing').and.callThrough();
+            curve = "M0,100 L100,0";
+            delta = h.parseDelta('x', {
+              '25.50': '-75.50%',
+              curve: curve
+            });
+            expect(delta.start.unit).toBe('%');
+            expect(delta.start.value).toBe(25.5);
+            expect(delta.start.string).toBe('25.5%');
+            expect(delta.end.unit).toBe('%');
+            expect(delta.end.value).toBe(-75.5);
+            expect(delta.end.string).toBe('-75.5%');
+            expect(typeof delta.curve).toBe('function');
+            expect(delta.curve(.5)).toBeCloseTo(.5, 2);
+            return expect(mojs.easing.parseEasing).toHaveBeenCalledWith(curve);
+          });
           it('should fallback to end units if two units undefined and warn', function() {
             var delta;
             spyOn(h, 'warn');
@@ -315,7 +375,7 @@
             expect(delta.end.value).toBe(-75.5);
             return expect(delta.end.string).toBe('-75.5px');
           });
-          it('should not warn with the same units', function() {
+          return it('should not warn with the same units', function() {
             var delta;
             spyOn(h, 'warn');
             delta = h.parseDelta('x', {
@@ -323,6 +383,8 @@
             });
             return expect(h.warn).not.toHaveBeenCalled();
           });
+        });
+        describe('strokeDash.. deltas', function() {
           it('should work with strokeDash.. properties', function() {
             var delta;
             delta = h.parseDelta('strokeDashoffset', {
@@ -346,6 +408,42 @@
             expect(delta.end[0].unit).toBe('%');
             expect(delta.end[0].value).toBe(-75.5);
             return expect(delta.end[0].string).toBe('-75.5%');
+          });
+          it('should parse strokeDash values easing', function() {
+            var delta, startDelta;
+            spyOn(mojs.easing, 'parseEasing').and.callThrough();
+            startDelta = {
+              '25.50%': '-75.50',
+              easing: 'cubic.out'
+            };
+            delta = h.parseDelta('strokeDashoffset', startDelta);
+            expect(delta.start[0].unit).toBe('%');
+            expect(delta.start[0].value).toBe(25.5);
+            expect(delta.start[0].string).toBe('25.5%');
+            expect(delta.end[0].unit).toBe('%');
+            expect(delta.end[0].value).toBe(-75.5);
+            expect(delta.end[0].string).toBe('-75.5%');
+            expect(delta.easing).toBe(mojs.easing.cubic.out);
+            return expect(mojs.easing.parseEasing).toHaveBeenCalledWith('cubic.out');
+          });
+          it('should parse strokeDash values curve', function() {
+            var curve, delta, startDelta;
+            spyOn(mojs.easing, 'parseEasing').and.callThrough();
+            curve = "M0,100 L100,0";
+            startDelta = {
+              '25.50%': '-75.50',
+              curve: curve
+            };
+            delta = h.parseDelta('strokeDashoffset', startDelta);
+            expect(delta.start[0].unit).toBe('%');
+            expect(delta.start[0].value).toBe(25.5);
+            expect(delta.start[0].string).toBe('25.5%');
+            expect(delta.end[0].unit).toBe('%');
+            expect(delta.end[0].value).toBe(-75.5);
+            expect(delta.end[0].string).toBe('-75.5%');
+            expect(typeof delta.curve).toBe('function');
+            expect(delta.curve(.5)).toBeCloseTo(.5, 2);
+            return expect(mojs.easing.parseEasing).toHaveBeenCalledWith(curve);
           });
           return it('should work with strokeDash.. properties #3', function() {
             var delta;
@@ -371,7 +469,7 @@
             expect(delta.delta.r).toBe(255);
             return expect(delta.type).toBe('color');
           });
-          return it('should ignore stroke-linecap prop, use start prop and warn', function() {
+          it('should ignore stroke-linecap prop, use start prop and warn', function() {
             var delta;
             spyOn(console, 'warn');
             delta = h.parseDelta('strokeLinecap', {
@@ -385,11 +483,73 @@
             expect(console.warn).toHaveBeenCalled();
             return expect(delta.type).not.toBeDefined();
           });
+          it('should parse color easing values', function() {
+            var delta, startDelta;
+            spyOn(mojs.easing, 'parseEasing').and.callThrough();
+            startDelta = {
+              '#000': 'rgb(255,255,255)',
+              easing: 'cubic.out'
+            };
+            delta = h.parseDelta('stroke', startDelta);
+            expect(delta.start.r).toBe(0);
+            expect(delta.end.r).toBe(255);
+            expect(delta.delta.r).toBe(255);
+            expect(delta.type).toBe('color');
+            expect(delta.easing).toBe(mojs.easing.cubic.out);
+            return expect(mojs.easing.parseEasing).toHaveBeenCalledWith('cubic.out');
+          });
+          return it('should parse color curve values', function() {
+            var curve, delta, startDelta;
+            spyOn(mojs.easing, 'parseEasing').and.callThrough();
+            curve = "M0,100 L100,0";
+            startDelta = {
+              '#000': 'rgb(255,255,255)',
+              curve: curve
+            };
+            delta = h.parseDelta('stroke', startDelta);
+            expect(delta.start.r).toBe(0);
+            expect(delta.end.r).toBe(255);
+            expect(delta.delta.r).toBe(255);
+            expect(delta.type).toBe('color');
+            expect(typeof delta.curve).toBe('function');
+            expect(delta.curve(.5)).toBeCloseTo(.5, 2);
+            return expect(mojs.easing.parseEasing).toHaveBeenCalledWith(curve);
+          });
         });
         describe('array values ->', function() {
-          return it('should calculate array delta', function() {
+          it('should calculate array delta', function() {
             var delta;
             delta = h.parseDelta('strokeDasharray', {
+              '200 100%': '300'
+            });
+            expect(delta.type).toBe('array');
+            expect(delta.start[0].value).toBe(200);
+            expect(delta.start[0].unit).toBe('px');
+            expect(delta.end[0].value).toBe(300);
+            expect(delta.end[0].unit).toBe('px');
+            expect(delta.start[1].value).toBe(100);
+            expect(delta.start[1].unit).toBe('%');
+            expect(delta.end[1].value).toBe(0);
+            return expect(delta.end[1].unit).toBe('%');
+          });
+          it('should calculate array delta', function() {
+            var delta;
+            delta = h.parseDelta('strokeDashoffset', {
+              '200 100%': '300'
+            });
+            expect(delta.type).toBe('array');
+            expect(delta.start[0].value).toBe(200);
+            expect(delta.start[0].unit).toBe('px');
+            expect(delta.end[0].value).toBe(300);
+            expect(delta.end[0].unit).toBe('px');
+            expect(delta.start[1].value).toBe(100);
+            expect(delta.start[1].unit).toBe('%');
+            expect(delta.end[1].value).toBe(0);
+            return expect(delta.end[1].unit).toBe('%');
+          });
+          return it('should calculate array delta', function() {
+            var delta;
+            delta = h.parseDelta('origin', {
               '200 100%': '300'
             });
             expect(delta.type).toBe('array');
@@ -409,7 +569,7 @@
             delta = h.parseDelta('x', {
               '0%': '100%'
             });
-            expect(delta.start.string).toBe('0%');
+            expect(delta.start.string).toBe('0');
             expect(delta.end.string).toBe('100%');
             expect(delta.delta).toBe(100);
             return expect(delta.type).toBe('unit');
@@ -424,7 +584,7 @@
             return expect(delta.type).not.toBeDefined();
           });
         });
-        return describe('rand values ->', function() {
+        describe('rand values ->', function() {
           return it('should calculate unit delta', function() {
             var delta;
             delta = h.parseDelta('x', {
@@ -434,6 +594,34 @@
             expect(delta.start.value).not.toBeGreaterThan(20);
             expect(delta.end.value).toBeGreaterThan(-1);
             return expect(delta.end.value).not.toBeGreaterThan(5);
+          });
+        });
+        return describe('stagger values ->', function() {
+          it('should calculate stagger values for pos props', function() {
+            var delta;
+            delta = h.parseDelta('x', {
+              'stagger(20, 20)': 'stagger(20, -10)'
+            }, 2);
+            expect(delta.start.value).toBe(60);
+            return expect(delta.end.value).toBe(0);
+          });
+          it('should calculate stagger values', function() {
+            var delta, startDelta;
+            startDelta = {
+              'stagger(20, 20)': 'stagger(20, -10)'
+            };
+            delta = h.parseDelta('radius', startDelta, 2);
+            expect(delta.start).toBe(60);
+            return expect(delta.end).toBe(0);
+          });
+          return it('should use 0 index as a fallback', function() {
+            var delta, startDelta;
+            startDelta = {
+              'stagger(20, 20)': 'stagger(20, -10)'
+            };
+            delta = h.parseDelta('radius', startDelta);
+            expect(delta.start).toBe(20);
+            return expect(delta.end).toBe(20);
           });
         });
       });
@@ -555,6 +743,13 @@
           expect(unit.unit).toBe('px');
           return expect(unit.string).toBe('100px');
         });
+        it('should always return 0 for 0', function() {
+          var unit;
+          unit = h.parseUnit(0);
+          expect(unit.value).toBe(0);
+          expect(unit.unit).toBe('px');
+          return expect(unit.string).toBe('0');
+        });
         it('should parse unitless string', function() {
           var unit;
           unit = h.parseUnit('100');
@@ -568,6 +763,13 @@
           expect(unit.value).toBe(100);
           expect(unit.unit).toBe('px');
           return expect(unit.string).toBe('100px');
+        });
+        it('should always return 0 for 0 in strings', function() {
+          var unit;
+          unit = h.parseUnit('0px');
+          expect(unit.value).toBe(0);
+          expect(unit.unit).toBe('px');
+          return expect(unit.string).toBe('0');
         });
         it('should parse percent string', function() {
           var unit;
@@ -808,7 +1010,7 @@
           return expect(delta[2].unit).toBe('%');
         });
       });
-      describe('getRadialPoint', function() {
+      describe('getRadialPoint method ->', function() {
         it('should calculate radial point', function() {
           var point;
           point = h.getRadialPoint({
@@ -850,15 +1052,7 @@
           expect(point.x).toBe(50);
           return expect(point.y).toBe(-50);
         });
-        it('should return false if 1 of 3 options missed', function() {
-          var point;
-          point = h.getRadialPoint({
-            radius: 50,
-            angle: 90
-          });
-          return expect(point).toBeFalsy();
-        });
-        it('should return false only if 1 of 3 options missed but not falsy', function() {
+        return it('should return false only if param is 0', function() {
           var point;
           point = h.getRadialPoint({
             radius: 0,
@@ -869,12 +1063,6 @@
             }
           });
           return expect(point).toBeTruthy();
-        });
-        return it('options should have default empty object', function() {
-          var point;
-          point = h.getRadialPoint();
-          expect(point).toBeFalsy();
-          return expect(h.getRadialPoint).not.toThrow();
         });
       });
       describe('cloneObj method', function() {
@@ -1237,9 +1425,122 @@
         return expect(tr !== '').toBe(h.checkIf3d());
       });
     });
-    return describe('is3d property ->', function() {
+    describe('is3d property ->', function() {
       return it('should be fulfilled', function() {
         return expect(h.is3d).toBe(h.checkIf3d());
+      });
+    });
+    describe('isObject method ->', function() {
+      return it('should return true if object', function() {
+        expect(h.isObject({})).toBe(true);
+        expect(h.isObject(null)).toBe(false);
+        expect(h.isObject('a')).toBe(false);
+        expect(h.isObject(2)).toBe(false);
+        return expect(h.isObject(true)).toBe(false);
+      });
+    });
+    describe('getDeltaStart method ->', function() {
+      return it('should return value of the 0 key of passed object', function() {
+        return expect(h.getDeltaStart({
+          2: 1
+        })).toBe('2');
+      });
+    });
+    describe('getDeltaEnd method ->', function() {
+      return it('should return value of the 0 key of passed object', function() {
+        return expect(h.getDeltaEnd({
+          2: 1
+        })).toBe(1);
+      });
+    });
+    describe('isTweenProp method ->', function() {
+      return it('should check in callbacksMap and tweenOptionMap maps', function() {
+        var key, value, _ref, _ref1, _results;
+        _ref = h.callbacksMap;
+        for (key in _ref) {
+          value = _ref[key];
+          expect(h.isTweenProp(key)).toBe(1);
+        }
+        _ref1 = h.tweenOptionMap;
+        _results = [];
+        for (key in _ref1) {
+          value = _ref1[key];
+          _results.push(expect(h.isTweenProp(key)).toBe(1));
+        }
+        return _results;
+      });
+    });
+    describe('parseStringOption method', function() {
+      it('should return passed value if not a string', function() {
+        var obj, result;
+        obj = {};
+        result = h.parseStringOption(obj);
+        return expect(result).toBe(obj);
+      });
+      it('should parse stagger values', function() {
+        var result;
+        result = h.parseStringOption('stagger(20, 40)');
+        return expect(result).toBe(20);
+      });
+      it('should parse stagger values with index', function() {
+        var result;
+        result = h.parseStringOption('stagger(20, 40)', 2);
+        return expect(result).toBe(20 + (2 * 40));
+      });
+      it('should parse rand values', function() {
+        var result;
+        result = h.parseStringOption('rand(10, 20)');
+        expect(result).toBeGreaterThan(10);
+        return expect(result).not.toBeGreaterThan(20);
+      });
+      return it('should parse rand values inside stagger', function() {
+        var result;
+        result = h.parseStringOption('stagger(rand(10, 20), rand(20, 30))', 1);
+        expect(result).toBeGreaterThan(30);
+        return expect(result).not.toBeGreaterThan(50);
+      });
+    });
+    describe('_getLastItem method ->', function() {
+      return it('should get the last item of array', function() {
+        expect(h.getLastItem([1, 2, 3, 4])).toBe(4);
+        expect(h.getLastItem([1, 2, 3, 7])).toBe(7);
+        expect(h.getLastItem([1, 2, 3])).toBe(3);
+        expect(h.getLastItem([1, 2])).toBe(2);
+        return expect(h.getLastItem([1])).toBe(1);
+      });
+    });
+    describe('parseEl method ->', function() {
+      it('should find an element if `string` passed ', function() {
+        return expect(h.parseEl('body')).toBe(document.body);
+      });
+      it('should error if no element found ', function() {
+        var el;
+        spyOn(h, 'error').and.callThrough();
+        el = h.parseEl('#some-element');
+        return expect(h.error).toHaveBeenCalled();
+      });
+      return it('should return an HTMLElement unattended ', function() {
+        var el;
+        el = document.createElement('div');
+        expect(h.parseEl(document.body)).toBe(document.body);
+        return expect(h.parseEl(el)).toBe(el);
+      });
+    });
+    return describe('force3d method ->', function() {
+      it('should set backface-visibility to hidden on el', function() {
+        var bfv, bv, el, pbv;
+        el = document.createElement('div');
+        h.force3d(el);
+        bv = el.style['backface-visibility'];
+        pbv = el.style["" + h.prefix.css + "backface-visibility"];
+        bfv = bv || pbv;
+        return expect(bfv).toBe('hidden');
+      });
+      return it('should return el', function() {
+        var el, result;
+        el = document.createElement('div');
+        result = h.force3d(el);
+        return expect(result).toBe(el);
       });
     });
   });

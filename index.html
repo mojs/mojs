@@ -6,7 +6,29 @@
     <link rel="stylesheet" type="text/css" href="css/main.css">
   </head>
   <body>
-    <div id="js-el1" class="el"></div>
+    
+    <style>
+      body, html {
+        height: 100%;
+      }
+      /*div {
+        outline: 1px solid red;
+      }*/
+      .el {
+        background:   cyan;
+        position:     absolute;
+      }
+    </style>
+
+    <!-- <div class="el" id="js-el"></div> -->
+
+    <script src="vendor/lodash.min.js"></script>
+    <script src="vendor/platform.js"></script>
+    <script src="vendor/benchmark.js"></script>
+
+    <script src="node_modules/mojs-player/build/mojs-player.js"></script>
+    <!-- <script src="http://cdn.jsdelivr.net/mojs/latest/mo.min.js"></script> -->
     <script src="build/mo.js"></script>
+
   </body>
 </html>

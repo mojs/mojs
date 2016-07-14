@@ -1,24 +1,32 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-Bit = require './bit'
+Bit = require('./bit').default or require('./bit');
 
 class Rect extends Bit
-  type:   'rect'
-  ratio:  1.43
-  draw:->
+  # shape:   'rect'
+  # ratio:   1.43
+  _declareDefaults:->
     super
-    radiusX = if @props.radiusX? then @props.radiusX else @props.radius
-    radiusY = if @props.radiusY? then @props.radiusY else @props.radius
-    @setAttrsIfChanged
-      width:  2*radiusX
-      height: 2*radiusY
-      x:      @props.x - radiusX
-      y:      @props.y - radiusY
+    this._defaults.tag = 'rect'
+    this._defaults.rx  = 0
+    this._defaults.ry  = 0
+    # this._defaults.ratio = 1.43
+  _draw:->
+    super
+    p = @_props
+    radiusX = if p.radiusX? then p.radiusX else p.radius
+    radiusY = if p.radiusY? then p.radiusY else p.radius
+    @_setAttrIfChanged 'width', 2*radiusX
+    @_setAttrIfChanged 'height', 2*radiusY
+    @_setAttrIfChanged 'x', (p.width/2) - radiusX
+    @_setAttrIfChanged 'y', (p.height/2) - radiusY
+    @_setAttrIfChanged 'rx', p.rx
+    @_setAttrIfChanged 'ry', p.ry
 
-  getLength:->
-    radiusX = if @props.radiusX? then @props.radiusX else @props.radius
-    radiusY = if @props.radiusY? then @props.radiusY else @props.radius
-    2*radiusX + 2*radiusY
+  _getLength:->
+    radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
+    radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
+    2*(2*radiusX + 2*radiusY)
 
 module.exports = Rect

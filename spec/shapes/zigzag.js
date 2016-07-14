@@ -1,9 +1,9 @@
 (function() {
   var Bit, Zigzag, ns, svg;
 
-  Zigzag = mojs.Zigzag;
+  Zigzag = mojs.shapesMap.getShape('zigzag');
 
-  Bit = mojs.Bit;
+  Bit = mojs.shapesMap.getShape('bit');
 
   ns = 'http://www.w3.org/2000/svg';
 
@@ -26,61 +26,154 @@
       });
       return expect(svg.firstChild).toBeDefined();
     });
-    it('should have ratio of 1.43', function() {
-      var line;
-      line = new Zigzag({
-        ctx: svg
+    describe('_declareDefaults method ->', function() {
+      it('should call super', function() {
+        var zigzag;
+        zigzag = new Zigzag;
+        spyOn(Bit.prototype, '_declareDefaults');
+        zigzag._declareDefaults();
+        return expect(Bit.prototype._declareDefaults).toHaveBeenCalled();
       });
-      return expect(line.ratio).toBe(1.43);
+      it('should set `shape` to `path`', function() {
+        var zigzag;
+        zigzag = new Zigzag;
+        return expect(zigzag._defaults.tag).toBe('path');
+      });
+      return it('should set `points` to `3`', function() {
+        var zigzag;
+        zigzag = new Zigzag;
+        return expect(zigzag._defaults.points).toBe(3);
+      });
     });
     describe('methods ->', function() {
-      return describe('draw method ->', function() {
+      return describe('_draw method ->', function() {
         it('should add properties to el', function() {
           var zigzag;
           return zigzag = new Zigzag({
-            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
             radius: 20
           });
         });
         it('should define points', function() {
           var zigzag;
           zigzag = new Zigzag({
-            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
             radius: 20
           });
+          zigzag._draw();
           return expect(zigzag.el.getAttribute('d')).toBeTruthy();
         });
-        return it('should not work with 0 points', function() {
+        it('should not work with 0 points', function() {
           var zigzag;
           zigzag = new Zigzag({
-            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
             radius: 20,
             points: 0
           });
           return expect(zigzag.el.getAttribute('d')).toBeFalsy();
         });
+        it('should calculate path length', function() {
+          var zigzag;
+          zigzag = new Zigzag({
+            radius: 20,
+            points: 10
+          });
+          zigzag._draw();
+          return expect(zigzag._length).toBeCloseTo(184.390, 2);
+        });
+        it('should set `d` attribute', function() {
+          var currentX, currentY, delta, i, isP1, isP2, length, p, points, radiusX, radiusY, stepX, x, y, yFlip, zigzag, _i, _ref;
+          zigzag = new Zigzag({
+            radius: 20,
+            points: 10
+          });
+          zigzag._draw();
+          p = zigzag._props;
+          radiusX = p.radiusX != null ? p.radiusX : p.radius;
+          radiusY = p.radiusY != null ? p.radiusY : p.radius;
+          x = p.width / 2;
+          y = p.height / 2;
+          currentX = x - radiusX;
+          currentY = y;
+          stepX = (2 * radiusX) / (p.points - 1);
+          yFlip = -1;
+          delta = Math.sqrt(stepX * stepX + radiusY * radiusY);
+          length = -delta;
+          points = "M" + currentX + ", " + y + " ";
+          for (i = _i = 0, _ref = p.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+            points += "L" + currentX + ", " + currentY + " ";
+            currentX += stepX;
+            length += delta;
+            currentY = yFlip === -1 ? y - radiusY : y;
+            yFlip = -yFlip;
+          }
+          isP1 = zigzag.el.getAttribute('d') === points;
+          isP2 = zigzag.el.getAttribute('d') === 'M -20 0 L -20 0 L -15.5556 -20 L -11.1111 0 L -6.66667 -20 L -2.22222 0 L 2.22222 -20 L 6.66667 0 L 11.1111 -20 L 15.5556 0 L 20 -20';
+          expect(isP1 || isP2).toBe(true);
+          expect(zigzag._prevRadiusX).toBe(radiusX);
+          expect(zigzag._prevRadiusY).toBe(radiusY);
+          return expect(zigzag._prevPoints).toBe(p.points);
+        });
+        it('should not set `d` attribute if nothing changed', function() {
+          var zigzag;
+          zigzag = new Zigzag({
+            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+            radius: 20,
+            points: 10
+          });
+          zigzag._draw();
+          spyOn(zigzag.el, 'setAttribute');
+          zigzag._draw();
+          return expect(zigzag.el.setAttribute).not.toHaveBeenCalled();
+        });
+        it('should set `d` attribute if `radiusX` changed', function() {
+          var zigzag;
+          zigzag = new Zigzag({
+            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+            radius: 20,
+            points: 10
+          });
+          zigzag._draw();
+          spyOn(zigzag.el, 'setAttribute');
+          zigzag._props.radiusX = 30;
+          zigzag._draw();
+          return expect(zigzag.el.setAttribute).toHaveBeenCalled();
+        });
+        it('should set `d` attribute if `radiusY` changed', function() {
+          var zigzag;
+          zigzag = new Zigzag({
+            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+            radius: 20,
+            points: 10
+          });
+          zigzag._draw();
+          spyOn(zigzag.el, 'setAttribute');
+          zigzag._props.radiusY = 30;
+          zigzag._draw();
+          return expect(zigzag.el.setAttribute).toHaveBeenCalled();
+        });
+        return it('should set `d` attribute if `points` changed', function() {
+          var zigzag;
+          zigzag = new Zigzag({
+            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
+            radius: 20,
+            points: 10
+          });
+          zigzag._draw();
+          spyOn(zigzag.el, 'setAttribute');
+          zigzag._props.points = 30;
+          zigzag._draw();
+          return expect(zigzag.el.setAttribute).toHaveBeenCalled();
+        });
       });
     });
     return describe('getLength method ->', function() {
-      it('should calculate total length of the path', function() {
-        var bit, radius;
-        radius = 100;
+      return it('should calculate total length of the path', function() {
+        var bit;
         bit = new Zigzag({
           ctx: document.createElementNS(ns, 'svg'),
-          radius: radius
+          radiusX: 100,
+          radiusY: 550
         });
-        return expect(Math.round(bit.getLength())).toBe(400);
-      });
-      return it('should calculate total length of the with different radiusX/Y', function() {
-        var bit, radiusX, radiusY;
-        radiusX = 100;
-        radiusY = 50;
-        bit = new Zigzag({
-          ctx: document.createElementNS(ns, 'svg'),
-          radiusX: radiusX,
-          radiusY: radiusY
-        });
-        return expect(bit.getLength()).toBe(300);
+        bit._draw();
+        return expect(bit._getLength()).toBe(bit._length);
       });
     });
   });

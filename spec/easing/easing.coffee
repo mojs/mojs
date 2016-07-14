@@ -134,6 +134,10 @@ describe 'easing ->', ->
       fun = ->
       expect(easing.parseEasing(fun)).toBe fun
       expect(typeof easing.parseEasing(fun)).toBe 'function'
+    it 'should parse null/undefined to liner.none', ->
+        fun = easing.parseEasing(null)
+        expect(fun).toBe mojs.easing.linear.none
+        
     describe 'easing name option ->', ->
       it 'should parse string easing', ->
         expect(typeof easing.parseEasing('cubic.in')).toBe 'function'
@@ -182,7 +186,9 @@ describe 'easing ->', ->
       fun = -> console.log 'function'
       expect(easing._splitEasing(fun)+'').toBe fun+''
 
-
+  describe 'approximate object', ->
+    it 'should de defined', ->
+      expect(easing.approximate).toBeDefined();
 
     
 

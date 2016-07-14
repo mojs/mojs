@@ -15,41 +15,29 @@
     it('should expose h.delta mojs', function() {
       return expect(mojs.delta).toBe(mojs.helpers.delta);
     });
-    it('should have bitsMap', function() {
-      return expect(mojs.bitsMap).toBeDefined();
+    it('should expose shapesMap.addShape mojs', function() {
+      return expect(mojs.addShape).toBe(mojs.shapesMap.addShape);
     });
-    it('should have Circle', function() {
-      return expect(mojs.Circle).toBeDefined();
-    });
-    it('should have Cross', function() {
-      return expect(mojs.Cross).toBeDefined();
-    });
-    it('should have Line', function() {
-      return expect(mojs.Line).toBeDefined();
-    });
-    it('should have Rect', function() {
-      return expect(mojs.Rect).toBeDefined();
-    });
-    it('should have Polygon', function() {
-      return expect(mojs.Polygon).toBeDefined();
-    });
-    it('should have Equal', function() {
-      return expect(mojs.Equal).toBeDefined();
-    });
-    it('should have Zigzag', function() {
-      return expect(mojs.Zigzag).toBeDefined();
+    it('should expose shapesMap.customShape mojs', function() {
+      return expect(mojs.CustomShape).toBe(mojs.shapesMap.custom);
     });
     it('should have Burst', function() {
       return expect(mojs.Burst).toBeDefined();
     });
-    it('should have Transit', function() {
-      return expect(mojs.Transit).toBeDefined();
+    it('should have Shape', function() {
+      return expect(mojs.Shape).toBeDefined();
     });
-    it('should have Swirl', function() {
-      return expect(mojs.Swirl).toBeDefined();
+    it('should have Transit alias', function() {
+      return expect(mojs.Transit).toBe(mojs.Shape);
     });
-    it('should have Stagger', function() {
-      return expect(mojs.Stagger).toBeDefined();
+    it('should have ShapeSwirl', function() {
+      return expect(mojs.ShapeSwirl).toBeDefined();
+    });
+    it('should have Swirl alias', function() {
+      return expect(mojs.Swirl).toBe(mojs.ShapeSwirl);
+    });
+    it('should have stagger', function() {
+      return expect(mojs.stagger).toBeDefined();
     });
     it('should have Spriter', function() {
       return expect(mojs.Spriter).toBeDefined();
@@ -63,11 +51,26 @@
     it('should have Tween', function() {
       return expect(mojs.Tween).toBeDefined();
     });
+    it('should have Tweenable', function() {
+      return expect(mojs.Tweenable).toBeDefined();
+    });
+    it('should have Thenable', function() {
+      return expect(mojs.Thenable).toBeDefined();
+    });
+    it('should have Tunable', function() {
+      return expect(mojs.Tunable).toBeDefined();
+    });
+    it('should have Module', function() {
+      return expect(mojs.Module).toBeDefined();
+    });
     it('should have tweener', function() {
       return expect(mojs.tweener).toBeDefined();
     });
-    return it('should have easing', function() {
+    it('should have easing', function() {
       return expect(mojs.easing).toBeDefined();
+    });
+    return it('should have shapesMap', function() {
+      return expect(mojs.shapesMap).toBeDefined();
     });
   });
 

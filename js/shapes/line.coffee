@@ -1,16 +1,20 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-Bit = require './bit'
+Bit = require('./bit').default or require('./bit');
 
 class Line extends Bit
-  draw:->
-    radiusX = if @props.radiusX? then @props.radiusX else @props.radius
-    @setAttrsIfChanged
-      x1:  @props.x - radiusX
-      x2:  @props.x + radiusX
-      y1:  @props.y
-      y2:  @props.y
+  _declareDefaults:->
+    super
+    this._defaults.tag = 'line'
+  _draw:->
+    radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
+    x = @_props.width/2
+    y = @_props.height/2
+    @_setAttrIfChanged 'x1', x - radiusX
+    @_setAttrIfChanged 'x2', x + radiusX
+    @_setAttrIfChanged 'y1', y
+    @_setAttrIfChanged 'y2', y
     super
 
 module.exports = Line

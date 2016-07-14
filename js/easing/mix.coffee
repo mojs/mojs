@@ -20,8 +20,8 @@ sort = (a, b)->
   a.value = parseIfEasing(a); b.value = parseIfEasing(b)
 
   returnValue = 0
-  a.to <  b.to and (returnValue = -1)
-  a.to >  b.to and (returnValue =  1)
+  a.to < b.to and (returnValue = -1)
+  a.to > b.to and (returnValue =  1)
   returnValue
   
 # ---

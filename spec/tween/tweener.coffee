@@ -2,9 +2,9 @@ t        = window.mojs.tweener
 Tween    = window.mojs.Tween
 Timeline = window.mojs.Timeline
 
-describe 'Twenner ->', ->
-  afterEach  -> t.stopLoop(); t.tweens.length = 0
-  beforeEach -> t.stopLoop(); t.tweens.length = 0
+describe 'Tweener ->', ->
+  afterEach  -> t._stopLoop(); t.removeAll()
+  beforeEach -> t._stopLoop(); t.removeAll()
   it 'have tweens array', ->
     expect(t.tweens).toBeDefined()
     expect(t.tweens instanceof Array).toBe true
@@ -15,71 +15,81 @@ describe 'Twenner ->', ->
     it 'should have requestAnimationFrame defined', ->
       expect(window.requestAnimationFrame).toBeDefined()
 
-  describe 'loop ->', ->
+  describe '_loop ->', ->
     it 'should loop over', (dfr)->
-      t.startLoop()
+      t._startLoop()
       t.add new Tween
-      spyOn t, 'loop'
+      spyOn t, '_loop'
       setTimeout ->
-        expect(t.loop).toHaveBeenCalled(); dfr()
+        expect(t._loop).toHaveBeenCalled(); dfr()
       , 100
     it 'should call update fun', (dfr)->
-      t.startLoop()
-      spyOn t, 'update'
+      t._startLoop()
+      spyOn t, '_update'
       setTimeout ->
-        expect(t.update).toHaveBeenCalledWith(jasmine.any(Number)); dfr()
+        expect(t._update).toHaveBeenCalledWith(jasmine.any(Number)); dfr()
       , 100
     it 'should stop at the end', (dfr)->
       t.add new Tween
-      t.startLoop()
-      setTimeout (-> t.tweens[0].update = -> true), 100
-      setTimeout (-> expect(t.isRunning).toBe(false); dfr()), 200
+      t._startLoop()
+      setTimeout (-> t.tweens[0]._update = -> true), 100
+      setTimeout (-> expect(t._isRunning).toBe(false); dfr()), 200
 
     it 'should stop if !@isRunning', ()->
-      t.isRunning = false
+      t._isRunning = false
       spyOn window, 'requestAnimationFrame'
-      spyOn t, 'update'
-      t.loop()
+      spyOn t, '_update'
+      t._loop()
       expect(window.requestAnimationFrame).not.toHaveBeenCalled()
-      expect(t.update).not.toHaveBeenCalled()
+      expect(t._update).not.toHaveBeenCalled()
 
-  describe 'startLoop method ->', ->
+  describe '_startLoop method ->', ->
     it 'should call loop method', (dfr)->
-      spyOn t, 'loop'
-      t.startLoop()
+      spyOn t, '_loop'
+      t._startLoop()
       setTimeout ->
-        expect(t.loop).toHaveBeenCalled()
+        expect(t._loop).toHaveBeenCalled()
         dfr()
       , 60
     it 'should set isRunning flag', ->
-      expect(t.isRunning).toBeFalsy()
-      t.startLoop()
-      expect(t.isRunning).toBe true
+      expect(t._isRunning).toBeFalsy()
+      t._startLoop()
+      expect(t._isRunning).toBe true
     it 'should call loop only once', ->
-      t.startLoop()
-      spyOn t, 'loop'
-      t.startLoop()
-      expect(t.loop).not.toHaveBeenCalled()
+      t._startLoop()
+      spyOn t, '_loop'
+      t._startLoop()
+      expect(t._loop).not.toHaveBeenCalled()
     it 'should start only 1 concurrent loop', ()->
-      t.startLoop()
-      expect(t.isRunning).toBe true
+      t._startLoop()
+      expect(t._isRunning).toBe true
       spyOn window, 'requestAnimationFrame'
-      t.startLoop()
+      t._startLoop()
       expect(window.requestAnimationFrame).not.toHaveBeenCalled()
-  describe 'stopLoop method ->', ->
+  describe '_stopLoop method ->', ->
     it 'should set isRunning to false', ->
-      t.startLoop()
-      t.stopLoop()
-      expect(t.isRunning).toBe false
+      t._startLoop()
+      t._stopLoop()
+      expect(t._isRunning).toBe false
   describe 'add method ->', ->
     it 'should add to tweens', ->
       t.add new Tween
       expect(t.tweens.length).toBe 1
       expect(t.tweens[0] instanceof Tween).toBe true
-    it 'should call startLoop method', ->
-      spyOn t, 'startLoop'
+    it 'should add to tweens only once', ->
+      t1 = new Tween
+      t.add t1
+      t.add t1
+      expect(t.tweens.length).toBe 1
+      expect(t.tweens[0]).toBe t1
+    it 'should call _startLoop method', ->
+      spyOn t, '_startLoop'
       t.add new Tween
-      expect(t.startLoop).toHaveBeenCalled()
+      expect(t._startLoop).toHaveBeenCalled()
+    it 'should set _isRunning to true', ->
+      t1 = new Tween
+      t.add t1
+      expect(t1._isRunning).toBe true
   describe 'remove method ->', ->
     it 'should remove a tween', ->
       t1 = new Tween; t2 = new Tween
@@ -94,6 +104,20 @@ describe 'Twenner ->', ->
       t.remove 1
       expect(t.tweens.length).toBe 1
       expect(t.tweens[0])    .toBe t1
+    it 'should set _isRunning to false', ->
+      t1 = new Tween; t2 = new Tween
+      t.add t1; t.add t2
+      expect(t.tweens.length).toBe 2
+      t.remove t1
+      expect(t1._isRunning).toBe false
+      expect(t2._isRunning).toBe true
+    it 'should call _onTweenerRemove method on each ', ->
+      t1 = new Tween
+      t.add t1
+      expect(t.tweens.length).toBe 1
+      spyOn t1, '_onTweenerRemove'
+      t.remove t1
+      expect(t1._onTweenerRemove).toHaveBeenCalled()
   describe 'removeAll method ->', ->
     it 'should remove all tweens', ->
       t1 = new Tween; t2 = new Tween
@@ -102,15 +126,48 @@ describe 'Twenner ->', ->
       t.removeAll()
       expect(t.tweens.length).toBe 0
 
-  describe 'update method ->', ->
+  describe '_update method ->', ->
     it 'should update the current time on every timeline',->
       t.add new Tween
       t.add new Tween
-      spyOn t.tweens[0], 'update'
-      spyOn t.tweens[1], 'update'
-      t.update time = performance.now() + 200
-      expect(t.tweens[0].update).toHaveBeenCalledWith time
-      expect(t.tweens[1].update).toHaveBeenCalledWith time
+      spyOn t.tweens[0], '_update'
+      spyOn t.tweens[1], '_update'
+      t._update time = performance.now() + 200
+      expect(t.tweens[0]._update).toHaveBeenCalledWith time
+      expect(t.tweens[1]._update).toHaveBeenCalledWith time
+    it 'should remove tween if ended',->
+      tw = new Tween
+      t.add tw
+      tw._update = -> true
+      expect(t.tweens[0]).toBe tw
+      spyOn(t, 'remove').and.callThrough()
+      t._update time = performance.now() + 200
+      expect(t.remove).toHaveBeenCalledWith tw
+      expect(t.tweens[0]).not.toBeDefined()
 
+    it 'should set tween\'s _prevTime to undefined if ended', (dfr)->
+      tw = new Tween duration: 100
+      tw._setStartTime()
+      t.add tw
+      expect(t.tweens[0]).toBe tw
+      spyOn(t, 'remove').and.callThrough()
+      startTime = performance.now()
 
+      setTimeout ->
+        expect(tw._prevTime).toBe undefined
+        dfr()
+      , 400
+
+    it 'should call tween\'s _onTweenerFinish if ended', (dfr)->
+      duration = 50
+      tw = new Tween duration: duration
+      tw._setStartTime()
+      t.add tw
+      expect(t.tweens[0]).toBe tw
+      spyOn tw, '_onTweenerFinish'
+
+      setTimeout ->
+        expect(tw._onTweenerFinish).toHaveBeenCalled()
+        dfr()
+      , 2*duration
 

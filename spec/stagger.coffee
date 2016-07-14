@@ -1,6 +1,6 @@
-Stagger = mojs.Stagger mojs.MotionPath
+Stagger = mojs.stagger mojs.MotionPath
 
-describe 'Stagger ->', ->
+describe 'stagger ->', ->
   describe '_getOptionByMod method ->', ->
     it 'should get an option by modulo of i', ->
       options = bit: ['foo', 'bar', 'baz'], path: 'M0,0 L100,100'
@@ -105,7 +105,7 @@ describe 'Stagger ->', ->
       options = el: [div, div], path: 'M0,0 L100,100', delay: '200'
       s = new Stagger options
       s.init options, mojs.MotionPath
-      expect(s.timeline.timelines.length).toBe 2
+      expect(s.timeline._timelines.length).toBe 2
     it 'should pass isRunLess = true', ->
       div = document.createElement 'div'
       options = el: [div, div], path: 'M0,0 L100,100', delay: '200'
@@ -123,36 +123,39 @@ describe 'Stagger ->', ->
       options = el: [div, div], path: 'M0,0 L100,100', delay: '200'
       s = new Stagger options
       s.init options, mojs.MotionPath
-      spyOn s.timeline, 'start'
+      spyOn s.timeline, 'play'
       s.run()
-      expect(s.timeline.start).toHaveBeenCalled()
+      expect(s.timeline.play).toHaveBeenCalled()
 
   describe 'stagger callbacks ->', ->
     it 'should pass the onStaggerStart callback to timeline', ->
       fun = ->
       s = new Stagger onStaggerStart: fun
-      expect(s.timeline.o.onStart).toBe fun
+      expect(s.timeline._o.onStart).toBe fun
     it 'should pass the onStaggerUpdate callback to timeline', ->
       fun = ->
       s = new Stagger onStaggerUpdate: fun
-      expect(s.timeline.o.onUpdate).toBe fun
+      expect(s.timeline._o.onUpdate).toBe fun
     it 'should pass the onStaggerComplete callback to timeline', ->
       fun = ->
       s = new Stagger onStaggerComplete: fun
-      expect(s.timeline.o.onComplete).toBe fun
+      expect(s.timeline._o.onComplete).toBe fun
     it 'should pass the onStaggerReverseComplete callback to timeline', ->
       fun = ->
       s = new Stagger onStaggerReverseComplete: fun
-      expect(s.timeline.o.onReverseComplete).toBe fun
+      expect(s.timeline._o.onReverseComplete).toBe fun
 
   describe 'moduleDelay option ->', ->
     it 'should pass the moduleDelay option to timeline', ->
       s = new Stagger moduleDelay: 200
-      expect(s.timeline.o.delay).toBe 200
+      expect(s.timeline._o.delay).toBe 200
 
   describe 'quantifier option ->', ->
     it 'should be passed to the _getChildQuantity method', ->
-      s = new Stagger delay: [100, 200, 300], quantifier: 2
+      s = new Stagger
+        delay:  [100, 200, 300], quantifier: 2
+        el:     document.createElement 'div'
+        path:   'M0,0 L100,100'
       expect(s.childModules[0].o.delay).toBe 100
       expect(s.childModules[1].o.delay).toBe 200
       expect(s.childModules[2]).not.toBeDefined()

@@ -1,741 +1,1105 @@
-Transit = mojs.Transit
-Swirl   = mojs.Swirl
-Burst   = mojs.Burst
-t       = mojs.tweener
+Shape       = mojs.Shape
+ShapeSwirl  = mojs.ShapeSwirl
+Burst       = mojs.Burst
+Tunable     = mojs.Tunable
+Tunable     = mojs.Tunable
+t           = mojs.tweener
+h           = mojs.h
 
 describe 'Burst ->', ->
   beforeEach -> t.removeAll()
 
   describe 'extension ->', ->
-    it 'should extend Transit class', ->
+    it 'should extend Shape class', ->
       burst = new Burst
-      expect(burst instanceof Transit).toBe true
-    it 'should have its own defaults', ->
-      burst = new Burst
-      # skip childOptions from extendDefaults
-      expect(burst.skipProps.childOptions).toBe 1
-      # presentation props
-      expect(burst.defaults.degree) .toBe       360
-      expect(burst.defaults.count) .toBe        5
-      expect(burst.defaults.opacity).toBe       1
-      expect(burst.defaults.randomAngle) .toBe  0
-      expect(burst.defaults.randomRadius).toBe  0
-      # position props/el props
-      expect(burst.defaults.x).toBe       100
-      expect(burst.defaults.y).toBe       100
-      expect(burst.defaults.shiftX).toBe  0
-      expect(burst.defaults.shiftY).toBe  0
-      # size props
-      expect(burst.defaults.radius[25]) .toBe  75
-      expect(burst.defaults.angle)      .toBe  0
-      expect(burst.defaults.size)       .toBe  null
-      expect(burst.defaults.sizeGap)    .toBe  0
-      # callbacks
-      expect(burst.defaults.onStart)        .toBe  null
-      expect(burst.defaults.onComplete)     .toBe  null
-      expect(burst.defaults.onCompleteChain).toBe  null
-      expect(burst.defaults.onUpdate)       .toBe  null
+      expect(burst instanceof Tunable).toBe true
 
-    it 'should have childDefaults', ->
+  describe '_defaults ->', ->
+    it 'should have Burst\'s defaults', ->
       burst = new Burst
-      expect(burst.childDefaults.radius[7]).toBe 0
-      expect(burst.childDefaults.points)   .toBe 3
-      expect(burst.childDefaults.angle)    .toBe 0
-      # callbacks
-      expect(burst.childDefaults.onStart)   .toBe null
-      expect(burst.childDefaults.onComplete).toBe null
-      expect(burst.childDefaults.onUpdate)  .toBe null
-      expect(burst.childDefaults.duration)         .toBe  500
-      expect(burst.childDefaults.delay)            .toBe  0
-      expect(burst.childDefaults.repeat)           .toBe  0
-      expect(burst.childDefaults.yoyo)             .toBe  false
-      expect(burst.childDefaults.easing)           .toBe  'Linear.None'
-      expect(burst.childDefaults.type)             .toBe  'circle'
-      expect(burst.childDefaults.fill)             .toBe  'deeppink'
-      expect(burst.childDefaults.fillOpacity)      .toBe  1
-      expect(burst.childDefaults.stroke)           .toBe  'transparent'
-      expect(burst.childDefaults.strokeWidth)      .toBe  0
-      expect(burst.childDefaults.strokeDasharray)  .toBe  ''
-      expect(burst.childDefaults.strokeDashoffset) .toBe  ''
-      expect(burst.childDefaults.strokeLinecap)    .toBe  null
-      expect(burst.childDefaults.isSwirl)          .toBe  false
-      expect(burst.childDefaults.swirlSize)        .toBe  10
-      expect(burst.childDefaults.swirlFrequency)   .toBe  3
-    
-    it 'should have optionsIntersection object', ->
-      burst = new Burst
-      expect(burst.optionsIntersection.radius)    .toBe 1
-      expect(burst.optionsIntersection.radiusX)   .toBe 1
-      expect(burst.optionsIntersection.radiusY)   .toBe 1
-      expect(burst.optionsIntersection.opacity)   .toBe 1
-      expect(burst.optionsIntersection.angle)     .toBe 1
-      expect(burst.optionsIntersection.onUpdate)  .toBe 1
-      expect(burst.optionsIntersection.onStart)   .toBe 1
-      expect(burst.optionsIntersection.onComplete).toBe 1
-      expect(Object.keys(burst.optionsIntersection).length).toBe 8
+      expect(burst._defaults.count).toBe 5
+      expect(burst._defaults.degree).toBe 360
+      expect(burst._defaults.radius).toEqual { 0 : 50 }
+      expect(burst._defaults.radiusX).toEqual null
+      expect(burst._defaults.radiusY).toEqual null
+      # expect(burst._defaults.isSwirl).toEqual false
+      # expect(burst._defaults.easing).toEqual 'linear.none'
+      # expect(burst._defaults.isSoftHide).toEqual true
 
-  describe 'initialization ->', ->
-    it 'should create transits', ->
-      burst = new Burst
-      expect(burst.transits.length).toBe 5
-      expect(burst.transits[0] instanceof Swirl).toBe true
+  describe '_extendDefaults method ->', ->
+    it 'should call _removeTweenProperties method', ->
+      b = new Burst
+      spyOn b, '_removeTweenProperties'
+      b._extendDefaults()
+      expect(b._removeTweenProperties).toHaveBeenCalledWith b._o
 
-    it 'should pass indexes to transits', ->
+    it 'should call super', ->
       burst = new Burst
-      expect(burst.transits.length).toBe 5
-      expect(burst.transits[0].o.index).toBe 0
-      expect(burst.transits[1].o.index).toBe 1
-      expect(burst.transits[2].o.index).toBe 2
-      expect(burst.transits[3].o.index).toBe 3
-      expect(burst.transits[4].o.index).toBe 4
+      spyOn mojs.Module::, '_extendDefaults'
+      burst._extendDefaults()
+      expect(mojs.Module::_extendDefaults).toHaveBeenCalled()
 
-    it 'should pass properties to transits', ->
+  describe '_render method ->', ->
+    it 'should create master swirl', ->
       burst = new Burst
-        stroke: 'red'
-        strokeWidth:    {10:0}
-        strokeOpacity:  {1:0}
-        strokeDasharray:  '200 10 0'
-        strokeDashoffset: '50'
-        strokeLinecap:    'round'
-        fill: 'deeppink'
-        fillOpacity: .5
-        type: 'rect'
-        swirlSize: 20
-        swirlFrequency: 'rand(10,20)'
-        count: 6
-        isSwirl: true
-        radius: {'rand(10,20)': 100}
-        childOptions:
-          stroke: [ 'deeppink', 'yellow', null ]
-          strokeWidth: [null, null, 20]
-          strokeOpacity: [null, 1 ,null]
-          fill:   ['#fff', null]
-          type:   ['circle', null, 'polygon']
-          swirlSize: [10, null]
-          swirlFrequency: [null, 3]
-          radius: [ { 20: 50}, 20, '500' ]
-          strokeDasharray: ['10 20', null, { '40': '10' }]
-          strokeDashoffset: ['200', null, null]
-          fillOpacity:  [null, 1]
-          strokeLinecap: ['butt', null]
-          points: [10, null, 10]
+      burst.masterSwirl = undefined
+      burst._render()
+      expect(burst.masterSwirl instanceof ShapeSwirl).toBe true
 
-      expect(burst.transits[0].o.radius[20]).toBe 50
-      expect(burst.transits[1].o.radius)    .toBe 20
-      expect(burst.transits[2].o.radius)    .toBe '500'
-      expect(burst.transits[3].o.radius[20]).toBe 50
-      expect(burst.transits[4].o.radius)    .toBe 20
+    it 'should set el of master swirl as el', ->
+      burst = new Burst
+      expect(burst.el).toBe burst.masterSwirl.el
+
+    it 'should pass options to master swirl', ->
+      opts = {}
+      burst = new Burst opts
+      burst.masterSwirl = undefined
+      burst._render()
+      expect(burst.masterSwirl._o).toBe opts
+
+    it 'should pass isWithShape option to master swirl', ->
+      opts = {}
+      burst = new Burst opts
+      expect(burst.masterSwirl._o.isWithShape).toBe false
+
+    # nope
+    # it 'should pass radius option to master swirl', ->
+    #   opts = {}
+    #   burst = new Burst opts
+    #   expect(burst.masterSwirl._o.radius).toBe 0
+
+    it 'should self as callbacksContext', ->
+      opts = {}
+      burst = new Burst opts
+      expect(burst.masterSwirl._o.callbacksContext).toBe burst
+
+    it 'should call _saveTimelineOptions method', ->
+      opts = {}
+      b = new Burst opts
+      spyOn b, '_saveTimelineOptions'
+      b._render()
+      expect(b._saveTimelineOptions).toHaveBeenCalledWith b._o
+
+    it 'should call _renderSwirls method', ->
+      opts = {}
+      burst = new Burst opts
+      spyOn burst, '_renderSwirls'
+      burst._render()
+      expect(burst._renderSwirls).toHaveBeenCalled()
+
+    it 'should create _masterSwirls object', ->
+      burst = new Burst
+      expect(burst._masterSwirls[0]).toBe burst.masterSwirl
+      expect(typeof burst._masterSwirls).toBe 'object'
+      # not null
+      expect(burst._masterSwirls).toBe burst._masterSwirls
+
+    it 'should add optional properties to option', ->
+      burst = new Burst
+      spyOn burst, '_addOptionalProps'
+      burst._renderSwirls()
       
-      expect(burst.transits[1].o.stroke)    .toBe 'yellow'
-      expect(burst.transits[2].o.stroke)    .toBe 'red'
-      expect(burst.transits[3].o.stroke)    .toBe 'deeppink'
+      expect(burst._addOptionalProps.calls.count()).toBe 5
 
-      expect(burst.transits[3].o.strokeWidth[10]).toBe 0
-      expect(burst.transits[1].o.strokeWidth[10]).toBe 0
-      expect(burst.transits[2].o.strokeWidth).toBe 20
-
-      expect(burst.transits[0].o.fill)      .toBe '#fff'
-      expect(burst.transits[1].o.fill)      .toBe 'deeppink'
-
-      expect(burst.transits[0].o.fillOpacity).toBe .5
-      expect(burst.transits[1].o.fillOpacity).toBe 1
-
-      expect(burst.transits[0].o.isSwirl)       .toBe  true
-      expect(burst.transits[0].o.swirlSize)     .toBe  10
-      expect(burst.transits[1].o.swirlSize)     .toBe  20
-      
-      expect(burst.transits[0].o.swirlFrequency).toBe  'rand(10,20)'
-      expect(burst.transits[1].o.swirlFrequency).toBe  3
-      
-      expect(burst.transits[0].o.type).toBe     'circle'
-      expect(burst.transits[1].o.type).toBe     'rect'
-      expect(burst.transits[2].o.type).toBe     'polygon'
-
-      expect(burst.transits[0].o.strokeOpacity[1]).toBe     0
-      expect(burst.transits[1].o.strokeOpacity)   .toBe     1
-      expect(burst.transits[2].o.strokeOpacity[1]).toBe     0
-
-      expect(burst.transits[0].o.strokeDasharray).toBe        '10 20'
-      expect(burst.transits[1].o.strokeDasharray).toBe        '200 10 0'
-      expect(burst.transits[2].o.strokeDasharray['40']).toBe  '10'
-
-      expect(burst.transits[0].o.strokeDashoffset).toBe  '200'
-      expect(burst.transits[1].o.strokeDashoffset).toBe  '50'
-      expect(burst.transits[2].o.strokeDashoffset).toBe  '50'
-
-      expect(burst.transits[0].o.strokeLinecap).toBe  'butt'
-      expect(burst.transits[1].o.strokeLinecap).toBe  'round'
-      expect(burst.transits[2].o.strokeLinecap).toBe  'butt'
-
-      expect(burst.transits[0].o.points).toBe  10
-      expect(burst.transits[1].o.points).toBe  3
-      expect(burst.transits[2].o.points).toBe  10
-
-    it 'should keep the bit angle', ->
+    it 'should set time on tween of masterSwirl', ->
       burst = new Burst
-        cound: 2
-        childOptions: angle: [10, null]
-      expect(burst.transits[0].o.angle).toBe 100
-      expect(burst.transits[1].o.angle).toBe 162
+        children:
+          duration: 'stagger(500, 1000)'
+          repeat: 2
+      burst.masterSwirl.tween._props.duration = null
+      burst._renderSwirls()
+      expect(burst.masterSwirl.tween._props.duration)
+        .toBe burst._calcPackTime burst._swirls[0]
 
-    it 'should keep the bit angle if delta passed', ->
+    it 'should set isSwirl to false by default', ->
       burst = new Burst
-        cound: 2
-        childOptions: angle: [{200: 10}, null]
-      expect(burst.transits[0].o.angle[290]).toBe 100
-      expect(burst.transits[1].o.angle)     .toBe 162
+        children:
+          duration: 'stagger(500, 1000)'
+          repeat: 2
 
-    it 'should not keep the bit angle if isResetAngles is passed', ->
-      burst = new Burst
-        cound: 2
-        isResetAngles: true
-        childOptions: angle: [{200: 10}, null]
-      expect(burst.transits[0].o.angle[200]).toBe 10
-      expect(burst.transits[1].o.angle)     .toBe 0
+      expect(burst.masterSwirl._props.isSwirl).toBe false
 
-    it 'should pass x/y to transits', ->
-      burst = new Burst
-        radius: { 50: 75 }
-        count: 2
-      center = burst.props.center
-      expect(burst.transits[0].o.x).toBe center
-      expect(burst.transits[0].o.y[center - 50]).toBe center - 75
-      expect(burst.transits[1].o.x).toBe center
-      expect(burst.transits[1].o.y[center + 50]).toBe center + 75
-
-  describe 'fillTransform method ->', ->
-    it 'return tranform string of the el', ->
-      burst = new Burst
-        shiftX: 100, shiftY: 100, angle: 50
-      expect(burst.fillTransform())
-        .toBe 'rotate(50deg) translate(100px, 100px)'
-
-  describe 'isNeedsTransform method ->', ->
-    it 'return boolean if fillTransform needed', ->
-      burst = new Burst shiftX: 100, shiftY: 100, angle: 50
-      expect(burst.isNeedsTransform()).toBe true
-
-  describe 'getOption method ->', ->
-    it 'should return an option obj based on i ->', ->
-      burst = new Burst
-        childOptions: radius: [ { 20: 50}, 20, '500' ]
-      option0 = burst.getOption 0
-      option1 = burst.getOption 1
-      option7 = burst.getOption 7
-      expect(option0.radius[20]).toBe 50
-      expect(option1.radius)    .toBe 20
-      expect(option7.radius)    .toBe 20
-    it 'should try to fallback to childDefaiults first ->', ->
-      burst = new Burst
-        duration: 2000
-        childOptions: radius: [ 200, null, '500' ]
-      option0 = burst.getOption 0
-      option1 = burst.getOption 1
-      option7 = burst.getOption 7
-      option8 = burst.getOption 8
-      expect(option0.radius)   .toBe 200
-      expect(option1.radius[7]).toBe 0
-      expect(option7.radius[7]).toBe 0
-      expect(option8.radius)   .toBe '500'
-    it 'should fallback to parent prop if defined  ->', ->
-      burst = new Burst
-        duration: 2000
-        childOptions: duration: [ 200, null, '500' ]
-      option0 = burst.getOption 0
-      option1 = burst.getOption 1
-      option7 = burst.getOption 7
-      option8 = burst.getOption 8
-      expect(option0.duration).toBe 200
-      expect(option1.duration).toBe 2000
-      expect(option7.duration).toBe 2000
-      expect(option8.duration).toBe '500'
-    it 'should fallback to parent default ->', ->
-      burst = new Burst
-        childOptions: duration: [ 200, null, '500' ]
-      option0 = burst.getOption 0
-      option1 = burst.getOption 1
-      option7 = burst.getOption 7
-      option8 = burst.getOption 8
-      expect(option0.duration).toBe 200
-      expect(option1.duration).toBe 500
-      expect(option7.duration).toBe 500
-      expect(option8.duration).toBe '500'
-    it 'should have all the props filled ->', ->
-      burst = new Burst
-        childOptions: duration: [ 200, null, '500' ]
-      option0 = burst.getOption 0
-      option1 = burst.getOption 1
-      option7 = burst.getOption 7
-      option8 = burst.getOption 8
-      expect(option0.radius[7]).toBe 0
-      expect(option1.radius[7]).toBe 0
-      expect(option7.radius[7]).toBe 0
-      expect(option8.radius[7]).toBe 0
-    it 'should have parent only options ->', ->
-      burst = new Burst
-        radius: { 'rand(10,20)': 100 }
-        angle: {50: 0}
-        onUpdate:->
-        onStart:->
-        onComplete:->
-      option0 = burst.getOption 0
-      expect(option0.radius[7]) .toBe 0
-      expect(option0.angle)     .toBe 0
-      expect(option0.onUpdate)  .toBe null
-      expect(option0.onStart)   .toBe null
-      expect(option0.onComplete).toBe null
-    # it 'should recieve options object ->', ->
+    # nope
+    # it 'should work with isSwirl option', ->
     #   burst = new Burst
-    #     childOptions: radius: [ { 20: 50}, 20, '500' ]
-    #   o = childOptions: radius: [ { 20: 51}, 21, '501' ]
-    #   option0 = burst.getOption 0, o
-    #   option1 = burst.getOption 1, o
-    #   option7 = burst.getOption 7, o
-    #   expect(option0.radius[20]).toBe 51
-    #   expect(option1.radius)    .toBe 21
-    #   expect(option7.radius)    .toBe 21
-  
-  describe 'getBitAngle method ->', ->
-    it 'should get angle by i', ->
-      burst = new Burst radius: { 'rand(10,20)': 100 }
-      expect(burst.getBitAngle(0, 0)).toBe 90
-      expect(burst.getBitAngle(0, 1)).toBe 162
-      expect(burst.getBitAngle(0, 2)).toBe 234
-      expect(burst.getBitAngle(90, 2)).toBe 234 + 90
-      expect(burst.getBitAngle(0, 3)).toBe 306
-      expect(burst.getBitAngle(90, 3)).toBe 306 + 90
-      expect(burst.getBitAngle(0, 4)).toBe 378
-      expect(burst.getBitAngle(50, 4)).toBe 378 + 50
-    it 'should get delta angle by i', ->
-      burst = new Burst radius: { 'rand(10,20)': 100 }
-      expect(burst.getBitAngle({180:0}, 0)[270]).toBe 90
-      expect(burst.getBitAngle({50:20}, 3)[356]).toBe 326
-      expect(burst.getBitAngle({50:20}, 4)[428]).toBe 398
+    #     isSwirl: true
+    #     children:
+    #       duration: 'stagger(500, 1000)'
+    #       repeat: 2
 
-  describe 'getPropByMod method ->', ->
-    it 'should return the prop from @o based on i ->', ->
+    #   expect(burst.masterSwirl._props.isSwirl).toBe true
+
+  describe '_renderSwirls method', ->
+    it 'should create _swirls object', ->
       burst = new Burst
-        childOptions: radius: [ { 20: 50}, 20, '500' ]
-      opt0 = burst.getPropByMod key: 'radius', i: 0
-      opt1 = burst.getPropByMod key: 'radius', i: 1
-      opt2 = burst.getPropByMod key: 'radius', i: 2
-      opt8 = burst.getPropByMod key: 'radius', i: 8
+      expect(typeof burst._swirls).toBe 'object'
+      # not null
+      expect(burst._swirls).toBe burst._swirls
+
+    it 'should create _swirls pack', ->
+      count = 5
+      burst = new Burst count: count
+      pack = burst._swirls[0]
+      expect( h.isArray(pack) ).toBe true
+      expect( pack.length ).toBe count
+      expect( pack[0] instanceof ShapeSwirl ).toBe true
+      expect( pack[1] instanceof ShapeSwirl ).toBe true
+      expect( pack[2] instanceof ShapeSwirl ).toBe true
+      expect( pack[3] instanceof ShapeSwirl ).toBe true
+      expect( pack[4] instanceof ShapeSwirl ).toBe true
+
+    it 'should pass options to swirls', ->
+      count = 5; fills = [ 'cyan', 'yellow', 'blue' ]
+      burst = new Burst
+        count: count
+        children:
+          fill: fills
+      pack = burst._swirls[0]
+      expect( pack[0]._o.fill ).toBe fills[0]
+      expect( pack[1]._o.fill ).toBe fills[1]
+      expect( pack[2]._o.fill ).toBe fills[2]
+      expect( pack[3]._o.fill ).toBe fills[0]
+      expect( pack[4]._o.fill ).toBe fills[1]
+
+    it 'should parent to swirls', ->
+      count = 5
+      burst = new Burst
+        count: count
+        # children: {}
+
+      pack = burst._swirls[0]
+      expect( pack[0]._o.parent ).toBe burst.masterSwirl.el
+      expect( pack[1]._o.parent ).toBe burst.masterSwirl.el
+      expect( pack[2]._o.parent ).toBe burst.masterSwirl.el
+      expect( pack[3]._o.parent ).toBe burst.masterSwirl.el
+      expect( pack[4]._o.parent ).toBe burst.masterSwirl.el
+
+  describe '_getChildOption method ->', ->
+    it 'should get options from swirls', ->
+      b = new Burst count: 2
+      o = { children: { fill: [ 'yellow', 'cyan', 'blue' ] } }
+      result = b._getChildOption( o, 1 )
+      expect(result.fill).toBe 'cyan'
+
+      it 'should not throw if there is no swirls', ->
+        b = new Burst count: 2
+        o = { }
+        result = b._getChildOption( o, 1 )
+        expect(result).toEqual {}
+
+  describe '_getPropByMod method ->', ->
+    it 'should fallback to empty object', ->
+      burst = new Burst
+        children: radius: [ { 20: 50}, 20, '500' ]
+      opt0 = burst._getPropByMod 'radius', 0
+      expect(opt0).toBe undefined
+    it 'should return the prop from passed object based on index ->', ->
+      burst = new Burst
+        children:
+          radius: [ { 20: 50}, 20, '500' ]
+      
+      opt0 = burst._getPropByMod 'radius', 0, burst._o.children
+      opt1 = burst._getPropByMod 'radius', 1, burst._o.children
+      opt2 = burst._getPropByMod 'radius', 2, burst._o.children
+      opt8 = burst._getPropByMod 'radius', 8, burst._o.children
       expect(opt0[20]).toBe 50
       expect(opt1)    .toBe 20
       expect(opt2)    .toBe '500'
       expect(opt8)    .toBe '500'
-
     it 'should the same prop if not an array ->', ->
-      burst = new Burst childOptions: radius: 20
-      opt0 = burst.getPropByMod key: 'radius', i: 0
-      opt1 = burst.getPropByMod key: 'radius', i: 1
-      opt8 = burst.getPropByMod key: 'radius', i: 8
+      burst = new Burst children: radius: 20
+      opt0 = burst._getPropByMod 'radius', 0, burst._o.children
+      opt1 = burst._getPropByMod 'radius', 1, burst._o.children
+      opt8 = burst._getPropByMod 'radius', 8, burst._o.children
       expect(opt0).toBe 20
       expect(opt1).toBe 20
       expect(opt8).toBe 20
     it 'should work with another options object ->', ->
       burst = new Burst
-        radius: 40
-        childOptions: radius: 20
-      from = burst.o
-      opt0 = burst.getPropByMod key: 'radius', i: 0, from: from
-      opt1 = burst.getPropByMod key: 'radius', i: 1, from: from
-      opt8 = burst.getPropByMod key: 'radius', i: 8, from: from
-      expect(opt0).toBe 40
-      expect(opt1).toBe 40
-      expect(opt8).toBe 40
+        fill: 'cyan'
+        children: radius: 20
 
-  describe 'randomness ->', ->
-    describe 'random angle ->', ->
-      it 'should have randomAngle option ->', ->
-        burst = new Burst
-        expect(burst.props.randomAngle).toBeDefined()
-        expect(burst.props.randomAngle).toBe 0
-      it 'should calculate angleRand for every transit ->', ->
-        burst = new Burst randomAngle: true
-        expect(burst.transits[0].o.angleShift).toBeDefined()
-        expect(burst.transits[1].o.angleShift).toBeDefined()
-    describe 'random radius ->', ->
-      it 'should have randomRadius option ->', ->
-        burst = new Burst
-        expect(burst.props.randomRadius).toBeDefined()
-        expect(burst.props.randomRadius).toBe 0
-      it 'should calculate radiusRand for every transit ->', ->
-        burst = new Burst randomRadius: true
-        expect(burst.transits[0].o.radiusScale).toBeDefined()
-        expect(burst.transits[1].o.radiusScale).toBeDefined()
-  describe 'size calculations calcSize method ->', ->
-    
-    it 'should calculate size based on largest transit + self radius', ->
-      burst = new Burst
-        radius: 50
-        childOptions:
-          radius:      [{ 20: 50 }, 20]
-          strokeWidth: 20
-      
-      expect(burst.props.size)  .toBe 240
-      expect(burst.props.center).toBe 120
+      from = burst._o
+      opt0 = burst._getPropByMod 'fill', 0, from
+      opt1 = burst._getPropByMod 'fill', 1, from
+      opt8 = burst._getPropByMod 'fill', 8, from
 
+      expect(opt0).toBe 'cyan'
+      expect(opt1).toBe 'cyan'
+      expect(opt8).toBe 'cyan'
 
-    it 'should calculate size based on largest transit + self radius #2', ->
-      burst = new Burst
-        radius: 50, radiusX: 100
-        childOptions:
-          radius:      [{ 20: 50 }, 20]
-          strokeWidth: 20
-      expect(burst.props.size)  .toBe 340
-      expect(burst.props.center).toBe 170
-    it 'should calculate size based on largest transit + self radius #3', ->
-      burst = new Burst
-        radius: {20: 50}, radiusX: 20
-        childOptions:
-          radius:      [{ 20: 50 }, 20]
-          strokeWidth: 20
-      expect(burst.props.size)  .toBe 240
-      expect(burst.props.center).toBe 120
-    it 'should calculate size based on largest transit + self radius #4', ->
-      burst = new Burst
-        radius: 50, radiusY: {20: 100}
-        childOptions:
-          radius:      [{ 20: 50 }, 20]
-          strokeWidth: 20
-      expect(burst.props.size)  .toBe 340
-      expect(burst.props.center).toBe 170
-    it 'should calculate size based on largest transit + self radius #5', ->
-      burst = new Burst
-        childOptions:
-          radius:      [{ 20: 50 }, 20]
-          strokeWidth: 20
-      expect(burst.props.size)  .toBe 290
-      expect(burst.props.center).toBe 145
-    it 'should call the calcSize of every transit', ->
-      burst = new Burst
-        childOptions:
-          radius:      [{ 20: 50 }, 20]
-          strokeWidth: 20
-      spyOn burst.transits[0], 'calcSize'
-      spyOn burst.transits[1], 'calcSize'
-      burst.calcSize()
-      expect(burst.transits[0].calcSize).toHaveBeenCalled()
-      expect(burst.transits[1].calcSize).toHaveBeenCalled()
-    it 'should call addBitOptions method', ->
-      burst = new Burst
-      spyOn burst, 'addBitOptions'
-      burst.calcSize()
-      expect(burst.addBitOptions).toHaveBeenCalled()
+  describe '_makeTween method ->', ->
+    it 'should override parent', ->
+      bs = new Burst
+      spyOn mojs.Tweenable.prototype, '_makeTween'
+      bs._makeTween()
+      expect(mojs.Tweenable.prototype._makeTween).not.toHaveBeenCalled()
 
-    it 'should work with sizeGap', ->
-      burst = new Burst
-        sizeGap: 20
-        childOptions:
-          radius:      [{ 20: 50 }, 20]
-          strokeWidth: 20
-      expect(burst.props.size)  .toBe 330
-      expect(burst.props.center).toBe burst.props.size/2
+  describe '_makeTimeline method ->', ->
 
-  describe 'addBitOptions method ->', ->
-    it 'should set x/y on every transit', ->
-      burst = new Burst radius: {0: 120}
-      expect(typeof burst.transits[1].o.x).toBe 'object'
-    it 'should work if end radius is 0', ->
-      burst = new Burst radius: {120: 0}
-      x = burst.transits[1].o.x; keys = Object.keys x
-      expect(x[keys[0]]+'').not.toBe keys[0]
-    it 'should work with radiusX', ->
-      burst = new Burst
-        radius: {120: 0}, radiusX: 30
-      expect(parseInt(burst.transits[1].o.x,10)).toBe 155
-    it 'should work with radiusY', ->
-      burst = new Burst
-        radius: {120: 0}, radiusY: {30: 0}
-      keys = Object.keys(burst.transits[1].o.y)
-      center = burst.props.center
-      expect(burst.transits[1].o.y[keys[0]]).toBe center
-    it 'should increase angle and position delta on angleShift', ->
-      burst1 = new Burst radius: {120: 0}, count: 2
-      burst2 = new Burst radius: {120: 0}, count: 2, randomAngle: .5
-      expect(burst2.transits[1].o.angle)
-        .toBe burst1.transits[1].o.angle+burst2.transits[1].props.angleShift
+    it 'should restore timeline options on _o', ->
+      timeline = {}
+      bs = new Burst timeline: timeline
+      bs._makeTimeline()
+      expect(bs._o.timeline).toBe timeline
 
-    it 'should increase angle and position delta on angleShift for deltas', ->
-      burst1 = new Burst
-        radius: {120: 0}, count: 2, childOptions: angle: {25: 50}
-      burst2 = new Burst
-        radius: {120: 0}, count: 2, randomAngle: 1
-        childOptions: angle: {25: 50}
-      start2 = burst2.transits[1].deltas.angle.start
-      end2   = burst2.transits[1].deltas.angle.start
-      start1 = burst1.transits[1].deltas.angle.start
-      end1   = burst1.transits[1].deltas.angle.start
-      expect(start2)
-        .toBe start1+burst2.transits[1].props.angleShift
-      expect(end2)
-        .toBe end1+burst2.transits[1].props.angleShift
-    it 'should increase position', ->
-      burst1 = new Burst radius: 50, count: 2
-      burst2 = new Burst radius: 50, count: 2, randomAngle: .5
-      expect(burst2.transits[1].o.x)
-        .not.toBe burst1.transits[1].o.x
-      expect(burst2.transits[1].o.y)
-        .not.toBe burst1.transits[1].o.y
+    it 'should call super', ->
+      bs = new Burst
+      spyOn mojs.Tweenable::, '_makeTimeline'
+      bs._makeTimeline()
+      expect(mojs.Tweenable::_makeTimeline).toHaveBeenCalled()
 
-    it 'should keep degreeCnt not less than 1', ->
-      burst = new Burst radius: {0: 120}, degree: 270, count:  1
-      expect(burst.degreeCnt).toBe 1
+    it 'should add masterSwirl to the timeline', ->
+      bs = new Burst
+      expect(bs.timeline._timelines[0]).toBe bs.masterSwirl.timeline
 
-  describe 'createTween method ->', ->
-    it 'should create tween', ->
-      burst = new Burst
-      expect(burst.timeline).toBeDefined()
-    it 'should add tweens to timeline', ->
-      burst = new Burst
-      expect(burst.timeline.timelines.length).toBe 6
-    it 'should call startTween method', ->
-      burst = new Burst
-      spyOn burst, 'startTween'
-      burst.createTween()
-      expect(burst.startTween).toHaveBeenCalled()
-    it 'should not call startTween method if isRunLess', ->
-      burst = new Burst isRunLess: true
-      spyOn burst, 'startTween'
-      burst.createTween()
-      expect(burst.startTween).not.toHaveBeenCalled()
+    it 'should add swirls to the timeline', ->
+      bs = new Burst count: 5
+      expect(bs.timeline._timelines[1]).toBe bs._swirls[0][0].timeline
+      expect(bs.timeline._timelines[2]).toBe bs._swirls[0][1].timeline
+      expect(bs.timeline._timelines[3]).toBe bs._swirls[0][2].timeline
+      expect(bs.timeline._timelines[4]).toBe bs._swirls[0][3].timeline
+      expect(bs.timeline._timelines[5]).toBe bs._swirls[0][4].timeline
 
-  describe 'onStart callback ->', ->
-    it 'should run onStart callback', (dfr)->
-      burst = new Burst isRunLess: true, onStart:->
-      spyOn burst.props, 'onStart'
-      burst.run()
-      setTimeout ->
-        expect(burst.props.onStart).toHaveBeenCalled(); dfr()
-      , 300
-    it 'should have the scope of burst', (dfr)->
-      isRightScope = null
-      burst = new Burst onStart:-> isRightScope = @ instanceof Burst
-      setTimeout ->
-        expect(isRightScope).toBe(true); dfr()
-      , 300
+  describe '_addOptionalProps method ->', ->
+    it 'should return the passed object', ->
+      burst = new Burst
+      obj = {}
+      result = burst._addOptionalProps obj, 0
+      expect(result).toBe obj
 
-  describe 'onComplete callback ->', ->
-    it 'should run onComplete callback', (dfr)->
-      t.removeAll()
+    it 'should add parent, index', ->
       burst = new Burst
-        duration: 20, onComplete:-> expect(true).toBe(true); dfr()
+      obj = {}
+      result = burst._addOptionalProps obj, 0
+      expect(result.index).toBe 0
+      expect(result.parent).toBe burst.masterSwirl.el
 
-    it 'should have the scope of burst', (dfr)->
-      t.removeAll()
-      isRightScope = false
-      burst = new Burst
-        duration: 20, onComplete:-> isRightScope = @ instanceof Burst
-      setTimeout ->
-        expect(isRightScope).toBe(true); dfr()
-      , 300
-
-  describe 'onUpdate callback ->', ->
-    t.removeAll()
-    it 'should run onUpdate callback', (dfr)->
-      burst = new Burst
-        isRunLess: true
-        duration: 20
-        onUpdate:->
-      spyOn burst, 'onUpdate'
-      burst.run()
-      setTimeout ->
-        expect(burst.onUpdate).toHaveBeenCalledWith(1); dfr()
-      , 300
-    it 'should have the scope of burst', (dfr)->
-      t.removeAll()
-      isRightScope = false
-      burst = new Burst
-        duration: 20, onUpdate:-> isRightScope = @ instanceof Burst
-      burst.run()
-      setTimeout (-> expect(isRightScope).toBe(true); dfr()), 300
-  
-  describe 'then method ->', ->
-    it 'should call the h.error method', ->
-      burst = new Burst
-      spyOn burst.h, 'error'
-      burst.then()
-      expect(burst.h.error).toHaveBeenCalled()
-
-    # it 'should call then method on every transit', ->
+    # nope
+    # it 'should set isSiwrl to false by default', ->
     #   burst = new Burst
-    #     radius: { 20: 50 }, count: 2
-    #     duration: 10
-    #     childOptions:
-    #       duration: [null, 200]
-    #   spyOn burst.transits[0], 'then'
-    #   spyOn burst.transits[1], 'then'
-    #   burst.then radius: 0
-    #   expect(burst.transits[0].then).toHaveBeenCalledWith duration: 10
-    #   expect(burst.transits[1].then).toHaveBeenCalledwith duration: 200
+    #   obj = { }
+    #   result = burst._addOptionalProps obj, 0
+    #   expect(result.isSwirl).toBe false
 
-  describe 'run method ->', ->
-    it 'should call extendDefaults', ->
-      burst = new Burst radius: { 20: 50 }
-      spyOn burst, 'extendDefaults'
-      o = { radius: 10}
-      burst.run o
-      expect(burst.extendDefaults).toHaveBeenCalledWith o
-    it 'should not call extendDefaults if no obj passed', ->
-      burst = new Burst radius: { 20: 50 }
-      spyOn burst, 'extendDefaults'
-      burst.run()
-      expect(burst.extendDefaults).not.toHaveBeenCalled()
-    it 'should recieve new options', ->
-      burst = new Burst radius: { 20: 50 }
-      burst.run radius: 10
-      expect(burst.props.radius).toBe  10
-      expect(burst.deltas.radius).not.toBeDefined()
-    it 'should recieve new child options', ->
-      burst = new Burst radius: { 20: 50 }, duration: 400
-      burst.run duration: 500, childOptions: duration: [null, 1000, null]
+    #   obj = { isSwirl: true }
+    #   result = burst._addOptionalProps obj, 0
+    #   expect(result.isSwirl).toBe true
+
+    # nope
+    # it 'should hard rewrite `left` and `top` properties to 50%', ->
+    #   burst = new Burst
+    #   obj = {}
+    #   result = burst._addOptionalProps obj, 0
+    #   expect(result.left).toBe '50%'
+    #   expect(result.top).toBe '50%'
+
+    it 'should add x/y', ->
+      burst = new Burst
+        radius: { 0: 100 }
+        count:  2,
+        size: 0
+
+      obj0 = {}
+      obj1 = {}
+      result0 = burst._addOptionalProps obj0, 0
+      result1 = burst._addOptionalProps obj1, 1
+
+      eps = 0.00001
+      isClose = obj0.x[0] - 0 < eps
+      isZero  = obj0.x is 0
+      expect(isClose or isZero).toBe true
+      expect(obj0.y[0]).toBeCloseTo -100, 5
+
+      eps = 0.00001
+      isClose = obj1.x[0] - 0 < eps
+      isZero  = obj1.x is 0
+      expect(isClose or isZero).toBe true
+      expect(obj1.y[0]).toBeCloseTo 100, 5
+
+    it 'should add angles ->', ->
+      burst = new Burst
+        radius: { 0: 100 }
+        count:  2
+
+      obj0 = { angle: 0 }
+      obj1 = { angle: 0 }
+      result0 = burst._addOptionalProps obj0, 0
+      result1 = burst._addOptionalProps obj1, 1
+
+      expect(obj0.angle).toBe 90
+      expect(obj1.angle).toBe 270
+
+  describe '_getBitAngle method ->', ->
+    it 'should get angle by i', ->
+      burst = new Burst radius: { 'rand(10,20)': 100 }
+      expect(burst._getBitAngle(0,  0, 0)).toBe 90
+      expect(burst._getBitAngle(0,  0, 1)).toBe 162
+      expect(burst._getBitAngle(0,  0, 2)).toBe 234
+      expect(burst._getBitAngle(90, 0, 2)).toBe 234 + 90
+      expect(burst._getBitAngle(0,  0, 3)).toBe 306
+      expect(burst._getBitAngle(90, 0, 3)).toBe 306 + 90
+      expect(burst._getBitAngle(0,  0, 4)).toBe 378
+      expect(burst._getBitAngle(50, 0, 4)).toBe 378 + 50
+
+    it 'should add with angleShift', ->
+      burst = new Burst radius: { 'rand(10,20)': 100 }
+      expect(burst._getBitAngle(0,  0, 0)).toBe 90
+      expect(burst._getBitAngle(0,  10, 1)).toBe 162 + 10
+      expect(burst._getBitAngle(0,  30, 2)).toBe 234 + 30
+      expect(burst._getBitAngle(90, 40, 2)).toBe 234 + 90 + 40
+      expect(burst._getBitAngle(0,  20, 3)).toBe 306 + 20
+      expect(burst._getBitAngle(90, 25, 3)).toBe 306 + 90 + 25
+      expect(burst._getBitAngle(0,  10, 4)).toBe 378 + 10
+      expect(burst._getBitAngle(50, 60, 4)).toBe 378 + 50 + 60
+    it 'should fallback to 0', ->
+      burst = new Burst radius: { 'rand(10,20)': 100 }
+      expect(burst._getBitAngle(undefined, 0, 0)).toBe 90
+      expect(burst._getBitAngle(undefined, 0, 1)).toBe 162
+      expect(burst._getBitAngle(undefined, 0, 2)).toBe 234
+    it 'should get delta angle by i', ->
+      burst = new Burst radius: { 'rand(10,20)': 100 }
+      expect(burst._getBitAngle({180:0}, 0, 0)[270]).toBe 90
+      expect(burst._getBitAngle({50:20}, 0, 3)[356]).toBe 326
+      expect(burst._getBitAngle({50:20}, 0, 4)[428]).toBe 398
+
+    it 'should add angleShift to deltas', ->
+      burst = new Burst radius: { 'rand(10,20)': 100 }
+      expect(burst._getBitAngle({180:0}, 20, 0)[270 + 20]).toBe 90 + 20
+      expect(burst._getBitAngle({50:20}, 30, 3)[356 + 30]).toBe 326 + 30
+      expect(burst._getBitAngle({50:20}, 50, 4)[428 + 50]).toBe 398 + 50
+
+    it 'should work with `stagger` values', ->
+      burst = new Burst count: 2
       
-      expect(burst.o.childOptions).toBeDefined()
-      expect(burst.transits[0].o.duration).toBe 500
-      expect(burst.transits[1].o.duration).toBe 1000
-      expect(burst.transits[2].o.duration).toBe 500
-    it 'should extend old childOptions', ->
-      burst = new Burst
-        duration: 400, childOptions: fill: 'deeppink'
-      newDuration = [null, 1000, null]
-      burst.run duration: 500, childOptions: duration: newDuration
-      expect(burst.o.childOptions.fill)    .toBe 'deeppink'
-      expect(burst.o.childOptions.duration).toBe newDuration
-    it 'should call recalcDuration on tween', ->
-      burst = new Burst
-        duration: 400, childOptions: fill: 'deeppink'
-      newDuration = [null, 1000, null]
-      spyOn burst.timeline, 'recalcDuration'
-      burst.run duration: 500, childOptions: duration: newDuration
-      expect(burst.timeline.recalcDuration).toHaveBeenCalled()
-    it 'should start timeline', ->
-      burst = new Burst
-      spyOn burst, 'startTween'
-      burst.run duration: 500
-      expect(burst.startTween).toHaveBeenCalled()
-    it 'should call generateRandomAngle method if randomAngle was passed', ->
-      burst = new Burst randomAngle: .1
-      spyOn burst, 'generateRandomAngle'
-      burst.run()
-      expect(burst.generateRandomAngle).toHaveBeenCalled()
-    it 'should not call generateRandomAngle method', ->
-      burst = new Burst
-      spyOn burst, 'generateRandomAngle'
-      burst.run()
-      expect(burst.generateRandomAngle).not.toHaveBeenCalled()
-    it 'should call generateRandomRadius method if randomAngle was passed', ->
-      burst = new Burst randomRadius: .1
-      spyOn burst, 'generateRandomRadius'
-      burst.run()
-      expect(burst.generateRandomRadius).toHaveBeenCalled()
-    it 'should not call generateRandomRadius method', ->
-      burst = new Burst
-      spyOn burst, 'generateRandomRadius'
-      burst.run()
-      expect(burst.generateRandomRadius).not.toHaveBeenCalled()
-    it 'should warn if count was passed', ->
-      burst = new Burst
-      spyOn burst.h, 'warn'
-      burst.run count: 10
-      expect(burst.h.warn).toHaveBeenCalled()
-    it 'should keep angles on run', ->
-      burst = new Burst isRunLess: true
-      burst.run count: 10
-      expect(burst.transits[3].o.angle).toBe 306
-    it 'should recieve new angle options', ->
-      burst = new Burst isRunLess: true
-      burst.run childOptions: angle: 90
-      expect(burst.transits[3].o.angle).toBe 396
-      expect(burst.transits[4].o.angle).toBe 468
-    it 'should recieve new angle delta options', ->
-      burst = new Burst isRunLess: true
-      burst.run childOptions: angle: 90: 0
-      expect(burst.transits[3].o.angle[396]).toBe 306
-      expect(burst.transits[4].o.angle[468]).toBe 378
-    it 'should skip circular shape angle on isResetAngles', ->
-      burst = new Burst isRunLess: true
-      burst.run isResetAngles: true, childOptions: angle: 90: 0
-      expect(burst.transits[3].o.angle[90]).toBe 0
-      expect(burst.transits[4].o.angle[90]).toBe 0
+      expect(burst._getBitAngle({'stagger(20, 10)':0}, 0, 0)[110]).toBe 90
+      expect(burst._getBitAngle({'stagger(20, 10)':0}, 0, 1)[300]).toBe 270
 
-  describe 'generateRandomAngle method ->', ->
-    it 'should generate random angle based on randomness', ->
-      burst = new Burst randomAngle: .5
-      angle = burst.generateRandomAngle()
-      expect(angle).toBeGreaterThan     -1
-      expect(angle).not.toBeGreaterThan 180
-    it 'should generate random angle based on randomness #2', ->
-      burst = new Burst randomAngle: .75
-      angle = burst.generateRandomAngle()
-      expect(angle).toBeGreaterThan     -1
-      expect(angle).not.toBeGreaterThan 270
-  describe 'generateRandomRadius method ->', ->
-    it 'should generate random radius based on randomness', ->
-      burst = new Burst randomRadius: .75
-      radius = burst.generateRandomRadius()
-      expect(radius).toBeGreaterThan     .24
-      expect(radius).not.toBeGreaterThan 1
+      expect(burst._getBitAngle({0:'stagger(20, 10)'}, 0, 1)[270]).toBe 300
 
-  describe 'draw method ->', ->
-    it 'should not call drawEl method', ->
-      burst = new Burst
-      spyOn burst, 'drawEl'
-      burst.draw()
-      expect(burst.drawEl).toHaveBeenCalled()
-    it 'should call fillTransform method', ->
-      burst = new Burst radius: 25
-      spyOn burst, 'fillTransform'
-      burst.draw()
-      expect(burst.fillTransform).toHaveBeenCalled()
+    it 'should work with `random` values', ->
+      burst = new Burst count: 2
+      
+      angle = burst._getBitAngle({'rand(10, 20)':0}, 0, 0)
+      for key, value in angle
+        baseAngle = 90
+        expect(parseInt(key)).toBeGreaterThan  baseAngle + 10
+        expect(parseInt(key)).not.toBeGreaterThan baseAngle + 20
+        expect(parseInt(value)).toBe baseAngle
 
-  describe 'getSideRadius method ->', ->
+      angle = burst._getBitAngle({'rand(10, 20)':0}, 0, 1)
+      for key, value in angle
+        baseAngle = 270
+        expect(parseInt(key)).toBeGreaterThan  baseAngle + 10
+        expect(parseInt(key)).not.toBeGreaterThan baseAngle + 20
+        expect(parseInt(value)).toBe baseAngle
+
+      angle = burst._getBitAngle({0:'rand(10, 20)'}, 0, 1)
+      for key, value in angle
+        baseAngle = 270
+        expect(parseInt(key)).toBe baseAngle
+        expect(parseInt(value)).toBeGreaterThan  baseAngle + 10
+        expect(parseInt(value)).not.toBeGreaterThan baseAngle + 20
+
+  describe '_getSidePoint method ->', ->
+    it 'should return the side\'s point', ->
+      burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:10}
+      point0 = burst._getSidePoint('start', 0)
+      expect(point0.x).toBeDefined()
+      expect(point0.y).toBeDefined()
+    it 'should return the side\'s point by i', ->
+      burst = new Burst(radius: {5:25}, radiusX: {10:20}, radiusY: {30:10})
+        .then(radius: {5:25}, radiusX: {10:20}, radiusY: {30:10})
+      spyOn(burst, '_getSideRadius').and.callThrough()
+
+      point0 = burst._getSidePoint('start', 0, 0)
+      expect(burst._getSideRadius).toHaveBeenCalledWith 'start', 0
+      expect(burst._getSideRadius.calls.count()).toBe 1
+      
+      point1 = burst._getSidePoint('start', 0, 1)
+      expect(burst._getSideRadius).toHaveBeenCalledWith 'start', 1
+      expect(burst._getSideRadius.calls.count()).toBe 2
+
+  describe '_getSideRadius method ->', ->
     it 'should return the side\'s radius, radiusX and radiusY', ->
       burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:10}
-      sides = burst.getSideRadius('start')
+      sides = burst._getSideRadius('start')
       expect(sides.radius) .toBe 5
       expect(sides.radiusX).toBe 10
       expect(sides.radiusY).toBe 30
 
-  describe 'getSidePoint method ->', ->
-    it 'should return the side\'s point', ->
-      burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:10}
-      point = burst.getSidePoint('start', 0)
-      expect(point.x).toBeDefined()
-      expect(point.y).toBeDefined()
+    it 'should return the side\'s radius, radiusX and radiusY by i', ->
+      burst = new Burst(radius: {5:25}, radiusX: {10:20}, radiusY: {30:10})
+        .then( radius: {20:40}, radiusX: { 50:10 }, radiusY: { 10:20 } )
+      sidesS = burst._getSideRadius('start')
+      sidesE = burst._getSideRadius('end')
+      expect(sidesS.radius) .toBe 5
+      expect(sidesS.radiusX).toBe 10
+      expect(sidesS.radiusY).toBe 30
+      expect(sidesE.radius) .toBe 25
+      expect(sidesE.radiusX).toBe 20
+      expect(sidesE.radiusY).toBe 10
 
-  describe 'getRadiusByKey method ->', ->
+      sidesS = burst._getSideRadius('start', 1)
+      sidesE = burst._getSideRadius('end', 1)
+      expect(sidesS.radius) .toBe 20
+      expect(sidesS.radiusX).toBe 50
+      expect(sidesS.radiusY).toBe 10
+
+      expect(sidesE.radius) .toBe 40
+      expect(sidesE.radiusX).toBe 10
+      expect(sidesE.radiusY).toBe 20
+
+  describe '_getRadiusByKey method ->', ->
     it 'should return the key\'s radius', ->
       burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:20}
-      radius  = burst.getRadiusByKey('radius',  'start')
-      radiusX = burst.getRadiusByKey('radiusX', 'start')
-      radiusY = burst.getRadiusByKey('radiusX', 'end')
+      radius  = burst._getRadiusByKey('radius',  'start')
+      radiusX = burst._getRadiusByKey('radiusX', 'start')
+      radiusY = burst._getRadiusByKey('radiusX', 'end')
       expect(radius).toBe   5
       expect(radiusX).toBe 10
       expect(radiusY).toBe 20
 
-  describe 'getDeltaFromPoints method ->', ->
+    it 'should return the key\'s radius of the last master module // plain', ->
+      burst = new Burst(
+          radius: 5, radiusX: 10, radiusY: 30
+        ).then(
+          radius: 25, radiusX: 20, radiusY: 40
+        )
+      radiusS  = burst._getRadiusByKey('radius',  'start', 1)
+      radiusXS = burst._getRadiusByKey('radiusX', 'start', 1)
+      radiusYS = burst._getRadiusByKey('radiusY', 'start', 1)
+      radiusE  = burst._getRadiusByKey('radius',  'end', 1)
+      radiusXE = burst._getRadiusByKey('radiusX', 'end', 1)
+      radiusYE = burst._getRadiusByKey('radiusY', 'end', 1)
+
+      expect(radiusS).toBe   5
+      expect(radiusXS).toBe 10
+      expect(radiusYS).toBe 30
+
+      expect(radiusE).toBe  25
+      expect(radiusXE).toBe 20
+      expect(radiusYE).toBe 40
+
+
+    it 'should return the key\'s radius of the last master module // deltas', ->
+      burst = new Burst(
+          radius: 5, radiusX: 10, radiusY: 30
+        ).then(
+          radius: { 10 : 25},
+          radiusX: { 30 : 20},
+          radiusY: { 25 : 30 }
+        )
+      radiusS  = burst._getRadiusByKey('radius',  'start', 1)
+      radiusXS = burst._getRadiusByKey('radiusX', 'start', 1)
+      radiusYS = burst._getRadiusByKey('radiusY', 'start', 1)
+      radiusE  = burst._getRadiusByKey('radius',  'end', 1)
+      radiusXE = burst._getRadiusByKey('radiusX', 'end', 1)
+      radiusYE = burst._getRadiusByKey('radiusY', 'end', 1)
+
+      expect(radiusS).toBe  10
+      expect(radiusXS).toBe 30
+      expect(radiusYS).toBe 25
+
+      expect(radiusE).toBe  25
+      expect(radiusXE).toBe 20
+      expect(radiusYE).toBe 30
+
+  describe '_getDeltaFromPoints method ->', ->
     it 'should return the delta', ->
       burst = new Burst
-      delta  = burst.getDeltaFromPoints('x', {x: 10, y: 20}, {x: 20, y: 40})
+      delta  = burst._getDeltaFromPoints('x', {x: 10, y: 20}, {x: 20, y: 40})
       expect(delta[10]).toBe 20
     it 'should return one value if start and end positions are equal', ->
       burst = new Burst
-      delta  = burst.getDeltaFromPoints('x', {x: 10, y: 20}, {x: 10, y: 40})
+      delta  = burst._getDeltaFromPoints('x', {x: 10, y: 20}, {x: 10, y: 40})
       expect(delta).toBe 10
 
+  describe '_vars method ->', ->
+    it 'should call super', ->
+      burst = new Burst
+      spyOn mojs.Thenable::, '_vars'
+      burst._vars()
+      expect(mojs.Thenable::_vars).toHaveBeenCalled()
+    it 'should create _bufferTimeline', ->
+      burst = new Burst
+      burst._bufferTimeline = null
+      burst._vars()
+      expect(burst._bufferTimeline instanceof mojs.Timeline).toBe true
+
+  describe '_recalcModulesTime method', ->
+    it 'should set duration on every moddules tween', ->
+      b = new Burst(fill: 'cyan').then('fill': 'yellow')
+      shiftTime = 0
+      modules = b.masterSwirl._modules
+
+      spyOn(b, '_calcPackTime').and.callThrough()
+      b._recalcModulesTime()
+      
+      expect(b._calcPackTime).toHaveBeenCalledWith b._swirls[0]
+      time = b._calcPackTime(b._swirls[0])
+      expect(modules[0].tween._props.duration).toBe  time
+      expect(modules[0].tween._props.shiftTime).toBe shiftTime
+
+      shiftTime += time
+
+      expect(b._calcPackTime).toHaveBeenCalledWith b._swirls[1]
+      time = b._calcPackTime(b._swirls[1])
+      expect(modules[1].tween._props.duration).toBe  time
+      expect(modules[1].tween._props.shiftTime).toBe shiftTime
+
+      shiftTime += time
+
+    it 'should call _recalcTotalDuration on main timeline', ->
+      b = new Burst(fill: 'cyan').then('fill': 'yellow')
+      spyOn b.timeline, '_recalcTotalDuration'
+
+      b._recalcModulesTime()
+
+      expect(b.timeline._recalcTotalDuration).toHaveBeenCalled()
 
 
+  describe '_masterThen method ->', ->
+    it 'should pass options to masterSwirl', ->
+      b = new Burst count: 2
+        
+      spyOn b.masterSwirl, 'then'
+
+      o = { opacity: .5 }
+      b._masterThen(o)
+
+      expect( b.masterSwirl.then ).toHaveBeenCalledWith o
+
+    it 'should save the new master swirl', ->
+      b = new Burst count: 2
+        
+      b._masterThen( { opacity: .5 } )
+      expect( b._masterSwirls.length ).toBe 2
+
+    it 'should return the new swirl', ->
+      b = new Burst count: 2
+        
+      result = b._masterThen( { opacity: .5 } )
+      expect( result ).toBe b._masterSwirls[b._masterSwirls.length-1]
+
+  describe '_childThen method ->', ->
+    it 'should pass options to swirls', ->
+      b = new Burst count: 2
+        
+      pack = b._swirls[0] 
+      spyOn pack[0], 'then'
+      spyOn pack[1], 'then'
+
+      o = { children: { radius: [ 10, 20 ] } }
+      b._childThen(o, b._masterThen(o))
+
+      option0 = b._getChildOption( o, 0 )
+      option0.parent = b._masterSwirls[1].el
+      b._addBurstProperties option0, 0, 1
+      expect(pack[0].then).toHaveBeenCalledWith option0
+
+      option1 = b._getChildOption( o, 1 )
+      option1.parent = b._masterSwirls[1].el
+      b._addBurstProperties option1, 1, 1
+      expect(pack[1].then).toHaveBeenCalledWith option1
+
+    it 'should call _addBurstProperties with the latest main swirl', ->
+      b = new Burst count: 2
+
+      spyOn b, '_addBurstProperties'
+        
+      pack = b._swirls[0] 
+
+      o = { children: { radius: [ 10, 20 ] } }
+      b._childThen(o, b._masterThen(o))
+
+      option0 = b._getChildOption( o, 0 )
+      option0.parent = b._masterSwirls[1].el
+      expect(b._addBurstProperties).toHaveBeenCalledWith option0, 0, 1
+
+      option1 = b._getChildOption( o, 1 )
+      option1.parent = b._masterSwirls[1].el
+      expect(b._addBurstProperties).toHaveBeenCalledWith option1, 1, 1
+
+    it 'should save new swirls to _swirls', ->
+      b = new Burst count: 2
+        
+      o = { children: { radius: [ 10, 20 ] } }
+
+      b._masterThen(o)
+
+      b._childThen(o)
+
+      expect(b._swirls[1].length).toBe 2
+      expect(b._swirls[1][0] instanceof ShapeSwirl).toBe true
+      expect(b._swirls[1][1] instanceof ShapeSwirl).toBe true
+
+    it 'should return the new pack', ->
+      b = new Burst count: 2
+        
+      o = { children: { radius: [ 10, 20 ] } }
+
+      b._masterThen(o)
+      result = b._childThen(o)
+
+      expect(result).toBe b._swirls[1]
+
+  describe 'then method ->', ->
+    it 'should return this', ->
+      b = new Burst count: 2
+      expect( b.then({}) ).toBe b
+
+    it 'should call _removeTweenProperties method', ->
+      b = new Burst
+      spyOn b, '_removeTweenProperties'
+      options = { x: 200 }
+      b.then(options)
+      expect(b._removeTweenProperties).toHaveBeenCalledWith options
+
+    it 'should call _masterThen method', ->
+      b = new Burst count: 2
+      spyOn(b, '_masterThen').and.callThrough()
+      options = {}
+      b.then options
+      expect( b._masterThen ).toHaveBeenCalledWith options
+
+    it 'should call _childThen method', ->
+      b = new Burst count: 2
+      spyOn(b, '_childThen').and.callThrough()
+      options = {}
+      b.then options
+
+      expect(b._childThen.calls.count()).toBe 1
+      expect(b._childThen.calls.first().args[0]).toBe options
+      # expect(b._childThen.calls.first().args[1])
+      #   .toBe h.getLastItem b._masterSwirls
+
+    it 'should set duration on new master swirl', ->
+      b = new Burst count: 2
+      spyOn(b, '_setSwirlDuration').and.callThrough()
+      b.then({ children: { duration: 50 } })
+      time = b._calcPackTime( b._swirls[1] )
+
+      expect(b._setSwirlDuration.calls.count()).toBe 1
+      expect(b._setSwirlDuration.calls.first().args[0])
+        .toBe b._masterSwirls[1]
+      expect(b._setSwirlDuration.calls.first().args[1])
+        .toBe time
+
+    it 'should call _recalcTotalDuration method', ->
+      b = new Burst count: 2
+  
+      spyOn b.timeline, '_recalcTotalDuration'      
+      b.then({ children: { radius: [ 10, 20 ] } })
+
+      expect(b.timeline._recalcTotalDuration).toHaveBeenCalled()
+
+  describe '_calcPackTime method ->', ->
+    it 'should calculate time of swirls array', ->
+      # should not include shift time
+      sw = new ShapeSwirl
+      sw.timeline._props.shiftTime = 200000
+
+      pack = [
+        sw,
+        new ShapeSwirl( duration: 2000 ),
+        new ShapeSwirl( duration: 1800, delay: 400 ),
+        new ShapeSwirl( duration: 4000, speed: 3 )
+      ]
+
+      b = new Burst
+      tm = new mojs.Timeline
+
+      maxTime = 0
+      for swirl, i in pack
+        tween = swirl.tween; p = tween._props
+        maxTime = Math.max( p.repeatTime/p.speed, maxTime )
+
+      expect( b._calcPackTime pack ).toBe maxTime
+
+  describe '_setSwirlDuration method ->', ->
+    it 'should set tweens time', ->
+      b = new Burst
+      sw = new ShapeSwirl
+
+      spyOn sw.tween,    '_setProp'
+      spyOn sw.timeline, '_recalcTotalDuration'
+
+      duration = 10
+      b._setSwirlDuration sw, duration
+
+      expect(sw.tween._setProp).toHaveBeenCalledWith 'duration', duration
+      expect(sw.timeline._recalcTotalDuration).toHaveBeenCalled()
+
+    it 'should not throw if Swirl has no timeline', ->
+      b = new Burst
+      sw = new ShapeSwirl
+
+      sw.timeline = sw.tween
+
+      set = -> b._setSwirlDuration sw, 10
+
+      expect(set).not.toThrow()
+
+  describe 'tune method ->', ->
+    it 'should return `this`', ->
+      b = new Burst
+      expect(b.tune({ x: 200 })).toBe b
+
+    it 'should call _tuneNewOptions method', ->
+      b = new Burst
+      spyOn b, '_tuneNewOptions'
+      options = { x: 200 }
+      b.tune(options)
+      expect(b._tuneNewOptions).toHaveBeenCalledWith options
+
+    it 'should not call _tuneNewOptions method if no options', ->
+      b = new Burst
+      spyOn b, '_tuneNewOptions'
+      options = null
+      result = b.tune(options)
+      expect(b._tuneNewOptions).not.toHaveBeenCalledWith options
+      # should return `this` in this case
+      expect(result).toBe b
+
+    it 'should call tune on masterSwirl', ->
+      b = new Burst
+      spyOn b.masterSwirl, 'tune'
+      options = { x: 200 }
+      b.tune(options)
+      expect(b.masterSwirl.tune).toHaveBeenCalledWith options
+
+    it 'should call _tuneSwirls method', ->
+      b = new Burst
+      spyOn b, '_tuneSwirls'
+      options = { x: 200 }
+      b.tune(options)
+      expect(b._tuneSwirls).toHaveBeenCalledWith options
+
+    it 'should call tune 0 pack swirls', ->
+      b = new Burst
+
+      pack0 = b._swirls[0]
+      spyOn pack0[0], 'tune'
+      spyOn pack0[1], 'tune'
+      spyOn pack0[2], 'tune'
+      spyOn pack0[3], 'tune'
+      spyOn pack0[4], 'tune'
+
+      swirls = { x: 200, fill: ['cyan', 'yellow'] }
+      options = { children: swirls }
+      b.tune( options )
+
+      option0 = b._getChildOption options, 0
+      b._addBurstProperties option0, 0
+      args = pack0[0].tune.calls.first().args
+      expect(args[0]).toEqual option0
+
+      option1 = b._getChildOption options, 1
+      b._addBurstProperties option1, 1
+      args = pack0[1].tune.calls.first().args
+      expect(args[0]).toEqual option1
+
+      option2 = b._getChildOption options, 2
+      b._addBurstProperties option2, 2
+      args = pack0[2].tune.calls.first().args
+      expect(args[0]).toEqual option2
+
+      option3 = b._getChildOption options, 3
+      b._addBurstProperties option3, 3
+      args = pack0[3].tune.calls.first().args
+      expect(args[0]).toEqual option3
+
+      option4 = b._getChildOption options, 4
+      b._addBurstProperties option4, 4
+      args = pack0[4].tune.calls.first().args
+      expect(args[0]).toEqual option4
+
+    it 'should add Burst properties to options', ->
+      b = new Burst
+      spyOn b.masterSwirl, 'tune'
+      options = { x: 200 }
+      spyOn b, '_addBurstProperties'
+      b.tune(options)
+      expect(b._addBurstProperties).toHaveBeenCalledWith {}, 0
+      expect(b._addBurstProperties).toHaveBeenCalledWith {}, 1
+      expect(b._addBurstProperties).toHaveBeenCalledWith {}, 2
+      expect(b._addBurstProperties).toHaveBeenCalledWith {}, 3
+      expect(b._addBurstProperties).toHaveBeenCalledWith {}, 4
+
+    it 'should call _recalcModulesTime method', ->
+      b = new Burst
+      spyOn b, '_recalcModulesTime'
+      options = { x: 200 }
+      b.tune(options)
+      expect(b._recalcModulesTime).toHaveBeenCalled()
+
+    it 'should call _saveTimelineOptions method', ->
+      b = new Burst
+      spyOn b, '_saveTimelineOptions'
+      options = { x: 200 }
+      b.tune(options)
+      expect(b._saveTimelineOptions).toHaveBeenCalledWith options
+
+    it 'should set new options on timeline', ->
+      b = new Burst
+      spyOn b.timeline, '_setProp'
+      options = { x: 200 }
+      b.tune(options)
+      expect(b.timeline._setProp).toHaveBeenCalledWith b._timelineOptions
+
+  describe '_removeTweenProperties method ->', ->
+    it 'should remove all tween props from passed object', ->
+      b = new Burst
+      o = {}
+      for key of h.tweenOptionMap
+        o[key] = 1
+
+      for key of b._defaults
+        o[key] = 1
+
+      b._removeTweenProperties(o)
+
+      for key of h.tweenOptionMap
+        expect(o[key]).not.toBeDefined()
+      
+      # nope      
+      # expect(o['easing']).toBe 1
+      # for key of b._defaults
+      #   expect(o[key]).toBe 1
+
+  describe '_saveTimelineOptions method ->', ->
+    it 'should save timeline options to _timelineOptions', ->
+      b = new Burst
+      timeline = {}
+      opts = { timeline: timeline }
+      b._saveTimelineOptions opts
+      expect( b._timelineOptions ).toBe timeline
+      expect( opts.timeline ).not.toBeDefined()
+
+    # nope
+    # it 'should set _timelineOptions to null first', ->
+    #   b = new Burst
+    #   opts = { }
+    #   b._saveTimelineOptions opts
+    #   expect( b._timelineOptions ).toBe null
 
 
+  describe '_addBurstProperties method ->', ->
+    it 'should calculate bit angle', ->
+      b = new Burst
+      angle = 20
+      obj = { angle: angle }
+      b._addBurstProperties( obj, 1 )
+      expect( obj.angle ).toBe b._getBitAngle( angle, 0, 1 )
+
+    it 'should calculate bit x and y', ->
+      index = 1
+      b = new Burst
+      obj = {}
+      b._addBurstProperties( obj, index )
+
+      p           = b._props
+      degreeCnt   = if (p.degree % 360 is 0) then p.count else p.count-1 || 1;
+      step        = p.degree/degreeCnt;
+      pointStart  = b._getSidePoint('start', index*step );
+      pointEnd    = b._getSidePoint('end',   index*step );
+
+      expect( obj.x ).toEqual b._getDeltaFromPoints('x', pointStart, pointEnd)
+      expect( obj.y ).toEqual b._getDeltaFromPoints('y', pointStart, pointEnd)
+
+    # nope
+    # it 'should set degreeShift to 0', ->
+    #   b = new Burst
+    #   angle = 20
+    #   obj = { degreeShift: angle }
+    #   b._addBurstProperties( obj, 1 )
+    #   expect( obj.degreeShift ).toBe 0
+
+    it 'should calculate bit x/y and angle regarding degreeShift', ->
+      index = 1
+      angle = 20
+      degreeShifts = [ 0, 10, 20 ]
+      b = new Burst children: { degreeShift: degreeShifts }
+      # put degreeShift value back since we override it to `0`
+      # in `_addBurstProperties` method
+      obj = { angle: angle, degreeShift: degreeShifts[index]  }
+      b._addBurstProperties( obj, index )
+
+      p           = b._props
+      degreeCnt   = if (p.degree % 360 is 0) then p.count else p.count-1 || 1;
+      step        = p.degree/degreeCnt;
+      pointStart  = b._getSidePoint('start', index*step + degreeShifts[ index ] );
+      pointEnd    = b._getSidePoint('end',   index*step + degreeShifts[ index ] );
+
+      expect( obj.x ).toEqual b._getDeltaFromPoints('x', pointStart, pointEnd)
+      expect( obj.y ).toEqual b._getDeltaFromPoints('y', pointStart, pointEnd)
+      expect( obj.angle ).toEqual b._getBitAngle( angle + degreeShifts[ index ], 0, index )
+
+    it 'should calculate bit x/y and angle regarding stagger', ->
+      index = 2
+      angle = 20
+      b = new Burst children: { degreeShift: 'stagger(200)' }
+      # put degreeShift value back since we override it to `0`
+      # in `_addBurstProperties` method
+      obj = { angle: angle, degreeShift: 'stagger(200)'  }
+      b._addBurstProperties( obj, index )
+
+      p           = b._props
+      degreeCnt   = if (p.degree % 360 is 0) then p.count else p.count-1 || 1;
+      step        = p.degree/degreeCnt;
+      pointStart  = b._getSidePoint('start', index*step + 400 );
+      pointEnd    = b._getSidePoint('end',   index*step + 400 );
+
+      expect( obj.x ).toEqual b._getDeltaFromPoints('x', pointStart, pointEnd)
+      expect( obj.y ).toEqual b._getDeltaFromPoints('y', pointStart, pointEnd)
+      expect( obj.angle ).toEqual b._getBitAngle( angle + 400, 0, index )
+
+    it 'should fallback to 0 for angle', ->
+      index = 2
+      b = new Burst children: { degreeShift: 'stagger(200)' }
+      # put degreeShift value back since we override it to `0`
+      # in `_addBurstProperties` method
+      obj = { degreeShift: 'stagger(200)'  }
+      b._addBurstProperties( obj, index )
+
+      p           = b._props
+      degreeCnt   = if (p.degree % 360 is 0) then p.count else p.count-1 || 1;
+      step        = p.degree/degreeCnt;
+      pointStart  = b._getSidePoint('start', index*step + 400 );
+      pointEnd    = b._getSidePoint('end',   index*step + 400 );
+
+      expect( obj.angle ).toEqual b._getBitAngle( 0, 400, index );
+
+    it 'should call _getSidePoint with passed index', ->
+      b = new Burst count: 2
+        .then radius: 20
+      spyOn(b, '_getSidePoint').and.callThrough()
+      obj = { }
+      b._addBurstProperties( obj, 2, 1 )
+
+      expect(b._getSidePoint).toHaveBeenCalledWith 'start', 360, 1
+      expect(b._getSidePoint).toHaveBeenCalledWith 'end', 360, 1
 
 
+  describe '_refreshBurstOptions method ->', ->
+    it 'should call _tuneNewOptions with results of _addBurstProperties', ->
+      b = new Burst count: 4
+        .then radius: 20
+        .then radius: 30
 
+      modules = b._swirls[0][0]._modules
 
+      for j in [1...modules.length]
+        module  = modules[j]
+        spyOn(module, '_tuneNewOptions').and.callThrough()
+      
+      b._refreshBurstOptions modules, 1
 
+      for j in [1...modules.length]
+        module  = modules[j]
+        options = {}
+        b._addBurstProperties options, 1, j
+        expect(module._tuneNewOptions).toHaveBeenCalledWith options
 
+  describe '_tuneSwirls method', ->
+    it 'should call _refreshBurstOptions with modules and i', ->
+      b = new Burst count: 4
+        .then radius: 20
+        .then radius: 30
 
+      spyOn b, '_refreshBurstOptions'
+      b._tuneSwirls({})
 
+      pack0 = b._swirls[0]
+      for i in [0...pack0.length]
+        swirl = pack0[i]
+        expect( b._refreshBurstOptions )
+          .toHaveBeenCalledWith swirl._modules, i
 
+    it 'should add Burst properties to options', ->
+      b = new Burst children: { degreeShift: 10 }
+      options = { x: 200 }
+      spyOn b, '_addBurstProperties'
+      b._tuneSwirls(options)
+      expect(b._addBurstProperties).toHaveBeenCalledWith { }, 0
+      expect(b._addBurstProperties).toHaveBeenCalledWith { }, 1
+      expect(b._addBurstProperties).toHaveBeenCalledWith { }, 2
+      expect(b._addBurstProperties).toHaveBeenCalledWith { }, 3
+      expect(b._addBurstProperties).toHaveBeenCalledWith { }, 4
+
+    it 'should not override the new degreeShift', ->
+      b = new Burst children: { degreeShift: 10 }
+      options = { x: 200, children: { degreeShift: 20 } }
+      spyOn b, '_addBurstProperties'
+      b._tuneSwirls(options)
+      expect(b._addBurstProperties).toHaveBeenCalledWith { degreeShift: 20 }, 0
+      expect(b._addBurstProperties).toHaveBeenCalledWith { degreeShift: 20 }, 1
+      expect(b._addBurstProperties).toHaveBeenCalledWith { degreeShift: 20 }, 2
+      expect(b._addBurstProperties).toHaveBeenCalledWith { degreeShift: 20 }, 3
+      expect(b._addBurstProperties).toHaveBeenCalledWith { degreeShift: 20 }, 4
+
+  describe 'ChildSwirl ->', ->
+    ChildSwirl = Burst.ChildSwirl
+    it 'should extend ShapeSwirl', ->
+      child = new ChildSwirl
+      expect(child instanceof ShapeSwirl).toBe true
+
+    it 'should override defaults', ->
+      child = new ChildSwirl
+      expect(child._defaults.isSwirl).toBe false
+
+    it 'should override duration to 700', ->
+      child = new ChildSwirl
+      expect(child._o.duration).toBe 700
+
+    it 'should not override duration to 700 if defined', ->
+      child = new ChildSwirl duration: 0
+      expect(child._o.duration).toBe 0
+
+    it 'should be used as children swirl', ->
+      burst = new Burst
+      expect(burst._swirls[0][0] instanceof ChildSwirl).toBe true
+
+    it 'should not regard degreeShift in xy calculations', ->
+      child1 = new ChildSwirl degreeShift: 0,   x: { 0: 200 }
+      child2 = new ChildSwirl degreeShift: 20,  x: { 0: 200 }
+      child1.setProgress( .45 ); child1.setProgress( .5 )
+      child2.setProgress( .45 ); child2.setProgress( .5 )
+      expect(child1._props.x).toBe child2._props.x
+      expect(child1._props.y).toBe child2._props.y
+
+  describe 'MainSwirl ->', ->
+    ChildSwirl = Burst.ChildSwirl
+    MainSwirl  = Burst.MainSwirl
+    it 'should extend ChildSwirl', ->
+      child = new MainSwirl
+      expect(child instanceof ChildSwirl).toBe true
+
+    it 'should override defaults', ->
+      child = new MainSwirl
+      expect(child._defaults.scale).toBe 1
+      expect(child._defaults.width).toBe 0
+      expect(child._defaults.height).toBe 0
+      expect(child._defaults.isSwirl).toBe false
+      expect(child._defaults.radius[25]).toBe 75
+
+    it 'should be used as main swirl', ->
+      burst = new Burst
+      expect(burst.masterSwirl instanceof MainSwirl).toBe true
+
+  describe '_hide method ->', ->
+    it 'should not call super', ->
+      burst = new Burst
+      spyOn mojs.Module::, '_hide'
+      burst._hide()
+      expect(mojs.Module::_hide).not.toHaveBeenCalled()
+
+  describe '_show method ->', ->
+    it 'should not call super', ->
+      burst = new Burst
+      spyOn mojs.Module::, '_show'
+      burst._show()
+      expect(mojs.Module::_show).not.toHaveBeenCalled()
 
 

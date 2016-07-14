@@ -10,15 +10,17 @@ describe 'Helpers ->', ->
     expect(h.NS).toBe 'http://www.w3.org/2000/svg'
   it 'should have remBase', ->
     expect(typeof h.remBase).toBe 'number'
-  it 'should have posPropsMap map', ->
-    expect(h.posPropsMap.x).toBe      1
-    expect(h.posPropsMap.y).toBe      1
-    expect(h.posPropsMap.shiftX).toBe 1
-    expect(h.posPropsMap.shiftY).toBe 1
-  it 'should have strokeDashPropsMap map', ->
-    expect(h.strokeDashPropsMap.strokeDasharray) .toBe    1
-    expect(h.strokeDashPropsMap.strokeDashoffset).toBe    1
-    expect(Object.keys(h.strokeDashPropsMap).length).toBe  2
+  it 'should have unitOptionMap map', ->
+    expect(h.unitOptionMap.left).toBe 1
+    expect(h.unitOptionMap.top).toBe  1
+    expect(h.unitOptionMap.x).toBe    1
+    expect(h.unitOptionMap.y).toBe    1
+    expect(h.unitOptionMap.rx).toBe   1
+    expect(h.unitOptionMap.ry).toBe   1
+  # it 'should have strokeDashPropsMap map', ->
+  #   expect(h.strokeDashPropsMap.strokeDasharray) .toBe     1
+  #   expect(h.strokeDashPropsMap.strokeDashoffset).toBe     1
+  #   expect(Object.keys(h.strokeDashPropsMap).length).toBe  2
   it 'should have initial uniqIDs props', ->
     expect(h.uniqIDs).toBe -1
   describe 'prefix', ->
@@ -38,18 +40,8 @@ describe 'Helpers ->', ->
       expect(h.isOldOpera).toBeDefined()
   describe 'tween related map ->', ->
     it 'should be a map of tween related options ->', ->
-      expect(h.chainOptionMap.duration)         .toBe 1
-      expect(h.chainOptionMap.delay)            .toBe 1
-      expect(h.chainOptionMap.repeat)           .toBe 1
-      expect(h.chainOptionMap.easing)           .toBe 1
-      expect(h.chainOptionMap.yoyo)             .toBe 1
-      expect(h.chainOptionMap.onStart)          .toBe 1
-      expect(h.chainOptionMap.onComplete)       .toBe 1
-      expect(h.chainOptionMap.onCompleteChain)  .toBe 1
-      expect(h.chainOptionMap.onUpdate)         .toBe 1
-      expect(h.chainOptionMap.points)           .toBe 1
-      mapLen = Object.keys(h.chainOptionMap).length
-      expect(mapLen)                            .toBe 10
+      # expect(h.chainOptionMap.points).toBe 1
+      expect(Object.keys(h.chainOptionMap).length).toBe 0
   describe 'pure tween props ->', ->
     it 'should be a map of tween related options ->', ->
       expect(h.tweenOptionMap.duration)           .toBe 1
@@ -57,14 +49,20 @@ describe 'Helpers ->', ->
       expect(h.tweenOptionMap.repeat)             .toBe 1
       expect(h.tweenOptionMap.easing)             .toBe 1
       expect(h.tweenOptionMap.yoyo)               .toBe 1
-      expect(Object.keys(h.tweenOptionMap).length).toBe 5
+      expect(h.tweenOptionMap.shiftTime)          .toBe 1
+      expect(h.tweenOptionMap.isReversed)         .toBe 1
+      expect(h.tweenOptionMap.speed)              .toBe 1
+      expect(Object.keys(h.tweenOptionMap).length).toBe 8
   describe 'pure callbacks props ->', ->
     it 'should be a map of callback related options ->', ->
       expect(h.callbacksMap.onStart)            .toBe 1
       expect(h.callbacksMap.onUpdate)           .toBe 1
       expect(h.callbacksMap.onComplete)         .toBe 1
-      expect(h.callbacksMap.onCompleteChain)    .toBe 1
-      expect(Object.keys(h.callbacksMap).length).toBe 4
+      expect(h.callbacksMap.onProgress)         .toBe 1
+      expect(h.callbacksMap.onFirstUpdate)      .toBe 1
+      expect(h.callbacksMap.onRepeatStart)      .toBe 1
+      expect(h.callbacksMap.onRepeatComplete)   .toBe 1
+      expect(Object.keys(h.callbacksMap).length).toBe 7
   describe 'methods ->', ->
     describe 'clamp method', ->
       it 'should clamp value to max and min', ->
@@ -169,13 +167,44 @@ describe 'Helpers ->', ->
       it 'should work with float numbers', ->
         expect(h.rand(.2, .9)).toBeGreaterThan      .1
         expect(h.rand(.2, .9)).not.toBeGreaterThan  .9
-    describe 'getDelta method ->', ->
+    
+
+    describe 'parseDelta method ->', ->
       describe 'numeric values ->', ->
         it 'should calculate delta', ->
           delta = h.parseDelta 'radius', {25: 75}
           expect(delta.start)   .toBe   25
           expect(delta.delta)   .toBe   50
           expect(delta.type)    .toBe   'number'
+
+        it 'should parse easing', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          easing = 'cubic.out'
+          startDelta = { 25: 75, easing: easing }
+          delta = h.parseDelta 'radius', startDelta
+          expect(delta.start)   .toBe   25
+          expect(delta.delta)   .toBe   50
+          expect(delta.type)    .toBe   'number'
+          expect(delta.easing)  .toBe   mojs.easing.cubic.out
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith easing
+          
+          expect(startDelta.easing).toBe easing
+
+        it 'should parse curve', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          curve = "M0,100 L100,0"
+          startDelta = { 25: 75, curve: curve }
+          delta = h.parseDelta 'radius', startDelta
+          expect(delta.start)   .toBe   25
+          expect(delta.delta)   .toBe   50
+          expect(delta.type)    .toBe   'number'
+          
+          expect(typeof delta.curve).toBe 'function'
+          expect(delta.curve(.5)).toBeCloseTo .5, 2
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
+          
+          expect(startDelta.curve).toBe curve
+
         it 'should calculate delta with string arguments', ->
           delta = h.parseDelta 'radius', {25: 75}
           expect(delta.start)   .toBe   25
@@ -193,6 +222,8 @@ describe 'Helpers ->', ->
           expect(delta.start)   .toBe   25.5
           expect(delta.end)     .toBe   -75.5
           expect(delta.delta)   .toBe   -101
+
+      describe 'unit values ->', ->
 
         it 'should fallback to declared units if one of them is not defined', ->
           delta = h.parseDelta 'x',  {'25.50%': -75.50}
@@ -216,6 +247,40 @@ describe 'Helpers ->', ->
           expect(delta.end.value)   .toBe   -75.5
           expect(delta.end.string)  .toBe   '-75.5%'
 
+        it 'should parse unit values easing', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          delta = h.parseDelta 'x',  {'25.50': '-75.50%', easing: 'cubic.out'}
+
+          expect(delta.start.unit)    .toBe   '%'
+          expect(delta.start.value)   .toBe   25.5
+          expect(delta.start.string)  .toBe   '25.5%'
+
+          expect(delta.end.unit)    .toBe   '%'
+          expect(delta.end.value)   .toBe   -75.5
+          expect(delta.end.string)  .toBe   '-75.5%'
+
+          expect(delta.easing)  .toBe   mojs.easing.cubic.out
+
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith 'cubic.out'
+
+        it 'should parse unit values curve', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          curve = "M0,100 L100,0"
+          delta = h.parseDelta 'x',  {'25.50': '-75.50%', curve: curve }
+
+          expect(delta.start.unit)    .toBe   '%'
+          expect(delta.start.value)   .toBe   25.5
+          expect(delta.start.string)  .toBe   '25.5%'
+
+          expect(delta.end.unit)    .toBe   '%'
+          expect(delta.end.value)   .toBe   -75.5
+          expect(delta.end.string)  .toBe   '-75.5%'
+
+          expect(typeof delta.curve).toBe   'function'
+          expect( delta.curve( .5 ) ).toBeCloseTo .5, 2
+
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
+
         it 'should fallback to end units if two units undefined and warn', ->
           spyOn h, 'warn'
           delta = h.parseDelta 'x',  {'25.50%': '-75.50px'}
@@ -233,6 +298,8 @@ describe 'Helpers ->', ->
           spyOn h, 'warn'
           delta = h.parseDelta 'x',  {'25.50%': '-75.50%'}
           expect(h.warn).not.toHaveBeenCalled()
+
+      describe 'strokeDash.. deltas', ->
 
         it 'should work with strokeDash.. properties', ->
           delta = h.parseDelta 'strokeDashoffset',  {'25.50': '-75.50%'}
@@ -254,6 +321,40 @@ describe 'Helpers ->', ->
           expect(delta.end[0].unit)    .toBe   '%'
           expect(delta.end[0].value)   .toBe   -75.5
           expect(delta.end[0].string)  .toBe   '-75.5%'
+
+        it 'should parse strokeDash values easing', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          startDelta = {'25.50%': '-75.50', easing: 'cubic.out'}
+          delta = h.parseDelta 'strokeDashoffset', startDelta
+          expect(delta.start[0].unit)    .toBe   '%'
+          expect(delta.start[0].value)   .toBe   25.5
+          expect(delta.start[0].string)  .toBe   '25.5%'
+
+          expect(delta.end[0].unit)    .toBe   '%'
+          expect(delta.end[0].value)   .toBe   -75.5
+          expect(delta.end[0].string)  .toBe   '-75.5%'
+
+          expect(delta.easing)  .toBe   mojs.easing.cubic.out
+
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith 'cubic.out'
+
+        it 'should parse strokeDash values curve', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          curve = "M0,100 L100,0"
+          startDelta = {'25.50%': '-75.50', curve: curve }
+          delta = h.parseDelta 'strokeDashoffset', startDelta
+          expect(delta.start[0].unit)    .toBe   '%'
+          expect(delta.start[0].value)   .toBe   25.5
+          expect(delta.start[0].string)  .toBe   '25.5%'
+
+          expect(delta.end[0].unit)    .toBe   '%'
+          expect(delta.end[0].value)   .toBe   -75.5
+          expect(delta.end[0].string)  .toBe   '-75.5%'
+
+          expect(typeof delta.curve)   .toBe   'function'
+          expect(delta.curve(.5)).toBeCloseTo .5, 2
+
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
         
         it 'should work with strokeDash.. properties #3', ->
           delta = h.parseDelta 'strokeDashoffset',  {'25.50%': '-75.50px'}
@@ -280,9 +381,60 @@ describe 'Helpers ->', ->
             .not.toThrow()
           expect(console.warn).toHaveBeenCalled()
           expect(delta.type).not.toBeDefined()
+
+        it 'should parse color easing values', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          startDelta = {'#000': 'rgb(255,255,255)', easing: 'cubic.out'}
+          delta = h.parseDelta 'stroke', startDelta
+          expect(delta.start.r)    .toBe   0
+          expect(delta.end.r)      .toBe   255
+          expect(delta.delta.r)    .toBe   255
+          expect(delta.type)       .toBe   'color'
+
+          expect(delta.easing)  .toBe   mojs.easing.cubic.out
+
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith 'cubic.out'
+
+        it 'should parse color curve values', ->
+          spyOn(mojs.easing, 'parseEasing').and.callThrough()
+          curve = "M0,100 L100,0"
+          startDelta = {'#000': 'rgb(255,255,255)', curve: curve }
+          delta = h.parseDelta 'stroke', startDelta
+          expect(delta.start.r)    .toBe   0
+          expect(delta.end.r)      .toBe   255
+          expect(delta.delta.r)    .toBe   255
+          expect(delta.type)       .toBe   'color'
+
+          expect(typeof delta.curve).toBe   'function'
+          expect(delta.curve(.5))   .toBeCloseTo  .5, 2
+
+          expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
+          
       describe 'array values ->', ->
         it 'should calculate array delta', ->
           delta = h.parseDelta 'strokeDasharray', { '200 100%': '300' }
+          expect(delta.type)           .toBe   'array'
+          expect(delta.start[0].value) .toBe   200
+          expect(delta.start[0].unit)  .toBe   'px'
+          expect(delta.end[0].value)   .toBe   300
+          expect(delta.end[0].unit)    .toBe   'px'
+          expect(delta.start[1].value) .toBe   100
+          expect(delta.start[1].unit)  .toBe   '%'
+          expect(delta.end[1].value)   .toBe   0
+          expect(delta.end[1].unit)    .toBe   '%'
+        it 'should calculate array delta', ->
+          delta = h.parseDelta 'strokeDashoffset', { '200 100%': '300' }
+          expect(delta.type)           .toBe   'array'
+          expect(delta.start[0].value) .toBe   200
+          expect(delta.start[0].unit)  .toBe   'px'
+          expect(delta.end[0].value)   .toBe   300
+          expect(delta.end[0].unit)    .toBe   'px'
+          expect(delta.start[1].value) .toBe   100
+          expect(delta.start[1].unit)  .toBe   '%'
+          expect(delta.end[1].value)   .toBe   0
+          expect(delta.end[1].unit)    .toBe   '%'
+        it 'should calculate array delta', ->
+          delta = h.parseDelta 'origin', { '200 100%': '300' }
           expect(delta.type)           .toBe   'array'
           expect(delta.start[0].value) .toBe   200
           expect(delta.start[0].unit)  .toBe   'px'
@@ -296,7 +448,7 @@ describe 'Helpers ->', ->
       describe 'unit values ->', ->
         it 'should calculate unit delta', ->
           delta = h.parseDelta 'x', {'0%': '100%'}
-          expect(delta.start.string)    .toBe   '0%'
+          expect(delta.start.string)    .toBe   '0'
           expect(delta.end.string)      .toBe   '100%'
           expect(delta.delta)           .toBe   100
           expect(delta.type)            .toBe   'unit'
@@ -311,6 +463,22 @@ describe 'Helpers ->', ->
           expect(delta.start.value).not.toBeGreaterThan 20
           expect(delta.end.value).toBeGreaterThan     -1
           expect(delta.end.value).not.toBeGreaterThan 5
+
+      describe 'stagger values ->', ->
+        it 'should calculate stagger values for pos props', ->
+          delta = h.parseDelta 'x', { 'stagger(20, 20)': 'stagger(20, -10)' }, 2
+          expect(delta.start.value).toBe 60
+          expect(delta.end.value).toBe 0
+        it 'should calculate stagger values', ->
+          startDelta = { 'stagger(20, 20)': 'stagger(20, -10)' }
+          delta = h.parseDelta 'radius', startDelta, 2
+          expect(delta.start).toBe 60
+          expect(delta.end).toBe 0
+        it 'should use 0 index as a fallback', ->
+          startDelta = { 'stagger(20, 20)': 'stagger(20, -10)' }
+          delta = h.parseDelta 'radius', startDelta
+          expect(delta.start).toBe 20
+          expect(delta.end).toBe 20
 
     describe 'computedStyle method', ->
       it 'should return computed styles',->
@@ -406,6 +574,11 @@ describe 'Helpers ->', ->
         expect(unit.value)    .toBe 100
         expect(unit.unit)     .toBe 'px'
         expect(unit.string)   .toBe '100px'
+      it 'should always return 0 for 0', ->
+        unit = h.parseUnit(0)
+        expect(unit.value)    .toBe 0
+        expect(unit.unit)     .toBe 'px'
+        expect(unit.string)   .toBe '0'
       it 'should parse unitless string', ->
         unit = h.parseUnit('100')
         expect(unit.value)    .toBe 100
@@ -416,6 +589,11 @@ describe 'Helpers ->', ->
         expect(unit.value)    .toBe 100
         expect(unit.unit)     .toBe 'px'
         expect(unit.string)   .toBe '100px'
+      it 'should always return 0 for 0 in strings', ->
+        unit = h.parseUnit('0px')
+        expect(unit.value)    .toBe 0
+        expect(unit.unit)     .toBe 'px'
+        expect(unit.string)   .toBe '0'
       it 'should parse percent string', ->
         unit = h.parseUnit('100%')
         expect(unit.value)    .toBe 100
@@ -611,7 +789,7 @@ describe 'Helpers ->', ->
       #   expect(-> h.calcArrDelta [200, 300, 100]).toThrow()
       #   expect(-> h.calcArrDelta()).toThrow()
       
-    describe 'getRadialPoint', ->
+    describe 'getRadialPoint method ->', ->
       it 'should calculate radial point', ->
         point = h.getRadialPoint
           radius: 50
@@ -635,21 +813,32 @@ describe 'Helpers ->', ->
           center: x: 50, y: 50
         expect(point.x).toBe 50
         expect(point.y).toBe -50
-      it 'should return false if 1 of 3 options missed', ->
-        point = h.getRadialPoint
-          radius: 50
-          angle:  90
-        expect(point).toBeFalsy()
-      it 'should return false only if 1 of 3 options missed but not falsy', ->
+      # nope
+      # it 'should return false if 1 of 3 options missed', ->
+      #   point = h.getRadialPoint
+      #     radius: 50
+      #     angle:  90
+      #   expect(point).toBeFalsy()
+      it 'should return false only if param is 0', ->
         point = h.getRadialPoint
           radius: 0
           angle:  90
           center: x: 0, y: 0
         expect(point).toBeTruthy()
-      it 'options should have default empty object', ->
-        point = h.getRadialPoint()
-        expect(point).toBeFalsy()
-        expect(h.getRadialPoint).not.toThrow()
+      # nope
+      # it 'should not return exponential forms', ->
+      #   point = h.getRadialPoint
+      #     radius: 0.00000001
+      #     angle:  90
+      #     center: x: 0.00000001, y: 0.00000001
+      #   console.log point
+      #   expect(point.x).not.toMatch /e/
+      #   expect(point.y).not.toMatch /e/
+      # nope
+      # it 'options should have default empty object', ->
+      #   point = h.getRadialPoint()
+      #   expect(point).toBeFalsy()
+      #   expect(h.getRadialPoint).not.toThrow()
 
     describe 'cloneObj method', ->
       it 'should clone object', ->
@@ -887,5 +1076,92 @@ describe 'Helpers ->', ->
     it 'should be fulfilled', ->
       expect(h.is3d).toBe h.checkIf3d()
 
+  describe 'isObject method ->', ->
+    it 'should return true if object', ->
+      expect(h.isObject({})).toBe true
+      expect(h.isObject(null)).toBe false
+      expect(h.isObject('a')).toBe false
+      expect(h.isObject(2)).toBe false
+      expect(h.isObject(true)).toBe false
+
+  describe 'getDeltaStart method ->', ->
+    it 'should return value of the 0 key of passed object', ->
+      expect(h.getDeltaStart({ 2: 1 })).toBe '2'
+
+  describe 'getDeltaEnd method ->', ->
+    it 'should return value of the 0 key of passed object', ->
+      expect(h.getDeltaEnd({ 2: 1 })).toBe 1
+
+  describe 'isTweenProp method ->', ->
+    it 'should check in callbacksMap and tweenOptionMap maps', ->
+      for key, value of h.callbacksMap
+        expect(h.isTweenProp(key)).toBe 1
+      for key, value of h.tweenOptionMap
+        expect(h.isTweenProp(key)).toBe 1
+
+  describe 'parseStringOption method', ->
+    it 'should return passed value if not a string', ->
+      obj = {}
+      result = h.parseStringOption obj
+      expect(result).toBe obj
+
+    it 'should parse stagger values', ->
+      result = h.parseStringOption 'stagger(20, 40)'
+      expect(result).toBe 20
+
+    it 'should parse stagger values with index', ->
+      result = h.parseStringOption 'stagger(20, 40)', 2
+      expect(result).toBe 20 + (2*40)
+
+    it 'should parse rand values', ->
+      result = h.parseStringOption 'rand(10, 20)'
+      expect(result).toBeGreaterThan     10
+      expect(result).not.toBeGreaterThan 20
+
+    it 'should parse rand values inside stagger', ->
+      result = h.parseStringOption 'stagger(rand(10, 20), rand(20, 30))', 1
+      expect(result).toBeGreaterThan     30
+      expect(result).not.toBeGreaterThan 50
+
+  describe '_getLastItem method ->', ->
+    it 'should get the last item of array', ->
+      expect(h.getLastItem([1,2,3,4])).toBe 4
+      expect(h.getLastItem([1,2,3,7])).toBe 7
+      expect(h.getLastItem([1,2,3])).toBe 3
+      expect(h.getLastItem([1,2])).toBe 2
+      expect(h.getLastItem([1])).toBe 1
+
+  describe 'parseEl method ->', ->
+    it 'should find an element if `string` passed ', ->
+      expect( h.parseEl( 'body' ) ).toBe document.body
+
+    it 'should error if no element found ', ->
+      spyOn(h, 'error').and.callThrough()
+      el = h.parseEl( '#some-element' )
+      expect( h.error ).toHaveBeenCalled()
+
+    it 'should return an HTMLElement unattended ', ->
+      el = document.createElement 'div'
+      expect( h.parseEl( document.body ) ).toBe document.body
+      expect( h.parseEl( el ) ).toBe el
+
+  describe 'force3d method ->', ->
+    it 'should set backface-visibility to hidden on el', ->
+
+      el = document.createElement 'div'
+      h.force3d el
+
+      bv = el.style[ 'backface-visibility' ]
+      pbv = el.style[ "#{h.prefix.css}backface-visibility" ]
+      bfv = bv or pbv
+      expect( bfv ).toBe 'hidden'
+
+    it 'should return el', ->
+
+      el = document.createElement 'div'
+      result = h.force3d el
+
+      expect( result ).toBe el
+    
 
 

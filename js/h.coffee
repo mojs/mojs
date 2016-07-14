@@ -1,4 +1,3 @@
-
 # Utils methods and map objects
 #
 # @class Helpers
@@ -47,42 +46,36 @@ class Helpers
     orange:      'rgb(255,128,0)'
   # ---
   # none-tweenable props
-  chainOptionMap:
-    duration:         1
-    delay:            1
-    repeat:           1
-    easing:           1
-    yoyo:             1
-    onStart:          1
-    onComplete:       1
-    onCompleteChain:  1
-    onUpdate:         1
-    points:           1
+  chainOptionMap: {} # callbacksContext: 1
   callbacksMap:
     onStart:          1
     onComplete:       1
-    onCompleteChain:  1
+    onFirstUpdate:    1
     onUpdate:         1
+    onProgress:       1
+    onRepeatStart:    1
+    onRepeatComplete: 1
   tweenOptionMap:
     duration:         1
     delay:            1
+    speed:            1
     repeat:           1
     easing:           1
     yoyo:             1
-  posPropsMap:
+    shiftTime:        1
+    isReversed:       1
+  unitOptionMap:
+    left:             1
+    top:              1
     x:                1
     y:                1
-    shiftX:           1
-    shiftY:           1
-
-    burstX:           1
-    burstY:           1
-    burstShiftX:      1
-    burstShiftY:      1
-  strokeDashPropsMap:
-    strokeDasharray:  1
-    strokeDashoffset: 1
+    rx:               1
+    ry:               1
+  # strokeDashPropsMap:
+  #   strokeDasharray:  1
+  #   # strokeDashoffset: 1
   RAD_TO_DEG: 180/Math.PI
+  # DEG_TO_RAD: Math.PI/180
   constructor:-> @vars()
   vars:->
     @prefix = @getPrefix()
@@ -152,11 +145,9 @@ class Helpers
   clamp:(value, min, max)->
     if value < min then min else if value > max then max else value
     # Math.min Math.max(value, min), max
-  setPrefixedStyle:(el, name, value, isIt)->
-    if name.match /transform/gim
-      el.style["#{name}"] = value
-      el.style["#{@prefix.css}#{name}"] = value
-    else el.style[name] = value
+  setPrefixedStyle:(el, name, value)->
+    (name is 'transform') and (el.style["#{@prefix.css}#{name}"] = value)
+    el.style[name] = value
   # ---
   # 
   # Sets styles on element with prefix(if needed) on el
@@ -194,9 +185,9 @@ class Helpers
     if typeof value is 'number'
       return returnVal =
         unit:     'px'
-        isStrict:   false
+        isStrict: false
         value:    value
-        string:   "#{value}px"
+        string:   if value is 0 then "#{value}" else "#{value}px"
     else if typeof value is 'string'
       regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim
       unit = value.match(regex)?[0]; isStrict = true
@@ -207,7 +198,7 @@ class Helpers
         unit:     unit
         isStrict: isStrict
         value:    amount
-        string:   "#{amount}#{unit}"
+        string:   if amount is 0 then "#{amount}" else "#{amount}#{unit}"
     value
   bind:(func, context) ->
     wrapper = ->
@@ -217,13 +208,14 @@ class Helpers
     bindArgs = Array::slice.call(arguments, 2)
     wrapper
   getRadialPoint:(o={})->
-    return if !o.radius? or !o.angle? or !o.center?
-    radAngle = (o.angle-90)*(Math.PI/180)
+    # return if !o.radius? or !o.angle? or !o.center?
+    radAngle = (o.angle-90)*0.017453292519943295 # Math.PI/180
     radiusX = if o.radiusX? then o.radiusX else o.radius
     radiusY = if o.radiusY? then o.radiusY else o.radius
     point =
       x: o.center.x + (Math.cos(radAngle)*radiusX)
       y: o.center.y + (Math.sin(radAngle)*radiusY)
+
   getPrefix:->
     styles = window.getComputedStyle(document.documentElement, "")
     v = Array::slice.call(styles).join("").match(/-(moz|webkit|ms)-/)
@@ -312,6 +304,7 @@ class Helpers
           g: parseInt(result[2],10)
           b: parseInt(result[3],10)
           a: if alpha? and !isNaN(alpha) then alpha else 1
+
     colorObj
 
   computedStyle:(el)-> getComputedStyle el
@@ -362,12 +355,23 @@ class Helpers
     if typeof str is 'string' and str.match(/rand\(/) then @parseRand(str)
     else str
   # if delta object was passed: like { 20: 75 }
-  parseDelta:(key, value)->
+  parseDelta:(key, value, index)->
+    # clone the delta object before proceed
+    value = @cloneObj value
+    # parse delta easing
+    easing = value.easing
+    if easing? then easing = mojs.easing.parseEasing( easing )
+    delete value.easing
+    # parse delta curve
+    curve = value.curve
+    if curve? then curve = mojs.easing.parseEasing( curve )
+    delete value.curve
+
     start = Object.keys(value)[0]
     end   = value[start]
     delta = start: start
     # color values
-    if isNaN(parseFloat(start)) and !start.match(/rand\(/)
+    if isNaN(parseFloat(start)) and !start.match(/rand\(/) and !start.match(/stagger\(/)
       if key is 'strokeLinecap'
         @warn "Sorry, stroke-linecap property is not animatable
            yet, using the start(#{start}) value instead", value
@@ -376,16 +380,18 @@ class Helpers
       startColorObj = @makeColorObj start
       endColorObj   = @makeColorObj end
       delta  =
-        start:  startColorObj
-        end:    endColorObj
-        type:   'color'
+        type:     'color'
+        start:    startColorObj
+        end:      endColorObj
+        easing:   easing
+        curve:    curve
         delta:
           r: endColorObj.r - startColorObj.r
           g: endColorObj.g - startColorObj.g
           b: endColorObj.b - startColorObj.b
           a: endColorObj.a - startColorObj.a
     # color strokeDasharray/strokeDashoffset
-    else if key is 'strokeDasharray' or key is 'strokeDashoffset'
+    else if key is 'strokeDasharray' or key is 'strokeDashoffset' or key is 'origin'
       startArr  = @strToArr start
       endArr    = @strToArr end
       @normDashArrays startArr, endArr
@@ -395,36 +401,42 @@ class Helpers
         @mergeUnits start, end, key
 
       delta =
-        start:  startArr
-        end:    endArr
-        delta:  @calcArrDelta startArr, endArr
-        type:   'array'
+        type:     'array'
+        start:    startArr
+        end:      endArr
+        delta:    @calcArrDelta startArr, endArr
+        easing:   easing
+        curve:    curve
     ## plain numeric value ##
     else
       ## filter tween-related properties
       # defined in helpers.chainOptionMap
       # because tween-related props shouldn't
       ## have deltas
-      if !@chainOptionMap[key]
-        # position values defined in posPropsMap
-        if @posPropsMap[key]
-          end   = @parseUnit @parseIfRand end
-          start = @parseUnit @parseIfRand start
+      if !@callbacksMap[key] and !@tweenOptionMap[key]
+        # position values defined in unitOptionMap
+        if @unitOptionMap[key]
+          end   = @parseUnit @parseStringOption end,   index
+          start = @parseUnit @parseStringOption start, index
           @mergeUnits start, end, key
           delta =
-            start:  start
-            end:    end
-            delta:  end.value - start.value
-            type:   'unit'
+            type:     'unit'
+            start:    start
+            end:      end
+            delta:    end.value - start.value
+            easing:   easing
+            curve:    curve
         else
-          # none position but numeric values
-          end   = parseFloat @parseIfRand    end
-          start = parseFloat @parseIfRand  start
+          # not position but numeric values
+          end   = parseFloat @parseStringOption  end,   index
+          start = parseFloat @parseStringOption  start, index
           delta =
-            start:  start
-            end:    end
-            delta:  end - start
-            type:   'number'
+            type:     'number'
+            start:    start
+            end:      end
+            delta:    end - start
+            easing:   easing
+            curve:    curve
     delta
 
   mergeUnits:(start, end, key)->
@@ -445,7 +457,6 @@ class Helpers
   isDOM:(o)->
     return false if !o?
     # if typeof Node is 'function' then o instanceof Node
-    # else
     isNode = typeof o.nodeType is 'number' and typeof o.nodeName is 'string'
     typeof o is 'object' and isNode
   getChildElements:(element)->
@@ -501,6 +512,74 @@ class Helpers
     style = div.style; prefixed = "#{@prefix.css}transform"
     tr = if style[prefixed]? then style[prefixed] else style.transform
     tr isnt ''
+  ###
+    Method to check if variable holds pointer to an object.
+    @param {Any} Variable to test
+    @returns {Boolean} If variable is object.
+  ###
+  isObject:(variable)-> variable != null and typeof variable is 'object'
+  ###
+    Method to get first value of the object.
+    Used to get end value on ∆s.
+    @param {Object} Object to get the value of.
+    @returns {Any} The value of the first object' property.
+  ###
+  getDeltaEnd: (obj)-> key = Object.keys(obj)[0]; return obj[key]
+  ###
+    Method to get first key of the object.
+    Used to get start value on ∆s.
+    @param {Object} Object to get the value of.
+    @returns {String} The key of the first object' property.
+  ###
+  getDeltaStart: (obj)-> key = Object.keys(obj)[0]; return key
+  ###
+    Method to check if propery exists in callbacksMap or tweenOptionMap.
+    @param {String} Property name to check for
+    @returns {Boolean} If property is tween property.
+  ###
+  isTweenProp:(keyName)-> @tweenOptionMap[keyName] or @callbacksMap[keyName]
+  ###
+    Method to parse string property value
+    which can include both `rand` and `stagger `
+    value in various positions.
+    @param {String} Property name to check for.
+    @param {Number} Optional index for stagger.
+    @returns {Number} Parsed option value.
+  ###
+  parseStringOption: ( value, index = 0 ) ->
+    if typeof value is 'string'
+      value = @parseIfStagger( value, index )
+      value = @parseIfRand( value )
+    value
+  ###
+    Method to get the last item of array.
+    @private
+    @param {Array} Array to get the last item in.
+    @returns {Any} The last item of array.
+  ###
+  getLastItem: (arr) -> arr[arr.length-1]
+  ###
+    Method parse HTMLElement.
+    @private
+    @param {String, Object} Selector string or HTMLElement.
+    @returns {Object} HTMLElement.
+  ###
+  parseEl: ( el )->
+    if h.isDOM( el ) then return el
+    else if ( typeof el is 'string' )
+      el = document.querySelector( el )
+    
+    if ( el == null ) then h.error( "Can't parse HTML element: ", el );
+    el
+  ###
+    Method force compositor layer on HTMLElement.
+    @private
+    @param {Object} HTMLElement.
+    @returns {Object} HTMLElement.
+  ###
+  force3d: ( el )->
+    this.setPrefixedStyle el, 'backface-visibility', 'hidden'
+    el
 
 h = new Helpers
 module.exports = h

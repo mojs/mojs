@@ -6,17 +6,17 @@ module.exports = function(config) {
   // Browsers to run on Sauce Labs
   // Check out https://saucelabs.com/platforms for all browser/OS combos
   var customLaunchers = {
-    sl_chrome_26: {
-      base: 'SauceLabs',
-      browserName: 'chrome',
-      platform: 'Windows XP',
-      version: '26'
-    },
     sl_chrome_35: {
       base: 'SauceLabs',
       browserName: 'chrome',
       platform: 'Windows 7',
       version: '35'
+    },
+    sl_chrome_50: {
+      base: 'SauceLabs',
+      browserName: 'chrome',
+      platform: 'Windows 7',
+      version: '50'
     },
     sl_safari: {
       base: 'SauceLabs',
@@ -32,7 +32,7 @@ module.exports = function(config) {
     sl_firefox_4: {
       base: 'SauceLabs',
       browserName: 'firefox',
-      version: '4'
+      version: '38'
     },
     // sl_ios_safari: {
     //   base: 'SauceLabs',
@@ -75,57 +75,69 @@ module.exports = function(config) {
     basePath: '',
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'browserify'],
+    frameworks: ['jasmine'],
     // list of files / patterns to load in the browser
     files: [
-      'spec/mo.spec.js',
+      './node_modules/phantomjs-polyfill/bind-polyfill.js',
       // 'dist/**/*.js',
-      'spec/**/*.js'
-      // 'dist/mo.js',
-      // 'dist/transit.js',
-      // 'spec/transit.js',
+      'build/mo.js',
+      'spec/**/*.js',
+      'spec/shapes/*.js'
     ],
     // list of files to exclude
     exclude: [
-      // 'js/mo.js',
-      // 'dist/mo.js',
-      // 'dist/mojs.js',
-      // 'dist/h.js',
+      // 'build/h.js',
       // 'spec/h.js',
-      // 'dist/transit.js',
-      // 'spec/transit.js',
-      // 'dist/swirl.js',
-      // 'spec/swirl.js',
-      // 'dist/spriter.js',
-      // 'spec/spriter.js',
-      // 'dist/stagger.js',
-      // 'spec/stagger.js',
-      // // 'dist/tween.js',
-      // // 'spec/tween.js',
-      // 'dist/burst.js',
+      
+      // // 'build/shape.js',
+      // // 'spec/shape.js',
+      // 'build/shape-swirl.js',
+      // 'spec/shape-swirl.js',
+      // 'build/burst.js',
       // 'spec/burst.js',
-      // // 'dist/timeline.js',
-      // // 'spec/timeline.js',
-      // 'dist/motion-path.js',
+
+      // 'build/module.js',
+      // 'spec/module.js',
+      // 'build/tween/tweenable.js',
+      // 'spec/tween/tweenable.js',
+      // 'build/tunable.js',
+      // 'spec/tunable.js',
+      // 'build/thenable.js',
+      // 'spec/thenable.js',
+      
+      // 'build/spriter.js',
+      // 'spec/spriter.js',
+      // 'build/stagger.js',
+      // 'spec/stagger.js',
+
+      // 'build/easing/easing.js',
+      // 'spec/easing/easing.js',
+
+      // // 'build/tween/timeline.js',
+      // // 'spec/tween/timeline.js',
+      // // 'build/tween/tween.js',
+      // // 'spec/tween/tween.js',
+      // // 'build/tween/tweener.js',
+      // // 'spec/tween/tweener.js',
+
+      // 'build/motion-path.js',
       // 'spec/motion-path.js',
-      // 'dist/tweener.js',
-      // 'spec/tweener.js',
-      // 'dist/bits/*.js',
-      // 'spec/bits/*.js'
+      // 'build/shapes/*.js',
+      // 'spec/shapes/*.js'
     ],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'spec/mo.spec.js': 'coverage',
-        // 'dist/**/*.js': ['browserify']
+      'build/mo.js': 'coverage',
+      // 'dist/**/*.js': ['browserify']
     },
-    browserify: {
-      debug: true,
-      transform: [ 'brfs', istanbul({
-        ignore: ['**/node_modules/**', '**/spec/**', '**/vendor/**'],
-      })]
-    },
+    // browserify: {
+    //   debug: true,
+    //   transform: [ 'brfs', istanbul({
+    //     ignore: ['**/node_modules/**', '**/spec/**', '**/vendor/**'],
+    //   })]
+    // },
     coverageReporter: {
       reporters:[
         {type: 'html', dir:'coverage/'},
