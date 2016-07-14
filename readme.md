@@ -15,6 +15,9 @@
 ## Tutorials
   - [Path Easing](http://mojs.io/tutorials/easing/path-easing/)
 
+## Tools
+  - [MojsPlayer](https://github.com/legomushroom/mojs-player)
+
 ## Installation
 ### CDN
 `<script src="//cdn.jsdelivr.net/mojs/latest/mo.min.js"></script>`  
