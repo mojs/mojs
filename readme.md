@@ -4,7 +4,7 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom-dev.svg)](https://saucelabs.com/u/legomushroom-dev)
 
-## Webiste
+## Website
 [mojs.io](http://mojs.io/)
 
 ## Demos
