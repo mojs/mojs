@@ -11,9 +11,14 @@
   - [motion graphics for the web](http://codepen.io/sol0mka/full/ogOYJj/)
   - [bubble layout](http://codepen.io/sol0mka/full/yNOage/)
   - [sleepy mole](http://codepen.io/sol0mka/full/OyzBXR)
+  - [Animocons](http://tympanus.net/Development/Animocons/)
 
 ## Tutorials
   - [Path Easing](http://mojs.io/tutorials/easing/path-easing/)
+  - [Icon Animations Powered by mo.js](http://tympanus.net/codrops/2016/02/23/icon-animations-powered-by-mo-js/)
+
+## Tools
+  - [MojsPlayer](https://github.com/legomushroom/mojs-player)
 
 ## Installation
 ### CDN
