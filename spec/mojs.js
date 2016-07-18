@@ -69,8 +69,12 @@
     it('should have easing', function() {
       return expect(mojs.easing).toBeDefined();
     });
-    return it('should have shapesMap', function() {
+    it('should have shapesMap', function() {
       return expect(mojs.shapesMap).toBeDefined();
+    });
+    return it('should have _pool', function() {
+      expect(typeof mojs._pool).toBe('object');
+      return expect(mojs._pool).toBe(mojs._pool);
     });
   });
 

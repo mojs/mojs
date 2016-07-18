@@ -12,6 +12,7 @@ import Tweener      from './tween/tweener';
 import Tweenable    from './tween/tweenable';
 import Thenable     from './thenable';
 import Tunable      from './tunable';
+import Delta        from './delta/delta';
 import Module       from './module';
 import tweener      from './tween/tweener';
 import easing       from './easing/easing';
@@ -20,7 +21,7 @@ var mojs = {
   revision:   '0.265.7', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
-  tweener, easing, shapesMap
+  tweener, easing, shapesMap, _pool: { Delta }
 }
 
 // functions alias

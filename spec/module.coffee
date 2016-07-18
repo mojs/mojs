@@ -564,7 +564,7 @@ describe 'module class ->', ->
 
   describe '_calcCurrentProps method', ->
     it 'should calc color with alpha', ->
-      md = new Module isIt: 1
+      md = new Module
 
       md._deltas = {
         fill: h.parseDelta( 'fill', { 'rgba(0,0,0,0)' : 'rgba(0,0,0,1)' }, 0 )

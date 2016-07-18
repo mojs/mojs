@@ -381,6 +381,7 @@ class Helpers
       endColorObj   = @makeColorObj end
       delta  =
         type:     'color'
+        name:     key
         start:    startColorObj
         end:      endColorObj
         easing:   easing
@@ -402,6 +403,7 @@ class Helpers
 
       delta =
         type:     'array'
+        name:     key
         start:    startArr
         end:      endArr
         delta:    @calcArrDelta startArr, endArr
@@ -421,6 +423,7 @@ class Helpers
           @mergeUnits start, end, key
           delta =
             type:     'unit'
+            name:     key
             start:    start
             end:      end
             delta:    end.value - start.value
@@ -432,6 +435,7 @@ class Helpers
           start = parseFloat @parseStringOption  start, index
           delta =
             type:     'number'
+            name:     key
             start:    start
             end:      end
             delta:    end - start

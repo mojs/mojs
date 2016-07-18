@@ -4,16 +4,21 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom-dev.svg)](https://saucelabs.com/u/legomushroom-dev)
 
-## Webiste
-[mojs.io](http://mojs.io/)
+## Website
+[mojs.io](http://mojs.io/) [[repo](https://github.com/legomushroom/mojs-website)]
 
 ## Demos
   - [motion graphics for the web](http://codepen.io/sol0mka/full/ogOYJj/)
   - [bubble layout](http://codepen.io/sol0mka/full/yNOage/)
   - [sleepy mole](http://codepen.io/sol0mka/full/OyzBXR)
+  - [Animocons](http://tympanus.net/Development/Animocons/)
 
 ## Tutorials
   - [Path Easing](http://mojs.io/tutorials/easing/path-easing/)
+  - [Icon Animations Powered by mo.js](http://tympanus.net/codrops/2016/02/23/icon-animations-powered-by-mo-js/)
+
+## Tools
+  - [MojsPlayer](https://github.com/legomushroom/mojs-player)
 
 ## Installation
 ### CDN

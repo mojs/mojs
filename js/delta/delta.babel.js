@@ -1,0 +1,119 @@
+const h = require('../h');
+import Tween from '../tween/tween';
+
+class Delta {
+
+  constructor ( o = {} ) {
+    this._o = o;
+  }
+  /*
+    Method to create tween of the delta.
+    @private
+    @param {Object} Options object.
+  */
+  _createTween (o) {
+    var it = this;
+    o.callbackOverrides = {
+      onUpdate (ep, p) { it._calcCurrentProps( ep, p ); }
+    }
+    this.tween = new Tween( o );
+  }
+  /*
+    Method to calculate current progress of the deltas.
+    @private
+    @param {Number} Eased progress to calculate - [0..1].
+    @param {Number} Progress to calculate - [0..1].
+  */
+  _calcCurrentProps ( easedProgress, p ) {
+    var deltas = this._o.deltas;
+    for (var i = 0; i < deltas.length; i++) {
+      this[`_calcCurrent_${deltas[i].type}`]( deltas[i] );
+    }
+  }
+  /*
+    Method to calc the current color delta value.
+    @param {Object} Delta
+    @param {Number} Eased progress [0..1].
+    @param {Number} Plain progress [0..1].
+  */
+  _calcCurrent_color (delta, ep, p) {
+    var r, g, b, a,
+        start = delta.start,
+        d     = delta.delta;
+    if ( !delta.curve ) {
+      r = parseInt(start.r + ep * d.r, 10);
+      g = parseInt(start.g + ep * d.g, 10);
+      b = parseInt(start.b + ep * d.b, 10);
+      a = parseFloat(start.a + ep * d.a);
+    } else {
+      var cp = delta.curve(p);
+      r = parseInt(cp * (start.r + p*d.r), 10);
+      g = parseInt(cp * (start.g + p*d.g), 10);
+      b = parseInt(cp * (start.b + p*d.b), 10);
+      a = parseFloat(cp * (start.a + p*d.a));
+    }
+    this._o.props[delta.name] = `rgba(${r},${g},${b},${a})`;
+  }
+  /*
+    Method to calc the current number delta value.
+    @param {Object} Delta
+    @param {Number} Eased progress [0..1].
+    @param {Number} Plain progress [0..1].
+  */
+  _calcCurrent_number (delta, ep, p) {
+    this._o.props[delta.name] = (!delta.curve)
+          ? delta.start + ep * delta.delta
+          : delta.curve(p) * ( delta.start + p * delta.delta );
+  }
+  /*
+    Method to calc the current number with units delta value.
+    @param {Object} Delta
+    @param {Number} Eased progress [0..1].
+    @param {Number} Plain progress [0..1].
+  */
+  _calcCurrent_unit (delta, ep, p) {
+    var currentValue = (!delta.curve)
+      ? delta.start.value + ep*delta.delta
+      : delta.curve(p) * ( delta.start.value + p * delta.delta );
+    
+    this._o.props[delta.name] = `${currentValue}${delta.end.unit}`
+  }
+  /*
+    Method to calc the current array delta value.
+    @param {Object} Delta
+    @param {Number} Eased progress [0..1].
+    @param {Number} Plain progress [0..1].
+  */
+  _calcCurrent_array (delta, ep, p) {
+    var arr,
+        name = delta.name,
+        props = this._o.props;
+
+    // to prevent GC bothering with arrays garbage
+    if ( h.isArray( props[name] ) ) {
+      arr = props[name];
+      arr.length = 0;
+    } else { arr = []; }
+
+    // just optimization to prevent curve
+    // calculations on every array item
+    var proc = (delta.curve) ? delta.curve(p) : null;
+
+    for ( var i = 0; i < delta.delta.length; i++ ) {
+      var item = delta.delta[i],
+          dash = (!delta.curve)
+            ? delta.start[i].value + ep * item.value
+            : proc * (delta.start[i].value + p * item.value);
+
+      arr.push({
+        string: `${dash}${item.unit}`,
+        value:  dash,
+        unit:   item.unit,
+      });
+    }
+    props[name] = arr;
+  }
+
+}
+
+export default Delta;

@@ -176,6 +176,7 @@ describe 'Helpers ->', ->
           expect(delta.start)   .toBe   25
           expect(delta.delta)   .toBe   50
           expect(delta.type)    .toBe   'number'
+          expect(delta.name)    .toBe   'radius'
 
         it 'should parse easing', ->
           spyOn(mojs.easing, 'parseEasing').and.callThrough()
@@ -235,6 +236,8 @@ describe 'Helpers ->', ->
           expect(delta.end.unit)    .toBe   '%'
           expect(delta.end.value)   .toBe   -75.5
           expect(delta.end.string)  .toBe   '-75.5%'
+
+          expect(delta.name)        .toBe   'x'
 
         it 'should fallback to declared units if one of them defined #2', ->
           delta = h.parseDelta 'x',  {'25.50': '-75.50%'}
@@ -311,6 +314,7 @@ describe 'Helpers ->', ->
           expect(delta.end[0].unit)    .toBe   '%'
           expect(delta.end[0].value)   .toBe   -75.5
           expect(delta.end[0].string)  .toBe   '-75.5%'
+          expect(delta.name)           .toBe   'strokeDashoffset'
 
         it 'should work with strokeDash.. properties #2', ->
           delta = h.parseDelta 'strokeDashoffset',  {'25.50%': '-75.50'}
@@ -374,6 +378,8 @@ describe 'Helpers ->', ->
           expect(delta.end.r)      .toBe   255
           expect(delta.delta.r)    .toBe   255
           expect(delta.type)       .toBe   'color'
+          expect(delta.name)       .toBe   'stroke'
+
         it 'should ignore stroke-linecap prop, use start prop and warn', ->
           spyOn console, 'warn'
           delta = h.parseDelta 'strokeLinecap', {'round': 'butt'}
@@ -422,6 +428,7 @@ describe 'Helpers ->', ->
           expect(delta.start[1].unit)  .toBe   '%'
           expect(delta.end[1].value)   .toBe   0
           expect(delta.end[1].unit)    .toBe   '%'
+          expect(delta.name)           .toBe   'strokeDasharray'
         it 'should calculate array delta', ->
           delta = h.parseDelta 'strokeDashoffset', { '200 100%': '300' }
           expect(delta.type)           .toBe   'array'

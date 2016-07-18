@@ -369,10 +369,11 @@ class Module {
           b = parseInt(value.start.b + ep * value.delta.b, 10);
           a = parseFloat(value.start.a + ep * value.delta.a);
         } else {
-          r = parseInt(value.curve(p) * (value.start.r + p*value.delta.r), 10);
-          g = parseInt(value.curve(p) * (value.start.g + p*value.delta.g), 10);
-          b = parseInt(value.curve(p) * (value.start.b + p*value.delta.b), 10);
-          a = parseFloat(value.curve(p) * (value.start.a + p*value.delta.a));
+          var cp = value.curve(p);
+          r = parseInt(cp * (value.start.r + p*value.delta.r), 10);
+          g = parseInt(cp * (value.start.g + p*value.delta.g), 10);
+          b = parseInt(cp * (value.start.b + p*value.delta.b), 10);
+          a = parseFloat(cp * (value.start.a + p*value.delta.a));
         }
         this._props[key] = `rgba(${r},${g},${b},${a})`;
       }
