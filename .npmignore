@@ -1,10 +1,14 @@
 node_modules/
 coverage/
-build/
-docs/
+mockups/
+vendor/
 spec/
 css/
 js/
 index.html
 index.jade
+bower.json
 npm-debug.log
+gulpfile.js
+karma.conf.js
+webpack.config.js
