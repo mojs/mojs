@@ -1,7 +1,5 @@
 (function() {
-  var Delta, Module, Tween, deltas, h, props, tweenOptions;
-
-  Module = mojs.Module;
+  var Delta, Tween, deltas, h, props, tweenOptions;
 
   Tween = mojs.Tween;
 
@@ -244,7 +242,7 @@
         delta._createTween(tweenOptions);
         return expect(delta.tween._o).toBe(tweenOptions);
       });
-      return it('should add onUpdate callback override', function() {
+      it('should add onUpdate callback override', function() {
         var delta;
         tweenOptions = {
           duration: 200
@@ -260,6 +258,16 @@
         spyOn(delta, '_calcCurrentProps');
         delta.tween._callbackOverrides.onUpdate(.2, .1);
         return expect(delta._calcCurrentProps).toHaveBeenCalledWith(.2, .1);
+      });
+      return it('should be called on initialization', function() {
+        var delta;
+        spyOn(Delta.prototype, '_createTween');
+        delta = new Delta({
+          deltas: deltas,
+          tweenOptions: tweenOptions,
+          props: props
+        });
+        return expect(Delta.prototype._createTween).toHaveBeenCalled();
       });
     });
   });

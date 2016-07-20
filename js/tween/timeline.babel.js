@@ -162,14 +162,12 @@ class Timeline extends Tween {
   }
 
   _updateChildren ( p, time, isYoyo ) {
-    this._o.isIt && console.log( time, this._prevTime )
     var coef = ( time > this._prevTime ) ? -1 : 1;
     if ( this._props.isYoyo && isYoyo ) { coef *= -1; }
     var timeToTimelines     = this._props.startTime + p*(this._props.duration),
         prevTimeToTimelines = timeToTimelines + coef,
         len = this._timelines.length;
 
-    this._o.isIt && console.log( `update children`, timeToTimelines, prevTimeToTimelines );
     for (var i = 0; i < len; i++) {
       // specify the children's array update loop direction
       // if time > prevTime go from 0->length else from length->0

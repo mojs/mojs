@@ -48,6 +48,7 @@ class Helpers
   # none-tweenable props
   chainOptionMap: {} # callbacksContext: 1
   callbacksMap:
+    onRefresh:        1
     onStart:          1
     onComplete:       1
     onFirstUpdate:    1
@@ -55,15 +56,21 @@ class Helpers
     onProgress:       1
     onRepeatStart:    1
     onRepeatComplete: 1
+    onPlaybackStart:    1
+    onPlaybackPause:    1
+    onPlaybackStop:     1
+    onPlaybackComplete: 1
   tweenOptionMap:
     duration:         1
     delay:            1
     speed:            1
     repeat:           1
     easing:           1
-    yoyo:             1
+    backwardEasing:   1
+    isYoyo:           1
     shiftTime:        1
     isReversed:       1
+    callbacksContext: 1
   unitOptionMap:
     left:             1
     top:              1

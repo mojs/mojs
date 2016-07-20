@@ -1,6 +1,6 @@
 # import Delta from '../../js/delta/delta.babel.js'
 
-Module  = mojs.Module
+# Module  = mojs.Module
 Tween   = mojs.Tween
 h       = mojs.h
 Delta   = mojs._pool.Delta
@@ -225,6 +225,15 @@ describe 'Delta ->', ->
       delta.tween._callbackOverrides.onUpdate( .2, .1 )
 
       expect( delta._calcCurrentProps ).toHaveBeenCalledWith .2, .1
+
+    it 'should be called on initialization', ->
+      spyOn Delta.prototype, '_createTween'
+      delta = new Delta
+        deltas: deltas,
+        tweenOptions: tweenOptions,
+        props: props
+
+      expect( Delta.prototype._createTween ).toHaveBeenCalled()
 
 
 

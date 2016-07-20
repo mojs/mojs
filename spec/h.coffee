@@ -48,13 +48,16 @@ describe 'Helpers ->', ->
       expect(h.tweenOptionMap.delay)              .toBe 1
       expect(h.tweenOptionMap.repeat)             .toBe 1
       expect(h.tweenOptionMap.easing)             .toBe 1
-      expect(h.tweenOptionMap.yoyo)               .toBe 1
+      expect(h.tweenOptionMap.backwardEasing)     .toBe 1
+      expect(h.tweenOptionMap.isYoyo)             .toBe 1
       expect(h.tweenOptionMap.shiftTime)          .toBe 1
       expect(h.tweenOptionMap.isReversed)         .toBe 1
       expect(h.tweenOptionMap.speed)              .toBe 1
-      expect(Object.keys(h.tweenOptionMap).length).toBe 8
+      expect(h.tweenOptionMap.callbacksContext)   .toBe 1
+      expect(Object.keys(h.tweenOptionMap).length).toBe 10
   describe 'pure callbacks props ->', ->
     it 'should be a map of callback related options ->', ->
+      expect(h.callbacksMap.onRefresh)          .toBe 1
       expect(h.callbacksMap.onStart)            .toBe 1
       expect(h.callbacksMap.onUpdate)           .toBe 1
       expect(h.callbacksMap.onComplete)         .toBe 1
@@ -62,7 +65,11 @@ describe 'Helpers ->', ->
       expect(h.callbacksMap.onFirstUpdate)      .toBe 1
       expect(h.callbacksMap.onRepeatStart)      .toBe 1
       expect(h.callbacksMap.onRepeatComplete)   .toBe 1
-      expect(Object.keys(h.callbacksMap).length).toBe 7
+      expect(h.callbacksMap.onPlaybackStart)    .toBe 1
+      expect(h.callbacksMap.onPlaybackPause)    .toBe 1
+      expect(h.callbacksMap.onPlaybackStop)     .toBe 1
+      expect(h.callbacksMap.onPlaybackComplete) .toBe 1
+      expect(Object.keys(h.callbacksMap).length).toBe 12
   describe 'methods ->', ->
     describe 'clamp method', ->
       it 'should clamp value to max and min', ->

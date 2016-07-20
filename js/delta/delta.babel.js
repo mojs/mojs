@@ -5,6 +5,7 @@ class Delta {
 
   constructor ( o = {} ) {
     this._o = o;
+    this._createTween( o );
   }
   /*
     Method to create tween of the delta.
@@ -113,7 +114,6 @@ class Delta {
     }
     props[name] = arr;
   }
-
 }
 
 export default Delta;
