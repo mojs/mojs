@@ -8,14 +8,17 @@
 [mojs.io](http://mojs.io/)
 
 ## Demos
-  - [motion graphics for the web](http://codepen.io/sol0mka/full/ogOYJj/)
-  - [bubble layout](http://codepen.io/sol0mka/full/yNOage/)
-  - [sleepy mole](http://codepen.io/sol0mka/full/OyzBXR)
+  - [Motion Graphics for the Web](http://codepen.io/sol0mka/full/ogOYJj/)
+  - [Bubble Layout](http://codepen.io/sol0mka/full/yNOage/)
+  - [Sleepy Mole](http://codepen.io/sol0mka/full/OyzBXR)
   - [Animocons](http://tympanus.net/Development/Animocons/)
 
 ## Tutorials
   - [Path Easing](http://mojs.io/tutorials/easing/path-easing/)
   - [Icon Animations Powered by mo.js](http://tympanus.net/codrops/2016/02/23/icon-animations-powered-by-mo-js/)
+
+## API
+  - [Reference](https://github.com/legomushroom/mojs/blob/master/api/index.md)
 
 ## Tools
   - [MojsPlayer](https://github.com/legomushroom/mojs-player)
