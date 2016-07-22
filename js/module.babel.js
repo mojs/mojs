@@ -19,7 +19,6 @@ class Module {
       timeline: 1,
       prevChainModule: 1,
       callbacksContext: 1
-
     };
 
     this._declareDefaults();

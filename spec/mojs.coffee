@@ -19,6 +19,8 @@ describe 'mojs ->', ->
     expect(mojs.Shape).toBeDefined()
   it 'should have Transit alias', ->
     expect(mojs.Transit).toBe mojs.Shape
+  it 'should have Html', ->
+    expect(mojs.Html).toBeDefined()
   it 'should have ShapeSwirl', ->
     expect(mojs.ShapeSwirl).toBeDefined()
   it 'should have Swirl alias', ->

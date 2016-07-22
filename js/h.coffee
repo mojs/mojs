@@ -591,6 +591,16 @@ class Helpers
   force3d: ( el )->
     this.setPrefixedStyle el, 'backface-visibility', 'hidden'
     el
+  ###
+    Method to check if value is delta.
+    @private
+    @param {Any} Property to check.
+    @returns {Boolean} If value is delta.
+  ###
+  isDelta: ( optionsValue )->
+    isObject = this.isObject( optionsValue )
+    isObject = isObject && !optionsValue.unit
+    return !(!isObject or this.isArray(optionsValue) or this.isDOM(optionsValue))
 
 h = new Helpers
 module.exports = h

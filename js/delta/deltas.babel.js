@@ -24,8 +24,10 @@ class Deltas {
     @private
     @param {Object} Timeline options.
   */
-  _createTimeline ( opts ) {
-    this.timeline = new Timeline(opts);
+  _createTimeline ( opts = {} ) {
+    opts.timeline = opts.timeline || {};
+    opts.timeline.callbackOverrides = { onUpdate: this._o.onUpdate }
+    this.timeline = new Timeline(opts.timeline);
     this.timeline.add( this._deltas );
   }
   /*
@@ -43,7 +45,6 @@ class Deltas {
     // create child delta object
     for ( var i = 0; i < this._childDeltas.length; i++ ) {
       var delta = this._childDeltas[i];
-
       this._deltas.push(
         this._createDelta( [delta.delta], delta.tweenOptions )
       );
@@ -119,7 +120,7 @@ class Deltas {
     }
     return {
       delta,
-      tweenOptions: (isTween) ? tweenOptions: null
+      tweenOptions: (isTween) ? tweenOptions: undefined
     };
   }
   /*

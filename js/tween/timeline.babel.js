@@ -153,12 +153,15 @@ class Timeline extends Tween {
     @param {Number} Current update time.
   */
   _setProgress (p, time, isYoyo) {
-    Tween.prototype._setProgress.call( this, p, time );
     // we need to pass self previous time to children
     // to prevent initial _wasUnknownUpdate nested waterfall
     // if not yoyo option set, pass the previous time
     // otherwise, pass previous or next time regarding yoyo period.
+
+    // COVER CURRENT SWAPPED ORDER
     this._updateChildren( p, time, isYoyo );
+    
+    Tween.prototype._setProgress.call( this, p, time );
   }
 
   _updateChildren ( p, time, isYoyo ) {

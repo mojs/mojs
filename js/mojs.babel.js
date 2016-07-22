@@ -1,8 +1,9 @@
 import h            from './h';
 import shapesMap    from './shapes/shapesMap';
-import Burst        from './burst';
 import Shape        from './shape';
 import ShapeSwirl   from './shape-swirl';
+import Burst        from './burst';
+import Html         from './html';
 import stagger      from './stagger';
 import Spriter      from './spriter';
 import MotionPath   from './motion-path';
@@ -19,8 +20,8 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.266.0', isDebug: true, helpers: h,
-  Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
+  revision:   '0.267.0', isDebug: true, helpers: h,
+  Shape, ShapeSwirl, Burst, Html, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap, _pool: { Delta, Deltas }
 }

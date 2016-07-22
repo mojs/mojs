@@ -1176,6 +1176,15 @@ describe 'Helpers ->', ->
       result = h.force3d el
 
       expect( result ).toBe el
+
+  describe 'isDelta method ->', ->
+    it 'should detect if value is not a delta value', ->
+      expect(h.isDelta(45))    .toBe false
+      expect(h.isDelta('45'))  .toBe false
+      expect(h.isDelta(['45'])).toBe false
+      expect(h.isDelta({ unit: 'px', value: 20 })).toBe false
+      expect(h.isDelta({ 20: 30 })).toBe true
+
     
 
 

@@ -25,7 +25,7 @@
       expect(delta._o.tweenOptions).toBe(tweenOptions);
       return expect(delta._o.props).toBe(props);
     });
-    describe('_calcCurrentProps method', function() {
+    describe('_calcCurrentProps method ->', function() {
       return it('should call sub functions based on each delta type', function() {
         var arrDelta, delta, fillDelta, radiusDelta, xDelta;
         fillDelta = h.parseDelta('fill', {
@@ -51,10 +51,10 @@
         spyOn(delta, '_calcCurrent_unit');
         spyOn(delta, '_calcCurrent_array');
         delta._calcCurrentProps(.5, .5);
-        expect(delta._calcCurrent_color).toHaveBeenCalledWith(fillDelta);
-        expect(delta._calcCurrent_number).toHaveBeenCalledWith(radiusDelta);
-        expect(delta._calcCurrent_unit).toHaveBeenCalledWith(xDelta);
-        return expect(delta._calcCurrent_array).toHaveBeenCalledWith(arrDelta);
+        expect(delta._calcCurrent_color).toHaveBeenCalledWith(fillDelta, .5, .5);
+        expect(delta._calcCurrent_number).toHaveBeenCalledWith(radiusDelta, .5, .5);
+        expect(delta._calcCurrent_unit).toHaveBeenCalledWith(xDelta, .5, .5);
+        return expect(delta._calcCurrent_array).toHaveBeenCalledWith(arrDelta, .5, .5);
       });
     });
     describe('_calcCurrent_color method', function() {
@@ -267,7 +267,7 @@
           tweenOptions: tweenOptions,
           props: props
         });
-        return expect(Delta.prototype._createTween).toHaveBeenCalled();
+        return expect(Delta.prototype._createTween).toHaveBeenCalledWith(tweenOptions);
       });
     });
   });

@@ -20,7 +20,7 @@ describe 'Delta ->', ->
     expect( delta._o.tweenOptions ).toBe tweenOptions
     expect( delta._o.props ).toBe props
 
-  describe '_calcCurrentProps method', ->
+  describe '_calcCurrentProps method ->', ->
     it 'should call sub functions based on each delta type', ->
       fillDelta   =  h.parseDelta( 'fill', { 'rgba(0,0,0,0)' : 'rgba(200,100,20,1)' }, 0 )
       xDelta      =  h.parseDelta( 'x', { '0px' : '100px' }, 0 )
@@ -40,10 +40,10 @@ describe 'Delta ->', ->
 
       delta._calcCurrentProps .5, .5
 
-      expect( delta._calcCurrent_color ).toHaveBeenCalledWith  fillDelta
-      expect( delta._calcCurrent_number ).toHaveBeenCalledWith radiusDelta
-      expect( delta._calcCurrent_unit ).toHaveBeenCalledWith   xDelta
-      expect( delta._calcCurrent_array ).toHaveBeenCalledWith  arrDelta
+      expect( delta._calcCurrent_color ).toHaveBeenCalledWith  fillDelta, .5, .5
+      expect( delta._calcCurrent_number ).toHaveBeenCalledWith radiusDelta, .5, .5
+      expect( delta._calcCurrent_unit ).toHaveBeenCalledWith   xDelta, .5, .5
+      expect( delta._calcCurrent_array ).toHaveBeenCalledWith  arrDelta, .5, .5
 
   describe '_calcCurrent_color method', ->
     it 'should calc color with alpha', ->
@@ -233,7 +233,7 @@ describe 'Delta ->', ->
         tweenOptions: tweenOptions,
         props: props
 
-      expect( Delta.prototype._createTween ).toHaveBeenCalled()
+      expect( Delta.prototype._createTween ).toHaveBeenCalledWith tweenOptions
 
 
 

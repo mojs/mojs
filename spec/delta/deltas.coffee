@@ -40,9 +40,19 @@ describe 'Deltas ->', ->
       deltas = new Deltas
         options:  options,
         props:    props
-        timeline: timeline
+        timeline: {}
+
+      expect(deltas.timeline._o).toEqual timeline
+
+    it 'should pass callbackOverrides to the timeline', ->
       
-      expect(deltas.timeline._o).toBe timeline
+      fun = ->
+      deltas = new Deltas
+        options:  options,
+        props:    props,
+        onUpdate: fun
+      
+      expect(deltas.timeline._callbackOverrides.onUpdate).toBe fun
 
     it 'should add _deltas to the Timeline', ->
       options = {

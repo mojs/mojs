@@ -47,9 +47,19 @@
         deltas = new Deltas({
           options: options,
           props: props,
-          timeline: timeline
+          timeline: {}
         });
-        return expect(deltas.timeline._o).toBe(timeline);
+        return expect(deltas.timeline._o).toEqual(timeline);
+      });
+      it('should pass callbackOverrides to the timeline', function() {
+        var deltas, fun;
+        fun = function() {};
+        deltas = new Deltas({
+          options: options,
+          props: props,
+          onUpdate: fun
+        });
+        return expect(deltas.timeline._callbackOverrides.onUpdate).toBe(fun);
       });
       return it('should add _deltas to the Timeline', function() {
         var deltas;

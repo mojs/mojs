@@ -5,14 +5,14 @@ class Delta {
 
   constructor ( o = {} ) {
     this._o = o;
-    this._createTween( o );
+    this._createTween( o.tweenOptions );
   }
   /*
     Method to create tween of the delta.
     @private
     @param {Object} Options object.
   */
-  _createTween (o) {
+  _createTween ( o = {} ) {
     var it = this;
     o.callbackOverrides = {
       onUpdate (ep, p) { it._calcCurrentProps( ep, p ); }
@@ -28,7 +28,7 @@ class Delta {
   _calcCurrentProps ( easedProgress, p ) {
     var deltas = this._o.deltas;
     for (var i = 0; i < deltas.length; i++) {
-      this[`_calcCurrent_${deltas[i].type}`]( deltas[i] );
+      this[`_calcCurrent_${deltas[i].type}`]( deltas[i], easedProgress, p );
     }
   }
   /*
@@ -76,7 +76,7 @@ class Delta {
     var currentValue = (!delta.curve)
       ? delta.start.value + ep*delta.delta
       : delta.curve(p) * ( delta.start.value + p * delta.delta );
-    
+
     this._o.props[delta.name] = `${currentValue}${delta.end.unit}`
   }
   /*

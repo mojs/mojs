@@ -1538,7 +1538,7 @@
         return expect(h.parseEl(el)).toBe(el);
       });
     });
-    return describe('force3d method ->', function() {
+    describe('force3d method ->', function() {
       it('should set backface-visibility to hidden on el', function() {
         var bfv, bv, el, pbv;
         el = document.createElement('div');
@@ -1553,6 +1553,20 @@
         el = document.createElement('div');
         result = h.force3d(el);
         return expect(result).toBe(el);
+      });
+    });
+    return describe('isDelta method ->', function() {
+      return it('should detect if value is not a delta value', function() {
+        expect(h.isDelta(45)).toBe(false);
+        expect(h.isDelta('45')).toBe(false);
+        expect(h.isDelta(['45'])).toBe(false);
+        expect(h.isDelta({
+          unit: 'px',
+          value: 20
+        })).toBe(false);
+        return expect(h.isDelta({
+          20: 30
+        })).toBe(true);
       });
     });
   });

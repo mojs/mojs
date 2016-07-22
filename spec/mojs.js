@@ -30,6 +30,9 @@
     it('should have Transit alias', function() {
       return expect(mojs.Transit).toBe(mojs.Shape);
     });
+    it('should have Html', function() {
+      return expect(mojs.Html).toBeDefined();
+    });
     it('should have ShapeSwirl', function() {
       return expect(mojs.ShapeSwirl).toBeDefined();
     });
