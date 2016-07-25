@@ -1,6 +1,6 @@
 # Burst
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/28b429cd2d5ae8c0dd0f10cecd6d0bd0)
+- [CodePen Example](http://codepen.io/sol0mka/pen/JKWKVR?editors=0010)
 - [ShapeSwirl API](./shape-swirl.md)
 - [Stagger Strings API](./stagger.md)
 - [Property Maps API](./property-maps.md)
@@ -159,7 +159,7 @@ const burst = new mojs.Burst({
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/28b429cd2d5ae8c0dd0f10cecd6d0bd0)
+- [CodePen Example](http://codepen.io/sol0mka/pen/JKWKVR?editors=0010)
 - [ShapeSwirl API](./shape-swirl.md)
 - [Stagger Strings API](./stagger.md)
 - [Property Maps API](./property-maps.md)
