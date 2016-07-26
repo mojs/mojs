@@ -4,6 +4,8 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom-dev.svg)](https://saucelabs.com/u/legomushroom-dev)
 
+## You can support the project [on Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare) now!
+
 ## Website
 [mojs.io](http://mojs.io/) [[repo](https://github.com/legomushroom/mojs-website)]
 
@@ -12,8 +14,21 @@
   - [Bubble Layout](http://codepen.io/sol0mka/full/yNOage/)
   - [Sleepy Mole](http://codepen.io/sol0mka/full/OyzBXR)
   - [Animocons](http://tympanus.net/Development/Animocons/)
+  - [Sleepy Mole](http://codepen.io/sol0mka/full/OyzBXR)
+  - [Bubbles](http://codepen.io/sol0mka/full/2ef10ed42ff535182c31cd1dbb81e453/)
+  - [Mograph](http://codepen.io/sol0mka/full/39427561a8a0b15d7896480a7d96d3d1/)
+  - [Word Reveal](http://codepen.io/sol0mka/full/c94452fb65dbf676b0ae8a12d4267473/)
+  - [Physical Balls](http://codepen.io/sol0mka/full/7315f4364360ec87a6655d33782702fe/)
+  - [Dust Trail](http://codepen.io/sol0mka/full/633e6aa52d40691cca2f2cda91650bae/)
+  - [Bubble Modal](http://codepen.io/sol0mka/full/3c49de2d7d0ca3e92bf5db5bf7a2687d/)
+  - [Blast](http://codepen.io/sol0mka/full/699cfc8716a13e0e1c15105af2b6fb95/) (click to see)
+  - [Simple Burst](http://codepen.io/sol0mka/full/6caf96461207a5caa9226fbd2631569d/) (click to see)
+  - [Dusty Burst](http://codepen.io/sol0mka/full/03e9d8f2fbf886aa1505c61c81d782a0/) (click to see)
+  - [Love or Hate Modal](http://codepen.io/sol0mka/full/812699ce32c9a7aeb70c9384b32a533a/)
 
 ## Tutorials
+  - [Shape & Swirl](http://mojs.io/tutorials/shape/)
+  - [Burst](http://mojs.io/tutorials/burst/)
   - [Path Easing](http://mojs.io/tutorials/easing/path-easing/)
   - [Icon Animations Powered by mo.js](http://tympanus.net/codrops/2016/02/23/icon-animations-powered-by-mo-js/)
 
@@ -32,7 +47,7 @@
 `npm install mo-js`
 
 ## Docs
-Working hard on `docs`, `tutorials` and `website`. Follow [@legomushroom](https://twitter.com/legomushroom) for updates. Star and flattr to show your interest.
+Working hard on `APIs`, `tutorials` and `website`. Follow [@legomushroom](https://twitter.com/legomushroom) for updates. Star to show your interest.
 
 ## Target browsers
 - Chrome 4+
@@ -40,6 +55,8 @@ Working hard on `docs`, `tutorials` and `website`. Follow [@legomushroom](https:
 - Opera 11.5+
 - Safari 4+
 - IE 9+
+
+## You can support the project [on Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare) now!
 
 ## License
 
