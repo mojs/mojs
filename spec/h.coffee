@@ -682,6 +682,11 @@ describe 'Helpers ->', ->
         expect(unit.isStrict).toBe false
         unit = h.parseUnit('100px')
         expect(unit.isStrict).toBe true
+      it 'should parse `deg` string', ->
+        unit = h.parseUnit('100deg')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'deg'
+        expect(unit.string)   .toBe '100deg'
 
     describe 'strToArr method', ->
       it 'should parse string to array',->

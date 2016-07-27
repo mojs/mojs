@@ -73,7 +73,7 @@
       });
     });
     describe('_createDeltas method ->', function() {
-      return it('should create deltas with passed object', function() {
+      it('should create deltas with passed object', function() {
         var html;
         html = new Html({
           el: el,
@@ -88,15 +88,34 @@
         });
         html.deltas = null;
         html.timeline = null;
-        html._createDeltas(html._renamedOpts);
+        html._createDeltas(html._o);
         expect(html.deltas instanceof mojs._pool.Deltas).toBe(true);
-        expect(html.deltas._o.options).toBe(html._renamedOpts);
+        expect(html.deltas._o.options).toBe(html._o);
         expect(typeof html.deltas._o.onUpdate).toBe('function');
-        spyOn(html, '_drawTransfrom');
+        spyOn(html, '_draw');
         html.deltas._o.onUpdate();
-        expect(html._drawTransfrom).toHaveBeenCalled();
+        expect(html._draw).toHaveBeenCalled();
         expect(html.deltas._o.props).toBe(html._props);
         return expect(html.timeline).toBe(html.deltas.timeline);
+      });
+      return it('should pass property maps to Deltas', function() {
+        var html;
+        html = new Html({
+          el: el,
+          borderWidth: '20px',
+          borderRadius: '40px',
+          x: {
+            20: 40
+          },
+          color: {
+            'cyan': 'orange'
+          }
+        });
+        html.deltas._o._arrayPropertyMap = null;
+        html.deltas._o._numberPropertyMap = null;
+        html._createDeltas(html._o);
+        expect(html.deltas._o.arrayPropertyMap).toBe(html._arrayPropertyMap);
+        return expect(html.deltas._o.numberPropertyMap).toBe(html._numberPropertyMap);
       });
     });
     describe('_makeTween and _makeTimeline methods ->', function() {
@@ -161,7 +180,7 @@
         html._declareDefaults();
         return expect(html._drawExclude.el).toBe(1);
       });
-      return it('should create _3dProperties object', function() {
+      it('should create _3dProperties object', function() {
         var html;
         html = new Html({
           el: el
@@ -169,6 +188,33 @@
         html._3dProperties = null;
         html._declareDefaults();
         return expect(html._3dProperties).toEqual(['rotateX', 'rotateY', 'z']);
+      });
+      it('should create _arrayPropertyMap object', function() {
+        var html;
+        html = new Html({
+          el: el
+        });
+        html._arrayPropertyMap = null;
+        html._declareDefaults();
+        expect(html._arrayPropertyMap.transformOrigin).toBe(1);
+        return expect(html._arrayPropertyMap.backgroundPosition).toBe(1);
+      });
+      return it('should create _numberPropertyMap object', function() {
+        var html;
+        html = new Html({
+          el: el
+        });
+        html._numberPropertyMap = null;
+        html._declareDefaults();
+        expect(html._numberPropertyMap.opacity).toBe(1);
+        expect(html._numberPropertyMap.scale).toBe(1);
+        expect(html._numberPropertyMap.scaleX).toBe(1);
+        expect(html._numberPropertyMap.scaleY).toBe(1);
+        expect(html._numberPropertyMap.rotate).toBe(1);
+        expect(html._numberPropertyMap.rotateX).toBe(1);
+        expect(html._numberPropertyMap.rotateY).toBe(1);
+        expect(html._numberPropertyMap.skewX).toBe(1);
+        return expect(html._numberPropertyMap.skewY).toBe(1);
       });
     });
     describe('_addDefaults method', function() {
@@ -254,7 +300,7 @@
         return expect(html._props.el.style['borderWidth']).toBe('20px');
       });
     });
-    return describe('_drawTransfrom method', function() {
+    describe('_drawTransform method', function() {
       it('should set transform on el', function() {
         var args, html, string;
         el = document.createElement('div');
@@ -263,13 +309,13 @@
           el: el
         });
         spyOn(html, '_setStyle');
-        html._drawTransfrom();
+        html._drawTransform();
         args = html._setStyle.calls.first().args;
         expect(args[0]).toBe('transform');
         string = args[1];
         string = string.replace(/\n/gim, ' ');
         string = string.replace(/\s{2,}/gim, ' ');
-        return expect(string).toBe('translate(0, 0) rotate(0deg) skew(0, 0) scale(1, 1)');
+        return expect(string).toBe('translate(0, 0) rotate(0deg) skew(0deg, 0deg) scale(1, 1)');
       });
       return it('should set 3d transform on el', function() {
         var args, html, string;
@@ -280,13 +326,45 @@
           z: '10px'
         });
         spyOn(html, '_setStyle');
-        html._drawTransfrom();
+        html._drawTransform();
         args = html._setStyle.calls.first().args;
         expect(args[0]).toBe('transform');
         string = args[1];
         string = string.replace(/\n/gim, ' ');
         string = string.replace(/\s{2,}/gim, ' ');
-        return expect(string).toBe('translate3d(0, 0, 10px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0, 0) scale(1, 1)');
+        return expect(string).toBe('translate3d(0, 0, 10px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg) scale(1, 1)');
+      });
+    });
+    return describe('_draw method', function() {
+      it('should style _props to el', function() {
+        var html;
+        el = document.createElement('div');
+        html = new Html({
+          el: el,
+          left: {
+            '20px': '40px'
+          }
+        });
+        spyOn(html, '_setStyle').and.callThrough();
+        html._props.left = '30px';
+        html._state.left = '0px';
+        el.style['left'] = '';
+        html._draw();
+        expect(el.style['left']).toBe(html._props.left);
+        return expect(html._setStyle).toHaveBeenCalledWith;
+      });
+      return it('should call _drawTransform method', function() {
+        var html;
+        el = document.createElement('div');
+        html = new Html({
+          el: el,
+          left: {
+            '20px': '40px'
+          }
+        });
+        spyOn(html, '_drawTransform');
+        html._draw();
+        return expect(html._drawTransform).toHaveBeenCalled();
       });
     });
   });

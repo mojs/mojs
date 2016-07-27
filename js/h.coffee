@@ -197,7 +197,7 @@ class Helpers
         value:    value
         string:   if value is 0 then "#{value}" else "#{value}px"
     else if typeof value is 'string'
-      regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim
+      regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin|deg/gim
       unit = value.match(regex)?[0]; isStrict = true
       # if a plain number was passed set isStrict to false and add px
       if !unit then unit = 'px'; isStrict = false

@@ -73,18 +73,34 @@ describe 'Html ->', ->
       html.deltas   = null
       html.timeline = null
 
-      html._createDeltas html._renamedOpts
+      html._createDeltas html._o
 
       expect( html.deltas instanceof mojs._pool.Deltas ).toBe true
-      expect( html.deltas._o.options ).toBe html._renamedOpts
+      expect( html.deltas._o.options ).toBe html._o
       
       expect( typeof html.deltas._o.onUpdate ).toBe 'function'
-      spyOn html, '_drawTransfrom'
+      spyOn html, '_draw'
       html.deltas._o.onUpdate()
-      expect( html._drawTransfrom ).toHaveBeenCalled()
+      expect( html._draw ).toHaveBeenCalled()
 
       expect( html.deltas._o.props ).toBe html._props
       expect( html.timeline ).toBe html.deltas.timeline
+
+    it 'should pass property maps to Deltas', ->
+      html = new Html
+        el: el
+        borderWidth:  '20px'
+        borderRadius: '40px'
+        x:            { 20: 40 }
+        color:        { 'cyan': 'orange' }
+
+      html.deltas._o._arrayPropertyMap  = null
+      html.deltas._o._numberPropertyMap = null
+
+      html._createDeltas html._o
+
+      expect( html.deltas._o.arrayPropertyMap ).toBe html._arrayPropertyMap
+      expect( html.deltas._o.numberPropertyMap ).toBe html._numberPropertyMap
 
   describe '_makeTween and _makeTimeline methods ->', ->
     it 'should override them to empty methods', ->
@@ -161,6 +177,33 @@ describe 'Html ->', ->
 
       expect( html._3dProperties ).toEqual [ 'rotateX', 'rotateY', 'z' ]
 
+    it 'should create _arrayPropertyMap object', ->
+
+      html = new Html el: el
+
+      html._arrayPropertyMap = null
+      html._declareDefaults()
+
+      expect( html._arrayPropertyMap.transformOrigin ).toBe 1
+      expect( html._arrayPropertyMap.backgroundPosition ).toBe 1
+
+    it 'should create _numberPropertyMap object', ->
+
+      html = new Html el: el
+
+      html._numberPropertyMap = null
+      html._declareDefaults()
+
+      expect( html._numberPropertyMap.opacity ).toBe 1
+      expect( html._numberPropertyMap.scale ).toBe 1
+      expect( html._numberPropertyMap.scaleX ).toBe 1
+      expect( html._numberPropertyMap.scaleY ).toBe 1
+      expect( html._numberPropertyMap.rotate ).toBe 1
+      expect( html._numberPropertyMap.rotateX ).toBe 1
+      expect( html._numberPropertyMap.rotateY ).toBe 1
+      expect( html._numberPropertyMap.skewX ).toBe 1
+      expect( html._numberPropertyMap.skewY ).toBe 1
+
   describe '_addDefaults method', ->
     it 'should add defaults to passed object', ->
       html = new Html
@@ -230,7 +273,7 @@ describe 'Html ->', ->
       html._setStyle 'borderWidth', '50px'
       expect( html._props.el.style['borderWidth'] ).toBe '20px'
 
-  describe '_drawTransfrom method', ->
+  describe '_drawTransform method', ->
     it 'should set transform on el', ->
       el = document.createElement 'div'
       document.body.appendChild el
@@ -239,7 +282,7 @@ describe 'Html ->', ->
         el: el
 
       spyOn html, '_setStyle'
-      html._drawTransfrom()
+      html._drawTransform()
 
       args = html._setStyle.calls.first().args
 
@@ -247,7 +290,7 @@ describe 'Html ->', ->
       string = args[1]
       string = string.replace /\n/gim, ' '
       string = string.replace /\s{2,}/gim, ' '
-      expect( string ).toBe 'translate(0, 0) rotate(0deg) skew(0, 0) scale(1, 1)'
+      expect( string ).toBe 'translate(0, 0) rotate(0deg) skew(0deg, 0deg) scale(1, 1)'
 
     it 'should set 3d transform on el', ->
       el = document.createElement 'div'
@@ -258,7 +301,7 @@ describe 'Html ->', ->
         z:  '10px'
 
       spyOn html, '_setStyle'
-      html._drawTransfrom()
+      html._drawTransform()
 
       args = html._setStyle.calls.first().args
 
@@ -267,20 +310,42 @@ describe 'Html ->', ->
       string = string.replace /\n/gim, ' '
       string = string.replace /\s{2,}/gim, ' '
       expect( string )
-        .toBe 'translate3d(0, 0, 10px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0, 0) scale(1, 1)'
+        .toBe 'translate3d(0, 0, 10px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg) scale(1, 1)'
 
-  # describe '_draw method', ->
-  #   it 'should style _props to el', ->
-  #     el = document.createElement 'div'
-  #     html = new Html
-  #       el: el
-  #       borderRadius: '20px'
+  describe '_draw method', ->
+    it 'should style _props to el', ->
+      el = document.createElement 'div'
+      html = new Html
+        el: el
+        left: { '20px': '40px' }
 
-  #     el.style['border-radius'] = ''
+      spyOn(html, '_setStyle').and.callThrough()
+      html._props.left = '30px'
+      html._state.left = '0px'
+      el.style['left'] = ''
 
-  #     html._draw()
+      html._draw()
 
-  #     expect( el.style['border-radius'] ).toBe '20px'
+      expect( el.style['left'] ).toBe html._props.left
+
+      expect( html._setStyle ).toHaveBeenCalledWith
+
+    it 'should call _drawTransform method', ->
+      el = document.createElement 'div'
+      html = new Html
+        el: el
+        left: { '20px': '40px' }
+
+      spyOn html, '_drawTransform'
+      html._draw()
+
+      expect( html._drawTransform ).toHaveBeenCalled()
+
+
+
+
+
+
 
   # describe '_renameProperties method ->', ->
   #   it 'should rename camelCase to spinal-case', ->

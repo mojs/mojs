@@ -37,35 +37,44 @@ class Html extends Tunable {
     this._drawExclude  = { el: 1 }
     // properties that cause 3d layer
     this._3dProperties = [ 'rotateX', 'rotateY', 'z' ];
+    // properties that have array values
+    this._arrayPropertyMap = { transformOrigin: 1, backgroundPosition: 1 }
+    // properties that have no units
+    this._numberPropertyMap = {
+      opacity: 1, scale: 1, scaleX: 1, scaleY: 1,
+      rotate: 1, rotateX: 1, rotateY: 1,
+      skewX: 1, skewY: 1
+    }
   }
   /*
     Method to draw _props to el.
     @private
   */
   _draw () {
-    const keys = Object.keys( this._props );
-
-    for (var i = 0; i < keys.length; i++) {
-      console.log( keys[i] );
+    const p = this._props;
+    for (var i = 0; i < this._drawProps.length; i++) {
+      var name = this._drawProps[i];
+      this._setStyle( name, p[name] )
     }
+    this._drawTransform();
   }
   /*
     Method to set transform on element.
     @private
   */
-  _drawTransfrom () {
+  _drawTransform () {
     const p = this._props;
     const string = ( !this._is3d )
       ? `translate(${p.x}, ${p.y})
           rotate(${p.rotate}deg)
-          skew(${p.skewX}, ${p.skewY})
+          skew(${p.skewX}deg, ${p.skewY}deg)
           scale(${p.scaleX}, ${p.scaleY})`
 
       : `translate3d(${p.x}, ${p.y}, ${p.z})
           rotateX(${p.rotateX}deg)
           rotateY(${p.rotateY}deg)
           rotateZ(${p.rotateZ}deg)
-          skew(${p.skewX}, ${p.skewY})
+          skew(${p.skewX}deg, ${p.skewY}deg)
           scale(${p.scaleX}, ${p.scaleY})`;
 
     this._setStyle( 'transform', string );
@@ -164,9 +173,11 @@ class Html extends Tunable {
   */
   _createDeltas (options) {
     this.deltas = new Deltas({
-      props:   this._props,
       options,
-      onUpdate: (p) => { this._drawTransfrom(); }
+      props: this._props,
+      onUpdate: (p) => { this._draw(); },
+      arrayPropertyMap:  this._arrayPropertyMap,
+      numberPropertyMap: this._numberPropertyMap
     });
 
     this.timeline = this.deltas.timeline;

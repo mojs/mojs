@@ -882,12 +882,19 @@
           unit = h.parseUnit(obj);
           return expect(unit).toBe(obj);
         });
-        return it('should detect if unit if strict', function() {
+        it('should detect if unit if strict', function() {
           var unit;
           unit = h.parseUnit(100);
           expect(unit.isStrict).toBe(false);
           unit = h.parseUnit('100px');
           return expect(unit.isStrict).toBe(true);
+        });
+        return it('should parse `deg` string', function() {
+          var unit;
+          unit = h.parseUnit('100deg');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('deg');
+          return expect(unit.string).toBe('100deg');
         });
       });
       describe('strToArr method', function() {

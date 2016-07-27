@@ -1710,6 +1710,14 @@
 	    this._drawExclude = { el: 1 };
 	    // properties that cause 3d layer
 	    this._3dProperties = ['rotateX', 'rotateY', 'z'];
+	    // properties that have array values
+	    this._arrayPropertyMap = { transformOrigin: 1, backgroundPosition: 1 };
+	    // properties that have no units
+	    this._numberPropertyMap = {
+	      opacity: 1, scale: 1, scaleX: 1, scaleY: 1,
+	      rotate: 1, rotateX: 1, rotateY: 1,
+	      skewX: 1, skewY: 1
+	    };
 	  };
 	  /*
 	    Method to draw _props to el.
@@ -1718,11 +1726,12 @@
 
 
 	  Html.prototype._draw = function _draw() {
-	    var keys = (0, _keys2.default)(this._props);
-
-	    for (var i = 0; i < keys.length; i++) {
-	      console.log(keys[i]);
+	    var p = this._props;
+	    for (var i = 0; i < this._drawProps.length; i++) {
+	      var name = this._drawProps[i];
+	      this._setStyle(name, p[name]);
 	    }
+	    this._drawTransform();
 	  };
 	  /*
 	    Method to set transform on element.
@@ -1730,9 +1739,9 @@
 	  */
 
 
-	  Html.prototype._drawTransfrom = function _drawTransfrom() {
+	  Html.prototype._drawTransform = function _drawTransform() {
 	    var p = this._props;
-	    var string = !this._is3d ? 'translate(' + p.x + ', ' + p.y + ')\n          rotate(' + p.rotate + 'deg)\n          skew(' + p.skewX + ', ' + p.skewY + ')\n          scale(' + p.scaleX + ', ' + p.scaleY + ')' : 'translate3d(' + p.x + ', ' + p.y + ', ' + p.z + ')\n          rotateX(' + p.rotateX + 'deg)\n          rotateY(' + p.rotateY + 'deg)\n          rotateZ(' + p.rotateZ + 'deg)\n          skew(' + p.skewX + ', ' + p.skewY + ')\n          scale(' + p.scaleX + ', ' + p.scaleY + ')';
+	    var string = !this._is3d ? 'translate(' + p.x + ', ' + p.y + ')\n          rotate(' + p.rotate + 'deg)\n          skew(' + p.skewX + 'deg, ' + p.skewY + 'deg)\n          scale(' + p.scaleX + ', ' + p.scaleY + ')' : 'translate3d(' + p.x + ', ' + p.y + ', ' + p.z + ')\n          rotateX(' + p.rotateX + 'deg)\n          rotateY(' + p.rotateY + 'deg)\n          rotateZ(' + p.rotateZ + 'deg)\n          skew(' + p.skewX + 'deg, ' + p.skewY + 'deg)\n          scale(' + p.scaleX + ', ' + p.scaleY + ')';
 
 	    this._setStyle('transform', string);
 	  };
@@ -1849,11 +1858,13 @@
 	    var _this2 = this;
 
 	    this.deltas = new _deltas2.default({
-	      props: this._props,
 	      options: options,
+	      props: this._props,
 	      onUpdate: function onUpdate(p) {
-	        _this2._drawTransfrom();
-	      }
+	        _this2._draw();
+	      },
+	      arrayPropertyMap: this._arrayPropertyMap,
+	      numberPropertyMap: this._numberPropertyMap
 	    });
 
 	    this.timeline = this.deltas.timeline;
@@ -6312,7 +6323,7 @@
 	        string: value === 0 ? "" + value : value + "px"
 	      };
 	    } else if (typeof value === 'string') {
-	      regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim;
+	      regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin|deg/gim;
 	      unit = (ref = value.match(regex)) != null ? ref[0] : void 0;
 	      isStrict = true;
 	      if (!unit) {
@@ -9855,7 +9866,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.267.3', isDebug: true, helpers: _h2.default,
+	  revision: '0.268.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, Html: _html2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default, _pool: { Delta: _delta2.default, Deltas: _deltas2.default }
