@@ -13,6 +13,17 @@ for (var i = 0; i < keys.length; i++) {
 const TWEEN_PROPERTIES = obj._defaults;
 
 
+/*
+  TODO:
+    - deltas initial _props set
+    - initial render
+    - refresh
+    - isShowStart/isShowEnd options
+    - current values in deltas
+    - then chains
+*/
+
+
 class Html extends Tunable {
 
   _declareDefaults () {
@@ -45,6 +56,10 @@ class Html extends Tunable {
       rotate: 1, rotateX: 1, rotateY: 1,
       skewX: 1, skewY: 1
     }
+    // properties that should be prefixed 
+    this._prefixPropertyMap = { transform: 1, transformOrigin: 1 }
+    // save prefix
+    this._prefix = h.prefix.css;
   }
   /*
     Method to draw _props to el.
@@ -54,7 +69,7 @@ class Html extends Tunable {
     const p = this._props;
     for (var i = 0; i < this._drawProps.length; i++) {
       var name = this._drawProps[i];
-      this._setStyle( name, p[name] )
+      this._setStyle( name, p[name] );
     }
     this._drawTransform();
   }
@@ -87,7 +102,14 @@ class Html extends Tunable {
   */
   _setStyle ( name, value ) {
     if ( this._state[ name ] !== value ) {
-      this._props.el.style[ name ] = value;
+      var style = this._props.el.style;
+      // set style
+      style[ name ] = value;
+      // if prefix needed - set it
+      if ( this._prefixPropertyMap[ name ] ) {
+        style[ `${this._prefix}${name}` ] = value;
+      }
+      // cache the last set value
       this._state[ name ] = value;
     }
   }

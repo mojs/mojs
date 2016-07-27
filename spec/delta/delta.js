@@ -168,19 +168,9 @@
           props: props
         });
         delta._calcCurrent_array(arrDelta, .5, .5);
-        return expect(delta._o.props['strokeDasharray']).toEqual([
-          {
-            string: '100px',
-            value: 100,
-            unit: 'px'
-          }, {
-            string: '50px',
-            value: 50,
-            unit: 'px'
-          }
-        ]);
+        return expect(delta._o.props['strokeDasharray']).toEqual('100px 50px ');
       });
-      it('should calc array # curve', function() {
+      return it('should calc array # curve', function() {
         var arrDelta, delta, strokeDasharray;
         arrDelta = h.parseDelta('strokeDasharray', {
           '0 100': '200 0',
@@ -193,27 +183,9 @@
           props: props
         });
         delta._calcCurrent_array(arrDelta, .5, .5);
-        strokeDasharray = delta._o.props['strokeDasharray'];
-        expect(strokeDasharray[0].value).toBeCloseTo(75, 1);
-        expect(strokeDasharray[1].value).toBeCloseTo(37.5, 1);
-        return expect(strokeDasharray.length).toBeCloseTo(2);
-      });
-      return it('should reuse the props array', function() {
-        var arr, arrDelta, delta;
-        arrDelta = h.parseDelta('strokeDasharray', {
-          '0 100': '200 0'
-        }, 0);
-        arr = [];
-        props = {
-          strokeDasharray: arr
-        };
-        delta = new Delta({
-          deltas: [arrDelta],
-          tweenOptions: tweenOptions,
-          props: props
-        });
-        delta._calcCurrent_array(arrDelta, .5, .5);
-        return expect(delta._o.props['strokeDasharray']).toBe(arr);
+        strokeDasharray = delta._o.props['strokeDasharray'].split(/\s/);
+        expect(parseFloat(strokeDasharray[0])).toBeCloseTo(75, 1);
+        return expect(parseFloat(strokeDasharray[1])).toBeCloseTo(37.5, 1);
       });
     });
     return describe('_createTween method', function() {

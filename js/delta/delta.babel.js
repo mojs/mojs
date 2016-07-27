@@ -86,15 +86,16 @@ class Delta {
     @param {Number} Plain progress [0..1].
   */
   _calcCurrent_array (delta, ep, p) {
-    var arr,
-        name = delta.name,
-        props = this._o.props;
+    // var arr,
+    var name   = delta.name,
+        props  = this._o.props,
+        string = '';
 
     // to prevent GC bothering with arrays garbage
-    if ( h.isArray( props[name] ) ) {
-      arr = props[name];
-      arr.length = 0;
-    } else { arr = []; }
+    // if ( h.isArray( props[name] ) ) {
+    //   arr = props[name];
+    //   arr.length = 0;
+    // } else { arr = []; }
 
     // just optimization to prevent curve
     // calculations on every array item
@@ -106,13 +107,14 @@ class Delta {
             ? delta.start[i].value + ep * item.value
             : proc * (delta.start[i].value + p * item.value);
 
-      arr.push({
-        string: `${dash}${item.unit}`,
-        value:  dash,
-        unit:   item.unit,
-      });
+      string += `${dash}${item.unit} `;
+      // arr.push({
+      //   string: `${dash}${item.unit}`,
+      //   value:  dash,
+      //   unit:   item.unit,
+      // });
     }
-    props[name] = arr;
+    props[name] = string;
   }
 }
 

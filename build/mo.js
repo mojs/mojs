@@ -1680,6 +1680,16 @@
 	}
 	var TWEEN_PROPERTIES = obj._defaults;
 
+	/*
+	  TODO:
+	    - deltas initial _props set
+	    - initial render
+	    - refresh
+	    - isShowStart/isShowEnd options
+	    - current values in deltas
+	    - then chains
+	*/
+
 	var Html = function (_Tunable) {
 	  (0, _inherits3.default)(Html, _Tunable);
 
@@ -1718,6 +1728,10 @@
 	      rotate: 1, rotateX: 1, rotateY: 1,
 	      skewX: 1, skewY: 1
 	    };
+	    // properties that should be prefixed
+	    this._prefixPropertyMap = { transform: 1, transformOrigin: 1 };
+	    // save prefix
+	    this._prefix = h.prefix.css;
 	  };
 	  /*
 	    Method to draw _props to el.
@@ -1755,7 +1769,14 @@
 
 	  Html.prototype._setStyle = function _setStyle(name, value) {
 	    if (this._state[name] !== value) {
-	      this._props.el.style[name] = value;
+	      var style = this._props.el.style;
+	      // set style
+	      style[name] = value;
+	      // if prefix needed - set it
+	      if (this._prefixPropertyMap[name]) {
+	        style['' + this._prefix + name] = value;
+	      }
+	      // cache the last set value
 	      this._state[name] = value;
 	    }
 	  };
@@ -5073,17 +5094,16 @@
 
 
 	  Delta.prototype._calcCurrent_array = function _calcCurrent_array(delta, ep, p) {
-	    var arr,
-	        name = delta.name,
-	        props = this._o.props;
+	    // var arr,
+	    var name = delta.name,
+	        props = this._o.props,
+	        string = '';
 
 	    // to prevent GC bothering with arrays garbage
-	    if (h.isArray(props[name])) {
-	      arr = props[name];
-	      arr.length = 0;
-	    } else {
-	      arr = [];
-	    }
+	    // if ( h.isArray( props[name] ) ) {
+	    //   arr = props[name];
+	    //   arr.length = 0;
+	    // } else { arr = []; }
 
 	    // just optimization to prevent curve
 	    // calculations on every array item
@@ -5093,13 +5113,14 @@
 	      var item = delta.delta[i],
 	          dash = !delta.curve ? delta.start[i].value + ep * item.value : proc * (delta.start[i].value + p * item.value);
 
-	      arr.push({
-	        string: '' + dash + item.unit,
-	        value: dash,
-	        unit: item.unit
-	      });
+	      string += '' + dash + item.unit + ' ';
+	      // arr.push({
+	      //   string: `${dash}${item.unit}`,
+	      //   value:  dash,
+	      //   unit:   item.unit,
+	      // });
 	    }
-	    props[name] = arr;
+	    props[name] = string;
 	  };
 
 	  return Delta;
@@ -9866,7 +9887,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.268.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.268.2', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, Html: _html2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default, _pool: { Delta: _delta2.default, Deltas: _deltas2.default }
@@ -9900,6 +9921,25 @@
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
 	*/
+
+	// const html = new mojs.Html({
+	//   el: document.querySelector('#js-el'),
+	//   // x:  { 0: 200 },
+	//   // borderRadius: { 0: 10 },
+	//   // backgroundColor: { 'cyan' : 'yellow' },
+	//   rotate: { 0: 180 },
+	//   // skewX: { 0: 10 },
+	//   transformOrigin: { '500% 100%' : '50% 100%' },
+	//   // scaleX: { 1: 0 },
+	//   // opacity:  { 1 : 0 },
+	//   duration: 4000
+	// });
+
+	// new MojsPlayer({ add: html });
+
+	// document.addEventListener('click', (e) => {
+	//   html.replay();
+	// });
 
 	// istanbul ignore next
 	if (true) {

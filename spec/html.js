@@ -1,7 +1,9 @@
 (function() {
-  var Html, el;
+  var Html, el, h;
 
   Html = mojs.Html;
+
+  h = mojs.h;
 
   el = document.createElement('div');
 
@@ -199,7 +201,7 @@
         expect(html._arrayPropertyMap.transformOrigin).toBe(1);
         return expect(html._arrayPropertyMap.backgroundPosition).toBe(1);
       });
-      return it('should create _numberPropertyMap object', function() {
+      it('should create _numberPropertyMap object', function() {
         var html;
         html = new Html({
           el: el
@@ -215,6 +217,25 @@
         expect(html._numberPropertyMap.rotateY).toBe(1);
         expect(html._numberPropertyMap.skewX).toBe(1);
         return expect(html._numberPropertyMap.skewY).toBe(1);
+      });
+      it('should create _prefixPropertyMap object', function() {
+        var html;
+        html = new Html({
+          el: el
+        });
+        html._prefixPropertyMap = null;
+        html._declareDefaults();
+        expect(html._prefixPropertyMap.transform).toBe(1);
+        return expect(html._prefixPropertyMap.transformOrigin).toBe(1);
+      });
+      return it('should create _prefix property', function() {
+        var html;
+        html = new Html({
+          el: el
+        });
+        html._prefix = null;
+        html._declareDefaults();
+        return expect(html._prefix).toBe(h.prefix.css);
       });
     });
     describe('_addDefaults method', function() {
@@ -277,6 +298,16 @@
         html._props.el.style['borderWidth'] = null;
         html._setStyle('borderWidth', '50px');
         return expect(html._props.el.style['borderWidth']).toBe('50px');
+      });
+      it('should prefix properties that are in _prefixPropertyMap', function() {
+        var html;
+        el = document.createElement('div');
+        html = new Html({
+          el: el
+        });
+        html._props.el.style["" + h.prefix.css + "transform"] = null;
+        html._setStyle('transform', 'scale(1)');
+        return expect(html._props.el.style["" + h.prefix.css + "transform"]).toBe('scale(1)');
       });
       it('should add the style to _state', function() {
         var html;

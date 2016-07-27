@@ -152,7 +152,8 @@ describe 'Delta ->', ->
 
       delta._calcCurrent_array arrDelta, .5, .5
       expect( delta._o.props['strokeDasharray'] )
-        .toEqual [ { string : '100px', value : 100, unit : 'px' }, { string : '50px', value : 50, unit : 'px' } ]
+        # .toEqual [ { string : '100px', value : 100, unit : 'px' }, { string : '50px', value : 50, unit : 'px' } ]
+        .toEqual '100px 50px '
 
     it 'should calc array # curve', ->
       arrDelta =  h.parseDelta( 'strokeDasharray', {
@@ -166,22 +167,23 @@ describe 'Delta ->', ->
 
       delta._calcCurrent_array arrDelta, .5, .5
 
-      strokeDasharray = delta._o.props['strokeDasharray']
-      expect( strokeDasharray[0].value ).toBeCloseTo 75, 1
-      expect( strokeDasharray[1].value ).toBeCloseTo 37.5, 1
-      expect( strokeDasharray.length ).toBeCloseTo 2
+      strokeDasharray = delta._o.props['strokeDasharray'].split /\s/
 
-    it 'should reuse the props array', ->
-      arrDelta =  h.parseDelta( 'strokeDasharray', { '0 100' : '200 0' }, 0 )
-      arr = []
-      props = { strokeDasharray: arr }
-      delta = new Delta
-        deltas: [ arrDelta ],
-        tweenOptions: tweenOptions,
-        props: props
+      expect( parseFloat(strokeDasharray[0]) ).toBeCloseTo 75, 1
+      expect( parseFloat(strokeDasharray[1]) ).toBeCloseTo 37.5, 1
+      # expect( strokeDasharray.length ).toBeCloseTo 2
 
-      delta._calcCurrent_array arrDelta, .5, .5
-      expect( delta._o.props['strokeDasharray'] ).toBe arr
+    # it 'should reuse the props array', ->
+    #   arrDelta =  h.parseDelta( 'strokeDasharray', { '0 100' : '200 0' }, 0 )
+    #   arr = []
+    #   props = { strokeDasharray: arr }
+    #   delta = new Delta
+    #     deltas: [ arrDelta ],
+    #     tweenOptions: tweenOptions,
+    #     props: props
+
+    #   delta._calcCurrent_array arrDelta, .5, .5
+    #   expect( delta._o.props['strokeDasharray'] ).toBe arr
 
   describe '_createTween method', ->
     it 'should create a tween', ->

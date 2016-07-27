@@ -1,6 +1,6 @@
 
-
-Html      = mojs.Html
+Html  = mojs.Html
+h     = mojs.h
 
 el = document.createElement('div');
 
@@ -204,14 +204,31 @@ describe 'Html ->', ->
       expect( html._numberPropertyMap.skewX ).toBe 1
       expect( html._numberPropertyMap.skewY ).toBe 1
 
+    it 'should create _prefixPropertyMap object', ->
+
+      html = new Html el: el
+
+      html._prefixPropertyMap = null
+      html._declareDefaults()
+
+      expect( html._prefixPropertyMap.transform ).toBe 1
+      expect( html._prefixPropertyMap.transformOrigin ).toBe 1
+
+    it 'should create _prefix property', ->
+
+      html = new Html el: el
+
+      html._prefix = null
+      html._declareDefaults()
+
+      expect( html._prefix ).toBe h.prefix.css
+
   describe '_addDefaults method', ->
     it 'should add defaults to passed object', ->
       html = new Html
         el: el
 
-      obj = {
-        skewX: 20
-      }
+      obj = { skewX: 20 }
 
       result = html._addDefaults( obj )
 
@@ -254,6 +271,14 @@ describe 'Html ->', ->
       html._setStyle 'borderWidth', '50px'
       expect( html._props.el.style['borderWidth'] ).toBe '50px'
 
+    it 'should prefix properties that are in _prefixPropertyMap', ->
+      el = document.createElement 'div'
+      html = new Html el: el
+
+      html._props.el.style["#{h.prefix.css}transform"] = null
+      html._setStyle 'transform', 'scale(1)'
+      expect( html._props.el.style["#{h.prefix.css}transform"] ).toBe 'scale(1)'
+
     it 'should add the style to _state', ->
       el = document.createElement 'div'
       html = new Html
@@ -265,8 +290,7 @@ describe 'Html ->', ->
 
     it 'should not set style if it is in _state', ->
       el = document.createElement 'div'
-      html = new Html
-        el: el
+      html = new Html el: el
 
       html._state['borderWidth'] = '50px'
       html._props.el.style['borderWidth'] = '20px'
