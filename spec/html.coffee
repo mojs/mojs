@@ -25,24 +25,23 @@ describe 'Html ->', ->
 
       p = html._props
 
-      expect( p['border-width'] ).toBe '20px'
-      expect( p['border-radius'] ).toBe '40px'
+      expect( p['borderWidth'] ).toBe '20px'
+      expect( p['borderRadius'] ).toBe '40px'
       expect( p['y'] ).toBe '40px'
 
       equal = {
         el: el
-        'border-width':  '20px'
-        'border-radius': '40px'
+        'borderWidth':  '20px'
+        'borderRadius': '40px'
         y: 40
         x:      { 20: 40 }
         skewX:  { 20: 40 }
         color:  { 'cyan': 'orange' }
       }
-      equal = html._addDefaults( equal )
-      expect( html._renamedOpts ) .toEqual equal
+      expect( html._addDefaults html._o ).toEqual html._addDefaults( equal )
 
       expect( html._renderProps )
-        .toEqual [ 'border-width', 'border-radius' ]
+        .toEqual [ 'borderWidth', 'borderRadius' ]
 
       expect( html._drawProps )
         .toEqual [ 'color' ]
@@ -59,7 +58,7 @@ describe 'Html ->', ->
 
       html._extendDefaults()
 
-      expect( html._createDeltas ).toHaveBeenCalledWith html._renamedOpts
+      expect( html._createDeltas ).toHaveBeenCalledWith html._addDefaults html._o
 
   
   describe '_createDeltas method ->', ->
@@ -86,72 +85,6 @@ describe 'Html ->', ->
 
       expect( html.deltas._o.props ).toBe html._props
       expect( html.timeline ).toBe html.deltas.timeline
-
-
-
-  describe '_renameProperties method ->', ->
-    it 'should rename camelCase to spinal-case', ->
-      html = new Html
-        el: el
-
-      opts =
-        borderWidth:  '20px'
-        borderRadius: '40px'
-        x:            { 20: 40 }
-        color:        { 'cyan': 'orange' }
-
-      newOpts = html._renameProperties opts
-
-      expect( newOpts['border-width'] ).toBe opts.borderWidth
-      expect( newOpts['border-radius'] ).toBe opts.borderRadius
-      expect( newOpts['x'] ).toBe opts.x
-      expect( newOpts['color'] ).toBe opts.color
-
-    it 'should ignore tween properties', ->
-      html = new Html
-        el: el
-
-      opts =
-        borderWidth:  '20px'
-        borderRadius: '40px'
-        x:            { 20: 40 }
-        color:        { 'cyan': 'orange' }
-        callbacksContext: {}
-        onUpdate: ->
-
-      newOpts = html._renameProperties opts
-
-      expect( newOpts['border-width'] ).toBe opts.borderWidth
-      expect( newOpts['border-radius'] ).toBe opts.borderRadius
-      expect( newOpts['x'] ).toBe opts.x
-      expect( newOpts['color'] ).toBe opts.color
-
-      expect( newOpts['callbacksContext'] ).toBe opts.callbacksContext
-      expect( newOpts['onUpdate'] ).toBe opts.onUpdate
-
-    it 'should ignore defauls properties', ->
-      html = new Html
-        el: el
-
-      opts =
-        borderRadius: '40px'
-        x:            { 20: 40 }
-        skewY:        '20px'
-        rotateY:      { 40: 10 }
-
-      newOpts = html._renameProperties opts
-
-      expect( newOpts['border-radius'] ).toBe opts.borderRadius
-      expect( newOpts['x'] ).toBe opts.x
-      expect( newOpts['skewY'] ).toBe opts.skewY
-      expect( newOpts['rotateY'] ).toBe opts.rotateY
-
-  describe '_renameProperty method ->', ->
-    it 'should change string from camelCase to spinal-case', ->
-      html = new Html
-        el: el
-
-      expect( html._renameProperty( 'borderRadius' ) ).toBe 'border-radius'
 
   describe '_makeTween and _makeTimeline methods ->', ->
     it 'should override them to empty methods', ->
@@ -348,3 +281,68 @@ describe 'Html ->', ->
   #     html._draw()
 
   #     expect( el.style['border-radius'] ).toBe '20px'
+
+  # describe '_renameProperties method ->', ->
+  #   it 'should rename camelCase to spinal-case', ->
+  #     html = new Html
+  #       el: el
+
+  #     opts =
+  #       borderWidth:  '20px'
+  #       borderRadius: '40px'
+  #       x:            { 20: 40 }
+  #       color:        { 'cyan': 'orange' }
+
+  #     newOpts = html._renameProperties opts
+
+  #     expect( newOpts['border-width'] ).toBe opts.borderWidth
+  #     expect( newOpts['border-radius'] ).toBe opts.borderRadius
+  #     expect( newOpts['x'] ).toBe opts.x
+  #     expect( newOpts['color'] ).toBe opts.color
+
+  #   it 'should ignore tween properties', ->
+  #     html = new Html
+  #       el: el
+
+  #     opts =
+  #       borderWidth:  '20px'
+  #       borderRadius: '40px'
+  #       x:            { 20: 40 }
+  #       color:        { 'cyan': 'orange' }
+  #       callbacksContext: {}
+  #       onUpdate: ->
+
+  #     newOpts = html._renameProperties opts
+
+  #     expect( newOpts['border-width'] ).toBe opts.borderWidth
+  #     expect( newOpts['border-radius'] ).toBe opts.borderRadius
+  #     expect( newOpts['x'] ).toBe opts.x
+  #     expect( newOpts['color'] ).toBe opts.color
+
+  #     expect( newOpts['callbacksContext'] ).toBe opts.callbacksContext
+  #     expect( newOpts['onUpdate'] ).toBe opts.onUpdate
+
+  #   it 'should ignore defauls properties', ->
+  #     html = new Html
+  #       el: el
+
+  #     opts =
+  #       borderRadius: '40px'
+  #       x:            { 20: 40 }
+  #       skewY:        '20px'
+  #       rotateY:      { 40: 10 }
+
+  #     newOpts = html._renameProperties opts
+
+  #     expect( newOpts['border-radius'] ).toBe opts.borderRadius
+  #     expect( newOpts['x'] ).toBe opts.x
+  #     expect( newOpts['skewY'] ).toBe opts.skewY
+  #     expect( newOpts['rotateY'] ).toBe opts.rotateY
+
+  # describe '_renameProperty method ->', ->
+  #   it 'should change string from camelCase to spinal-case', ->
+  #     html = new Html
+  #       el: el
+
+  #     expect( html._renameProperty( 'borderRadius' ) ).toBe 'border-radius'
+

@@ -33,8 +33,9 @@ class Html extends Tunable {
       scaleX:     1,
       scaleY:     1,
     }
-
+    // exclude from automatic drawing
     this._drawExclude  = { el: 1 }
+    // properties that cause 3d layer
     this._3dProperties = [ 'rotateX', 'rotateY', 'z' ];
   }
   /*
@@ -96,22 +97,27 @@ class Html extends Tunable {
     // extend options with defaults
     o = this._addDefaults(o);
     // rename properties to spinal-case
-    this._renamedOpts = this._renameProperties( o );
+    // this._renamedOpts = this._renameProperties( o );
 
-    const keys = Object.keys( this._renamedOpts );
+    const keys = Object.keys( o );
 
     for ( var i = 0; i < keys.length; i ++ ) {
       var key = keys[i];
+      // include the property if it is not in drawExclude object
+      // and not in defaults = not a transform
       var isInclude = !this._drawExclude[key] && this._defaults[key] == null;
       // copy all non-delta properties to the props
-      if ( !h.isDelta( this._renamedOpts[key] ) ) {
-        this._parseOption( key, this._renamedOpts[key] );
+      // if not delta then add the property to render
+      // list that is called on initialization
+      if ( !h.isDelta( o[key] ) ) {
+        this._parseOption( key, o[key] );
         if ( isInclude ) { this._renderProps.push( key ); }
       // copy delta prop but not transforms
+      // otherwise push it to draw list that gets traversed on every draw
       } else if ( isInclude ) { this._drawProps.push( key ); }
     }
 
-    this._createDeltas( this._renamedOpts );
+    this._createDeltas( o );
   }
   /*
     Method to add defauls to passed object.
@@ -119,11 +125,16 @@ class Html extends Tunable {
     @param {Object} Object to add defaults to.
   */
   _addDefaults (obj) {
+    // flag that after all defaults are set will indicate
+    // if user have set the 3d transform
     this._is3d = false;
+
     for (var key in this._defaults) {
       // skip property if it is listed in _skipProps
       // if (this._skipProps && this._skipProps[key]) { continue; }
+
       // copy the properties to the _o object
+      // if it's null - set the default value
       if ( obj[key] == null ) {
         // scaleX and scaleY should fallback to scale
         if ( key === 'scaleX' || key === 'scaleY' ) {
@@ -160,41 +171,59 @@ class Html extends Tunable {
 
     this.timeline = this.deltas.timeline;
   }
-  /*
-    Method to rename properties from camelCase to spinal-case.
-    @private
-    @param {Object} Options to rename.
-    @returns {Object} Newely created object.
-  */
-  _renameProperties (opts) {
-    const keys = Object.keys(opts);
-    const newOpts = {};
-
-    for (var i = 0; i < keys.length; i++ ) {
-      var key = keys[i];
-      // rename property only if it's not a tween property
-      if ( !TWEEN_PROPERTIES[key] && ( this._defaults[key] == null ) ) {
-        newOpts[ this._renameProperty(key) ] = opts[key];
-      // otherwise just copy it
-      } else { newOpts[ key ] = opts[key]; }
-    }
-
-    return newOpts;
-  }
-  /*
-    Method to change string from camelCase to spinal-case.
-    @private
-    @param {String} String to change.
-    @returns {String} Changed string.
-  */
-  _renameProperty (str) {
-    return str.replace(/(?!^)([A-Z])/g, ' $1')
-            .replace(/[_\s]+(?=[a-zA-Z])/g, '-').toLowerCase();
-  }
-
   /* @overrides @ Tweenable */
   _makeTween () {}
   _makeTimeline () {}
 }
 
 export default Html;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// /*
+  //   Method to rename properties from camelCase to spinal-case.
+  //   @private
+  //   @param {Object} Options to rename.
+  //   @returns {Object} Newely created object.
+  // */
+  // _renameProperties (opts) {
+  //   const keys = Object.keys(opts);
+  //   const newOpts = {};
+
+  //   for (var i = 0; i < keys.length; i++ ) {
+  //     var key = keys[i];
+  //     // rename property only if it's not a tween property
+  //     if ( !TWEEN_PROPERTIES[key] && ( this._defaults[key] == null ) ) {
+  //       newOpts[ this._renameProperty(key) ] = opts[key];
+  //     // otherwise just copy it
+  //     } else { newOpts[ key ] = opts[key]; }
+  //   }
+
+  //   return newOpts;
+  // }
+  // /*
+  //   Method to change string from camelCase to spinal-case.
+  //   @private
+  //   @param {String} String to change.
+  //   @returns {String} Changed string.
+  // */
+  // _renameProperty (str) {
+  //   return str.replace(/(?!^)([A-Z])/g, ' $1')
+  //           .replace(/[_\s]+(?=[a-zA-Z])/g, '-').toLowerCase();
+  // }

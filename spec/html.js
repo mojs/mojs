@@ -32,13 +32,13 @@
           }
         });
         p = html._props;
-        expect(p['border-width']).toBe('20px');
-        expect(p['border-radius']).toBe('40px');
+        expect(p['borderWidth']).toBe('20px');
+        expect(p['borderRadius']).toBe('40px');
         expect(p['y']).toBe('40px');
         equal = {
           el: el,
-          'border-width': '20px',
-          'border-radius': '40px',
+          'borderWidth': '20px',
+          'borderRadius': '40px',
           y: 40,
           x: {
             20: 40
@@ -50,9 +50,8 @@
             'cyan': 'orange'
           }
         };
-        equal = html._addDefaults(equal);
-        expect(html._renamedOpts).toEqual(equal);
-        expect(html._renderProps).toEqual(['border-width', 'border-radius']);
+        expect(html._addDefaults(html._o)).toEqual(html._addDefaults(equal));
+        expect(html._renderProps).toEqual(['borderWidth', 'borderRadius']);
         return expect(html._drawProps).toEqual(['color']);
       });
       return it('should call _createDeltas method ->', function() {
@@ -70,7 +69,7 @@
         });
         spyOn(html, '_createDeltas');
         html._extendDefaults();
-        return expect(html._createDeltas).toHaveBeenCalledWith(html._renamedOpts);
+        return expect(html._createDeltas).toHaveBeenCalledWith(html._addDefaults(html._o));
       });
     });
     describe('_createDeltas method ->', function() {
@@ -98,84 +97,6 @@
         expect(html._drawTransfrom).toHaveBeenCalled();
         expect(html.deltas._o.props).toBe(html._props);
         return expect(html.timeline).toBe(html.deltas.timeline);
-      });
-    });
-    describe('_renameProperties method ->', function() {
-      it('should rename camelCase to spinal-case', function() {
-        var html, newOpts, opts;
-        html = new Html({
-          el: el
-        });
-        opts = {
-          borderWidth: '20px',
-          borderRadius: '40px',
-          x: {
-            20: 40
-          },
-          color: {
-            'cyan': 'orange'
-          }
-        };
-        newOpts = html._renameProperties(opts);
-        expect(newOpts['border-width']).toBe(opts.borderWidth);
-        expect(newOpts['border-radius']).toBe(opts.borderRadius);
-        expect(newOpts['x']).toBe(opts.x);
-        return expect(newOpts['color']).toBe(opts.color);
-      });
-      it('should ignore tween properties', function() {
-        var html, newOpts, opts;
-        html = new Html({
-          el: el
-        });
-        opts = {
-          borderWidth: '20px',
-          borderRadius: '40px',
-          x: {
-            20: 40
-          },
-          color: {
-            'cyan': 'orange'
-          },
-          callbacksContext: {},
-          onUpdate: function() {}
-        };
-        newOpts = html._renameProperties(opts);
-        expect(newOpts['border-width']).toBe(opts.borderWidth);
-        expect(newOpts['border-radius']).toBe(opts.borderRadius);
-        expect(newOpts['x']).toBe(opts.x);
-        expect(newOpts['color']).toBe(opts.color);
-        expect(newOpts['callbacksContext']).toBe(opts.callbacksContext);
-        return expect(newOpts['onUpdate']).toBe(opts.onUpdate);
-      });
-      return it('should ignore defauls properties', function() {
-        var html, newOpts, opts;
-        html = new Html({
-          el: el
-        });
-        opts = {
-          borderRadius: '40px',
-          x: {
-            20: 40
-          },
-          skewY: '20px',
-          rotateY: {
-            40: 10
-          }
-        };
-        newOpts = html._renameProperties(opts);
-        expect(newOpts['border-radius']).toBe(opts.borderRadius);
-        expect(newOpts['x']).toBe(opts.x);
-        expect(newOpts['skewY']).toBe(opts.skewY);
-        return expect(newOpts['rotateY']).toBe(opts.rotateY);
-      });
-    });
-    describe('_renameProperty method ->', function() {
-      return it('should change string from camelCase to spinal-case', function() {
-        var html;
-        html = new Html({
-          el: el
-        });
-        return expect(html._renameProperty('borderRadius')).toBe('border-radius');
       });
     });
     describe('_makeTween and _makeTimeline methods ->', function() {

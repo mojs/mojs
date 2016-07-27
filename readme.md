@@ -14,7 +14,6 @@
   - [Bubble Layout](http://codepen.io/sol0mka/full/yNOage/)
   - [Sleepy Mole](http://codepen.io/sol0mka/full/OyzBXR)
   - [Animocons](http://tympanus.net/Development/Animocons/)
-  - [Sleepy Mole](http://codepen.io/sol0mka/full/OyzBXR)
   - [Bubbles](http://codepen.io/sol0mka/full/2ef10ed42ff535182c31cd1dbb81e453/)
   - [Mograph](http://codepen.io/sol0mka/full/39427561a8a0b15d7896480a7d96d3d1/)
   - [Word Reveal](http://codepen.io/sol0mka/full/c94452fb65dbf676b0ae8a12d4267473/)

@@ -24,6 +24,7 @@ class Helpers
   #
   # @property   shortColors
   # @type       {Object}
+  # REMOVE WHEN ALL MODULES WILL USE DELTAS CLASS
   shortColors:
     transparent: 'rgba(0,0,0,0)'
     none:        'rgba(0,0,0,0)'
