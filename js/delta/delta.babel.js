@@ -15,7 +15,8 @@ class Delta {
   _createTween ( o = {} ) {
     var it = this;
     o.callbackOverrides = {
-      onUpdate (ep, p) { it._calcCurrentProps( ep, p ); }
+      onUpdate (ep, p) { it._calcCurrentProps( ep, p ); },
+      // onRefresh (isBefore, ep, p) { it._calcCurrentProps( 0, 0 ); }
     }
     this.tween = new Tween( o );
   }

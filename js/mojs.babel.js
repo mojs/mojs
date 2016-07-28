@@ -20,7 +20,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.268.2', isDebug: true, helpers: h,
+  revision:   '0.269.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, Html, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap, _pool: { Delta, Deltas }
@@ -60,19 +60,18 @@ window.mojs = mojs;
 //   // x:  { 0: 200 },
 //   // borderRadius: { 0: 10 },
 //   // backgroundColor: { 'cyan' : 'yellow' },
+//   borderRadius: 25,
 //   rotate: { 0: 180 },
+//   transformOrigin: '500% 100%',
 //   // skewX: { 0: 10 },
-//   transformOrigin: { '500% 100%' : '50% 100%' },
+//   // transformOrigin: { '500% 100%' : '50% 100%' },
 //   // scaleX: { 1: 0 },
 //   // opacity:  { 1 : 0 },
+//   // timeline: { delay: 5000 },
 //   duration: 4000
 // });
 
 // new MojsPlayer({ add: html });
-
-// document.addEventListener('click', (e) => {
-//   html.replay();
-// });
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {

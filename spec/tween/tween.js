@@ -7561,7 +7561,18 @@
           });
           spyOn(tw._props, 'onRefresh');
           tw._refresh(true);
-          return expect(tw._props.onRefresh).toHaveBeenCalledWith(true);
+          return expect(tw._props.onRefresh).toHaveBeenCalledWith(true, 0, 0);
+        });
+        it('should call onRefresh with eased progress', function() {
+          var tw;
+          easing = mojs.easing.path('M0,50 L100, 0');
+          tw = new Tween({
+            easing: easing,
+            onRefresh: function() {}
+          });
+          spyOn(tw._props, 'onRefresh');
+          tw._refresh(true);
+          return expect(tw._props.onRefresh).toHaveBeenCalledWith(true, easing(0), 0);
         });
         it('should not throw if no callback set', function() {
           var tw;

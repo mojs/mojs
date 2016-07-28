@@ -10,19 +10,19 @@ const keys = Object.keys( obj._defaults );
 for (var i = 0; i < keys.length; i++) {
   obj._defaults[keys[i]] = 1;
 }
-const TWEEN_PROPERTIES = obj._defaults;
 
+const TWEEN_PROPERTIES = obj._defaults;
 
 /*
   TODO:
-    - deltas initial _props set
-    - initial render
     - refresh
+    - timeline options
+    - deltas initial _props set?
+    - should parse `el`
     - isShowStart/isShowEnd options
     - current values in deltas
     - then chains
 */
-
 
 class Html extends Tunable {
 
@@ -95,6 +95,21 @@ class Html extends Tunable {
     this._setStyle( 'transform', string );
   }
   /*
+    Method to render on initialization.
+    @private
+    @overrides @ Module
+  */
+  _render () {
+    for (var i = 0; i < this._renderProps.length; i++) {
+      var name  = this._renderProps[i],
+          value = this._props[name];
+
+      value = (typeof value === 'number') ? `${value}px` : value;
+      // console.log(name, value);
+      this._setStyle( name, value );
+    }
+  }
+  /*
     Method to set style on el.
     @private
     @param {String} Style property name.
@@ -140,7 +155,7 @@ class Html extends Tunable {
       // copy all non-delta properties to the props
       // if not delta then add the property to render
       // list that is called on initialization
-      if ( !h.isDelta( o[key] ) ) {
+      if ( !h.isDelta( o[key] ) && !TWEEN_PROPERTIES[key] ) {
         this._parseOption( key, o[key] );
         if ( isInclude ) { this._renderProps.push( key ); }
       // copy delta prop but not transforms
@@ -149,6 +164,34 @@ class Html extends Tunable {
     }
 
     this._createDeltas( o );
+  }
+  /*
+    Method to parse option value.
+    @private
+    @param {String} Option name.
+    @param {Any} Option value.
+  */
+  _parseOption ( key, value ) {
+    super._parseOption( key, value );
+    // at this point the property is parsed
+    var parsed = this._props[key];
+    // cast it to string if it is array
+    if ( h.isArray(parsed) ) {
+      this._props[key] = this._arrToString(parsed);
+    }
+  }
+  /*
+    Method cast array to string value.
+    @private
+    @param {Array} Array of parsed numbers with units.
+    @returns {String} Casted array.
+  */
+  _arrToString (arr) {
+    var string = '';
+    for (var i = 0; i < arr.length; i++) {
+      string += `${arr[i].string} `;
+    }
+    return string;
   }
   /*
     Method to add defauls to passed object.
@@ -197,7 +240,8 @@ class Html extends Tunable {
     this.deltas = new Deltas({
       options,
       props: this._props,
-      onUpdate: (p) => { this._draw(); },
+      onUpdate:  (p) => { this._draw(); },
+      // onRefresh: (p) => { console.log('refresh'); this._draw(); },
       arrayPropertyMap:  this._arrayPropertyMap,
       numberPropertyMap: this._numberPropertyMap
     });

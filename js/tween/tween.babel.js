@@ -992,7 +992,7 @@ class Tween extends Module {
   _refresh ( isBefore ) {
     var p = this._props;
     if ( p.onRefresh != null ) {
-      p.onRefresh.call( p.callbacksContext || this, isBefore );
+      p.onRefresh.call( p.callbacksContext || this, isBefore, p.easing(0), 0 );
     }
   }
   /*

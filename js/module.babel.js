@@ -232,6 +232,7 @@ class Module {
   }
   /*
     Method to parse option value.
+    @private
     @param {String} Option name.
     @param {Any} Option value.
   */

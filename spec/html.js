@@ -56,6 +56,27 @@
         expect(html._renderProps).toEqual(['borderWidth', 'borderRadius']);
         return expect(html._drawProps).toEqual(['color']);
       });
+      it('should not copy tween properties _renderProps', function() {
+        var html, p;
+        html = new Html({
+          el: el,
+          borderWidth: '20px',
+          borderRadius: '40px',
+          y: 40,
+          x: {
+            20: 40
+          },
+          skewX: {
+            20: 40
+          },
+          color: {
+            'cyan': 'orange'
+          },
+          duration: 300
+        });
+        p = html._props;
+        return expect(html._renderProps).toEqual(['borderWidth', 'borderRadius']);
+      });
       return it('should call _createDeltas method ->', function() {
         var html;
         html = new Html({
@@ -366,7 +387,7 @@
         return expect(string).toBe('translate3d(0, 0, 10px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg) scale(1, 1)');
       });
     });
-    return describe('_draw method', function() {
+    describe('_draw method', function() {
       it('should style _props to el', function() {
         var html;
         el = document.createElement('div');
@@ -396,6 +417,66 @@
         spyOn(html, '_drawTransform');
         html._draw();
         return expect(html._drawTransform).toHaveBeenCalled();
+      });
+    });
+    describe('_render method ->', function() {
+      it('should set initial properties', function() {
+        var html;
+        el = document.createElement('div');
+        html = new Html({
+          el: el,
+          borderRadius: 25
+        });
+        spyOn(html, '_setStyle');
+        html._render();
+        expect(html._setStyle).toHaveBeenCalledWith('borderRadius', '25px');
+        return expect(html._setStyle.calls.count()).toBe(1);
+      });
+      return it('should not add pixels if a string', function() {
+        var html;
+        el = document.createElement('div');
+        html = new Html({
+          el: el,
+          borderRadius: '25rem'
+        });
+        spyOn(html, '_setStyle');
+        html._render();
+        expect(html._setStyle).toHaveBeenCalledWith('borderRadius', '25rem');
+        return expect(html._setStyle.calls.count()).toBe(1);
+      });
+    });
+    describe('_arrToString method ->', function() {
+      return it('should cast array to string', function() {
+        var arr, html;
+        el = document.createElement('div');
+        html = new Html({
+          el: el
+        });
+        arr = h.strToArr('200px 300px');
+        return expect(html._arrToString(arr)).toBe('200px 300px ');
+      });
+    });
+    return describe('_parseOption method ->', function() {
+      it('should call super', function() {
+        var html, name, value;
+        name = 'x';
+        value = 20;
+        html = new Html({
+          el: document.createElement('div')
+        });
+        spyOn(mojs.Module.prototype, '_parseOption');
+        html._parseOption(name, value);
+        return expect(mojs.Module.prototype._parseOption).toHaveBeenCalledWith(name, value);
+      });
+      return it('should cast array values', function() {
+        var html, name, value;
+        name = 'transformOrigin';
+        value = '200px 300px';
+        html = new Html({
+          el: document.createElement('div')
+        });
+        html._parseOption(name, value);
+        return expect(html._props[name]).toBe('200px 300px ');
       });
     });
   });

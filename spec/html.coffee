@@ -46,6 +46,24 @@ describe 'Html ->', ->
       expect( html._drawProps )
         .toEqual [ 'color' ]
 
+    it 'should not copy tween properties _renderProps', ->
+      html = new Html
+        el: el
+        borderWidth:  '20px'
+        borderRadius: '40px'
+        y:            40
+        x:            { 20: 40 }
+        skewX:        { 20: 40 }
+        color:        { 'cyan': 'orange' }
+        duration:     300
+        # prevChainModule: { foo: 'bar' }
+
+      p = html._props
+
+      expect( html._renderProps )
+        .toEqual [ 'borderWidth', 'borderRadius' ]
+
+
     it 'should call _createDeltas method ->', ->
       html = new Html
         el: el
@@ -366,8 +384,61 @@ describe 'Html ->', ->
       expect( html._drawTransform ).toHaveBeenCalled()
 
 
+  describe '_render method ->', ->
+    it 'should set initial properties', ->
+      el = document.createElement 'div'
+      html = new Html
+        el: el
+        borderRadius: 25
+
+      spyOn html, '_setStyle'
+      html._render()
+
+      expect( html._setStyle ).toHaveBeenCalledWith 'borderRadius', '25px'
+      expect( html._setStyle.calls.count() ).toBe 1
+
+    it 'should not add pixels if a string', ->
+      el = document.createElement 'div'
+      html = new Html
+        el: el
+        borderRadius: '25rem'
+
+      spyOn html, '_setStyle'
+      html._render()
+
+      expect( html._setStyle ).toHaveBeenCalledWith 'borderRadius', '25rem'
+      expect( html._setStyle.calls.count() ).toBe 1
+
+  describe '_arrToString method ->', ->
+    it 'should cast array to string', ->
+      el = document.createElement 'div'
+      html = new Html el: el
+
+      arr = h.strToArr( '200px 300px' )
+
+      expect( html._arrToString( arr ) ).toBe '200px 300px '
 
 
+  describe '_parseOption method ->', ->
+    it 'should call super', ->
+      name = 'x'; value = 20
+      html = new Html el: document.createElement 'div'
+
+      spyOn mojs.Module.prototype, '_parseOption'
+
+      html._parseOption name, value
+
+      expect( mojs.Module.prototype._parseOption )
+        .toHaveBeenCalledWith name, value
+
+    it 'should cast array values', ->
+      name = 'transformOrigin'; value = '200px 300px'
+      html = new Html
+        el: document.createElement 'div'
+
+      html._parseOption name, value
+
+      expect( html._props[name] ).toBe '200px 300px '
 
 
 
