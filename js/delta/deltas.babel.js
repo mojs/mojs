@@ -69,13 +69,9 @@ class Deltas {
   */
   _createTimeline ( opts = {} ) {
     opts.timeline = opts.timeline || {};
-    // opts.timeline.delay = 5000;
-    // opts.timeline.onRefresh = () => {
-    //   console.log('on rfsh');
-    // }
     opts.timeline.callbackOverrides = {
       onUpdate:   this._o.onUpdate,
-      // onRefresh:  () => { console.log('refresh');  }
+      onRefresh:  this._o.onUpdate
     }
     this.timeline = new Timeline(opts.timeline);
     this.timeline.add( this._deltas );

@@ -395,7 +395,7 @@ describe 'Html ->', ->
       html._render()
 
       expect( html._setStyle ).toHaveBeenCalledWith 'borderRadius', '25px'
-      expect( html._setStyle.calls.count() ).toBe 1
+      expect( html._setStyle.calls.count() ).toBe 2
 
     it 'should not add pixels if a string', ->
       el = document.createElement 'div'
@@ -407,7 +407,17 @@ describe 'Html ->', ->
       html._render()
 
       expect( html._setStyle ).toHaveBeenCalledWith 'borderRadius', '25rem'
-      expect( html._setStyle.calls.count() ).toBe 1
+      expect( html._setStyle.calls.count() ).toBe 2
+
+    it 'should call _draw method', ->
+      el = document.createElement 'div'
+      html = new Html el: el
+
+      spyOn html, '_draw'
+      html._render()
+
+      expect( html._draw ).toHaveBeenCalled()
+      expect( html._draw.calls.count() ).toBe 1
 
   describe '_arrToString method ->', ->
     it 'should cast array to string', ->

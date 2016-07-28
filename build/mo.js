@@ -1683,7 +1683,6 @@
 
 	/*
 	  TODO:
-	    - refresh
 	    - timeline options
 	    - deltas initial _props set?
 	    - should parse `el`
@@ -1774,9 +1773,10 @@
 	          value = this._props[name];
 
 	      value = typeof value === 'number' ? value + 'px' : value;
-	      // console.log(name, value);
 	      this._setStyle(name, value);
 	    }
+
+	    this._draw();
 	  };
 	  /*
 	    Method to set style on el.
@@ -5051,6 +5051,8 @@
 
 	    this._o = o;
 	    this._createTween(o.tweenOptions);
+	    // initial properties render
+	    this.tween._refresh(true);
 	  }
 	  /*
 	    Method to create tween of the delta.
@@ -5066,10 +5068,11 @@
 	    o.callbackOverrides = {
 	      onUpdate: function onUpdate(ep, p) {
 	        it._calcCurrentProps(ep, p);
+	      },
+	      onRefresh: function onRefresh(isBefore, ep, p) {
+	        it._calcCurrentProps(ep, p);
 	      }
 	    };
-
-	    // onRefresh (isBefore, ep, p) { it._calcCurrentProps( 0, 0 ); }
 	    this.tween = new _tween2.default(o);
 	  };
 	  /*
@@ -5292,14 +5295,10 @@
 	    var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 	    opts.timeline = opts.timeline || {};
-	    // opts.timeline.delay = 5000;
-	    // opts.timeline.onRefresh = () => {
-	    //   console.log('on rfsh');
-	    // }
 	    opts.timeline.callbackOverrides = {
-	      onUpdate: this._o.onUpdate
+	      onUpdate: this._o.onUpdate,
+	      onRefresh: this._o.onUpdate
 	    };
-	    // onRefresh:  () => { console.log('refresh');  }
 	    this.timeline = new _timeline2.default(opts.timeline);
 	    this.timeline.add(this._deltas);
 	  };
@@ -9949,7 +9948,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.269.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.270.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, Html: _html2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default, _pool: { Delta: _delta2.default, Deltas: _deltas2.default }
@@ -9990,13 +9989,14 @@
 	//   // borderRadius: { 0: 10 },
 	//   // backgroundColor: { 'cyan' : 'yellow' },
 	//   borderRadius: 25,
-	//   rotate: { 0: 180 },
+	//   rotate: { 90: 180 },
 	//   transformOrigin: '500% 100%',
 	//   // skewX: { 0: 10 },
 	//   // transformOrigin: { '500% 100%' : '50% 100%' },
 	//   // scaleX: { 1: 0 },
 	//   // opacity:  { 1 : 0 },
 	//   // timeline: { delay: 5000 },
+	//   delay: 5000,
 	//   duration: 4000
 	// });
 

@@ -5,7 +5,7 @@ Tween   = mojs.Tween
 h       = mojs.h
 Delta   = mojs._pool.Delta
 
-deltas  = [ {}, {} ]
+deltas  = [ h.parseDelta('x', { 0: 20 }, 0), h.parseDelta('y', { 20: 10 }, 0) ]
 tweenOptions = {}
 props = {}
 
@@ -19,6 +19,15 @@ describe 'Delta ->', ->
     expect( delta._o.deltas ).toBe deltas
     expect( delta._o.tweenOptions ).toBe tweenOptions
     expect( delta._o.props ).toBe props
+
+  it 'should call refresh on tween when constructing', ->
+      spyOn mojs.Tween.prototype, '_refresh'
+      delta = new Delta
+        deltas: deltas,
+        tweenOptions: tweenOptions,
+        props: props
+
+      expect( mojs.Tween.prototype._refresh ).toHaveBeenCalledWith true
 
   describe '_calcCurrentProps method ->', ->
     it 'should call sub functions based on each delta type', ->
@@ -173,6 +182,7 @@ describe 'Delta ->', ->
       expect( parseFloat(strokeDasharray[1]) ).toBeCloseTo 37.5, 1
       # expect( strokeDasharray.length ).toBeCloseTo 2
 
+    # not now
     # it 'should reuse the props array', ->
     #   arrDelta =  h.parseDelta( 'strokeDasharray', { '0 100' : '200 0' }, 0 )
     #   arr = []
@@ -185,7 +195,7 @@ describe 'Delta ->', ->
     #   delta._calcCurrent_array arrDelta, .5, .5
     #   expect( delta._o.props['strokeDasharray'] ).toBe arr
 
-  describe '_createTween method', ->
+  describe '_createTween method ->', ->
     it 'should create a tween', ->
       delta = new Delta
         deltas: deltas,
@@ -228,8 +238,27 @@ describe 'Delta ->', ->
 
       expect( delta._calcCurrentProps ).toHaveBeenCalledWith .2, .1
 
+    it 'should add onRefresh callback override', ->
+      tweenOptions = { duration: 200 }
+      delta = new Delta
+        deltas: deltas,
+        tweenOptions: tweenOptions,
+        props: props
+
+      delta.tween = null
+      delta._createTween tweenOptions
+
+      expect( typeof delta.tween._callbackOverrides.onRefresh )
+        .toBe 'function'
+
+      spyOn delta, '_calcCurrentProps'
+
+      delta.tween._callbackOverrides.onRefresh( true, .2, .1 )
+
+      expect( delta._calcCurrentProps ).toHaveBeenCalledWith .2, .1
+
     it 'should be called on initialization', ->
-      spyOn Delta.prototype, '_createTween'
+      spyOn(Delta.prototype, '_createTween').and.callThrough()
       delta = new Delta
         deltas: deltas,
         tweenOptions: tweenOptions,

@@ -15,7 +15,6 @@ const TWEEN_PROPERTIES = obj._defaults;
 
 /*
   TODO:
-    - refresh
     - timeline options
     - deltas initial _props set?
     - should parse `el`
@@ -105,9 +104,10 @@ class Html extends Tunable {
           value = this._props[name];
 
       value = (typeof value === 'number') ? `${value}px` : value;
-      // console.log(name, value);
       this._setStyle( name, value );
     }
+
+    this._draw();
   }
   /*
     Method to set style on el.

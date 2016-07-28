@@ -51,7 +51,7 @@
         });
         return expect(deltas.timeline._o).toEqual(timeline);
       });
-      it('should pass callbackOverrides to the timeline', function() {
+      it('should pass callbackOverrides to the timeline - onUpdate', function() {
         var deltas, fun;
         fun = function() {};
         deltas = new Deltas({
@@ -60,6 +60,16 @@
           onUpdate: fun
         });
         return expect(deltas.timeline._callbackOverrides.onUpdate).toBe(fun);
+      });
+      it('should pass callbackOverrides to the timeline - onRefresh', function() {
+        var deltas, fun;
+        fun = function() {};
+        deltas = new Deltas({
+          options: options,
+          props: props,
+          onUpdate: fun
+        });
+        return expect(deltas.timeline._callbackOverrides.onRefresh).toBe(fun);
       });
       return it('should add _deltas to the Timeline', function() {
         var deltas;

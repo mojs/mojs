@@ -7,7 +7,13 @@
 
   Delta = mojs._pool.Delta;
 
-  deltas = [{}, {}];
+  deltas = [
+    h.parseDelta('x', {
+      0: 20
+    }, 0), h.parseDelta('y', {
+      20: 10
+    }, 0)
+  ];
 
   tweenOptions = {};
 
@@ -24,6 +30,16 @@
       expect(delta._o.deltas).toBe(deltas);
       expect(delta._o.tweenOptions).toBe(tweenOptions);
       return expect(delta._o.props).toBe(props);
+    });
+    it('should call refresh on tween when constructing', function() {
+      var delta;
+      spyOn(mojs.Tween.prototype, '_refresh');
+      delta = new Delta({
+        deltas: deltas,
+        tweenOptions: tweenOptions,
+        props: props
+      });
+      return expect(mojs.Tween.prototype._refresh).toHaveBeenCalledWith(true);
     });
     describe('_calcCurrentProps method ->', function() {
       return it('should call sub functions based on each delta type', function() {
@@ -188,7 +204,7 @@
         return expect(parseFloat(strokeDasharray[1])).toBeCloseTo(37.5, 1);
       });
     });
-    return describe('_createTween method', function() {
+    return describe('_createTween method ->', function() {
       it('should create a tween', function() {
         var delta;
         delta = new Delta({
@@ -231,9 +247,26 @@
         delta.tween._callbackOverrides.onUpdate(.2, .1);
         return expect(delta._calcCurrentProps).toHaveBeenCalledWith(.2, .1);
       });
+      it('should add onRefresh callback override', function() {
+        var delta;
+        tweenOptions = {
+          duration: 200
+        };
+        delta = new Delta({
+          deltas: deltas,
+          tweenOptions: tweenOptions,
+          props: props
+        });
+        delta.tween = null;
+        delta._createTween(tweenOptions);
+        expect(typeof delta.tween._callbackOverrides.onRefresh).toBe('function');
+        spyOn(delta, '_calcCurrentProps');
+        delta.tween._callbackOverrides.onRefresh(true, .2, .1);
+        return expect(delta._calcCurrentProps).toHaveBeenCalledWith(.2, .1);
+      });
       return it('should be called on initialization', function() {
         var delta;
-        spyOn(Delta.prototype, '_createTween');
+        spyOn(Delta.prototype, '_createTween').and.callThrough();
         delta = new Delta({
           deltas: deltas,
           tweenOptions: tweenOptions,

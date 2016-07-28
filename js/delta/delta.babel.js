@@ -6,6 +6,8 @@ class Delta {
   constructor ( o = {} ) {
     this._o = o;
     this._createTween( o.tweenOptions );
+    // initial properties render
+    this.tween._refresh( true );
   }
   /*
     Method to create tween of the delta.
@@ -16,7 +18,7 @@ class Delta {
     var it = this;
     o.callbackOverrides = {
       onUpdate (ep, p) { it._calcCurrentProps( ep, p ); },
-      // onRefresh (isBefore, ep, p) { it._calcCurrentProps( 0, 0 ); }
+      onRefresh (isBefore, ep, p) { it._calcCurrentProps( ep, p ); }
     }
     this.tween = new Tween( o );
   }

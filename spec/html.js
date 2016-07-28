@@ -430,9 +430,9 @@
         spyOn(html, '_setStyle');
         html._render();
         expect(html._setStyle).toHaveBeenCalledWith('borderRadius', '25px');
-        return expect(html._setStyle.calls.count()).toBe(1);
+        return expect(html._setStyle.calls.count()).toBe(2);
       });
-      return it('should not add pixels if a string', function() {
+      it('should not add pixels if a string', function() {
         var html;
         el = document.createElement('div');
         html = new Html({
@@ -442,7 +442,18 @@
         spyOn(html, '_setStyle');
         html._render();
         expect(html._setStyle).toHaveBeenCalledWith('borderRadius', '25rem');
-        return expect(html._setStyle.calls.count()).toBe(1);
+        return expect(html._setStyle.calls.count()).toBe(2);
+      });
+      return it('should call _draw method', function() {
+        var html;
+        el = document.createElement('div');
+        html = new Html({
+          el: el
+        });
+        spyOn(html, '_draw');
+        html._render();
+        expect(html._draw).toHaveBeenCalled();
+        return expect(html._draw.calls.count()).toBe(1);
       });
     });
     describe('_arrToString method ->', function() {
