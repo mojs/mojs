@@ -21,7 +21,6 @@
   - [Dust Trail](http://codepen.io/sol0mka/full/633e6aa52d40691cca2f2cda91650bae/)
   - [Bubble Modal](http://codepen.io/sol0mka/full/3c49de2d7d0ca3e92bf5db5bf7a2687d/)
   - [Bubbles](http://codepen.io/sol0mka/full/2ef10ed42ff535182c31cd1dbb81e453/)
-  
   - [Blast](http://codepen.io/sol0mka/full/699cfc8716a13e0e1c15105af2b6fb95/) (click to see)
   - [Simple Burst](http://codepen.io/sol0mka/full/6caf96461207a5caa9226fbd2631569d/) (click to see)
   - [Dusty Burst](http://codepen.io/sol0mka/full/03e9d8f2fbf886aa1505c61c81d782a0/) (click to see)
