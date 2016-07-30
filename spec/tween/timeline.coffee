@@ -454,6 +454,15 @@ describe 'Timeline ->', ->
       t._recalcTotalDuration()
       expect(t._props.duration).toBe 1000
 
+    it 'should recalculate duration with negative delays', ->
+      t = new Timeline
+      timeline = new Tween  duration: 100
+      timeline2 = new Tween duration: 200, delay: -150
+      t.add timeline
+      t._timelines.push timeline2
+      t._recalcTotalDuration()
+      expect(t._props.duration).toBe 100
+
     it 'should call _calcDimentions method', ->
       delay = 200; maxDur = 1000
       t = new Timeline delay: delay

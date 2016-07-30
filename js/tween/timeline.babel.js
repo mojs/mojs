@@ -192,7 +192,7 @@ class Timeline extends Tween {
   */
   _recalcDuration (timeline) {
     var p             = timeline._props,
-        timelineTime  = p.repeatTime/p.speed + (p.shiftTime || 0);
+        timelineTime  = p.repeatTime/p.speed + (p.shiftTime || 0) + timeline._negativeShift;
 
     this._props.duration = Math.max(timelineTime, this._props.duration);
   }
@@ -251,11 +251,11 @@ class Timeline extends Tween {
     @param {Boolean} If refresh even before start time.
   */
   _refresh ( isBefore ) {
-    super._refresh( isBefore );
     const len = this._timelines.length;
     for (var i = 0; i < len; i++) {
       this._timelines[i]._refresh( isBefore );
     }
+    super._refresh( isBefore );
   }
   /*
     Method do declare defaults by this._defaults object

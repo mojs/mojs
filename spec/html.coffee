@@ -46,6 +46,24 @@ describe 'Html ->', ->
       expect( html._drawProps )
         .toEqual [ 'color' ]
 
+    it 'should not copy tween properties _drawProps', ->
+      html = new Html
+        el: el
+        borderWidth:  '20px'
+        borderRadius: '40px'
+        y:            40
+        x:            { 20: 40 }
+        skewX:        { 20: 40 }
+        color:        { 'cyan': 'orange' }
+        duration:     300
+        timeline:     { delay: 300 }
+        # prevChainModule: { foo: 'bar' }
+
+      p = html._props
+
+      expect( html._drawProps )
+        .toEqual [ 'color' ]
+
     it 'should not copy tween properties _renderProps', ->
       html = new Html
         el: el
@@ -63,7 +81,6 @@ describe 'Html ->', ->
       expect( html._renderProps )
         .toEqual [ 'borderWidth', 'borderRadius' ]
 
-
     it 'should call _createDeltas method ->', ->
       html = new Html
         el: el
@@ -78,7 +95,23 @@ describe 'Html ->', ->
 
       expect( html._createDeltas ).toHaveBeenCalledWith html._addDefaults html._o
 
-  
+    it 'should parse el ->', ->
+      div = document.createElement('div')
+      div.setAttribute( 'id', 'js-el' )
+      document.body.appendChild div
+      html = new Html
+        el: '#js-el'
+        borderWidth:  '20px'
+        borderRadius: '40px'
+        x:            { 20: 40 }
+        color:        { 'cyan': 'orange' }
+
+      html._props.el = null
+      html._extendDefaults()
+
+      expect( html._props.el instanceof HTMLElement ).toBe true
+      expect( html._props.el ).toBe div
+
   describe '_createDeltas method ->', ->
     it 'should create deltas with passed object', ->
       html = new Html
@@ -450,7 +483,29 @@ describe 'Html ->', ->
 
       expect( html._props[name] ).toBe '200px 300px '
 
+  # not now
+  # describe '_replaceCurrent method ->', ->
+  #   it 'should get computedStyle', ->
+  #     html = new Html
+  #       el: document.createElement 'div'
 
+  #     spyOn(h, 'computedStyle').and.callThrough()
+  #     html._replaceCurrent 'x', { '=': 180 }
+
+  #     expect(h.computedStyle).toHaveBeenCalledWith html._props.el
+
+  #   it 'should replace = with current values', ->
+      
+  #     div = document.createElement 'div'
+  #     div.style['borderRadius'] = '20px'
+  #     document.body.appendChild div
+  #     html = new Html el: div
+
+  #     # console.log h.computedStyle(div)
+
+  #     result = html._replaceCurrent 'borderRadius', { '=': '100px' }
+
+  #     expect( result ).toEqual { '20px': '100px' }
 
   # describe '_renameProperties method ->', ->
   #   it 'should rename camelCase to spinal-case', ->

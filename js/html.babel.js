@@ -10,17 +10,14 @@ const keys = Object.keys( obj._defaults );
 for (var i = 0; i < keys.length; i++) {
   obj._defaults[keys[i]] = 1;
 }
-
+obj._defaults['timeline'] = 1;
 const TWEEN_PROPERTIES = obj._defaults;
 
 /*
   TODO:
-    - timeline options
-    - deltas initial _props set?
-    - should parse `el`
-    - isShowStart/isShowEnd options
-    - current values in deltas
     - then chains
+    - current values in deltas
+    - isShowStart/isShowEnd options
 */
 
 class Html extends Tunable {
@@ -142,21 +139,22 @@ class Html extends Tunable {
     let o = { ...this._o };
     // extend options with defaults
     o = this._addDefaults(o);
-    // rename properties to spinal-case
-    // this._renamedOpts = this._renameProperties( o );
 
     const keys = Object.keys( o );
-
     for ( var i = 0; i < keys.length; i ++ ) {
       var key = keys[i];
       // include the property if it is not in drawExclude object
       // and not in defaults = not a transform
-      var isInclude = !this._drawExclude[key] && this._defaults[key] == null;
+      var isInclude =
+        !this._drawExclude[key] && // not in exclude map
+        this._defaults[key] == null && // not transform property
+        !TWEEN_PROPERTIES[key]; // not tween property
       // copy all non-delta properties to the props
       // if not delta then add the property to render
       // list that is called on initialization
       if ( !h.isDelta( o[key] ) && !TWEEN_PROPERTIES[key] ) {
         this._parseOption( key, o[key] );
+        if ( key === 'el' ) { this._props[key] = h.parseEl( o[key] ); }
         if ( isInclude ) { this._renderProps.push( key ); }
       // copy delta prop but not transforms
       // otherwise push it to draw list that gets traversed on every draw
@@ -241,7 +239,6 @@ class Html extends Tunable {
       options,
       props: this._props,
       onUpdate:  (p) => { this._draw(); },
-      // onRefresh: (p) => { console.log('refresh'); this._draw(); },
       arrayPropertyMap:  this._arrayPropertyMap,
       numberPropertyMap: this._numberPropertyMap
     });
@@ -270,6 +267,31 @@ export default Html;
 
 
 
+
+/*
+  Method to replace current values (=) in delta object.
+  @private
+  @param {String} Property name.
+  @param {Object} Delta to replace in.
+  @returns {Object} Delta with replaced values.
+*/
+// _replaceCurrent(name, delta) {
+//   const computed = h.computedStyle( this._props.el ),
+//         newDelta = {};
+
+//   const keys = Object.keys(delta);
+//   for (var i = 0; i < keys.length; i++) {
+//     const key   = keys[i],
+//           value = delta[key];
+
+//     console.log(name, computed[name]);
+//     if ( key === '=' ) {
+//       newDelta[computed[name]] = delta[key];
+//     }
+//   }
+
+//   return newDelta;
+// }
 
 
 

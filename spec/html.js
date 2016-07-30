@@ -56,6 +56,30 @@
         expect(html._renderProps).toEqual(['borderWidth', 'borderRadius']);
         return expect(html._drawProps).toEqual(['color']);
       });
+      it('should not copy tween properties _drawProps', function() {
+        var html, p;
+        html = new Html({
+          el: el,
+          borderWidth: '20px',
+          borderRadius: '40px',
+          y: 40,
+          x: {
+            20: 40
+          },
+          skewX: {
+            20: 40
+          },
+          color: {
+            'cyan': 'orange'
+          },
+          duration: 300,
+          timeline: {
+            delay: 300
+          }
+        });
+        p = html._props;
+        return expect(html._drawProps).toEqual(['color']);
+      });
       it('should not copy tween properties _renderProps', function() {
         var html, p;
         html = new Html({
@@ -77,7 +101,7 @@
         p = html._props;
         return expect(html._renderProps).toEqual(['borderWidth', 'borderRadius']);
       });
-      return it('should call _createDeltas method ->', function() {
+      it('should call _createDeltas method ->', function() {
         var html;
         html = new Html({
           el: el,
@@ -93,6 +117,27 @@
         spyOn(html, '_createDeltas');
         html._extendDefaults();
         return expect(html._createDeltas).toHaveBeenCalledWith(html._addDefaults(html._o));
+      });
+      return it('should parse el ->', function() {
+        var div, html;
+        div = document.createElement('div');
+        div.setAttribute('id', 'js-el');
+        document.body.appendChild(div);
+        html = new Html({
+          el: '#js-el',
+          borderWidth: '20px',
+          borderRadius: '40px',
+          x: {
+            20: 40
+          },
+          color: {
+            'cyan': 'orange'
+          }
+        });
+        html._props.el = null;
+        html._extendDefaults();
+        expect(html._props.el instanceof HTMLElement).toBe(true);
+        return expect(html._props.el).toBe(div);
       });
     });
     describe('_createDeltas method ->', function() {

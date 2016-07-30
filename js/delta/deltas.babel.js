@@ -30,6 +30,7 @@ const keys = Object.keys( obj._defaults );
 for (var i = 0; i < keys.length; i++) {
   obj._defaults[keys[i]] = 1;
 }
+obj._defaults['timeline'] = 1;
 const TWEEN_PROPERTIES = obj._defaults;
 
 class Deltas {
@@ -60,7 +61,7 @@ class Deltas {
 
     this._parseDeltas( o.options );
     this._createDeltas();
-    this._createTimeline(o.timeline);
+    this._createTimeline( this._mainTweenOptions );
   }
   /*
     Method to create Timeline.

@@ -86,8 +86,8 @@ module.exports = function(config) {
     ],
     // list of files to exclude
     exclude: [
-      // 'build/h.js',
-      // 'spec/h.js',
+      'build/h.js',
+      'spec/h.js',
 
       // 'build/delta/deltas.js',
       // 'spec/delta/deltas.js',

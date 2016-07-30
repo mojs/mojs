@@ -26,23 +26,14 @@ describe 'Deltas ->', ->
       expect(deltas.timeline instanceof mojs.Timeline).toBe true
 
     it 'should be called on initialization', ->
+      options = { x: { 20: 0 }, timeline: { duration: 200 } }
       spyOn Deltas::, '_createTimeline'
-      timeline = {}
       deltas = new Deltas
         options:  options,
         props:    props
-        timeline: timeline
 
-      expect( Deltas::_createTimeline ).toHaveBeenCalledWith timeline
-
-    it 'should pass timeline options to the timeline', ->
-      timeline = {}
-      deltas = new Deltas
-        options:  options,
-        props:    props
-        timeline: {}
-
-      expect(deltas.timeline._o).toEqual timeline
+      expect( Deltas::_createTimeline )
+        .toHaveBeenCalledWith deltas._mainTweenOptions
 
     it 'should pass callbackOverrides to the timeline - onUpdate', ->
       
@@ -227,6 +218,16 @@ describe 'Deltas ->', ->
 
       expect( result.delta ).toEqual { 0: 20, curve: 'M0,0 L100,0' }
       expect( result.tweenOptions ).toBeFalsy()
+
+    it 'should treat timeline property as tween one', ->
+      options = { x: { 0: 20 }, timeline: { delay: 200 } }
+      deltas = new Deltas
+        options:  options,
+        props:    props
+
+      result = deltas._splitTweenOptions options
+
+      expect( result.tweenOptions.timeline ).toEqual { delay: 200 }
 
   describe '_createDeltas method ->', ->
     it 'should create deltas from parsed object ->', ->
@@ -699,7 +700,5 @@ describe 'Deltas ->', ->
         expect( deltas._parseUnitDelta ).not.toHaveBeenCalled()
         expect( deltas._parseNumberDelta ).toHaveBeenCalledWith name, sourceDelta, index
         expect( delta ).toEqual deltas._parseNumberDelta name, sourceDelta, index
-
-
 
 

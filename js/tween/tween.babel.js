@@ -331,6 +331,7 @@ class Tween extends Module {
     // save it to _negativeShift property and
     // reset it back to 0
     if ( this._props.delay < 0 ) {
+      // console.log('yep', this._props.delay );
       this._negativeShift = this._props.delay;
       this._props.delay = 0;
     }
@@ -387,7 +388,7 @@ class Tween extends Module {
     // - shift time is shift of the parent
     p.startTime = startTime + p.delay + this._negativeShift + shiftTime;
     p.endTime   = p.startTime + p.repeatTime - p.delay;
-    // set play time to the startTime
+    // set play time to the startTimes
     // if playback controls are used - use _resumeTime as play time,
     // else use shifted startTime -- shift is needed for timelines append chains
     this._playTime = ( this._resumeTime != null )
@@ -992,7 +993,11 @@ class Tween extends Module {
   _refresh ( isBefore ) {
     var p = this._props;
     if ( p.onRefresh != null ) {
-      p.onRefresh.call( p.callbacksContext || this, isBefore, p.easing(0), 0 );
+      if ( isBefore ) {
+        p.onRefresh.call( p.callbacksContext || this, isBefore, p.easing(0), 0 );
+      } else {
+        p.onRefresh.call( p.callbacksContext || this, isBefore, p.easing(1), 1 );
+      }
     }
   }
   /*

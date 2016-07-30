@@ -31,25 +31,21 @@
         return expect(deltas.timeline instanceof mojs.Timeline).toBe(true);
       });
       it('should be called on initialization', function() {
-        var deltas, timeline;
+        var deltas;
+        options = {
+          x: {
+            20: 0
+          },
+          timeline: {
+            duration: 200
+          }
+        };
         spyOn(Deltas.prototype, '_createTimeline');
-        timeline = {};
         deltas = new Deltas({
           options: options,
-          props: props,
-          timeline: timeline
+          props: props
         });
-        return expect(Deltas.prototype._createTimeline).toHaveBeenCalledWith(timeline);
-      });
-      it('should pass timeline options to the timeline', function() {
-        var deltas, timeline;
-        timeline = {};
-        deltas = new Deltas({
-          options: options,
-          props: props,
-          timeline: {}
-        });
-        return expect(deltas.timeline._o).toEqual(timeline);
+        return expect(Deltas.prototype._createTimeline).toHaveBeenCalledWith(deltas._mainTweenOptions);
       });
       it('should pass callbackOverrides to the timeline - onUpdate', function() {
         var deltas, fun;
@@ -308,7 +304,7 @@
         });
         return expect(result.tweenOptions).toBeFalsy();
       });
-      return it('should parse curve as part of delta', function() {
+      it('should parse curve as part of delta', function() {
         var deltas, result;
         deltas = new Deltas({
           options: options,
@@ -323,6 +319,25 @@
           curve: 'M0,0 L100,0'
         });
         return expect(result.tweenOptions).toBeFalsy();
+      });
+      return it('should treat timeline property as tween one', function() {
+        var deltas, result;
+        options = {
+          x: {
+            0: 20
+          },
+          timeline: {
+            delay: 200
+          }
+        };
+        deltas = new Deltas({
+          options: options,
+          props: props
+        });
+        result = deltas._splitTweenOptions(options);
+        return expect(result.tweenOptions.timeline).toEqual({
+          delay: 200
+        });
       });
     });
     describe('_createDeltas method ->', function() {

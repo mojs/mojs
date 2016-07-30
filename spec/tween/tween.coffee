@@ -7305,6 +7305,16 @@ describe 'Tween ->', ->
         tw._refresh true
         expect( tw._props.onRefresh ).toHaveBeenCalledWith true, easing(0), 0
 
+      it 'should call onRefresh with eased progress // after', ->
+        easing = mojs.easing.path('M0,50 L100, 0')
+        tw = new Tween
+          easing: easing
+          onRefresh: ->
+
+        spyOn tw._props, 'onRefresh'
+        tw._refresh false
+        expect( tw._props.onRefresh ).toHaveBeenCalledWith false, easing(1), 1
+
       it 'should not throw if no callback set', ->
         tw = new Tween
         expect( -> tw._refresh true ).not.toThrow()
