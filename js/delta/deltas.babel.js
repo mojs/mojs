@@ -64,6 +64,27 @@ class Deltas {
     this._createTimeline( this._mainTweenOptions );
   }
   /*
+    Method to call `refresh` on all child `delta` objects.
+    @public
+    @param {Boolean} If before start time (true) or after end time (false).
+  */
+  refresh (isBefore) {
+    for ( var i = 0; i < this._deltas.length; i++ ) {
+      this._deltas[i].refresh( isBefore );
+    }
+    return this;
+  }
+  /*
+    Method to call `restore` on all child `delta` objects.
+    @public
+  */
+  restore () {
+    for ( var i = 0; i < this._deltas.length; i++ ) {
+      this._deltas[i].restore();
+    }
+    return this;
+  }
+  /*
     Method to create Timeline.
     @private
     @param {Object} Timeline options.
@@ -191,9 +212,11 @@ class Deltas {
     for ( var i = 0; i < keys.length; i++ ) {
       let key = keys[i]
       if ( TWEEN_PROPERTIES[key] ) {
-        tweenOptions[key] = delta[key];
+        if ( delta[key] != null ) {
+          tweenOptions[key] = delta[key];
+          isTween = true;
+        }
         delete delta[key];
-        isTween = true;
       }
     }
     return {

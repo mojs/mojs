@@ -512,7 +512,7 @@
         return expect(html._arrToString(arr)).toBe('200px 300px ');
       });
     });
-    return describe('_parseOption method ->', function() {
+    describe('_parseOption method ->', function() {
       it('should call super', function() {
         var html, name, value;
         name = 'x';
@@ -533,6 +533,130 @@
         });
         html._parseOption(name, value);
         return expect(html._props[name]).toBe('200px 300px ');
+      });
+    });
+    return describe('then method ->', function() {
+      it('should call `refresh` on the last `_module`', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        spyOn(html._modules[0].deltas, 'refresh');
+        html.then({
+          borderRadius: 0
+        });
+        return expect(html._modules[0].deltas.refresh).toHaveBeenCalledWith(false);
+      });
+      it('should call `refresh` on the last `_module` #2', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        }).then({
+          borderRadius: 0
+        });
+        spyOn(html._modules[1].deltas, 'refresh');
+        html.then({
+          borderRadius: 20
+        });
+        return expect(html._modules[1].deltas.refresh).toHaveBeenCalledWith(false);
+      });
+      it('should set the last `_history` record to last `_modules` `_props`', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        html._history[0] = void 0;
+        html.then({
+          borderRadius: 0
+        });
+        return expect(html._history[0]).toBeDefined();
+      });
+      it('should set the last `_history` record to last `_modules` `_props` #2', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        }).then({
+          borderRadius: 0
+        });
+        html._history[1] = void 0;
+        html.then({
+          borderRadius: 0
+        });
+        return expect(html._history[1]).toBeDefined();
+      });
+      it('should call `super`', function() {
+        var html, opts;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        spyOn(mojs.Thenable.prototype, 'then');
+        opts = {
+          borderRadius: 0
+        };
+        html.then(opts);
+        return expect(mojs.Thenable.prototype.then).toHaveBeenCalledWith(opts);
+      });
+      it('should restore `deltas`', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        spyOn(html._modules[0].deltas, 'restore');
+        html.then({
+          borderRadius: 0
+        });
+        return expect(html._modules[0].deltas.restore).toHaveBeenCalled();
+      });
+      it('should restore `deltas` #2', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        }).then({
+          borderRadius: 0
+        });
+        spyOn(html._modules[1].deltas, 'restore');
+        html.then({
+          borderRadius: 0
+        });
+        return expect(html._modules[1].deltas.restore).toHaveBeenCalled();
+      });
+      it('should return `this`', function() {
+        var html, result;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        result = html.then({
+          borderRadius: 0
+        });
+        return expect(result).toBe(html);
+      });
+      it('should return if no options passed', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        spyOn(html._modules[0].deltas, 'refresh');
+        html.then();
+        return expect(html._modules[0].deltas.refresh).not.toHaveBeenCalled();
+      });
+      return it('should return if empty object passed', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        spyOn(html._modules[0].deltas, 'refresh');
+        html.then({});
+        return expect(html._modules[0].deltas.refresh).not.toHaveBeenCalled();
       });
     });
   });

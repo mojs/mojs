@@ -266,6 +266,85 @@ describe 'Delta ->', ->
 
       expect( Delta.prototype._createTween ).toHaveBeenCalledWith tweenOptions
 
+  describe 'refresh method ->', ->
+    it 'should call `_refresh` on `tween` // before', ->
+      delta = new Delta
+        deltas: deltas,
+        tweenOptions: tweenOptions,
+        props: props
+
+      spyOn(delta.tween, '_refresh').and.callThrough()
+
+      delta.refresh( true )
+      expect( delta.tween._refresh ).toHaveBeenCalledWith true
+
+    it 'should call `_refresh` on `tween` // after', ->
+      delta = new Delta
+        deltas: deltas,
+        tweenOptions: tweenOptions,
+        props: props
+
+      spyOn(delta.tween, '_refresh').and.callThrough()
+
+      delta.refresh( false )
+      expect( delta.tween._refresh ).toHaveBeenCalledWith false
+
+    it 'should save `_previousValues`', ->
+      deltas  = [ h.parseDelta('x', { 0: 20 }, 0), h.parseDelta('y', { 20: 10 }, 0) ]
+      props = { }
+      delta = new Delta
+        deltas: deltas,
+        tweenOptions: tweenOptions,
+        props: props
+
+      delta._previousValues = null
+      
+      delta.refresh( false )
+
+      p = delta._previousValues
+      expect( p[0].name ).toBe 'x'
+      expect( p[0].value ).toBe '0px'
+
+      expect( p[1].name ).toBe 'y'
+      expect( p[1].value ).toBe '20px'
+
+    it 'should return this', ->
+      delta = new Delta
+        deltas: deltas,
+        tweenOptions: tweenOptions,
+        props: props
+
+      result = delta.refresh( false )
+      expect( result ).toBe delta
+
+
+  describe 'restore method ->', ->
+    it 'should call restore values from `_previousValues`', ->
+      props = { }
+      delta = new Delta
+        deltas: deltas,
+        tweenOptions: tweenOptions,
+        props: props
+
+      props.z = null
+      props.f = null
+      delta._previousValues = [ { name: 'z', value: 20 }, { name: 'f', value: 40 } ]
+
+      delta.restore()
+      expect( props.z ).toBe 20
+      expect( props.f ).toBe 40
+
+    it 'should return `this`', ->
+      props = { }
+      delta = new Delta
+        deltas: deltas,
+        tweenOptions: tweenOptions,
+        props: props
+
+      delta._previousValues = [ { name: 'z', value: 20 }, { name: 'f', value: 40 } ]
+
+      result = delta.restore()
+      expect( result ).toBe delta
 
 
 

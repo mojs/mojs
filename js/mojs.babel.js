@@ -20,7 +20,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.273.0', isDebug: true, helpers: h,
+  revision:   '0.274.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, Html, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap, _pool: { Delta, Deltas }
@@ -54,17 +54,6 @@ window.mojs = mojs;
   parse rand(stagger(20, 10), 20) values
   percentage for radius
 */
-
-// const html = new mojs.Html({
-//   el: '#js-el',
-//   rotate: { 180: 'rand(10, 20)' },
-//   // borderRadius: 'rand(10, 20)'
-//   // timeline: { delay: 100 },
-//   duration: 2000
-// })
-// // .then({ borderRadius: 0 });
-
-// new MojsPlayer({ add: html });
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {

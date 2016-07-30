@@ -14,27 +14,22 @@ class Thenable extends Tweenable {
   */
   then ( o ) {
     // return if nothing was passed
-    if ((o == null) || !Object.keys(o)) { return 1; }
+    if ((o == null) || !Object.keys(o).length) { return 1; }
     // merge then options with the current ones
     var prevRecord = this._history[ this._history.length - 1 ],
         prevModule = this._modules[ this._modules.length - 1 ],
         merged     = this._mergeThenOptions( prevRecord, o );
 
-    // console.log(merged.angle);
     this._resetMergedFlags( merged );
-    // reset isShowEnd flag on prev module
-    // prevModule._setProp && prevModule._setProp('isShowEnd', false);
     // create a submodule of the same type as the master module
-    // console.log(merged.isTimelineLess, merged, prevRecord);
     var module = new this.constructor( merged );
     // set `this` as amster module of child module
     module._masterModule = this;
     // save the modules to the _modules array
     this._modules.push( module );
     // add module's tween into master timeline
-    // console.log(this.timeline._props['duration']);
     this.timeline.append( module );
-    // console.log(this.timeline._props['duration']);
+    
     return this;
   }
 

@@ -15,7 +15,8 @@ const TWEEN_PROPERTIES = obj._defaults;
 
 /*
   TODO:
-    - then chains
+    - should pass callbacksContext
+    - default if previous delta was not set
     - current values in deltas
     - isShowStart/isShowEnd options
 */
@@ -56,6 +57,24 @@ class Html extends Tunable {
     this._prefixPropertyMap = { transform: 1, transformOrigin: 1 }
     // save prefix
     this._prefix = h.prefix.css;
+  }
+
+  then (o) {
+    // return if nothing was passed
+    if ((o == null) || !Object.keys(o).length) { return 1; }
+
+    // get the last item in `then` chain
+    var prevModule = h.getLastItem( this._modules );
+    // set deltas to the finish state
+    prevModule.deltas.refresh( false );
+    // copy finish state to the last history record
+    this._history[ this._history.length-1 ] = prevModule._props;
+    // call super
+    super.then(o);
+    // restore the _props
+    prevModule.deltas.restore();
+
+    return this;
   }
   /*
     Method to draw _props to el.

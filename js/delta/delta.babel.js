@@ -7,7 +7,42 @@ class Delta {
     this._o = o;
     this._createTween( o.tweenOptions );
     // initial properties render
-    this.tween._refresh( true );
+    this.refresh( true );
+  }
+  /*
+    Method to call `_refresh` method on `tween`.
+    Use switch between `0` and `1` progress for delta value.
+    @public
+    @param {Boolean} If refresh before start time or after.
+    @returns this.
+  */
+  refresh (isBefore) {
+    this._previousValues = [];
+
+    var deltas = this._o.deltas;
+    for (var i = 0; i < deltas.length; i++) {
+      var name = deltas[i].name;
+      this._previousValues.push({
+        name, value: this._o.props[name]
+      })      
+    }
+
+
+    this.tween._refresh( isBefore );
+    return this;
+  }
+  /*
+    Method to restore all saved properties from `_previousValues` array.
+    @public
+    @returns this.
+  */
+  restore () {
+    var prev = this._previousValues;
+    for (var i = 0; i < prev.length; i++) {
+      const record = prev[i];
+      this._o.props[record.name] = record.value;
+    }
+    return this;
   }
   /*
     Method to create tween of the delta.

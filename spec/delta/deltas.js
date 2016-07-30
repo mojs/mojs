@@ -304,6 +304,22 @@
         });
         return expect(result.tweenOptions).toBeFalsy();
       });
+      it('should not return tweenOptions if they are sufficiently `undefined`', function() {
+        var deltas, result;
+        deltas = new Deltas({
+          options: options,
+          props: props
+        });
+        result = deltas._splitTweenOptions({
+          0: 20,
+          easing: void 0,
+          duration: null
+        });
+        expect(result.delta).toEqual({
+          0: 20
+        });
+        return expect(result.tweenOptions).toBeFalsy();
+      });
       it('should parse curve as part of delta', function() {
         var deltas, result;
         deltas = new Deltas({
@@ -882,7 +898,7 @@
         return expect(array[1].unit).toBe('px');
       });
     });
-    return describe('_parseDelta method ->', function() {
+    describe('_parseDelta method ->', function() {
       describe('color values ->', function() {
         it('should parse color objects', function() {
           var delta, deltas, name, sourceDelta;
@@ -1004,6 +1020,70 @@
           expect(deltas._parseNumberDelta).toHaveBeenCalledWith(name, sourceDelta, index);
           return expect(delta).toEqual(deltas._parseNumberDelta(name, sourceDelta, index));
         });
+      });
+    });
+    describe('refresh method ->', function() {
+      it('should call `refresh` on all `delta` objects // before', function() {
+        var deltas;
+        deltas = new Deltas({
+          options: options,
+          props: props
+        });
+        spyOn(deltas._deltas[0], 'refresh');
+        spyOn(deltas._deltas[1], 'refresh');
+        spyOn(deltas._deltas[2], 'refresh');
+        deltas.refresh(true);
+        expect(deltas._deltas[0].refresh).toHaveBeenCalledWith(true);
+        expect(deltas._deltas[1].refresh).toHaveBeenCalledWith(true);
+        return expect(deltas._deltas[2].refresh).toHaveBeenCalledWith(true);
+      });
+      it('should call `refresh` on all `delta` objects // after', function() {
+        var deltas;
+        deltas = new Deltas({
+          options: options,
+          props: props
+        });
+        spyOn(deltas._deltas[0], 'refresh');
+        spyOn(deltas._deltas[1], 'refresh');
+        spyOn(deltas._deltas[2], 'refresh');
+        deltas.refresh(false);
+        expect(deltas._deltas[0].refresh).toHaveBeenCalledWith(false);
+        expect(deltas._deltas[1].refresh).toHaveBeenCalledWith(false);
+        return expect(deltas._deltas[2].refresh).toHaveBeenCalledWith(false);
+      });
+      return it('should return `this`', function() {
+        var deltas, result;
+        deltas = new Deltas({
+          options: options,
+          props: props
+        });
+        result = deltas.refresh(false);
+        return expect(result).toBe(deltas);
+      });
+    });
+    return describe('restore method ->', function() {
+      it('should call `restore` on all `delta` objects', function() {
+        var deltas;
+        deltas = new Deltas({
+          options: options,
+          props: props
+        });
+        spyOn(deltas._deltas[0], 'restore');
+        spyOn(deltas._deltas[1], 'restore');
+        spyOn(deltas._deltas[2], 'restore');
+        deltas.restore();
+        expect(deltas._deltas[0].restore).toHaveBeenCalled();
+        expect(deltas._deltas[1].restore).toHaveBeenCalled();
+        return expect(deltas._deltas[2].restore).toHaveBeenCalled();
+      });
+      return it('should return `this`', function() {
+        var deltas, result;
+        deltas = new Deltas({
+          options: options,
+          props: props
+        });
+        result = deltas.restore();
+        return expect(result).toBe(deltas);
       });
     });
   });

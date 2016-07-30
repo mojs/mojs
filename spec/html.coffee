@@ -483,6 +483,127 @@ describe 'Html ->', ->
 
       expect( html._props[name] ).toBe '200px 300px '
 
+
+  describe 'then method ->', ->
+    it 'should call `refresh` on the last `_module`', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        })
+
+      spyOn html._modules[0].deltas, 'refresh'
+
+      html.then({ borderRadius: 0 })
+
+      expect( html._modules[0].deltas.refresh ).toHaveBeenCalledWith false
+
+    it 'should call `refresh` on the last `_module` #2', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        }).then({ borderRadius: 0 })
+
+      spyOn html._modules[1].deltas, 'refresh'
+
+      html.then({ borderRadius: 20 })
+
+      expect( html._modules[1].deltas.refresh ).toHaveBeenCalledWith false
+
+    it 'should set the last `_history` record to last `_modules` `_props`', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        })
+
+      html._history[0] = undefined
+
+      html.then({ borderRadius: 0 })
+
+      expect( html._history[0] ).toBeDefined()
+
+    it 'should set the last `_history` record to last `_modules` `_props` #2', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        }).then({ borderRadius: 0 })
+
+      html._history[1] = undefined
+
+      html.then({ borderRadius: 0 })
+
+      expect( html._history[1] ).toBeDefined()
+
+    it 'should call `super`', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        })
+
+      spyOn mojs.Thenable.prototype, 'then'
+      opts = { borderRadius: 0 }
+      html.then(opts)
+
+      expect( mojs.Thenable.prototype.then ).toHaveBeenCalledWith opts
+
+    it 'should restore `deltas`', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        })
+
+      spyOn html._modules[0].deltas, 'restore'
+
+      html.then({ borderRadius: 0 })
+
+      expect( html._modules[0].deltas.restore ).toHaveBeenCalled()
+
+    it 'should restore `deltas` #2', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        }).then({ borderRadius: 0 })
+
+      spyOn html._modules[1].deltas, 'restore'
+
+      html.then({ borderRadius: 0 })
+
+      expect( html._modules[1].deltas.restore ).toHaveBeenCalled()
+
+    it 'should return `this`', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        })
+
+      result = html.then({ borderRadius: 0 })
+
+      expect( result ).toBe html
+
+    it 'should return if no options passed', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        })
+
+      spyOn html._modules[0].deltas, 'refresh'
+
+      html.then()
+
+      expect( html._modules[0].deltas.refresh ).not.toHaveBeenCalled()
+
+    it 'should return if empty object passed', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        })
+
+      spyOn html._modules[0].deltas, 'refresh'
+
+      html.then({})
+
+      expect( html._modules[0].deltas.refresh ).not.toHaveBeenCalled()
+
+
   # not now
   # describe '_replaceCurrent method ->', ->
   #   it 'should get computedStyle', ->

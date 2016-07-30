@@ -1683,7 +1683,8 @@
 
 	/*
 	  TODO:
-	    - then chains
+	    - should pass callbacksContext
+	    - default if previous delta was not set
 	    - current values in deltas
 	    - isShowStart/isShowEnd options
 	*/
@@ -1730,6 +1731,26 @@
 	    this._prefixPropertyMap = { transform: 1, transformOrigin: 1 };
 	    // save prefix
 	    this._prefix = h.prefix.css;
+	  };
+
+	  Html.prototype.then = function then(o) {
+	    // return if nothing was passed
+	    if (o == null || !(0, _keys2.default)(o).length) {
+	      return 1;
+	    }
+
+	    // get the last item in `then` chain
+	    var prevModule = h.getLastItem(this._modules);
+	    // set deltas to the finish state
+	    prevModule.deltas.refresh(false);
+	    // copy finish state to the last history record
+	    this._history[this._history.length - 1] = prevModule._props;
+	    // call super
+	    _Tunable.prototype.then.call(this, o);
+	    // restore the _props
+	    prevModule.deltas.restore();
+
+	    return this;
 	  };
 	  /*
 	    Method to draw _props to el.
@@ -3579,11 +3600,10 @@
 	  Tween.prototype._refresh = function _refresh(isBefore) {
 	    var p = this._props;
 	    if (p.onRefresh != null) {
-	      if (isBefore) {
-	        p.onRefresh.call(p.callbacksContext || this, isBefore, p.easing(0), 0);
-	      } else {
-	        p.onRefresh.call(p.callbacksContext || this, isBefore, p.easing(1), 1);
-	      }
+	      var context = p.callbacksContext || this,
+	          progress = isBefore ? 0 : 1;
+
+	      p.onRefresh.call(context, isBefore, p.easing(progress), progress);
 	    }
 	  };
 	  /*
@@ -4519,7 +4539,7 @@
 
 	  Thenable.prototype.then = function then(o) {
 	    // return if nothing was passed
-	    if (o == null || !(0, _keys2.default)(o)) {
+	    if (o == null || !(0, _keys2.default)(o).length) {
 	      return 1;
 	    }
 	    // merge then options with the current ones
@@ -4527,21 +4547,16 @@
 	        prevModule = this._modules[this._modules.length - 1],
 	        merged = this._mergeThenOptions(prevRecord, o);
 
-	    // console.log(merged.angle);
 	    this._resetMergedFlags(merged);
-	    // reset isShowEnd flag on prev module
-	    // prevModule._setProp && prevModule._setProp('isShowEnd', false);
 	    // create a submodule of the same type as the master module
-	    // console.log(merged.isTimelineLess, merged, prevRecord);
 	    var module = new this.constructor(merged);
 	    // set `this` as amster module of child module
 	    module._masterModule = this;
 	    // save the modules to the _modules array
 	    this._modules.push(module);
 	    // add module's tween into master timeline
-	    // console.log(this.timeline._props['duration']);
 	    this.timeline.append(module);
-	    // console.log(this.timeline._props['duration']);
+
 	    return this;
 	  };
 
@@ -5083,8 +5098,46 @@
 	    this._o = o;
 	    this._createTween(o.tweenOptions);
 	    // initial properties render
-	    this.tween._refresh(true);
+	    this.refresh(true);
 	  }
+	  /*
+	    Method to call `_refresh` method on `tween`.
+	    Use switch between `0` and `1` progress for delta value.
+	    @public
+	    @param {Boolean} If refresh before start time or after.
+	    @returns this.
+	  */
+
+
+	  Delta.prototype.refresh = function refresh(isBefore) {
+	    this._previousValues = [];
+
+	    var deltas = this._o.deltas;
+	    for (var i = 0; i < deltas.length; i++) {
+	      var name = deltas[i].name;
+	      this._previousValues.push({
+	        name: name, value: this._o.props[name]
+	      });
+	    }
+
+	    this.tween._refresh(isBefore);
+	    return this;
+	  };
+	  /*
+	    Method to restore all saved properties from `_previousValues` array.
+	    @public
+	    @returns this.
+	  */
+
+
+	  Delta.prototype.restore = function restore() {
+	    var prev = this._previousValues;
+	    for (var i = 0; i < prev.length; i++) {
+	      var record = prev[i];
+	      this._o.props[record.name] = record.value;
+	    }
+	    return this;
+	  };
 	  /*
 	    Method to create tween of the delta.
 	    @private
@@ -5317,6 +5370,31 @@
 	    this._createTimeline(this._mainTweenOptions);
 	  }
 	  /*
+	    Method to call `refresh` on all child `delta` objects.
+	    @public
+	    @param {Boolean} If before start time (true) or after end time (false).
+	  */
+
+
+	  Deltas.prototype.refresh = function refresh(isBefore) {
+	    for (var i = 0; i < this._deltas.length; i++) {
+	      this._deltas[i].refresh(isBefore);
+	    }
+	    return this;
+	  };
+	  /*
+	    Method to call `restore` on all child `delta` objects.
+	    @public
+	  */
+
+
+	  Deltas.prototype.restore = function restore() {
+	    for (var i = 0; i < this._deltas.length; i++) {
+	      this._deltas[i].restore();
+	    }
+	    return this;
+	  };
+	  /*
 	    Method to create Timeline.
 	    @private
 	    @param {Object} Timeline options.
@@ -5463,9 +5541,11 @@
 	    for (var i = 0; i < keys.length; i++) {
 	      var key = keys[i];
 	      if (TWEEN_PROPERTIES[key]) {
-	        tweenOptions[key] = delta[key];
+	        if (delta[key] != null) {
+	          tweenOptions[key] = delta[key];
+	          isTween = true;
+	        }
 	        delete delta[key];
-	        isTween = true;
 	      }
 	    }
 	    return {
@@ -9980,7 +10060,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.273.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.274.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, Html: _html2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default, _pool: { Delta: _delta2.default, Deltas: _deltas2.default }
@@ -10014,17 +10094,6 @@
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
 	*/
-
-	// const html = new mojs.Html({
-	//   el: '#js-el',
-	//   rotate: { 180: 'rand(10, 20)' },
-	//   // borderRadius: 'rand(10, 20)'
-	//   // timeline: { delay: 100 },
-	//   duration: 2000
-	// })
-	// // .then({ borderRadius: 0 });
-
-	// new MojsPlayer({ add: html });
 
 	// istanbul ignore next
 	if (true) {

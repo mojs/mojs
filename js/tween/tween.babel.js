@@ -993,11 +993,10 @@ class Tween extends Module {
   _refresh ( isBefore ) {
     var p = this._props;
     if ( p.onRefresh != null ) {
-      if ( isBefore ) {
-        p.onRefresh.call( p.callbacksContext || this, isBefore, p.easing(0), 0 );
-      } else {
-        p.onRefresh.call( p.callbacksContext || this, isBefore, p.easing(1), 1 );
-      }
+      var context  = p.callbacksContext || this,
+          progress = ( isBefore ) ? 0 : 1;
+
+      p.onRefresh.call( context, isBefore, p.easing(progress), progress );
     }
   }
   /*
