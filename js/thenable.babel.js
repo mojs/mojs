@@ -94,6 +94,14 @@ class Thenable extends Tweenable {
     return o;
   }
   /*
+    Method to pipe startValue of the delta.
+    @private
+    @param {String} Start property name.
+    @param {Any} Start property value.
+    @returns {Any} Start property value.
+  */
+  _checkStartValue (name, value) { return value; }
+  /*
     Originally part of the _mergeThenOptions.
     Loops thru start object and copies all the props from it.
     @param {Object} An object to copy in.
@@ -134,6 +142,8 @@ class Thenable extends Tweenable {
           startValue = ( start[key] != null )
             ? start[key] : this._defaults[key];
 
+      startValue = this._checkStartValue( key, startValue );
+      // console.log(startValue);
       if ( endValue == null ) { continue };
       // make ∆ of start -> end
       // if key name is radiusX/radiusY and

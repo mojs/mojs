@@ -266,6 +266,16 @@ describe 'Delta ->', ->
 
       expect( Delta.prototype._createTween ).toHaveBeenCalledWith tweenOptions
 
+    it 'should pass callbacksContext to tween', ->
+      callbacksContext = {}
+      delta = new Delta
+        deltas: deltas,
+        tweenOptions: tweenOptions,
+        props: props,
+        callbacksContext: callbacksContext
+
+      expect( delta.tween._o.callbacksContext ).toBe callbacksContext
+
   describe 'refresh method ->', ->
     it 'should call `_refresh` on `tween` // before', ->
       delta = new Delta

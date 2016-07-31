@@ -1,5 +1,5 @@
 const h = require('./h');
-import Tunable    from './tunable';
+import Thenable   from './thenable';
 import Tween      from './tween/tween';
 import Deltas     from './delta/deltas';
 
@@ -15,13 +15,12 @@ const TWEEN_PROPERTIES = obj._defaults;
 
 /*
   TODO:
-    - should pass callbacksContext
-    - default if previous delta was not set
+    - then module should not set initial props
     - current values in deltas
     - isShowStart/isShowEnd options
 */
 
-class Html extends Tunable {
+class Html extends Thenable {
 
   _declareDefaults () {
     this._defaults = {
@@ -75,6 +74,25 @@ class Html extends Tunable {
     prevModule.deltas.restore();
 
     return this;
+  }
+  /*
+    Method to pipe startValue of the delta.
+    @private
+    @ovarrides @ Thenable
+    @param {String} Start property name.
+    @param {Any} Start property value.
+    @returns {Any} Start property value.
+  */
+  _checkStartValue (name, value) {
+    if ( value == null ) {
+      // return default value for transforms
+      if ( this._defaults[name] != null ) { return this._defaults[name]; }
+      // try to get the default DOM calue
+      if ( h.defaultStyles[name] != null ) { return h.defaultStyles[name]; }
+      // at the end return 0
+      return 0;
+    }
+    return value;
   }
   /*
     Method to draw _props to el.
@@ -256,10 +274,11 @@ class Html extends Tunable {
   _createDeltas (options) {
     this.deltas = new Deltas({
       options,
-      props: this._props,
-      onUpdate:  (p) => { this._draw(); },
+      props:             this._props,
+      onUpdate:          (p) => { this._draw(); },
       arrayPropertyMap:  this._arrayPropertyMap,
-      numberPropertyMap: this._numberPropertyMap
+      numberPropertyMap: this._numberPropertyMap,
+      callbacksContext:  this
     });
 
     this.timeline = this.deltas.timeline;

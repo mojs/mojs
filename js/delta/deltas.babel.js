@@ -90,11 +90,14 @@ class Deltas {
     @param {Object} Timeline options.
   */
   _createTimeline ( opts = {} ) {
+    const o = this._o;
     opts.timeline = opts.timeline || {};
     opts.timeline.callbackOverrides = {
-      onUpdate:   this._o.onUpdate,
-      onRefresh:  this._o.onUpdate
+      onUpdate:   o.onUpdate,
+      onRefresh:  o.onUpdate
     }
+    // send callbacksContext to timeline if set
+    o.callbacksContext && (opts.timeline.callbacksContext = o.callbacksContext);
     this.timeline = new Timeline(opts.timeline);
     this.timeline.add( this._deltas );
   }
@@ -126,7 +129,12 @@ class Deltas {
     @returns {Object} Delta object
   */
   _createDelta (deltas, tweenOptions) {
-    return new Delta({ deltas, tweenOptions, props: this._o.props });
+    const o = this._o;
+    return new Delta({
+      deltas, tweenOptions,
+      props:            o.props,
+      callbacksContext: o.callbacksContext
+    });
   }
   /*
     Method to parse delta objects from options.

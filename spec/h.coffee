@@ -2,6 +2,9 @@ h  = mojs.helpers
 ns = 'http://www.w3.org/2000/svg'
 
 describe 'Helpers ->', ->
+  it 'should have defaultStyles', ->
+    expect(h.defaultStyles).toEqual h.computedStyle( h.div )
+
   it 'should have logBadgeCss', ->
     expect(h.logBadgeCss).toBeDefined()
   it 'should have RAD_TO_DEG CONSTANT', ->
@@ -1190,6 +1193,6 @@ describe 'Helpers ->', ->
       expect(h.isDelta({ unit: 'px', value: 20 })).toBe false
       expect(h.isDelta({ 20: 30 })).toBe true
 
-    
+
 
 

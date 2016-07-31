@@ -444,6 +444,21 @@
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(mergedOpton.parent).toBe(parent);
       });
+      it('should call _checkStartValue with startValue', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          left: '10px'
+        };
+        end = {
+          left: 'stagger(100, 25)'
+        };
+        byte._defaults = {};
+        byte._vars();
+        spyOn(byte, '_checkStartValue');
+        mergedOpton = byte._mergeThenOptions(start, end);
+        return expect(byte._checkStartValue).toHaveBeenCalledWith('left', '10px');
+      });
       describe('easing based property', function() {
         it('should parse easing', function() {
           var byte, end, mergedOpton, start;
@@ -579,14 +594,14 @@
         th._vars();
         th.then({
           radius: 5,
-          yoyo: true,
+          isYoyo: true,
           delay: 100
         });
         expect(th._history.length).toBe(2);
         expect(th._history[1].radius[20]).toBe(5);
         expect(th._history[1].duration).toBe(1000);
         expect(th._history[1].delay).toBe(100);
-        return expect(th._history[1].yoyo).toBe(true);
+        return expect(th._history[1].isYoyo).toBe(true);
       });
       it('should always merge then options with the last history item', function() {
         var th;
@@ -620,7 +635,7 @@
         expect(th._history[2].radius[100]).toBe(10);
         expect(th._history[2].duration).toBe(1000);
         expect(th._history[2].delay).toBe(0);
-        expect(th._history[2].yoyo).toBe(void 0);
+        expect(th._history[2].isYoyo).toBe(void 0);
         return expect(th._history[2].stroke['transparent']).toBe('green');
       });
       it('should not copy callbacks', function() {
@@ -645,14 +660,14 @@
         th._vars();
         th.then({
           radius: 5,
-          yoyo: true,
+          isYoyo: true,
           delay: 100
         });
         expect(th._history.length).toBe(2);
         expect(th._history[1].radius[20]).toBe(5);
         expect(th._history[1].duration).toBe(1000);
         expect(th._history[1].delay).toBe(100);
-        expect(th._history[1].yoyo).toBe(true);
+        expect(th._history[1].isYoyo).toBe(true);
         expect(th._history[1].onComplete).toBe(void 0);
         expect(th._history[1].onUpdate).not.toBe(onUpdate);
         th.timeline.setProgress(.73);
@@ -763,7 +778,7 @@
         });
       });
     });
-    describe('_resetMergedFlags method', function() {
+    describe('_resetMergedFlags method ->', function() {
       it('should return the same object', function() {
         var obj, th;
         obj = {};
@@ -773,7 +788,9 @@
       return it('should reset flags on the piped object', function() {
         var obj, th;
         obj = {};
-        th = new Thenable({}).then({});
+        th = new Thenable({}).then({
+          x: 20
+        });
         th.el = document.createElement('div');
         th._resetMergedFlags(obj);
         expect(obj.isTimelineLess).toBe(true);
@@ -812,7 +829,7 @@
         return expect(shape._modules[1]._isFirstInChain()).toBe(false);
       });
     });
-    return describe('_isLastInChain method', function() {
+    describe('_isLastInChain method', function() {
       it('should return `true` if element is master', function() {
         var shape;
         shape = new Thenable;
@@ -826,6 +843,13 @@
           radius: 40
         });
         return expect(shape._modules[0]._isLastInChain()).toBe(false);
+      });
+    });
+    return describe('_checkStartValue method ->', function() {
+      return it('should return startValue', function() {
+        var shape;
+        shape = new Thenable();
+        return expect(shape._checkStartValue('x', 20)).toBe(20);
       });
     });
   });

@@ -67,7 +67,7 @@
         });
         return expect(deltas.timeline._callbackOverrides.onRefresh).toBe(fun);
       });
-      return it('should add _deltas to the Timeline', function() {
+      it('should add _deltas to the Timeline', function() {
         var deltas;
         options = {
           stroke: 'cyan',
@@ -94,6 +94,17 @@
           props: props
         });
         return expect(deltas.timeline._timelines.length).toBe(4);
+      });
+      return it('should pass `callbacksContext` to `timeline`', function() {
+        var callbacksContext, deltas;
+        callbacksContext = {};
+        deltas = new Deltas({
+          options: options,
+          props: props,
+          onUpdate: function() {},
+          callbacksContext: callbacksContext
+        });
+        return expect(deltas.timeline._o.callbacksContext).toBe(callbacksContext);
       });
     });
     describe('_parseDeltas method ->', function() {
@@ -422,7 +433,7 @@
         expect(childDelta2._o.props).toBe(props);
         return expect(childDelta2 instanceof Delta).toBe(true);
       });
-      return it('should be called on initialization', function() {
+      it('should be called on initialization', function() {
         var deltas;
         spyOn(Deltas.prototype, '_createDeltas').and.callThrough();
         deltas = new Deltas({
@@ -430,6 +441,21 @@
           props: props
         });
         return expect(Deltas.prototype._createDeltas).toHaveBeenCalled();
+      });
+      return it('should send callbacksContext to each delta', function() {
+        var callbacksContext, deltas, result;
+        callbacksContext = {};
+        deltas = new Deltas({
+          options: options,
+          props: props,
+          callbacksContext: callbacksContext
+        });
+        result = deltas._createDelta([
+          deltas._parseDelta('x', {
+            0: 20
+          })
+        ], {});
+        return expect(result._o.callbacksContext).toBe(callbacksContext);
       });
     });
     describe('_isDelta method ->', function() {

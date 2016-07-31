@@ -6,6 +6,9 @@
   ns = 'http://www.w3.org/2000/svg';
 
   describe('Helpers ->', function() {
+    it('should have defaultStyles', function() {
+      return expect(h.defaultStyles).toEqual(h.computedStyle(h.div));
+    });
     it('should have logBadgeCss', function() {
       return expect(h.logBadgeCss).toBeDefined();
     });

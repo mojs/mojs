@@ -72,6 +72,17 @@ describe 'Deltas ->', ->
 
       expect( deltas.timeline._timelines.length ).toBe 4
 
+    it 'should pass `callbacksContext` to `timeline`', ->
+      
+      callbacksContext = {}
+      deltas = new Deltas
+        options:  options,
+        props:    props,
+        onUpdate: ->
+        callbacksContext: callbacksContext
+      
+      expect(deltas.timeline._o.callbacksContext).toBe callbacksContext
+
   describe '_parseDeltas method ->', ->
     it 'should parse main tween options', ->
       deltas = new Deltas
@@ -302,6 +313,15 @@ describe 'Deltas ->', ->
 
       expect( Deltas.prototype._createDeltas ).toHaveBeenCalled()
 
+    it 'should send callbacksContext to each delta', ->
+      callbacksContext = {}
+      deltas = new Deltas
+        options:  options
+        props:    props
+        callbacksContext: callbacksContext
+
+      result = deltas._createDelta([ deltas._parseDelta( 'x', { 0: 20 } ) ], {})
+      expect( result._o.callbacksContext ).toBe callbacksContext
 
   describe '_isDelta method ->', ->
     it 'should detect if value is not a delta value', ->

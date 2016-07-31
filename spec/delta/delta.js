@@ -264,7 +264,7 @@
         delta.tween._callbackOverrides.onRefresh(true, .2, .1);
         return expect(delta._calcCurrentProps).toHaveBeenCalledWith(.2, .1);
       });
-      return it('should be called on initialization', function() {
+      it('should be called on initialization', function() {
         var delta;
         spyOn(Delta.prototype, '_createTween').and.callThrough();
         delta = new Delta({
@@ -273,6 +273,17 @@
           props: props
         });
         return expect(Delta.prototype._createTween).toHaveBeenCalledWith(tweenOptions);
+      });
+      return it('should pass callbacksContext to tween', function() {
+        var callbacksContext, delta;
+        callbacksContext = {};
+        delta = new Delta({
+          deltas: deltas,
+          tweenOptions: tweenOptions,
+          props: props,
+          callbacksContext: callbacksContext
+        });
+        return expect(delta.tween._o.callbacksContext).toBe(callbacksContext);
       });
     });
     describe('refresh method ->', function() {

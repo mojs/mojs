@@ -5,11 +5,10 @@ h     = mojs.h
 el = document.createElement('div');
 
 describe 'Html ->', ->
-  it 'should extend Tunable', ->
-    html = new Html
-      el: el
+  it 'should extend Thenable', ->
+    html = new Html el: el
 
-    expect( html instanceof mojs.Tunable ).toBe true
+    expect( html instanceof mojs.Thenable ).toBe true
 
   describe '_extendDefaults method ->', ->
     it 'should copy all non-delta properties to _props', ->
@@ -145,13 +144,27 @@ describe 'Html ->', ->
         x:            { 20: 40 }
         color:        { 'cyan': 'orange' }
 
-      html.deltas._o._arrayPropertyMap  = null
-      html.deltas._o._numberPropertyMap = null
+      html.deltas._o.arrayPropertyMap  = null
+      html.deltas._o.numberPropertyMap = null
 
       html._createDeltas html._o
 
       expect( html.deltas._o.arrayPropertyMap ).toBe html._arrayPropertyMap
       expect( html.deltas._o.numberPropertyMap ).toBe html._numberPropertyMap
+
+    it 'should pass `this` as callbacksContext', ->
+      html = new Html
+        el: el
+        borderWidth:  '20px'
+        borderRadius: '40px'
+        x:            { 20: 40 }
+        color:        { 'cyan': 'orange' }
+
+      html.deltas._o.callbacksContext  = null
+
+      html._createDeltas html._o
+
+      expect( html.deltas._o.callbacksContext ).toBe html
 
   describe '_makeTween and _makeTimeline methods ->', ->
     it 'should override them to empty methods', ->
@@ -603,6 +616,52 @@ describe 'Html ->', ->
 
       expect( html._modules[0].deltas.refresh ).not.toHaveBeenCalled()
 
+  describe '_checkStartValue method ->', ->
+    it 'should pipe the start value', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        })
+
+      expect(html._checkStartValue 'x', 20).toBe 20
+
+    it 'should fallback to 1 for opacity', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        })
+
+      expect(html._checkStartValue 'opacity').toBe '1'
+      expect(html._checkStartValue 'opacity', .5).toBe .5
+
+    it 'should fallback to _defaults if property is there', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        })
+
+      for key, value of html._defaults
+        expect(html._checkStartValue key).toBe value
+        expect(html._checkStartValue key, .5).toBe .5
+
+    it 'should fallback DOM defaults otherwise', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        })
+      
+      div = document.createElement 'div'
+      expect(html._checkStartValue 'borderRadius').toBe mojs.h.computedStyle(div)['borderRadius']
+      expect(html._checkStartValue 'borderRadius', .5).toBe .5
+
+    it 'should fallback to 0 at the end', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        })
+      
+      expect(html._checkStartValue 'someUnknownProperty').toBe 0
+      expect(html._checkStartValue 'someUnknownProperty', .5).toBe .5
 
   # not now
   # describe '_replaceCurrent method ->', ->

@@ -55,6 +55,7 @@ class Delta {
       onUpdate (ep, p) { it._calcCurrentProps( ep, p ); },
       onRefresh (isBefore, ep, p) { it._calcCurrentProps( ep, p ); }
     }
+    o.callbacksContext = this._o.callbacksContext;
     this.tween = new Tween( o );
   }
   /*

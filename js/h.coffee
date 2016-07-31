@@ -104,6 +104,8 @@ class Helpers
     @div = document.createElement('div')
     document.body.appendChild @div
 
+    @defaultStyles = @computedStyle @div
+
   # ---
 
   # Clones object by iterating thru object properties

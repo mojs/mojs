@@ -8,12 +8,12 @@
   el = document.createElement('div');
 
   describe('Html ->', function() {
-    it('should extend Tunable', function() {
+    it('should extend Thenable', function() {
       var html;
       html = new Html({
         el: el
       });
-      return expect(html instanceof mojs.Tunable).toBe(true);
+      return expect(html instanceof mojs.Thenable).toBe(true);
     });
     describe('_extendDefaults method ->', function() {
       it('should copy all non-delta properties to _props', function() {
@@ -166,7 +166,7 @@
         expect(html.deltas._o.props).toBe(html._props);
         return expect(html.timeline).toBe(html.deltas.timeline);
       });
-      return it('should pass property maps to Deltas', function() {
+      it('should pass property maps to Deltas', function() {
         var html;
         html = new Html({
           el: el,
@@ -179,11 +179,28 @@
             'cyan': 'orange'
           }
         });
-        html.deltas._o._arrayPropertyMap = null;
-        html.deltas._o._numberPropertyMap = null;
+        html.deltas._o.arrayPropertyMap = null;
+        html.deltas._o.numberPropertyMap = null;
         html._createDeltas(html._o);
         expect(html.deltas._o.arrayPropertyMap).toBe(html._arrayPropertyMap);
         return expect(html.deltas._o.numberPropertyMap).toBe(html._numberPropertyMap);
+      });
+      return it('should pass `this` as callbacksContext', function() {
+        var html;
+        html = new Html({
+          el: el,
+          borderWidth: '20px',
+          borderRadius: '40px',
+          x: {
+            20: 40
+          },
+          color: {
+            'cyan': 'orange'
+          }
+        });
+        html.deltas._o.callbacksContext = null;
+        html._createDeltas(html._o);
+        return expect(html.deltas._o.callbacksContext).toBe(html);
       });
     });
     describe('_makeTween and _makeTimeline methods ->', function() {
@@ -535,7 +552,7 @@
         return expect(html._props[name]).toBe('200px 300px ');
       });
     });
-    return describe('then method ->', function() {
+    describe('then method ->', function() {
       it('should call `refresh` on the last `_module`', function() {
         var html;
         html = new Html({
@@ -657,6 +674,59 @@
         spyOn(html._modules[0].deltas, 'refresh');
         html.then({});
         return expect(html._modules[0].deltas.refresh).not.toHaveBeenCalled();
+      });
+    });
+    return describe('_checkStartValue method ->', function() {
+      it('should pipe the start value', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        return expect(html._checkStartValue('x', 20)).toBe(20);
+      });
+      it('should fallback to 1 for opacity', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        expect(html._checkStartValue('opacity')).toBe('1');
+        return expect(html._checkStartValue('opacity', .5)).toBe(.5);
+      });
+      it('should fallback to _defaults if property is there', function() {
+        var html, key, value, _ref, _results;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        _ref = html._defaults;
+        _results = [];
+        for (key in _ref) {
+          value = _ref[key];
+          expect(html._checkStartValue(key)).toBe(value);
+          _results.push(expect(html._checkStartValue(key, .5)).toBe(.5));
+        }
+        return _results;
+      });
+      it('should fallback DOM defaults otherwise', function() {
+        var div, html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        div = document.createElement('div');
+        expect(html._checkStartValue('borderRadius')).toBe(mojs.h.computedStyle(div)['borderRadius']);
+        return expect(html._checkStartValue('borderRadius', .5)).toBe(.5);
+      });
+      return it('should fallback to 0 at the end', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        expect(html._checkStartValue('someUnknownProperty')).toBe(0);
+        return expect(html._checkStartValue('someUnknownProperty', .5)).toBe(.5);
       });
     });
   });

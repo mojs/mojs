@@ -270,6 +270,16 @@ describe 'thenable ->', ->
       mergedOpton = byte._mergeThenOptions start, end
       expect(mergedOpton.parent).toBe parent
 
+    it 'should call _checkStartValue with startValue', ->
+      byte = new Byte
+      start = left: '10px'
+      end   = left: 'stagger(100, 25)'
+      byte._defaults = {}
+      byte._vars()
+      spyOn byte, '_checkStartValue'
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(byte._checkStartValue).toHaveBeenCalledWith 'left', '10px'
+
     describe 'easing based property', ->
       it 'should parse easing', ->
         byte = new Byte
@@ -397,13 +407,13 @@ describe 'thenable ->', ->
       th._defaults = {}
       th._props = { radius: 20, duration: 1000, delay: 10 }
       th._vars()
-      th.then radius: 5, yoyo: true, delay: 100
+      th.then radius: 5, isYoyo: true, delay: 100
       expect(th._history.length)       .toBe 2
       
       expect(th._history[1].radius[20]).toBe 5
       expect(th._history[1].duration).toBe 1000
       expect(th._history[1].delay)   .toBe 100
-      expect(th._history[1].yoyo)    .toBe true
+      expect(th._history[1].isYoyo)  .toBe true
 
 
     it 'should always merge then options with the last history item', ->
@@ -420,8 +430,9 @@ describe 'thenable ->', ->
       expect(th._history[2].radius[100]).toBe 10
       expect(th._history[2].duration)   .toBe 1000
       expect(th._history[2].delay)      .toBe 0
-      expect(th._history[2].yoyo)       .toBe undefined
+      expect(th._history[2].isYoyo)       .toBe undefined
       expect(th._history[2].stroke['transparent']).toBe 'green'
+
     it 'should not copy callbacks', ->
       onUpdate = ->
       onStart  = ->
@@ -433,12 +444,12 @@ describe 'thenable ->', ->
         onUpdate:  onUpdate, onStart: onStart
       th._defaults = {}
       th._vars()
-      th.then radius: 5, yoyo: true, delay: 100
+      th.then radius: 5, isYoyo: true, delay: 100
       expect(th._history.length)       .toBe 2
       expect(th._history[1].radius[20]).toBe 5
       expect(th._history[1].duration)  .toBe 1000
       expect(th._history[1].delay)     .toBe 100
-      expect(th._history[1].yoyo)      .toBe true
+      expect(th._history[1].isYoyo)      .toBe true
       expect(th._history[1].onComplete).toBe undefined
       # expect(th._history[1].onUpdate).toBeDefined()
       expect(th._history[1].onUpdate).not.toBe onUpdate
@@ -519,14 +530,14 @@ describe 'thenable ->', ->
         expect(th.timeline._timelines.length).toBe 2
         expect(th.timeline._timelines[1]).toBe th._modules[1].tween
 
-  describe '_resetMergedFlags method', ->
+  describe '_resetMergedFlags method ->', ->
     it 'should return the same object', ->
       obj = {}
       th = new Thenable
       expect(th._resetMergedFlags(obj)).toBe obj
     it 'should reset flags on the piped object', ->
       obj = {}
-      th = new Thenable({}).then({})
+      th = new Thenable({}).then({ x: 20 })
       th.el = document.createElement 'div'
       th._resetMergedFlags(obj)
       expect(obj.isTimelineLess)  .toBe true
@@ -566,5 +577,13 @@ describe 'thenable ->', ->
       expect(shape._modules[0]._isLastInChain()).toBe false
       # expect(shape._modules[1]._isLastInChain()).toBe false
       # expect(shape._modules[2]._isLastInChain()).toBe true
+
+  describe '_checkStartValue method ->', ->
+    it 'should return startValue', ->
+      shape = new Thenable()
+
+      expect(shape._checkStartValue 'x', 20).toBe 20
+
+
 
 
