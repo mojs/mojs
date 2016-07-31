@@ -59,6 +59,8 @@ class Deltas {
       orange:      'rgb(255,128,0)'
     }
 
+    this._ignoreDeltasMap = { prevChainModule: 1, masterModule: 1 }
+
     this._parseDeltas( o.options );
     this._createDeltas();
     this._createTimeline( this._mainTweenOptions );
@@ -133,7 +135,8 @@ class Deltas {
     return new Delta({
       deltas, tweenOptions,
       props:            o.props,
-      callbacksContext: o.callbacksContext
+      isChained:        this._o.isChained,
+      callbacksContext: o.callbacksContext,
     });
   }
   /*
@@ -153,7 +156,7 @@ class Deltas {
     for (var i = 0; i < keys.length; i++ ) {
       var key = keys[i];
       // is property is delta - parse it
-      if ( this._isDelta( opts[key] ) ) {
+      if ( this._isDelta( opts[key] ) && !this._ignoreDeltasMap[key] ) {
         var delta = this._splitAndParseDelta( key, opts[key] );
         // if parsed object has no tween values - it's delta of the main object
         if (!delta.tweenOptions) { this._mainDeltas.push( delta.delta ); }

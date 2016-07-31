@@ -7,7 +7,7 @@ class Delta {
     this._o = o;
     this._createTween( o.tweenOptions );
     // initial properties render
-    this.refresh( true );
+    !this._o.isChained && this.refresh( true );
   }
   /*
     Method to call `_refresh` method on `tween`.
@@ -26,7 +26,6 @@ class Delta {
         name, value: this._o.props[name]
       })      
     }
-
 
     this.tween._refresh( isBefore );
     return this;

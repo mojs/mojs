@@ -1683,7 +1683,6 @@
 
 	/*
 	  TODO:
-	    - then module should not set initial props
 	    - current values in deltas
 	    - isShowStart/isShowEnd options
 	*/
@@ -1810,6 +1809,11 @@
 
 
 	  Html.prototype._render = function _render() {
+	    // return immediately if not the first in `then` chain
+	    if (this._o.prevChainModule) {
+	      return;
+	    }
+
 	    for (var i = 0; i < this._renderProps.length; i++) {
 	      var name = this._renderProps[i],
 	          value = this._props[name];
@@ -1981,7 +1985,8 @@
 	      },
 	      arrayPropertyMap: this._arrayPropertyMap,
 	      numberPropertyMap: this._numberPropertyMap,
-	      callbacksContext: this
+	      callbacksContext: this,
+	      isChained: !!this._o.prevChainModule
 	    });
 
 	    this.timeline = this.deltas.timeline;
@@ -5137,7 +5142,7 @@
 	    this._o = o;
 	    this._createTween(o.tweenOptions);
 	    // initial properties render
-	    this.refresh(true);
+	    !this._o.isChained && this.refresh(true);
 	  }
 	  /*
 	    Method to call `_refresh` method on `tween`.
@@ -5405,6 +5410,8 @@
 	      orange: 'rgb(255,128,0)'
 	    };
 
+	    this._ignoreDeltasMap = { prevChainModule: 1, masterModule: 1 };
+
 	    this._parseDeltas(o.options);
 	    this._createDeltas();
 	    this._createTimeline(this._mainTweenOptions);
@@ -5487,6 +5494,7 @@
 	    return new _delta2.default({
 	      deltas: deltas, tweenOptions: tweenOptions,
 	      props: o.props,
+	      isChained: this._o.isChained,
 	      callbacksContext: o.callbacksContext
 	    });
 	  };
@@ -5509,7 +5517,7 @@
 	    for (var i = 0; i < keys.length; i++) {
 	      var key = keys[i];
 	      // is property is delta - parse it
-	      if (this._isDelta(opts[key])) {
+	      if (this._isDelta(opts[key]) && !this._ignoreDeltasMap[key]) {
 	        var delta = this._splitAndParseDelta(key, opts[key]);
 	        // if parsed object has no tween values - it's delta of the main object
 	        if (!delta.tweenOptions) {
@@ -10109,7 +10117,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.275.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.275.1', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, Html: _html2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default, _pool: { Delta: _delta2.default, Deltas: _deltas2.default }

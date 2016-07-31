@@ -13,6 +13,13 @@ describe 'Deltas ->', ->
     expect( deltas._o.options ).toBe options
     expect( deltas._o.props ).toBe props
 
+  it 'should have _ignoreDeltas object', ->
+    deltas = new Deltas
+      options: options,
+      props: props
+
+    expect( deltas._ignoreDeltasMap ).toEqual { prevChainModule: 1, masterModule: 1 }
+
   describe '_createTimeline method', ->
     it 'should create a Timeline', ->
       deltas = new Deltas
@@ -160,6 +167,21 @@ describe 'Deltas ->', ->
 
       expect( Deltas.prototype._parseDeltas ).toHaveBeenCalledWith options
 
+    it 'should not call `_splitAndParseDelta` with props from `_ignoreDeltasMap`', ->
+      deltas = new Deltas
+        options:  options,
+        props:    props
+
+      deltas._parseDeltas deltas._o
+
+      mainSplit = deltas._splitTweenOptions( deltas._o )
+      opts      = mainSplit.delta
+
+      spyOn(deltas, '_splitAndParseDelta').and.callThrough()
+
+      for key, value of deltas._ignoreDeltasMap
+        expect( deltas._splitAndParseDelta )
+          .not.toHaveBeenCalledWith key, opts[key]
 
   describe '_splitAndParseDelta method ->', ->
     it 'should call _splitTweenOptions method with passed object', ->
@@ -350,6 +372,18 @@ describe 'Deltas ->', ->
       expect( result._o.deltas ).toBe deltasArr
       expect( result._o.tweenOptions ).toBe tweenOpts
       expect( result._o.props ).toBe props
+
+    it 'should pass isChained to delta', ->
+      deltas = new Deltas
+        options:   options,
+        props:     props,
+        isChained: true
+
+      deltasArr = []
+      tweenOpts = {}
+      result = deltas._createDelta deltasArr, tweenOpts
+
+      expect( result._o.isChained ).toBe true
 
   describe '_parseColorDelta method ->', ->
     it 'should calculate color delta', ->

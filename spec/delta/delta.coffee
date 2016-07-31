@@ -21,13 +21,24 @@ describe 'Delta ->', ->
     expect( delta._o.props ).toBe props
 
   it 'should call refresh on tween when constructing', ->
-      spyOn mojs.Tween.prototype, '_refresh'
-      delta = new Delta
-        deltas: deltas,
-        tweenOptions: tweenOptions,
-        props: props
+    spyOn mojs.Tween.prototype, '_refresh'
+    delta = new Delta
+      deltas: deltas,
+      tweenOptions: tweenOptions,
+      props: props
 
-      expect( mojs.Tween.prototype._refresh ).toHaveBeenCalledWith true
+    expect( mojs.Tween.prototype._refresh ).toHaveBeenCalledWith true
+
+  it 'should not call `refresh` on tween when constructing is `isChained`', ->
+    spyOn mojs.Tween.prototype, '_refresh'
+    delta = new Delta
+      deltas: deltas,
+      tweenOptions: tweenOptions,
+      props: props,
+      isChained: true
+
+    expect( mojs.Tween.prototype._refresh )
+      .not.toHaveBeenCalled()
 
   describe '_calcCurrentProps method ->', ->
     it 'should call sub functions based on each delta type', ->

@@ -152,7 +152,7 @@ describe 'Html ->', ->
       expect( html.deltas._o.arrayPropertyMap ).toBe html._arrayPropertyMap
       expect( html.deltas._o.numberPropertyMap ).toBe html._numberPropertyMap
 
-    it 'should pass `this` as callbacksContext', ->
+    it 'should pass `this` as callbacksContext to deltas', ->
       html = new Html
         el: el
         borderWidth:  '20px'
@@ -165,6 +165,21 @@ describe 'Html ->', ->
       html._createDeltas html._o
 
       expect( html.deltas._o.callbacksContext ).toBe html
+
+    it 'should pass prevChainModule to deltas', ->
+      prevChainModule = {}
+      html = new Html
+        el: el
+        borderWidth:  '20px'
+        borderRadius: '40px'
+        x:            { 20: 40 }
+        color:        { 'cyan': 'orange' }
+        prevChainModule: prevChainModule
+
+      html.deltas._o.isChained = null
+      html._createDeltas html._o
+
+      expect( html.deltas._o.isChained ).toBe true
 
   describe '_makeTween and _makeTimeline methods ->', ->
     it 'should override them to empty methods', ->
@@ -465,6 +480,21 @@ describe 'Html ->', ->
       expect( html._draw ).toHaveBeenCalled()
       expect( html._draw.calls.count() ).toBe 1
 
+    it 'should return immediately if `prevChainModule`', ->
+      el = document.createElement 'div'
+      html = new Html
+        el: el
+        prevChainModule: {}
+
+      spyOn html, '_draw'
+      spyOn html, '_setStyle'
+
+      html._render()
+
+      expect( html._draw ).not.toHaveBeenCalled()
+      expect( html._setStyle ).not.toHaveBeenCalled()
+
+
   describe '_arrToString method ->', ->
     it 'should cast array to string', ->
       el = document.createElement 'div'
@@ -516,7 +546,7 @@ describe 'Html ->', ->
         borderRadius: 10
         }).then({ borderRadius: 0 })
 
-      spyOn html._modules[1].deltas, 'refresh'
+      spyOn(html._modules[1].deltas, 'refresh').and.callThrough()
 
       html.then({ borderRadius: 20 })
 

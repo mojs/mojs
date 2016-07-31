@@ -185,7 +185,7 @@
         expect(html.deltas._o.arrayPropertyMap).toBe(html._arrayPropertyMap);
         return expect(html.deltas._o.numberPropertyMap).toBe(html._numberPropertyMap);
       });
-      return it('should pass `this` as callbacksContext', function() {
+      it('should pass `this` as callbacksContext to deltas', function() {
         var html;
         html = new Html({
           el: el,
@@ -201,6 +201,25 @@
         html.deltas._o.callbacksContext = null;
         html._createDeltas(html._o);
         return expect(html.deltas._o.callbacksContext).toBe(html);
+      });
+      return it('should pass prevChainModule to deltas', function() {
+        var html, prevChainModule;
+        prevChainModule = {};
+        html = new Html({
+          el: el,
+          borderWidth: '20px',
+          borderRadius: '40px',
+          x: {
+            20: 40
+          },
+          color: {
+            'cyan': 'orange'
+          },
+          prevChainModule: prevChainModule
+        });
+        html.deltas._o.isChained = null;
+        html._createDeltas(html._o);
+        return expect(html.deltas._o.isChained).toBe(true);
       });
     });
     describe('_makeTween and _makeTimeline methods ->', function() {
@@ -506,7 +525,7 @@
         expect(html._setStyle).toHaveBeenCalledWith('borderRadius', '25rem');
         return expect(html._setStyle.calls.count()).toBe(2);
       });
-      return it('should call _draw method', function() {
+      it('should call _draw method', function() {
         var html;
         el = document.createElement('div');
         html = new Html({
@@ -516,6 +535,19 @@
         html._render();
         expect(html._draw).toHaveBeenCalled();
         return expect(html._draw.calls.count()).toBe(1);
+      });
+      return it('should return immediately if `prevChainModule`', function() {
+        var html;
+        el = document.createElement('div');
+        html = new Html({
+          el: el,
+          prevChainModule: {}
+        });
+        spyOn(html, '_draw');
+        spyOn(html, '_setStyle');
+        html._render();
+        expect(html._draw).not.toHaveBeenCalled();
+        return expect(html._setStyle).not.toHaveBeenCalled();
       });
     });
     describe('_arrToString method ->', function() {
@@ -573,7 +605,7 @@
         }).then({
           borderRadius: 0
         });
-        spyOn(html._modules[1].deltas, 'refresh');
+        spyOn(html._modules[1].deltas, 'refresh').and.callThrough();
         html.then({
           borderRadius: 20
         });

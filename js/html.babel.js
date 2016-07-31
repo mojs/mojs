@@ -15,7 +15,6 @@ const TWEEN_PROPERTIES = obj._defaults;
 
 /*
   TODO:
-    - then module should not set initial props
     - current values in deltas
     - isShowStart/isShowEnd options
 */
@@ -133,6 +132,9 @@ class Html extends Thenable {
     @overrides @ Module
   */
   _render () {
+    // return immediately if not the first in `then` chain
+    if ( this._o.prevChainModule ) { return; }
+
     for (var i = 0; i < this._renderProps.length; i++) {
       var name  = this._renderProps[i],
           value = this._props[name];
@@ -278,7 +280,8 @@ class Html extends Thenable {
       onUpdate:          (p) => { this._draw(); },
       arrayPropertyMap:  this._arrayPropertyMap,
       numberPropertyMap: this._numberPropertyMap,
-      callbacksContext:  this
+      callbacksContext:  this,
+      isChained:         !!this._o.prevChainModule
     });
 
     this.timeline = this.deltas.timeline;

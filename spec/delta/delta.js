@@ -41,6 +41,17 @@
       });
       return expect(mojs.Tween.prototype._refresh).toHaveBeenCalledWith(true);
     });
+    it('should not call `refresh` on tween when constructing is `isChained`', function() {
+      var delta;
+      spyOn(mojs.Tween.prototype, '_refresh');
+      delta = new Delta({
+        deltas: deltas,
+        tweenOptions: tweenOptions,
+        props: props,
+        isChained: true
+      });
+      return expect(mojs.Tween.prototype._refresh).not.toHaveBeenCalled();
+    });
     describe('_calcCurrentProps method ->', function() {
       return it('should call sub functions based on each delta type', function() {
         var arrDelta, delta, fillDelta, radiusDelta, xDelta;

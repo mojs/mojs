@@ -89,8 +89,10 @@ module.exports = function(config) {
       // 'build/h.js',
       // 'spec/h.js',
 
-      'build/delta/deltas.js',
-      'spec/delta/deltas.js',
+      // 'build/delta/delta.js',
+      // 'spec/delta/delta.js',
+      // 'build/delta/deltas.js',
+      // 'spec/delta/deltas.js',
 
       // 'build/html.js',
       // 'spec/html.js',

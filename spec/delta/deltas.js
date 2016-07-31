@@ -19,6 +19,17 @@
       expect(deltas._o.options).toBe(options);
       return expect(deltas._o.props).toBe(props);
     });
+    it('should have _ignoreDeltas object', function() {
+      var deltas;
+      deltas = new Deltas({
+        options: options,
+        props: props
+      });
+      return expect(deltas._ignoreDeltasMap).toEqual({
+        prevChainModule: 1,
+        masterModule: 1
+      });
+    });
     describe('_createTimeline method', function() {
       it('should create a Timeline', function() {
         var deltas;
@@ -209,7 +220,7 @@
           }
         ]);
       });
-      return it('should be called on initialization', function() {
+      it('should be called on initialization', function() {
         var deltas;
         spyOn(Deltas.prototype, '_parseDeltas').and.callThrough();
         deltas = new Deltas({
@@ -217,6 +228,24 @@
           props: props
         });
         return expect(Deltas.prototype._parseDeltas).toHaveBeenCalledWith(options);
+      });
+      return it('should not call `_splitAndParseDelta` with props from `_ignoreDeltasMap`', function() {
+        var deltas, key, mainSplit, opts, value, _ref, _results;
+        deltas = new Deltas({
+          options: options,
+          props: props
+        });
+        deltas._parseDeltas(deltas._o);
+        mainSplit = deltas._splitTweenOptions(deltas._o);
+        opts = mainSplit.delta;
+        spyOn(deltas, '_splitAndParseDelta').and.callThrough();
+        _ref = deltas._ignoreDeltasMap;
+        _results = [];
+        for (key in _ref) {
+          value = _ref[key];
+          _results.push(expect(deltas._splitAndParseDelta).not.toHaveBeenCalledWith(key, opts[key]));
+        }
+        return _results;
       });
     });
     describe('_splitAndParseDelta method ->', function() {
@@ -478,7 +507,7 @@
       });
     });
     describe('_createDelta method ->', function() {
-      return it('should create delta from passed objects', function() {
+      it('should create delta from passed objects', function() {
         var deltas, deltasArr, result, tweenOpts;
         deltas = new Deltas({
           options: options,
@@ -491,6 +520,18 @@
         expect(result._o.deltas).toBe(deltasArr);
         expect(result._o.tweenOptions).toBe(tweenOpts);
         return expect(result._o.props).toBe(props);
+      });
+      return it('should pass isChained to delta', function() {
+        var deltas, deltasArr, result, tweenOpts;
+        deltas = new Deltas({
+          options: options,
+          props: props,
+          isChained: true
+        });
+        deltasArr = [];
+        tweenOpts = {};
+        result = deltas._createDelta(deltasArr, tweenOpts);
+        return expect(result._o.isChained).toBe(true);
       });
     });
     describe('_parseColorDelta method ->', function() {
