@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.265.7', isDebug: true, helpers: h,
+  revision:   '0.265.8', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -32,8 +32,6 @@ mojs.CustomShape = mojs.shapesMap.custom;
 // module alias
 mojs.Transit = mojs.Shape;
 mojs.Swirl   = mojs.ShapeSwirl;
-
-window.mojs = mojs;
 
 // TODO:
 /*
@@ -60,3 +58,6 @@ if ( (typeof define === "function") && define.amd ) {
 if ( (typeof module === "object") && (typeof module.exports === "object") ) {
   module.exports = mojs;
 }
+
+export default mojs;
+
