@@ -70,6 +70,13 @@ mojs.Swirl   = mojs.ShapeSwirl;
     });
 */
 
+// console.log(mojs);
+// const burst = new mojs.Burst({
+//   children: {
+//     shape: 'triangle'
+//   }
+// })
+
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {
   define("mojs", [], function () { return mojs; });
@@ -80,4 +87,6 @@ if ( (typeof module === "object") && (typeof module.exports === "object") ) {
 }
 
 export default mojs;
+
+(typeof window !== 'undefined') && (window.mojs = mojs);
 
