@@ -17,7 +17,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.265.8', isDebug: true, helpers: h,
+  revision:   '0.265.9', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -61,3 +61,4 @@ if ( (typeof module === "object") && (typeof module.exports === "object") ) {
 
 export default mojs;
 
+(typeof window !== 'undefined') && (window.mojs = mojs);
