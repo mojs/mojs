@@ -202,7 +202,7 @@
         html._createDeltas(html._o);
         return expect(html.deltas._o.callbacksContext).toBe(html);
       });
-      return it('should pass prevChainModule to deltas', function() {
+      it('should pass prevChainModule to deltas', function() {
         var html, prevChainModule;
         prevChainModule = {};
         html = new Html({
@@ -220,6 +220,24 @@
         html.deltas._o.isChained = null;
         html._createDeltas(html._o);
         return expect(html.deltas._o.isChained).toBe(true);
+      });
+      return it('should _customProps to deltas', function() {
+        var customProps, html;
+        customProps = {};
+        html = new Html({
+          el: el,
+          borderWidth: '20px',
+          borderRadius: '40px',
+          x: {
+            20: 40
+          },
+          color: {
+            'cyan': 'orange'
+          },
+          customProperties: customProps
+        });
+        html._createDeltas(html._o);
+        return expect(html.deltas._o.customProps).toBe(customProps);
       });
     });
     describe('_makeTween and _makeTimeline methods ->', function() {
@@ -317,6 +335,7 @@
         expect(html._numberPropertyMap.rotate).toBe(1);
         expect(html._numberPropertyMap.rotateX).toBe(1);
         expect(html._numberPropertyMap.rotateY).toBe(1);
+        expect(html._numberPropertyMap.rotateZ).toBe(1);
         expect(html._numberPropertyMap.skewX).toBe(1);
         return expect(html._numberPropertyMap.skewY).toBe(1);
       });
@@ -486,7 +505,7 @@
         expect(el.style['left']).toBe(html._props.left);
         return expect(html._setStyle).toHaveBeenCalledWith;
       });
-      return it('should call _drawTransform method', function() {
+      it('should call _drawTransform method', function() {
         var html;
         el = document.createElement('div');
         html = new Html({
@@ -498,6 +517,27 @@
         spyOn(html, '_drawTransform');
         html._draw();
         return expect(html._drawTransform).toHaveBeenCalled();
+      });
+      return it('should call _customDraw method', function() {
+        var customDraw, html;
+        el = document.createElement('div');
+        customDraw = function() {};
+        html = new Html({
+          el: el,
+          left: {
+            '20px': '40px'
+          },
+          customProperties: {
+            x: {
+              type: 'number',
+              "default": 0
+            },
+            draw: customDraw
+          }
+        });
+        spyOn(html, '_customDraw');
+        html._draw();
+        return expect(html._customDraw).toHaveBeenCalledWith(html._props.el, html._props);
       });
     });
     describe('_render method ->', function() {
@@ -708,7 +748,7 @@
         return expect(html._modules[0].deltas.refresh).not.toHaveBeenCalled();
       });
     });
-    return describe('_checkStartValue method ->', function() {
+    describe('_checkStartValue method ->', function() {
       it('should pipe the start value', function() {
         var html;
         html = new Html({
@@ -759,6 +799,33 @@
         });
         expect(html._checkStartValue('someUnknownProperty')).toBe(0);
         return expect(html._checkStartValue('someUnknownProperty', .5)).toBe(.5);
+      });
+    });
+    return describe('custom properties ->', function() {
+      var customProps, draw;
+      draw = function(el, props) {
+        return {
+          el: el
+        };
+      };
+      customProps = {
+        originX: {
+          type: 'unit',
+          "default": '50%'
+        },
+        draw: draw
+      };
+      return it('should save customProperties object', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10,
+          customProperties: customProps
+        });
+        expect(html._customProps).toBe(customProps);
+        expect(html._customDraw).toBe(draw);
+        expect(html._customProps.draw).not.toBeDefined();
+        return expect(html._o.customProperties).not.toBeDefined();
       });
     });
   });

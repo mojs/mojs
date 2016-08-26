@@ -7042,11 +7042,23 @@ describe 'Tween ->', ->
       tw._props.easing = 'ease.in'
       tw._extendDefaults()
       expect(typeof tw._props.easing).toBe 'function'
+    it 'should set _parent on easing function', ->
+      tw = new Tween
+      tw._props.easing = 'ease.in'
+      tw._extendDefaults()
+      expect(typeof tw._props.easing).toBe 'function'
+      expect(tw._props.easing._parent).toBe tw
 
     it 'should parse backwardEasing', ->
       tw = new Tween backwardEasing: 'ease.in'
       expect(typeof tw._props.backwardEasing).toBe 'function'
       expect(tw._props.backwardEasing).toBe easing.ease.in
+
+    it 'should set _parent on easing function', ->
+      tw = new Tween backwardEasing: 'ease.in'
+      expect(typeof tw._props.backwardEasing).toBe 'function'
+      expect(tw._props.backwardEasing).toBe easing.ease.in
+      expect(tw._props.backwardEasing._parent).toBe tw
 
     it 'should not parse backwardEasing if `null`', ->
       tw = new Tween
@@ -7123,10 +7135,16 @@ describe 'Tween ->', ->
       expect(result.isMojsCallbackOverride).toBe true
 
   describe '_assignProp method ->', ->
-    it 'should parse easign', ->
+    it 'should parse easing', ->
       tr = new Tween
       tr._assignProp 'easing', 'ease.in'
       expect(typeof tr._props.easing).toBe 'function'
+
+    it 'should set parent on easing', ->
+      tr = new Tween
+      tr._assignProp 'easing', 'ease.in'
+      expect(typeof tr._props.easing).toBe 'function'
+      expect(tr._props.easing._parent).toBe tr
 
     it 'should fallback to defaults for null values', ->
       tr = new Tween

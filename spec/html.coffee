@@ -181,6 +181,20 @@ describe 'Html ->', ->
 
       expect( html.deltas._o.isChained ).toBe true
 
+    it 'should _customProps to deltas', ->
+      customProps = {}
+      html = new Html
+        el: el
+        borderWidth:  '20px'
+        borderRadius: '40px'
+        x:            { 20: 40 }
+        color:        { 'cyan': 'orange' }
+        customProperties:  customProps
+
+      html._createDeltas html._o
+
+      expect( html.deltas._o.customProps ).toBe customProps
+
   describe '_makeTween and _makeTimeline methods ->', ->
     it 'should override them to empty methods', ->
       spyOn mojs.Tweenable.prototype, '_makeTween'
@@ -280,6 +294,7 @@ describe 'Html ->', ->
       expect( html._numberPropertyMap.rotate ).toBe 1
       expect( html._numberPropertyMap.rotateX ).toBe 1
       expect( html._numberPropertyMap.rotateY ).toBe 1
+      expect( html._numberPropertyMap.rotateZ ).toBe 1
       expect( html._numberPropertyMap.skewX ).toBe 1
       expect( html._numberPropertyMap.skewY ).toBe 1
 
@@ -444,6 +459,25 @@ describe 'Html ->', ->
 
       expect( html._drawTransform ).toHaveBeenCalled()
 
+    it 'should call _customDraw method', ->
+      el = document.createElement 'div'
+      customDraw = ->
+      html = new Html
+        el: el
+        left: { '20px': '40px' }
+        customProperties: {
+          x: {
+            type: 'number',
+            default: 0
+          },
+          draw: customDraw
+        }
+
+      spyOn html, '_customDraw'
+      html._draw()
+
+      expect( html._customDraw )
+        .toHaveBeenCalledWith html._props.el, html._props
 
   describe '_render method ->', ->
     it 'should set initial properties', ->
@@ -692,6 +726,30 @@ describe 'Html ->', ->
       
       expect(html._checkStartValue 'someUnknownProperty').toBe 0
       expect(html._checkStartValue 'someUnknownProperty', .5).toBe .5
+
+
+  describe 'custom properties ->', ->
+    draw = (el, props) -> { el }
+    customProps = {
+      originX: {
+        type:     'unit',
+        default:  '50%'
+      },
+      draw: draw
+    }
+
+    it 'should save customProperties object', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10,
+        customProperties: customProps
+        })
+
+      expect( html._customProps ).toBe customProps
+      expect( html._customDraw ).toBe draw
+      expect( html._customProps.draw ).not.toBeDefined()
+      expect( html._o.customProperties ).not.toBeDefined()
+      
 
   # not now
   # describe '_replaceCurrent method ->', ->

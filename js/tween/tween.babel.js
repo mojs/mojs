@@ -358,12 +358,14 @@ class Tween extends Module {
     super._extendDefaults();
 
     var p = this._props;
-    p.easing         = easing.parseEasing(p.easing);
+    p.easing = easing.parseEasing(p.easing);
+    p.easing._parent = this;
 
     // parse only present backward easing to prevent parsing as `linear.none`
     // because we need to fallback to `easing` in `_setProgress` method
     if ( p.backwardEasing != null ) {
       p.backwardEasing = easing.parseEasing(p.backwardEasing);
+      p.backwardEasing._parent = this;
     }
   }
   /*
@@ -1035,7 +1037,10 @@ class Tween extends Module {
     // fallback to defaults
     if ( value == null ) { value = this._defaults[key]; }
     // parse easing
-    ( key === 'easing' ) && ( value = easing.parseEasing(value) );
+    if ( key === 'easing' ) {
+      value = easing.parseEasing(value);
+      value._parent = this;
+    }
     // handle control callbacks overrides
     var control       = this._callbackOverrides[key],
         isntOverriden = (!value || (!value.isMojsCallbackOverride));

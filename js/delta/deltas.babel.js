@@ -3,7 +3,7 @@
   find deltas in it and send them to `Delta` classes.
   The `Delta` class is dull - they expect actual parsed deltas
   and separated tween options, so we should parse them here.
-  The timeline of the module controls the `Delta` modules tweens.
+  The timeline of the module controls the `Delta` modules' tweens.
 
   @param {Object} props Object to set deltas result to (pass to the Delta classes).
   @param {Object} options Object to parse the deltas from.
@@ -16,6 +16,25 @@
                                             that should be parsed as numbers
                                             without units.
 */
+
+// TODO:
+// - colors with curves change alpha level too
+// const html = new mojs.Html({
+//   el: '#js-el',
+//   x: { 0: 100 },
+//   onUpdate () {
+//     console.log(this._props.originX);
+//   },
+//   originX: { 'white': 'black', curve: 'M0,100 L100, 0' },
+//   customProperties: {
+//     originX: {
+//       type: 'color',
+//       default: 'cyan'
+//     },
+//     draw() { console.log('draw'); }
+//   }
+// });
+
 
 const easing = require('../easing/easing');
 const h = require('../h');
@@ -145,8 +164,11 @@ class Deltas {
     @param {Object} Options object to parse the deltas from.
   */
   _parseDeltas (obj) {
+    // spilt main animation properties and main tween properties
     const mainSplit = this._splitTweenOptions( obj );
+    // main animation properties
     const opts      = mainSplit.delta;
+    // main tween properties
     this._mainTweenOptions = mainSplit.tweenOptions;
 
     this._mainDeltas  = [];
@@ -188,6 +210,36 @@ class Deltas {
     @param {Number} Module index.
   */
   _parseDelta (name, object, index) {
+    // if name is in _o.customProps - parse it regarding the type
+    return ( this._o.customProps && this._o.customProps[ name ] )
+      ? this._parseDeltaByCustom(name, object, index)
+      : this._parseDeltaByGuess(name, object, index);
+  }
+  /**
+    Method to parse delta by taking the type from the customProps object.
+    @private
+    @param {String} Property name.
+    @param {Object} Raw delta object.
+    @param {Number} Module index.
+  */
+  _parseDeltaByCustom (name, object, index) {
+    const customRecord = this._o.customProps[name];
+
+    switch ( customRecord.type.toLowerCase() ) {
+      case 'color':  { return this._parseColorDelta( name, object ); }
+      case 'array':  { return this._parseArrayDelta( name, object ); }
+      case 'number': { return this._parseNumberDelta( name, object, index ); }
+      case 'unit':   { return this._parseUnitDelta( name, object, index ); }
+    }
+  }
+  /**
+    Method to parse delta by reasoning about it's value.
+    @private
+    @param {String} Property name.
+    @param {Object} Raw delta object.
+    @param {Number} Module index.
+  */
+  _parseDeltaByGuess (name, object, index) {
     const { start } = this._preparseDelta( object );
     const o = this._o;
 
@@ -372,7 +424,10 @@ class Deltas {
     value = {...value};
     // parse curve if exist
     let curve = value.curve;
-    if (curve != null) { curve = easing.parseEasing( curve ); }
+    if (curve != null) {
+      curve = easing.parseEasing( curve );
+      curve._parent = this;
+    }
     delete value.curve;
     // parse start and end values
     const start = Object.keys(value)[0],

@@ -7296,6 +7296,14 @@
         tw._extendDefaults();
         return expect(typeof tw._props.easing).toBe('function');
       });
+      it('should set _parent on easing function', function() {
+        var tw;
+        tw = new Tween;
+        tw._props.easing = 'ease.in';
+        tw._extendDefaults();
+        expect(typeof tw._props.easing).toBe('function');
+        return expect(tw._props.easing._parent).toBe(tw);
+      });
       it('should parse backwardEasing', function() {
         var tw;
         tw = new Tween({
@@ -7303,6 +7311,15 @@
         });
         expect(typeof tw._props.backwardEasing).toBe('function');
         return expect(tw._props.backwardEasing).toBe(easing.ease["in"]);
+      });
+      it('should set _parent on easing function', function() {
+        var tw;
+        tw = new Tween({
+          backwardEasing: 'ease.in'
+        });
+        expect(typeof tw._props.backwardEasing).toBe('function');
+        expect(tw._props.backwardEasing).toBe(easing.ease["in"]);
+        return expect(tw._props.backwardEasing._parent).toBe(tw);
       });
       return it('should not parse backwardEasing if `null`', function() {
         var tw;
@@ -7397,11 +7414,18 @@
       });
     });
     describe('_assignProp method ->', function() {
-      it('should parse easign', function() {
+      it('should parse easing', function() {
         var tr;
         tr = new Tween;
         tr._assignProp('easing', 'ease.in');
         return expect(typeof tr._props.easing).toBe('function');
+      });
+      it('should set parent on easing', function() {
+        var tr;
+        tr = new Tween;
+        tr._assignProp('easing', 'ease.in');
+        expect(typeof tr._props.easing).toBe('function');
+        return expect(tr._props.easing._parent).toBe(tr);
       });
       it('should fallback to defaults for null values', function() {
         var tr;

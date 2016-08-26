@@ -229,7 +229,7 @@
         });
         return expect(Deltas.prototype._parseDeltas).toHaveBeenCalledWith(options);
       });
-      return it('should not call `_splitAndParseDelta` with props from `_ignoreDeltasMap`', function() {
+      it('should not call `_splitAndParseDelta` with props from `_ignoreDeltasMap`', function() {
         var deltas, key, mainSplit, opts, value, _ref, _results;
         deltas = new Deltas({
           options: options,
@@ -246,6 +246,32 @@
           _results.push(expect(deltas._splitAndParseDelta).not.toHaveBeenCalledWith(key, opts[key]));
         }
         return _results;
+      });
+      it('should call `_parseDeltaByGuess` if not in customProps', function() {
+        var deltas;
+        deltas = new Deltas({
+          options: options,
+          props: props
+        });
+        spyOn(deltas, '_parseDeltaByGuess').and.callThrough();
+        deltas._parseDelta('x', props, 0);
+        return expect(deltas._parseDeltaByGuess).toHaveBeenCalledWith('x', props, 0);
+      });
+      return it('should call `_parseDeltaByCustom` if in customProps', function() {
+        var deltas;
+        deltas = new Deltas({
+          options: options,
+          props: props,
+          customProps: {
+            x: {
+              type: 'number',
+              "default": 0
+            }
+          }
+        });
+        spyOn(deltas, '_parseDeltaByCustom').and.callThrough();
+        deltas._parseDelta('x', props, 0);
+        return expect(deltas._parseDeltaByCustom).toHaveBeenCalledWith('x', props, 0);
       });
     });
     describe('_splitAndParseDelta method ->', function() {
@@ -830,6 +856,22 @@
         expect(mojs.easing.parseEasing).toHaveBeenCalledWith(curve);
         return expect(startDelta.curve).toBe(curve);
       });
+      it('should set parent on parsed curve', function() {
+        var curve, delta, deltas, startDelta;
+        deltas = new Deltas({
+          options: options,
+          props: props
+        });
+        curve = "M0,100 L100,0";
+        startDelta = {
+          25: 75,
+          curve: curve
+        };
+        delta = deltas._preparseDelta(startDelta);
+        expect(typeof delta.curve).toBe('function');
+        expect(delta.curve(.5)).toBeCloseTo(.5, 2);
+        return expect(delta.curve._parent).toBe(deltas);
+      });
       return it('should not parse curve if not set', function() {
         var delta, deltas, startDelta;
         deltas = new Deltas({
@@ -1128,7 +1170,7 @@
         return expect(result).toBe(deltas);
       });
     });
-    return describe('restore method ->', function() {
+    describe('restore method ->', function() {
       it('should call `restore` on all `delta` objects', function() {
         var deltas;
         deltas = new Deltas({
@@ -1151,6 +1193,72 @@
         });
         result = deltas.restore();
         return expect(result).toBe(deltas);
+      });
+    });
+    return describe('_parseDeltaByCustom method ->', function() {
+      it('should call _parseColorDelta if type is color ', function() {
+        var deltas;
+        deltas = new Deltas({
+          options: options,
+          props: props,
+          customProps: {
+            x: {
+              type: 'color',
+              "default": 'cyan'
+            }
+          }
+        });
+        spyOn(deltas, '_parseColorDelta');
+        deltas._parseDeltaByCustom('x', props, 0);
+        return expect(deltas._parseColorDelta).toHaveBeenCalledWith('x', props);
+      });
+      it('should call _parseArrayDelta if type is array', function() {
+        var deltas;
+        deltas = new Deltas({
+          options: options,
+          props: props,
+          customProps: {
+            x: {
+              type: 'array',
+              "default": '100 100'
+            }
+          }
+        });
+        spyOn(deltas, '_parseArrayDelta');
+        deltas._parseDeltaByCustom('x', props, 0);
+        return expect(deltas._parseArrayDelta).toHaveBeenCalledWith('x', props);
+      });
+      it('should call _parseNumberDelta if type is number', function() {
+        var deltas;
+        deltas = new Deltas({
+          options: options,
+          props: props,
+          customProps: {
+            x: {
+              type: 'number',
+              "default": 1
+            }
+          }
+        });
+        spyOn(deltas, '_parseNumberDelta');
+        deltas._parseDeltaByCustom('x', props, 0);
+        return expect(deltas._parseNumberDelta).toHaveBeenCalledWith('x', props, 0);
+      });
+      return it('should call _parseUnitDelta if type is unit', function() {
+        var deltas;
+        deltas = new Deltas({
+          options: options,
+          props: props,
+          customProps: {
+            x: {
+              type: 'unit',
+              "default": 1
+            }
+          }
+        });
+        spyOn(deltas, '_parseUnitDelta');
+        deltas._parseDeltaByCustom('x', props, 0);
+        return expect(deltas._parseUnitDelta).toHaveBeenCalledWith('x', props, 0);
       });
     });
   });

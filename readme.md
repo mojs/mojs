@@ -40,6 +40,7 @@
 
 ## Tools
   - [MojsPlayer](https://github.com/legomushroom/mojs-player)
+  - [MojsCurveEditor](https://github.com/legomushroom/mojs-curve-editor)
 
 ## Installation
 ### CDN

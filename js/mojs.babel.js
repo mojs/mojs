@@ -20,7 +20,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.275.1', isDebug: true, helpers: h,
+  revision:   '0.277.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, Html, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap, _pool: { Delta, Deltas }
@@ -69,13 +69,6 @@ mojs.Swirl   = mojs.ShapeSwirl;
         .play();
     });
 */
-
-// console.log(mojs);
-// const burst = new mojs.Burst({
-//   children: {
-//     shape: 'triangle'
-//   }
-// })
 
 // istanbul ignore next
 if ( (typeof define === "function") && define.amd ) {

@@ -183,6 +183,36 @@ describe 'Deltas ->', ->
         expect( deltas._splitAndParseDelta )
           .not.toHaveBeenCalledWith key, opts[key]
 
+    it 'should call `_parseDeltaByGuess` if not in customProps', ->
+      deltas = new Deltas
+        options:  options,
+        props:    props
+
+      spyOn(deltas, '_parseDeltaByGuess').and.callThrough()
+
+      deltas._parseDelta 'x', props, 0
+
+      expect( deltas._parseDeltaByGuess )
+        .toHaveBeenCalledWith 'x', props, 0
+
+    it 'should call `_parseDeltaByCustom` if in customProps', ->
+      deltas = new Deltas
+        options:  options,
+        props:    props
+        customProps: {
+          x: {
+            type:     'number',
+            default:  0
+          }
+        }
+
+      spyOn(deltas, '_parseDeltaByCustom').and.callThrough()
+
+      deltas._parseDelta 'x', props, 0
+
+      expect( deltas._parseDeltaByCustom )
+        .toHaveBeenCalledWith 'x', props, 0
+
   describe '_splitAndParseDelta method ->', ->
     it 'should call _splitTweenOptions method with passed object', ->
       deltas = new Deltas
@@ -573,7 +603,6 @@ describe 'Deltas ->', ->
     it 'should parse curve', ->
       deltas = new Deltas options: options, props: props
 
-
       curve = "M0,100 L100,0"
       startDelta = { 25: 75, curve: curve }
 
@@ -588,6 +617,17 @@ describe 'Deltas ->', ->
       expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
       
       expect(startDelta.curve).toBe curve
+
+    it 'should set parent on parsed curve', ->
+      deltas = new Deltas options: options, props: props
+
+      curve = "M0,100 L100,0"
+      startDelta = { 25: 75, curve: curve }
+      delta = deltas._preparseDelta startDelta
+
+      expect(typeof delta.curve).toBe 'function'
+      expect(delta.curve(.5)).toBeCloseTo .5, 2
+      expect(delta.curve._parent).toBe deltas
 
     it 'should not parse curve if not set', ->
       deltas = new Deltas options: options, props: props
@@ -824,4 +864,71 @@ describe 'Deltas ->', ->
       result = deltas.restore()
 
       expect( result ).toBe deltas
+
+  describe '_parseDeltaByCustom method ->', ->
+    it 'should call _parseColorDelta if type is color ', ->
+      deltas = new Deltas
+        options:  options,
+        props:    props
+        customProps: {
+          x: {
+            type:     'color',
+            default:  'cyan'
+          }
+        }
+
+      spyOn deltas, '_parseColorDelta'
+
+      deltas._parseDeltaByCustom 'x', props, 0
+
+      expect( deltas._parseColorDelta ).toHaveBeenCalledWith 'x', props
+
+    it 'should call _parseArrayDelta if type is array', ->
+      deltas = new Deltas
+        options:  options,
+        props:    props
+        customProps: {
+          x: {
+            type:     'array',
+            default:  '100 100'
+          }
+        }
+
+      spyOn deltas, '_parseArrayDelta'
+
+      deltas._parseDeltaByCustom 'x', props, 0
+      expect( deltas._parseArrayDelta ).toHaveBeenCalledWith 'x', props
+
+    it 'should call _parseNumberDelta if type is number', ->
+      deltas = new Deltas
+        options:  options,
+        props:    props
+        customProps: {
+          x: {
+            type:     'number',
+            default:  1
+          }
+        }
+
+      spyOn deltas, '_parseNumberDelta'
+
+      deltas._parseDeltaByCustom 'x', props, 0
+      expect( deltas._parseNumberDelta ).toHaveBeenCalledWith 'x', props, 0
+
+    it 'should call _parseUnitDelta if type is unit', ->
+      deltas = new Deltas
+        options:  options,
+        props:    props
+        customProps: {
+          x: {
+            type:     'unit',
+            default:  1
+          }
+        }
+
+      spyOn deltas, '_parseUnitDelta'
+
+      deltas._parseDeltaByCustom 'x', props, 0
+      expect( deltas._parseUnitDelta ).toHaveBeenCalledWith 'x', props, 0
+
 

@@ -171,8 +171,8 @@ class Thenable extends Tweenable {
   _mergeThenProperty ( key, startValue, endValue ) {
     // if isnt tween property
     var isBoolean = typeof endValue === 'boolean',
-        curve,
-        easing;
+        curve, easing;
+
     if ( !h.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean ) {
 
       if ( h.isObject( endValue ) && endValue.to != null ) {
