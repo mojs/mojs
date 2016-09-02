@@ -6,7 +6,7 @@
 - [Property Maps API](./syntax/property-maps.md)
 - [Tween API](./tweens/tween.md)
 - [Timeline API](./tweens/timeline.md)
-- [back](./index.md)
+- [back](./readme.md)
 
 Full API reference:
 
@@ -165,4 +165,4 @@ const burst = new mojs.Burst({
 - [Property Maps API](./syntax/property-maps.md)
 - [Tween API](./tweens/tween.md)
 - [Timeline API](./tweens/timeline.md)
-- [back](./index.md)
+- [back](./readme.md)

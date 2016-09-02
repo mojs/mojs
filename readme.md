@@ -36,7 +36,7 @@
   - [Icon Animations Powered by mo.js](http://tympanus.net/codrops/2016/02/23/icon-animations-powered-by-mo-js/)
 
 ## API
-  - [Reference](https://github.com/legomushroom/mojs/blob/master/api/index.md)
+  - [Reference](https://github.com/legomushroom/mojs/blob/master/api/readme.md)
 
 ## Tools
   - [MojsPlayer](https://github.com/legomushroom/mojs-player)

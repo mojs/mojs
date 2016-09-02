@@ -2,7 +2,7 @@
 
 - [CodePen Example](http://codepen.io/sol0mka/pen/XKMKjQ?editors=0010)
 - [Tween API](./tweens/tween.md)
-- [back](./index.md)
+- [back](./readme.md)
 
 Full API reference:
 
@@ -243,4 +243,4 @@ const shape = new mojs.Shape({
 
 - [CodePen Example](http://codepen.io/sol0mka/pen/XKMKjQ?editors=0010)
 - [Tween API](./tweens/tween.md)
-- [back](./index.md)
+- [back](./readme.md)
