@@ -1,7 +1,7 @@
 # Base Easing Functions
 
 - [CodePen Example](http://codepen.io/sol0mka/pen/qNraVV?editors=0010)
-- [back](/api/index.md)
+- [back](/api/readme.md)
 
 The base easing functions could be expressed with strings that contain `easing name` and `direction` delimited by `.` or could be accessed directly on `mojs.easing` object:
 
@@ -66,4 +66,4 @@ The full list of base functions:
 ```
 
 - [CodePen Example](http://codepen.io/sol0mka/pen/qNraVV?editors=0010)
-- [back](/api/index.md)
+- [back](/api/readme.md)
