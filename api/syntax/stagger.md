@@ -1,7 +1,7 @@
 # Stagger Strings Syntax
 
 - [CodePen Example](http://codepen.io/sol0mka/pen/wWJWVY?editors=0010)
-- [back](/api/index.md)
+- [back](/api/readme.md)
 
 Stagger string was designed to express continious numeric values. Often used with `Burst` and `Stagger` modules to generate a value on children with some `step`.  
 
@@ -20,4 +20,4 @@ Full API reference:
 ```
 
 - [CodePen Example](http://codepen.io/sol0mka/pen/wWJWVY?editors=0010)
-- [back](/api/index.md)
+- [back](/api/readme.md)
