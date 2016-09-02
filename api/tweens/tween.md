@@ -2,7 +2,7 @@
 
 - [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0011)
 - [Timeline](./timeline.md)
-- [back](/api/index.md)
+- [back](/api/readme.md)
 
 Full API reference:
 
@@ -135,4 +135,4 @@ const tween = new mojs.Tween({
 
 - [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0011)
 - [Timeline](./timeline.md)
-- [back](/api/index.md)
+- [back](/api/readme.md)
