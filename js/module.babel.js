@@ -5,6 +5,8 @@ import h from './h';
 */
 class Module {
   constructor ( o = {} ) {
+    // this._isIt = o.isIt;
+    // delete o.isIt;
     this._o     = o;
     this._index = this._o.index || 0;
     // map of props that should be

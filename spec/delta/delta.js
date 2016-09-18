@@ -275,6 +275,21 @@
         delta.tween._callbackOverrides.onRefresh(true, .2, .1);
         return expect(delta._calcCurrentProps).toHaveBeenCalledWith(.2, .1);
       });
+      it('should add not onRefresh callback override is isChained', function() {
+        var delta;
+        tweenOptions = {
+          duration: 200
+        };
+        delta = new Delta({
+          deltas: deltas,
+          tweenOptions: tweenOptions,
+          props: props,
+          isChained: true
+        });
+        delta.tween = null;
+        delta._createTween(tweenOptions);
+        return expect(typeof delta.tween._callbackOverrides.onRefresh).toBe('undefined');
+      });
       it('should be called on initialization', function() {
         var delta;
         spyOn(Delta.prototype, '_createTween').and.callThrough();

@@ -50,7 +50,7 @@ class Thenable extends Tweenable {
     // reset isRefreshState flag for the submodules
     obj.isRefreshState   = false;
     // set the submodule callbacks context
-    obj.callbacksContext = this._props.callbacksContext;
+    obj.callbacksContext = this._props.callbacksContext || this;
     // set previous module
     obj.prevChainModule  = h.getLastItem( this._modules );
     // pass the `this` as master module
@@ -143,7 +143,6 @@ class Thenable extends Tweenable {
             ? start[key] : this._defaults[key];
 
       startValue = this._checkStartValue( key, startValue );
-      // console.log(startValue);
       if ( endValue == null ) { continue };
       // make ∆ of start -> end
       // if key name is radiusX/radiusY and

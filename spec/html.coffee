@@ -27,17 +27,20 @@ describe 'Html ->', ->
       expect( p['borderWidth'] ).toBe '20px'
       expect( p['borderRadius'] ).toBe '40px'
       expect( p['y'] ).toBe '40px'
+      
+      # defaults
+      expect( p['z'] ).toBe 0
+      expect( p['skewY'] ).toBe 0
 
-      equal = {
-        el: el
-        'borderWidth':  '20px'
-        'borderRadius': '40px'
-        y: 40
-        x:      { 20: 40 }
-        skewX:  { 20: 40 }
-        color:  { 'cyan': 'orange' }
-      }
-      expect( html._addDefaults html._o ).toEqual html._addDefaults( equal )
+      expect( p['rotate'] ).toBe 0
+      expect( p['rotateX'] ).toBe 0
+      expect( p['rotateY'] ).toBe 0
+      expect( p['rotateZ'] ).toBe 0
+      
+      expect( p['scale'] ).toBe  1
+      expect( p['scaleX'] ).toBe 1
+      expect( p['scaleY'] ).toBe 1
+      # defaults end
 
       expect( html._renderProps )
         .toEqual [ 'borderWidth', 'borderRadius' ]
@@ -63,6 +66,26 @@ describe 'Html ->', ->
       expect( html._drawProps )
         .toEqual [ 'color' ]
 
+    it 'should not copy customProperties _drawProps', ->
+      customProperties = {
+        originX: {
+          type: 'number',
+          default: 0
+        }
+        draw: -> {}
+      }
+      html = new Html
+        el: el
+        color:        'cyan' : 'red'
+        originX:      { 20: 40 }
+        customProperties: customProperties
+        # prevChainModule: { foo: 'bar' }
+
+      p = html._props
+
+      expect( html._drawProps )
+        .toEqual [ 'color' ]
+
     it 'should not copy tween properties _renderProps', ->
       html = new Html
         el: el
@@ -76,6 +99,24 @@ describe 'Html ->', ->
         # prevChainModule: { foo: 'bar' }
 
       p = html._props
+
+      expect( html._renderProps )
+        .toEqual [ 'borderWidth', 'borderRadius' ]
+
+    it 'should not copy customProperties to _renderProps', ->
+      customProperties = {
+        originX: {
+          type: 'number',
+          default: 0
+        }
+        draw: -> {}
+      }
+      html = new Html
+        el: el
+        borderWidth:  '20px'
+        borderRadius: '40px'
+        originX:      20
+        customProperties: customProperties
 
       expect( html._renderProps )
         .toEqual [ 'borderWidth', 'borderRadius' ]
@@ -111,6 +152,14 @@ describe 'Html ->', ->
       expect( html._props.el instanceof HTMLElement ).toBe true
       expect( html._props.el ).toBe div
 
+    it 'should use props if passed ->', ->
+      props = {}
+      html = new Html
+        el: document.createElement 'div'
+        props: props
+
+      expect( html._props ).toBe props
+
   describe '_createDeltas method ->', ->
     it 'should create deltas with passed object', ->
       html = new Html
@@ -121,20 +170,13 @@ describe 'Html ->', ->
         color:        { 'cyan': 'orange' }
 
       html.deltas   = null
-      html.timeline = null
+      # html.timeline = null
 
       html._createDeltas html._o
 
       expect( html.deltas instanceof mojs._pool.Deltas ).toBe true
       expect( html.deltas._o.options ).toBe html._o
-      
-      expect( typeof html.deltas._o.onUpdate ).toBe 'function'
-      spyOn html, '_draw'
-      html.deltas._o.onUpdate()
-      expect( html._draw ).toHaveBeenCalled()
-
       expect( html.deltas._o.props ).toBe html._props
-      expect( html.timeline ).toBe html.deltas.timeline
 
     it 'should pass property maps to Deltas', ->
       html = new Html
@@ -151,6 +193,20 @@ describe 'Html ->', ->
 
       expect( html.deltas._o.arrayPropertyMap ).toBe html._arrayPropertyMap
       expect( html.deltas._o.numberPropertyMap ).toBe html._numberPropertyMap
+
+
+    it 'should pass options callbacksContext to deltas', ->
+      html = new Html el: el
+
+      callbacksContext = {}
+      o = {
+        callbacksContext: callbacksContext,
+        x:                { 20: 40 }
+      }
+
+      html._createDeltas o
+
+      expect( html.deltas._o.callbacksContext ).toBe callbacksContext
 
     it 'should pass `this` as callbacksContext to deltas', ->
       html = new Html
@@ -198,15 +254,24 @@ describe 'Html ->', ->
   describe '_makeTween and _makeTimeline methods ->', ->
     it 'should override them to empty methods', ->
       spyOn mojs.Tweenable.prototype, '_makeTween'
-      spyOn mojs.Tweenable.prototype, '_makeTimeline'
+      # spyOn mojs.Tweenable.prototype, '_makeTimeline'
 
-      html = new Html
-        el: el
+      html = new Html el: el
 
       expect( mojs.Tweenable.prototype._makeTween ).not.toHaveBeenCalled()
-      expect( mojs.Tweenable.prototype._makeTimeline ).not.toHaveBeenCalled()
+      # expect( mojs.Tweenable.prototype._makeTimeline ).not.toHaveBeenCalled()
 
   describe '_vars method ->', ->
+    it 'should call refresh on deltas', ->
+      html = new Html el: el
+
+      spyOn html.deltas, 'refresh'
+
+      html._vars()
+
+      expect( html.deltas.refresh ).toHaveBeenCalledWith false
+
+
     it 'should call super', ->
       spyOn mojs.Module.prototype, '_vars'
 
@@ -226,6 +291,15 @@ describe 'Html ->', ->
       expect( typeof html._state ).toBe 'object'
       expect( html._state ).toBe html._state
 
+    it 'should call restore on deltas', ->
+      html = new Html el: el
+
+      spyOn html.deltas, 'restore'
+
+      html._vars()
+
+      expect( html.deltas.restore ).toHaveBeenCalled()
+
   describe '_declareDefaults method ->', ->
     it 'should _declareDefaults', ->
       html = new Html
@@ -241,7 +315,6 @@ describe 'Html ->', ->
       expect( html._defaults.skewX ).toBe 0
       expect( html._defaults.skewY ).toBe 0
       
-      expect( html._defaults.rotate ).toBe  0
       expect( html._defaults.rotateX ).toBe 0
       expect( html._defaults.rotateY ).toBe 0
       expect( html._defaults.rotateZ ).toBe 0
@@ -751,91 +824,110 @@ describe 'Html ->', ->
       expect( html._o.customProperties ).not.toBeDefined()
       
 
-  # not now
-  # describe '_replaceCurrent method ->', ->
-  #   it 'should get computedStyle', ->
-  #     html = new Html
-  #       el: document.createElement 'div'
+  describe '_makeTimeline method ->', ->
+    it 'should call super', ->
 
-  #     spyOn(h, 'computedStyle').and.callThrough()
-  #     html._replaceCurrent 'x', { '=': 180 }
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+      })
+      html.timeline = null
 
-  #     expect(h.computedStyle).toHaveBeenCalledWith html._props.el
+      spyOn(mojs.Tweenable.prototype, '_makeTimeline').and.callThrough()
+      html._makeTimeline()
 
-  #   it 'should replace = with current values', ->
-      
-  #     div = document.createElement 'div'
-  #     div.style['borderRadius'] = '20px'
-  #     document.body.appendChild div
-  #     html = new Html el: div
+      expect( mojs.Tweenable.prototype._makeTimeline )
+        .toHaveBeenCalled()
 
-  #     # console.log h.computedStyle(div)
+    it 'should add deltas to the timeline', ->
 
-  #     result = html._replaceCurrent 'borderRadius', { '=': '100px' }
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+      })
+      html.timeline = null
 
-  #     expect( result ).toEqual { '20px': '100px' }
+      spyOn(mojs.Timeline.prototype, 'add').and.callThrough()
 
-  # describe '_renameProperties method ->', ->
-  #   it 'should rename camelCase to spinal-case', ->
-  #     html = new Html
-  #       el: el
+      html._makeTimeline()
 
-  #     opts =
-  #       borderWidth:  '20px'
-  #       borderRadius: '40px'
-  #       x:            { 20: 40 }
-  #       color:        { 'cyan': 'orange' }
+      expect( mojs.Timeline.prototype.add )
+        .toHaveBeenCalledWith html.deltas
 
-  #     newOpts = html._renameProperties opts
+      expect( html.timeline._timelines[0] )
+        .toBe( html.deltas.timeline )
 
-  #     expect( newOpts['border-width'] ).toBe opts.borderWidth
-  #     expect( newOpts['border-radius'] ).toBe opts.borderRadius
-  #     expect( newOpts['x'] ).toBe opts.x
-  #     expect( newOpts['color'] ).toBe opts.color
+    it 'should not call super if prevChainModule set', ->
 
-  #   it 'should ignore tween properties', ->
-  #     html = new Html
-  #       el: el
+      html0 = new Html
+        el: document.createElement 'div'
 
-  #     opts =
-  #       borderWidth:  '20px'
-  #       borderRadius: '40px'
-  #       x:            { 20: 40 }
-  #       color:        { 'cyan': 'orange' }
-  #       callbacksContext: {}
-  #       onUpdate: ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+        prevChainModule: html0
+      })
+      html.timeline = null
 
-  #     newOpts = html._renameProperties opts
+      spyOn(mojs.Tweenable.prototype, '_makeTimeline').and.callThrough()
+      html._makeTimeline()
 
-  #     expect( newOpts['border-width'] ).toBe opts.borderWidth
-  #     expect( newOpts['border-radius'] ).toBe opts.borderRadius
-  #     expect( newOpts['x'] ).toBe opts.x
-  #     expect( newOpts['color'] ).toBe opts.color
+      expect( mojs.Tweenable.prototype._makeTimeline )
+        .not.toHaveBeenCalled()
 
-  #     expect( newOpts['callbacksContext'] ).toBe opts.callbacksContext
-  #     expect( newOpts['onUpdate'] ).toBe opts.onUpdate
+    it 'should not add deltas to the timeline if chained', ->
+      html0 = new Html
+        el: document.createElement 'div'
 
-  #   it 'should ignore defauls properties', ->
-  #     html = new Html
-  #       el: el
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10,
+        prevChainModule: html0
+      })
 
-  #     opts =
-  #       borderRadius: '40px'
-  #       x:            { 20: 40 }
-  #       skewY:        '20px'
-  #       rotateY:      { 40: 10 }
+      spyOn(mojs.Timeline.prototype, 'add').and.callThrough()
 
-  #     newOpts = html._renameProperties opts
+      html._makeTimeline()
 
-  #     expect( newOpts['border-radius'] ).toBe opts.borderRadius
-  #     expect( newOpts['x'] ).toBe opts.x
-  #     expect( newOpts['skewY'] ).toBe opts.skewY
-  #     expect( newOpts['rotateY'] ).toBe opts.rotateY
+      expect( mojs.Timeline.prototype.add )
+        .not.toHaveBeenCalledWith html.deltas
 
-  # describe '_renameProperty method ->', ->
-  #   it 'should change string from camelCase to spinal-case', ->
-  #     html = new Html
-  #       el: el
+      expect( html.timeline ).toBe html.deltas.timeline
 
-  #     expect( html._renameProperty( 'borderRadius' ) ).toBe 'border-radius'
+    it 'should add callbackOverrides to the timeline', ->
+
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+      })
+
+      html.timeline = null
+
+      html._makeTimeline()
+
+      overrides = html.timeline._callbackOverrides
+      expect( overrides.onUpdate ).toBe html._draw
+      expect( overrides.onRefresh ).toBe html._draw
+
+
+  describe '_resetMergedFlags method ->', ->
+    it 'should call super and add props', ->
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10
+      })
+
+      spyOn mojs.Thenable.prototype, '_resetMergedFlags'
+
+      opts = {}
+      result = html._resetMergedFlags opts
+
+      expect( result ).toBe opts
+      expect( result.props ).toBe html._props
+      expect( result.customProperties ).toBe html._customProps
+      expect( mojs.Thenable.prototype._resetMergedFlags )
+        .toHaveBeenCalledWith opts
+
+
+
 

@@ -785,7 +785,7 @@
         th = new Thenable;
         return expect(th._resetMergedFlags(obj)).toBe(obj);
       });
-      return it('should reset flags on the piped object', function() {
+      it('should reset flags on the piped object', function() {
         var obj, th;
         obj = {};
         th = new Thenable({}).then({
@@ -797,8 +797,15 @@
         expect(obj.isShowStart).toBe(false);
         expect(obj.isRefreshState).toBe(false);
         expect(obj.prevChainModule).toBe(th._modules[th._modules.length - 1]);
-        expect(obj.callbacksContext).toBe(th._props.callbacksContext);
+        expect(obj.callbacksContext).toBe(th);
         return expect(obj.masterModule).toBe(th);
+      });
+      return it('should set callbacksContext to this if not set', function() {
+        var obj, th;
+        obj = {};
+        th = new Thenable({});
+        th._resetMergedFlags(obj);
+        return expect(obj.callbacksContext).toBe(th);
       });
     });
     describe('_getArrayLength method ->', function() {

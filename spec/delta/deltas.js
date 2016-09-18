@@ -58,27 +58,7 @@
         });
         return expect(Deltas.prototype._createTimeline).toHaveBeenCalledWith(deltas._mainTweenOptions);
       });
-      it('should pass callbackOverrides to the timeline - onUpdate', function() {
-        var deltas, fun;
-        fun = function() {};
-        deltas = new Deltas({
-          options: options,
-          props: props,
-          onUpdate: fun
-        });
-        return expect(deltas.timeline._callbackOverrides.onUpdate).toBe(fun);
-      });
-      it('should pass callbackOverrides to the timeline - onRefresh', function() {
-        var deltas, fun;
-        fun = function() {};
-        deltas = new Deltas({
-          options: options,
-          props: props,
-          onUpdate: fun
-        });
-        return expect(deltas.timeline._callbackOverrides.onRefresh).toBe(fun);
-      });
-      it('should add _deltas to the Timeline', function() {
+      return it('should add _deltas to the Timeline', function() {
         var deltas;
         options = {
           stroke: 'cyan',
@@ -105,17 +85,6 @@
           props: props
         });
         return expect(deltas.timeline._timelines.length).toBe(4);
-      });
-      return it('should pass `callbacksContext` to `timeline`', function() {
-        var callbacksContext, deltas;
-        callbacksContext = {};
-        deltas = new Deltas({
-          options: options,
-          props: props,
-          onUpdate: function() {},
-          callbacksContext: callbacksContext
-        });
-        return expect(deltas.timeline._o.callbacksContext).toBe(callbacksContext);
       });
     });
     describe('_parseDeltas method ->', function() {
@@ -1196,69 +1165,18 @@
       });
     });
     return describe('_parseDeltaByCustom method ->', function() {
-      it('should call _parseColorDelta if type is color ', function() {
+      return it('should call _parseNumberDelta', function() {
         var deltas;
         deltas = new Deltas({
           options: options,
           props: props,
           customProps: {
-            x: {
-              type: 'color',
-              "default": 'cyan'
-            }
-          }
-        });
-        spyOn(deltas, '_parseColorDelta');
-        deltas._parseDeltaByCustom('x', props, 0);
-        return expect(deltas._parseColorDelta).toHaveBeenCalledWith('x', props);
-      });
-      it('should call _parseArrayDelta if type is array', function() {
-        var deltas;
-        deltas = new Deltas({
-          options: options,
-          props: props,
-          customProps: {
-            x: {
-              type: 'array',
-              "default": '100 100'
-            }
-          }
-        });
-        spyOn(deltas, '_parseArrayDelta');
-        deltas._parseDeltaByCustom('x', props, 0);
-        return expect(deltas._parseArrayDelta).toHaveBeenCalledWith('x', props);
-      });
-      it('should call _parseNumberDelta if type is number', function() {
-        var deltas;
-        deltas = new Deltas({
-          options: options,
-          props: props,
-          customProps: {
-            x: {
-              type: 'number',
-              "default": 1
-            }
+            x: 0
           }
         });
         spyOn(deltas, '_parseNumberDelta');
         deltas._parseDeltaByCustom('x', props, 0);
         return expect(deltas._parseNumberDelta).toHaveBeenCalledWith('x', props, 0);
-      });
-      return it('should call _parseUnitDelta if type is unit', function() {
-        var deltas;
-        deltas = new Deltas({
-          options: options,
-          props: props,
-          customProps: {
-            x: {
-              type: 'unit',
-              "default": 1
-            }
-          }
-        });
-        spyOn(deltas, '_parseUnitDelta');
-        deltas._parseDeltaByCustom('x', props, 0);
-        return expect(deltas._parseUnitDelta).toHaveBeenCalledWith('x', props, 0);
       });
     });
   });
