@@ -40,6 +40,8 @@ describe 'Html ->', ->
       expect( p['scale'] ).toBe  1
       expect( p['scaleX'] ).toBe 1
       expect( p['scaleY'] ).toBe 1
+      
+      expect( p['isRefresh'] ).toBe true
       # defaults end
 
       expect( html._renderProps )
@@ -908,6 +910,22 @@ describe 'Html ->', ->
       overrides = html.timeline._callbackOverrides
       expect( overrides.onUpdate ).toBe html._draw
       expect( overrides.onRefresh ).toBe html._draw
+
+    it 'should not add onRefresh if isRefresh set to false', ->
+
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10,
+        isRefresh:    false
+      })
+
+      html.timeline = null
+
+      html._makeTimeline()
+
+      overrides = html.timeline._callbackOverrides
+      expect( overrides.onUpdate ).toBe html._draw
+      expect( overrides.onRefresh ).not.toBeDefined()
 
 
   describe '_resetMergedFlags method ->', ->
