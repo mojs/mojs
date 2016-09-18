@@ -1691,10 +1691,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	/*
 	  TODO:
 
-	    - change _props to _propsObj for animations
-	    - add isRefresh API option
 	    - add isShowStart/isShowEnd options
-
+	    - change _props to _propsObj for animations
 	    - current values in deltas
 	*/
 
@@ -1722,7 +1720,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      scale: 1,
 	      scaleX: 1,
-	      scaleY: 1
+	      scaleY: 1,
+
+	      isRefresh: true
 	    };
 	    // exclude from automatic drawing
 	    this._drawExclude = { el: 1 };
@@ -2063,12 +2063,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this._o.prevChainModule) {
 	      return;
 	    }
-
 	    // add callbacks overrides
 	    this._o.timeline = this._o.timeline || {};
 	    this._o.timeline.callbackOverrides = {
 	      onUpdate: this._draw,
-	      onRefresh: this._draw
+	      onRefresh: this._props.isRefresh ? this._draw : void 0
 	    };
 
 	    _Thenable.prototype._makeTimeline.call(this);
@@ -10321,7 +10320,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.278.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.279.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, Html: _html2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default, _pool: { Delta: _delta2.default, Deltas: _deltas2.default }

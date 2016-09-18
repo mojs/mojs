@@ -46,6 +46,7 @@
         expect(p['scale']).toBe(1);
         expect(p['scaleX']).toBe(1);
         expect(p['scaleY']).toBe(1);
+        expect(p['isRefresh']).toBe(true);
         expect(html._renderProps).toEqual(['borderWidth', 'borderRadius']);
         return expect(html._drawProps).toEqual(['color']);
       });
@@ -952,7 +953,7 @@
         expect(mojs.Timeline.prototype.add).not.toHaveBeenCalledWith(html.deltas);
         return expect(html.timeline).toBe(html.deltas.timeline);
       });
-      return it('should add callbackOverrides to the timeline', function() {
+      it('should add callbackOverrides to the timeline', function() {
         var html, overrides;
         html = new Html({
           el: document.createElement('div'),
@@ -963,6 +964,19 @@
         overrides = html.timeline._callbackOverrides;
         expect(overrides.onUpdate).toBe(html._draw);
         return expect(overrides.onRefresh).toBe(html._draw);
+      });
+      return it('should not add onRefresh if isRefresh set to false', function() {
+        var html, overrides;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10,
+          isRefresh: false
+        });
+        html.timeline = null;
+        html._makeTimeline();
+        overrides = html.timeline._callbackOverrides;
+        expect(overrides.onUpdate).toBe(html._draw);
+        return expect(overrides.onRefresh).not.toBeDefined();
       });
     });
     return describe('_resetMergedFlags method ->', function() {

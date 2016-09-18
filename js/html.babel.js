@@ -16,10 +16,8 @@ const TWEEN_PROPERTIES = obj._defaults;
 /*
   TODO:
 
-    - change _props to _propsObj for animations
-    - add isRefresh API option
     - add isShowStart/isShowEnd options
-
+    - change _props to _propsObj for animations
     - current values in deltas
 */
 
@@ -42,6 +40,8 @@ class Html extends Thenable {
       scale:      1,
       scaleX:     1,
       scaleY:     1,
+
+      isRefresh:  true
     }
     // exclude from automatic drawing
     this._drawExclude  = { el: 1 }
@@ -346,12 +346,11 @@ class Html extends Thenable {
   _makeTimeline () {
     // do not create timeline if module if chained
     if ( this._o.prevChainModule ) { return; }
-
     // add callbacks overrides
     this._o.timeline = this._o.timeline || {};
     this._o.timeline.callbackOverrides = {
       onUpdate:  this._draw,
-      onRefresh: this._draw
+      onRefresh: (this._props.isRefresh) ? this._draw : void 0
     }
 
     super._makeTimeline();
