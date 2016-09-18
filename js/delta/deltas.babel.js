@@ -111,15 +111,16 @@ class Deltas {
     @param {Object} Timeline options.
   */
   _createTimeline ( opts = {} ) {
-    const o = this._o;
-    opts.timeline = opts.timeline || {};
-    opts.timeline.callbackOverrides = {
-      onUpdate:   o.onUpdate,
-      onRefresh:  o.onUpdate
-    }
+    // const o = this._o;
+    // opts.timeline = opts.timeline || {};
+    // opts.timeline.callbackOverrides = {
+    //   onUpdate:   o.onUpdate,
+    //   onRefresh:  o.onUpdate
+    // }
     // send callbacksContext to timeline if set
-    o.callbacksContext && (opts.timeline.callbacksContext = o.callbacksContext);
-    this.timeline = new Timeline(opts.timeline);
+    // o.callbacksContext && (opts.timeline.callbacksContext = o.callbacksContext);
+    // opts.timeline
+    this.timeline = new Timeline;
     this.timeline.add( this._deltas );
   }
   /*
@@ -154,7 +155,7 @@ class Deltas {
     return new Delta({
       deltas, tweenOptions,
       props:            o.props,
-      isChained:        this._o.isChained,
+      isChained:        o.isChained,
       callbacksContext: o.callbacksContext,
     });
   }
@@ -211,7 +212,7 @@ class Deltas {
   */
   _parseDelta (name, object, index) {
     // if name is in _o.customProps - parse it regarding the type
-    return ( this._o.customProps && this._o.customProps[ name ] )
+    return ( this._o.customProps && (this._o.customProps[ name ] != null) )
       ? this._parseDeltaByCustom(name, object, index)
       : this._parseDeltaByGuess(name, object, index);
   }
@@ -223,14 +224,14 @@ class Deltas {
     @param {Number} Module index.
   */
   _parseDeltaByCustom (name, object, index) {
-    const customRecord = this._o.customProps[name];
-
-    switch ( customRecord.type.toLowerCase() ) {
-      case 'color':  { return this._parseColorDelta( name, object ); }
-      case 'array':  { return this._parseArrayDelta( name, object ); }
-      case 'number': { return this._parseNumberDelta( name, object, index ); }
-      case 'unit':   { return this._parseUnitDelta( name, object, index ); }
-    }
+    return this._parseNumberDelta( name, object, index ); 
+    // const customRecord = this._o.customProps[name];
+    // switch ( customRecord.type.toLowerCase() ) {
+    //   case 'color':  { return this._parseColorDelta( name, object ); }
+    //   case 'array':  { return this._parseArrayDelta( name, object ); }
+    //   case 'number': { return this._parseNumberDelta( name, object, index ); }
+    //   case 'unit':   { return this._parseUnitDelta( name, object, index ); }
+    // }
   }
   /**
     Method to parse delta by reasoning about it's value.

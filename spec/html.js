@@ -17,7 +17,7 @@
     });
     describe('_extendDefaults method ->', function() {
       it('should copy all non-delta properties to _props', function() {
-        var equal, html, p;
+        var html, p;
         html = new Html({
           el: el,
           borderWidth: '20px',
@@ -37,22 +37,15 @@
         expect(p['borderWidth']).toBe('20px');
         expect(p['borderRadius']).toBe('40px');
         expect(p['y']).toBe('40px');
-        equal = {
-          el: el,
-          'borderWidth': '20px',
-          'borderRadius': '40px',
-          y: 40,
-          x: {
-            20: 40
-          },
-          skewX: {
-            20: 40
-          },
-          color: {
-            'cyan': 'orange'
-          }
-        };
-        expect(html._addDefaults(html._o)).toEqual(html._addDefaults(equal));
+        expect(p['z']).toBe(0);
+        expect(p['skewY']).toBe(0);
+        expect(p['rotate']).toBe(0);
+        expect(p['rotateX']).toBe(0);
+        expect(p['rotateY']).toBe(0);
+        expect(p['rotateZ']).toBe(0);
+        expect(p['scale']).toBe(1);
+        expect(p['scaleX']).toBe(1);
+        expect(p['scaleY']).toBe(1);
         expect(html._renderProps).toEqual(['borderWidth', 'borderRadius']);
         return expect(html._drawProps).toEqual(['color']);
       });
@@ -80,6 +73,30 @@
         p = html._props;
         return expect(html._drawProps).toEqual(['color']);
       });
+      it('should not copy customProperties _drawProps', function() {
+        var customProperties, html, p;
+        customProperties = {
+          originX: {
+            type: 'number',
+            "default": 0
+          },
+          draw: function() {
+            return {};
+          }
+        };
+        html = new Html({
+          el: el,
+          color: {
+            'cyan': 'red'
+          },
+          originX: {
+            20: 40
+          },
+          customProperties: customProperties
+        });
+        p = html._props;
+        return expect(html._drawProps).toEqual(['color']);
+      });
       it('should not copy tween properties _renderProps', function() {
         var html, p;
         html = new Html({
@@ -101,6 +118,26 @@
         p = html._props;
         return expect(html._renderProps).toEqual(['borderWidth', 'borderRadius']);
       });
+      it('should not copy customProperties to _renderProps', function() {
+        var customProperties, html;
+        customProperties = {
+          originX: {
+            type: 'number',
+            "default": 0
+          },
+          draw: function() {
+            return {};
+          }
+        };
+        html = new Html({
+          el: el,
+          borderWidth: '20px',
+          borderRadius: '40px',
+          originX: 20,
+          customProperties: customProperties
+        });
+        return expect(html._renderProps).toEqual(['borderWidth', 'borderRadius']);
+      });
       it('should call _createDeltas method ->', function() {
         var html;
         html = new Html({
@@ -118,7 +155,7 @@
         html._extendDefaults();
         return expect(html._createDeltas).toHaveBeenCalledWith(html._addDefaults(html._o));
       });
-      return it('should parse el ->', function() {
+      it('should parse el ->', function() {
         var div, html;
         div = document.createElement('div');
         div.setAttribute('id', 'js-el');
@@ -139,6 +176,15 @@
         expect(html._props.el instanceof HTMLElement).toBe(true);
         return expect(html._props.el).toBe(div);
       });
+      return it('should use props if passed ->', function() {
+        var html, props;
+        props = {};
+        html = new Html({
+          el: document.createElement('div'),
+          props: props
+        });
+        return expect(html._props).toBe(props);
+      });
     });
     describe('_createDeltas method ->', function() {
       it('should create deltas with passed object', function() {
@@ -155,16 +201,10 @@
           }
         });
         html.deltas = null;
-        html.timeline = null;
         html._createDeltas(html._o);
         expect(html.deltas instanceof mojs._pool.Deltas).toBe(true);
         expect(html.deltas._o.options).toBe(html._o);
-        expect(typeof html.deltas._o.onUpdate).toBe('function');
-        spyOn(html, '_draw');
-        html.deltas._o.onUpdate();
-        expect(html._draw).toHaveBeenCalled();
-        expect(html.deltas._o.props).toBe(html._props);
-        return expect(html.timeline).toBe(html.deltas.timeline);
+        return expect(html.deltas._o.props).toBe(html._props);
       });
       it('should pass property maps to Deltas', function() {
         var html;
@@ -184,6 +224,21 @@
         html._createDeltas(html._o);
         expect(html.deltas._o.arrayPropertyMap).toBe(html._arrayPropertyMap);
         return expect(html.deltas._o.numberPropertyMap).toBe(html._numberPropertyMap);
+      });
+      it('should pass options callbacksContext to deltas', function() {
+        var callbacksContext, html, o;
+        html = new Html({
+          el: el
+        });
+        callbacksContext = {};
+        o = {
+          callbacksContext: callbacksContext,
+          x: {
+            20: 40
+          }
+        };
+        html._createDeltas(o);
+        return expect(html.deltas._o.callbacksContext).toBe(callbacksContext);
       });
       it('should pass `this` as callbacksContext to deltas', function() {
         var html;
@@ -244,15 +299,22 @@
       return it('should override them to empty methods', function() {
         var html;
         spyOn(mojs.Tweenable.prototype, '_makeTween');
-        spyOn(mojs.Tweenable.prototype, '_makeTimeline');
         html = new Html({
           el: el
         });
-        expect(mojs.Tweenable.prototype._makeTween).not.toHaveBeenCalled();
-        return expect(mojs.Tweenable.prototype._makeTimeline).not.toHaveBeenCalled();
+        return expect(mojs.Tweenable.prototype._makeTween).not.toHaveBeenCalled();
       });
     });
     describe('_vars method ->', function() {
+      it('should call refresh on deltas', function() {
+        var html;
+        html = new Html({
+          el: el
+        });
+        spyOn(html.deltas, 'refresh');
+        html._vars();
+        return expect(html.deltas.refresh).toHaveBeenCalledWith(false);
+      });
       it('should call super', function() {
         var html;
         spyOn(mojs.Module.prototype, '_vars');
@@ -261,7 +323,7 @@
         });
         return expect(mojs.Module.prototype._vars).toHaveBeenCalled();
       });
-      return it('should create _state object', function() {
+      it('should create _state object', function() {
         var html;
         html = new Html({
           el: el
@@ -270,6 +332,15 @@
         html._vars();
         expect(typeof html._state).toBe('object');
         return expect(html._state).toBe(html._state);
+      });
+      return it('should call restore on deltas', function() {
+        var html;
+        html = new Html({
+          el: el
+        });
+        spyOn(html.deltas, 'restore');
+        html._vars();
+        return expect(html.deltas.restore).toHaveBeenCalled();
       });
     });
     describe('_declareDefaults method ->', function() {
@@ -285,7 +356,6 @@
         expect(html._defaults.z).toBe(0);
         expect(html._defaults.skewX).toBe(0);
         expect(html._defaults.skewY).toBe(0);
-        expect(html._defaults.rotate).toBe(0);
         expect(html._defaults.rotateX).toBe(0);
         expect(html._defaults.rotateY).toBe(0);
         expect(html._defaults.rotateZ).toBe(0);
@@ -801,7 +871,7 @@
         return expect(html._checkStartValue('someUnknownProperty', .5)).toBe(.5);
       });
     });
-    return describe('custom properties ->', function() {
+    describe('custom properties ->', function() {
       var customProps, draw;
       draw = function(el, props) {
         return {
@@ -826,6 +896,89 @@
         expect(html._customDraw).toBe(draw);
         expect(html._customProps.draw).not.toBeDefined();
         return expect(html._o.customProperties).not.toBeDefined();
+      });
+    });
+    describe('_makeTimeline method ->', function() {
+      it('should call super', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        html.timeline = null;
+        spyOn(mojs.Tweenable.prototype, '_makeTimeline').and.callThrough();
+        html._makeTimeline();
+        return expect(mojs.Tweenable.prototype._makeTimeline).toHaveBeenCalled();
+      });
+      it('should add deltas to the timeline', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        html.timeline = null;
+        spyOn(mojs.Timeline.prototype, 'add').and.callThrough();
+        html._makeTimeline();
+        expect(mojs.Timeline.prototype.add).toHaveBeenCalledWith(html.deltas);
+        return expect(html.timeline._timelines[0]).toBe(html.deltas.timeline);
+      });
+      it('should not call super if prevChainModule set', function() {
+        var html, html0;
+        html0 = new Html({
+          el: document.createElement('div')
+        });
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10,
+          prevChainModule: html0
+        });
+        html.timeline = null;
+        spyOn(mojs.Tweenable.prototype, '_makeTimeline').and.callThrough();
+        html._makeTimeline();
+        return expect(mojs.Tweenable.prototype._makeTimeline).not.toHaveBeenCalled();
+      });
+      it('should not add deltas to the timeline if chained', function() {
+        var html, html0;
+        html0 = new Html({
+          el: document.createElement('div')
+        });
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10,
+          prevChainModule: html0
+        });
+        spyOn(mojs.Timeline.prototype, 'add').and.callThrough();
+        html._makeTimeline();
+        expect(mojs.Timeline.prototype.add).not.toHaveBeenCalledWith(html.deltas);
+        return expect(html.timeline).toBe(html.deltas.timeline);
+      });
+      return it('should add callbackOverrides to the timeline', function() {
+        var html, overrides;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        html.timeline = null;
+        html._makeTimeline();
+        overrides = html.timeline._callbackOverrides;
+        expect(overrides.onUpdate).toBe(html._draw);
+        return expect(overrides.onRefresh).toBe(html._draw);
+      });
+    });
+    return describe('_resetMergedFlags method ->', function() {
+      return it('should call super and add props', function() {
+        var html, opts, result;
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10
+        });
+        spyOn(mojs.Thenable.prototype, '_resetMergedFlags');
+        opts = {};
+        result = html._resetMergedFlags(opts);
+        expect(result).toBe(opts);
+        expect(result.props).toBe(html._props);
+        expect(result.customProperties).toBe(html._customProps);
+        return expect(mojs.Thenable.prototype._resetMergedFlags).toHaveBeenCalledWith(opts);
       });
     });
   });

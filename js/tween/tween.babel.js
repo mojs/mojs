@@ -331,7 +331,6 @@ class Tween extends Module {
     // save it to _negativeShift property and
     // reset it back to 0
     if ( this._props.delay < 0 ) {
-      // console.log('yep', this._props.delay );
       this._negativeShift = this._props.delay;
       this._props.delay = 0;
     }

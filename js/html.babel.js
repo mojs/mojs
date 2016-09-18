@@ -15,10 +15,12 @@ const TWEEN_PROPERTIES = obj._defaults;
 
 /*
   TODO:
-    - custom props
-    - callback contexts for callbacks
-    - current values in deltas
+
+    - change _props to _propsObj for animations
+    - add isRefresh API option
     - add isShowStart/isShowEnd options
+
+    - current values in deltas
 */
 
 class Html extends Thenable {
@@ -64,11 +66,11 @@ class Html extends Thenable {
     if ((o == null) || !Object.keys(o).length) { return 1; }
 
     // get the last item in `then` chain
-    var prevModule = h.getLastItem( this._modules );
+    var prevModule = h.getLastItem( this._modules );  
     // set deltas to the finish state
     prevModule.deltas.refresh( false );
     // copy finish state to the last history record
-    this._history[ this._history.length-1 ] = prevModule._props;
+    this._history[ this._history.length-1 ] = prevModule._o;
     // call super
     super.then(o);
     // restore the _props
@@ -174,7 +176,7 @@ class Html extends Thenable {
     @private
   */
   _extendDefaults () {
-    this._props       = {};
+    this._props = this._o.props || {};
     // props for intial render only
     this._renderProps = [];
     // props for draw on every frame update
@@ -186,6 +188,7 @@ class Html extends Thenable {
     // extend options with defaults
     o = this._addDefaults(o);
 
+
     const keys = Object.keys( o );
     for ( var i = 0; i < keys.length; i ++ ) {
       var key = keys[i];
@@ -195,6 +198,8 @@ class Html extends Thenable {
         !this._drawExclude[key] && // not in exclude map
         this._defaults[key] == null && // not transform property
         !TWEEN_PROPERTIES[key]; // not tween property
+
+      var isCustom = this._customProps[key];
       // copy all non-delta properties to the props
       // if not delta then add the property to render
       // list that is called on initialization
@@ -203,10 +208,10 @@ class Html extends Thenable {
       if ( !h.isDelta( o[key] ) && !TWEEN_PROPERTIES[key] ) {
         this._parseOption( key, o[key] );
         if ( key === 'el' ) { this._props[key] = h.parseEl( o[key] ); }
-        if ( isInclude ) { this._renderProps.push( key ); }
+        if ( isInclude && ! isCustom ) { this._renderProps.push( key ); }
       // copy delta prop but not transforms
       // otherwise push it to draw list that gets traversed on every draw
-      } else if ( isInclude ) { this._drawProps.push( key ); }
+      } else if ( isInclude && !isCustom ) { this._drawProps.push( key ); }
     }
 
     this._createDeltas( o );
@@ -217,6 +222,7 @@ class Html extends Thenable {
   */
   _saveCustomProperties ( o ) {
     this._customProps = o.customProperties;
+    // this._customPropsOrigin = o.customProperties;
     
     if ( this._customProps ) {
       this._customDraw  = this._customProps.draw;
@@ -224,6 +230,21 @@ class Html extends Thenable {
       delete this._customProps.draw;
       delete o.customProperties;
     }
+
+    this._customProps = this._customProps || {};
+  }
+  /*
+    Method to reset some flags on merged options object.
+    @private
+    @overrides @ Thenable
+    @param   {Object} Options object.
+    @returns {Object} Options object.
+  */
+  _resetMergedFlags ( o ) {
+    super._resetMergedFlags( o );
+    o.props = this._props;
+    o.customProperties = this._customProps;
+    return o;
   }
   /*
     Method to parse option value.
@@ -287,9 +308,16 @@ class Html extends Thenable {
     @private
   */
   _vars () {
+    // set deltas to the last value, so the _props with
+    // end values will be copied to the _history, it is
+    // crucial for `then` chaining
+    this.deltas.refresh(false);
+    // call super vars
     super._vars();
     // state of set properties
     this._state = {};
+    // restore delta values that we have refreshed before
+    this.deltas.restore(false);
   }
   /*
     Method to create deltas from passed object.
@@ -300,19 +328,35 @@ class Html extends Thenable {
     this.deltas = new Deltas({
       options,
       props:             this._props,
-      onUpdate:          (p) => { this._draw(); },
       arrayPropertyMap:  this._arrayPropertyMap,
       numberPropertyMap: this._numberPropertyMap,
       customProps:       this._customProps,
-      callbacksContext:  this,
+      callbacksContext:  options.callbacksContext || this,
       isChained:         !!this._o.prevChainModule
     });
 
-    this.timeline = this.deltas.timeline;
+    // if chained module set timeline to deltas' timeline 
+    if ( this._o.prevChainModule ) {
+      this.timeline = this.deltas.timeline;
+    }
   }
   /* @overrides @ Tweenable */
   _makeTween () {}
-  _makeTimeline () {}
+  // _makeTimeline () {}
+  _makeTimeline () {
+    // do not create timeline if module if chained
+    if ( this._o.prevChainModule ) { return; }
+
+    // add callbacks overrides
+    this._o.timeline = this._o.timeline || {};
+    this._o.timeline.callbackOverrides = {
+      onUpdate:  this._draw,
+      onRefresh: this._draw
+    }
+
+    super._makeTimeline();
+    this.timeline.add( this.deltas );
+  }
 
   /*
     Method to merge `start` and `end` for a property in then record.
@@ -321,7 +365,7 @@ class Html extends Thenable {
     @param {Any}    Start value of the property.
     @param {Any}    End value of the property.
   */
-  // !! CCOOVVEERR !!
+  // !! COVER !!
   // _mergeThenProperty ( key, startValue, endValue ) {
   //   // if isnt tween property
   //   var isBoolean = typeof endValue === 'boolean',

@@ -52,8 +52,16 @@ class Delta {
     var it = this;
     o.callbackOverrides = {
       onUpdate (ep, p) { it._calcCurrentProps( ep, p ); },
-      onRefresh (isBefore, ep, p) { it._calcCurrentProps( ep, p ); }
     }
+    
+    // if not chained - add the onRefresh callback
+    // to refresh the tween when needed
+    if ( !this._o.isChained ) {
+      o.callbackOverrides.onRefresh = function (isBefore, ep, p) {
+        it._calcCurrentProps( ep, p );
+      }
+    }
+
     o.callbacksContext = this._o.callbacksContext;
     this.tween = new Tween( o );
   }
@@ -66,7 +74,8 @@ class Delta {
   _calcCurrentProps ( easedProgress, p ) {
     var deltas = this._o.deltas;
     for (var i = 0; i < deltas.length; i++) {
-      this[`_calcCurrent_${deltas[i].type}`]( deltas[i], easedProgress, p );
+      var type = deltas[i].type;
+      this[`_calcCurrent_${type}`]( deltas[i], easedProgress, p );
     }
   }
   /*
@@ -115,7 +124,7 @@ class Delta {
       ? delta.start.value + ep*delta.delta
       : delta.curve(p) * ( delta.start.value + p * delta.delta );
 
-    this._o.props[delta.name] = `${currentValue}${delta.end.unit}`
+    this._o.props[delta.name] = `${currentValue}${delta.end.unit}`;
   }
   /*
     Method to calc the current array delta value.
