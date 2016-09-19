@@ -45,7 +45,7 @@ describe 'Html ->', ->
       expect( p['isShowStart'] ).toBe true
       expect( p['isShowEnd'] ).toBe true
       expect( p['isSoftHide'] ).toBe true
-      # expect( p['isForce3d'] ).toBe true
+      expect( p['isForce3d'] ).toBe false
       # defaults end
 
       expect( html._renderProps )
@@ -443,6 +443,27 @@ describe 'Html ->', ->
       obj = { skewX: 20, scale: 2, scaleY: 3 }
       result = html._addDefaults( obj )
       expect( html._is3d  ).toBe false
+
+    it 'should get if any 3d present // positive', ->
+      html = new Html
+        el: el
+
+      html._is3d = null
+
+      obj = { skewX: 20, scale: 2, scaleY: 3, z: 20 }
+      result = html._addDefaults( obj )
+      expect( html._is3d  ).toBe true
+
+    it 'should _is3d be true is isForce3d set', ->
+      html = new Html
+        el: el
+        isForce3d: true
+
+      html._is3d = null
+
+      obj = { skewX: 20, scale: 2, scaleY: 3 }
+      result = html._addDefaults( obj )
+      expect( html._is3d  ).toBe true
 
 
   describe '_setStyle method', ->

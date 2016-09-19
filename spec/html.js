@@ -49,6 +49,7 @@
         expect(p['isShowStart']).toBe(true);
         expect(p['isShowEnd']).toBe(true);
         expect(p['isSoftHide']).toBe(true);
+        expect(p['isForce3d']).toBe(false);
         expect(html._renderProps).toEqual(['borderWidth', 'borderRadius']);
         return expect(html._drawProps).toEqual(['color']);
       });
@@ -482,7 +483,7 @@
         expect(result.scaleX).toBe(2);
         return expect(result.scaleY).toBe(3);
       });
-      return it('should get if any 3d present', function() {
+      it('should get if any 3d present', function() {
         var html, obj, result;
         html = new Html({
           el: el
@@ -495,6 +496,36 @@
         };
         result = html._addDefaults(obj);
         return expect(html._is3d).toBe(false);
+      });
+      it('should get if any 3d present // positive', function() {
+        var html, obj, result;
+        html = new Html({
+          el: el
+        });
+        html._is3d = null;
+        obj = {
+          skewX: 20,
+          scale: 2,
+          scaleY: 3,
+          z: 20
+        };
+        result = html._addDefaults(obj);
+        return expect(html._is3d).toBe(true);
+      });
+      return it('should _is3d be true is isForce3d set', function() {
+        var html, obj, result;
+        html = new Html({
+          el: el,
+          isForce3d: true
+        });
+        html._is3d = null;
+        obj = {
+          skewX: 20,
+          scale: 2,
+          scaleY: 3
+        };
+        result = html._addDefaults(obj);
+        return expect(html._is3d).toBe(true);
       });
     });
     describe('_setStyle method', function() {

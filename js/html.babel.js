@@ -16,7 +16,6 @@ const TWEEN_PROPERTIES = obj._defaults;
 /*
   TODO:
 
-    - add isForce3d option
     - change _props to _propsObj for animations
     - current values in deltas
 */
@@ -44,7 +43,8 @@ class Html extends Thenable {
       isRefresh:    true,
       isSoftHide:   true,
       isShowStart:  true,
-      isShowEnd:    true
+      isShowEnd:    true,
+      isForce3d:    false
     }
     // exclude from automatic drawing
     this._drawExclude  = { el: 1 }
@@ -320,6 +320,9 @@ class Html extends Thenable {
         if ( this._3dProperties.indexOf( key ) !== -1 ) { this._is3d = true }
       }
     }
+
+    if (this._o.isForce3d) { this._is3d = true; }
+
     return obj;
   }
   /*
