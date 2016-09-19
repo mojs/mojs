@@ -73,13 +73,34 @@
         expect(th._modules.length).toBe(1);
         return expect(th._modules[0]).toBe(th);
       });
-      return it('should declare _nonMergeProps map', function() {
+      it('should declare _nonMergeProps map', function() {
         var th;
         th = new Thenable;
         th._vars();
         expect(h.isObject(th._nonMergeProps)).toBe(true);
         expect(Object.keys(th._nonMergeProps).length).toBe(1);
         return expect(th._nonMergeProps['shape']).toBe(1);
+      });
+      it('should save passed _o.masterModule to _masterModule', function() {
+        var obj, thenable;
+        obj = {};
+        thenable = new Thenable({
+          masterModule: obj
+        });
+        thenable._masterModule = null;
+        thenable._vars();
+        return expect(thenable._masterModule).toBe(obj);
+      });
+      return it('should set `_isChained` based on `prevChainModule` option', function() {
+        var thenable, thenable0;
+        thenable0 = new Thenable;
+        thenable = new Thenable({
+          prevChainModule: thenable0,
+          masterModule: thenable0
+        });
+        thenable._isChained = null;
+        thenable._vars();
+        return expect(thenable._isChained).toBe(true);
       });
     });
     Byte = Thenable;

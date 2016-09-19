@@ -39,14 +39,16 @@
         expect(p['y']).toBe('40px');
         expect(p['z']).toBe(0);
         expect(p['skewY']).toBe(0);
-        expect(p['rotate']).toBe(0);
-        expect(p['rotateX']).toBe(0);
-        expect(p['rotateY']).toBe(0);
-        expect(p['rotateZ']).toBe(0);
+        expect(p['angleX']).toBe(0);
+        expect(p['angleY']).toBe(0);
+        expect(p['angleZ']).toBe(0);
         expect(p['scale']).toBe(1);
         expect(p['scaleX']).toBe(1);
         expect(p['scaleY']).toBe(1);
         expect(p['isRefresh']).toBe(true);
+        expect(p['isShowStart']).toBe(true);
+        expect(p['isShowEnd']).toBe(true);
+        expect(p['isSoftHide']).toBe(true);
         expect(html._renderProps).toEqual(['borderWidth', 'borderRadius']);
         return expect(html._drawProps).toEqual(['color']);
       });
@@ -176,6 +178,22 @@
         html._extendDefaults();
         expect(html._props.el instanceof HTMLElement).toBe(true);
         return expect(html._props.el).toBe(div);
+      });
+      it('should save _props.el to el ->', function() {
+        var div, html;
+        div = document.createElement('div');
+        html = new Html({
+          el: div,
+          borderWidth: '20px',
+          borderRadius: '40px',
+          x: {
+            20: 40
+          },
+          color: {
+            'cyan': 'orange'
+          }
+        });
+        return expect(html.el).toBe(div);
       });
       return it('should use props if passed ->', function() {
         var html, props;
@@ -357,9 +375,9 @@
         expect(html._defaults.z).toBe(0);
         expect(html._defaults.skewX).toBe(0);
         expect(html._defaults.skewY).toBe(0);
-        expect(html._defaults.rotateX).toBe(0);
-        expect(html._defaults.rotateY).toBe(0);
-        expect(html._defaults.rotateZ).toBe(0);
+        expect(html._defaults.angleX).toBe(0);
+        expect(html._defaults.angleY).toBe(0);
+        expect(html._defaults.angleZ).toBe(0);
         expect(html._defaults.scale).toBe(1);
         expect(html._defaults.scaleX).toBe(1);
         return expect(html._defaults.scaleY).toBe(1);
@@ -380,7 +398,7 @@
         });
         html._3dProperties = null;
         html._declareDefaults();
-        return expect(html._3dProperties).toEqual(['rotateX', 'rotateY', 'z']);
+        return expect(html._3dProperties).toEqual(['angleX', 'angleY', 'z']);
       });
       it('should create _arrayPropertyMap object', function() {
         var html;
@@ -403,10 +421,9 @@
         expect(html._numberPropertyMap.scale).toBe(1);
         expect(html._numberPropertyMap.scaleX).toBe(1);
         expect(html._numberPropertyMap.scaleY).toBe(1);
-        expect(html._numberPropertyMap.rotate).toBe(1);
-        expect(html._numberPropertyMap.rotateX).toBe(1);
-        expect(html._numberPropertyMap.rotateY).toBe(1);
-        expect(html._numberPropertyMap.rotateZ).toBe(1);
+        expect(html._numberPropertyMap.angleX).toBe(1);
+        expect(html._numberPropertyMap.angleY).toBe(1);
+        expect(html._numberPropertyMap.angleZ).toBe(1);
         expect(html._numberPropertyMap.skewX).toBe(1);
         return expect(html._numberPropertyMap.skewY).toBe(1);
       });
@@ -647,7 +664,7 @@
         expect(html._draw).toHaveBeenCalled();
         return expect(html._draw.calls.count()).toBe(1);
       });
-      return it('should return immediately if `prevChainModule`', function() {
+      it('should return immediately if `prevChainModule`', function() {
         var html;
         el = document.createElement('div');
         html = new Html({
@@ -659,6 +676,36 @@
         html._render();
         expect(html._draw).not.toHaveBeenCalled();
         return expect(html._setStyle).not.toHaveBeenCalled();
+      });
+      it('should not call _hide if isShowStart is true', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div')
+        });
+        spyOn(html, '_hide');
+        html._render();
+        return expect(html._hide).not.toHaveBeenCalled();
+      });
+      it('should call _hide if isShowStart is false', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          isShowStart: false
+        });
+        spyOn(html, '_hide');
+        html._render();
+        return expect(html._hide).toHaveBeenCalled();
+      });
+      return it('should not call _hide if module is chained', function() {
+        var html;
+        html = new Html({
+          el: document.createElement('div'),
+          prevChainModule: {},
+          isShowStart: false
+        });
+        spyOn(html, '_hide');
+        html._render();
+        return expect(html._hide).not.toHaveBeenCalled();
       });
     });
     describe('_arrToString method ->', function() {
@@ -852,6 +899,18 @@
         }
         return _results;
       });
+      it('should fallback to _customProps if property is there', function() {
+        var customProperties, html;
+        customProperties = {
+          originY: 50
+        };
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10,
+          customProperties: customProperties
+        });
+        return expect(html._checkStartValue('originY')).toBe(customProperties.originY);
+      });
       it('should fallback DOM defaults otherwise', function() {
         var div, html;
         html = new Html({
@@ -873,30 +932,45 @@
       });
     });
     describe('custom properties ->', function() {
-      var customProps, draw;
-      draw = function(el, props) {
-        return {
-          el: el
+      return describe('_saveCustomProperties method ->', function() {
+        var customProps, draw;
+        draw = function(el, props) {
+          return {
+            el: el
+          };
         };
-      };
-      customProps = {
-        originX: {
-          type: 'unit',
-          "default": '50%'
-        },
-        draw: draw
-      };
-      return it('should save customProperties object', function() {
-        var html;
-        html = new Html({
-          el: document.createElement('div'),
-          borderRadius: 10,
-          customProperties: customProps
+        customProps = {
+          originX: {
+            type: 'unit',
+            "default": '50%'
+          },
+          draw: draw
+        };
+        it('should save customProperties object', function() {
+          var html;
+          spyOn(Html.prototype, '_saveCustomProperties').and.callThrough();
+          html = new Html({
+            el: document.createElement('div'),
+            borderRadius: 10,
+            customProperties: customProps
+          });
+          expect(Html.prototype._saveCustomProperties).toHaveBeenCalled();
+          expect(html._customProps).toBe(customProps);
+          expect(html._customDraw).toBe(draw);
+          expect(html._customProps.draw).not.toBeDefined();
+          return expect(html._o.customProperties).not.toBeDefined();
         });
-        expect(html._customProps).toBe(customProps);
-        expect(html._customDraw).toBe(draw);
-        expect(html._customProps.draw).not.toBeDefined();
-        return expect(html._o.customProperties).not.toBeDefined();
+        return it('should call _copyDefaultCustomProps method', function() {
+          var html;
+          html = new Html({
+            el: document.createElement('div'),
+            borderRadius: 10,
+            customProperties: customProps
+          });
+          spyOn(html, '_copyDefaultCustomProps');
+          html._saveCustomProperties();
+          return expect(html._copyDefaultCustomProps).toHaveBeenCalled();
+        });
       });
     });
     describe('_makeTimeline method ->', function() {
@@ -938,7 +1012,7 @@
         html._makeTimeline();
         return expect(mojs.Tweenable.prototype._makeTimeline).not.toHaveBeenCalled();
       });
-      it('should not add deltas to the timeline if chained', function() {
+      return it('should not add deltas to the timeline if chained', function() {
         var html, html0;
         html0 = new Html({
           el: document.createElement('div')
@@ -953,33 +1027,269 @@
         expect(mojs.Timeline.prototype.add).not.toHaveBeenCalledWith(html.deltas);
         return expect(html.timeline).toBe(html.deltas.timeline);
       });
-      it('should add callbackOverrides to the timeline', function() {
-        var html, overrides;
+    });
+    describe('_addCallbackOverrides method ->', function() {
+      it('should add callbackOverrides passed object', function() {
+        var html, obj;
         html = new Html({
           el: document.createElement('div'),
           borderRadius: 10
         });
-        html.timeline = null;
-        html._makeTimeline();
-        overrides = html.timeline._callbackOverrides;
-        expect(overrides.onUpdate).toBe(html._draw);
-        return expect(overrides.onRefresh).toBe(html._draw);
+        obj = {};
+        html._addCallbackOverrides(obj);
+        expect(obj.callbackOverrides.onUpdate).toBe(html._draw);
+        return expect(obj.callbackOverrides.onRefresh).toBe(html._draw);
       });
-      return it('should not add onRefresh if isRefresh set to false', function() {
-        var html, overrides;
+      it('should not add onRefresh if isRefresh set to false', function() {
+        var html, obj;
         html = new Html({
           el: document.createElement('div'),
           borderRadius: 10,
           isRefresh: false
         });
-        html.timeline = null;
-        html._makeTimeline();
-        overrides = html.timeline._callbackOverrides;
-        expect(overrides.onUpdate).toBe(html._draw);
-        return expect(overrides.onRefresh).not.toBeDefined();
+        obj = {};
+        html._addCallbackOverrides(obj);
+        expect(obj.callbackOverrides.onUpdate).toBe(html._draw);
+        return expect(obj.callbackOverrides.onRefresh).not.toBeDefined();
+      });
+      describe('onStart callback override ->', function() {
+        it('should override this._o.onStart', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div')
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          return expect(typeof obj.callbackOverrides.onStart).toBe('function');
+        });
+        it('should call _show if isForward and !_isChained and isShowStart is false', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div'),
+            isShowStart: false
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_show');
+          obj.callbackOverrides.onStart(true);
+          return expect(html._show).toHaveBeenCalled();
+        });
+        it('should not call _show if isShowStart is true', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div')
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_show');
+          obj.callbackOverrides.onStart(true);
+          return expect(html._show).not.toHaveBeenCalled();
+        });
+        it('should not call _show if _isChained', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div'),
+            masterModule: new Html({
+              el: document.createElement('div')
+            })
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_show');
+          obj.callbackOverrides.onStart(true);
+          return expect(html._show).not.toHaveBeenCalled();
+        });
+        it('should call _hide if not isForward and !_isChained and isShowStart is false', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div'),
+            isShowStart: false
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_hide');
+          obj.callbackOverrides.onStart(false);
+          return expect(html._hide).toHaveBeenCalled();
+        });
+        it('should not call _hide if not isForward and !_isChained and isShowStart is true', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div')
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_hide');
+          obj.callbackOverrides.onStart(false);
+          return expect(html._hide).not.toHaveBeenCalled();
+        });
+        it('should not call _hide if _isChained', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div'),
+            isShowStart: false,
+            masterModule: new Html({
+              el: document.createElement('div')
+            })
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_hide');
+          obj.callbackOverrides.onStart(false);
+          return expect(html._hide).not.toHaveBeenCalled();
+        });
+        return it('should not call _hide if not isForward and isShowStart', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div')
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_hide');
+          obj.callbackOverrides.onStart(false);
+          return expect(html._hide).not.toHaveBeenCalled();
+        });
+      });
+      return describe('onComplete callback override ->', function() {
+        it('should override this._o.onComplete', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div')
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          return expect(typeof obj.callbackOverrides.onComplete).toBe('function');
+        });
+        it('should call _show if !isForward and isShowEnd is false', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div'),
+            isShowEnd: false
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_show');
+          obj.callbackOverrides.onComplete(false);
+          return expect(html._show).toHaveBeenCalled();
+        });
+        it('should not call _show if !isForward and isShowEnd is true', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div')
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_show');
+          obj.callbackOverrides.onComplete(false);
+          return expect(html._show).not.toHaveBeenCalled();
+        });
+        it('should call _show if !isForward and _isChained and isShowEnd is false', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div'),
+            isShowEnd: false
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_show');
+          obj.callbackOverrides.onComplete(false);
+          return expect(html._show).toHaveBeenCalled();
+        });
+        it('should call _show if !isForward and !_isChained', function() {
+          var html, obj, obj2;
+          html = new Html({
+            el: document.createElement('div'),
+            isShowEnd: false
+          }).then({
+            radius: 0
+          });
+          el = html._modules[1];
+          obj = {};
+          obj2 = {};
+          html._addCallbackOverrides(obj);
+          el._addCallbackOverrides(obj2);
+          spyOn(html, '_show');
+          spyOn(el, '_show');
+          obj.callbackOverrides.onComplete(false);
+          obj2.callbackOverrides.onComplete(false);
+          expect(el._show).not.toHaveBeenCalled();
+          return expect(html._show).toHaveBeenCalled();
+        });
+        it('should call _hide if isForward and !isShowEnd', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div'),
+            isShowEnd: false
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_hide');
+          obj.callbackOverrides.onComplete(true);
+          return expect(html._hide).toHaveBeenCalled();
+        });
+        it('should not call _hide if isForward but isShowEnd', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div')
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_hide');
+          obj.callbackOverrides.onComplete(true);
+          return expect(html._hide).not.toHaveBeenCalled();
+        });
+        it('should call _hide if isForward and !_isChained', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div'),
+            isShowEnd: false
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_hide');
+          obj.callbackOverrides.onComplete(true);
+          return expect(html._hide).toHaveBeenCalled();
+        });
+        it('should call not _hide if isForward and _isChained', function() {
+          var html, obj;
+          html = new Html({
+            isShowEnd: false,
+            el: document.createElement('div')
+          }).then({
+            radius: 0
+          });
+          obj = {};
+          el._addCallbackOverrides(obj);
+          spyOn(html, '_hide');
+          obj.callbackOverrides.onComplete(true);
+          return expect(html._hide).not.toHaveBeenCalled();
+        });
+        it('should not call _hide if isForward and _isLastInChain but isShowEnd', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div')
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_hide');
+          obj.callbackOverrides.onComplete(true);
+          return expect(html._hide).not.toHaveBeenCalled();
+        });
+        return it('should not call _hide if isForward but !_isLastInChain and isShowEnd', function() {
+          var html, obj;
+          html = new Html({
+            el: document.createElement('div')
+          }).then({
+            radius: 0
+          });
+          obj = {};
+          html._addCallbackOverrides(obj);
+          spyOn(html, '_hide');
+          obj.callbackOverrides.onComplete(true);
+          return expect(html._hide).not.toHaveBeenCalled();
+        });
       });
     });
-    return describe('_resetMergedFlags method ->', function() {
+    describe('_resetMergedFlags method ->', function() {
       return it('should call super and add props', function() {
         var html, opts, result;
         html = new Html({
@@ -993,6 +1303,55 @@
         expect(result.props).toBe(html._props);
         expect(result.customProperties).toBe(html._customProps);
         return expect(mojs.Thenable.prototype._resetMergedFlags).toHaveBeenCalledWith(opts);
+      });
+    });
+    describe('_copyDefaultCustomProps method ->', function() {
+      it('should copy _customProps defaults to _o', function() {
+        var customProperties, html;
+        customProperties = {
+          originY: 1000,
+          originX: 500
+        };
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10,
+          customProperties: customProperties
+        });
+        html._o.originY = null;
+        html._o.originX = null;
+        html._copyDefaultCustomProps();
+        expect(html._o.originY).toBe(customProperties.originY);
+        return expect(html._o.originX).toBe(customProperties.originX);
+      });
+      return it('should not copy _customProps defaults to _o if set', function() {
+        var customProperties, html;
+        customProperties = {
+          originY: 1000,
+          originX: 500
+        };
+        html = new Html({
+          el: document.createElement('div'),
+          borderRadius: 10,
+          originX: 200,
+          customProperties: customProperties
+        });
+        html._copyDefaultCustomProps();
+        expect(html._o.originY).toBe(customProperties.originY);
+        return expect(html._o.originX).toBe(200);
+      });
+    });
+    return describe('_showByTransform method', function() {
+      return it('should call _drawTransform method', function() {
+        var shape;
+        shape = new Html({
+          el: document.createElement('div'),
+          easing: function(k) {
+            return 1;
+          }
+        });
+        spyOn(shape, '_drawTransform');
+        shape._showByTransform();
+        return expect(shape._drawTransform).toHaveBeenCalled();
       });
     });
   });

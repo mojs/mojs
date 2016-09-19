@@ -1436,12 +1436,14 @@ describe 'Shape ->', ->
 
       expect( shape._setProgress ).toHaveBeenCalledWith 1, 0
 
+  describe '_showByTransform method', ->
+    it 'should call _drawEl method', ->
+      shape = new Shape easing: (k)-> return 1
 
+      spyOn shape, '_drawEl'
+      shape._showByTransform()
 
-
-
-
-
+      expect( shape._drawEl ).toHaveBeenCalled()
 
 
 

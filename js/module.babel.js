@@ -80,8 +80,8 @@ class Module {
     if ( !this.el ) { return; }
 
     if ( p.isSoftHide ) {
-      this.el.style.opacity = p.opacity;
-      h.setPrefixedStyle( this.el, 'transform', this._fillTransform() );
+      // this.el.style.opacity = p.opacity;
+      this._showByTransform();
     } else { this.el.style.display = 'block'; }
 
     this._isShown = true;
@@ -92,14 +92,19 @@ class Module {
   */
   _hide () {
     if ( !this.el ) { return; }
-    
+
     if ( this._props.isSoftHide ) {
-      this.el.style.opacity = 0;
+      // this.el.style.opacity = 0;
       h.setPrefixedStyle( this.el, 'transform', 'scale(0)' );
     } else { this.el.style.display = 'none'; }
     
     this._isShown = false;
   }
+  /*
+    Method to show element by applying transform back to normal.
+    @private
+  */
+  _showByTransform () {}
   /*
     Method to parse option string.
     Searches for stagger and rand values and parses them.
