@@ -1698,7 +1698,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	/*
 	  TODO:
 
-	    - add isForce3d option
 	    - change _props to _propsObj for animations
 	    - current values in deltas
 	*/
@@ -1732,7 +1731,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      isRefresh: true,
 	      isSoftHide: true,
 	      isShowStart: true,
-	      isShowEnd: true
+	      isShowEnd: true,
+	      isForce3d: false
 	    };
 	    // exclude from automatic drawing
 	    this._drawExclude = { el: 1 };
@@ -2039,6 +2039,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	    }
+
+	    if (this._o.isForce3d) {
+	      this._is3d = true;
+	    }
+
 	    return obj;
 	  };
 	  /*
@@ -10421,7 +10426,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.281.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.282.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, Html: _html2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default, _pool: { Delta: _delta2.default, Deltas: _deltas2.default }
@@ -10486,41 +10491,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	typeof window !== 'undefined' && (window.mojs = mojs);
-
-	// var CUSTOM_PROPS = {
-	//     originY: 50,
-	//     draw (el, props) {
-	//       console.log(props.originY);
-	//       el.style.transformOrigin = `50% ${props.originY}`;
-	//     }
-	//   }
-
-	// var duration = 500,
-	//     shift    = 150;
-
-	// var html = new mojs.Html({
-	//   el: '#js-el',
-	//   y: { [-shift]: 0, easing: 'cubic.in', duration },
-	//   x: { 0: 200 },
-	//   // originY: 100,
-	//   isShowStart: false,
-	//   isShowEnd: false,
-	//   timeline: { delay: 1000 },
-	//   customProperties: CUSTOM_PROPS
-	// }).then({
-	//   originY: 300,
-	//   x: 300,
-	// })
-	// .then({
-	//   originY: 400,
-	//   x: 400,
-	// })
-	// // .then({
-	// //   originY: 400,
-	// //   x: 500,
-	// // });
-
-	// var player = new MojsPlayer({ add: html });
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module)))
 
 /***/ },
