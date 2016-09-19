@@ -63,6 +63,10 @@ class Thenable extends Tweenable {
   */
   _vars () {
     super._vars();
+    // save _master module
+    this._masterModule    = this._o.masterModule;
+    // set isChained flag based on prevChainModule option
+    this._isChained       = !!this._masterModule;
     // we are expect that the _o object
     // have been already extended by defaults
     var initialRecord = h.cloneObj(this._props);

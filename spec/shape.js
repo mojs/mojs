@@ -1859,7 +1859,7 @@
         return expect(shape._getMaxSizeInChain).toHaveBeenCalled();
       });
     });
-    return describe('_refreshBefore method ->', function() {
+    describe('_refreshBefore method ->', function() {
       it('should call `_show` method is `isShowStart`', function() {
         var shape;
         shape = new Shape({
@@ -1893,6 +1893,19 @@
         spyOn(shape, '_setProgress');
         shape._refreshBefore();
         return expect(shape._setProgress).toHaveBeenCalledWith(1, 0);
+      });
+    });
+    return describe('_showByTransform method', function() {
+      return it('should call _drawEl method', function() {
+        var shape;
+        shape = new Shape({
+          easing: function(k) {
+            return 1;
+          }
+        });
+        spyOn(shape, '_drawEl');
+        shape._showByTransform();
+        return expect(shape._drawEl).toHaveBeenCalled();
       });
     });
   });

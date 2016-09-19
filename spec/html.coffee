@@ -32,16 +32,20 @@ describe 'Html ->', ->
       expect( p['z'] ).toBe 0
       expect( p['skewY'] ).toBe 0
 
-      expect( p['rotate'] ).toBe 0
-      expect( p['rotateX'] ).toBe 0
-      expect( p['rotateY'] ).toBe 0
-      expect( p['rotateZ'] ).toBe 0
+      # expect( p['rotate'] ).toBe 0
+      expect( p['angleX'] ).toBe 0
+      expect( p['angleY'] ).toBe 0
+      expect( p['angleZ'] ).toBe 0
       
       expect( p['scale'] ).toBe  1
       expect( p['scaleX'] ).toBe 1
       expect( p['scaleY'] ).toBe 1
       
       expect( p['isRefresh'] ).toBe true
+      expect( p['isShowStart'] ).toBe true
+      expect( p['isShowEnd'] ).toBe true
+      expect( p['isSoftHide'] ).toBe true
+      # expect( p['isForce3d'] ).toBe true
       # defaults end
 
       expect( html._renderProps )
@@ -153,6 +157,17 @@ describe 'Html ->', ->
 
       expect( html._props.el instanceof HTMLElement ).toBe true
       expect( html._props.el ).toBe div
+
+    it 'should save _props.el to el ->', ->
+      div = document.createElement('div')
+      html = new Html
+        el: div
+        borderWidth:  '20px'
+        borderRadius: '40px'
+        x:            { 20: 40 }
+        color:        { 'cyan': 'orange' }
+
+      expect( html.el ).toBe div
 
     it 'should use props if passed ->', ->
       props = {}
@@ -317,9 +332,9 @@ describe 'Html ->', ->
       expect( html._defaults.skewX ).toBe 0
       expect( html._defaults.skewY ).toBe 0
       
-      expect( html._defaults.rotateX ).toBe 0
-      expect( html._defaults.rotateY ).toBe 0
-      expect( html._defaults.rotateZ ).toBe 0
+      expect( html._defaults.angleX ).toBe 0
+      expect( html._defaults.angleY ).toBe 0
+      expect( html._defaults.angleZ ).toBe 0
       
       expect( html._defaults.scale ).toBe  1
       expect( html._defaults.scaleX ).toBe 1
@@ -343,7 +358,7 @@ describe 'Html ->', ->
       html._3dProperties = null
       html._declareDefaults()
 
-      expect( html._3dProperties ).toEqual [ 'rotateX', 'rotateY', 'z' ]
+      expect( html._3dProperties ).toEqual [ 'angleX', 'angleY', 'z' ]
 
     it 'should create _arrayPropertyMap object', ->
 
@@ -366,10 +381,10 @@ describe 'Html ->', ->
       expect( html._numberPropertyMap.scale ).toBe 1
       expect( html._numberPropertyMap.scaleX ).toBe 1
       expect( html._numberPropertyMap.scaleY ).toBe 1
-      expect( html._numberPropertyMap.rotate ).toBe 1
-      expect( html._numberPropertyMap.rotateX ).toBe 1
-      expect( html._numberPropertyMap.rotateY ).toBe 1
-      expect( html._numberPropertyMap.rotateZ ).toBe 1
+      # expect( html._numberPropertyMap.rotate ).toBe 1
+      expect( html._numberPropertyMap.angleX ).toBe 1
+      expect( html._numberPropertyMap.angleY ).toBe 1
+      expect( html._numberPropertyMap.angleZ ).toBe 1
       expect( html._numberPropertyMap.skewX ).toBe 1
       expect( html._numberPropertyMap.skewY ).toBe 1
 
@@ -603,6 +618,39 @@ describe 'Html ->', ->
       expect( html._draw ).not.toHaveBeenCalled()
       expect( html._setStyle ).not.toHaveBeenCalled()
 
+    it 'should not call _hide if isShowStart is true', ->
+      html = new Html
+        el: document.createElement 'div'
+
+      spyOn html, '_hide'
+
+      html._render()
+
+      expect( html._hide ).not.toHaveBeenCalled()
+
+    it 'should call _hide if isShowStart is false', ->
+      html = new Html
+        el: document.createElement 'div'
+        isShowStart: false
+
+      spyOn html, '_hide'
+
+      html._render()
+
+      expect( html._hide ).toHaveBeenCalled()
+
+    it 'should not call _hide if module is chained', ->
+      html = new Html
+        el: document.createElement 'div'
+        prevChainModule: {}
+        isShowStart: false
+
+      spyOn html, '_hide'
+
+      html._render()
+
+      expect( html._hide ).not.toHaveBeenCalled()
+
 
   describe '_arrToString method ->', ->
     it 'should cast array to string', ->
@@ -783,6 +831,18 @@ describe 'Html ->', ->
         expect(html._checkStartValue key).toBe value
         expect(html._checkStartValue key, .5).toBe .5
 
+    it 'should fallback to _customProps if property is there', ->
+      customProperties = {
+        originY: 50
+      }
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10,
+        customProperties: customProperties
+      });
+
+      expect(html._checkStartValue 'originY').toBe customProperties.originY
+
     it 'should fallback DOM defaults otherwise', ->
       html = new Html({
         el: document.createElement 'div'
@@ -804,28 +864,47 @@ describe 'Html ->', ->
 
 
   describe 'custom properties ->', ->
-    draw = (el, props) -> { el }
-    customProps = {
-      originX: {
-        type:     'unit',
-        default:  '50%'
-      },
-      draw: draw
-    }
 
-    it 'should save customProperties object', ->
-      html = new Html({
-        el: document.createElement 'div'
-        borderRadius: 10,
-        customProperties: customProps
-        })
+    describe '_saveCustomProperties method ->', ->
+      draw = (el, props) -> { el }
+      customProps = {
+        originX: {
+          type:     'unit',
+          default:  '50%'
+        },
+        draw: draw
+      }
 
-      expect( html._customProps ).toBe customProps
-      expect( html._customDraw ).toBe draw
-      expect( html._customProps.draw ).not.toBeDefined()
-      expect( html._o.customProperties ).not.toBeDefined()
-      
+      it 'should save customProperties object', ->
+        spyOn(Html.prototype, '_saveCustomProperties').and.callThrough()
 
+        html = new Html({
+          el: document.createElement 'div'
+          borderRadius: 10,
+          customProperties: customProps
+        });
+
+        expect( Html.prototype._saveCustomProperties )
+          .toHaveBeenCalled()
+
+        expect( html._customProps ).toBe customProps
+        expect( html._customDraw ).toBe draw
+        expect( html._customProps.draw ).not.toBeDefined()
+        expect( html._o.customProperties ).not.toBeDefined()
+
+      it 'should call _copyDefaultCustomProps method', ->
+        html = new Html({
+          el: document.createElement 'div'
+          borderRadius: 10,
+          customProperties: customProps
+        });
+
+        spyOn html, '_copyDefaultCustomProps'
+
+        html._saveCustomProperties()
+
+        expect( html._copyDefaultCustomProps ).toHaveBeenCalled()
+        
   describe '_makeTimeline method ->', ->
     it 'should call super', ->
 
@@ -896,20 +975,19 @@ describe 'Html ->', ->
 
       expect( html.timeline ).toBe html.deltas.timeline
 
-    it 'should add callbackOverrides to the timeline', ->
+  describe '_addCallbackOverrides method ->', ->
+    it 'should add callbackOverrides passed object', ->
 
       html = new Html({
         el: document.createElement 'div'
         borderRadius: 10
       })
 
-      html.timeline = null
+      obj = {}
+      html._addCallbackOverrides( obj )
 
-      html._makeTimeline()
-
-      overrides = html.timeline._callbackOverrides
-      expect( overrides.onUpdate ).toBe html._draw
-      expect( overrides.onRefresh ).toBe html._draw
+      expect( obj.callbackOverrides.onUpdate ).toBe html._draw
+      expect( obj.callbackOverrides.onRefresh ).toBe html._draw
 
     it 'should not add onRefresh if isRefresh set to false', ->
 
@@ -919,14 +997,177 @@ describe 'Html ->', ->
         isRefresh:    false
       })
 
-      html.timeline = null
+      obj = {}
+      html._addCallbackOverrides( obj )
 
-      html._makeTimeline()
+      expect( obj.callbackOverrides.onUpdate ).toBe html._draw
+      expect( obj.callbackOverrides.onRefresh ).not.toBeDefined()
 
-      overrides = html.timeline._callbackOverrides
-      expect( overrides.onUpdate ).toBe html._draw
-      expect( overrides.onRefresh ).not.toBeDefined()
 
+    describe 'onStart callback override ->', ->
+      it 'should override this._o.onStart', ->
+        html = new Html el: document.createElement 'div'
+        obj = {}
+        html._addCallbackOverrides( obj )
+        expect(typeof obj.callbackOverrides.onStart).toBe 'function'
+      it 'should call _show if isForward and !_isChained
+          and isShowStart is false', ->
+        html = new Html
+          el: document.createElement 'div'
+          isShowStart: false
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_show'
+        obj.callbackOverrides.onStart true
+        expect(html._show).toHaveBeenCalled()
+      it 'should not call _show if isShowStart is true', ->
+        html = new Html el: document.createElement 'div'
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_show'
+        obj.callbackOverrides.onStart true
+        expect(html._show).not.toHaveBeenCalled()
+      it 'should not call _show if _isChained', ->
+        html = new Html
+          el: document.createElement 'div'
+          masterModule: new Html el: document.createElement 'div'
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_show'
+        obj.callbackOverrides.onStart true
+        expect(html._show).not.toHaveBeenCalled()
+      it 'should call _hide if not isForward and !_isChained
+          and isShowStart is false', ->
+        html = new Html
+          el: document.createElement 'div'
+          isShowStart: false
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_hide'
+        obj.callbackOverrides.onStart false
+        expect(html._hide).toHaveBeenCalled()
+      it 'should not call _hide if not isForward and !_isChained
+          and isShowStart is true', ->
+        html = new Html el: document.createElement 'div'
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_hide'
+        obj.callbackOverrides.onStart false
+        expect(html._hide).not.toHaveBeenCalled()
+      it 'should not call _hide if _isChained', ->
+        html = new Html
+          el: document.createElement 'div'
+          isShowStart: false
+          masterModule: new Html el: document.createElement 'div'
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_hide'
+        obj.callbackOverrides.onStart false
+        expect(html._hide).not.toHaveBeenCalled()
+      it 'should not call _hide if not isForward and isShowStart', ->
+        html = new Html el: document.createElement 'div'
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_hide'
+        obj.callbackOverrides.onStart false
+        expect(html._hide).not.toHaveBeenCalled()
+      
+    describe 'onComplete callback override ->', ->
+      it 'should override this._o.onComplete', ->
+        html = new Html el: document.createElement 'div'
+        obj = {}
+        html._addCallbackOverrides( obj )
+        expect(typeof obj.callbackOverrides.onComplete).toBe 'function'
+      it 'should call _show if !isForward and isShowEnd is false', ->
+        html = new Html
+          el: document.createElement 'div'
+          isShowEnd: false
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_show'
+        obj.callbackOverrides.onComplete false
+        expect(html._show).toHaveBeenCalled()
+      it 'should not call _show if !isForward and isShowEnd is true', ->
+        html = new Html el: document.createElement 'div'
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_show'
+        obj.callbackOverrides.onComplete false
+        expect(html._show).not.toHaveBeenCalled()
+      it 'should call _show if !isForward and _isChained
+          and isShowEnd is false', ->
+        html = new Html
+          el: document.createElement 'div'
+          isShowEnd: false
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_show'
+        obj.callbackOverrides.onComplete false
+        expect(html._show).toHaveBeenCalled()
+      it 'should call _show if !isForward and !_isChained', ->
+        html = new Html({ el: document.createElement('div'), isShowEnd: false})
+          .then radius: 0
+        el = html._modules[1]
+        obj = {}
+        obj2 = {}
+        html._addCallbackOverrides( obj )
+        el._addCallbackOverrides( obj2 )
+        spyOn html, '_show'
+        spyOn el, '_show'
+        obj.callbackOverrides.onComplete false
+        obj2.callbackOverrides.onComplete false
+        expect(el._show).not.toHaveBeenCalled()
+        expect(html._show).toHaveBeenCalled()
+      it 'should call _hide if isForward and !isShowEnd', ->
+        html = new Html
+          el: document.createElement('div'),
+          isShowEnd: false
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_hide'
+        obj.callbackOverrides.onComplete true
+        expect(html._hide).toHaveBeenCalled()
+      it 'should not call _hide if isForward but isShowEnd', ->
+        html = new Html el: document.createElement('div')
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_hide'
+        obj.callbackOverrides.onComplete true
+        expect(html._hide).not.toHaveBeenCalled()
+      it 'should call _hide if isForward and !_isChained', ->
+        html = new Html
+          el: document.createElement('div'),
+          isShowEnd: false
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_hide'
+        obj.callbackOverrides.onComplete true
+        expect(html._hide).toHaveBeenCalled()
+      it 'should call not _hide if isForward and _isChained', ->
+        html = new Html({
+          isShowEnd: false,
+          el: document.createElement('div')
+        }).then({ radius: 0 })
+        # module = html._modules[1]
+        obj = {}
+        el._addCallbackOverrides( obj )
+        spyOn html, '_hide'
+        obj.callbackOverrides.onComplete true
+        expect(html._hide).not.toHaveBeenCalled()
+      it 'should not call _hide if isForward and _isLastInChain but isShowEnd', ->
+        html = new Html el: document.createElement('div')
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_hide'
+        obj.callbackOverrides.onComplete true
+        expect(html._hide).not.toHaveBeenCalled()
+      it 'should not call _hide if isForward but !_isLastInChain and isShowEnd', ->
+        html = new Html({ el: document.createElement('div') }).then radius: 0
+        obj = {}
+        html._addCallbackOverrides( obj )
+        spyOn html, '_hide'
+        obj.callbackOverrides.onComplete true
+        expect(html._hide).not.toHaveBeenCalled()
 
   describe '_resetMergedFlags method ->', ->
     it 'should call super and add props', ->
@@ -945,6 +1186,57 @@ describe 'Html ->', ->
       expect( result.customProperties ).toBe html._customProps
       expect( mojs.Thenable.prototype._resetMergedFlags )
         .toHaveBeenCalledWith opts
+
+  describe '_copyDefaultCustomProps method ->', ->
+    it 'should copy _customProps defaults to _o', ->
+      customProperties = {
+        originY: 1000
+        originX: 500
+      }
+      
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10,
+        customProperties: customProperties
+      })
+
+      html._o.originY = null
+      html._o.originX = null
+
+      html._copyDefaultCustomProps()
+
+      expect( html._o.originY ).toBe customProperties.originY
+      expect( html._o.originX ).toBe customProperties.originX
+
+    it 'should not copy _customProps defaults to _o if set', ->
+      customProperties = {
+        originY: 1000
+        originX: 500
+      }
+      
+      html = new Html({
+        el: document.createElement 'div'
+        borderRadius: 10,
+        originX: 200
+        customProperties: customProperties
+      })
+
+      html._copyDefaultCustomProps()
+
+      expect( html._o.originY ).toBe customProperties.originY
+      expect( html._o.originX ).toBe 200
+
+  describe '_showByTransform method', ->
+    it 'should call _drawTransform method', ->
+      shape = new Html
+        el: document.createElement 'div'
+        easing: (k)-> return 1
+
+      spyOn shape, '_drawTransform'
+      shape._showByTransform()
+
+      expect( shape._drawTransform ).toHaveBeenCalled()
+
 
 
 

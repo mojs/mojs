@@ -16,7 +16,7 @@ const TWEEN_PROPERTIES = obj._defaults;
 /*
   TODO:
 
-    - add isShowStart/isShowEnd options
+    - add isForce3d option
     - change _props to _propsObj for animations
     - current values in deltas
 */
@@ -32,27 +32,31 @@ class Html extends Thenable {
       skewX:      0,
       skewY:      0,
 
-      rotate:     0,
-      rotateX:    0,
-      rotateY:    0,
-      rotateZ:    0,
+      // angle:      0,
+      angleX:     0,
+      angleY:     0,
+      angleZ:     0,
 
       scale:      1,
       scaleX:     1,
       scaleY:     1,
 
-      isRefresh:  true
+      isRefresh:    true,
+      isSoftHide:   true,
+      isShowStart:  true,
+      isShowEnd:    true
     }
     // exclude from automatic drawing
     this._drawExclude  = { el: 1 }
     // properties that cause 3d layer
-    this._3dProperties = [ 'rotateX', 'rotateY', 'z' ];
+    this._3dProperties = [ 'angleX', 'angleY', 'z' ];
     // properties that have array values
     this._arrayPropertyMap = { transformOrigin: 1, backgroundPosition: 1 }
     // properties that have no units
     this._numberPropertyMap = {
       opacity: 1, scale: 1, scaleX: 1, scaleY: 1,
-      rotate: 1, rotateX: 1, rotateY: 1, rotateZ: 1,
+      // angle: 1,
+      angleX: 1, angleY: 1, angleZ: 1,
       skewX: 1, skewY: 1
     }
     // properties that should be prefixed 
@@ -86,15 +90,18 @@ class Html extends Thenable {
     @param {Any} Start property value.
     @returns {Any} Start property value.
   */
-  _checkStartValue (name, value) {
+  _checkStartValue (key, value) {
     if ( value == null ) {
       // return default value for transforms
-      if ( this._defaults[name] != null ) { return this._defaults[name]; }
+      if ( this._defaults[key] != null ) { return this._defaults[key]; }
+      // return default value from _customProps
+      if ( this._customProps[key] != null ) { return this._customProps[key]; }
       // try to get the default DOM value
-      if ( h.defaultStyles[name] != null ) { return h.defaultStyles[name]; }
+      if ( h.defaultStyles[key] != null ) { return h.defaultStyles[key]; }
       // at the end return 0
       return 0;
     }
+
     return value;
   }
   /*
@@ -120,14 +127,14 @@ class Html extends Thenable {
     const p = this._props;
     const string = ( !this._is3d )
       ? `translate(${p.x}, ${p.y})
-          rotate(${p.rotateZ}deg)
+          rotate(${p.angleZ}deg)
           skew(${p.skewX}deg, ${p.skewY}deg)
           scale(${p.scaleX}, ${p.scaleY})`
 
       : `translate3d(${p.x}, ${p.y}, ${p.z})
-          rotateX(${p.rotateX}deg)
-          rotateY(${p.rotateY}deg)
-          rotateZ(${p.rotateZ}deg)
+          rotateX(${p.angleX}deg)
+          rotateY(${p.angleY}deg)
+          rotateZ(${p.angleZ}deg)
           skew(${p.skewX}deg, ${p.skewY}deg)
           scale(${p.scaleX}, ${p.scaleY})`;
 
@@ -142,15 +149,19 @@ class Html extends Thenable {
     // return immediately if not the first in `then` chain
     if ( this._o.prevChainModule ) { return; }
 
+    var p = this._props;
+
     for (var i = 0; i < this._renderProps.length; i++) {
       var name  = this._renderProps[i],
-          value = this._props[name];
+          value = p[name];
 
       value = (typeof value === 'number') ? `${value}px` : value;
       this._setStyle( name, value );
     }
 
     this._draw();
+
+    if (!p.isShowStart) { this._hide(); }
   }
   /*
     Method to set style on el.
@@ -188,7 +199,6 @@ class Html extends Thenable {
     // extend options with defaults
     o = this._addDefaults(o);
 
-
     const keys = Object.keys( o );
     for ( var i = 0; i < keys.length; i ++ ) {
       var key = keys[i];
@@ -207,7 +217,10 @@ class Html extends Thenable {
       // be drawed on each frame
       if ( !h.isDelta( o[key] ) && !TWEEN_PROPERTIES[key] ) {
         this._parseOption( key, o[key] );
-        if ( key === 'el' ) { this._props[key] = h.parseEl( o[key] ); }
+        if ( key === 'el' ) {
+          this._props.el = h.parseEl( o.el );
+          this.el = this._props.el;
+        }
         if ( isInclude && ! isCustom ) { this._renderProps.push( key ); }
       // copy delta prop but not transforms
       // otherwise push it to draw list that gets traversed on every draw
@@ -220,18 +233,24 @@ class Html extends Thenable {
     Method to save customProperties to _customProps.
     @param {Object} Options of the module.
   */
-  _saveCustomProperties ( o ) {
-    this._customProps = o.customProperties;
-    // this._customPropsOrigin = o.customProperties;
+  _saveCustomProperties ( o = {} ) {
+    this._customProps = o.customProperties || {};
+    this._customDraw  = this._customProps.draw;
+    delete this._customProps.draw;
+    delete o.customProperties;
+
+    this._copyDefaultCustomProps();
     
-    if ( this._customProps ) {
-      this._customDraw  = this._customProps.draw;
+    // if ( this._customProps ) {}
+    // this._customProps = this._customProps || {};
+  }
 
-      delete this._customProps.draw;
-      delete o.customProperties;
+  _copyDefaultCustomProps () {
+    for (let key in this._customProps) {
+      if (this._o[key] == null) {
+        this._o[key] = this._customProps[key];
+      }
     }
-
-    this._customProps = this._customProps || {};
   }
   /*
     Method to reset some flags on merged options object.
@@ -348,14 +367,44 @@ class Html extends Thenable {
     if ( this._o.prevChainModule ) { return; }
     // add callbacks overrides
     this._o.timeline = this._o.timeline || {};
-    this._o.timeline.callbackOverrides = {
-      onUpdate:  this._draw,
-      onRefresh: (this._props.isRefresh) ? this._draw : void 0
-    }
-
+    this._addCallbackOverrides( this._o.timeline );
     super._makeTimeline();
     this.timeline.add( this.deltas );
   }
+  /*
+    Method to add callback overrides to passed object object.
+    @param {Object} Object to add overrides on.
+  */
+  _addCallbackOverrides (o) {
+    var it = this;
+    var p = this._props;
+    o.callbackOverrides = {
+      onUpdate:  this._draw,
+      onRefresh: (this._props.isRefresh) ? this._draw : void 0,
+      onStart: function (isFwd) {
+        // don't touch main `el` onStart in chained elements
+        if ( it._isChained ) { return };
+        // show if was hidden at start
+        if ( isFwd && !p.isShowStart) { it._show(); }
+        // hide if should be hidden at start
+        else { if ( !p.isShowStart ) { it._hide(); } }
+      },
+      onComplete: function (isFwd) {
+        // don't touch main `el` if not the last in `then` chain
+        if ( it._isChained ) { return; }
+        if ( isFwd ) { if ( !p.isShowEnd ) { it._hide(); } }
+        else if (!p.isShowEnd) { it._show(); }
+      }
+    }
+  }
+
+  /*
+    Method that gets called on `soft` show of the module,
+    it should restore transform styles of the module.
+    @private
+    @overrides @ Module
+  */
+  _showByTransform () { this._drawTransform(); }
 
   /*
     Method to merge `start` and `end` for a property in then record.
@@ -365,54 +414,54 @@ class Html extends Thenable {
     @param {Any}    End value of the property.
   */
   // !! COVER !!
-  // _mergeThenProperty ( key, startValue, endValue ) {
-  //   // if isnt tween property
-  //   var isBoolean = typeof endValue === 'boolean',
-  //       curve, easing;
+  _mergeThenProperty ( key, startValue, endValue ) {
+    // if isnt tween property
+    var isBoolean = typeof endValue === 'boolean',
+        curve, easing;
         
-  //   if ( !h.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean ) {
+    if ( !h.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean ) {
 
-  //     const TWEEN_PROPS = {};
-  //     if ( h.isObject( endValue ) && endValue.to != null ) {
-  //       for (let key in endValue ) {
-  //         if ( TWEEN_PROPERTIES[key] || key === 'curve' ) {
-  //           TWEEN_PROPS[key] = endValue[key];
-  //           delete endValue[key];
-  //         }
-  //       }
-  //       // curve    = endValue.curve;
-  //       // easing   = endValue.easing;
-  //       endValue = endValue.to;
-  //     }
+      const TWEEN_PROPS = {};
+      if ( h.isObject( endValue ) && endValue.to != null ) {
+        for (let key in endValue ) {
+          if ( TWEEN_PROPERTIES[key] || key === 'curve' ) {
+            TWEEN_PROPS[key] = endValue[key];
+            delete endValue[key];
+          }
+        }
+        // curve    = endValue.curve;
+        // easing   = endValue.easing;
+        endValue = endValue.to;
+      }
 
-  //     // if end value is delta - just save it
-  //     if ( this._isDelta(endValue) ) {
+      // if end value is delta - just save it
+      if ( this._isDelta(endValue) ) {
 
-  //       const TWEEN_PROPS = {};
-  //       for (let key in endValue ) {
-  //         if ( TWEEN_PROPERTIES[key] || key === 'curve' ) {
-  //           TWEEN_PROPS[key] = endValue[key];
-  //           delete endValue[key];
-  //         }
-  //       }
-  //       var result = this._parseDeltaValues(key, endValue);
+        const TWEEN_PROPS = {};
+        for (let key in endValue ) {
+          if ( TWEEN_PROPERTIES[key] || key === 'curve' ) {
+            TWEEN_PROPS[key] = endValue[key];
+            delete endValue[key];
+          }
+        }
+        var result = this._parseDeltaValues(key, endValue);
 
-  //       return { ...result, ...TWEEN_PROPS };
-  //     } else {
-  //       var parsedEndValue = this._parsePreArrayProperty(key, endValue);
-  //       // if end value is not delta - merge with start value
-  //       if ( this._isDelta(startValue) ) {
-  //         // if start value is delta - take the end value
-  //         // as start value of the new delta
-  //         return {
-  //           [ h.getDeltaEnd(startValue) ]: parsedEndValue, ...TWEEN_PROPS
-  //         };
-  //       // if both start and end value are not ∆ - make ∆
-  //       } else { return { [ startValue ]: parsedEndValue, ...TWEEN_PROPS }; }
-  //     }
-  //   // copy the tween values unattended
-  //   } else { return endValue; }
-  // }
+        return { ...result, ...TWEEN_PROPS };
+      } else {
+        var parsedEndValue = this._parsePreArrayProperty(key, endValue);
+        // if end value is not delta - merge with start value
+        if ( this._isDelta(startValue) ) {
+          // if start value is delta - take the end value
+          // as start value of the new delta
+          return {
+            [ h.getDeltaEnd(startValue) ]: parsedEndValue, ...TWEEN_PROPS
+          };
+        // if both start and end value are not ∆ - make ∆
+        } else { return { [ startValue ]: parsedEndValue, ...TWEEN_PROPS }; }
+      }
+    // copy the tween values unattended
+    } else { return endValue; }
+  }
 }
 
 export default Html;

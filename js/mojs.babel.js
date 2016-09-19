@@ -20,7 +20,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.279.0', isDebug: true, helpers: h,
+  revision:   '0.281.0', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, Html, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap, _pool: { Delta, Deltas }
@@ -82,3 +82,40 @@ if ( (typeof module === "object") && (typeof module.exports === "object") ) {
 export default mojs;
 
 (typeof window !== 'undefined') && (window.mojs = mojs);
+
+
+
+// var CUSTOM_PROPS = {
+//     originY: 50,
+//     draw (el, props) {
+//       console.log(props.originY);
+//       el.style.transformOrigin = `50% ${props.originY}`;
+//     }
+//   }
+
+// var duration = 500,
+//     shift    = 150;
+
+// var html = new mojs.Html({
+//   el: '#js-el',
+//   y: { [-shift]: 0, easing: 'cubic.in', duration },
+//   x: { 0: 200 },
+//   // originY: 100,
+//   isShowStart: false,
+//   isShowEnd: false,
+//   timeline: { delay: 1000 },
+//   customProperties: CUSTOM_PROPS
+// }).then({
+//   originY: 300,
+//   x: 300,
+// })
+// .then({
+//   originY: 400,
+//   x: 400,
+// })
+// // .then({
+// //   originY: 400,
+// //   x: 500,
+// // });
+
+// var player = new MojsPlayer({ add: html });

@@ -268,12 +268,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // call _vars method on Thenable
 	    _Tunable.prototype._vars.call(this);
 	    this._lastSet = {};
-	    // save _master module
-	    this._masterModule = this._o.masterModule;
 	    // save previous module in the chain
 	    this._prevChainModule = this._o.prevChainModule;
-	    // set isChained flag based on prevChainModule option
-	    this._isChained = !!this._masterModule;
 	    // should draw on foreign svg canvas
 	    this.isForeign = !!this._o.ctx;
 	    // this._o.isTimelineLess = true;
@@ -727,6 +723,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else {
 	      this._hide();
 	    }
+	  };
+	  /*
+	    Method that gets called on `soft` show of the module,
+	    it should restore transform styles of the module.
+	    @private
+	    @overrides @ Module
+	  */
+
+
+	  Shape.prototype._showByTransform = function _showByTransform() {
+	    this._drawEl();
 	  };
 
 	  return Shape;
@@ -1641,9 +1648,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.__esModule = true;
 
-	var _extends2 = __webpack_require__(27);
+	var _extends4 = __webpack_require__(27);
 
-	var _extends3 = _interopRequireDefault(_extends2);
+	var _extends5 = _interopRequireDefault(_extends4);
 
 	var _classCallCheck2 = __webpack_require__(23);
 
@@ -1691,7 +1698,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/*
 	  TODO:
 
-	    - add isShowStart/isShowEnd options
+	    - add isForce3d option
 	    - change _props to _propsObj for animations
 	    - current values in deltas
 	*/
@@ -1713,27 +1720,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	      skewX: 0,
 	      skewY: 0,
 
-	      rotate: 0,
-	      rotateX: 0,
-	      rotateY: 0,
-	      rotateZ: 0,
+	      // angle:      0,
+	      angleX: 0,
+	      angleY: 0,
+	      angleZ: 0,
 
 	      scale: 1,
 	      scaleX: 1,
 	      scaleY: 1,
 
-	      isRefresh: true
+	      isRefresh: true,
+	      isSoftHide: true,
+	      isShowStart: true,
+	      isShowEnd: true
 	    };
 	    // exclude from automatic drawing
 	    this._drawExclude = { el: 1 };
 	    // properties that cause 3d layer
-	    this._3dProperties = ['rotateX', 'rotateY', 'z'];
+	    this._3dProperties = ['angleX', 'angleY', 'z'];
 	    // properties that have array values
 	    this._arrayPropertyMap = { transformOrigin: 1, backgroundPosition: 1 };
 	    // properties that have no units
 	    this._numberPropertyMap = {
 	      opacity: 1, scale: 1, scaleX: 1, scaleY: 1,
-	      rotate: 1, rotateX: 1, rotateY: 1, rotateZ: 1,
+	      // angle: 1,
+	      angleX: 1, angleY: 1, angleZ: 1,
 	      skewX: 1, skewY: 1
 	    };
 	    // properties that should be prefixed
@@ -1771,19 +1782,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	  */
 
 
-	  Html.prototype._checkStartValue = function _checkStartValue(name, value) {
+	  Html.prototype._checkStartValue = function _checkStartValue(key, value) {
 	    if (value == null) {
 	      // return default value for transforms
-	      if (this._defaults[name] != null) {
-	        return this._defaults[name];
+	      if (this._defaults[key] != null) {
+	        return this._defaults[key];
+	      }
+	      // return default value from _customProps
+	      if (this._customProps[key] != null) {
+	        return this._customProps[key];
 	      }
 	      // try to get the default DOM value
-	      if (h.defaultStyles[name] != null) {
-	        return h.defaultStyles[name];
+	      if (h.defaultStyles[key] != null) {
+	        return h.defaultStyles[key];
 	      }
 	      // at the end return 0
 	      return 0;
 	    }
+
 	    return value;
 	  };
 	  /*
@@ -1811,7 +1827,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  Html.prototype._drawTransform = function _drawTransform() {
 	    var p = this._props;
-	    var string = !this._is3d ? 'translate(' + p.x + ', ' + p.y + ')\n          rotate(' + p.rotateZ + 'deg)\n          skew(' + p.skewX + 'deg, ' + p.skewY + 'deg)\n          scale(' + p.scaleX + ', ' + p.scaleY + ')' : 'translate3d(' + p.x + ', ' + p.y + ', ' + p.z + ')\n          rotateX(' + p.rotateX + 'deg)\n          rotateY(' + p.rotateY + 'deg)\n          rotateZ(' + p.rotateZ + 'deg)\n          skew(' + p.skewX + 'deg, ' + p.skewY + 'deg)\n          scale(' + p.scaleX + ', ' + p.scaleY + ')';
+	    var string = !this._is3d ? 'translate(' + p.x + ', ' + p.y + ')\n          rotate(' + p.angleZ + 'deg)\n          skew(' + p.skewX + 'deg, ' + p.skewY + 'deg)\n          scale(' + p.scaleX + ', ' + p.scaleY + ')' : 'translate3d(' + p.x + ', ' + p.y + ', ' + p.z + ')\n          rotateX(' + p.angleX + 'deg)\n          rotateY(' + p.angleY + 'deg)\n          rotateZ(' + p.angleZ + 'deg)\n          skew(' + p.skewX + 'deg, ' + p.skewY + 'deg)\n          scale(' + p.scaleX + ', ' + p.scaleY + ')';
 
 	    this._setStyle('transform', string);
 	  };
@@ -1828,15 +1844,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 
+	    var p = this._props;
+
 	    for (var i = 0; i < this._renderProps.length; i++) {
 	      var name = this._renderProps[i],
-	          value = this._props[name];
+	          value = p[name];
 
 	      value = typeof value === 'number' ? value + 'px' : value;
 	      this._setStyle(name, value);
 	    }
 
 	    this._draw();
+
+	    if (!p.isShowStart) {
+	      this._hide();
+	    }
 	  };
 	  /*
 	    Method to set style on el.
@@ -1874,7 +1896,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // save custom properties if present
 	    this._saveCustomProperties(this._o);
 	    // copy the options
-	    var o = (0, _extends3.default)({}, this._o);
+	    var o = (0, _extends5.default)({}, this._o);
 	    // extend options with defaults
 	    o = this._addDefaults(o);
 
@@ -1896,7 +1918,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!h.isDelta(o[key]) && !TWEEN_PROPERTIES[key]) {
 	        this._parseOption(key, o[key]);
 	        if (key === 'el') {
-	          this._props[key] = h.parseEl(o[key]);
+	          this._props.el = h.parseEl(o.el);
+	          this.el = this._props.el;
 	        }
 	        if (isInclude && !isCustom) {
 	          this._renderProps.push(key);
@@ -1916,18 +1939,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	  */
 
 
-	  Html.prototype._saveCustomProperties = function _saveCustomProperties(o) {
-	    this._customProps = o.customProperties;
-	    // this._customPropsOrigin = o.customProperties;
+	  Html.prototype._saveCustomProperties = function _saveCustomProperties() {
+	    var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-	    if (this._customProps) {
-	      this._customDraw = this._customProps.draw;
+	    this._customProps = o.customProperties || {};
+	    this._customDraw = this._customProps.draw;
+	    delete this._customProps.draw;
+	    delete o.customProperties;
 
-	      delete this._customProps.draw;
-	      delete o.customProperties;
+	    this._copyDefaultCustomProps();
+
+	    // if ( this._customProps ) {}
+	    // this._customProps = this._customProps || {};
+	  };
+
+	  Html.prototype._copyDefaultCustomProps = function _copyDefaultCustomProps() {
+	    for (var key in this._customProps) {
+	      if (this._o[key] == null) {
+	        this._o[key] = this._customProps[key];
+	      }
 	    }
-
-	    this._customProps = this._customProps || {};
 	  };
 	  /*
 	    Method to reset some flags on merged options object.
@@ -2065,13 +2096,64 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    // add callbacks overrides
 	    this._o.timeline = this._o.timeline || {};
-	    this._o.timeline.callbackOverrides = {
-	      onUpdate: this._draw,
-	      onRefresh: this._props.isRefresh ? this._draw : void 0
-	    };
-
+	    this._addCallbackOverrides(this._o.timeline);
 	    _Thenable.prototype._makeTimeline.call(this);
 	    this.timeline.add(this.deltas);
+	  };
+	  /*
+	    Method to add callback overrides to passed object object.
+	    @param {Object} Object to add overrides on.
+	  */
+
+
+	  Html.prototype._addCallbackOverrides = function _addCallbackOverrides(o) {
+	    var it = this;
+	    var p = this._props;
+	    o.callbackOverrides = {
+	      onUpdate: this._draw,
+	      onRefresh: this._props.isRefresh ? this._draw : void 0,
+	      onStart: function onStart(isFwd) {
+	        // don't touch main `el` onStart in chained elements
+	        if (it._isChained) {
+	          return;
+	        };
+	        // show if was hidden at start
+	        if (isFwd && !p.isShowStart) {
+	          it._show();
+	        }
+	        // hide if should be hidden at start
+	        else {
+	            if (!p.isShowStart) {
+	              it._hide();
+	            }
+	          }
+	      },
+	      onComplete: function onComplete(isFwd) {
+	        // don't touch main `el` if not the last in `then` chain
+	        if (it._isChained) {
+	          return;
+	        }
+	        if (isFwd) {
+	          if (!p.isShowEnd) {
+	            it._hide();
+	          }
+	        } else if (!p.isShowEnd) {
+	          it._show();
+	        }
+	      }
+	    };
+	  };
+
+	  /*
+	    Method that gets called on `soft` show of the module,
+	    it should restore transform styles of the module.
+	    @private
+	    @overrides @ Module
+	  */
+
+
+	  Html.prototype._showByTransform = function _showByTransform() {
+	    this._drawTransform();
 	  };
 
 	  /*
@@ -2082,55 +2164,63 @@ return /******/ (function(modules) { // webpackBootstrap
 	    @param {Any}    End value of the property.
 	  */
 	  // !! COVER !!
-	  // _mergeThenProperty ( key, startValue, endValue ) {
-	  //   // if isnt tween property
-	  //   var isBoolean = typeof endValue === 'boolean',
-	  //       curve, easing;
 
-	  //   if ( !h.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean ) {
 
-	  //     const TWEEN_PROPS = {};
-	  //     if ( h.isObject( endValue ) && endValue.to != null ) {
-	  //       for (let key in endValue ) {
-	  //         if ( TWEEN_PROPERTIES[key] || key === 'curve' ) {
-	  //           TWEEN_PROPS[key] = endValue[key];
-	  //           delete endValue[key];
-	  //         }
-	  //       }
-	  //       // curve    = endValue.curve;
-	  //       // easing   = endValue.easing;
-	  //       endValue = endValue.to;
-	  //     }
+	  Html.prototype._mergeThenProperty = function _mergeThenProperty(key, startValue, endValue) {
+	    // if isnt tween property
+	    var isBoolean = typeof endValue === 'boolean',
+	        curve,
+	        easing;
 
-	  //     // if end value is delta - just save it
-	  //     if ( this._isDelta(endValue) ) {
+	    if (!h.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean) {
 
-	  //       const TWEEN_PROPS = {};
-	  //       for (let key in endValue ) {
-	  //         if ( TWEEN_PROPERTIES[key] || key === 'curve' ) {
-	  //           TWEEN_PROPS[key] = endValue[key];
-	  //           delete endValue[key];
-	  //         }
-	  //       }
-	  //       var result = this._parseDeltaValues(key, endValue);
+	      var TWEEN_PROPS = {};
+	      if (h.isObject(endValue) && endValue.to != null) {
+	        for (var _key in endValue) {
+	          if (TWEEN_PROPERTIES[_key] || _key === 'curve') {
+	            TWEEN_PROPS[_key] = endValue[_key];
+	            delete endValue[_key];
+	          }
+	        }
+	        // curve    = endValue.curve;
+	        // easing   = endValue.easing;
+	        endValue = endValue.to;
+	      }
 
-	  //       return { ...result, ...TWEEN_PROPS };
-	  //     } else {
-	  //       var parsedEndValue = this._parsePreArrayProperty(key, endValue);
-	  //       // if end value is not delta - merge with start value
-	  //       if ( this._isDelta(startValue) ) {
-	  //         // if start value is delta - take the end value
-	  //         // as start value of the new delta
-	  //         return {
-	  //           [ h.getDeltaEnd(startValue) ]: parsedEndValue, ...TWEEN_PROPS
-	  //         };
-	  //       // if both start and end value are not ∆ - make ∆
-	  //       } else { return { [ startValue ]: parsedEndValue, ...TWEEN_PROPS }; }
-	  //     }
-	  //   // copy the tween values unattended
-	  //   } else { return endValue; }
-	  // }
+	      // if end value is delta - just save it
+	      if (this._isDelta(endValue)) {
 
+	        var _TWEEN_PROPS = {};
+	        for (var _key2 in endValue) {
+	          if (TWEEN_PROPERTIES[_key2] || _key2 === 'curve') {
+	            _TWEEN_PROPS[_key2] = endValue[_key2];
+	            delete endValue[_key2];
+	          }
+	        }
+	        var result = this._parseDeltaValues(key, endValue);
+
+	        return (0, _extends5.default)({}, result, _TWEEN_PROPS);
+	      } else {
+	        var parsedEndValue = this._parsePreArrayProperty(key, endValue);
+	        // if end value is not delta - merge with start value
+	        if (this._isDelta(startValue)) {
+	          var _extends2;
+
+	          // if start value is delta - take the end value
+	          // as start value of the new delta
+	          return (0, _extends5.default)((_extends2 = {}, _extends2[h.getDeltaEnd(startValue)] = parsedEndValue, _extends2), TWEEN_PROPS);
+	          // if both start and end value are not ∆ - make ∆
+	        } else {
+	            var _extends3;
+
+	            return (0, _extends5.default)((_extends3 = {}, _extends3[startValue] = parsedEndValue, _extends3), TWEEN_PROPS);
+	          }
+	      }
+	      // copy the tween values unattended
+	    } else {
+	        return endValue;
+	      }
+	  };
 
 	  return Html;
 	}(_thenable2.default);
@@ -4761,6 +4851,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  Thenable.prototype._vars = function _vars() {
 	    _Tweenable.prototype._vars.call(this);
+	    // save _master module
+	    this._masterModule = this._o.masterModule;
+	    // set isChained flag based on prevChainModule option
+	    this._isChained = !!this._masterModule;
 	    // we are expect that the _o object
 	    // have been already extended by defaults
 	    var initialRecord = _h2.default.cloneObj(this._props);
@@ -6178,8 +6272,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (p.isSoftHide) {
-	      this.el.style.opacity = p.opacity;
-	      _h2.default.setPrefixedStyle(this.el, 'transform', this._fillTransform());
+	      // this.el.style.opacity = p.opacity;
+	      this._showByTransform();
 	    } else {
 	      this.el.style.display = 'block';
 	    }
@@ -6198,7 +6292,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (this._props.isSoftHide) {
-	      this.el.style.opacity = 0;
+	      // this.el.style.opacity = 0;
 	      _h2.default.setPrefixedStyle(this.el, 'transform', 'scale(0)');
 	    } else {
 	      this.el.style.display = 'none';
@@ -6206,6 +6300,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this._isShown = false;
 	  };
+	  /*
+	    Method to show element by applying transform back to normal.
+	    @private
+	  */
+
+
+	  Module.prototype._showByTransform = function _showByTransform() {};
 	  /*
 	    Method to parse option string.
 	    Searches for stagger and rand values and parses them.
@@ -10320,7 +10421,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.279.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.281.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, Html: _html2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default, _pool: { Delta: _delta2.default, Deltas: _deltas2.default }
@@ -10385,6 +10486,41 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	typeof window !== 'undefined' && (window.mojs = mojs);
+
+	// var CUSTOM_PROPS = {
+	//     originY: 50,
+	//     draw (el, props) {
+	//       console.log(props.originY);
+	//       el.style.transformOrigin = `50% ${props.originY}`;
+	//     }
+	//   }
+
+	// var duration = 500,
+	//     shift    = 150;
+
+	// var html = new mojs.Html({
+	//   el: '#js-el',
+	//   y: { [-shift]: 0, easing: 'cubic.in', duration },
+	//   x: { 0: 200 },
+	//   // originY: 100,
+	//   isShowStart: false,
+	//   isShowEnd: false,
+	//   timeline: { delay: 1000 },
+	//   customProperties: CUSTOM_PROPS
+	// }).then({
+	//   originY: 300,
+	//   x: 300,
+	// })
+	// .then({
+	//   originY: 400,
+	//   x: 400,
+	// })
+	// // .then({
+	// //   originY: 400,
+	// //   x: 500,
+	// // });
+
+	// var player = new MojsPlayer({ add: html });
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module)))
 
 /***/ },

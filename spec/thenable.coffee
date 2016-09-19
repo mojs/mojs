@@ -57,6 +57,23 @@ describe 'thenable ->', ->
       expect(Object.keys(th._nonMergeProps).length).toBe 1
       expect(th._nonMergeProps['shape']).toBe 1
 
+    it 'should save passed _o.masterModule to _masterModule', ->
+      obj = {}
+      thenable = new Thenable masterModule: obj
+      thenable._masterModule = null
+      thenable._vars()
+      expect(thenable._masterModule).toBe obj
+    it 'should set `_isChained` based on `prevChainModule` option', ->
+      thenable0 = new Thenable
+
+      thenable = new Thenable
+        prevChainModule: thenable0
+        masterModule:    thenable0
+
+      thenable._isChained = null
+      thenable._vars()
+      expect(thenable._isChained).toBe true
+
   Byte = Thenable
   describe '_mergeThenOptions method ->', ->
     it 'should merge 2 objects', ->
