@@ -193,6 +193,7 @@
           delay: '200'
         };
         s = new Stagger(options);
+        s._init(options, mojs.MotionPath);
         return expect(s._modules[0].o.isRunLess).toBe(true);
       });
       return it('should return self', function() {
@@ -215,6 +216,160 @@
           timeline: timeline
         });
         return expect(s.timeline._o).toBe(timeline);
+      });
+    });
+    describe('then method ->', function() {
+      it('should call _getOptionByIndex for each module', function() {
+        var StaggeredShape, options, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        spyOn(s, '_getOptionByIndex');
+        options = {
+          duration: 400
+        };
+        s.then(options);
+        expect(s._getOptionByIndex.calls.count()).toBe(5);
+        expect(s._getOptionByIndex).toHaveBeenCalledWith(0, options);
+        expect(s._getOptionByIndex).toHaveBeenCalledWith(1, options);
+        expect(s._getOptionByIndex).toHaveBeenCalledWith(2, options);
+        expect(s._getOptionByIndex).toHaveBeenCalledWith(3, options);
+        return expect(s._getOptionByIndex).toHaveBeenCalledWith(4, options);
+      });
+      it('should call _getOptionByIndex for each module', function() {
+        var StaggeredShape, options, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        spyOn(s._modules[0], 'then');
+        spyOn(s._modules[1], 'then');
+        spyOn(s._modules[2], 'then');
+        spyOn(s._modules[3], 'then');
+        spyOn(s._modules[4], 'then');
+        options = {
+          duration: 400,
+          fill: ['cyan', 'orange', 'yellow', 'blue'],
+          delay: 'stagger(200)'
+        };
+        s.then(options);
+        expect(s._modules[0].then).toHaveBeenCalledWith(s._getOptionByIndex(0, options));
+        expect(s._modules[1].then).toHaveBeenCalledWith(s._getOptionByIndex(1, options));
+        expect(s._modules[2].then).toHaveBeenCalledWith(s._getOptionByIndex(2, options));
+        expect(s._modules[3].then).toHaveBeenCalledWith(s._getOptionByIndex(3, options));
+        return expect(s._modules[4].then).toHaveBeenCalledWith(s._getOptionByIndex(4, options));
+      });
+      it('should not call _getOptionByIndex if no options passed', function() {
+        var StaggeredShape, options, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        spyOn(s, '_getOptionByIndex');
+        options = void 0;
+        s.then(options);
+        expect(s._getOptionByIndex.calls.count()).toBe(0);
+        expect(s._getOptionByIndex).not.toHaveBeenCalledWith(0, options);
+        expect(s._getOptionByIndex).not.toHaveBeenCalledWith(1, options);
+        expect(s._getOptionByIndex).not.toHaveBeenCalledWith(2, options);
+        expect(s._getOptionByIndex).not.toHaveBeenCalledWith(3, options);
+        return expect(s._getOptionByIndex).not.toHaveBeenCalledWith(4, options);
+      });
+      it('should return this', function() {
+        var StaggeredShape, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        return expect(s.then({
+          delay: 200
+        })).toBe(s);
+      });
+      return it('should return this if no options passed', function() {
+        var StaggeredShape, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        return expect(s.then()).toBe(s);
+      });
+    });
+    describe('tune method ->', function() {
+      it('should call _getOptionByIndex for each module', function() {
+        var StaggeredShape, options, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        spyOn(s, '_getOptionByIndex');
+        options = {
+          duration: 400
+        };
+        s.tune(options);
+        expect(s._getOptionByIndex.calls.count()).toBe(5);
+        expect(s._getOptionByIndex).toHaveBeenCalledWith(0, options);
+        expect(s._getOptionByIndex).toHaveBeenCalledWith(1, options);
+        expect(s._getOptionByIndex).toHaveBeenCalledWith(2, options);
+        expect(s._getOptionByIndex).toHaveBeenCalledWith(3, options);
+        return expect(s._getOptionByIndex).toHaveBeenCalledWith(4, options);
+      });
+      it('should call _getOptionByIndex for each module', function() {
+        var StaggeredShape, options, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        spyOn(s._modules[0], 'tune');
+        spyOn(s._modules[1], 'tune');
+        spyOn(s._modules[2], 'tune');
+        spyOn(s._modules[3], 'tune');
+        spyOn(s._modules[4], 'tune');
+        options = {
+          duration: 400,
+          fill: ['cyan', 'orange', 'yellow', 'blue'],
+          delay: 'stagger(200)'
+        };
+        s.tune(options);
+        expect(s._modules[0].tune).toHaveBeenCalledWith(s._getOptionByIndex(0, options));
+        expect(s._modules[1].tune).toHaveBeenCalledWith(s._getOptionByIndex(1, options));
+        expect(s._modules[2].tune).toHaveBeenCalledWith(s._getOptionByIndex(2, options));
+        expect(s._modules[3].tune).toHaveBeenCalledWith(s._getOptionByIndex(3, options));
+        return expect(s._modules[4].tune).toHaveBeenCalledWith(s._getOptionByIndex(4, options));
+      });
+      it('should not call _getOptionByIndex if no options passed', function() {
+        var StaggeredShape, options, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        spyOn(s, '_getOptionByIndex');
+        options = void 0;
+        s.tune(options);
+        expect(s._getOptionByIndex.calls.count()).toBe(0);
+        expect(s._getOptionByIndex).not.toHaveBeenCalledWith(0, options);
+        expect(s._getOptionByIndex).not.toHaveBeenCalledWith(1, options);
+        expect(s._getOptionByIndex).not.toHaveBeenCalledWith(2, options);
+        expect(s._getOptionByIndex).not.toHaveBeenCalledWith(3, options);
+        return expect(s._getOptionByIndex).not.toHaveBeenCalledWith(4, options);
+      });
+      it('should return this', function() {
+        var StaggeredShape, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        return expect(s.tune({
+          delay: 200
+        })).toBe(s);
+      });
+      return it('should return this if no options passed', function() {
+        var StaggeredShape, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        return expect(s.tune()).toBe(s);
       });
     });
     describe('quantifier option ->', function() {
