@@ -364,7 +364,6 @@ class Html extends Thenable {
   }
   /* @overrides @ Tweenable */
   _makeTween () {}
-  // _makeTimeline () {}
   _makeTimeline () {
     // do not create timeline if module if chained
     if ( this._o.prevChainModule ) { return; }
@@ -468,77 +467,3 @@ class Html extends Thenable {
 }
 
 export default Html;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-  Method to replace current values (=) in delta object.
-  @private
-  @param {String} Property name.
-  @param {Object} Delta to replace in.
-  @returns {Object} Delta with replaced values.
-*/
-// _replaceCurrent(name, delta) {
-//   const computed = h.computedStyle( this._props.el ),
-//         newDelta = {};
-
-//   const keys = Object.keys(delta);
-//   for (var i = 0; i < keys.length; i++) {
-//     const key   = keys[i],
-//           value = delta[key];
-
-//     if ( key === '=' ) {
-//       newDelta[computed[name]] = delta[key];
-//     }
-//   }
-
-//   return newDelta;
-// }
-
-
-
-// /*
-  //   Method to rename properties from camelCase to spinal-case.
-  //   @private
-  //   @param {Object} Options to rename.
-  //   @returns {Object} Newely created object.
-  // */
-  // _renameProperties (opts) {
-  //   const keys = Object.keys(opts);
-  //   const newOpts = {};
-
-  //   for (var i = 0; i < keys.length; i++ ) {
-  //     var key = keys[i];
-  //     // rename property only if it's not a tween property
-  //     if ( !TWEEN_PROPERTIES[key] && ( this._defaults[key] == null ) ) {
-  //       newOpts[ this._renameProperty(key) ] = opts[key];
-  //     // otherwise just copy it
-  //     } else { newOpts[ key ] = opts[key]; }
-  //   }
-
-  //   return newOpts;
-  // }
-  // /*
-  //   Method to change string from camelCase to spinal-case.
-  //   @private
-  //   @param {String} String to change.
-  //   @returns {String} Changed string.
-  // */
-  // _renameProperty (str) {
-  //   return str.replace(/(?!^)([A-Z])/g, ' $1')
-  //           .replace(/[_\s]+(?=[a-zA-Z])/g, '-').toLowerCase();
-  // }
