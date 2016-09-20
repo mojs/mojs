@@ -276,6 +276,18 @@
         expect(s._getOptionByIndex).not.toHaveBeenCalledWith(3, options);
         return expect(s._getOptionByIndex).not.toHaveBeenCalledWith(4, options);
       });
+      it('should call _recalcTotalDuration on timeline', function() {
+        var StaggeredShape, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        spyOn(s.timeline, '_recalcTotalDuration');
+        expect(s.then({
+          delay: 200
+        })).toBe(s);
+        return expect(s.timeline._recalcTotalDuration).toHaveBeenCalled();
+      });
       it('should return this', function() {
         var StaggeredShape, s;
         StaggeredShape = mojs.stagger(mojs.Shape);
@@ -352,6 +364,18 @@
         expect(s._getOptionByIndex).not.toHaveBeenCalledWith(2, options);
         expect(s._getOptionByIndex).not.toHaveBeenCalledWith(3, options);
         return expect(s._getOptionByIndex).not.toHaveBeenCalledWith(4, options);
+      });
+      it('should call _recalcTotalDuration on timeline', function() {
+        var StaggeredShape, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        spyOn(s.timeline, '_recalcTotalDuration');
+        expect(s.tune({
+          delay: 200
+        })).toBe(s);
+        return expect(s.timeline._recalcTotalDuration).toHaveBeenCalled();
       });
       it('should return this', function() {
         var StaggeredShape, s;
