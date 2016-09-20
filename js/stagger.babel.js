@@ -8,6 +8,34 @@ class Stagger extends Tunable {
     return this._init(options, Module);
   }
   /*
+    Method to create then chain on child modules.
+    @param {Object} Then options.
+    @return {Object} this.
+  */
+  then (o) {
+    if (o == null) { return this; }
+    for (var i = 0; i < this._modules.length; i++ ) {
+      // get child module's option and pass to the child `then`
+      this._modules[i].then( this._getOptionByIndex(i, o) )
+    }
+    return this;
+  }
+  /*
+    Method to tune child modules.
+    @param {Object} Tune options.
+    @return {Object} this.
+  */
+  tune (o) {
+    if (o == null) { return this; }
+    for (var i = 0; i < this._modules.length; i++ ) {
+      // get child module's option and pass to the child `then`
+      this._modules[i].tune( this._getOptionByIndex(i, o) )
+    }
+    return this;
+  }
+
+
+  /*
     Method to get an option by modulo and name.
     @param {String} Name of the property to get.
     @param {Number} Index for the modulo calculation.
@@ -65,7 +93,7 @@ class Stagger extends Tunable {
   _init (options, Module) {
   	var count = this._getChildQuantity(options.quantifier || 'el', options);
   	this._createTimeline(options); this._modules = [];
-  	for (var i = 0; i < count; i ++) {
+  	for (var i = 0; i < count; i++) {
   	  // get child module's option
       var option = this._getOptionByIndex(i, options); option.isRunLess = true;
       // create child module
