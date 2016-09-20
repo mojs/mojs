@@ -193,6 +193,13 @@ describe 'stagger ->', ->
       expect(s._getOptionByIndex).not.toHaveBeenCalledWith 3, options
       expect(s._getOptionByIndex).not.toHaveBeenCalledWith 4, options
 
+    it 'should call _recalcTotalDuration on timeline', ->
+      StaggeredShape = mojs.stagger mojs.Shape
+      s = new StaggeredShape quantifier: 5
+      spyOn s.timeline, '_recalcTotalDuration'
+      expect(s.then({ delay: 200 })).toBe s
+      expect(s.timeline._recalcTotalDuration).toHaveBeenCalled()
+
     it 'should return this', ->
       StaggeredShape = mojs.stagger mojs.Shape
       s = new StaggeredShape quantifier: 5
@@ -267,6 +274,13 @@ describe 'stagger ->', ->
       expect(s._getOptionByIndex).not.toHaveBeenCalledWith 3, options
       expect(s._getOptionByIndex).not.toHaveBeenCalledWith 4, options
 
+    it 'should call _recalcTotalDuration on timeline', ->
+      StaggeredShape = mojs.stagger mojs.Shape
+      s = new StaggeredShape quantifier: 5
+      spyOn s.timeline, '_recalcTotalDuration'
+      expect(s.tune({ delay: 200 })).toBe s
+      expect(s.timeline._recalcTotalDuration).toHaveBeenCalled()
+
     it 'should return this', ->
       StaggeredShape = mojs.stagger mojs.Shape
       s = new StaggeredShape quantifier: 5
@@ -276,7 +290,6 @@ describe 'stagger ->', ->
       StaggeredShape = mojs.stagger mojs.Shape
       s = new StaggeredShape quantifier: 5
       expect(s.tune()).toBe s
-
 
   # nope
   # describe 'stagger callbacks ->', ->

@@ -18,6 +18,7 @@ class Stagger extends Tunable {
       // get child module's option and pass to the child `then`
       this._modules[i].then( this._getOptionByIndex(i, o) )
     }
+    this.timeline._recalcTotalDuration();
     return this;
   }
   /*
@@ -31,6 +32,7 @@ class Stagger extends Tunable {
       // get child module's option and pass to the child `then`
       this._modules[i].tune( this._getOptionByIndex(i, o) )
     }
+    this.timeline._recalcTotalDuration();
     return this;
   }
 

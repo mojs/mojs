@@ -2293,6 +2293,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // get child module's option and pass to the child `then`
 	      this._modules[i].then(this._getOptionByIndex(i, o));
 	    }
+	    this.timeline._recalcTotalDuration();
 	    return this;
 	  };
 	  /*
@@ -2310,6 +2311,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // get child module's option and pass to the child `then`
 	      this._modules[i].tune(this._getOptionByIndex(i, o));
 	    }
+	    this.timeline._recalcTotalDuration();
 	    return this;
 	  };
 
@@ -10412,7 +10414,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.284.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.284.1', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, Html: _html2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default, _pool: { Delta: _delta2.default, Deltas: _deltas2.default }
