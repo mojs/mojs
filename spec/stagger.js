@@ -4,6 +4,13 @@
   Stagger = mojs.stagger(mojs.MotionPath);
 
   describe('stagger ->', function() {
+    it('should extend Tunable', function() {
+      var stagger;
+      stagger = new Stagger({
+        bit: ['foo', 'bar', 'baz']
+      });
+      return expect(stagger instanceof mojs.Tunable).toBe(true);
+    });
     describe('_getOptionByMod method ->', function() {
       it('should get an option by modulo of i', function() {
         var options, s;
@@ -164,7 +171,7 @@
         return expect(s.timeline instanceof mojs.Timeline).toBe(true);
       });
     });
-    describe('init ->', function() {
+    describe('_init method ->', function() {
       it('should make stagger', function() {
         var div, options, s;
         div = document.createElement('div');
@@ -174,7 +181,7 @@
           delay: '200'
         };
         s = new Stagger(options);
-        s.init(options, mojs.MotionPath);
+        s._init(options, mojs.MotionPath);
         return expect(s.timeline._timelines.length).toBe(2);
       });
       it('should pass isRunLess = true', function() {
@@ -186,8 +193,7 @@
           delay: '200'
         };
         s = new Stagger(options);
-        s.init(options, mojs.MotionPath);
-        return expect(s.childModules[0].o.isRunLess).toBe(true);
+        return expect(s._modules[0].o.isRunLess).toBe(true);
       });
       return it('should return self', function() {
         var div, options, s;
@@ -198,69 +204,20 @@
           delay: '200'
         };
         s = new Stagger(options);
-        return expect(s.init(options, mojs.MotionPath)).toBe(s);
+        return expect(s._init(options, mojs.MotionPath)).toBe(s);
       });
     });
-    describe('run method ->', function() {
-      return it('should run timeline', function() {
-        var div, options, s;
-        div = document.createElement('div');
-        options = {
-          el: [div, div],
-          path: 'M0,0 L100,100',
-          delay: '200'
-        };
-        s = new Stagger(options);
-        s.init(options, mojs.MotionPath);
-        spyOn(s.timeline, 'play');
-        s.run();
-        return expect(s.timeline.play).toHaveBeenCalled();
+    describe('timeline options', function() {
+      return it('should pass timeline options to main timeline', function() {
+        var s, timeline;
+        timeline = {};
+        s = new Stagger({
+          timeline: timeline
+        });
+        return expect(s.timeline._o).toBe(timeline);
       });
     });
-    describe('stagger callbacks ->', function() {
-      it('should pass the onStaggerStart callback to timeline', function() {
-        var fun, s;
-        fun = function() {};
-        s = new Stagger({
-          onStaggerStart: fun
-        });
-        return expect(s.timeline._o.onStart).toBe(fun);
-      });
-      it('should pass the onStaggerUpdate callback to timeline', function() {
-        var fun, s;
-        fun = function() {};
-        s = new Stagger({
-          onStaggerUpdate: fun
-        });
-        return expect(s.timeline._o.onUpdate).toBe(fun);
-      });
-      it('should pass the onStaggerComplete callback to timeline', function() {
-        var fun, s;
-        fun = function() {};
-        s = new Stagger({
-          onStaggerComplete: fun
-        });
-        return expect(s.timeline._o.onComplete).toBe(fun);
-      });
-      return it('should pass the onStaggerReverseComplete callback to timeline', function() {
-        var fun, s;
-        fun = function() {};
-        s = new Stagger({
-          onStaggerReverseComplete: fun
-        });
-        return expect(s.timeline._o.onReverseComplete).toBe(fun);
-      });
-    });
-    describe('moduleDelay option ->', function() {
-      return it('should pass the moduleDelay option to timeline', function() {
-        var s;
-        s = new Stagger({
-          moduleDelay: 200
-        });
-        return expect(s.timeline._o.delay).toBe(200);
-      });
-    });
-    return describe('quantifier option ->', function() {
+    describe('quantifier option ->', function() {
       return it('should be passed to the _getChildQuantity method', function() {
         var s;
         s = new Stagger({
@@ -269,9 +226,19 @@
           el: document.createElement('div'),
           path: 'M0,0 L100,100'
         });
-        expect(s.childModules[0].o.delay).toBe(100);
-        expect(s.childModules[1].o.delay).toBe(200);
-        return expect(s.childModules[2]).not.toBeDefined();
+        expect(s._modules[0].o.delay).toBe(100);
+        expect(s._modules[1].o.delay).toBe(200);
+        return expect(s._modules[2]).not.toBeDefined();
+      });
+    });
+    return describe('_makeTween and _makeTimeline methods ->', function() {
+      return it('should override them to empty methods', function() {
+        var stagger;
+        spyOn(mojs.Tweenable.prototype, '_makeTween');
+        spyOn(mojs.Tweenable.prototype, '_makeTimeline');
+        stagger = new Stagger({});
+        expect(mojs.Tweenable.prototype._makeTween).not.toHaveBeenCalled();
+        return expect(mojs.Tweenable.prototype._makeTimeline).not.toHaveBeenCalled();
       });
     });
   });

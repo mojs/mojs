@@ -1,9 +1,11 @@
 import h from './h';
-import Timeline from './tween/timeline';
+import Timeline  from './tween/timeline';
+import Tunable from './tunable';
 
-class Stagger {
+class Stagger extends Tunable {
   constructor (options, Module) {
-    return this.init(options, Module);
+    super();
+    return this._init(options, Module);
   }
   /*
     Method to get an option by modulo and name.
@@ -28,7 +30,7 @@ class Stagger {
     @param {Object} Options hash to look in.
   */
   _getOptionByIndex (i, store) {
-  	var options = { };
+  	var options = {};
   	Object.keys(store).forEach(key =>
   	  options[key] = this._getOptionByMod(key, i, store));
   	return options;
@@ -55,43 +57,35 @@ class Stagger {
   	  return 1;
     }
   }
-
-  /*
-    Method to create timeline.
-    @param {Object} Options. ** default ** empty object.
-  */
-  _createTimeline (options = { }) {
-  	this.timeline = new Timeline({
-      onStart:           options.onStaggerStart,
-      onUpdate:          options.onStaggerUpdate,
-      onComplete:        options.onStaggerComplete,
-      onReverseComplete: options.onStaggerReverseComplete,
-      delay:             options.moduleDelay,
-  	})
-  }
-
   /*
     Method to make stagger form options
     @param {Object} Options.
     @param {Object} Child class.
   */
-  init (options, Module) {
+  _init (options, Module) {
   	var count = this._getChildQuantity(options.quantifier || 'el', options);
-  	this._createTimeline(options); this.childModules = [ ]
+  	this._createTimeline(options); this._modules = [];
   	for (var i = 0; i < count; i ++) {
   	  // get child module's option
       var option = this._getOptionByIndex(i, options); option.isRunLess = true;
       // create child module
-      var module = new Module(option); this.childModules.push(module);
+      var module = new Module(option); this._modules.push(module);
       // add child module's timeline to the self timeline
       this.timeline.add(module);
   	}
   	return this;
   }
   /*
-    Method to start timeline.
+    Method to create timeline.
+    @param {Object} Timeline options.
   */
-  run() { this.timeline.play(); }
+  _createTimeline (options = {}) {
+    this.timeline = new Timeline(options.timeline);
+  }
+
+  /* @overrides @ Tweenable */
+  _makeTween () {}
+  _makeTimeline () {}
 }
 
 module.exports = function(Module) {

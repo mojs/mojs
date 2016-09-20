@@ -2091,8 +2091,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  Html.prototype._makeTween = function _makeTween() {};
-	  // _makeTimeline () {}
-
 
 	  Html.prototype._makeTimeline = function _makeTimeline() {
 	    // do not create timeline if module if chained
@@ -2232,62 +2230,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.default = Html;
 
-	/*
-	  Method to replace current values (=) in delta object.
-	  @private
-	  @param {String} Property name.
-	  @param {Object} Delta to replace in.
-	  @returns {Object} Delta with replaced values.
-	*/
-	// _replaceCurrent(name, delta) {
-	//   const computed = h.computedStyle( this._props.el ),
-	//         newDelta = {};
-
-	//   const keys = Object.keys(delta);
-	//   for (var i = 0; i < keys.length; i++) {
-	//     const key   = keys[i],
-	//           value = delta[key];
-
-	//     if ( key === '=' ) {
-	//       newDelta[computed[name]] = delta[key];
-	//     }
-	//   }
-
-	//   return newDelta;
-	// }
-
-	// /*
-	//   Method to rename properties from camelCase to spinal-case.
-	//   @private
-	//   @param {Object} Options to rename.
-	//   @returns {Object} Newely created object.
-	// */
-	// _renameProperties (opts) {
-	//   const keys = Object.keys(opts);
-	//   const newOpts = {};
-
-	//   for (var i = 0; i < keys.length; i++ ) {
-	//     var key = keys[i];
-	//     // rename property only if it's not a tween property
-	//     if ( !TWEEN_PROPERTIES[key] && ( this._defaults[key] == null ) ) {
-	//       newOpts[ this._renameProperty(key) ] = opts[key];
-	//     // otherwise just copy it
-	//     } else { newOpts[ key ] = opts[key]; }
-	//   }
-
-	//   return newOpts;
-	// }
-	// /*
-	//   Method to change string from camelCase to spinal-case.
-	//   @private
-	//   @param {String} String to change.
-	//   @returns {String} Changed string.
-	// */
-	// _renameProperty (str) {
-	//   return str.replace(/(?!^)([A-Z])/g, ' $1')
-	//           .replace(/[_\s]+(?=[a-zA-Z])/g, '-').toLowerCase();
-	// }
-
 /***/ },
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
@@ -2302,6 +2244,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
+	var _possibleConstructorReturn2 = __webpack_require__(24);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(25);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
 	var _h = __webpack_require__(19);
 
 	var _h2 = _interopRequireDefault(_h);
@@ -2310,13 +2260,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _timeline2 = _interopRequireDefault(_timeline);
 
+	var _tunable = __webpack_require__(13);
+
+	var _tunable2 = _interopRequireDefault(_tunable);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Stagger = function () {
+	var Stagger = function (_Tunable) {
+	  (0, _inherits3.default)(Stagger, _Tunable);
+
 	  function Stagger(options, Module) {
+	    var _ret;
+
 	    (0, _classCallCheck3.default)(this, Stagger);
 
-	    return this.init(options, Module);
+	    var _this = (0, _possibleConstructorReturn3.default)(this, _Tunable.call(this));
+
+	    return _ret = _this._init(options, Module), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 	  /*
 	    Method to get an option by modulo and name.
@@ -2344,11 +2304,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  Stagger.prototype._getOptionByIndex = function _getOptionByIndex(i, store) {
-	    var _this = this;
+	    var _this2 = this;
 
 	    var options = {};
 	    (0, _keys2.default)(store).forEach(function (key) {
-	      return options[key] = _this._getOptionByMod(key, i, store);
+	      return options[key] = _this2._getOptionByMod(key, i, store);
 	    });
 	    return options;
 	  };
@@ -2379,25 +2339,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return 1;
 	    }
 	  };
-
-	  /*
-	    Method to create timeline.
-	    @param {Object} Options. ** default ** empty object.
-	  */
-
-
-	  Stagger.prototype._createTimeline = function _createTimeline() {
-	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-	    this.timeline = new _timeline2.default({
-	      onStart: options.onStaggerStart,
-	      onUpdate: options.onStaggerUpdate,
-	      onComplete: options.onStaggerComplete,
-	      onReverseComplete: options.onStaggerReverseComplete,
-	      delay: options.moduleDelay
-	    });
-	  };
-
 	  /*
 	    Method to make stagger form options
 	    @param {Object} Options.
@@ -2405,30 +2346,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	  */
 
 
-	  Stagger.prototype.init = function init(options, Module) {
+	  Stagger.prototype._init = function _init(options, Module) {
 	    var count = this._getChildQuantity(options.quantifier || 'el', options);
-	    this._createTimeline(options);this.childModules = [];
+	    this._createTimeline(options);this._modules = [];
 	    for (var i = 0; i < count; i++) {
 	      // get child module's option
 	      var option = this._getOptionByIndex(i, options);option.isRunLess = true;
 	      // create child module
-	      var module = new Module(option);this.childModules.push(module);
+	      var module = new Module(option);this._modules.push(module);
 	      // add child module's timeline to the self timeline
 	      this.timeline.add(module);
 	    }
 	    return this;
 	  };
 	  /*
-	    Method to start timeline.
+	    Method to create timeline.
+	    @param {Object} Timeline options.
 	  */
 
 
-	  Stagger.prototype.run = function run() {
-	    this.timeline.play();
+	  Stagger.prototype._createTimeline = function _createTimeline() {
+	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	    this.timeline = new _timeline2.default(options.timeline);
 	  };
 
+	  /* @overrides @ Tweenable */
+
+
+	  Stagger.prototype._makeTween = function _makeTween() {};
+
+	  Stagger.prototype._makeTimeline = function _makeTimeline() {};
+
 	  return Stagger;
-	}();
+	}(_tunable2.default);
 
 	module.exports = function (Module) {
 	  return function (options) {
@@ -10426,7 +10377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.282.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.283.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, Html: _html2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default, _pool: { Delta: _delta2.default, Deltas: _deltas2.default }
