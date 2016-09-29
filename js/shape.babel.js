@@ -525,7 +525,12 @@ class Shape extends Tunable {
     @private
     @overrides @ Module
   */
-  _showByTransform () { this._drawEl(); }
+  _showByTransform () {
+    // reset the cache of the scale prop
+    this._lastSet.scale = null;
+    // draw el accroding to it's props
+    this._drawEl();
+  }
 }
 
 export default Shape;

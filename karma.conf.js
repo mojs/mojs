@@ -97,8 +97,8 @@ module.exports = function(config) {
       'build/html.js',
       'spec/html.js',
       
-      'build/shape.js',
-      'spec/shape.js',
+      // 'build/shape.js',
+      // 'spec/shape.js',
       'build/shape-swirl.js',
       'spec/shape-swirl.js',
       'build/burst.js',
