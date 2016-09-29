@@ -1896,7 +1896,7 @@
       });
     });
     return describe('_showByTransform method', function() {
-      return it('should call _drawEl method', function() {
+      it('should call _drawEl method', function() {
         var shape;
         shape = new Shape({
           easing: function(k) {
@@ -1906,6 +1906,22 @@
         spyOn(shape, '_drawEl');
         shape._showByTransform();
         return expect(shape._drawEl).toHaveBeenCalled();
+      });
+      return it('should update scale', function() {
+        var isIE, isNormal, s, shape, tr;
+        shape = new Shape({
+          easing: function(k) {
+            return 1;
+          }
+        });
+        shape.el.style.transform = 'scale(0)';
+        shape.el.style["" + mojs.h.prefix.css + "transform"] = 'scale(0)';
+        shape._showByTransform();
+        s = shape.el.style;
+        tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+        isNormal = tr === 'translate(0, 0) rotate(0deg) scale(1, 1)';
+        isIE = tr === 'translate(0, 0) rotate(0deg) scale(1)';
+        return expect(isNormal || isIE).toBe(true);
       });
     });
   });

@@ -1445,5 +1445,20 @@ describe 'Shape ->', ->
 
       expect( shape._drawEl ).toHaveBeenCalled()
 
+    it 'should update scale', ->
+      shape = new Shape easing: (k)-> return 1
+
+      shape.el.style.transform = 'scale(0)'
+      shape.el.style["#{mojs.h.prefix.css}transform"] = 'scale(0)'
+
+      shape._showByTransform()
+
+      s = shape.el.style
+      tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+      isNormal = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
+      isIE = tr is 'translate(0, 0) rotate(0deg) scale(1)'
+
+      expect(isNormal or isIE).toBe true
+
 
 
