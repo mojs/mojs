@@ -853,7 +853,6 @@ describe 'Helpers ->', ->
       #     radius: 0.00000001
       #     angle:  90
       #     center: x: 0.00000001, y: 0.00000001
-      #   console.log point
       #   expect(point.x).not.toMatch /e/
       #   expect(point.y).not.toMatch /e/
       # nope

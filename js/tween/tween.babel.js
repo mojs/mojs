@@ -307,7 +307,7 @@ class Tween extends Module {
         wasPlaying = wasPlay || wasReverse,
         wasStill   = wasStop || wasPause;
 
-    if ((state === 'play' || state === 'reverse') &&  wasStill ) {
+    if ((state === 'play' || state === 'reverse') && wasStill ) {
       this._playbackStart();
     }
     if ( state === 'pause' && wasPlaying ) {
@@ -1067,6 +1067,7 @@ class Tween extends Module {
     override.isMojsCallbackOverride = true;
     return override;
   }
+
 
   // _visualizeProgress(time) {
   //   var str = '|',

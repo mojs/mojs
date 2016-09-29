@@ -1908,7 +1908,7 @@
         return expect(shape._drawEl).toHaveBeenCalled();
       });
       return it('should update scale', function() {
-        var isIE, isNormal, s, shape, tr;
+        var isIE, isNormal, isNormal2, s, shape, tr;
         shape = new Shape({
           easing: function(k) {
             return 1;
@@ -1920,8 +1920,9 @@
         s = shape.el.style;
         tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
         isNormal = tr === 'translate(0, 0) rotate(0deg) scale(1, 1)';
+        isNormal2 = tr === 'translate(0px, 0px) rotate(0deg) scale(1, 1)';
         isIE = tr === 'translate(0, 0) rotate(0deg) scale(1)';
-        return expect(isNormal || isIE).toBe(true);
+        return expect(isNormal || isNormal2 || isIE).toBe(true);
       });
     });
   });
