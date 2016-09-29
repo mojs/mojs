@@ -7356,7 +7356,3 @@ describe 'Tween ->', ->
       tw._updateInActiveArea 0
 
       expect( tw._isRefreshed ).toBe false
-
-    
-
-

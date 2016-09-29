@@ -871,7 +871,7 @@ describe 'Html ->', ->
         })
       
       div = document.createElement 'div'
-      expect(html._checkStartValue 'borderRadius').toBe mojs.h.computedStyle(div)['borderRadius']
+      expect(html._checkStartValue 'borderRadius').toBe h.defaultStyles['borderRadius']
       expect(html._checkStartValue 'borderRadius', .5).toBe .5
 
     it 'should fallback to 0 at the end', ->

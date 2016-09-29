@@ -96,7 +96,7 @@ class Html extends Thenable {
       if ( this._defaults[key] != null ) { return this._defaults[key]; }
       // return default value from _customProps
       if ( this._customProps[key] != null ) { return this._customProps[key]; }
-      // try to get the default DOM value
+      // try to get the default value
       if ( h.defaultStyles[key] != null ) { return h.defaultStyles[key]; }
       // at the end return 0
       return 0;

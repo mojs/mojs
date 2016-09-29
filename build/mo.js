@@ -1795,7 +1795,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this._customProps[key] != null) {
 	        return this._customProps[key];
 	      }
-	      // try to get the default DOM value
+	      // try to get the default value
 	      if (h.defaultStyles[key] != null) {
 	        return h.defaultStyles[key];
 	      }
@@ -4406,11 +4406,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Tweener = function () {
 	  function Tweener() {
 	    (0, _classCallCheck3.default)(this, Tweener);
-	    this._vars();return this;
+
+	    this._vars();
+	    this._listenVisibilityChange();
+	    return this;
 	  }
 
 	  Tweener.prototype._vars = function _vars() {
-	    this.tweens = [];this._loop = this._loop.bind(this);
+	    this.tweens = [];
+	    this._loop = this._loop.bind(this);
+	    this._onVisibilityChange = this._onVisibilityChange.bind(this);
 	  };
 	  /*
 	    Main animation loop. Should have only one concurrent loop.
@@ -4509,6 +4514,65 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.tweens.splice(index, 1);
 	        tween._onTweenerRemove();
 	      }
+	    }
+	  };
+
+	  /*
+	    Method to initialize event listeners to visibility change events.
+	    @private
+	  */
+
+
+	  Tweener.prototype._listenVisibilityChange = function _listenVisibilityChange() {
+	    if (typeof document.hidden !== "undefined") {
+	      this._visibilityHidden = "hidden";
+	      this._visibilityChange = "visibilitychange";
+	    } else if (typeof document.mozHidden !== "undefined") {
+	      this._visibilityHidden = "mozHidden";
+	      this._visibilityChange = "mozvisibilitychange";
+	    } else if (typeof document.msHidden !== "undefined") {
+	      this._visibilityHidden = "msHidden";
+	      this._visibilityChange = "msvisibilitychange";
+	    } else if (typeof document.webkitHidden !== "undefined") {
+	      this._visibilityHidden = "webkitHidden";
+	      this._visibilityChange = "webkitvisibilitychange";
+	    }
+
+	    document.addEventListener(this._visibilityChange, this._onVisibilityChange, false);
+	  };
+	  /*
+	    Method that will fire on visibility change.
+	  */
+
+
+	  Tweener.prototype._onVisibilityChange = function _onVisibilityChange() {
+	    if (document[this._visibilityHidden]) {
+	      this._savePlayingTweens();
+	    } else {
+	      this._restorePlayingTweens();
+	    }
+	  };
+	  /*
+	    Method to save all playing tweens.
+	    @private
+	  */
+
+
+	  Tweener.prototype._savePlayingTweens = function _savePlayingTweens() {
+	    this._savedTweens = this.tweens.slice(0);
+	    for (var i = 0; i < this._savedTweens.length; i++) {
+	      this._savedTweens[i].pause();
+	    }
+	  };
+	  /*
+	    Method to restore all playing tweens.
+	    @private
+	  */
+
+
+	  Tweener.prototype._restorePlayingTweens = function _restorePlayingTweens() {
+	    for (var i = 0; i < this._savedTweens.length; i++) {
+	      this._savedTweens[i].play();
 	    }
 	  };
 
@@ -10417,7 +10481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.284.2', isDebug: true, helpers: _h2.default,
+	  revision: '0.285.0', isDebug: true, helpers: _h2.default,
 	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, Html: _html2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default, _pool: { Delta: _delta2.default, Deltas: _deltas2.default }

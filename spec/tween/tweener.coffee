@@ -171,3 +171,144 @@ describe 'Tweener ->', ->
         dfr()
       , 2*duration
 
+  isPageVisibility = ->
+    return (typeof document.hidden != "undefined") or (typeof document.mozHidden != "undefined") or (typeof document.msHidden != "undefined") or (typeof document.webkitHidden != "undefined")
+
+  describe '_listenVisibilityChange method ->', ->
+    if !isPageVisibility() then return
+
+    describe 'page visibility init ->', ->
+      it 'should have ran _listenVisibilityChange method ->', ->
+        expect(typeof t._visibilityHidden).toBe 'string'
+        expect(typeof t._visibilityChange).toBe 'string'
+
+    it 'should set _visibilityHidden property', ->
+      t._visibilityHidden = null
+      t._listenVisibilityChange()
+
+      isOldOpera = t._visibilityHidden == 'hidden'
+      isMozilla = t._visibilityHidden == 'mozHidden'
+      isIE = t._visibilityHidden == 'msHidden'
+      isWebkit = t._visibilityHidden == 'webkitHidden'
+
+      expect(isOldOpera or isMozilla or isIE or isWebkit).toBe true
+
+    it 'should set _visibilityChange property', ->
+      t._visibilityChange = null
+      t._listenVisibilityChange()
+
+      isOldOpera = t._visibilityChange == 'visibilitychange'
+      isMozilla = t._visibilityChange == 'mozvisibilitychange'
+      isIE = t._visibilityChange == 'msvisibilitychange'
+      isWebkit = t._visibilityChange == 'webkitvisibilitychange'
+
+      expect(isOldOpera or isMozilla or isIE or isWebkit).toBe true
+
+    it 'should set up visiblilityChange even listener', ->
+      spyOn document, 'addEventListener'
+      t._listenVisibilityChange()
+
+      expect( document.addEventListener )
+        .toHaveBeenCalledWith t._visibilityChange, t._onVisibilityChange, false
+
+
+  describe '_savePlayingTweens method ->', ->
+    it 'should copy all playing tweens to _savedTweens array', (done)->
+      tw1 = new Tween
+      tw1._setStartTime()
+      tw2 = new Tween
+      tw2._setStartTime()
+      tw3 = new Tween
+      tw3._setStartTime()
+      t.add tw1
+      t.add tw2
+      t.add tw3
+
+      setTimeout ->
+        t._savedTweens = []
+        t._savePlayingTweens()
+        expect(t._savedTweens.length).toBe 3
+        expect(t._savedTweens[0]).toBe tw1
+        expect(t._savedTweens[1]).toBe tw2
+        expect(t._savedTweens[2]).toBe tw3
+        done()
+      , 50
+
+    it 'should call `pause` on each tween', (done)->
+      tw1 = new Tween
+      tw1._setStartTime()
+      tw2 = new Tween
+      tw2._setStartTime()
+      tw3 = new Tween
+      tw3._setStartTime()
+      t.add tw1
+      t.add tw2
+      t.add tw3
+
+      spyOn tw1, 'pause'
+      spyOn tw2, 'pause'
+      spyOn tw3, 'pause'
+
+      setTimeout ->
+        t._savedTweens = []
+        t._savePlayingTweens()
+        expect(tw1.pause).toHaveBeenCalled()
+        expect(tw2.pause).toHaveBeenCalled()
+        expect(tw3.pause).toHaveBeenCalled()
+        done()
+      , 50
+
+
+  describe '_restorePlayingTweens method ->', ->
+    it 'should copy all _savedTweens tweens to tweens array', ->
+      tw1 = new Tween
+      tw1._setStartTime()
+      tw2 = new Tween
+      tw2._setStartTime()
+      tw3 = new Tween
+      tw3._setStartTime()
+
+      t.tweens = []
+      t._savedTweens = [ tw1, tw2, tw3 ]
+      t._restorePlayingTweens()
+      expect(t.tweens.length).toBe 3
+      expect(t.tweens[0]).toBe tw1
+      expect(t.tweens[1]).toBe tw2
+      expect(t.tweens[2]).toBe tw3
+
+    it 'should call `play` on each tween', ->
+      tw1 = new Tween
+      tw1._setStartTime()
+      tw2 = new Tween
+      tw2._setStartTime()
+      tw3 = new Tween
+      tw3._setStartTime()
+
+      spyOn tw1, 'play'
+      spyOn tw2, 'play'
+      spyOn tw3, 'play'
+
+      t.tweens = []
+      t._savedTweens = [ tw1, tw2, tw3 ]
+      t._restorePlayingTweens()
+
+      expect(tw1.play).toHaveBeenCalled()
+      expect(tw2.play).toHaveBeenCalled()
+      expect(tw3.play).toHaveBeenCalled()
+
+  describe '_onVisibilityChange method ->', ->
+    it 'should call _savePlayingTweens if hidden', ->
+
+      t._visibilityHidden = 'mojs-tweener-visibility-test'
+      document[t._visibilityHidden] = true
+      spyOn t, '_savePlayingTweens'
+      t._onVisibilityChange()
+      expect( t._savePlayingTweens ).toHaveBeenCalled()
+
+    it 'should call _restorePlayingTweens if visible', ->
+
+      t._visibilityHidden = 'mojs-tweener-visibility-test'
+      document[t._visibilityHidden] = false
+      spyOn t, '_restorePlayingTweens'
+      t._onVisibilityChange()
+      expect( t._restorePlayingTweens ).toHaveBeenCalled()

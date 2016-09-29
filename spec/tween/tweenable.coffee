@@ -195,3 +195,4 @@ describe 'tweenable ->', ->
       expect(tr.tween._props.callbacksContext).toBe obj
       expect(tr.timeline._props.callbacksContext).toBe obj
 
+

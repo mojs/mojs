@@ -1456,9 +1456,10 @@ describe 'Shape ->', ->
       s = shape.el.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
       isNormal = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
+      isNormal2 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
       isIE = tr is 'translate(0, 0) rotate(0deg) scale(1)'
 
-      expect(isNormal or isIE).toBe true
+      expect(isNormal or isNormal2 or isIE).toBe true
 
 
 

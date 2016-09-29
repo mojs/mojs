@@ -949,7 +949,7 @@
           borderRadius: 10
         });
         div = document.createElement('div');
-        expect(html._checkStartValue('borderRadius')).toBe(mojs.h.computedStyle(div)['borderRadius']);
+        expect(html._checkStartValue('borderRadius')).toBe(h.defaultStyles['borderRadius']);
         return expect(html._checkStartValue('borderRadius', .5)).toBe(.5);
       });
       return it('should fallback to 0 at the end', function() {

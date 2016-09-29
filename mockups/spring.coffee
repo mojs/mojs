@@ -44,4 +44,3 @@ spring = (options={}) ->
     1 - (At * Math.cos(angle))
 
 a = spring()
-console.log(a(1))
