@@ -5,7 +5,7 @@
 - [Shape](./shape.md)
 - [ShapeSwirl](./shape-swirl.md)
 - [Burst](./burst.md)
-- Stagger(soon)
+- [stagger](./stagger.md)
 - MotionPath(soon)
 - Spriter(soon)
 - Radial Spring(soon)

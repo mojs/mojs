@@ -1,4 +1,4 @@
-# Shape
+# Html
 
 References:
 
@@ -157,6 +157,11 @@ const html = new mojs.html({
   */
   .playBackward( shift = 0 )
   /*
+    Resumes playback in direction it was prior to `pause`.
+    @param shift {Number} Start progress shift in milliseconds.
+  */
+  .resume( shift = 0 )
+  /*
     Pauses playback.
   */
   .pause()
@@ -227,7 +232,7 @@ All custom properties are expected to be plain `numbers`, you can define `units`
 
 ### Independent deltas
 
-All delta values of the Html module could have entire set of Tween properties and can be animated individually:
+All `delta` values of the `Html` module could have entire set of `Tween` properties and can be animated individually:
 
 ```javascript
 const html = new mojs.Html({
