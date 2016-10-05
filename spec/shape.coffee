@@ -1436,7 +1436,7 @@ describe 'Shape ->', ->
 
       expect( shape._setProgress ).toHaveBeenCalledWith 1, 0
 
-  describe '_showByTransform method', ->
+  describe '_showByTransform method ->', ->
     it 'should call _drawEl method', ->
       shape = new Shape easing: (k)-> return 1
 
@@ -1457,9 +1457,10 @@ describe 'Shape ->', ->
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
       isNormal = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
       isNormal2 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
-      isIE = tr is 'translate(0, 0) rotate(0deg) scale(1)'
+      isIE9 = tr is 'translate(0, 0) rotate(0deg) scale(1)'
+      isIE = tr is 'translate(0px, 0px) rotate(0deg) scale(1)'
 
-      expect(isNormal or isNormal2 or isIE).toBe true
+      expect(isNormal or isNormal2 or isIE9 or isIE).toBe true
 
 
 
