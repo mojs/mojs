@@ -1895,7 +1895,7 @@
         return expect(shape._setProgress).toHaveBeenCalledWith(1, 0);
       });
     });
-    return describe('_showByTransform method', function() {
+    return describe('_showByTransform method ->', function() {
       it('should call _drawEl method', function() {
         var shape;
         shape = new Shape({
@@ -1908,7 +1908,7 @@
         return expect(shape._drawEl).toHaveBeenCalled();
       });
       return it('should update scale', function() {
-        var isIE, isNormal, isNormal2, s, shape, tr;
+        var isIE, isIE9, isNormal, isNormal2, s, shape, tr;
         shape = new Shape({
           easing: function(k) {
             return 1;
@@ -1921,8 +1921,9 @@
         tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
         isNormal = tr === 'translate(0, 0) rotate(0deg) scale(1, 1)';
         isNormal2 = tr === 'translate(0px, 0px) rotate(0deg) scale(1, 1)';
-        isIE = tr === 'translate(0, 0) rotate(0deg) scale(1)';
-        return expect(isNormal || isNormal2 || isIE).toBe(true);
+        isIE9 = tr === 'translate(0, 0) rotate(0deg) scale(1)';
+        isIE = tr === 'translate(0px, 0px) rotate(0deg) scale(1)';
+        return expect(isNormal || isNormal2 || isIE9 || isIE).toBe(true);
       });
     });
   });
