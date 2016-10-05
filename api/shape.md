@@ -181,7 +181,6 @@ const shape = new mojs.Shape({
     @param options {Object} Next shape state.
   */
   .then({ /* next state options */ })
-
   /*
     Tunes start state with new options.
     @param options {Object} New start properties.
@@ -192,7 +191,6 @@ const shape = new mojs.Shape({
     Regenerates all randoms in initial properties.
   */
   .generate()
-
   /*
     Starts playback.
     @param shift {Number} Start progress shift in milliseconds.
@@ -218,6 +216,11 @@ const shape = new mojs.Shape({
   */
   .replayBackward( shift = 0 )
   /*
+    Resumes playback in direction it was prior to `pause`.
+    @param shift {Number} Start progress shift in milliseconds.
+  */
+  .resume( shift = 0 )
+  /*
     Sets progress of the tween.
     @param progress {Number} Progress to set [ 0..1 ].
   */
@@ -227,7 +230,6 @@ const shape = new mojs.Shape({
     @param speed {Number} Progress to set [ 0..∞ ].
   */
   setSpeed ( speed )
-
   /* Stops and resets the tween. */
   reset ( speed )
 
