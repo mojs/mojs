@@ -235,6 +235,7 @@ class Html extends Thenable {
   */
   _saveCustomProperties ( o = {} ) {
     this._customProps = o.customProperties || {};
+    this._customProps = { ...this._customProps };
     this._customDraw  = this._customProps.draw;
     delete this._customProps.draw;
     delete o.customProperties;

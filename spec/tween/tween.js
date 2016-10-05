@@ -5435,6 +5435,47 @@
         return expect(t._subPlay).toHaveBeenCalledWith(0, 'play');
       });
     });
+    describe('resume method ->', function() {
+      it('should call play if prev state is play', function() {
+        var shift, t;
+        t = new Tween;
+        t.play();
+        t.pause();
+        spyOn(t, 'play');
+        shift = 200;
+        t.resume(shift);
+        return expect(t.play).toHaveBeenCalledWith(shift);
+      });
+      it('should call play if prev state is reverse', function() {
+        var shift, t;
+        t = new Tween;
+        t.playBackward();
+        t.pause();
+        spyOn(t, 'playBackward');
+        shift = 200;
+        t.resume(shift);
+        return expect(t.playBackward).toHaveBeenCalledWith(shift);
+      });
+      it('should do nothing if state is not pause', function() {
+        var result, t;
+        t = new Tween;
+        t.playBackward();
+        t.stop();
+        spyOn(t, 'play');
+        spyOn(t, 'playBackward');
+        result = t.resume();
+        expect(t.play).not.toHaveBeenCalled();
+        expect(t.playBackward).not.toHaveBeenCalled();
+        return expect(result).toBe(t);
+      });
+      return it('should always return this', function() {
+        var t;
+        t = new Tween;
+        t.playBackward();
+        t.pause();
+        return expect(t.resume()).toBe(t);
+      });
+    });
     describe('playBackward method ->', function() {
       it('should set _state to "reverse"', function() {
         var t;

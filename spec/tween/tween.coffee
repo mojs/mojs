@@ -5727,6 +5727,53 @@ describe 'Tween ->', ->
       t.play()
       expect(t._subPlay).toHaveBeenCalledWith(0, 'play')
 
+
+  describe 'resume method ->', ->
+    it 'should call play if prev state is play', ->
+      t = new Tween
+      t.play()
+      t.pause()
+
+      spyOn t, 'play'
+
+      shift = 200
+      t.resume( shift )
+
+      expect(t.play).toHaveBeenCalledWith( shift )
+
+    it 'should call play if prev state is reverse', ->
+      t = new Tween
+      t.playBackward()
+      t.pause()
+
+      spyOn t, 'playBackward'
+
+      shift = 200
+      t.resume( shift )
+
+      expect(t.playBackward).toHaveBeenCalledWith( shift )
+
+    it 'should do nothing if state is not pause', ->
+      t = new Tween
+      t.playBackward()
+      t.stop()
+
+      spyOn t, 'play'
+      spyOn t, 'playBackward'
+
+      result = t.resume()
+      expect(t.play).not.toHaveBeenCalled()
+      expect(t.playBackward).not.toHaveBeenCalled()
+      expect(result).toBe t
+
+    it 'should always return this', ->
+      t = new Tween
+      t.playBackward()
+      t.pause()
+
+      expect(t.resume()).toBe t
+
+
   describe 'playBackward method ->', ->
     it 'should set _state to "reverse"',->
       t = new Tween

@@ -262,21 +262,20 @@ describe 'Tweener ->', ->
   describe '_restorePlayingTweens method ->', ->
     it 'should copy all _savedTweens tweens to tweens array', ->
       tw1 = new Tween
-      tw1._setStartTime()
       tw2 = new Tween
-      tw2._setStartTime()
       tw3 = new Tween
-      tw3._setStartTime()
+      tw1.play()
+      tw2.play()
+      tw3.play()
 
-      t.tweens = []
-      t._savedTweens = [ tw1, tw2, tw3 ]
+      t._savePlayingTweens()
       t._restorePlayingTweens()
       expect(t.tweens.length).toBe 3
       expect(t.tweens[0]).toBe tw1
       expect(t.tweens[1]).toBe tw2
       expect(t.tweens[2]).toBe tw3
 
-    it 'should call `play` on each tween', ->
+    it 'should call `resume` on each tween', ->
       tw1 = new Tween
       tw1._setStartTime()
       tw2 = new Tween
@@ -284,17 +283,17 @@ describe 'Tweener ->', ->
       tw3 = new Tween
       tw3._setStartTime()
 
-      spyOn tw1, 'play'
-      spyOn tw2, 'play'
-      spyOn tw3, 'play'
+      spyOn tw1, 'resume'
+      spyOn tw2, 'resume'
+      spyOn tw3, 'resume'
 
       t.tweens = []
       t._savedTweens = [ tw1, tw2, tw3 ]
       t._restorePlayingTweens()
 
-      expect(tw1.play).toHaveBeenCalled()
-      expect(tw2.play).toHaveBeenCalled()
-      expect(tw3.play).toHaveBeenCalled()
+      expect(tw1.resume).toHaveBeenCalled()
+      expect(tw2.resume).toHaveBeenCalled()
+      expect(tw3.resume).toHaveBeenCalled()
 
   describe '_onVisibilityChange method ->', ->
     it 'should call _savePlayingTweens if hidden', ->

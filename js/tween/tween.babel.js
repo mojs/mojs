@@ -74,7 +74,7 @@ class Tween extends Module {
     }
   }
   /*
-    API method to run the Tween.
+    API method to play the Tween.
     @public
     @param  {Number} Shift time in milliseconds.
     @return {Object} Self.
@@ -87,7 +87,7 @@ class Tween extends Module {
     return this;
   }
   /*
-    API method to run the Tween in reverse.
+    API method to play the Tween in reverse.
     @public
     @param  {Number} Shift time in milliseconds.
     @return {Object} Self.
@@ -151,6 +151,26 @@ class Tween extends Module {
   replayBackward( shift = 0 ) {
     this.reset();
     this.playBackward( shift );
+    return this;
+  }
+  /*
+    API method to resume the Tween.
+    @public
+    @param  {Number} Shift time in milliseconds.
+    @return {Object} Self.
+  */
+  resume ( shift = 0 ) {
+    if ( this._state !== 'pause' ) { return this; }
+
+    switch (this._prevState) {
+      case 'play':
+        this.play( shift );
+        break;
+      case 'reverse': 
+        this.playBackward( shift );
+        break;
+    }
+
     return this;
   }
   /*

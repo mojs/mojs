@@ -297,8 +297,12 @@
         return expect(html.deltas._o.isChained).toBe(true);
       });
       return it('should _customProps to deltas', function() {
-        var customProps, html;
-        customProps = {};
+        var customProps, fun, html;
+        fun = function() {};
+        customProps = {
+          origin: 50,
+          draw: fun
+        };
         html = new Html({
           el: el,
           borderWidth: '20px',
@@ -312,7 +316,9 @@
           customProperties: customProps
         });
         html._createDeltas(html._o);
-        return expect(html.deltas._o.customProps).toBe(customProps);
+        return expect(html.deltas._o.customProps).toEqual(jasmine.objectContaining({
+          origin: 50
+        }));
       });
     });
     describe('_makeTween and _makeTimeline methods ->', function() {
@@ -978,16 +984,23 @@
           draw: draw
         };
         it('should save customProperties object', function() {
-          var html;
+          var fun, html;
           spyOn(Html.prototype, '_saveCustomProperties').and.callThrough();
+          fun = function() {};
+          customProps = {
+            origin: 50,
+            draw: fun
+          };
           html = new Html({
             el: document.createElement('div'),
             borderRadius: 10,
             customProperties: customProps
           });
           expect(Html.prototype._saveCustomProperties).toHaveBeenCalled();
-          expect(html._customProps).toBe(customProps);
-          expect(html._customDraw).toBe(draw);
+          expect(html._customProps).toEqual({
+            origin: 50
+          });
+          expect(html._customDraw).toBe(fun);
           expect(html._customProps.draw).not.toBeDefined();
           return expect(html._o.customProperties).not.toBeDefined();
         });
