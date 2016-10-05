@@ -79,6 +79,16 @@ class Tweenable extends Module {
     return this;
   }
   /*
+    `resume` method for the timeline.
+    @public
+    @param {Number} Time shift.
+    @returns this.
+  */
+  resume (shift = 0) {
+    this.timeline.resume.apply( this.timeline, arguments );
+    return this;
+  }
+  /*
     `setProgress` method for the timeline.
     @public
     @param {Number} [0...1] Progress value.

@@ -242,6 +242,22 @@
         return expect(result).toBe(tw);
       });
     });
+    describe('resume method ->', function() {
+      it('should call timeline\'s resume method', function() {
+        var progress, tw;
+        tw = new Tweenable;
+        spyOn(tw.timeline, 'resume');
+        progress = .5;
+        tw.resume(progress);
+        return expect(tw.timeline.resume).toHaveBeenCalledWith(progress);
+      });
+      return it('should return this', function() {
+        var result, tw;
+        tw = new Tweenable;
+        result = tw.resume();
+        return expect(result).toBe(tw);
+      });
+    });
     describe('setProgress ->', function() {
       it('should call timeline\'s setProgress method', function() {
         var progress, tw;
