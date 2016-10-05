@@ -24,29 +24,29 @@ const html = new mojs.html({
 
   // HTMLElement to animate. {String, Object} [selector, HTMLElement]
   el:           null,
-  // translateX property. {String, Number, Object} [value, delta]
+  // ∆ :: translateX property. {String, Number, Object} [value, delta]
   x:          0,
-  // translateY property. {String, Number, Object} [value, delta]
+  // ∆ :: translateY property. {String, Number, Object} [value, delta]
   y:          0,
-  // translateZ property. {String, Number, Object} [value, delta]
+  // ∆ :: translateZ property. {String, Number, Object} [value, delta]
   z:          0,
-  // skewX property. {String, Number, Object} [value, delta]
+  // ∆ :: skewX property. {String, Number, Object} [value, delta]
   skewX:      0,
-  // skewY property. {String, Number, Object} [value, delta]
+  // ∆ :: skewY property. {String, Number, Object} [value, delta]
   skewY:      0,
-  // rotateX property. {String, Number, Object} [value, delta]
+  // ∆ :: rotateX property. {String, Number, Object} [value, delta]
   angleX:     0,
-  // rotateY property. {String, Number, Object} [value, delta]
+  // ∆ :: rotateY property. {String, Number, Object} [value, delta]
   angleY:     0,
-  // rotateZ property. {String, Number, Object} [value, delta]
+  // ∆ :: rotateZ property. {String, Number, Object} [value, delta]
   angleZ:     0,
-  // scale property. {String, Number, Object} [value, delta]
+  // ∆ :: scale property. {String, Number, Object} [value, delta]
   scale:      1,
-  // scaleX property. {String, Number, Object} [value, delta]
+  // ∆ :: scaleX property. {String, Number, Object} [value, delta]
   scaleX:     1,
-  // scaleY property. {String, Number, Object} [value, delta]
+  // ∆ :: scaleY property. {String, Number, Object} [value, delta]
   scaleY:     1,
-  // opacity property. {String, Number, Object} [value, delta]
+  // ∆ :: opacity property. {String, Number, Object} [value, delta]
   opacity:    1,
   
   /*
