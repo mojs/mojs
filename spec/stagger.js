@@ -396,6 +396,52 @@
         return expect(s.tune()).toBe(s);
       });
     });
+    describe('generate method ->', function() {
+      it('should call generate for each module', function() {
+        var StaggeredShape, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        spyOn(s._modules[0], 'generate');
+        spyOn(s._modules[1], 'generate');
+        spyOn(s._modules[2], 'generate');
+        spyOn(s._modules[3], 'generate');
+        spyOn(s._modules[4], 'generate');
+        s.generate();
+        expect(s._modules[0].generate).toHaveBeenCalled();
+        expect(s._modules[1].generate).toHaveBeenCalled();
+        expect(s._modules[2].generate).toHaveBeenCalled();
+        expect(s._modules[3].generate).toHaveBeenCalled();
+        return expect(s._modules[4].generate).toHaveBeenCalled();
+      });
+      it('should call _recalcTotalDuration on timeline', function() {
+        var StaggeredShape, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        spyOn(s.timeline, '_recalcTotalDuration');
+        expect(s.generate()).toBe(s);
+        return expect(s.timeline._recalcTotalDuration).toHaveBeenCalled();
+      });
+      it('should return this', function() {
+        var StaggeredShape, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        return expect(s.generate()).toBe(s);
+      });
+      return it('should return this if no options passed', function() {
+        var StaggeredShape, s;
+        StaggeredShape = mojs.stagger(mojs.Shape);
+        s = new StaggeredShape({
+          quantifier: 5
+        });
+        return expect(s.generate()).toBe(s);
+      });
+    });
     describe('quantifier option ->', function() {
       return it('should be passed to the _getChildQuantity method', function() {
         var s;
