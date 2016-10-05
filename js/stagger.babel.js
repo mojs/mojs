@@ -16,7 +16,7 @@ class Stagger extends Tunable {
     if (o == null) { return this; }
     for (var i = 0; i < this._modules.length; i++ ) {
       // get child module's option and pass to the child `then`
-      this._modules[i].then( this._getOptionByIndex(i, o) )
+      this._modules[i].then( this._getOptionByIndex(i, o) );
     }
     this.timeline._recalcTotalDuration();
     return this;
@@ -30,13 +30,23 @@ class Stagger extends Tunable {
     if (o == null) { return this; }
     for (var i = 0; i < this._modules.length; i++ ) {
       // get child module's option and pass to the child `then`
-      this._modules[i].tune( this._getOptionByIndex(i, o) )
+      this._modules[i].tune( this._getOptionByIndex(i, o) );
     }
     this.timeline._recalcTotalDuration();
     return this;
   }
-
-
+  /*
+    Method to generate child modules.
+    @return {Object} this.
+  */
+  generate () {
+    for (var i = 0; i < this._modules.length; i++ ) {
+      // get child module's option and pass to the child `then`
+      this._modules[i].generate();
+    }
+    this.timeline._recalcTotalDuration();
+    return this;
+  }
   /*
     Method to get an option by modulo and name.
     @param {String} Name of the property to get.

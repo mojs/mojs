@@ -291,30 +291,45 @@ describe 'stagger ->', ->
       s = new StaggeredShape quantifier: 5
       expect(s.tune()).toBe s
 
-  # nope
-  # describe 'stagger callbacks ->', ->
-  #   it 'should pass the onStaggerStart callback to timeline', ->
-  #     fun = ->
-  #     s = new Stagger onStaggerStart: fun
-  #     expect(s.timeline._o.onStart).toBe fun
-  #   it 'should pass the onStaggerUpdate callback to timeline', ->
-  #     fun = ->
-  #     s = new Stagger onStaggerUpdate: fun
-  #     expect(s.timeline._o.onUpdate).toBe fun
-  #   it 'should pass the onStaggerComplete callback to timeline', ->
-  #     fun = ->
-  #     s = new Stagger onStaggerComplete: fun
-  #     expect(s.timeline._o.onComplete).toBe fun
-  #   it 'should pass the onStaggerReverseComplete callback to timeline', ->
-  #     fun = ->
-  #     s = new Stagger onStaggerReverseComplete: fun
-  #     expect(s.timeline._o.onReverseComplete).toBe fun
-  # nope
-  # describe 'moduleDelay option ->', ->
-  #   it 'should pass the moduleDelay option to timeline', ->
-  #     s = new Stagger moduleDelay: 200
-  #     expect(s.timeline._o.delay).toBe 200
 
+  describe 'generate method ->', ->
+    it 'should call generate for each module', ->
+      StaggeredShape = mojs.stagger mojs.Shape
+
+      s = new StaggeredShape quantifier: 5
+
+      spyOn s._modules[0], 'generate'
+      spyOn s._modules[1], 'generate'
+      spyOn s._modules[2], 'generate'
+      spyOn s._modules[3], 'generate'
+      spyOn s._modules[4], 'generate'
+
+      s.generate()
+      
+      expect(s._modules[0].generate).toHaveBeenCalled()
+      expect(s._modules[1].generate).toHaveBeenCalled()
+      expect(s._modules[2].generate).toHaveBeenCalled()
+      expect(s._modules[3].generate).toHaveBeenCalled()
+      expect(s._modules[4].generate).toHaveBeenCalled()
+
+    it 'should call _recalcTotalDuration on timeline', ->
+      StaggeredShape = mojs.stagger mojs.Shape
+      s = new StaggeredShape quantifier: 5
+      spyOn s.timeline, '_recalcTotalDuration'
+      expect(s.generate()).toBe s
+      expect(s.timeline._recalcTotalDuration).toHaveBeenCalled()
+
+    it 'should return this', ->
+      StaggeredShape = mojs.stagger mojs.Shape
+      s = new StaggeredShape quantifier: 5
+      expect(s.generate()).toBe s
+
+    it 'should return this if no options passed', ->
+      StaggeredShape = mojs.stagger mojs.Shape
+      s = new StaggeredShape quantifier: 5
+      expect(s.generate()).toBe s
+
+  
   describe 'quantifier option ->', ->
     it 'should be passed to the _getChildQuantity method', ->
       s = new Stagger
