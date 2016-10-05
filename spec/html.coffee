@@ -41,7 +41,7 @@ describe 'Html ->', ->
       expect( p['scaleX'] ).toBe 1
       expect( p['scaleY'] ).toBe 1
       
-      expect( p['isRefresh'] ).toBe true
+      expect( p['isRefreshState'] ).toBe true
       expect( p['isShowStart'] ).toBe true
       expect( p['isShowEnd'] ).toBe true
       expect( p['isSoftHide'] ).toBe true
@@ -1023,12 +1023,12 @@ describe 'Html ->', ->
       expect( obj.callbackOverrides.onUpdate ).toBe html._draw
       expect( obj.callbackOverrides.onRefresh ).toBe html._draw
 
-    it 'should not add onRefresh if isRefresh set to false', ->
+    it 'should not add onRefresh if isRefreshState set to false', ->
 
       html = new Html({
         el: document.createElement 'div'
-        borderRadius: 10,
-        isRefresh:    false
+        borderRadius:   10,
+        isRefreshState: false
       })
 
       obj = {}
