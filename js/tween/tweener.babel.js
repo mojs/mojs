@@ -135,7 +135,7 @@ class Tweener {
   */
   _restorePlayingTweens () {
     for (let i = 0; i < this._savedTweens.length; i++ ) {
-      this._savedTweens[i].play();
+      this._savedTweens[i].resume();
     }
   }
 }

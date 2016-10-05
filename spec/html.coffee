@@ -255,7 +255,11 @@ describe 'Html ->', ->
       expect( html.deltas._o.isChained ).toBe true
 
     it 'should _customProps to deltas', ->
-      customProps = {}
+      fun = ->
+      customProps = {
+        origin: 50,
+        draw: fun
+      }
       html = new Html
         el: el
         borderWidth:  '20px'
@@ -266,7 +270,10 @@ describe 'Html ->', ->
 
       html._createDeltas html._o
 
-      expect( html.deltas._o.customProps ).toBe customProps
+      expect( html.deltas._o.customProps )
+        .toEqual jasmine.objectContaining({
+          origin: 50
+        })
 
   describe '_makeTween and _makeTimeline methods ->', ->
     it 'should override them to empty methods', ->
@@ -899,6 +906,12 @@ describe 'Html ->', ->
       it 'should save customProperties object', ->
         spyOn(Html.prototype, '_saveCustomProperties').and.callThrough()
 
+        fun = ->
+        customProps = {
+          origin: 50,
+          draw: fun
+        }
+
         html = new Html({
           el: document.createElement 'div'
           borderRadius: 10,
@@ -908,8 +921,8 @@ describe 'Html ->', ->
         expect( Html.prototype._saveCustomProperties )
           .toHaveBeenCalled()
 
-        expect( html._customProps ).toBe customProps
-        expect( html._customDraw ).toBe draw
+        expect( html._customProps ).toEqual { origin: 50 }
+        expect( html._customDraw ).toBe fun
         expect( html._customProps.draw ).not.toBeDefined()
         expect( html._o.customProperties ).not.toBeDefined()
 
