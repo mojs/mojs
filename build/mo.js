@@ -1731,11 +1731,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      scaleX: 1,
 	      scaleY: 1,
 
-	      isRefresh: true,
 	      isSoftHide: true,
 	      isShowStart: true,
 	      isShowEnd: true,
-	      isForce3d: false
+	      isForce3d: false,
+	      isRefreshState: true
+
 	    };
 	    // exclude from automatic drawing
 	    this._drawExclude = { el: 1 };
@@ -2118,7 +2119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var p = this._props;
 	    o.callbackOverrides = {
 	      onUpdate: this._draw,
-	      onRefresh: this._props.isRefresh ? this._draw : void 0,
+	      onRefresh: this._props.isRefreshState ? this._draw : void 0,
 	      onStart: function onStart(isFwd) {
 	        // don't touch main `el` onStart in chained elements
 	        if (it._isChained) {

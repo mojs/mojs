@@ -1,115 +1,75 @@
 # Shape
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/bbd4fe6c1ac8519c76bc18828844e2c3)
+References:
+
+- [CodePen Example](http://codepen.io/sol0mka/pen/b8831849500f0d5cd0ab5691ebe17873?editors=0010)
 - [Tween API](./tweens/tween.md)
 - [back](./readme.md)
 
-Full API reference:
+Contents:
+
+  - [Full API Reference](#full-api-reference)
+  - [Other CSS properties](#other-css-properties)
+  - [Teach mojs with customProperties](#teach-mojs-with-customproperties)
+  - [Independent deltas](#independent-deltas)
+
+### Full API Reference:
+
+The module has `transforms/opacity` (`x`, `y`, `opacity` etc.) predefined properties listed below.
 
 ```javascript
-const shape = new mojs.Shape({
+const html = new mojs.html({
   
   /* SHAPE PROPERTIES */
 
-  // Parent of the module. {String, Object} [selector, HTMLElement]
-  parent:           document.body,
+  // HTMLElement to animate. {String, Object} [selector, HTMLElement]
+  el:           null,
+  // translateX property. {String, Number, Object} [value, delta]
+  x:          0,
+  // translateY property. {String, Number, Object} [value, delta]
+  y:          0,
+  // translateZ property. {String, Number, Object} [value, delta]
+  z:          0,
+  // skewX property. {String, Number, Object} [value, delta]
+  skewX:      0,
+  // skewY property. {String, Number, Object} [value, delta]
+  skewY:      0,
+  // rotateX property. {String, Number, Object} [value, delta]
+  angleX:     0,
+  // rotateY property. {String, Number, Object} [value, delta]
+  angleY:     0,
+  // rotateZ property. {String, Number, Object} [value, delta]
+  angleZ:     0,
+  // scale property. {String, Number, Object} [value, delta]
+  scale:      1,
+  // scaleX property. {String, Number, Object} [value, delta]
+  scaleX:     1,
+  // scaleY property. {String, Number, Object} [value, delta]
+  scaleY:     1,
+  // opacity property. {String, Number, Object} [value, delta]
+  opacity:    1,
+  
+  /*
+    For other CSS properties please see `Other CSS properties` section.
+  */
 
-  // Class name. {String}
-  className:        '',
-
-  // Shape name. {String} [ 'circle' | 'rect' | 'polygon' | 'line' | 'cross' | 'equal' | 'curve' | 'zigzag' | '*custom defined name*' ]
-  shape:            'circle',
-
-  // ∆ :: Stroke color. {String} [color name, rgb, rgba, hex]
-  stroke:           'transparent',
-
-  // ∆ :: Stroke Opacity. {Number} [ 0..1 ]
-  strokeOpacity:    1,
-
-  // Stroke Line Cap. {String} ['butt' | 'round' | 'square']
-  strokeLinecap:    '',
-
-  // ∆ :: Stroke Width. {Number} [ number ]
-  strokeWidth:      2,
-
-  // ∆ , Units :: Stroke Dash Array. {String, Number}
-  strokeDasharray:  0,
-
-  // ∆ , Units :: Stroke Dash Offset. {String, Number}
-  strokeDashoffset: 0,
-
-  // ∆ :: Fill Color. {String} [color name, rgb, rgba, hex]
-  fill:             'deeppink',
-
-  // ∆ :: Fill Opacity. {Number} [ 0..1 ]
-  fillOpacity:      1,
-
-  // ∆ , Units :: Left position of the module. {Number, String}
-  left:             '50%',
-
-  // ∆ , Units :: Top position of the module. {Number, String}
-  top:              '50%',
-
-  // ∆ , Units :: X shift. {Number, String}
-  x:                0,
-
-  // ∆ , Units :: Y shift. {Number, String}
-  y:                0,
-
-  // ∆ :: Angle. {Number, String}
-  angle:            0,
-
-  // ∆ :: Scale of the module. {Number}
-  scale:            1,
-
-  // ∆ :: Explicit scaleX value (fallbacks to `scale`). {Number}
-  scaleX:           null,
-
-  // ∆ :: Explicit scaleX value (fallbacks to `scale`). {Number}
-  scaleY:           null,
-
-  // ∆ , Unit :: Origin for `x`, `y`, `scale`, `rotate` properties. {String}
-  origin:           '50% 50%',
-
-  // ∆ :: Opacity. {Number} [ 0..1 ]
-  opacity:          1,
-
-  // ∆ :: X border radius. {Number, String}
-  rx:               0,
-
-  // ∆ :: Y border radius. {Number, String}
-  ry:               0,
-
-  // ∆ :: Points count ( for polygon, zigzag, equal ). {Number, String}
-  points:           3,
-
-  // ∆ :: Radius of the shape. {Number, String}
-  radius:           50,
-
-  // ∆ :: Radius X of the shape (fallbacks to `radius`). {Number, String}
-  radiusX:          null,
-
-  // ∆ :: Radius Y of the shape (fallbacks to `radius`). {Number, String}
-  radiusY:          null,
-
-  // If should hide module with `transforms` instead of `display`. {Boolean}
-  isSoftHide:       true,
-
-  // If should trigger composite layer for the module. {Boolean}
-  isForce3d:        false,
-
+  // Custom properties to alter mojs behaviour (see `Teach mojs with customProperties` section). {Object}
+  customProperties: null,
   // If should be shown before animation starts. {Boolean}
-  isShowStart:      false,
-
+  isShowStart:      true,
   // If should stay shown after animation ends. {Boolean}
   isShowEnd:        true,
-
+  // If refresh state on subsequent plays. {Boolean}
+  isShowStart:      true,
+  // If should trigger composite layer for the module. {Boolean}
+  isForce3d:        false,
+  // If should hide module with `transforms` instead of `display`. {Boolean}
+  isSoftHide:       true,
   // If refresh state on subsequent plays. {Boolean}
   isRefreshState:   true,
-
   // Context callbacks will be called with. {Object}
   callbacksContext: this
-  
+
   /* TWEEN PROPERTIES */
   // Duration {Number}
   duration:       350,
@@ -125,6 +85,10 @@ const shape = new mojs.Shape({
   easing:         'sin.out',
   // Easing function for backward direction of the tween animation (fallbacks to `easing`) {String, Function}[ easing name, path coordinates, bezier string, easing function ]
   backwardEasing: null,
+  // properties fro entire timeline
+  timeline: {
+   /* (+) TIMELINE PROPERTIES AND CALLBACKS - see Tween API */ 
+  },
 
   /* TWEEN CALLBACKS */
   /*
@@ -183,17 +147,6 @@ const shape = new mojs.Shape({
   .then({ /* next state options */ })
 
   /*
-    Tunes start state with new options.
-    @param options {Object} New start properties.
-  */
-  .tune({ /* new start properties */ })
-
-  /*
-    Regenerates all randoms in initial properties.
-  */
-  .generate()
-
-  /*
     Starts playback.
     @param shift {Number} Start progress shift in milliseconds.
   */
@@ -233,6 +186,62 @@ const shape = new mojs.Shape({
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/bbd4fe6c1ac8519c76bc18828844e2c3)
+### Other CSS properties
+
+Other `CSS` properties would be inferred automatically, please set them in `camelCase`:
+
+```javascript
+const html = new mojs.html({
+  el: '#js-el',
+  backgroundColor: { 'cyan': '#FA3204' },
+  borderWidth: { 2: 12 }
+});
+```
+
+- [CodePen Example](http://codepen.io/sol0mka/pen/14bcdfac6a89b918ac0292b35c0f156e?editors=0010)
+
+### Teach mojs with customProperties
+
+If property doesn't work as expected you can teach `mojs` with a `sutomProperties` definition:
+
+```javascript
+const html = new mojs.html({
+  el: '#js-el',
+  customProperties: {
+    originY: 50,
+    anotherCustomProp: 0,
+    draw (el, props) {
+      el.style['transformOrigin'] = `50% ${props.originY}%`;
+    }
+  }
+});
+```
+
+`customProperties` object should have
+  - list of custom properties names with their `default` value (`originY: 50, anotherCustomProp: 0`).
+  - `draw` function that will be responsible for rendering that custom properties. It will be called on each animation frame and will be provided with `el` and `props` object that contain current states for all custom properties (`props.originY, props.anotherCustomProp`). Feel free to apply that state to the `el` any way that works for you.
+
+All custom properties are expected to be plain `numbers`, you can define `units` in the `draw` function.
+
+- [CodePen Example](http://codepen.io/sol0mka/pen/08ed252eed451c270e49882b08cbbd41?editors=0010)
+
+### Independent deltas
+
+All delta values of the Html module could have entire set of Tween properties and can be animated individually:
+
+```javascript
+const html = new mojs.Html({
+  el: '#js-el',
+  x: { 200: 0, delay: 200, duration: 2000, easing: 'cubic.in' },
+  y: { 0: 200, duration: 2000, easing: 'cubic.out', onComplete () { /* ... */ } }
+});
+```
+
+This makes `mojs` animations ultimately flexible.
+
+- [CodePen Example](http://codepen.io/sol0mka/pen/087649b78e2d8aa407fb73051d7770ec?editors=0010)
+
+References:
+
 - [Tween API](./tweens/tween.md)
 - [back](./readme.md)

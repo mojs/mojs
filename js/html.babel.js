@@ -40,11 +40,12 @@ class Html extends Thenable {
       scaleX:     1,
       scaleY:     1,
 
-      isRefresh:    true,
-      isSoftHide:   true,
-      isShowStart:  true,
-      isShowEnd:    true,
-      isForce3d:    false
+      isSoftHide:       true,
+      isShowStart:      true,
+      isShowEnd:        true,
+      isForce3d:        false,
+      isRefreshState:   true
+
     }
     // exclude from automatic drawing
     this._drawExclude  = { el: 1 }
@@ -383,7 +384,7 @@ class Html extends Thenable {
     var p = this._props;
     o.callbackOverrides = {
       onUpdate:  this._draw,
-      onRefresh: (this._props.isRefresh) ? this._draw : void 0,
+      onRefresh: (this._props.isRefreshState) ? this._draw : void 0,
       onStart: function (isFwd) {
         // don't touch main `el` onStart in chained elements
         if ( it._isChained ) { return };

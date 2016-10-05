@@ -1,6 +1,7 @@
 # APIs
 
 ## Modules
+- [Html](./html.md)
 - [Shape](./shape.md)
 - [ShapeSwirl](./shape-swirl.md)
 - [Burst](./burst.md)
