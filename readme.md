@@ -60,7 +60,7 @@ Working hard on `APIs`, `tutorials` and `website`. Follow [@legomushroom](https:
 
 Kudos to supporters on [Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare):
 
-- Zak Frisch
+- [Zak Frisch](https://github.com/zfrisch)
 
 [full list of mojs patrons](./patrons.md)
 
