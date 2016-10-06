@@ -135,12 +135,13 @@ describe 'module class ->', ->
       expect( byte._isShown ).toBe false
 
     describe 'isSoftHide option ->', ->
-      it 'should set `opacity` of `el` to `0`', ->
-        byte = new Module radius: 25, isSoftHide: true
-        byte.el = document.createElement 'div'
-        byte.el.style[ 'opacity' ] = '.5'
-        byte._hide()
-        expect( byte.el.style[ 'opacity' ] ).toBe '0'
+      # nope
+      # it 'should set `opacity` of `el` to `0`', ->
+      #   byte = new Module radius: 25, isSoftHide: true
+      #   byte.el = document.createElement 'div'
+      #   byte.el.style[ 'opacity' ] = '.5'
+      #   byte._hide()
+      #   expect( byte.el.style[ 'opacity' ] ).toBe '0'
 
       it 'should set scale to 0', ->
         byte = new Module
@@ -152,38 +153,39 @@ describe 'module class ->', ->
         tr = style[ 'transform' ] || style[ "#{h.prefix.css}transform" ]
         expect( tr ).toBe 'scale(0)'
 
-  # describe '_show method ->' , ->
-  #   it 'should set `display` of `el` to `block`', ->
-  #     byte = new Module radius: 25, isSoftHide: false
-  #     byte.el.style[ 'display' ] = 'none'
-  #     byte._show()
-  #     expect( byte.el.style[ 'display' ] ).toBe 'block'
+  describe '_show method ->' , ->
+    it 'should set `display` of `el` to `block`', ->
+      byte = new Module radius: 25, isSoftHide: false
+      byte.el = document.createElement 'div'
+      byte.el.style[ 'display' ] = 'none'
+      byte._show()
+      expect( byte.el.style[ 'display' ] ).toBe 'block'
 
-  #   it 'should set `_isShown` to true', ->
-  #     byte = new Module radius: 25, isSoftHide: false
-  #     byte._isShown = true
-  #     byte._show()
-  #     expect( byte._isShown ).toBe true
+    it 'should set `_isShown` to true', ->
+      byte = new Module radius: 25, isSoftHide: false
+      byte._isShown = true
+      byte._show()
+      expect( byte._isShown ).toBe true
 
-  #   describe 'isSoftHide option ->', ->
-  #     it 'should set `opacity` of `el` to `_props.opacity`', ->
-  #       byte = new Module radius: 25, isSoftHide: true, opacity: .2
-  #       byte.el.style[ 'opacity' ] = '0'
-  #       byte._show()
-  #       expect( byte.el.style[ 'opacity' ] ).toBe "#{byte._props.opacity}"
+    describe 'isSoftHide option ->', ->
+      # nope
+      # it 'should set `opacity` of `el` to `_props.opacity`', ->
+      #   byte = new Module radius: 25, isSoftHide: true, opacity: .2
+      #   byte.el = document.createElement 'div'
+      #   byte.el.style[ 'opacity' ] = '0'
+      #   byte._show()
+      #   expect( byte.el.style[ 'opacity' ] ).toBe "#{byte._props.opacity}"
 
-  #     it 'should set `transform` to normal', ->
-  #       byte = new Module radius: 25, isSoftHide: true, opacity: .2
-  #       byte.el.style[ 'opacity' ] = '0'
-  #       byte.el.style[ 'transform' ] = 'none'
-  #       byte._show()
-  #       style = byte.el.style
-  #       tr = style[ 'transform' ] || style[ "#{h.prefix.css}transform" ]
-  #       expect( tr ).toBe byte._fillTransform()
-
-
-
-
+      it 'should set `transform` to normal', ->
+        byte = new Module radius: 25, isSoftHide: true, opacity: .2
+        byte.el = document.createElement 'div'
+        byte.el.style[ 'opacity' ] = '0'
+        byte.el.style[ 'transform' ] = 'none'
+        spyOn byte, '_showByTransform'
+        byte._show()
+        # style = byte.el.style
+        # tr = style[ 'transform' ] || style[ "#{h.prefix.css}transform" ]
+        expect( byte._showByTransform ).toHaveBeenCalled()
 
 
   # old
@@ -564,7 +566,7 @@ describe 'module class ->', ->
 
   describe '_calcCurrentProps method', ->
     it 'should calc color with alpha', ->
-      md = new Module isIt: 1
+      md = new Module
 
       md._deltas = {
         fill: h.parseDelta( 'fill', { 'rgba(0,0,0,0)' : 'rgba(0,0,0,1)' }, 0 )

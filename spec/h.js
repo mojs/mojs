@@ -6,6 +6,9 @@
   ns = 'http://www.w3.org/2000/svg';
 
   describe('Helpers ->', function() {
+    it('should have defaultStyles', function() {
+      return expect(h.defaultStyles).toEqual(h.computedStyle(h.div));
+    });
     it('should have logBadgeCss', function() {
       return expect(h.logBadgeCss).toBeDefined();
     });
@@ -59,15 +62,18 @@
         expect(h.tweenOptionMap.delay).toBe(1);
         expect(h.tweenOptionMap.repeat).toBe(1);
         expect(h.tweenOptionMap.easing).toBe(1);
-        expect(h.tweenOptionMap.yoyo).toBe(1);
+        expect(h.tweenOptionMap.backwardEasing).toBe(1);
+        expect(h.tweenOptionMap.isYoyo).toBe(1);
         expect(h.tweenOptionMap.shiftTime).toBe(1);
         expect(h.tweenOptionMap.isReversed).toBe(1);
         expect(h.tweenOptionMap.speed).toBe(1);
-        return expect(Object.keys(h.tweenOptionMap).length).toBe(8);
+        expect(h.tweenOptionMap.callbacksContext).toBe(1);
+        return expect(Object.keys(h.tweenOptionMap).length).toBe(10);
       });
     });
     describe('pure callbacks props ->', function() {
       return it('should be a map of callback related options ->', function() {
+        expect(h.callbacksMap.onRefresh).toBe(1);
         expect(h.callbacksMap.onStart).toBe(1);
         expect(h.callbacksMap.onUpdate).toBe(1);
         expect(h.callbacksMap.onComplete).toBe(1);
@@ -75,7 +81,11 @@
         expect(h.callbacksMap.onFirstUpdate).toBe(1);
         expect(h.callbacksMap.onRepeatStart).toBe(1);
         expect(h.callbacksMap.onRepeatComplete).toBe(1);
-        return expect(Object.keys(h.callbacksMap).length).toBe(7);
+        expect(h.callbacksMap.onPlaybackStart).toBe(1);
+        expect(h.callbacksMap.onPlaybackPause).toBe(1);
+        expect(h.callbacksMap.onPlaybackStop).toBe(1);
+        expect(h.callbacksMap.onPlaybackComplete).toBe(1);
+        return expect(Object.keys(h.callbacksMap).length).toBe(12);
       });
     });
     describe('methods ->', function() {
@@ -233,7 +243,8 @@
             });
             expect(delta.start).toBe(25);
             expect(delta.delta).toBe(50);
-            return expect(delta.type).toBe('number');
+            expect(delta.type).toBe('number');
+            return expect(delta.name).toBe('radius');
           });
           it('should parse easing', function() {
             var delta, easing, startDelta;
@@ -313,7 +324,8 @@
             expect(delta.start.string).toBe('25.5%');
             expect(delta.end.unit).toBe('%');
             expect(delta.end.value).toBe(-75.5);
-            return expect(delta.end.string).toBe('-75.5%');
+            expect(delta.end.string).toBe('-75.5%');
+            return expect(delta.name).toBe('x');
           });
           it('should fallback to declared units if one of them defined #2', function() {
             var delta;
@@ -395,7 +407,8 @@
             expect(delta.start[0].string).toBe('25.5%');
             expect(delta.end[0].unit).toBe('%');
             expect(delta.end[0].value).toBe(-75.5);
-            return expect(delta.end[0].string).toBe('-75.5%');
+            expect(delta.end[0].string).toBe('-75.5%');
+            return expect(delta.name).toBe('strokeDashoffset');
           });
           it('should work with strokeDash.. properties #2', function() {
             var delta;
@@ -467,7 +480,8 @@
             expect(delta.start.r).toBe(0);
             expect(delta.end.r).toBe(255);
             expect(delta.delta.r).toBe(255);
-            return expect(delta.type).toBe('color');
+            expect(delta.type).toBe('color');
+            return expect(delta.name).toBe('stroke');
           });
           it('should ignore stroke-linecap prop, use start prop and warn', function() {
             var delta;
@@ -530,7 +544,8 @@
             expect(delta.start[1].value).toBe(100);
             expect(delta.start[1].unit).toBe('%');
             expect(delta.end[1].value).toBe(0);
-            return expect(delta.end[1].unit).toBe('%');
+            expect(delta.end[1].unit).toBe('%');
+            return expect(delta.name).toBe('strokeDasharray');
           });
           it('should calculate array delta', function() {
             var delta;
@@ -870,12 +885,19 @@
           unit = h.parseUnit(obj);
           return expect(unit).toBe(obj);
         });
-        return it('should detect if unit if strict', function() {
+        it('should detect if unit if strict', function() {
           var unit;
           unit = h.parseUnit(100);
           expect(unit.isStrict).toBe(false);
           unit = h.parseUnit('100px');
           return expect(unit.isStrict).toBe(true);
+        });
+        return it('should parse `deg` string', function() {
+          var unit;
+          unit = h.parseUnit('100deg');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('deg');
+          return expect(unit.string).toBe('100deg');
         });
       });
       describe('strToArr method', function() {
@@ -1526,7 +1548,7 @@
         return expect(h.parseEl(el)).toBe(el);
       });
     });
-    return describe('force3d method ->', function() {
+    describe('force3d method ->', function() {
       it('should set backface-visibility to hidden on el', function() {
         var bfv, bv, el, pbv;
         el = document.createElement('div');
@@ -1541,6 +1563,20 @@
         el = document.createElement('div');
         result = h.force3d(el);
         return expect(result).toBe(el);
+      });
+    });
+    return describe('isDelta method ->', function() {
+      return it('should detect if value is not a delta value', function() {
+        expect(h.isDelta(45)).toBe(false);
+        expect(h.isDelta('45')).toBe(false);
+        expect(h.isDelta(['45'])).toBe(false);
+        expect(h.isDelta({
+          unit: 'px',
+          value: 20
+        })).toBe(false);
+        return expect(h.isDelta({
+          20: 30
+        })).toBe(true);
       });
     });
   });

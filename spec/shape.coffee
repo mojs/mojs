@@ -1436,12 +1436,31 @@ describe 'Shape ->', ->
 
       expect( shape._setProgress ).toHaveBeenCalledWith 1, 0
 
+  describe '_showByTransform method ->', ->
+    it 'should call _drawEl method', ->
+      shape = new Shape easing: (k)-> return 1
 
+      spyOn shape, '_drawEl'
+      shape._showByTransform()
 
+      expect( shape._drawEl ).toHaveBeenCalled()
 
+    it 'should update scale', ->
+      shape = new Shape easing: (k)-> return 1
 
+      shape.el.style.transform = 'scale(0)'
+      shape.el.style["#{mojs.h.prefix.css}transform"] = 'scale(0)'
 
+      shape._showByTransform()
 
+      s = shape.el.style
+      tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+      isNormal = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
+      isNormal2 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
+      isIE9 = tr is 'translate(0, 0) rotate(0deg) scale(1)'
+      isIE = tr is 'translate(0px, 0px) rotate(0deg) scale(1)'
+
+      expect(isNormal or isNormal2 or isIE9 or isIE).toBe true
 
 
 

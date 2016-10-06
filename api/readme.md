@@ -1,10 +1,11 @@
 # APIs
 
 ## Modules
+- [Html](./html.md)
 - [Shape](./shape.md)
 - [ShapeSwirl](./shape-swirl.md)
 - [Burst](./burst.md)
-- Stagger(soon)
+- [stagger](./stagger.md)
 - MotionPath(soon)
 - Spriter(soon)
 - Radial Spring(soon)
@@ -29,8 +30,8 @@
 ## Syntax
 - [Stagger Strings](./syntax/stagger.md)
 - [Rand Strings](./syntax/rand.md)
-- [Property Maps](./property-maps.md)
-- [Available Units](./units.md)
+- [Property Maps](./syntax/property-maps.md)
+- [Available Units](./syntax/units.md)
 
 ## License
 

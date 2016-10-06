@@ -1,13 +1,9 @@
 # mo · js [![Build Status](https://travis-ci.org/legomushroom/mojs.svg?branch=master)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.svg?branch=master)](https://coveralls.io/r/legomushroom/mojs?branch=master)
 
 #### motion graphics toolbelt for the web
+[mojs.io](http://mojs.io/)
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom.svg)](https://saucelabs.com/u/legomushroom)
-
-## You can support the project [on Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare) now!
-
-## Website
-[mojs.io](http://mojs.io/) [[repo](https://github.com/legomushroom/mojs-website)]
 
 ## Demos
   - [Motion Graphics for the Web](http://codepen.io/sol0mka/full/ogOYJj/)
@@ -35,21 +31,22 @@
   - [Path Easing](http://mojs.io/tutorials/easing/path-easing/)
   - [Icon Animations Powered by mo.js](http://tympanus.net/codrops/2016/02/23/icon-animations-powered-by-mo-js/)
 
-## API
-  - [Reference](https://github.com/legomushroom/mojs/blob/master/api/index.md)
+## Docs
+  - [Reference](https://github.com/legomushroom/mojs/blob/master/api/readme.md)
 
 ## Tools
   - [MojsPlayer](https://github.com/legomushroom/mojs-player)
+  - [MojsCurveEditor](https://github.com/legomushroom/mojs-curve-editor)
 
 ## Installation
-### CDN
-`<script src="//cdn.jsdelivr.net/mojs/latest/mo.min.js"></script>`  
-### Bower
-`bower install mojs`
-### NPM
-`npm install mo-js`
 
-## Docs
+npm: `npm install mo-js`
+
+cdn: `<script src="//cdn.jsdelivr.net/mojs/latest/mo.min.js"></script>`  
+
+bower: `bower install mojs`
+
+## Notes
 Working hard on `APIs`, `tutorials` and `website`. Follow [@legomushroom](https://twitter.com/legomushroom) for updates. Star to show your interest.
 
 ## Target browsers
@@ -59,7 +56,14 @@ Working hard on `APIs`, `tutorials` and `website`. Follow [@legomushroom](https:
 - Safari 4+
 - IE 9+
 
-## You can support the project [on Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare) now!
+## Thanks
+
+Kudos to supporters on [Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare):
+
+- Zak Frisch
+
+[full list of mojs patrons](./patrons.md)
+
 
 ## License
 

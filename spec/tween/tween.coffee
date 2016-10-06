@@ -5727,6 +5727,53 @@ describe 'Tween ->', ->
       t.play()
       expect(t._subPlay).toHaveBeenCalledWith(0, 'play')
 
+
+  describe 'resume method ->', ->
+    it 'should call play if prev state is play', ->
+      t = new Tween
+      t.play()
+      t.pause()
+
+      spyOn t, 'play'
+
+      shift = 200
+      t.resume( shift )
+
+      expect(t.play).toHaveBeenCalledWith( shift )
+
+    it 'should call play if prev state is reverse', ->
+      t = new Tween
+      t.playBackward()
+      t.pause()
+
+      spyOn t, 'playBackward'
+
+      shift = 200
+      t.resume( shift )
+
+      expect(t.playBackward).toHaveBeenCalledWith( shift )
+
+    it 'should do nothing if state is not pause', ->
+      t = new Tween
+      t.playBackward()
+      t.stop()
+
+      spyOn t, 'play'
+      spyOn t, 'playBackward'
+
+      result = t.resume()
+      expect(t.play).not.toHaveBeenCalled()
+      expect(t.playBackward).not.toHaveBeenCalled()
+      expect(result).toBe t
+
+    it 'should always return this', ->
+      t = new Tween
+      t.playBackward()
+      t.pause()
+
+      expect(t.resume()).toBe t
+
+
   describe 'playBackward method ->', ->
     it 'should set _state to "reverse"',->
       t = new Tween
@@ -7042,11 +7089,23 @@ describe 'Tween ->', ->
       tw._props.easing = 'ease.in'
       tw._extendDefaults()
       expect(typeof tw._props.easing).toBe 'function'
+    it 'should set _parent on easing function', ->
+      tw = new Tween
+      tw._props.easing = 'ease.in'
+      tw._extendDefaults()
+      expect(typeof tw._props.easing).toBe 'function'
+      expect(tw._props.easing._parent).toBe tw
 
     it 'should parse backwardEasing', ->
       tw = new Tween backwardEasing: 'ease.in'
       expect(typeof tw._props.backwardEasing).toBe 'function'
       expect(tw._props.backwardEasing).toBe easing.ease.in
+
+    it 'should set _parent on easing function', ->
+      tw = new Tween backwardEasing: 'ease.in'
+      expect(typeof tw._props.backwardEasing).toBe 'function'
+      expect(tw._props.backwardEasing).toBe easing.ease.in
+      expect(tw._props.backwardEasing._parent).toBe tw
 
     it 'should not parse backwardEasing if `null`', ->
       tw = new Tween
@@ -7123,10 +7182,16 @@ describe 'Tween ->', ->
       expect(result.isMojsCallbackOverride).toBe true
 
   describe '_assignProp method ->', ->
-    it 'should parse easign', ->
+    it 'should parse easing', ->
       tr = new Tween
       tr._assignProp 'easing', 'ease.in'
       expect(typeof tr._props.easing).toBe 'function'
+
+    it 'should set parent on easing', ->
+      tr = new Tween
+      tr._assignProp 'easing', 'ease.in'
+      expect(typeof tr._props.easing).toBe 'function'
+      expect(tr._props.easing._parent).toBe tr
 
     it 'should fallback to defaults for null values', ->
       tr = new Tween
@@ -7293,7 +7358,27 @@ describe 'Tween ->', ->
 
         spyOn tw._props, 'onRefresh'
         tw._refresh true
-        expect( tw._props.onRefresh ).toHaveBeenCalledWith true
+        expect( tw._props.onRefresh ).toHaveBeenCalledWith true, 0, 0
+
+      it 'should call onRefresh with eased progress', ->
+        easing = mojs.easing.path('M0,50 L100, 0')
+        tw = new Tween
+          easing: easing
+          onRefresh: ->
+
+        spyOn tw._props, 'onRefresh'
+        tw._refresh true
+        expect( tw._props.onRefresh ).toHaveBeenCalledWith true, easing(0), 0
+
+      it 'should call onRefresh with eased progress // after', ->
+        easing = mojs.easing.path('M0,50 L100, 0')
+        tw = new Tween
+          easing: easing
+          onRefresh: ->
+
+        spyOn tw._props, 'onRefresh'
+        tw._refresh false
+        expect( tw._props.onRefresh ).toHaveBeenCalledWith false, easing(1), 1
 
       it 'should not throw if no callback set', ->
         tw = new Tween
@@ -7318,7 +7403,3 @@ describe 'Tween ->', ->
       tw._updateInActiveArea 0
 
       expect( tw._isRefreshed ).toBe false
-
-    
-
-

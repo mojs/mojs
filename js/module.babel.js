@@ -5,6 +5,8 @@ import h from './h';
 */
 class Module {
   constructor ( o = {} ) {
+    // this._isIt = o.isIt;
+    // delete o.isIt;
     this._o     = o;
     this._index = this._o.index || 0;
     // map of props that should be
@@ -19,7 +21,6 @@ class Module {
       timeline: 1,
       prevChainModule: 1,
       callbacksContext: 1
-
     };
 
     this._declareDefaults();
@@ -79,8 +80,8 @@ class Module {
     if ( !this.el ) { return; }
 
     if ( p.isSoftHide ) {
-      this.el.style.opacity = p.opacity;
-      h.setPrefixedStyle( this.el, 'transform', this._fillTransform() );
+      // this.el.style.opacity = p.opacity;
+      this._showByTransform();
     } else { this.el.style.display = 'block'; }
 
     this._isShown = true;
@@ -91,14 +92,19 @@ class Module {
   */
   _hide () {
     if ( !this.el ) { return; }
-    
+
     if ( this._props.isSoftHide ) {
-      this.el.style.opacity = 0;
+      // this.el.style.opacity = 0;
       h.setPrefixedStyle( this.el, 'transform', 'scale(0)' );
     } else { this.el.style.display = 'none'; }
     
     this._isShown = false;
   }
+  /*
+    Method to show element by applying transform back to normal.
+    @private
+  */
+  _showByTransform () {}
   /*
     Method to parse option string.
     Searches for stagger and rand values and parses them.
@@ -233,6 +239,7 @@ class Module {
   }
   /*
     Method to parse option value.
+    @private
     @param {String} Option name.
     @param {Any} Option value.
   */
@@ -369,10 +376,11 @@ class Module {
           b = parseInt(value.start.b + ep * value.delta.b, 10);
           a = parseFloat(value.start.a + ep * value.delta.a);
         } else {
-          r = parseInt(value.curve(p) * (value.start.r + p*value.delta.r), 10);
-          g = parseInt(value.curve(p) * (value.start.g + p*value.delta.g), 10);
-          b = parseInt(value.curve(p) * (value.start.b + p*value.delta.b), 10);
-          a = parseFloat(value.curve(p) * (value.start.a + p*value.delta.a));
+          var cp = value.curve(p);
+          r = parseInt(cp * (value.start.r + p*value.delta.r), 10);
+          g = parseInt(cp * (value.start.g + p*value.delta.g), 10);
+          b = parseInt(cp * (value.start.b + p*value.delta.b), 10);
+          a = parseFloat(cp * (value.start.a + p*value.delta.a));
         }
         this._props[key] = `rgba(${r},${g},${b},${a})`;
       }

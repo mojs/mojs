@@ -1,8 +1,8 @@
 # Shape
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/XKMKjQ?editors=0010)
+- [CodePen Example](http://codepen.io/sol0mka/pen/bbd4fe6c1ac8519c76bc18828844e2c3)
 - [Tween API](./tweens/tween.md)
-- [back](./index.md)
+- [back](./readme.md)
 
 Full API reference:
 
@@ -155,14 +155,6 @@ const shape = new mojs.Shape({
   */
   onUpdate (ep, p, isForward, isYoyo) {},
   /*
-    Fires on every update of the tween in sufficiently active period (excluding delay periods).
-    @param ep {Number} Eased progress.
-    @param p {Number} Normal (not eased) progress.
-    @param isForward {Boolean} Direction of the progress.
-    @param isYoyo {Boolean} If in `yoyo` period.
-  */
-  onUpdate (ep, p, isForward, isYoyo) {},
-  /*
     Fires when tween's the progress reaches `1` point in normal or repeat period.
     @param isForward {Boolean} If progress moves in forward direction.
     @param isYoyo {Boolean} If progress inside `yoyo` flip period.
@@ -189,7 +181,6 @@ const shape = new mojs.Shape({
     @param options {Object} Next shape state.
   */
   .then({ /* next state options */ })
-
   /*
     Tunes start state with new options.
     @param options {Object} New start properties.
@@ -200,7 +191,6 @@ const shape = new mojs.Shape({
     Regenerates all randoms in initial properties.
   */
   .generate()
-
   /*
     Starts playback.
     @param shift {Number} Start progress shift in milliseconds.
@@ -226,6 +216,11 @@ const shape = new mojs.Shape({
   */
   .replayBackward( shift = 0 )
   /*
+    Resumes playback in direction it was prior to `pause`.
+    @param shift {Number} Start progress shift in milliseconds.
+  */
+  .resume( shift = 0 )
+  /*
     Sets progress of the tween.
     @param progress {Number} Progress to set [ 0..1 ].
   */
@@ -235,12 +230,11 @@ const shape = new mojs.Shape({
     @param speed {Number} Progress to set [ 0..∞ ].
   */
   setSpeed ( speed )
-
   /* Stops and resets the tween. */
   reset ( speed )
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/XKMKjQ?editors=0010)
+- [CodePen Example](http://codepen.io/sol0mka/pen/bbd4fe6c1ac8519c76bc18828844e2c3)
 - [Tween API](./tweens/tween.md)
-- [back](./index.md)
+- [back](./readme.md)

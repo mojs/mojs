@@ -2,7 +2,6 @@ Shape       = mojs.Shape
 ShapeSwirl  = mojs.ShapeSwirl
 Burst       = mojs.Burst
 Tunable     = mojs.Tunable
-Tunable     = mojs.Tunable
 t           = mojs.tweener
 h           = mojs.h
 

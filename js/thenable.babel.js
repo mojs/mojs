@@ -14,16 +14,13 @@ class Thenable extends Tweenable {
   */
   then ( o ) {
     // return if nothing was passed
-    if ((o == null) || !Object.keys(o)) { return 1; }
+    if ((o == null) || !Object.keys(o).length) { return 1; }
     // merge then options with the current ones
     var prevRecord = this._history[ this._history.length - 1 ],
         prevModule = this._modules[ this._modules.length - 1 ],
         merged     = this._mergeThenOptions( prevRecord, o );
 
-    // console.log(merged.angle);
     this._resetMergedFlags( merged );
-    // reset isShowEnd flag on prev module
-    // prevModule._setProp && prevModule._setProp('isShowEnd', false);
     // create a submodule of the same type as the master module
     var module = new this.constructor( merged );
     // set `this` as amster module of child module
@@ -32,6 +29,7 @@ class Thenable extends Tweenable {
     this._modules.push( module );
     // add module's tween into master timeline
     this.timeline.append( module );
+    
     return this;
   }
 
@@ -52,7 +50,7 @@ class Thenable extends Tweenable {
     // reset isRefreshState flag for the submodules
     obj.isRefreshState   = false;
     // set the submodule callbacks context
-    obj.callbacksContext = this._props.callbacksContext;
+    obj.callbacksContext = this._props.callbacksContext || this;
     // set previous module
     obj.prevChainModule  = h.getLastItem( this._modules );
     // pass the `this` as master module
@@ -65,6 +63,10 @@ class Thenable extends Tweenable {
   */
   _vars () {
     super._vars();
+    // save _master module
+    this._masterModule    = this._o.masterModule;
+    // set isChained flag based on prevChainModule option
+    this._isChained       = !!this._masterModule;
     // we are expect that the _o object
     // have been already extended by defaults
     var initialRecord = h.cloneObj(this._props);
@@ -95,6 +97,14 @@ class Thenable extends Tweenable {
     this._history.push(o);
     return o;
   }
+  /*
+    Method to pipe startValue of the delta.
+    @private
+    @param {String} Start property name.
+    @param {Any} Start property value.
+    @returns {Any} Start property value.
+  */
+  _checkStartValue (name, value) { return value; }
   /*
     Originally part of the _mergeThenOptions.
     Loops thru start object and copies all the props from it.
@@ -136,6 +146,7 @@ class Thenable extends Tweenable {
           startValue = ( start[key] != null )
             ? start[key] : this._defaults[key];
 
+      startValue = this._checkStartValue( key, startValue );
       if ( endValue == null ) { continue };
       // make ∆ of start -> end
       // if key name is radiusX/radiusY and
@@ -163,8 +174,8 @@ class Thenable extends Tweenable {
   _mergeThenProperty ( key, startValue, endValue ) {
     // if isnt tween property
     var isBoolean = typeof endValue === 'boolean',
-        curve,
-        easing;
+        curve, easing;
+
     if ( !h.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean ) {
 
       if ( h.isObject( endValue ) && endValue.to != null ) {

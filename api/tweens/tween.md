@@ -1,8 +1,8 @@
 # Tween
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0010)
+- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0011)
 - [Timeline](./timeline.md)
-- [back](/api/index.md)
+- [back](/api/readme.md)
 
 Full API reference:
 
@@ -118,6 +118,11 @@ const tween = new mojs.Tween({
   */
   .replayBackward( shift = 0 )
   /*
+    Resumes playback in direction it was prior to `pause`.
+    @param shift {Number} Start progress shift in milliseconds.
+  */
+  .resume( shift = 0 )
+  /*
     Sets progress of the tween.
     @param progress {Number} Progress to set [ 0..1 ].
   */
@@ -133,6 +138,6 @@ const tween = new mojs.Tween({
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0010)
+- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0011)
 - [Timeline](./timeline.md)
-- [back](/api/index.md)
+- [back](/api/readme.md)

@@ -30,6 +30,9 @@
     it('should have Transit alias', function() {
       return expect(mojs.Transit).toBe(mojs.Shape);
     });
+    it('should have Html', function() {
+      return expect(mojs.Html).toBeDefined();
+    });
     it('should have ShapeSwirl', function() {
       return expect(mojs.ShapeSwirl).toBeDefined();
     });
@@ -69,8 +72,18 @@
     it('should have easing', function() {
       return expect(mojs.easing).toBeDefined();
     });
-    return it('should have shapesMap', function() {
+    it('should have shapesMap', function() {
       return expect(mojs.shapesMap).toBeDefined();
+    });
+    it('should have _pool', function() {
+      expect(typeof mojs._pool).toBe('object');
+      return expect(mojs._pool).toBe(mojs._pool);
+    });
+    it('should have delta', function() {
+      return expect(mojs._pool.Delta).toBeDefined();
+    });
+    return it('should have deltas', function() {
+      return expect(mojs._pool.Deltas).toBeDefined();
     });
   });
 

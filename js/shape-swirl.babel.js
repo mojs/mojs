@@ -77,9 +77,6 @@ class ShapeSwirl extends Shape {
         y     = this._getPosValue('y'),
         angle = (90 + Math.atan((y.delta/x.delta) || 0)*h.RAD_TO_DEG);
 
-    // console.log('x:', x);
-    // console.log('y:', y);
-
     this._posData = {
       radius: Math.sqrt(x.delta*x.delta + y.delta*y.delta),
       angle: (x.delta < 0) ? angle + 180 : angle,

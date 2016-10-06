@@ -63,7 +63,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	__webpack_require__(59);
 	__webpack_require__(58);
-	module.exports = __webpack_require__(63)('iterator');
+	module.exports = __webpack_require__(61)('iterator');
 
 /***/ },
 /* 2 */
@@ -268,12 +268,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // call _vars method on Thenable
 	    _Tunable.prototype._vars.call(this);
 	    this._lastSet = {};
-	    // save _master module
-	    this._masterModule = this._o.masterModule;
 	    // save previous module in the chain
 	    this._prevChainModule = this._o.prevChainModule;
-	    // set isChained flag based on prevChainModule option
-	    this._isChained = !!this._masterModule;
 	    // should draw on foreign svg canvas
 	    this.isForeign = !!this._o.ctx;
 	    // this._o.isTimelineLess = true;
@@ -728,6 +724,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._hide();
 	    }
 	  };
+	  /*
+	    Method that gets called on `soft` show of the module,
+	    it should restore transform styles of the module.
+	    @private
+	    @overrides @ Module
+	  */
+
+
+	  Shape.prototype._showByTransform = function _showByTransform() {
+	    // reset the cache of the scale prop
+	    this._lastSet.scale = null;
+	    // draw el accroding to it's props
+	    this._drawEl();
+	  };
 
 	  return Shape;
 	}(_tunable2.default);
@@ -854,9 +864,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var x = this._getPosValue('x'),
 	        y = this._getPosValue('y'),
 	        angle = 90 + Math.atan(y.delta / x.delta || 0) * _h2.default.RAD_TO_DEG;
-
-	    // console.log('x:', x);
-	    // console.log('y:', y);
 
 	    this._posData = {
 	      radius: Math.sqrt(x.delta * x.delta + y.delta * y.delta),
@@ -1637,7 +1644,598 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Burst;
 
 /***/ },
-/* 5 */,
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _extends4 = __webpack_require__(27);
+
+	var _extends5 = _interopRequireDefault(_extends4);
+
+	var _classCallCheck2 = __webpack_require__(23);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(24);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(25);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _keys = __webpack_require__(28);
+
+	var _keys2 = _interopRequireDefault(_keys);
+
+	var _thenable = __webpack_require__(12);
+
+	var _thenable2 = _interopRequireDefault(_thenable);
+
+	var _tween = __webpack_require__(8);
+
+	var _tween2 = _interopRequireDefault(_tween);
+
+	var _deltas = __webpack_require__(15);
+
+	var _deltas2 = _interopRequireDefault(_deltas);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var h = __webpack_require__(19);
+
+
+	// get tween properties
+	var obj = {};
+	_tween2.default.prototype._declareDefaults.call(obj);
+	var keys = (0, _keys2.default)(obj._defaults);
+	for (var i = 0; i < keys.length; i++) {
+	  obj._defaults[keys[i]] = 1;
+	}
+	obj._defaults['timeline'] = 1;
+	var TWEEN_PROPERTIES = obj._defaults;
+
+	/*
+	  TODO:
+
+	    - change _props to _propsObj for animations
+	    - current values in deltas
+	*/
+
+	var Html = function (_Thenable) {
+	  (0, _inherits3.default)(Html, _Thenable);
+
+	  function Html() {
+	    (0, _classCallCheck3.default)(this, Html);
+	    return (0, _possibleConstructorReturn3.default)(this, _Thenable.apply(this, arguments));
+	  }
+
+	  Html.prototype._declareDefaults = function _declareDefaults() {
+	    this._defaults = {
+	      x: 0,
+	      y: 0,
+	      z: 0,
+
+	      skewX: 0,
+	      skewY: 0,
+
+	      // angle:      0,
+	      angleX: 0,
+	      angleY: 0,
+	      angleZ: 0,
+
+	      scale: 1,
+	      scaleX: 1,
+	      scaleY: 1,
+
+	      isSoftHide: true,
+	      isShowStart: true,
+	      isShowEnd: true,
+	      isForce3d: false,
+	      isRefreshState: true
+
+	    };
+	    // exclude from automatic drawing
+	    this._drawExclude = { el: 1 };
+	    // properties that cause 3d layer
+	    this._3dProperties = ['angleX', 'angleY', 'z'];
+	    // properties that have array values
+	    this._arrayPropertyMap = { transformOrigin: 1, backgroundPosition: 1 };
+	    // properties that have no units
+	    this._numberPropertyMap = {
+	      opacity: 1, scale: 1, scaleX: 1, scaleY: 1,
+	      // angle: 1,
+	      angleX: 1, angleY: 1, angleZ: 1,
+	      skewX: 1, skewY: 1
+	    };
+	    // properties that should be prefixed
+	    this._prefixPropertyMap = { transform: 1, transformOrigin: 1 };
+	    // save prefix
+	    this._prefix = h.prefix.css;
+	  };
+
+	  Html.prototype.then = function then(o) {
+	    // return if nothing was passed
+	    if (o == null || !(0, _keys2.default)(o).length) {
+	      return 1;
+	    }
+
+	    // get the last item in `then` chain
+	    var prevModule = h.getLastItem(this._modules);
+	    // set deltas to the finish state
+	    prevModule.deltas.refresh(false);
+	    // copy finish state to the last history record
+	    this._history[this._history.length - 1] = prevModule._o;
+	    // call super
+	    _Thenable.prototype.then.call(this, o);
+	    // restore the _props
+	    prevModule.deltas.restore();
+
+	    return this;
+	  };
+	  /*
+	    Method to pipe startValue of the delta.
+	    @private
+	    @ovarrides @ Thenable
+	    @param {String} Start property name.
+	    @param {Any} Start property value.
+	    @returns {Any} Start property value.
+	  */
+
+
+	  Html.prototype._checkStartValue = function _checkStartValue(key, value) {
+	    if (value == null) {
+	      // return default value for transforms
+	      if (this._defaults[key] != null) {
+	        return this._defaults[key];
+	      }
+	      // return default value from _customProps
+	      if (this._customProps[key] != null) {
+	        return this._customProps[key];
+	      }
+	      // try to get the default value
+	      if (h.defaultStyles[key] != null) {
+	        return h.defaultStyles[key];
+	      }
+	      // at the end return 0
+	      return 0;
+	    }
+
+	    return value;
+	  };
+	  /*
+	    Method to draw _props to el.
+	    @private
+	  */
+
+
+	  Html.prototype._draw = function _draw() {
+	    var p = this._props;
+	    for (var i = 0; i < this._drawProps.length; i++) {
+	      var name = this._drawProps[i];
+	      this._setStyle(name, p[name]);
+	    }
+	    // draw transforms
+	    this._drawTransform();
+	    // call custom transform callback if exist
+	    this._customDraw && this._customDraw(this._props.el, this._props);
+	  };
+	  /*
+	    Method to set transform on element.
+	    @private
+	  */
+
+
+	  Html.prototype._drawTransform = function _drawTransform() {
+	    var p = this._props;
+	    var string = !this._is3d ? 'translate(' + p.x + ', ' + p.y + ')\n          rotate(' + p.angleZ + 'deg)\n          skew(' + p.skewX + 'deg, ' + p.skewY + 'deg)\n          scale(' + p.scaleX + ', ' + p.scaleY + ')' : 'translate3d(' + p.x + ', ' + p.y + ', ' + p.z + ')\n          rotateX(' + p.angleX + 'deg)\n          rotateY(' + p.angleY + 'deg)\n          rotateZ(' + p.angleZ + 'deg)\n          skew(' + p.skewX + 'deg, ' + p.skewY + 'deg)\n          scale(' + p.scaleX + ', ' + p.scaleY + ')';
+
+	    this._setStyle('transform', string);
+	  };
+	  /*
+	    Method to render on initialization.
+	    @private
+	    @overrides @ Module
+	  */
+
+
+	  Html.prototype._render = function _render() {
+	    // return immediately if not the first in `then` chain
+	    if (this._o.prevChainModule) {
+	      return;
+	    }
+
+	    var p = this._props;
+
+	    for (var i = 0; i < this._renderProps.length; i++) {
+	      var name = this._renderProps[i],
+	          value = p[name];
+
+	      value = typeof value === 'number' ? value + 'px' : value;
+	      this._setStyle(name, value);
+	    }
+
+	    this._draw();
+
+	    if (!p.isShowStart) {
+	      this._hide();
+	    }
+	  };
+	  /*
+	    Method to set style on el.
+	    @private
+	    @param {String} Style property name.
+	    @param {String} Style property value.
+	  */
+
+
+	  Html.prototype._setStyle = function _setStyle(name, value) {
+	    if (this._state[name] !== value) {
+	      var style = this._props.el.style;
+	      // set style
+	      style[name] = value;
+	      // if prefix needed - set it
+	      if (this._prefixPropertyMap[name]) {
+	        style['' + this._prefix + name] = value;
+	      }
+	      // cache the last set value
+	      this._state[name] = value;
+	    }
+	  };
+	  /*
+	    Method to copy `_o` options to `_props` object.
+	    @private
+	  */
+
+
+	  Html.prototype._extendDefaults = function _extendDefaults() {
+	    this._props = this._o.props || {};
+	    // props for intial render only
+	    this._renderProps = [];
+	    // props for draw on every frame update
+	    this._drawProps = [];
+	    // save custom properties if present
+	    this._saveCustomProperties(this._o);
+	    // copy the options
+	    var o = (0, _extends5.default)({}, this._o);
+	    // extend options with defaults
+	    o = this._addDefaults(o);
+
+	    var keys = (0, _keys2.default)(o);
+	    for (var i = 0; i < keys.length; i++) {
+	      var key = keys[i];
+	      // include the property if it is not in drawExclude object
+	      // and not in defaults = not a transform
+	      var isInclude = !this._drawExclude[key] && // not in exclude map
+	      this._defaults[key] == null && // not transform property
+	      !TWEEN_PROPERTIES[key]; // not tween property
+
+	      var isCustom = this._customProps[key];
+	      // copy all non-delta properties to the props
+	      // if not delta then add the property to render
+	      // list that is called on initialization
+	      // otherwise add it to the draw list that will
+	      // be drawed on each frame
+	      if (!h.isDelta(o[key]) && !TWEEN_PROPERTIES[key]) {
+	        this._parseOption(key, o[key]);
+	        if (key === 'el') {
+	          this._props.el = h.parseEl(o.el);
+	          this.el = this._props.el;
+	        }
+	        if (isInclude && !isCustom) {
+	          this._renderProps.push(key);
+	        }
+	        // copy delta prop but not transforms
+	        // otherwise push it to draw list that gets traversed on every draw
+	      } else if (isInclude && !isCustom) {
+	          this._drawProps.push(key);
+	        }
+	    }
+
+	    this._createDeltas(o);
+	  };
+	  /*
+	    Method to save customProperties to _customProps.
+	    @param {Object} Options of the module.
+	  */
+
+
+	  Html.prototype._saveCustomProperties = function _saveCustomProperties() {
+	    var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	    this._customProps = o.customProperties || {};
+	    this._customProps = (0, _extends5.default)({}, this._customProps);
+	    this._customDraw = this._customProps.draw;
+	    delete this._customProps.draw;
+	    delete o.customProperties;
+
+	    this._copyDefaultCustomProps();
+
+	    // if ( this._customProps ) {}
+	    // this._customProps = this._customProps || {};
+	  };
+
+	  Html.prototype._copyDefaultCustomProps = function _copyDefaultCustomProps() {
+	    for (var key in this._customProps) {
+	      if (this._o[key] == null) {
+	        this._o[key] = this._customProps[key];
+	      }
+	    }
+	  };
+	  /*
+	    Method to reset some flags on merged options object.
+	    @private
+	    @overrides @ Thenable
+	    @param   {Object} Options object.
+	    @returns {Object} Options object.
+	  */
+
+
+	  Html.prototype._resetMergedFlags = function _resetMergedFlags(o) {
+	    _Thenable.prototype._resetMergedFlags.call(this, o);
+	    o.props = this._props;
+	    o.customProperties = this._customProps;
+	    return o;
+	  };
+	  /*
+	    Method to parse option value.
+	    @private
+	    @param {String} Option name.
+	    @param {Any} Option value.
+	  */
+
+
+	  Html.prototype._parseOption = function _parseOption(key, value) {
+	    _Thenable.prototype._parseOption.call(this, key, value);
+	    // at this point the property is parsed
+	    var parsed = this._props[key];
+	    // cast it to string if it is array
+	    if (h.isArray(parsed)) {
+	      this._props[key] = this._arrToString(parsed);
+	    }
+	  };
+	  /*
+	    Method cast array to string value.
+	    @private
+	    @param {Array} Array of parsed numbers with units.
+	    @returns {String} Casted array.
+	  */
+
+
+	  Html.prototype._arrToString = function _arrToString(arr) {
+	    var string = '';
+	    for (var i = 0; i < arr.length; i++) {
+	      string += arr[i].string + ' ';
+	    }
+	    return string;
+	  };
+	  /*
+	    Method to add defauls to passed object.
+	    @private
+	    @param {Object} Object to add defaults to.
+	  */
+
+
+	  Html.prototype._addDefaults = function _addDefaults(obj) {
+	    // flag that after all defaults are set will indicate
+	    // if user have set the 3d transform
+	    this._is3d = false;
+
+	    for (var key in this._defaults) {
+	      // skip property if it is listed in _skipProps
+	      // if (this._skipProps && this._skipProps[key]) { continue; }
+
+	      // copy the properties to the _o object
+	      // if it's null - set the default value
+	      if (obj[key] == null) {
+	        // scaleX and scaleY should fallback to scale
+	        if (key === 'scaleX' || key === 'scaleY') {
+	          obj[key] = obj['scale'] != null ? obj['scale'] : this._defaults['scale'];
+	        } else {
+	          obj[key] = this._defaults[key];
+	        }
+	      } else {
+	        // get if 3d property was set.
+	        if (this._3dProperties.indexOf(key) !== -1) {
+	          this._is3d = true;
+	        }
+	      }
+	    }
+
+	    if (this._o.isForce3d) {
+	      this._is3d = true;
+	    }
+
+	    return obj;
+	  };
+	  /*
+	    Lifecycle method to declare variables.
+	    @private
+	  */
+
+
+	  Html.prototype._vars = function _vars() {
+	    // set deltas to the last value, so the _props with
+	    // end values will be copied to the _history, it is
+	    // crucial for `then` chaining
+	    this.deltas.refresh(false);
+	    // call super vars
+	    _Thenable.prototype._vars.call(this);
+	    // state of set properties
+	    this._state = {};
+	    // restore delta values that we have refreshed before
+	    this.deltas.restore(false);
+	  };
+	  /*
+	    Method to create deltas from passed object.
+	    @private
+	    @param {Object} Options object to pass to the Deltas.
+	  */
+
+
+	  Html.prototype._createDeltas = function _createDeltas(options) {
+	    this.deltas = new _deltas2.default({
+	      options: options,
+	      props: this._props,
+	      arrayPropertyMap: this._arrayPropertyMap,
+	      numberPropertyMap: this._numberPropertyMap,
+	      customProps: this._customProps,
+	      callbacksContext: options.callbacksContext || this,
+	      isChained: !!this._o.prevChainModule
+	    });
+
+	    // if chained module set timeline to deltas' timeline
+	    if (this._o.prevChainModule) {
+	      this.timeline = this.deltas.timeline;
+	    }
+	  };
+	  /* @overrides @ Tweenable */
+
+
+	  Html.prototype._makeTween = function _makeTween() {};
+
+	  Html.prototype._makeTimeline = function _makeTimeline() {
+	    // do not create timeline if module if chained
+	    if (this._o.prevChainModule) {
+	      return;
+	    }
+	    // add callbacks overrides
+	    this._o.timeline = this._o.timeline || {};
+	    this._addCallbackOverrides(this._o.timeline);
+	    _Thenable.prototype._makeTimeline.call(this);
+	    this.timeline.add(this.deltas);
+	  };
+	  /*
+	    Method to add callback overrides to passed object object.
+	    @param {Object} Object to add overrides on.
+	  */
+
+
+	  Html.prototype._addCallbackOverrides = function _addCallbackOverrides(o) {
+	    var it = this;
+	    var p = this._props;
+	    o.callbackOverrides = {
+	      onUpdate: this._draw,
+	      onRefresh: this._props.isRefreshState ? this._draw : void 0,
+	      onStart: function onStart(isFwd) {
+	        // don't touch main `el` onStart in chained elements
+	        if (it._isChained) {
+	          return;
+	        };
+	        // show if was hidden at start
+	        if (isFwd && !p.isShowStart) {
+	          it._show();
+	        }
+	        // hide if should be hidden at start
+	        else {
+	            if (!p.isShowStart) {
+	              it._hide();
+	            }
+	          }
+	      },
+	      onComplete: function onComplete(isFwd) {
+	        // don't touch main `el` if not the last in `then` chain
+	        if (it._isChained) {
+	          return;
+	        }
+	        if (isFwd) {
+	          if (!p.isShowEnd) {
+	            it._hide();
+	          }
+	        } else if (!p.isShowEnd) {
+	          it._show();
+	        }
+	      }
+	    };
+	  };
+
+	  /*
+	    Method that gets called on `soft` show of the module,
+	    it should restore transform styles of the module.
+	    @private
+	    @overrides @ Module
+	  */
+
+
+	  Html.prototype._showByTransform = function _showByTransform() {
+	    this._drawTransform();
+	  };
+
+	  /*
+	    Method to merge `start` and `end` for a property in then record.
+	    @private
+	    @param {String} Property name.
+	    @param {Any}    Start value of the property.
+	    @param {Any}    End value of the property.
+	  */
+	  // !! COVER !!
+
+
+	  Html.prototype._mergeThenProperty = function _mergeThenProperty(key, startValue, endValue) {
+	    // if isnt tween property
+	    var isBoolean = typeof endValue === 'boolean',
+	        curve,
+	        easing;
+
+	    if (!h.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean) {
+
+	      var TWEEN_PROPS = {};
+	      if (h.isObject(endValue) && endValue.to != null) {
+	        for (var _key in endValue) {
+	          if (TWEEN_PROPERTIES[_key] || _key === 'curve') {
+	            TWEEN_PROPS[_key] = endValue[_key];
+	            delete endValue[_key];
+	          }
+	        }
+	        // curve    = endValue.curve;
+	        // easing   = endValue.easing;
+	        endValue = endValue.to;
+	      }
+
+	      // if end value is delta - just save it
+	      if (this._isDelta(endValue)) {
+
+	        var _TWEEN_PROPS = {};
+	        for (var _key2 in endValue) {
+	          if (TWEEN_PROPERTIES[_key2] || _key2 === 'curve') {
+	            _TWEEN_PROPS[_key2] = endValue[_key2];
+	            delete endValue[_key2];
+	          }
+	        }
+	        var result = this._parseDeltaValues(key, endValue);
+
+	        return (0, _extends5.default)({}, result, _TWEEN_PROPS);
+	      } else {
+	        var parsedEndValue = this._parsePreArrayProperty(key, endValue);
+	        // if end value is not delta - merge with start value
+	        if (this._isDelta(startValue)) {
+	          var _extends2;
+
+	          // if start value is delta - take the end value
+	          // as start value of the new delta
+	          return (0, _extends5.default)((_extends2 = {}, _extends2[h.getDeltaEnd(startValue)] = parsedEndValue, _extends2), TWEEN_PROPS);
+	          // if both start and end value are not ∆ - make ∆
+	        } else {
+	            var _extends3;
+
+	            return (0, _extends5.default)((_extends3 = {}, _extends3[startValue] = parsedEndValue, _extends3), TWEEN_PROPS);
+	          }
+	      }
+	      // copy the tween values unattended
+	    } else {
+	        return endValue;
+	      }
+	  };
+
+	  return Html;
+	}(_thenable2.default);
+
+	exports.default = Html;
+
+/***/ },
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1651,6 +2249,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
+	var _possibleConstructorReturn2 = __webpack_require__(24);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(25);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
 	var _h = __webpack_require__(19);
 
 	var _h2 = _interopRequireDefault(_h);
@@ -1659,14 +2265,74 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _timeline2 = _interopRequireDefault(_timeline);
 
+	var _tunable = __webpack_require__(13);
+
+	var _tunable2 = _interopRequireDefault(_tunable);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Stagger = function () {
+	var Stagger = function (_Tunable) {
+	  (0, _inherits3.default)(Stagger, _Tunable);
+
 	  function Stagger(options, Module) {
+	    var _ret;
+
 	    (0, _classCallCheck3.default)(this, Stagger);
 
-	    return this.init(options, Module);
+	    var _this = (0, _possibleConstructorReturn3.default)(this, _Tunable.call(this));
+
+	    return _ret = _this._init(options, Module), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
+	  /*
+	    Method to create then chain on child modules.
+	    @param {Object} Then options.
+	    @return {Object} this.
+	  */
+
+
+	  Stagger.prototype.then = function then(o) {
+	    if (o == null) {
+	      return this;
+	    }
+	    for (var i = 0; i < this._modules.length; i++) {
+	      // get child module's option and pass to the child `then`
+	      this._modules[i].then(this._getOptionByIndex(i, o));
+	    }
+	    this.timeline._recalcTotalDuration();
+	    return this;
+	  };
+	  /*
+	    Method to tune child modules.
+	    @param {Object} Tune options.
+	    @return {Object} this.
+	  */
+
+
+	  Stagger.prototype.tune = function tune(o) {
+	    if (o == null) {
+	      return this;
+	    }
+	    for (var i = 0; i < this._modules.length; i++) {
+	      // get child module's option and pass to the child `then`
+	      this._modules[i].tune(this._getOptionByIndex(i, o));
+	    }
+	    this.timeline._recalcTotalDuration();
+	    return this;
+	  };
+	  /*
+	    Method to generate child modules.
+	    @return {Object} this.
+	  */
+
+
+	  Stagger.prototype.generate = function generate() {
+	    for (var i = 0; i < this._modules.length; i++) {
+	      // get child module's option and pass to the child `then`
+	      this._modules[i].generate();
+	    }
+	    this.timeline._recalcTotalDuration();
+	    return this;
+	  };
 	  /*
 	    Method to get an option by modulo and name.
 	    @param {String} Name of the property to get.
@@ -1693,11 +2359,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  Stagger.prototype._getOptionByIndex = function _getOptionByIndex(i, store) {
-	    var _this = this;
+	    var _this2 = this;
 
 	    var options = {};
 	    (0, _keys2.default)(store).forEach(function (key) {
-	      return options[key] = _this._getOptionByMod(key, i, store);
+	      return options[key] = _this2._getOptionByMod(key, i, store);
 	    });
 	    return options;
 	  };
@@ -1728,25 +2394,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return 1;
 	    }
 	  };
-
-	  /*
-	    Method to create timeline.
-	    @param {Object} Options. ** default ** empty object.
-	  */
-
-
-	  Stagger.prototype._createTimeline = function _createTimeline() {
-	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-	    this.timeline = new _timeline2.default({
-	      onStart: options.onStaggerStart,
-	      onUpdate: options.onStaggerUpdate,
-	      onComplete: options.onStaggerComplete,
-	      onReverseComplete: options.onStaggerReverseComplete,
-	      delay: options.moduleDelay
-	    });
-	  };
-
 	  /*
 	    Method to make stagger form options
 	    @param {Object} Options.
@@ -1754,30 +2401,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	  */
 
 
-	  Stagger.prototype.init = function init(options, Module) {
+	  Stagger.prototype._init = function _init(options, Module) {
 	    var count = this._getChildQuantity(options.quantifier || 'el', options);
-	    this._createTimeline(options);this.childModules = [];
+	    this._createTimeline(options);this._modules = [];
 	    for (var i = 0; i < count; i++) {
 	      // get child module's option
-	      var option = this._getOptionByIndex(i, options);option.isRunLess = true;
+	      var option = this._getOptionByIndex(i, options);
+	      option.isRunLess = true;
+	      // set index of the module
+	      option.index = i;
 	      // create child module
-	      var module = new Module(option);this.childModules.push(module);
+	      var module = new Module(option);this._modules.push(module);
 	      // add child module's timeline to the self timeline
 	      this.timeline.add(module);
 	    }
 	    return this;
 	  };
 	  /*
-	    Method to start timeline.
+	    Method to create timeline.
+	    @param {Object} Timeline options.
 	  */
 
 
-	  Stagger.prototype.run = function run() {
-	    this.timeline.play();
+	  Stagger.prototype._createTimeline = function _createTimeline() {
+	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	    this.timeline = new _timeline2.default(options.timeline);
 	  };
 
+	  /* @overrides @ Tweenable */
+
+
+	  Stagger.prototype._makeTween = function _makeTween() {};
+
+	  Stagger.prototype._makeTimeline = function _makeTimeline() {};
+
 	  return Stagger;
-	}();
+	}(_tunable2.default);
 
 	module.exports = function (Module) {
 	  return function (options) {
@@ -2161,7 +2821,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  };
 	  /*
-	    API method to run the Tween.
+	    API method to play the Tween.
 	    @public
 	    @param  {Number} Shift time in milliseconds.
 	    @return {Object} Self.
@@ -2180,7 +2840,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this;
 	  };
 	  /*
-	    API method to run the Tween in reverse.
+	    API method to play the Tween in reverse.
 	    @public
 	    @param  {Number} Shift time in milliseconds.
 	    @return {Object} Self.
@@ -2266,6 +2926,32 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.reset();
 	    this.playBackward(shift);
+	    return this;
+	  };
+	  /*
+	    API method to resume the Tween.
+	    @public
+	    @param  {Number} Shift time in milliseconds.
+	    @return {Object} Self.
+	  */
+
+
+	  Tween.prototype.resume = function resume() {
+	    var shift = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+	    if (this._state !== 'pause') {
+	      return this;
+	    }
+
+	    switch (this._prevState) {
+	      case 'play':
+	        this.play(shift);
+	        break;
+	      case 'reverse':
+	        this.playBackward(shift);
+	        break;
+	    }
+
 	    return this;
 	  };
 	  /*
@@ -2509,11 +3195,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var p = this._props;
 	    p.easing = _easing2.default.parseEasing(p.easing);
+	    p.easing._parent = this;
 
 	    // parse only present backward easing to prevent parsing as `linear.none`
 	    // because we need to fallback to `easing` in `_setProgress` method
 	    if (p.backwardEasing != null) {
 	      p.backwardEasing = _easing2.default.parseEasing(p.backwardEasing);
+	      p.backwardEasing._parent = this;
 	    }
 	  };
 	  /*
@@ -2542,7 +3230,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // - shift time is shift of the parent
 	    p.startTime = startTime + p.delay + this._negativeShift + shiftTime;
 	    p.endTime = p.startTime + p.repeatTime - p.delay;
-	    // set play time to the startTime
+	    // set play time to the startTimes
 	    // if playback controls are used - use _resumeTime as play time,
 	    // else use shifted startTime -- shift is needed for timelines append chains
 	    this._playTime = this._resumeTime != null ? this._resumeTime : startTime + shiftTime;
@@ -3206,7 +3894,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Tween.prototype._refresh = function _refresh(isBefore) {
 	    var p = this._props;
 	    if (p.onRefresh != null) {
-	      p.onRefresh.call(p.callbacksContext || this, isBefore);
+	      var context = p.callbacksContext || this,
+	          progress = isBefore ? 0 : 1;
+
+	      p.onRefresh.call(context, isBefore, p.easing(progress), progress);
 	    }
 	  };
 	  /*
@@ -3255,7 +3946,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value = this._defaults[key];
 	    }
 	    // parse easing
-	    key === 'easing' && (value = _easing2.default.parseEasing(value));
+	    if (key === 'easing') {
+	      value = _easing2.default.parseEasing(value);
+	      value._parent = this;
+	    }
 	    // handle control callbacks overrides
 	    var control = this._callbackOverrides[key],
 	        isntOverriden = !value || !value.isMojsCallbackOverride;
@@ -3575,16 +4269,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  Timeline.prototype._setProgress = function _setProgress(p, time, isYoyo) {
-	    _tween2.default.prototype._setProgress.call(this, p, time);
 	    // we need to pass self previous time to children
 	    // to prevent initial _wasUnknownUpdate nested waterfall
 	    // if not yoyo option set, pass the previous time
 	    // otherwise, pass previous or next time regarding yoyo period.
+
+	    // COVER CURRENT SWAPPED ORDER
 	    this._updateChildren(p, time, isYoyo);
+
+	    _tween2.default.prototype._setProgress.call(this, p, time);
 	  };
 
 	  Timeline.prototype._updateChildren = function _updateChildren(p, time, isYoyo) {
-	    this._o.isIt && console.log(time, this._prevTime);
 	    var coef = time > this._prevTime ? -1 : 1;
 	    if (this._props.isYoyo && isYoyo) {
 	      coef *= -1;
@@ -3593,7 +4289,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        prevTimeToTimelines = timeToTimelines + coef,
 	        len = this._timelines.length;
 
-	    this._o.isIt && console.log('update children', timeToTimelines, prevTimeToTimelines);
 	    for (var i = 0; i < len; i++) {
 	      // specify the children's array update loop direction
 	      // if time > prevTime go from 0->length else from length->0
@@ -3612,7 +4307,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  Timeline.prototype._recalcDuration = function _recalcDuration(timeline) {
 	    var p = timeline._props,
-	        timelineTime = p.repeatTime / p.speed + (p.shiftTime || 0);
+	        timelineTime = p.repeatTime / p.speed + (p.shiftTime || 0) + timeline._negativeShift;
 
 	    this._props.duration = Math.max(timelineTime, this._props.duration);
 	  };
@@ -3683,11 +4378,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  Timeline.prototype._refresh = function _refresh(isBefore) {
-	    _Tween.prototype._refresh.call(this, isBefore);
 	    var len = this._timelines.length;
 	    for (var i = 0; i < len; i++) {
 	      this._timelines[i]._refresh(isBefore);
 	    }
+	    _Tween.prototype._refresh.call(this, isBefore);
 	  };
 	  /*
 	    Method do declare defaults by this._defaults object
@@ -3755,11 +4450,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Tweener = function () {
 	  function Tweener() {
 	    (0, _classCallCheck3.default)(this, Tweener);
-	    this._vars();return this;
+
+	    this._vars();
+	    this._listenVisibilityChange();
+	    return this;
 	  }
 
 	  Tweener.prototype._vars = function _vars() {
-	    this.tweens = [];this._loop = this._loop.bind(this);
+	    this.tweens = [];
+	    this._loop = this._loop.bind(this);
+	    this._onVisibilityChange = this._onVisibilityChange.bind(this);
 	  };
 	  /*
 	    Main animation loop. Should have only one concurrent loop.
@@ -3858,6 +4558,65 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.tweens.splice(index, 1);
 	        tween._onTweenerRemove();
 	      }
+	    }
+	  };
+
+	  /*
+	    Method to initialize event listeners to visibility change events.
+	    @private
+	  */
+
+
+	  Tweener.prototype._listenVisibilityChange = function _listenVisibilityChange() {
+	    if (typeof document.hidden !== "undefined") {
+	      this._visibilityHidden = "hidden";
+	      this._visibilityChange = "visibilitychange";
+	    } else if (typeof document.mozHidden !== "undefined") {
+	      this._visibilityHidden = "mozHidden";
+	      this._visibilityChange = "mozvisibilitychange";
+	    } else if (typeof document.msHidden !== "undefined") {
+	      this._visibilityHidden = "msHidden";
+	      this._visibilityChange = "msvisibilitychange";
+	    } else if (typeof document.webkitHidden !== "undefined") {
+	      this._visibilityHidden = "webkitHidden";
+	      this._visibilityChange = "webkitvisibilitychange";
+	    }
+
+	    document.addEventListener(this._visibilityChange, this._onVisibilityChange, false);
+	  };
+	  /*
+	    Method that will fire on visibility change.
+	  */
+
+
+	  Tweener.prototype._onVisibilityChange = function _onVisibilityChange() {
+	    if (document[this._visibilityHidden]) {
+	      this._savePlayingTweens();
+	    } else {
+	      this._restorePlayingTweens();
+	    }
+	  };
+	  /*
+	    Method to save all playing tweens.
+	    @private
+	  */
+
+
+	  Tweener.prototype._savePlayingTweens = function _savePlayingTweens() {
+	    this._savedTweens = this.tweens.slice(0);
+	    for (var i = 0; i < this._savedTweens.length; i++) {
+	      this._savedTweens[i].pause();
+	    }
+	  };
+	  /*
+	    Method to restore all playing tweens.
+	    @private
+	  */
+
+
+	  Tweener.prototype._restorePlayingTweens = function _restorePlayingTweens() {
+	    for (var i = 0; i < this._savedTweens.length; i++) {
+	      this._savedTweens[i].resume();
 	    }
 	  };
 
@@ -3991,6 +4750,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  Tweenable.prototype.replayBackward = function replayBackward() {
 	    this.timeline.replayBackward.apply(this.timeline, arguments);
+	    return this;
+	  };
+	  /*
+	    `resume` method for the timeline.
+	    @public
+	    @param {Number} Time shift.
+	    @returns this.
+	  */
+
+
+	  Tweenable.prototype.resume = function resume() {
+	    var shift = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+	    this.timeline.resume.apply(this.timeline, arguments);
 	    return this;
 	  };
 	  /*
@@ -4141,7 +4914,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  Thenable.prototype.then = function then(o) {
 	    // return if nothing was passed
-	    if (o == null || !(0, _keys2.default)(o)) {
+	    if (o == null || !(0, _keys2.default)(o).length) {
 	      return 1;
 	    }
 	    // merge then options with the current ones
@@ -4149,10 +4922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        prevModule = this._modules[this._modules.length - 1],
 	        merged = this._mergeThenOptions(prevRecord, o);
 
-	    // console.log(merged.angle);
 	    this._resetMergedFlags(merged);
-	    // reset isShowEnd flag on prev module
-	    // prevModule._setProp && prevModule._setProp('isShowEnd', false);
 	    // create a submodule of the same type as the master module
 	    var module = new this.constructor(merged);
 	    // set `this` as amster module of child module
@@ -4161,6 +4931,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._modules.push(module);
 	    // add module's tween into master timeline
 	    this.timeline.append(module);
+
 	    return this;
 	  };
 
@@ -4183,7 +4954,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // reset isRefreshState flag for the submodules
 	    obj.isRefreshState = false;
 	    // set the submodule callbacks context
-	    obj.callbacksContext = this._props.callbacksContext;
+	    obj.callbacksContext = this._props.callbacksContext || this;
 	    // set previous module
 	    obj.prevChainModule = _h2.default.getLastItem(this._modules);
 	    // pass the `this` as master module
@@ -4198,6 +4969,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  Thenable.prototype._vars = function _vars() {
 	    _Tweenable.prototype._vars.call(this);
+	    // save _master module
+	    this._masterModule = this._o.masterModule;
+	    // set isChained flag based on prevChainModule option
+	    this._isChained = !!this._masterModule;
 	    // we are expect that the _o object
 	    // have been already extended by defaults
 	    var initialRecord = _h2.default.cloneObj(this._props);
@@ -4229,6 +5004,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._mergeEndLoop(o, start, end);
 	    this._history.push(o);
 	    return o;
+	  };
+	  /*
+	    Method to pipe startValue of the delta.
+	    @private
+	    @param {String} Start property name.
+	    @param {Any} Start property value.
+	    @returns {Any} Start property value.
+	  */
+
+
+	  Thenable.prototype._checkStartValue = function _checkStartValue(name, value) {
+	    return value;
 	  };
 	  /*
 	    Originally part of the _mergeThenOptions.
@@ -4279,6 +5066,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var endValue = end[key],
 	          startValue = start[key] != null ? start[key] : this._defaults[key];
 
+	      startValue = this._checkStartValue(key, startValue);
 	      if (endValue == null) {
 	        continue;
 	      };
@@ -4312,6 +5100,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var isBoolean = typeof endValue === 'boolean',
 	        curve,
 	        easing;
+
 	    if (!_h2.default.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean) {
 
 	      if (_h2.default.isObject(endValue) && endValue.to != null) {
@@ -4675,8 +5464,809 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Tuneable;
 
 /***/ },
-/* 14 */,
-/* 15 */,
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _classCallCheck2 = __webpack_require__(23);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _tween = __webpack_require__(8);
+
+	var _tween2 = _interopRequireDefault(_tween);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var h = __webpack_require__(19);
+
+	var Delta = function () {
+	  function Delta() {
+	    var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    (0, _classCallCheck3.default)(this, Delta);
+
+	    this._o = o;
+	    this._createTween(o.tweenOptions);
+	    // initial properties render
+	    !this._o.isChained && this.refresh(true);
+	  }
+	  /*
+	    Method to call `_refresh` method on `tween`.
+	    Use switch between `0` and `1` progress for delta value.
+	    @public
+	    @param {Boolean} If refresh before start time or after.
+	    @returns this.
+	  */
+
+
+	  Delta.prototype.refresh = function refresh(isBefore) {
+	    this._previousValues = [];
+
+	    var deltas = this._o.deltas;
+	    for (var i = 0; i < deltas.length; i++) {
+	      var name = deltas[i].name;
+	      this._previousValues.push({
+	        name: name, value: this._o.props[name]
+	      });
+	    }
+
+	    this.tween._refresh(isBefore);
+	    return this;
+	  };
+	  /*
+	    Method to restore all saved properties from `_previousValues` array.
+	    @public
+	    @returns this.
+	  */
+
+
+	  Delta.prototype.restore = function restore() {
+	    var prev = this._previousValues;
+	    for (var i = 0; i < prev.length; i++) {
+	      var record = prev[i];
+	      this._o.props[record.name] = record.value;
+	    }
+	    return this;
+	  };
+	  /*
+	    Method to create tween of the delta.
+	    @private
+	    @param {Object} Options object.
+	  */
+
+
+	  Delta.prototype._createTween = function _createTween() {
+	    var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	    var it = this;
+	    o.callbackOverrides = {
+	      onUpdate: function onUpdate(ep, p) {
+	        it._calcCurrentProps(ep, p);
+	      }
+	    };
+
+	    // if not chained - add the onRefresh callback
+	    // to refresh the tween when needed
+	    if (!this._o.isChained) {
+	      o.callbackOverrides.onRefresh = function (isBefore, ep, p) {
+	        it._calcCurrentProps(ep, p);
+	      };
+	    }
+
+	    o.callbacksContext = this._o.callbacksContext;
+	    this.tween = new _tween2.default(o);
+	  };
+	  /*
+	    Method to calculate current progress of the deltas.
+	    @private
+	    @param {Number} Eased progress to calculate - [0..1].
+	    @param {Number} Progress to calculate - [0..1].
+	  */
+
+
+	  Delta.prototype._calcCurrentProps = function _calcCurrentProps(easedProgress, p) {
+	    var deltas = this._o.deltas;
+	    for (var i = 0; i < deltas.length; i++) {
+	      var type = deltas[i].type;
+	      this['_calcCurrent_' + type](deltas[i], easedProgress, p);
+	    }
+	  };
+	  /*
+	    Method to calc the current color delta value.
+	    @param {Object} Delta
+	    @param {Number} Eased progress [0..1].
+	    @param {Number} Plain progress [0..1].
+	  */
+
+
+	  Delta.prototype._calcCurrent_color = function _calcCurrent_color(delta, ep, p) {
+	    var r,
+	        g,
+	        b,
+	        a,
+	        start = delta.start,
+	        d = delta.delta;
+	    if (!delta.curve) {
+	      r = parseInt(start.r + ep * d.r, 10);
+	      g = parseInt(start.g + ep * d.g, 10);
+	      b = parseInt(start.b + ep * d.b, 10);
+	      a = parseFloat(start.a + ep * d.a);
+	    } else {
+	      var cp = delta.curve(p);
+	      r = parseInt(cp * (start.r + p * d.r), 10);
+	      g = parseInt(cp * (start.g + p * d.g), 10);
+	      b = parseInt(cp * (start.b + p * d.b), 10);
+	      a = parseFloat(cp * (start.a + p * d.a));
+	    }
+	    this._o.props[delta.name] = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+	  };
+	  /*
+	    Method to calc the current number delta value.
+	    @param {Object} Delta
+	    @param {Number} Eased progress [0..1].
+	    @param {Number} Plain progress [0..1].
+	  */
+
+
+	  Delta.prototype._calcCurrent_number = function _calcCurrent_number(delta, ep, p) {
+	    this._o.props[delta.name] = !delta.curve ? delta.start + ep * delta.delta : delta.curve(p) * (delta.start + p * delta.delta);
+	  };
+	  /*
+	    Method to calc the current number with units delta value.
+	    @param {Object} Delta
+	    @param {Number} Eased progress [0..1].
+	    @param {Number} Plain progress [0..1].
+	  */
+
+
+	  Delta.prototype._calcCurrent_unit = function _calcCurrent_unit(delta, ep, p) {
+	    var currentValue = !delta.curve ? delta.start.value + ep * delta.delta : delta.curve(p) * (delta.start.value + p * delta.delta);
+
+	    this._o.props[delta.name] = '' + currentValue + delta.end.unit;
+	  };
+	  /*
+	    Method to calc the current array delta value.
+	    @param {Object} Delta
+	    @param {Number} Eased progress [0..1].
+	    @param {Number} Plain progress [0..1].
+	  */
+
+
+	  Delta.prototype._calcCurrent_array = function _calcCurrent_array(delta, ep, p) {
+	    // var arr,
+	    var name = delta.name,
+	        props = this._o.props,
+	        string = '';
+
+	    // to prevent GC bothering with arrays garbage
+	    // if ( h.isArray( props[name] ) ) {
+	    //   arr = props[name];
+	    //   arr.length = 0;
+	    // } else { arr = []; }
+
+	    // just optimization to prevent curve
+	    // calculations on every array item
+	    var proc = delta.curve ? delta.curve(p) : null;
+
+	    for (var i = 0; i < delta.delta.length; i++) {
+	      var item = delta.delta[i],
+	          dash = !delta.curve ? delta.start[i].value + ep * item.value : proc * (delta.start[i].value + p * item.value);
+
+	      string += '' + dash + item.unit + ' ';
+	      // arr.push({
+	      //   string: `${dash}${item.unit}`,
+	      //   value:  dash,
+	      //   unit:   item.unit,
+	      // });
+	    }
+	    props[name] = string;
+	  };
+
+	  return Delta;
+	}();
+
+	exports.default = Delta;
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _extends2 = __webpack_require__(27);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _classCallCheck2 = __webpack_require__(23);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _keys = __webpack_require__(28);
+
+	var _keys2 = _interopRequireDefault(_keys);
+
+	var _timeline = __webpack_require__(9);
+
+	var _timeline2 = _interopRequireDefault(_timeline);
+
+	var _tween = __webpack_require__(8);
+
+	var _tween2 = _interopRequireDefault(_tween);
+
+	var _delta = __webpack_require__(14);
+
+	var _delta2 = _interopRequireDefault(_delta);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/*
+	  This module's target is to parse options object,
+	  find deltas in it and send them to `Delta` classes.
+	  The `Delta` class is dull - they expect actual parsed deltas
+	  and separated tween options, so we should parse them here.
+	  The timeline of the module controls the `Delta` modules' tweens.
+
+	  @param {Object} props Object to set deltas result to (pass to the Delta classes).
+	  @param {Object} options Object to parse the deltas from.
+	  @param {Function} onUpdate onUpdate callback.
+	  @param optional {Object} arrayPropertyMap List of properties with truthy
+	                                            values which describe properties
+	                                            that should be parsed as arrays.
+	  @param optional {Object} numberPropertyMap List of properties with truthy
+	                                            values which describe properties
+	                                            that should be parsed as numbers
+	                                            without units.
+	*/
+
+	// TODO:
+	// - colors with curves change alpha level too
+	// const html = new mojs.Html({
+	//   el: '#js-el',
+	//   x: { 0: 100 },
+	//   onUpdate () {
+	//     console.log(this._props.originX);
+	//   },
+	//   originX: { 'white': 'black', curve: 'M0,100 L100, 0' },
+	//   customProperties: {
+	//     originX: {
+	//       type: 'color',
+	//       default: 'cyan'
+	//     },
+	//     draw() { console.log('draw'); }
+	//   }
+	// });
+
+	var easing = __webpack_require__(22);
+	var h = __webpack_require__(19);
+
+
+	// get tween properties
+	var obj = {};
+	_tween2.default.prototype._declareDefaults.call(obj);
+	var keys = (0, _keys2.default)(obj._defaults);
+	for (var i = 0; i < keys.length; i++) {
+	  obj._defaults[keys[i]] = 1;
+	}
+	obj._defaults['timeline'] = 1;
+	var TWEEN_PROPERTIES = obj._defaults;
+
+	var Deltas = function () {
+	  function Deltas() {
+	    var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    (0, _classCallCheck3.default)(this, Deltas);
+
+	    this._o = o;
+
+	    this._shortColors = {
+	      transparent: 'rgba(0,0,0,0)',
+	      none: 'rgba(0,0,0,0)',
+	      aqua: 'rgb(0,255,255)',
+	      black: 'rgb(0,0,0)',
+	      blue: 'rgb(0,0,255)',
+	      fuchsia: 'rgb(255,0,255)',
+	      gray: 'rgb(128,128,128)',
+	      green: 'rgb(0,128,0)',
+	      lime: 'rgb(0,255,0)',
+	      maroon: 'rgb(128,0,0)',
+	      navy: 'rgb(0,0,128)',
+	      olive: 'rgb(128,128,0)',
+	      purple: 'rgb(128,0,128)',
+	      red: 'rgb(255,0,0)',
+	      silver: 'rgb(192,192,192)',
+	      teal: 'rgb(0,128,128)',
+	      white: 'rgb(255,255,255)',
+	      yellow: 'rgb(255,255,0)',
+	      orange: 'rgb(255,128,0)'
+	    };
+
+	    this._ignoreDeltasMap = { prevChainModule: 1, masterModule: 1 };
+
+	    this._parseDeltas(o.options);
+	    this._createDeltas();
+	    this._createTimeline(this._mainTweenOptions);
+	  }
+	  /*
+	    Method to call `refresh` on all child `delta` objects.
+	    @public
+	    @param {Boolean} If before start time (true) or after end time (false).
+	  */
+
+
+	  Deltas.prototype.refresh = function refresh(isBefore) {
+	    for (var i = 0; i < this._deltas.length; i++) {
+	      this._deltas[i].refresh(isBefore);
+	    }
+	    return this;
+	  };
+	  /*
+	    Method to call `restore` on all child `delta` objects.
+	    @public
+	  */
+
+
+	  Deltas.prototype.restore = function restore() {
+	    for (var i = 0; i < this._deltas.length; i++) {
+	      this._deltas[i].restore();
+	    }
+	    return this;
+	  };
+	  /*
+	    Method to create Timeline.
+	    @private
+	    @param {Object} Timeline options.
+	  */
+
+
+	  Deltas.prototype._createTimeline = function _createTimeline() {
+	    var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	    // const o = this._o;
+	    // opts.timeline = opts.timeline || {};
+	    // opts.timeline.callbackOverrides = {
+	    //   onUpdate:   o.onUpdate,
+	    //   onRefresh:  o.onUpdate
+	    // }
+	    // send callbacksContext to timeline if set
+	    // o.callbacksContext && (opts.timeline.callbacksContext = o.callbacksContext);
+	    // opts.timeline
+	    this.timeline = new _timeline2.default();
+	    this.timeline.add(this._deltas);
+	  };
+	  /*
+	    Method to create Deltas from parsed options.
+	    @private
+	  */
+
+
+	  Deltas.prototype._createDeltas = function _createDeltas() {
+	    this._deltas = [];
+
+	    // create main delta object
+	    this._deltas.push(this._createDelta(this._mainDeltas, this._mainTweenOptions));
+
+	    // create child delta object
+	    for (var i = 0; i < this._childDeltas.length; i++) {
+	      var delta = this._childDeltas[i];
+	      this._deltas.push(this._createDelta([delta.delta], delta.tweenOptions));
+	    }
+	  };
+	  /*
+	    Method to create Delta object with passed options.
+	    @private
+	    @param {Array} Array of deltas.
+	    @param {Object} Tween properties.
+	    @returns {Object} Delta object
+	  */
+
+
+	  Deltas.prototype._createDelta = function _createDelta(deltas, tweenOptions) {
+	    var o = this._o;
+	    return new _delta2.default({
+	      deltas: deltas, tweenOptions: tweenOptions,
+	      props: o.props,
+	      isChained: o.isChained,
+	      callbacksContext: o.callbacksContext
+	    });
+	  };
+	  /*
+	    Method to parse delta objects from options.
+	    @private
+	    @param {Object} Options object to parse the deltas from.
+	  */
+
+
+	  Deltas.prototype._parseDeltas = function _parseDeltas(obj) {
+	    // spilt main animation properties and main tween properties
+	    var mainSplit = this._splitTweenOptions(obj);
+	    // main animation properties
+	    var opts = mainSplit.delta;
+	    // main tween properties
+	    this._mainTweenOptions = mainSplit.tweenOptions;
+
+	    this._mainDeltas = [];
+	    this._childDeltas = [];
+	    var keys = (0, _keys2.default)(opts);
+	    // loop thru all properties without tween ones
+	    for (var i = 0; i < keys.length; i++) {
+	      var key = keys[i];
+	      // is property is delta - parse it
+	      if (this._isDelta(opts[key]) && !this._ignoreDeltasMap[key]) {
+	        var delta = this._splitAndParseDelta(key, opts[key]);
+	        // if parsed object has no tween values - it's delta of the main object
+	        if (!delta.tweenOptions) {
+	          this._mainDeltas.push(delta.delta);
+	        }
+	        // otherwise it is distinct delta object
+	        else {
+	            this._childDeltas.push(delta);
+	          }
+	      }
+	    }
+	  };
+	  /*
+	    Method to split tween values and parse single delta record.
+	    @private
+	    @param {String} Property name.
+	    @param {Object} Raw delta object.
+	    @returns {Object} Split object.
+	                @param {Object} tweenOptions Tween properties.
+	                @param {Object} delta Parsed delta.
+	  */
+
+
+	  Deltas.prototype._splitAndParseDelta = function _splitAndParseDelta(name, object) {
+	    var split = this._splitTweenOptions(object);
+	    // parse delta in the object
+	    split.delta = this._parseDelta(name, split.delta);
+	    return split;
+	  };
+	  /*
+	    Method to parse delta by delegating the variables to _parse*Delta methods.
+	    @private
+	    @param {String} Property name.
+	    @param {Object} Raw delta object.
+	    @param {Number} Module index.
+	  */
+
+
+	  Deltas.prototype._parseDelta = function _parseDelta(name, object, index) {
+	    // if name is in _o.customProps - parse it regarding the type
+	    return this._o.customProps && this._o.customProps[name] != null ? this._parseDeltaByCustom(name, object, index) : this._parseDeltaByGuess(name, object, index);
+	  };
+	  /**
+	    Method to parse delta by taking the type from the customProps object.
+	    @private
+	    @param {String} Property name.
+	    @param {Object} Raw delta object.
+	    @param {Number} Module index.
+	  */
+
+
+	  Deltas.prototype._parseDeltaByCustom = function _parseDeltaByCustom(name, object, index) {
+	    return this._parseNumberDelta(name, object, index);
+	    // const customRecord = this._o.customProps[name];
+	    // switch ( customRecord.type.toLowerCase() ) {
+	    //   case 'color':  { return this._parseColorDelta( name, object ); }
+	    //   case 'array':  { return this._parseArrayDelta( name, object ); }
+	    //   case 'number': { return this._parseNumberDelta( name, object, index ); }
+	    //   case 'unit':   { return this._parseUnitDelta( name, object, index ); }
+	    // }
+	  };
+	  /**
+	    Method to parse delta by reasoning about it's value.
+	    @private
+	    @param {String} Property name.
+	    @param {Object} Raw delta object.
+	    @param {Number} Module index.
+	  */
+
+
+	  Deltas.prototype._parseDeltaByGuess = function _parseDeltaByGuess(name, object, index) {
+	    var _preparseDelta2 = this._preparseDelta(object);
+
+	    var start = _preparseDelta2.start;
+
+	    var o = this._o;
+
+	    // color values
+	    if (isNaN(parseFloat(start)) && !start.match(/rand\(/) && !start.match(/stagger\(/)) {
+	      return this._parseColorDelta(name, object);
+	      // array values
+	    } else if (o.arrayPropertyMap && o.arrayPropertyMap[name]) {
+	        return this._parseArrayDelta(name, object);
+	        // unit or number values
+	      } else {
+	          return o.numberPropertyMap && o.numberPropertyMap[name] ?
+	          // if the property is in the number property map - parse it like number
+	          this._parseNumberDelta(name, object, index)
+	          // otherwise - like number with units
+	          : this._parseUnitDelta(name, object, index);
+	        }
+	  };
+	  /*
+	    Method to separate tween options from delta properties.
+	    @param {Object} Object for separation.
+	    @returns {Object} Object that contains 2 objects
+	                        - one delta options
+	                        - one tween options ( could be empty if no tween opts )
+	  */
+
+
+	  Deltas.prototype._splitTweenOptions = function _splitTweenOptions(delta) {
+	    delta = (0, _extends3.default)({}, delta);
+
+	    var keys = (0, _keys2.default)(delta),
+	        tweenOptions = {};
+	    var isTween = null;
+
+	    for (var i = 0; i < keys.length; i++) {
+	      var key = keys[i];
+	      if (TWEEN_PROPERTIES[key]) {
+	        if (delta[key] != null) {
+	          tweenOptions[key] = delta[key];
+	          isTween = true;
+	        }
+	        delete delta[key];
+	      }
+	    }
+	    return {
+	      delta: delta,
+	      tweenOptions: isTween ? tweenOptions : undefined
+	    };
+	  };
+	  /*
+	    Method to check if the property is delta property.
+	    @private
+	    @param {Any} Parameter value to check.
+	    @returns {Boolean}
+	  */
+
+
+	  Deltas.prototype._isDelta = function _isDelta(optionsValue) {
+	    var isObject = h.isObject(optionsValue);
+	    isObject = isObject && !optionsValue.unit;
+	    return !(!isObject || h.isArray(optionsValue) || h.isDOM(optionsValue));
+	  };
+	  /*
+	    Method to parse color delta values.
+	    @private
+	    @param {String} Name of the property.
+	    @param {Any} Property value.
+	    @returns {Object} Parsed delta.
+	  */
+
+
+	  Deltas.prototype._parseColorDelta = function _parseColorDelta(key, value) {
+	    if (key === 'strokeLinecap') {
+	      h.warn('Sorry, stroke-linecap property is not animatable yet, using the start(#{start}) value instead', value);
+	      return {};
+	    }
+	    var preParse = this._preparseDelta(value);
+
+	    var startColorObj = this._makeColorObj(preParse.start),
+	        endColorObj = this._makeColorObj(preParse.end);
+
+	    var delta = {
+	      type: 'color',
+	      name: key,
+	      start: startColorObj,
+	      end: endColorObj,
+	      curve: preParse.curve,
+	      delta: {
+	        r: endColorObj.r - startColorObj.r,
+	        g: endColorObj.g - startColorObj.g,
+	        b: endColorObj.b - startColorObj.b,
+	        a: endColorObj.a - startColorObj.a
+	      }
+	    };
+	    return delta;
+	  };
+	  /*
+	    Method to parse array delta values.
+	    @private
+	    @param {String} Name of the property.
+	    @param {Any} Property value.
+	    @returns {Object} Parsed delta.
+	  */
+
+
+	  Deltas.prototype._parseArrayDelta = function _parseArrayDelta(key, value) {
+	    var preParse = this._preparseDelta(value);
+
+	    var startArr = this._strToArr(preParse.start),
+	        endArr = this._strToArr(preParse.end);
+
+	    h.normDashArrays(startArr, endArr);
+
+	    for (var i = 0; i < startArr.length; i++) {
+	      var end = endArr[i];
+	      h.mergeUnits(startArr[i], end, key);
+	    }
+
+	    var delta = {
+	      type: 'array',
+	      name: key,
+	      start: startArr,
+	      end: endArr,
+	      delta: h.calcArrDelta(startArr, endArr),
+	      curve: preParse.curve
+	    };
+
+	    return delta;
+	  };
+	  /*
+	    Method to parse numeric delta values with units.
+	    @private
+	    @param {String} Name of the property.
+	    @param {Any} Property value.
+	    @param {Number} Index of the module.
+	    @returns {Object} Parsed delta.
+	  */
+
+
+	  Deltas.prototype._parseUnitDelta = function _parseUnitDelta(key, value, index) {
+	    var preParse = this._preparseDelta(value);
+
+	    var end = h.parseUnit(h.parseStringOption(preParse.end, index)),
+	        start = h.parseUnit(h.parseStringOption(preParse.start, index));
+
+	    h.mergeUnits(start, end, key);
+	    var delta = {
+	      type: 'unit',
+	      name: key,
+	      start: start,
+	      end: end,
+	      delta: end.value - start.value,
+	      curve: preParse.curve
+	    };
+	    return delta;
+	  };
+	  /*
+	    Method to parse numeric delta values without units.
+	    @private
+	    @param {String} Name of the property.
+	    @param {Any} Property value.
+	    @param {Number} Index of the module.
+	    @returns {Object} Parsed delta.
+	  */
+
+
+	  Deltas.prototype._parseNumberDelta = function _parseNumberDelta(key, value, index) {
+	    var preParse = this._preparseDelta(value);
+
+	    var end = parseFloat(h.parseStringOption(preParse.end, index)),
+	        start = parseFloat(h.parseStringOption(preParse.start, index));
+
+	    var delta = {
+	      type: 'number',
+	      name: key,
+	      start: start,
+	      end: end,
+	      delta: end - start,
+	      curve: preParse.curve
+	    };
+
+	    return delta;
+	  };
+	  /*
+	    Method to extract `curve` and `start`/`end` values.
+	    @private
+	    @param {Object} Delta object.
+	    @returns {Object} Preparsed delta.
+	              @property {String} Start value.
+	              @property {String, Number} End value.
+	  */
+
+
+	  Deltas.prototype._preparseDelta = function _preparseDelta(value) {
+	    // clone value object
+	    value = (0, _extends3.default)({}, value);
+	    // parse curve if exist
+	    var curve = value.curve;
+	    if (curve != null) {
+	      curve = easing.parseEasing(curve);
+	      curve._parent = this;
+	    }
+	    delete value.curve;
+	    // parse start and end values
+	    var start = (0, _keys2.default)(value)[0],
+	        end = value[start];
+
+	    return { start: start, end: end, curve: curve };
+	  };
+	  /*
+	    Method to parse color into usable object.
+	    @private
+	    @param {String} Color string.
+	    @returns {Object} Parsed color value.
+	  */
+
+
+	  Deltas.prototype._makeColorObj = function _makeColorObj(color) {
+	    // HEX
+	    var colorObj = {};
+	    if (color[0] === '#') {
+	      var result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(color);
+	      if (result) {
+	        var r = result[1].length === 2 ? result[1] : result[1] + result[1],
+	            g = result[2].length === 2 ? result[2] : result[2] + result[2],
+	            b = result[3].length === 2 ? result[3] : result[3] + result[3];
+
+	        colorObj = {
+	          r: parseInt(r, 16), g: parseInt(g, 16), b: parseInt(b, 16), a: 1
+	        };
+	      }
+	    }
+
+	    // not HEX
+	    // shorthand color and rgb()
+	    if (color[0] !== '#') {
+	      var isRgb = color[0] === 'r' && color[1] === 'g' && color[2] === 'b';
+	      var rgbColor = undefined;
+	      // rgb color
+	      if (isRgb) {
+	        rgbColor = color;
+	      };
+	      // shorthand color name
+	      if (!isRgb) {
+	        if (!this._shortColors[color]) {
+	          h.div.style.color = color;
+	          rgbColor = h.computedStyle(h.div).color;
+	        } else {
+	          rgbColor = this._shortColors[color];
+	        }
+	      }
+
+	      var regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),',
+	          regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$',
+	          result = new RegExp(regexString1 + regexString2, 'gi').exec(rgbColor),
+	          alpha = parseFloat(result[4] || 1);
+
+	      if (result) {
+	        colorObj = {
+	          r: parseInt(result[1], 10),
+	          g: parseInt(result[2], 10),
+	          b: parseInt(result[3], 10),
+	          a: alpha != null && !isNaN(alpha) ? alpha : 1
+	        };
+	      }
+	    }
+
+	    return colorObj;
+	  };
+	  /*
+	    Method to parse string into array.
+	    @private
+	    @param {String, Number} String or number to parse.
+	    @returns {Array} Parsed array.
+	  */
+
+
+	  Deltas.prototype._strToArr = function _strToArr(string) {
+	    var arr = [];
+	    // plain number
+	    if (typeof string === 'number' && !isNaN(string)) {
+	      arr.push(h.parseUnit(string));
+	      return arr;
+	    }
+	    // string array
+	    string.trim().split(/\s+/gim).forEach(function (str) {
+	      arr.push(h.parseUnit(h.parseIfRand(str)));
+	    });
+	    return arr;
+	  };
+
+	  return Deltas;
+	}();
+
+	exports.default = Deltas;
+
+/***/ },
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -4707,6 +6297,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	    (0, _classCallCheck3.default)(this, Module);
 
+	    // this._isIt = o.isIt;
+	    // delete o.isIt;
 	    this._o = o;
 	    this._index = this._o.index || 0;
 	    // map of props that should be
@@ -4721,7 +6313,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      timeline: 1,
 	      prevChainModule: 1,
 	      callbacksContext: 1
-
 	    };
 
 	    this._declareDefaults();
@@ -4799,8 +6390,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (p.isSoftHide) {
-	      this.el.style.opacity = p.opacity;
-	      _h2.default.setPrefixedStyle(this.el, 'transform', this._fillTransform());
+	      // this.el.style.opacity = p.opacity;
+	      this._showByTransform();
 	    } else {
 	      this.el.style.display = 'block';
 	    }
@@ -4819,7 +6410,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (this._props.isSoftHide) {
-	      this.el.style.opacity = 0;
+	      // this.el.style.opacity = 0;
 	      _h2.default.setPrefixedStyle(this.el, 'transform', 'scale(0)');
 	    } else {
 	      this.el.style.display = 'none';
@@ -4827,6 +6418,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this._isShown = false;
 	  };
+	  /*
+	    Method to show element by applying transform back to normal.
+	    @private
+	  */
+
+
+	  Module.prototype._showByTransform = function _showByTransform() {};
 	  /*
 	    Method to parse option string.
 	    Searches for stagger and rand values and parses them.
@@ -4978,6 +6576,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	  /*
 	    Method to parse option value.
+	    @private
 	    @param {String} Option name.
 	    @param {Any} Option value.
 	  */
@@ -5119,10 +6718,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	          b = parseInt(value.start.b + ep * value.delta.b, 10);
 	          a = parseFloat(value.start.a + ep * value.delta.a);
 	        } else {
-	          r = parseInt(value.curve(p) * (value.start.r + p * value.delta.r), 10);
-	          g = parseInt(value.curve(p) * (value.start.g + p * value.delta.g), 10);
-	          b = parseInt(value.curve(p) * (value.start.b + p * value.delta.b), 10);
-	          a = parseFloat(value.curve(p) * (value.start.a + p * value.delta.a));
+	          var cp = value.curve(p);
+	          r = parseInt(cp * (value.start.r + p * value.delta.r), 10);
+	          g = parseInt(cp * (value.start.g + p * value.delta.g), 10);
+	          b = parseInt(cp * (value.start.b + p * value.delta.b), 10);
+	          a = parseFloat(cp * (value.start.a + p * value.delta.a));
 	        }
 	        this._props[key] = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 	      }
@@ -5224,13 +6824,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Helpers.prototype.chainOptionMap = {};
 
 	  Helpers.prototype.callbacksMap = {
+	    onRefresh: 1,
 	    onStart: 1,
 	    onComplete: 1,
 	    onFirstUpdate: 1,
 	    onUpdate: 1,
 	    onProgress: 1,
 	    onRepeatStart: 1,
-	    onRepeatComplete: 1
+	    onRepeatComplete: 1,
+	    onPlaybackStart: 1,
+	    onPlaybackPause: 1,
+	    onPlaybackStop: 1,
+	    onPlaybackComplete: 1
 	  };
 
 	  Helpers.prototype.tweenOptionMap = {
@@ -5239,9 +6844,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    speed: 1,
 	    repeat: 1,
 	    easing: 1,
-	    yoyo: 1,
+	    backwardEasing: 1,
+	    isYoyo: 1,
 	    shiftTime: 1,
-	    isReversed: 1
+	    isReversed: 1,
+	    callbacksContext: 1
 	  };
 
 	  Helpers.prototype.unitOptionMap = {
@@ -5276,7 +6883,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.is3d = this.checkIf3d();
 	    this.uniqIDs = -1;
 	    this.div = document.createElement('div');
-	    return document.body.appendChild(this.div);
+	    document.body.appendChild(this.div);
+	    return this.defaultStyles = this.computedStyle(this.div);
 	  };
 
 	  Helpers.prototype.cloneObj = function(obj, exclude) {
@@ -5386,7 +6994,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        string: value === 0 ? "" + value : value + "px"
 	      };
 	    } else if (typeof value === 'string') {
-	      regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim;
+	      regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin|deg/gim;
 	      unit = (ref = value.match(regex)) != null ? ref[0] : void 0;
 	      isStrict = true;
 	      if (!unit) {
@@ -5619,6 +7227,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      endColorObj = this.makeColorObj(end);
 	      delta = {
 	        type: 'color',
+	        name: key,
 	        start: startColorObj,
 	        end: endColorObj,
 	        easing: easing,
@@ -5641,6 +7250,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      delta = {
 	        type: 'array',
+	        name: key,
 	        start: startArr,
 	        end: endArr,
 	        delta: this.calcArrDelta(startArr, endArr),
@@ -5655,6 +7265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.mergeUnits(start, end, key);
 	          delta = {
 	            type: 'unit',
+	            name: key,
 	            start: start,
 	            end: end,
 	            delta: end.value - start.value,
@@ -5666,6 +7277,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          start = parseFloat(this.parseStringOption(start, index));
 	          delta = {
 	            type: 'number',
+	            name: key,
 	            start: start,
 	            end: end,
 	            delta: end - start,
@@ -5885,6 +7497,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return el;
 	  };
 
+
+	  /*
+	    Method to check if value is delta.
+	    @private
+	    @param {Any} Property to check.
+	    @returns {Boolean} If value is delta.
+	   */
+
+	  Helpers.prototype.isDelta = function(optionsValue) {
+	    var isObject;
+	    isObject = this.isObject(optionsValue);
+	    isObject = isObject && !optionsValue.unit;
+	    return !(!isObject || this.isArray(optionsValue) || this.isDOM(optionsValue));
+	  };
+
 	  return Helpers;
 
 	})();
@@ -5902,23 +7529,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
 
-	Custom = __webpack_require__(35)["default"] || __webpack_require__(35);
+	Custom = __webpack_require__(36)["default"] || __webpack_require__(36);
 
-	Circle = __webpack_require__(36);
+	Circle = __webpack_require__(37);
 
-	Line = __webpack_require__(37);
+	Line = __webpack_require__(38);
 
-	Zigzag = __webpack_require__(38);
+	Zigzag = __webpack_require__(39);
 
-	Rect = __webpack_require__(34);
+	Rect = __webpack_require__(35);
 
-	Polygon = __webpack_require__(39);
+	Polygon = __webpack_require__(40);
 
-	Cross = __webpack_require__(40);
+	Cross = __webpack_require__(41);
 
-	Curve = __webpack_require__(41)["default"] || __webpack_require__(41);
+	Curve = __webpack_require__(42)["default"] || __webpack_require__(42);
 
-	Equal = __webpack_require__(42);
+	Equal = __webpack_require__(43);
 
 	h = __webpack_require__(19);
 
@@ -5979,7 +7606,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	h = __webpack_require__(19);
 
-	resize = __webpack_require__(43);
+	resize = __webpack_require__(34);
 
 	Tween = __webpack_require__(8)["default"];
 
@@ -7147,7 +8774,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Bit;
 
 /***/ },
-/* 27 */,
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+
+	var _assign = __webpack_require__(50);
+
+	var _assign2 = _interopRequireDefault(_assign);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _assign2.default || function (target) {
+	  for (var i = 1; i < arguments.length; i++) {
+	    var source = arguments[i];
+
+	    for (var key in source) {
+	      if (Object.prototype.hasOwnProperty.call(source, key)) {
+	        target[key] = source[key];
+	      }
+	    }
+	  }
+
+	  return target;
+	};
+
+/***/ },
 /* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -7231,715 +8885,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/* istanbul ignore next */
-	var Bit, Rect,
-	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-	  hasProp = {}.hasOwnProperty;
-
-	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
-
-	Rect = (function(superClass) {
-	  extend(Rect, superClass);
-
-	  function Rect() {
-	    return Rect.__super__.constructor.apply(this, arguments);
-	  }
-
-	  Rect.prototype._declareDefaults = function() {
-	    Rect.__super__._declareDefaults.apply(this, arguments);
-	    this._defaults.tag = 'rect';
-	    this._defaults.rx = 0;
-	    return this._defaults.ry = 0;
-	  };
-
-	  Rect.prototype._draw = function() {
-	    var p, radiusX, radiusY;
-	    Rect.__super__._draw.apply(this, arguments);
-	    p = this._props;
-	    radiusX = p.radiusX != null ? p.radiusX : p.radius;
-	    radiusY = p.radiusY != null ? p.radiusY : p.radius;
-	    this._setAttrIfChanged('width', 2 * radiusX);
-	    this._setAttrIfChanged('height', 2 * radiusY);
-	    this._setAttrIfChanged('x', (p.width / 2) - radiusX);
-	    this._setAttrIfChanged('y', (p.height / 2) - radiusY);
-	    this._setAttrIfChanged('rx', p.rx);
-	    return this._setAttrIfChanged('ry', p.ry);
-	  };
-
-	  Rect.prototype._getLength = function() {
-	    var radiusX, radiusY;
-	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
-	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    return 2 * (2 * radiusX + 2 * radiusY);
-	  };
-
-	  return Rect;
-
-	})(Bit);
-
-	module.exports = Rect;
-
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	exports.__esModule = true;
-
-	var _classCallCheck2 = __webpack_require__(23);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(24);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(25);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _bit = __webpack_require__(26);
-
-	var _bit2 = _interopRequireDefault(_bit);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Custom = function (_Bit) {
-	  (0, _inherits3.default)(Custom, _Bit);
-
-	  function Custom() {
-	    (0, _classCallCheck3.default)(this, Custom);
-	    return (0, _possibleConstructorReturn3.default)(this, _Bit.apply(this, arguments));
-	  }
-
-	  /*
-	    Method to declare module's defaults.
-	    @private
-	    @overrides @ Bit
-	  */
-
-	  Custom.prototype._declareDefaults = function _declareDefaults() {
-	    _Bit.prototype._declareDefaults.call(this);
-
-	    this._defaults.tag = 'path';
-	    this._defaults.parent = null;
-
-	    // remove `stroke-width` from `_drawMap`
-	    // because we need to recal strokeWidth size regarding scale
-	    for (var i = 0; i < this._drawMap.length; i++) {
-	      if (this._drawMap[i] === 'stroke-width') {
-	        this._drawMap.splice(i, 1);
-	      }
-	    }
-	  };
-	  /*
-	    Method to get shape to set on module's path.
-	    @public
-	    @returns {String} Empty string.
-	  */
-
-
-	  Custom.prototype.getShape = function getShape() {
-	    return '';
-	  };
-	  /*
-	    Method to get shape perimeter length.
-	    @public
-	    @returns {Number} Default length string.
-	  */
-
-
-	  Custom.prototype.getLength = function getLength() {
-	    return 100;
-	  };
-	  /*
-	    Method to draw the shape.
-	    Called on every frame.
-	    @private
-	    @overrides @ Bit
-	  */
-
-
-	  Custom.prototype._draw = function _draw() {
-	    var p = this._props,
-	        state = this._state,
-	        radiusXChange = state['radiusX'] !== p.radiusX,
-	        radiusYChange = state['radiusY'] !== p.radiusY,
-	        radiusChange = state['radius'] !== p.radius;
-
-	    // update transform only if one of radiuses changed
-	    if (radiusXChange || radiusYChange || radiusChange) {
-	      this.el.setAttribute('transform', this._getScale());
-	      state['radiusX'] = p.radiusX;
-	      state['radiusY'] = p.radiusY;
-	      state['radius'] = p.radius;
-	    }
-
-	    this._setAttrIfChanged('stroke-width', p['stroke-width'] / p.maxScale);
-
-	    _Bit.prototype._draw.call(this);
-	  };
-	  /*
-	    Method for initial render of the shape.
-	    @private
-	    @overrides @ Bit
-	  */
-
-
-	  Custom.prototype._render = function _render() {
-	    if (this._isRendered) {
-	      return;
-	    }
-	    this._isRendered = true;
-
-	    this._length = this.getLength();
-
-	    var p = this._props;
-	    p.parent.innerHTML = '<svg id="js-mojs-shape-canvas" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink"><g id="js-mojs-shape-el">' + this.getShape() + '</g></svg>';
-
-	    this._canvas = p.parent.querySelector('#js-mojs-shape-canvas');
-	    this.el = p.parent.querySelector('#js-mojs-shape-el');
-	    this._setCanvasSize();
-	  };
-	  /*
-	    Method to get scales for the shape.
-	    @private
-	    @mutates @props
-	  */
-
-
-	  Custom.prototype._getScale = function _getScale() {
-	    var p = this._props,
-	        radiusX = p.radiusX ? p.radiusX : p.radius,
-	        radiusY = p.radiusY ? p.radiusY : p.radius;
-
-	    p.scaleX = 2 * radiusX / 100;
-	    p.scaleY = 2 * radiusY / 100;
-	    p.maxScale = Math.max(p.scaleX, p.scaleY);
-
-	    p.shiftX = p.width / 2 - 50 * p.scaleX;
-	    p.shiftY = p.height / 2 - 50 * p.scaleY;
-
-	    var translate = 'translate(' + p.shiftX + ', ' + p.shiftY + ')';
-	    return translate + ' scale(' + p.scaleX + ', ' + p.scaleY + ')';
-	  };
-	  /*
-	    Method to length of the shape.
-	    @private
-	    @returns {Number} Length of the shape.
-	  */
-
-
-	  Custom.prototype._getLength = function _getLength() {
-	    return this._length;
-	  };
-
-	  return Custom;
-	}(_bit2.default);
-
-	exports.default = Custom;
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/* istanbul ignore next */
-	var Bit, Circle,
-	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-	  hasProp = {}.hasOwnProperty;
-
-	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
-
-	Circle = (function(superClass) {
-	  extend(Circle, superClass);
-
-	  function Circle() {
-	    return Circle.__super__.constructor.apply(this, arguments);
-	  }
-
-	  Circle.prototype._declareDefaults = function() {
-	    Circle.__super__._declareDefaults.apply(this, arguments);
-	    return this._defaults.shape = 'ellipse';
-	  };
-
-	  Circle.prototype._draw = function() {
-	    var rx, ry;
-	    rx = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
-	    ry = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    this._setAttrIfChanged('rx', rx);
-	    this._setAttrIfChanged('ry', ry);
-	    this._setAttrIfChanged('cx', this._props.width / 2);
-	    this._setAttrIfChanged('cy', this._props.height / 2);
-	    return Circle.__super__._draw.apply(this, arguments);
-	  };
-
-	  Circle.prototype._getLength = function() {
-	    var radiusX, radiusY;
-	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
-	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    return 2 * Math.PI * Math.sqrt((radiusX * radiusX + radiusY * radiusY) / 2);
-	  };
-
-	  return Circle;
-
-	})(Bit);
-
-	module.exports = Circle;
-
-
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/* istanbul ignore next */
-	var Bit, Line,
-	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-	  hasProp = {}.hasOwnProperty;
-
-	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
-
-	Line = (function(superClass) {
-	  extend(Line, superClass);
-
-	  function Line() {
-	    return Line.__super__.constructor.apply(this, arguments);
-	  }
-
-	  Line.prototype._declareDefaults = function() {
-	    Line.__super__._declareDefaults.apply(this, arguments);
-	    return this._defaults.tag = 'line';
-	  };
-
-	  Line.prototype._draw = function() {
-	    var radiusX, x, y;
-	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
-	    x = this._props.width / 2;
-	    y = this._props.height / 2;
-	    this._setAttrIfChanged('x1', x - radiusX);
-	    this._setAttrIfChanged('x2', x + radiusX);
-	    this._setAttrIfChanged('y1', y);
-	    this._setAttrIfChanged('y2', y);
-	    return Line.__super__._draw.apply(this, arguments);
-	  };
-
-	  return Line;
-
-	})(Bit);
-
-	module.exports = Line;
-
-
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/* istanbul ignore next */
-	var Bit, Zigzag,
-	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-	  hasProp = {}.hasOwnProperty;
-
-	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
-
-	Zigzag = (function(superClass) {
-	  extend(Zigzag, superClass);
-
-	  function Zigzag() {
-	    return Zigzag.__super__.constructor.apply(this, arguments);
-	  }
-
-	  Zigzag.prototype._declareDefaults = function() {
-	    Zigzag.__super__._declareDefaults.apply(this, arguments);
-	    this._defaults.tag = 'path';
-	    return this._defaults.points = 3;
-	  };
-
-	  Zigzag.prototype._draw = function() {
-	    var currentX, currentY, delta, i, isPoints, isRadiusX, isRadiusY, j, length, p, points, radiusX, radiusY, ref, stepX, x, y, yFlip;
-	    Zigzag.__super__._draw.apply(this, arguments);
-	    p = this._props;
-	    if (!this._props.points) {
-	      return;
-	    }
-	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
-	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    isRadiusX = radiusX === this._prevRadiusX;
-	    isRadiusY = radiusY === this._prevRadiusY;
-	    isPoints = p.points === this._prevPoints;
-	    if (isRadiusX && isRadiusY && isPoints) {
-	      return;
-	    }
-	    x = p.width / 2;
-	    y = p.height / 2;
-	    currentX = x - radiusX;
-	    currentY = y;
-	    stepX = (2 * radiusX) / (p.points - 1);
-	    yFlip = -1;
-	    delta = Math.sqrt(stepX * stepX + radiusY * radiusY);
-	    length = -delta;
-	    points = "M" + currentX + ", " + y + " ";
-	    for (i = j = 0, ref = p.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-	      points += "L" + currentX + ", " + currentY + " ";
-	      currentX += stepX;
-	      length += delta;
-	      currentY = yFlip === -1 ? y - radiusY : y;
-	      yFlip = -yFlip;
-	    }
-	    this._length = length;
-	    this.el.setAttribute('d', points);
-	    this._prevPoints = p.points;
-	    this._prevRadiusX = radiusX;
-	    return this._prevRadiusY = radiusY;
-	  };
-
-	  Zigzag.prototype._getLength = function() {
-	    return this._length;
-	  };
-
-	  return Zigzag;
-
-	})(Bit);
-
-	module.exports = Zigzag;
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/* istanbul ignore next */
-	var Bit, Polygon, h,
-	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-	  hasProp = {}.hasOwnProperty;
-
-	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
-
-	h = __webpack_require__(19);
-
-	Polygon = (function(superClass) {
-	  extend(Polygon, superClass);
-
-	  function Polygon() {
-	    return Polygon.__super__.constructor.apply(this, arguments);
-	  }
-
-
-	  /*
-	    Method to declare defaults.
-	    @overrides @ Bit
-	   */
-
-	  Polygon.prototype._declareDefaults = function() {
-	    Polygon.__super__._declareDefaults.apply(this, arguments);
-	    this._defaults.tag = 'path';
-	    return this._defaults.points = 3;
-	  };
-
-
-	  /*
-	    Method to draw the shape.
-	    @overrides @ Bit
-	   */
-
-	  Polygon.prototype._draw = function() {
-	    var char, d, i, isPoints, isRadiusX, isRadiusY, j, k, len, p, point, radiusX, radiusY, ref, ref1, step;
-	    p = this._props;
-	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
-	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    isRadiusX = radiusX === this._prevRadiusX;
-	    isRadiusY = radiusY === this._prevRadiusY;
-	    isPoints = p.points === this._prevPoints;
-	    if (!(isRadiusX && isRadiusY && isPoints)) {
-	      step = 360 / this._props.points;
-	      if (this._radialPoints == null) {
-	        this._radialPoints = [];
-	      } else {
-	        this._radialPoints.length = 0;
-	      }
-	      for (i = j = 0, ref = this._props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-	        this._radialPoints.push(h.getRadialPoint({
-	          radius: this._props.radius,
-	          radiusX: this._props.radiusX,
-	          radiusY: this._props.radiusY,
-	          angle: i * step,
-	          center: {
-	            x: p.width / 2,
-	            y: p.height / 2
-	          }
-	        }));
-	      }
-	      d = '';
-	      ref1 = this._radialPoints;
-	      for (i = k = 0, len = ref1.length; k < len; i = ++k) {
-	        point = ref1[i];
-	        char = i === 0 ? 'M' : 'L';
-	        d += "" + char + (point.x.toFixed(4)) + "," + (point.y.toFixed(4)) + " ";
-	      }
-	      this._prevPoints = p.points;
-	      this._prevRadiusX = radiusX;
-	      this._prevRadiusY = radiusY;
-	      this.el.setAttribute('d', (d += 'z'));
-	    }
-	    return Polygon.__super__._draw.apply(this, arguments);
-	  };
-
-
-	  /*
-	    Method to get length of the shape.
-	    @overrides @ Bit
-	   */
-
-	  Polygon.prototype._getLength = function() {
-	    return this._getPointsPerimiter(this._radialPoints);
-	  };
-
-	  return Polygon;
-
-	})(Bit);
-
-	module.exports = Polygon;
-
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/* istanbul ignore next */
-	var Bit, Cross,
-	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-	  hasProp = {}.hasOwnProperty;
-
-	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
-
-	Cross = (function(superClass) {
-	  extend(Cross, superClass);
-
-	  function Cross() {
-	    return Cross.__super__.constructor.apply(this, arguments);
-	  }
-
-	  Cross.prototype._declareDefaults = function() {
-	    Cross.__super__._declareDefaults.apply(this, arguments);
-	    return this._defaults.tag = 'path';
-	  };
-
-	  Cross.prototype._draw = function() {
-	    var d, isRadiusX, isRadiusY, line1, line2, p, radiusX, radiusY, x, x1, x2, y, y1, y2;
-	    Cross.__super__._draw.apply(this, arguments);
-	    p = this._props;
-	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
-	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    isRadiusX = radiusX === this._prevRadiusX;
-	    isRadiusY = radiusY === this._prevRadiusY;
-	    if (isRadiusX && isRadiusY) {
-	      return;
-	    }
-	    x = this._props.width / 2;
-	    y = this._props.height / 2;
-	    x1 = x - radiusX;
-	    x2 = x + radiusX;
-	    line1 = "M" + x1 + "," + y + " L" + x2 + "," + y;
-	    y1 = y - radiusY;
-	    y2 = y + radiusY;
-	    line2 = "M" + x + "," + y1 + " L" + x + "," + y2;
-	    d = line1 + " " + line2;
-	    this.el.setAttribute('d', d);
-	    this._prevRadiusX = radiusX;
-	    return this._prevRadiusY = radiusY;
-	  };
-
-	  Cross.prototype._getLength = function() {
-	    var radiusX, radiusY;
-	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
-	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    return 2 * (radiusX + radiusY);
-	  };
-
-	  return Cross;
-
-	})(Bit);
-
-	module.exports = Cross;
-
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	exports.__esModule = true;
-
-	var _classCallCheck2 = __webpack_require__(23);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(24);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(25);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _bit = __webpack_require__(26);
-
-	var _bit2 = _interopRequireDefault(_bit);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Curve = function (_Bit) {
-	  (0, _inherits3.default)(Curve, _Bit);
-
-	  function Curve() {
-	    (0, _classCallCheck3.default)(this, Curve);
-	    return (0, _possibleConstructorReturn3.default)(this, _Bit.apply(this, arguments));
-	  }
-
-	  /*
-	    Method to declare module's defaults.
-	    @private
-	    @overrides @ Bit
-	  */
-
-	  Curve.prototype._declareDefaults = function _declareDefaults() {
-	    _Bit.prototype._declareDefaults.call(this);
-	    this._defaults.tag = 'path';
-	  };
-	  /*
-	    Method to draw the module.
-	    @private
-	    @overrides @ Bit
-	  */
-
-
-	  Curve.prototype._draw = function _draw() {
-	    _Bit.prototype._draw.call(this);
-	    var p = this._props;
-
-	    var radiusX = p.radiusX != null ? p.radiusX : p.radius;
-	    var radiusY = p.radiusY != null ? p.radiusY : p.radius;
-
-	    var isRadiusX = radiusX === this._prevRadiusX;
-	    var isRadiusY = radiusY === this._prevRadiusY;
-	    var isPoints = p.points === this._prevPoints;
-	    // skip if nothing changed
-	    if (isRadiusX && isRadiusY && isPoints) {
-	      return;
-	    }
-
-	    var x = p.width / 2;
-	    var y = p.height / 2;
-	    var x1 = x - radiusX;
-	    var x2 = x + radiusX;
-
-	    var d = 'M' + x1 + ' ' + y + ' Q ' + x + ' ' + (y - 2 * radiusY) + ' ' + x2 + ' ' + y;
-
-	    // set the `d` attribute and save it to `_prevD`
-	    this.el.setAttribute('d', d);
-	    // save the properties
-	    this._prevPoints = p.points;
-	    this._prevRadiusX = radiusX;
-	    this._prevRadiusY = radiusY;
-	  };
-
-	  Curve.prototype._getLength = function _getLength() {
-	    var p = this._props;
-
-	    var radiusX = p.radiusX != null ? p.radiusX : p.radius;
-	    var radiusY = p.radiusY != null ? p.radiusY : p.radius;
-
-	    var dRadius = radiusX + radiusY;
-	    var sqrt = Math.sqrt((3 * radiusX + radiusY) * (radiusX + 3 * radiusY));
-
-	    return .5 * Math.PI * (3 * dRadius - sqrt);
-	  };
-
-	  return Curve;
-	}(_bit2.default); // istanbul ignore next
-
-
-	exports.default = Curve;
-
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/* istanbul ignore next */
-	var Bit, Equal,
-	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-	  hasProp = {}.hasOwnProperty;
-
-	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
-
-	Equal = (function(superClass) {
-	  extend(Equal, superClass);
-
-	  function Equal() {
-	    return Equal.__super__.constructor.apply(this, arguments);
-	  }
-
-	  Equal.prototype._declareDefaults = function() {
-	    Equal.__super__._declareDefaults.apply(this, arguments);
-	    this._defaults.tag = 'path';
-	    return this._defaults.points = 2;
-	  };
-
-	  Equal.prototype._draw = function() {
-	    var d, i, isPoints, isRadiusX, isRadiusY, j, p, radiusX, radiusY, ref, x, x1, x2, y, yStart, yStep;
-	    Equal.__super__._draw.apply(this, arguments);
-	    p = this._props;
-	    if (!this._props.points) {
-	      return;
-	    }
-	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
-	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
-	    isRadiusX = radiusX === this._prevRadiusX;
-	    isRadiusY = radiusY === this._prevRadiusY;
-	    isPoints = p.points === this._prevPoints;
-	    if (isRadiusX && isRadiusY && isPoints) {
-	      return;
-	    }
-	    x = this._props.width / 2;
-	    y = this._props.height / 2;
-	    x1 = x - radiusX;
-	    x2 = x + radiusX;
-	    d = '';
-	    yStep = 2 * radiusY / (this._props.points - 1);
-	    yStart = y - radiusY;
-	    for (i = j = 0, ref = this._props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-	      y = "" + (i * yStep + yStart);
-	      d += "M" + x1 + ", " + y + " L" + x2 + ", " + y + " ";
-	    }
-	    this.el.setAttribute('d', d);
-	    this._prevPoints = p.points;
-	    this._prevRadiusX = radiusX;
-	    return this._prevRadiusY = radiusY;
-	  };
-
-	  Equal.prototype._getLength = function() {
-	    return 2 * (this._props.radiusX != null ? this._props.radiusX : this._props.radius);
-	  };
-
-	  return Equal;
-
-	})(Bit);
-
-	module.exports = Equal;
-
-
-/***/ },
-/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
@@ -8157,6 +9102,715 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return typeof window !== "undefined" && window !== null ? window.anyResizeEvent = new Main : void 0;
 	  }
 	})();
+
+
+/***/ },
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/* istanbul ignore next */
+	var Bit, Rect,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
+
+	Rect = (function(superClass) {
+	  extend(Rect, superClass);
+
+	  function Rect() {
+	    return Rect.__super__.constructor.apply(this, arguments);
+	  }
+
+	  Rect.prototype._declareDefaults = function() {
+	    Rect.__super__._declareDefaults.apply(this, arguments);
+	    this._defaults.tag = 'rect';
+	    this._defaults.rx = 0;
+	    return this._defaults.ry = 0;
+	  };
+
+	  Rect.prototype._draw = function() {
+	    var p, radiusX, radiusY;
+	    Rect.__super__._draw.apply(this, arguments);
+	    p = this._props;
+	    radiusX = p.radiusX != null ? p.radiusX : p.radius;
+	    radiusY = p.radiusY != null ? p.radiusY : p.radius;
+	    this._setAttrIfChanged('width', 2 * radiusX);
+	    this._setAttrIfChanged('height', 2 * radiusY);
+	    this._setAttrIfChanged('x', (p.width / 2) - radiusX);
+	    this._setAttrIfChanged('y', (p.height / 2) - radiusY);
+	    this._setAttrIfChanged('rx', p.rx);
+	    return this._setAttrIfChanged('ry', p.ry);
+	  };
+
+	  Rect.prototype._getLength = function() {
+	    var radiusX, radiusY;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
+	    return 2 * (2 * radiusX + 2 * radiusY);
+	  };
+
+	  return Rect;
+
+	})(Bit);
+
+	module.exports = Rect;
+
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _classCallCheck2 = __webpack_require__(23);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(24);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(25);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _bit = __webpack_require__(26);
+
+	var _bit2 = _interopRequireDefault(_bit);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Custom = function (_Bit) {
+	  (0, _inherits3.default)(Custom, _Bit);
+
+	  function Custom() {
+	    (0, _classCallCheck3.default)(this, Custom);
+	    return (0, _possibleConstructorReturn3.default)(this, _Bit.apply(this, arguments));
+	  }
+
+	  /*
+	    Method to declare module's defaults.
+	    @private
+	    @overrides @ Bit
+	  */
+
+	  Custom.prototype._declareDefaults = function _declareDefaults() {
+	    _Bit.prototype._declareDefaults.call(this);
+
+	    this._defaults.tag = 'path';
+	    this._defaults.parent = null;
+
+	    // remove `stroke-width` from `_drawMap`
+	    // because we need to recal strokeWidth size regarding scale
+	    for (var i = 0; i < this._drawMap.length; i++) {
+	      if (this._drawMap[i] === 'stroke-width') {
+	        this._drawMap.splice(i, 1);
+	      }
+	    }
+	  };
+	  /*
+	    Method to get shape to set on module's path.
+	    @public
+	    @returns {String} Empty string.
+	  */
+
+
+	  Custom.prototype.getShape = function getShape() {
+	    return '';
+	  };
+	  /*
+	    Method to get shape perimeter length.
+	    @public
+	    @returns {Number} Default length string.
+	  */
+
+
+	  Custom.prototype.getLength = function getLength() {
+	    return 100;
+	  };
+	  /*
+	    Method to draw the shape.
+	    Called on every frame.
+	    @private
+	    @overrides @ Bit
+	  */
+
+
+	  Custom.prototype._draw = function _draw() {
+	    var p = this._props,
+	        state = this._state,
+	        radiusXChange = state['radiusX'] !== p.radiusX,
+	        radiusYChange = state['radiusY'] !== p.radiusY,
+	        radiusChange = state['radius'] !== p.radius;
+
+	    // update transform only if one of radiuses changed
+	    if (radiusXChange || radiusYChange || radiusChange) {
+	      this.el.setAttribute('transform', this._getScale());
+	      state['radiusX'] = p.radiusX;
+	      state['radiusY'] = p.radiusY;
+	      state['radius'] = p.radius;
+	    }
+
+	    this._setAttrIfChanged('stroke-width', p['stroke-width'] / p.maxScale);
+
+	    _Bit.prototype._draw.call(this);
+	  };
+	  /*
+	    Method for initial render of the shape.
+	    @private
+	    @overrides @ Bit
+	  */
+
+
+	  Custom.prototype._render = function _render() {
+	    if (this._isRendered) {
+	      return;
+	    }
+	    this._isRendered = true;
+
+	    this._length = this.getLength();
+
+	    var p = this._props;
+	    p.parent.innerHTML = '<svg id="js-mojs-shape-canvas" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink"><g id="js-mojs-shape-el">' + this.getShape() + '</g></svg>';
+
+	    this._canvas = p.parent.querySelector('#js-mojs-shape-canvas');
+	    this.el = p.parent.querySelector('#js-mojs-shape-el');
+	    this._setCanvasSize();
+	  };
+	  /*
+	    Method to get scales for the shape.
+	    @private
+	    @mutates @props
+	  */
+
+
+	  Custom.prototype._getScale = function _getScale() {
+	    var p = this._props,
+	        radiusX = p.radiusX ? p.radiusX : p.radius,
+	        radiusY = p.radiusY ? p.radiusY : p.radius;
+
+	    p.scaleX = 2 * radiusX / 100;
+	    p.scaleY = 2 * radiusY / 100;
+	    p.maxScale = Math.max(p.scaleX, p.scaleY);
+
+	    p.shiftX = p.width / 2 - 50 * p.scaleX;
+	    p.shiftY = p.height / 2 - 50 * p.scaleY;
+
+	    var translate = 'translate(' + p.shiftX + ', ' + p.shiftY + ')';
+	    return translate + ' scale(' + p.scaleX + ', ' + p.scaleY + ')';
+	  };
+	  /*
+	    Method to length of the shape.
+	    @private
+	    @returns {Number} Length of the shape.
+	  */
+
+
+	  Custom.prototype._getLength = function _getLength() {
+	    return this._length;
+	  };
+
+	  return Custom;
+	}(_bit2.default);
+
+	exports.default = Custom;
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/* istanbul ignore next */
+	var Bit, Circle,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
+
+	Circle = (function(superClass) {
+	  extend(Circle, superClass);
+
+	  function Circle() {
+	    return Circle.__super__.constructor.apply(this, arguments);
+	  }
+
+	  Circle.prototype._declareDefaults = function() {
+	    Circle.__super__._declareDefaults.apply(this, arguments);
+	    return this._defaults.shape = 'ellipse';
+	  };
+
+	  Circle.prototype._draw = function() {
+	    var rx, ry;
+	    rx = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    ry = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
+	    this._setAttrIfChanged('rx', rx);
+	    this._setAttrIfChanged('ry', ry);
+	    this._setAttrIfChanged('cx', this._props.width / 2);
+	    this._setAttrIfChanged('cy', this._props.height / 2);
+	    return Circle.__super__._draw.apply(this, arguments);
+	  };
+
+	  Circle.prototype._getLength = function() {
+	    var radiusX, radiusY;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
+	    return 2 * Math.PI * Math.sqrt((radiusX * radiusX + radiusY * radiusY) / 2);
+	  };
+
+	  return Circle;
+
+	})(Bit);
+
+	module.exports = Circle;
+
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/* istanbul ignore next */
+	var Bit, Line,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
+
+	Line = (function(superClass) {
+	  extend(Line, superClass);
+
+	  function Line() {
+	    return Line.__super__.constructor.apply(this, arguments);
+	  }
+
+	  Line.prototype._declareDefaults = function() {
+	    Line.__super__._declareDefaults.apply(this, arguments);
+	    return this._defaults.tag = 'line';
+	  };
+
+	  Line.prototype._draw = function() {
+	    var radiusX, x, y;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    x = this._props.width / 2;
+	    y = this._props.height / 2;
+	    this._setAttrIfChanged('x1', x - radiusX);
+	    this._setAttrIfChanged('x2', x + radiusX);
+	    this._setAttrIfChanged('y1', y);
+	    this._setAttrIfChanged('y2', y);
+	    return Line.__super__._draw.apply(this, arguments);
+	  };
+
+	  return Line;
+
+	})(Bit);
+
+	module.exports = Line;
+
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/* istanbul ignore next */
+	var Bit, Zigzag,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
+
+	Zigzag = (function(superClass) {
+	  extend(Zigzag, superClass);
+
+	  function Zigzag() {
+	    return Zigzag.__super__.constructor.apply(this, arguments);
+	  }
+
+	  Zigzag.prototype._declareDefaults = function() {
+	    Zigzag.__super__._declareDefaults.apply(this, arguments);
+	    this._defaults.tag = 'path';
+	    return this._defaults.points = 3;
+	  };
+
+	  Zigzag.prototype._draw = function() {
+	    var currentX, currentY, delta, i, isPoints, isRadiusX, isRadiusY, j, length, p, points, radiusX, radiusY, ref, stepX, x, y, yFlip;
+	    Zigzag.__super__._draw.apply(this, arguments);
+	    p = this._props;
+	    if (!this._props.points) {
+	      return;
+	    }
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
+	    isRadiusX = radiusX === this._prevRadiusX;
+	    isRadiusY = radiusY === this._prevRadiusY;
+	    isPoints = p.points === this._prevPoints;
+	    if (isRadiusX && isRadiusY && isPoints) {
+	      return;
+	    }
+	    x = p.width / 2;
+	    y = p.height / 2;
+	    currentX = x - radiusX;
+	    currentY = y;
+	    stepX = (2 * radiusX) / (p.points - 1);
+	    yFlip = -1;
+	    delta = Math.sqrt(stepX * stepX + radiusY * radiusY);
+	    length = -delta;
+	    points = "M" + currentX + ", " + y + " ";
+	    for (i = j = 0, ref = p.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+	      points += "L" + currentX + ", " + currentY + " ";
+	      currentX += stepX;
+	      length += delta;
+	      currentY = yFlip === -1 ? y - radiusY : y;
+	      yFlip = -yFlip;
+	    }
+	    this._length = length;
+	    this.el.setAttribute('d', points);
+	    this._prevPoints = p.points;
+	    this._prevRadiusX = radiusX;
+	    return this._prevRadiusY = radiusY;
+	  };
+
+	  Zigzag.prototype._getLength = function() {
+	    return this._length;
+	  };
+
+	  return Zigzag;
+
+	})(Bit);
+
+	module.exports = Zigzag;
+
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/* istanbul ignore next */
+	var Bit, Polygon, h,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
+
+	h = __webpack_require__(19);
+
+	Polygon = (function(superClass) {
+	  extend(Polygon, superClass);
+
+	  function Polygon() {
+	    return Polygon.__super__.constructor.apply(this, arguments);
+	  }
+
+
+	  /*
+	    Method to declare defaults.
+	    @overrides @ Bit
+	   */
+
+	  Polygon.prototype._declareDefaults = function() {
+	    Polygon.__super__._declareDefaults.apply(this, arguments);
+	    this._defaults.tag = 'path';
+	    return this._defaults.points = 3;
+	  };
+
+
+	  /*
+	    Method to draw the shape.
+	    @overrides @ Bit
+	   */
+
+	  Polygon.prototype._draw = function() {
+	    var char, d, i, isPoints, isRadiusX, isRadiusY, j, k, len, p, point, radiusX, radiusY, ref, ref1, step;
+	    p = this._props;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
+	    isRadiusX = radiusX === this._prevRadiusX;
+	    isRadiusY = radiusY === this._prevRadiusY;
+	    isPoints = p.points === this._prevPoints;
+	    if (!(isRadiusX && isRadiusY && isPoints)) {
+	      step = 360 / this._props.points;
+	      if (this._radialPoints == null) {
+	        this._radialPoints = [];
+	      } else {
+	        this._radialPoints.length = 0;
+	      }
+	      for (i = j = 0, ref = this._props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+	        this._radialPoints.push(h.getRadialPoint({
+	          radius: this._props.radius,
+	          radiusX: this._props.radiusX,
+	          radiusY: this._props.radiusY,
+	          angle: i * step,
+	          center: {
+	            x: p.width / 2,
+	            y: p.height / 2
+	          }
+	        }));
+	      }
+	      d = '';
+	      ref1 = this._radialPoints;
+	      for (i = k = 0, len = ref1.length; k < len; i = ++k) {
+	        point = ref1[i];
+	        char = i === 0 ? 'M' : 'L';
+	        d += "" + char + (point.x.toFixed(4)) + "," + (point.y.toFixed(4)) + " ";
+	      }
+	      this._prevPoints = p.points;
+	      this._prevRadiusX = radiusX;
+	      this._prevRadiusY = radiusY;
+	      this.el.setAttribute('d', (d += 'z'));
+	    }
+	    return Polygon.__super__._draw.apply(this, arguments);
+	  };
+
+
+	  /*
+	    Method to get length of the shape.
+	    @overrides @ Bit
+	   */
+
+	  Polygon.prototype._getLength = function() {
+	    return this._getPointsPerimiter(this._radialPoints);
+	  };
+
+	  return Polygon;
+
+	})(Bit);
+
+	module.exports = Polygon;
+
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/* istanbul ignore next */
+	var Bit, Cross,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
+
+	Cross = (function(superClass) {
+	  extend(Cross, superClass);
+
+	  function Cross() {
+	    return Cross.__super__.constructor.apply(this, arguments);
+	  }
+
+	  Cross.prototype._declareDefaults = function() {
+	    Cross.__super__._declareDefaults.apply(this, arguments);
+	    return this._defaults.tag = 'path';
+	  };
+
+	  Cross.prototype._draw = function() {
+	    var d, isRadiusX, isRadiusY, line1, line2, p, radiusX, radiusY, x, x1, x2, y, y1, y2;
+	    Cross.__super__._draw.apply(this, arguments);
+	    p = this._props;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
+	    isRadiusX = radiusX === this._prevRadiusX;
+	    isRadiusY = radiusY === this._prevRadiusY;
+	    if (isRadiusX && isRadiusY) {
+	      return;
+	    }
+	    x = this._props.width / 2;
+	    y = this._props.height / 2;
+	    x1 = x - radiusX;
+	    x2 = x + radiusX;
+	    line1 = "M" + x1 + "," + y + " L" + x2 + "," + y;
+	    y1 = y - radiusY;
+	    y2 = y + radiusY;
+	    line2 = "M" + x + "," + y1 + " L" + x + "," + y2;
+	    d = line1 + " " + line2;
+	    this.el.setAttribute('d', d);
+	    this._prevRadiusX = radiusX;
+	    return this._prevRadiusY = radiusY;
+	  };
+
+	  Cross.prototype._getLength = function() {
+	    var radiusX, radiusY;
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
+	    return 2 * (radiusX + radiusY);
+	  };
+
+	  return Cross;
+
+	})(Bit);
+
+	module.exports = Cross;
+
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _classCallCheck2 = __webpack_require__(23);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(24);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(25);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _bit = __webpack_require__(26);
+
+	var _bit2 = _interopRequireDefault(_bit);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Curve = function (_Bit) {
+	  (0, _inherits3.default)(Curve, _Bit);
+
+	  function Curve() {
+	    (0, _classCallCheck3.default)(this, Curve);
+	    return (0, _possibleConstructorReturn3.default)(this, _Bit.apply(this, arguments));
+	  }
+
+	  /*
+	    Method to declare module's defaults.
+	    @private
+	    @overrides @ Bit
+	  */
+
+	  Curve.prototype._declareDefaults = function _declareDefaults() {
+	    _Bit.prototype._declareDefaults.call(this);
+	    this._defaults.tag = 'path';
+	  };
+	  /*
+	    Method to draw the module.
+	    @private
+	    @overrides @ Bit
+	  */
+
+
+	  Curve.prototype._draw = function _draw() {
+	    _Bit.prototype._draw.call(this);
+	    var p = this._props;
+
+	    var radiusX = p.radiusX != null ? p.radiusX : p.radius;
+	    var radiusY = p.radiusY != null ? p.radiusY : p.radius;
+
+	    var isRadiusX = radiusX === this._prevRadiusX;
+	    var isRadiusY = radiusY === this._prevRadiusY;
+	    var isPoints = p.points === this._prevPoints;
+	    // skip if nothing changed
+	    if (isRadiusX && isRadiusY && isPoints) {
+	      return;
+	    }
+
+	    var x = p.width / 2;
+	    var y = p.height / 2;
+	    var x1 = x - radiusX;
+	    var x2 = x + radiusX;
+
+	    var d = 'M' + x1 + ' ' + y + ' Q ' + x + ' ' + (y - 2 * radiusY) + ' ' + x2 + ' ' + y;
+
+	    // set the `d` attribute and save it to `_prevD`
+	    this.el.setAttribute('d', d);
+	    // save the properties
+	    this._prevPoints = p.points;
+	    this._prevRadiusX = radiusX;
+	    this._prevRadiusY = radiusY;
+	  };
+
+	  Curve.prototype._getLength = function _getLength() {
+	    var p = this._props;
+
+	    var radiusX = p.radiusX != null ? p.radiusX : p.radius;
+	    var radiusY = p.radiusY != null ? p.radiusY : p.radius;
+
+	    var dRadius = radiusX + radiusY;
+	    var sqrt = Math.sqrt((3 * radiusX + radiusY) * (radiusX + 3 * radiusY));
+
+	    return .5 * Math.PI * (3 * dRadius - sqrt);
+	  };
+
+	  return Curve;
+	}(_bit2.default); // istanbul ignore next
+
+
+	exports.default = Curve;
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/* istanbul ignore next */
+	var Bit, Equal,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Bit = __webpack_require__(26)["default"] || __webpack_require__(26);
+
+	Equal = (function(superClass) {
+	  extend(Equal, superClass);
+
+	  function Equal() {
+	    return Equal.__super__.constructor.apply(this, arguments);
+	  }
+
+	  Equal.prototype._declareDefaults = function() {
+	    Equal.__super__._declareDefaults.apply(this, arguments);
+	    this._defaults.tag = 'path';
+	    return this._defaults.points = 2;
+	  };
+
+	  Equal.prototype._draw = function() {
+	    var d, i, isPoints, isRadiusX, isRadiusY, j, p, radiusX, radiusY, ref, x, x1, x2, y, yStart, yStep;
+	    Equal.__super__._draw.apply(this, arguments);
+	    p = this._props;
+	    if (!this._props.points) {
+	      return;
+	    }
+	    radiusX = this._props.radiusX != null ? this._props.radiusX : this._props.radius;
+	    radiusY = this._props.radiusY != null ? this._props.radiusY : this._props.radius;
+	    isRadiusX = radiusX === this._prevRadiusX;
+	    isRadiusY = radiusY === this._prevRadiusY;
+	    isPoints = p.points === this._prevPoints;
+	    if (isRadiusX && isRadiusY && isPoints) {
+	      return;
+	    }
+	    x = this._props.width / 2;
+	    y = this._props.height / 2;
+	    x1 = x - radiusX;
+	    x2 = x + radiusX;
+	    d = '';
+	    yStep = 2 * radiusY / (this._props.points - 1);
+	    yStart = y - radiusY;
+	    for (i = j = 0, ref = this._props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+	      y = "" + (i * yStep + yStart);
+	      d += "M" + x1 + ", " + y + " L" + x2 + ", " + y + " ";
+	    }
+	    this.el.setAttribute('d', d);
+	    this._prevPoints = p.points;
+	    this._prevRadiusX = radiusX;
+	    return this._prevRadiusY = radiusY;
+	  };
+
+	  Equal.prototype._getLength = function() {
+	    return 2 * (this._props.radiusX != null ? this._props.radiusX : this._props.radius);
+	  };
+
+	  return Equal;
+
+	})(Bit);
+
+	module.exports = Equal;
 
 
 /***/ },
@@ -8765,16 +10419,21 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(56), __esModule: true };
+	module.exports = { "default": __webpack_require__(55), __esModule: true };
 
 /***/ },
 /* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(55), __esModule: true };
+	module.exports = { "default": __webpack_require__(56), __esModule: true };
 
 /***/ },
-/* 50 */,
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(57), __esModule: true };
+
+/***/ },
 /* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -8786,8 +10445,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(61);
-	module.exports = __webpack_require__(62).Object.keys;
+	__webpack_require__(67);
+	module.exports = __webpack_require__(64).Object.keys;
 
 /***/ },
 /* 53 */
@@ -8809,10 +10468,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _shapesMap2 = _interopRequireDefault(_shapesMap);
 
-	var _burst = __webpack_require__(4);
-
-	var _burst2 = _interopRequireDefault(_burst);
-
 	var _shape = __webpack_require__(2);
 
 	var _shape2 = _interopRequireDefault(_shape);
@@ -8820,6 +10475,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _shapeSwirl = __webpack_require__(3);
 
 	var _shapeSwirl2 = _interopRequireDefault(_shapeSwirl);
+
+	var _burst = __webpack_require__(4);
+
+	var _burst2 = _interopRequireDefault(_burst);
+
+	var _html = __webpack_require__(5);
+
+	var _html2 = _interopRequireDefault(_html);
 
 	var _stagger = __webpack_require__(6);
 
@@ -8857,6 +10520,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _tunable2 = _interopRequireDefault(_tunable);
 
+	var _delta = __webpack_require__(14);
+
+	var _delta2 = _interopRequireDefault(_delta);
+
+	var _deltas = __webpack_require__(15);
+
+	var _deltas2 = _interopRequireDefault(_deltas);
+
 	var _module = __webpack_require__(16);
 
 	var _module2 = _interopRequireDefault(_module);
@@ -8868,10 +10539,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mojs = {
-	  revision: '0.265.9', isDebug: true, helpers: _h2.default,
-	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
+	  revision: '0.288.1', isDebug: true, helpers: _h2.default,
+	  Shape: _shape2.default, ShapeSwirl: _shapeSwirl2.default, Burst: _burst2.default, Html: _html2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
-	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
+	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default, _pool: { Delta: _delta2.default, Deltas: _deltas2.default }
 	};
 
 	// functions alias
@@ -8886,7 +10557,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	// TODO:
 	/*
-	  performance
+	  H/V in paths
 
 	  rand for direction
 	  burst children angle after tune
@@ -8899,6 +10570,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  swirls in then chains for x/y
 	  parse rand(stagger(20, 10), 20) values
 	  percentage for radius
+
+	  issue:
+	    const shape = new mojs.Shape({
+	      scale: { 0: 1 },
+	      duration: 1000
+	    })
+	    .then({ scale: 0 })
+	    .then({ scale: 1, onComplete () { this.pause(); } })
+	    .then({ scale: 0 })
+	    .then({ scale: 1 })
+	    ;
+
+	    document.addEventListener('click', () => {
+	      shape
+	        .tune({ fill: 'cyan' })
+	        .play();
+	    });
 	*/
 
 	// istanbul ignore next
@@ -8922,12 +10610,19 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(64);
-	__webpack_require__(65);
-	module.exports = __webpack_require__(62).Symbol;
+	__webpack_require__(62);
+	__webpack_require__(63);
+	module.exports = __webpack_require__(64).Symbol;
 
 /***/ },
 /* 55 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(65);
+	module.exports = __webpack_require__(64).Object.setPrototypeOf;
+
+/***/ },
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(66);
@@ -8936,14 +10631,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(67);
-	module.exports = __webpack_require__(62).Object.setPrototypeOf;
+	__webpack_require__(68);
+	module.exports = __webpack_require__(64).Object.assign;
 
 /***/ },
-/* 57 */,
 /* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -8979,7 +10673,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var anObject = __webpack_require__(73)
 	  , get      = __webpack_require__(74);
-	module.exports = __webpack_require__(62).getIterator = function(it){
+	module.exports = __webpack_require__(64).getIterator = function(it){
 	  var iterFn = get(it);
 	  if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
 	  return anObject(iterFn.call(it));
@@ -8989,58 +10683,38 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 19.1.2.14 Object.keys(O)
-	var toObject = __webpack_require__(75);
-
-	__webpack_require__(76)('keys', function($keys){
-	  return function keys(it){
-	    return $keys(toObject(it));
-	  };
-	});
-
-/***/ },
-/* 62 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var core = module.exports = {version: '1.2.6'};
-	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-
-/***/ },
-/* 63 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var store  = __webpack_require__(77)('wks')
-	  , uid    = __webpack_require__(78)
-	  , Symbol = __webpack_require__(79).Symbol;
+	var store  = __webpack_require__(75)('wks')
+	  , uid    = __webpack_require__(76)
+	  , Symbol = __webpack_require__(77).Symbol;
 	module.exports = function(name){
 	  return store[name] || (store[name] =
 	    Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
 	};
 
 /***/ },
-/* 64 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	// ECMAScript 6 symbols shim
 	var $              = __webpack_require__(66)
-	  , global         = __webpack_require__(79)
-	  , has            = __webpack_require__(80)
-	  , DESCRIPTORS    = __webpack_require__(81)
-	  , $export        = __webpack_require__(82)
-	  , redefine       = __webpack_require__(83)
-	  , $fails         = __webpack_require__(84)
-	  , shared         = __webpack_require__(77)
-	  , setToStringTag = __webpack_require__(85)
-	  , uid            = __webpack_require__(78)
-	  , wks            = __webpack_require__(63)
-	  , keyOf          = __webpack_require__(86)
-	  , $names         = __webpack_require__(87)
-	  , enumKeys       = __webpack_require__(88)
-	  , isArray        = __webpack_require__(89)
+	  , global         = __webpack_require__(77)
+	  , has            = __webpack_require__(78)
+	  , DESCRIPTORS    = __webpack_require__(79)
+	  , $export        = __webpack_require__(80)
+	  , redefine       = __webpack_require__(81)
+	  , $fails         = __webpack_require__(82)
+	  , shared         = __webpack_require__(75)
+	  , setToStringTag = __webpack_require__(83)
+	  , uid            = __webpack_require__(76)
+	  , wks            = __webpack_require__(61)
+	  , keyOf          = __webpack_require__(84)
+	  , $names         = __webpack_require__(85)
+	  , enumKeys       = __webpack_require__(86)
+	  , isArray        = __webpack_require__(87)
 	  , anObject       = __webpack_require__(73)
-	  , toIObject      = __webpack_require__(90)
-	  , createDesc     = __webpack_require__(91)
+	  , toIObject      = __webpack_require__(88)
+	  , createDesc     = __webpack_require__(89)
 	  , getDesc        = $.getDesc
 	  , setDesc        = $.setDesc
 	  , _create        = $.create
@@ -9180,7 +10854,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  $.getNames   = $names.get = $getOwnPropertyNames;
 	  $.getSymbols = $getOwnPropertySymbols;
 
-	  if(DESCRIPTORS && !__webpack_require__(92)){
+	  if(DESCRIPTORS && !__webpack_require__(90)){
 	    redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
 	  }
 	}
@@ -9250,10 +10924,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	setToStringTag(global.JSON, 'JSON', true);
 
 /***/ },
-/* 65 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var core = module.exports = {version: '1.2.6'};
+	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
+
+/***/ },
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.19 Object.setPrototypeOf(O, proto)
+	var $export = __webpack_require__(80);
+	$export($export.S, 'Object', {setPrototypeOf: __webpack_require__(91).set});
 
 /***/ },
 /* 66 */
@@ -9277,12 +10966,25 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 19.1.3.19 Object.setPrototypeOf(O, proto)
-	var $export = __webpack_require__(82);
-	$export($export.S, 'Object', {setPrototypeOf: __webpack_require__(93).set});
+	// 19.1.2.14 Object.keys(O)
+	var toObject = __webpack_require__(92);
+
+	__webpack_require__(93)('keys', function($keys){
+	  return function keys(it){
+	    return $keys(toObject(it));
+	  };
+	});
 
 /***/ },
-/* 68 */,
+/* 68 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.1 Object.assign(target, source)
+	var $export = __webpack_require__(80);
+
+	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(94)});
+
+/***/ },
 /* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -9290,7 +10992,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var addToUnscopables = __webpack_require__(95)
 	  , step             = __webpack_require__(96)
 	  , Iterators        = __webpack_require__(70)
-	  , toIObject        = __webpack_require__(90);
+	  , toIObject        = __webpack_require__(88);
 
 	// 22.1.3.4 Array.prototype.entries()
 	// 22.1.3.13 Array.prototype.keys()
@@ -9354,16 +11056,16 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var LIBRARY        = __webpack_require__(92)
-	  , $export        = __webpack_require__(82)
-	  , redefine       = __webpack_require__(83)
+	var LIBRARY        = __webpack_require__(90)
+	  , $export        = __webpack_require__(80)
+	  , redefine       = __webpack_require__(81)
 	  , hide           = __webpack_require__(99)
-	  , has            = __webpack_require__(80)
+	  , has            = __webpack_require__(78)
 	  , Iterators      = __webpack_require__(70)
 	  , $iterCreate    = __webpack_require__(100)
-	  , setToStringTag = __webpack_require__(85)
+	  , setToStringTag = __webpack_require__(83)
 	  , getProto       = __webpack_require__(66).getProto
-	  , ITERATOR       = __webpack_require__(63)('iterator')
+	  , ITERATOR       = __webpack_require__(61)('iterator')
 	  , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
 	  , FF_ITERATOR    = '@@iterator'
 	  , KEYS           = 'keys'
@@ -9435,9 +11137,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var classof   = __webpack_require__(102)
-	  , ITERATOR  = __webpack_require__(63)('iterator')
+	  , ITERATOR  = __webpack_require__(61)('iterator')
 	  , Iterators = __webpack_require__(70);
-	module.exports = __webpack_require__(62).getIteratorMethod = function(it){
+	module.exports = __webpack_require__(64).getIteratorMethod = function(it){
 	  if(it != undefined)return it[ITERATOR]
 	    || it['@@iterator']
 	    || Iterators[classof(it)];
@@ -9447,32 +11149,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 7.1.13 ToObject(argument)
-	var defined = __webpack_require__(98);
-	module.exports = function(it){
-	  return Object(defined(it));
-	};
-
-/***/ },
-/* 76 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// most Object methods by ES6 should accept primitives
-	var $export = __webpack_require__(82)
-	  , core    = __webpack_require__(62)
-	  , fails   = __webpack_require__(84);
-	module.exports = function(KEY, exec){
-	  var fn  = (core.Object || {})[KEY] || Object[KEY]
-	    , exp = {};
-	  exp[KEY] = exec(fn);
-	  $export($export.S + $export.F * fails(function(){ fn(1); }), 'Object', exp);
-	};
-
-/***/ },
-/* 77 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var global = __webpack_require__(79)
+	var global = __webpack_require__(77)
 	  , SHARED = '__core-js_shared__'
 	  , store  = global[SHARED] || (global[SHARED] = {});
 	module.exports = function(key){
@@ -9480,7 +11157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 78 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var id = 0
@@ -9490,7 +11167,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 79 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
@@ -9499,7 +11176,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
 
 /***/ },
-/* 80 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var hasOwnProperty = {}.hasOwnProperty;
@@ -9508,20 +11185,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 81 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Thank's IE8 for his funny defineProperty
-	module.exports = !__webpack_require__(84)(function(){
+	module.exports = !__webpack_require__(82)(function(){
 	  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
 	});
 
 /***/ },
-/* 82 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var global    = __webpack_require__(79)
-	  , core      = __webpack_require__(62)
+	var global    = __webpack_require__(77)
+	  , core      = __webpack_require__(64)
 	  , ctx       = __webpack_require__(103)
 	  , PROTOTYPE = 'prototype';
 
@@ -9568,13 +11245,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = $export;
 
 /***/ },
-/* 83 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(99);
 
 /***/ },
-/* 84 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(exec){
@@ -9586,23 +11263,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 85 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var def = __webpack_require__(66).setDesc
-	  , has = __webpack_require__(80)
-	  , TAG = __webpack_require__(63)('toStringTag');
+	  , has = __webpack_require__(78)
+	  , TAG = __webpack_require__(61)('toStringTag');
 
 	module.exports = function(it, tag, stat){
 	  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
 	};
 
 /***/ },
-/* 86 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $         = __webpack_require__(66)
-	  , toIObject = __webpack_require__(90);
+	  , toIObject = __webpack_require__(88);
 	module.exports = function(object, el){
 	  var O      = toIObject(object)
 	    , keys   = $.getKeys(O)
@@ -9613,11 +11290,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 87 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-	var toIObject = __webpack_require__(90)
+	var toIObject = __webpack_require__(88)
 	  , getNames  = __webpack_require__(66).getNames
 	  , toString  = {}.toString;
 
@@ -9638,7 +11315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 88 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// all enumerable object keys, includes symbols
@@ -9657,7 +11334,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 89 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 7.2.2 IsArray(argument)
@@ -9667,7 +11344,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 90 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// to indexed object, toObject with fallback for non-array-like ES3 strings
@@ -9678,7 +11355,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 91 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(bitmap, value){
@@ -9691,13 +11368,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 92 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = true;
 
 /***/ },
-/* 93 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Works with __proto__ only. Old v8 can't work with null proto objects.
@@ -9728,7 +11405,69 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 94 */,
+/* 92 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 7.1.13 ToObject(argument)
+	var defined = __webpack_require__(98);
+	module.exports = function(it){
+	  return Object(defined(it));
+	};
+
+/***/ },
+/* 93 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// most Object methods by ES6 should accept primitives
+	var $export = __webpack_require__(80)
+	  , core    = __webpack_require__(64)
+	  , fails   = __webpack_require__(82);
+	module.exports = function(KEY, exec){
+	  var fn  = (core.Object || {})[KEY] || Object[KEY]
+	    , exp = {};
+	  exp[KEY] = exec(fn);
+	  $export($export.S + $export.F * fails(function(){ fn(1); }), 'Object', exp);
+	};
+
+/***/ },
+/* 94 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.1 Object.assign(target, source, ...)
+	var $        = __webpack_require__(66)
+	  , toObject = __webpack_require__(92)
+	  , IObject  = __webpack_require__(105);
+
+	// should work with symbols and should have deterministic property order (V8 bug)
+	module.exports = __webpack_require__(82)(function(){
+	  var a = Object.assign
+	    , A = {}
+	    , B = {}
+	    , S = Symbol()
+	    , K = 'abcdefghijklmnopqrst';
+	  A[S] = 7;
+	  K.split('').forEach(function(k){ B[k] = k; });
+	  return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
+	}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
+	  var T     = toObject(target)
+	    , $$    = arguments
+	    , $$len = $$.length
+	    , index = 1
+	    , getKeys    = $.getKeys
+	    , getSymbols = $.getSymbols
+	    , isEnum     = $.isEnum;
+	  while($$len > index){
+	    var S      = IObject($$[index++])
+	      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
+	      , length = keys.length
+	      , j      = 0
+	      , key;
+	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
+	  }
+	  return T;
+	} : Object.assign;
+
+/***/ },
 /* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -9768,8 +11507,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var $          = __webpack_require__(66)
-	  , createDesc = __webpack_require__(91);
-	module.exports = __webpack_require__(81) ? function(object, key, value){
+	  , createDesc = __webpack_require__(89);
+	module.exports = __webpack_require__(79) ? function(object, key, value){
 	  return $.setDesc(object, key, createDesc(1, value));
 	} : function(object, key, value){
 	  object[key] = value;
@@ -9782,12 +11521,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	var $              = __webpack_require__(66)
-	  , descriptor     = __webpack_require__(91)
-	  , setToStringTag = __webpack_require__(85)
+	  , descriptor     = __webpack_require__(89)
+	  , setToStringTag = __webpack_require__(83)
 	  , IteratorPrototype = {};
 
 	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	__webpack_require__(99)(IteratorPrototype, __webpack_require__(63)('iterator'), function(){ return this; });
+	__webpack_require__(99)(IteratorPrototype, __webpack_require__(61)('iterator'), function(){ return this; });
 
 	module.exports = function(Constructor, NAME, next){
 	  Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
@@ -9808,7 +11547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	// getting tag from 19.1.3.6 Object.prototype.toString()
 	var cof = __webpack_require__(104)
-	  , TAG = __webpack_require__(63)('toStringTag')
+	  , TAG = __webpack_require__(61)('toStringTag')
 	  // ES3 wrong here
 	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
 
