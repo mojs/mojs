@@ -117,6 +117,13 @@ describe 'stagger ->', ->
       s = new Stagger options
       s._init options, mojs.MotionPath
       expect(s._modules[0].o.isRunLess).toBe true
+    it 'should pass index to the module', ->
+      div = document.createElement 'div'
+      options = el: [div, div], path: 'M0,0 L100,100', delay: '200'
+      s = new Stagger options
+      s._init options, mojs.Shape
+      expect(s._modules[0]._o.index).toBe 0
+      expect(s._modules[1]._o.index).toBe 1
     it 'should return self', ->
       div = document.createElement 'div'
       options = el: [div, div], path: 'M0,0 L100,100', delay: '200'

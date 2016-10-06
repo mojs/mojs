@@ -107,7 +107,10 @@ class Stagger extends Tunable {
   	this._createTimeline(options); this._modules = [];
   	for (var i = 0; i < count; i++) {
   	  // get child module's option
-      var option = this._getOptionByIndex(i, options); option.isRunLess = true;
+      var option = this._getOptionByIndex(i, options);
+      option.isRunLess = true;
+      // set index of the module
+      option.index = i;
       // create child module
       var module = new Module(option); this._modules.push(module);
       // add child module's timeline to the self timeline
