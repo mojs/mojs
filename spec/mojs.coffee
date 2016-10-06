@@ -19,6 +19,8 @@ describe 'mojs ->', ->
     expect(mojs.Shape).toBeDefined()
   it 'should have Transit alias', ->
     expect(mojs.Transit).toBe mojs.Shape
+  it 'should have Html', ->
+    expect(mojs.Html).toBeDefined()
   it 'should have ShapeSwirl', ->
     expect(mojs.ShapeSwirl).toBeDefined()
   it 'should have Swirl alias', ->
@@ -47,3 +49,11 @@ describe 'mojs ->', ->
     expect(mojs.easing).toBeDefined()
   it 'should have shapesMap', ->
     expect(mojs.shapesMap).toBeDefined()
+  
+  it 'should have _pool', ->
+    expect(typeof mojs._pool).toBe 'object'
+    expect(mojs._pool).toBe mojs._pool
+  it 'should have delta', ->
+    expect(mojs._pool.Delta).toBeDefined()
+  it 'should have deltas', ->
+    expect(mojs._pool.Deltas).toBeDefined()

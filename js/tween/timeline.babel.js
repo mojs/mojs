@@ -153,23 +153,24 @@ class Timeline extends Tween {
     @param {Number} Current update time.
   */
   _setProgress (p, time, isYoyo) {
-    Tween.prototype._setProgress.call( this, p, time );
     // we need to pass self previous time to children
     // to prevent initial _wasUnknownUpdate nested waterfall
     // if not yoyo option set, pass the previous time
     // otherwise, pass previous or next time regarding yoyo period.
+
+    // COVER CURRENT SWAPPED ORDER
     this._updateChildren( p, time, isYoyo );
+    
+    Tween.prototype._setProgress.call( this, p, time );
   }
 
   _updateChildren ( p, time, isYoyo ) {
-    this._o.isIt && console.log( time, this._prevTime )
     var coef = ( time > this._prevTime ) ? -1 : 1;
     if ( this._props.isYoyo && isYoyo ) { coef *= -1; }
     var timeToTimelines     = this._props.startTime + p*(this._props.duration),
         prevTimeToTimelines = timeToTimelines + coef,
         len = this._timelines.length;
 
-    this._o.isIt && console.log( `update children`, timeToTimelines, prevTimeToTimelines );
     for (var i = 0; i < len; i++) {
       // specify the children's array update loop direction
       // if time > prevTime go from 0->length else from length->0
@@ -191,7 +192,7 @@ class Timeline extends Tween {
   */
   _recalcDuration (timeline) {
     var p             = timeline._props,
-        timelineTime  = p.repeatTime/p.speed + (p.shiftTime || 0);
+        timelineTime  = p.repeatTime/p.speed + (p.shiftTime || 0) + timeline._negativeShift;
 
     this._props.duration = Math.max(timelineTime, this._props.duration);
   }
@@ -250,11 +251,11 @@ class Timeline extends Tween {
     @param {Boolean} If refresh even before start time.
   */
   _refresh ( isBefore ) {
-    super._refresh( isBefore );
     const len = this._timelines.length;
     for (var i = 0; i < len; i++) {
       this._timelines[i]._refresh( isBefore );
     }
+    super._refresh( isBefore );
   }
   /*
     Method do declare defaults by this._defaults object

@@ -9,8 +9,6 @@
 
   Tunable = mojs.Tunable;
 
-  Tunable = mojs.Tunable;
-
   t = mojs.tweener;
 
   h = mojs.h;

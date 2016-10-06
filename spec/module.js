@@ -188,17 +188,6 @@
         return expect(byte._isShown).toBe(false);
       });
       return describe('isSoftHide option ->', function() {
-        it('should set `opacity` of `el` to `0`', function() {
-          var byte;
-          byte = new Module({
-            radius: 25,
-            isSoftHide: true
-          });
-          byte.el = document.createElement('div');
-          byte.el.style['opacity'] = '.5';
-          byte._hide();
-          return expect(byte.el.style['opacity']).toBe('0');
-        });
         return it('should set scale to 0', function() {
           var byte, style, tr;
           byte = new Module({
@@ -210,6 +199,45 @@
           style = byte.el.style;
           tr = style['transform'] || style["" + h.prefix.css + "transform"];
           return expect(tr).toBe('scale(0)');
+        });
+      });
+    });
+    describe('_show method ->', function() {
+      it('should set `display` of `el` to `block`', function() {
+        var byte;
+        byte = new Module({
+          radius: 25,
+          isSoftHide: false
+        });
+        byte.el = document.createElement('div');
+        byte.el.style['display'] = 'none';
+        byte._show();
+        return expect(byte.el.style['display']).toBe('block');
+      });
+      it('should set `_isShown` to true', function() {
+        var byte;
+        byte = new Module({
+          radius: 25,
+          isSoftHide: false
+        });
+        byte._isShown = true;
+        byte._show();
+        return expect(byte._isShown).toBe(true);
+      });
+      return describe('isSoftHide option ->', function() {
+        return it('should set `transform` to normal', function() {
+          var byte;
+          byte = new Module({
+            radius: 25,
+            isSoftHide: true,
+            opacity: .2
+          });
+          byte.el = document.createElement('div');
+          byte.el.style['opacity'] = '0';
+          byte.el.style['transform'] = 'none';
+          spyOn(byte, '_showByTransform');
+          byte._show();
+          return expect(byte._showByTransform).toHaveBeenCalled();
         });
       });
     });
@@ -734,9 +762,7 @@
     describe('_calcCurrentProps method', function() {
       return it('should calc color with alpha', function() {
         var md;
-        md = new Module({
-          isIt: 1
-        });
+        md = new Module;
         md._deltas = {
           fill: h.parseDelta('fill', {
             'rgba(0,0,0,0)': 'rgba(0,0,0,1)'

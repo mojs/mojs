@@ -702,6 +702,21 @@
         t._recalcTotalDuration();
         return expect(t._props.duration).toBe(1000);
       });
+      it('should recalculate duration with negative delays', function() {
+        var t, timeline, timeline2;
+        t = new Timeline;
+        timeline = new Tween({
+          duration: 100
+        });
+        timeline2 = new Tween({
+          duration: 200,
+          delay: -150
+        });
+        t.add(timeline);
+        t._timelines.push(timeline2);
+        t._recalcTotalDuration();
+        return expect(t._props.duration).toBe(100);
+      });
       it('should call _calcDimentions method', function() {
         var delay, maxDur, t, timeline, timeline2;
         delay = 200;

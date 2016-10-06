@@ -24,6 +24,7 @@ class Helpers
   #
   # @property   shortColors
   # @type       {Object}
+  # REMOVE WHEN ALL MODULES WILL USE DELTAS CLASS
   shortColors:
     transparent: 'rgba(0,0,0,0)'
     none:        'rgba(0,0,0,0)'
@@ -48,6 +49,7 @@ class Helpers
   # none-tweenable props
   chainOptionMap: {} # callbacksContext: 1
   callbacksMap:
+    onRefresh:        1
     onStart:          1
     onComplete:       1
     onFirstUpdate:    1
@@ -55,15 +57,21 @@ class Helpers
     onProgress:       1
     onRepeatStart:    1
     onRepeatComplete: 1
+    onPlaybackStart:    1
+    onPlaybackPause:    1
+    onPlaybackStop:     1
+    onPlaybackComplete: 1
   tweenOptionMap:
     duration:         1
     delay:            1
     speed:            1
     repeat:           1
     easing:           1
-    yoyo:             1
+    backwardEasing:   1
+    isYoyo:           1
     shiftTime:        1
     isReversed:       1
+    callbacksContext: 1
   unitOptionMap:
     left:             1
     top:              1
@@ -95,6 +103,8 @@ class Helpers
 
     @div = document.createElement('div')
     document.body.appendChild @div
+
+    @defaultStyles = @computedStyle @div
 
   # ---
 
@@ -189,7 +199,7 @@ class Helpers
         value:    value
         string:   if value is 0 then "#{value}" else "#{value}px"
     else if typeof value is 'string'
-      regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim
+      regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin|deg/gim
       unit = value.match(regex)?[0]; isStrict = true
       # if a plain number was passed set isStrict to false and add px
       if !unit then unit = 'px'; isStrict = false
@@ -381,6 +391,7 @@ class Helpers
       endColorObj   = @makeColorObj end
       delta  =
         type:     'color'
+        name:     key
         start:    startColorObj
         end:      endColorObj
         easing:   easing
@@ -402,6 +413,7 @@ class Helpers
 
       delta =
         type:     'array'
+        name:     key
         start:    startArr
         end:      endArr
         delta:    @calcArrDelta startArr, endArr
@@ -421,6 +433,7 @@ class Helpers
           @mergeUnits start, end, key
           delta =
             type:     'unit'
+            name:     key
             start:    start
             end:      end
             delta:    end.value - start.value
@@ -432,6 +445,7 @@ class Helpers
           start = parseFloat @parseStringOption  start, index
           delta =
             type:     'number'
+            name:     key
             start:    start
             end:      end
             delta:    end - start
@@ -580,6 +594,16 @@ class Helpers
   force3d: ( el )->
     this.setPrefixedStyle el, 'backface-visibility', 'hidden'
     el
+  ###
+    Method to check if value is delta.
+    @private
+    @param {Any} Property to check.
+    @returns {Boolean} If value is delta.
+  ###
+  isDelta: ( optionsValue )->
+    isObject = this.isObject( optionsValue )
+    isObject = isObject && !optionsValue.unit
+    return !(!isObject or this.isArray(optionsValue) or this.isDOM(optionsValue))
 
 h = new Helpers
 module.exports = h

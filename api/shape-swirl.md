@@ -3,7 +3,7 @@
 - [CodePen Example](http://codepen.io/sol0mka/pen/pbebwQ?editors=0010)
 - [Shape API](./shape.md)
 - [Tween API](./tweens/tween.md)
-- [back](./index.md)
+- [back](./readme.md)
 
 Full API reference:
 
@@ -74,6 +74,11 @@ const shape = new mojs.Shape({
   */
   .replayBackward( shift = 0 )
   /*
+    Resumes playback in direction it was prior to `pause`.
+    @param shift {Number} Start progress shift in milliseconds.
+  */
+  .resume( shift = 0 )
+  /*
     Sets progress of the tween.
     @param progress {Number} Progress to set [ 0..1 ].
   */
@@ -92,4 +97,4 @@ const shape = new mojs.Shape({
 - [CodePen Example](http://codepen.io/sol0mka/pen/pbebwQ?editors=0010)
 - [Shape API](./shape.md)
 - [Tween API](./tweens/tween.md)
-- [back](./index.md)
+- [back](./readme.md)

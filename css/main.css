@@ -4,9 +4,6 @@
   background: #aaa;
   position: absolute;
   left: 0;
-  -webkit-transform-origin: center bottom;
-  -ms-transform-origin: center bottom;
-  transform-origin: center bottom;
 }
 html,
 body {

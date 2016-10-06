@@ -1,7 +1,7 @@
 {
   "name": "mo-js",
   "description": "motion graphics toolbelt for the web",
-  "version": "0.265.9",
+  "version": "0.288.1",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -76,6 +76,7 @@
     "gulp-uglify": "latest",
     "gulp-watch": "*",
     "karma": "^0.12.24",
+    "karma-babel-preprocessor": "^6.0.1",
     "karma-browserify": "^2.0.0",
     "karma-chrome-launcher": "^0.1.4",
     "karma-clear-screen-reporter": "0.0.1",

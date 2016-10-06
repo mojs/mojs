@@ -74,7 +74,7 @@ class Tween extends Module {
     }
   }
   /*
-    API method to run the Tween.
+    API method to play the Tween.
     @public
     @param  {Number} Shift time in milliseconds.
     @return {Object} Self.
@@ -87,7 +87,7 @@ class Tween extends Module {
     return this;
   }
   /*
-    API method to run the Tween in reverse.
+    API method to play the Tween in reverse.
     @public
     @param  {Number} Shift time in milliseconds.
     @return {Object} Self.
@@ -151,6 +151,26 @@ class Tween extends Module {
   replayBackward( shift = 0 ) {
     this.reset();
     this.playBackward( shift );
+    return this;
+  }
+  /*
+    API method to resume the Tween.
+    @public
+    @param  {Number} Shift time in milliseconds.
+    @return {Object} Self.
+  */
+  resume ( shift = 0 ) {
+    if ( this._state !== 'pause' ) { return this; }
+
+    switch (this._prevState) {
+      case 'play':
+        this.play( shift );
+        break;
+      case 'reverse': 
+        this.playBackward( shift );
+        break;
+    }
+
     return this;
   }
   /*
@@ -307,7 +327,7 @@ class Tween extends Module {
         wasPlaying = wasPlay || wasReverse,
         wasStill   = wasStop || wasPause;
 
-    if ((state === 'play' || state === 'reverse') &&  wasStill ) {
+    if ((state === 'play' || state === 'reverse') && wasStill ) {
       this._playbackStart();
     }
     if ( state === 'pause' && wasPlaying ) {
@@ -357,12 +377,14 @@ class Tween extends Module {
     super._extendDefaults();
 
     var p = this._props;
-    p.easing         = easing.parseEasing(p.easing);
+    p.easing = easing.parseEasing(p.easing);
+    p.easing._parent = this;
 
     // parse only present backward easing to prevent parsing as `linear.none`
     // because we need to fallback to `easing` in `_setProgress` method
     if ( p.backwardEasing != null ) {
       p.backwardEasing = easing.parseEasing(p.backwardEasing);
+      p.backwardEasing._parent = this;
     }
   }
   /*
@@ -387,7 +409,7 @@ class Tween extends Module {
     // - shift time is shift of the parent
     p.startTime = startTime + p.delay + this._negativeShift + shiftTime;
     p.endTime   = p.startTime + p.repeatTime - p.delay;
-    // set play time to the startTime
+    // set play time to the startTimes
     // if playback controls are used - use _resumeTime as play time,
     // else use shifted startTime -- shift is needed for timelines append chains
     this._playTime = ( this._resumeTime != null )
@@ -992,7 +1014,10 @@ class Tween extends Module {
   _refresh ( isBefore ) {
     var p = this._props;
     if ( p.onRefresh != null ) {
-      p.onRefresh.call( p.callbacksContext || this, isBefore );
+      var context  = p.callbacksContext || this,
+          progress = ( isBefore ) ? 0 : 1;
+
+      p.onRefresh.call( context, isBefore, p.easing(progress), progress );
     }
   }
   /*
@@ -1031,7 +1056,10 @@ class Tween extends Module {
     // fallback to defaults
     if ( value == null ) { value = this._defaults[key]; }
     // parse easing
-    ( key === 'easing' ) && ( value = easing.parseEasing(value) );
+    if ( key === 'easing' ) {
+      value = easing.parseEasing(value);
+      value._parent = this;
+    }
     // handle control callbacks overrides
     var control       = this._callbackOverrides[key],
         isntOverriden = (!value || (!value.isMojsCallbackOverride));
@@ -1059,6 +1087,7 @@ class Tween extends Module {
     override.isMojsCallbackOverride = true;
     return override;
   }
+
 
   // _visualizeProgress(time) {
   //   var str = '|',

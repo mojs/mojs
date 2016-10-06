@@ -5,6 +5,7 @@ vendor/
 spec/
 css/
 js/
+.travis.yml
 index.html
 index.jade
 bower.json

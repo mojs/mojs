@@ -142,12 +142,8 @@ class Shape extends Tunable {
     // call _vars method on Thenable
     super._vars();
     this._lastSet = {};
-    // save _master module
-    this._masterModule    = this._o.masterModule;
     // save previous module in the chain
     this._prevChainModule = this._o.prevChainModule;
-    // set isChained flag based on prevChainModule option
-    this._isChained       = !!this._masterModule;
     // should draw on foreign svg canvas
     this.isForeign        = !!this._o.ctx;
     // this._o.isTimelineLess = true;
@@ -522,6 +518,18 @@ class Shape extends Tunable {
     this._setProgress( this.tween._props.easing(0), 0 );
 
     if ( this._props.isShowStart ) { this._show(); } else { this._hide(); }
+  }
+  /*
+    Method that gets called on `soft` show of the module,
+    it should restore transform styles of the module.
+    @private
+    @overrides @ Module
+  */
+  _showByTransform () {
+    // reset the cache of the scale prop
+    this._lastSet.scale = null;
+    // draw el accroding to it's props
+    this._drawEl();
   }
 }
 

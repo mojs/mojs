@@ -57,6 +57,23 @@ describe 'thenable ->', ->
       expect(Object.keys(th._nonMergeProps).length).toBe 1
       expect(th._nonMergeProps['shape']).toBe 1
 
+    it 'should save passed _o.masterModule to _masterModule', ->
+      obj = {}
+      thenable = new Thenable masterModule: obj
+      thenable._masterModule = null
+      thenable._vars()
+      expect(thenable._masterModule).toBe obj
+    it 'should set `_isChained` based on `prevChainModule` option', ->
+      thenable0 = new Thenable
+
+      thenable = new Thenable
+        prevChainModule: thenable0
+        masterModule:    thenable0
+
+      thenable._isChained = null
+      thenable._vars()
+      expect(thenable._isChained).toBe true
+
   Byte = Thenable
   describe '_mergeThenOptions method ->', ->
     it 'should merge 2 objects', ->
@@ -270,6 +287,16 @@ describe 'thenable ->', ->
       mergedOpton = byte._mergeThenOptions start, end
       expect(mergedOpton.parent).toBe parent
 
+    it 'should call _checkStartValue with startValue', ->
+      byte = new Byte
+      start = left: '10px'
+      end   = left: 'stagger(100, 25)'
+      byte._defaults = {}
+      byte._vars()
+      spyOn byte, '_checkStartValue'
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(byte._checkStartValue).toHaveBeenCalledWith 'left', '10px'
+
     describe 'easing based property', ->
       it 'should parse easing', ->
         byte = new Byte
@@ -397,13 +424,13 @@ describe 'thenable ->', ->
       th._defaults = {}
       th._props = { radius: 20, duration: 1000, delay: 10 }
       th._vars()
-      th.then radius: 5, yoyo: true, delay: 100
+      th.then radius: 5, isYoyo: true, delay: 100
       expect(th._history.length)       .toBe 2
       
       expect(th._history[1].radius[20]).toBe 5
       expect(th._history[1].duration).toBe 1000
       expect(th._history[1].delay)   .toBe 100
-      expect(th._history[1].yoyo)    .toBe true
+      expect(th._history[1].isYoyo)  .toBe true
 
 
     it 'should always merge then options with the last history item', ->
@@ -420,8 +447,9 @@ describe 'thenable ->', ->
       expect(th._history[2].radius[100]).toBe 10
       expect(th._history[2].duration)   .toBe 1000
       expect(th._history[2].delay)      .toBe 0
-      expect(th._history[2].yoyo)       .toBe undefined
+      expect(th._history[2].isYoyo)       .toBe undefined
       expect(th._history[2].stroke['transparent']).toBe 'green'
+
     it 'should not copy callbacks', ->
       onUpdate = ->
       onStart  = ->
@@ -433,12 +461,12 @@ describe 'thenable ->', ->
         onUpdate:  onUpdate, onStart: onStart
       th._defaults = {}
       th._vars()
-      th.then radius: 5, yoyo: true, delay: 100
+      th.then radius: 5, isYoyo: true, delay: 100
       expect(th._history.length)       .toBe 2
       expect(th._history[1].radius[20]).toBe 5
       expect(th._history[1].duration)  .toBe 1000
       expect(th._history[1].delay)     .toBe 100
-      expect(th._history[1].yoyo)      .toBe true
+      expect(th._history[1].isYoyo)      .toBe true
       expect(th._history[1].onComplete).toBe undefined
       # expect(th._history[1].onUpdate).toBeDefined()
       expect(th._history[1].onUpdate).not.toBe onUpdate
@@ -519,22 +547,27 @@ describe 'thenable ->', ->
         expect(th.timeline._timelines.length).toBe 2
         expect(th.timeline._timelines[1]).toBe th._modules[1].tween
 
-  describe '_resetMergedFlags method', ->
+  describe '_resetMergedFlags method ->', ->
     it 'should return the same object', ->
       obj = {}
       th = new Thenable
       expect(th._resetMergedFlags(obj)).toBe obj
     it 'should reset flags on the piped object', ->
-      obj = {}
-      th = new Thenable({}).then({})
+      obj = { }
+      th = new Thenable({}).then({ x: 20 })
       th.el = document.createElement 'div'
       th._resetMergedFlags(obj)
       expect(obj.isTimelineLess)  .toBe true
       expect(obj.isShowStart)     .toBe false
       expect(obj.isRefreshState)  .toBe false
       expect(obj.prevChainModule) .toBe th._modules[th._modules.length-1]
-      expect(obj.callbacksContext).toBe th._props.callbacksContext
+      expect(obj.callbacksContext).toBe th
       expect(obj.masterModule).toBe     th
+    it 'should set callbacksContext to this if not set', ->
+      obj = {}
+      th = new Thenable({})
+      th._resetMergedFlags(obj)
+      expect(obj.callbacksContext).toBe th
 
   describe '_getArrayLength method ->', ->
     it 'should get length if array', ->
@@ -566,5 +599,13 @@ describe 'thenable ->', ->
       expect(shape._modules[0]._isLastInChain()).toBe false
       # expect(shape._modules[1]._isLastInChain()).toBe false
       # expect(shape._modules[2]._isLastInChain()).toBe true
+
+  describe '_checkStartValue method ->', ->
+    it 'should return startValue', ->
+      shape = new Thenable()
+
+      expect(shape._checkStartValue 'x', 20).toBe 20
+
+
 
 

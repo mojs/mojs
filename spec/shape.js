@@ -1859,7 +1859,7 @@
         return expect(shape._getMaxSizeInChain).toHaveBeenCalled();
       });
     });
-    return describe('_refreshBefore method ->', function() {
+    describe('_refreshBefore method ->', function() {
       it('should call `_show` method is `isShowStart`', function() {
         var shape;
         shape = new Shape({
@@ -1893,6 +1893,37 @@
         spyOn(shape, '_setProgress');
         shape._refreshBefore();
         return expect(shape._setProgress).toHaveBeenCalledWith(1, 0);
+      });
+    });
+    return describe('_showByTransform method ->', function() {
+      it('should call _drawEl method', function() {
+        var shape;
+        shape = new Shape({
+          easing: function(k) {
+            return 1;
+          }
+        });
+        spyOn(shape, '_drawEl');
+        shape._showByTransform();
+        return expect(shape._drawEl).toHaveBeenCalled();
+      });
+      return it('should update scale', function() {
+        var isIE, isIE9, isNormal, isNormal2, s, shape, tr;
+        shape = new Shape({
+          easing: function(k) {
+            return 1;
+          }
+        });
+        shape.el.style.transform = 'scale(0)';
+        shape.el.style["" + mojs.h.prefix.css + "transform"] = 'scale(0)';
+        shape._showByTransform();
+        s = shape.el.style;
+        tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+        isNormal = tr === 'translate(0, 0) rotate(0deg) scale(1, 1)';
+        isNormal2 = tr === 'translate(0px, 0px) rotate(0deg) scale(1, 1)';
+        isIE9 = tr === 'translate(0, 0) rotate(0deg) scale(1)';
+        isIE = tr === 'translate(0px, 0px) rotate(0deg) scale(1)';
+        return expect(isNormal || isNormal2 || isIE9 || isIE).toBe(true);
       });
     });
   });

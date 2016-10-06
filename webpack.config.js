@@ -31,12 +31,12 @@ module.exports = {
     ]
   },
   output: {
-    path:           __dirname + '/build',
-    filename:       'mo.js',
-    publicPath:     'build/',
-    library:        'mojs',
-    libraryTarget:  'umd',
-    umdNamedDefine: true
+    path:             __dirname + '/build',
+    filename:         'mo.js',
+    publicPath:       'build/',
+    library:          'mojs',
+    libraryTarget:    'umd',
+    umdNamedDefine:   true
   },
   plugins: [],
   resolve: {

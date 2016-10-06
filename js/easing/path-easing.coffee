@@ -149,7 +149,6 @@ class PathEasing
   # @param  {Object} bound point (start or end)
   # @return {Number, Undefined} returns Y value if true, undefined if false
   _checkIfPointCloseEnough:(p, point)->
-    # console.log p, point.x/@_rect
     @_resolveY(point) if h.closeEnough p, point.x/@_rect, @_eps
   # ---
 

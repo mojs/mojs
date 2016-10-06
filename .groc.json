@@ -1,8 +1,0 @@
-{
-  "glob": ["js/**/*.coffee", "readme.md"],
-  "out": "docs",
-  "github": false,
-  "style":  "solarized",
-  "index": "readme.md",
-  "ext-scripts": ["docs/ei.js"]
-}

@@ -8,6 +8,7 @@
   Timeline = window.mojs.Timeline;
 
   describe('Tweener ->', function() {
+    var isPageVisibility;
     afterEach(function() {
       t._stopLoop();
       return t.removeAll();
@@ -184,7 +185,7 @@
         return expect(t.tweens.length).toBe(0);
       });
     });
-    return describe('_update method ->', function() {
+    describe('_update method ->', function() {
       it('should update the current time on every timeline', function() {
         var time;
         t.add(new Tween);
@@ -237,6 +238,142 @@
           expect(tw._onTweenerFinish).toHaveBeenCalled();
           return dfr();
         }, 2 * duration);
+      });
+    });
+    isPageVisibility = function() {
+      return (typeof document.hidden !== "undefined") || (typeof document.mozHidden !== "undefined") || (typeof document.msHidden !== "undefined") || (typeof document.webkitHidden !== "undefined");
+    };
+    describe('_listenVisibilityChange method ->', function() {
+      if (!isPageVisibility()) {
+        return;
+      }
+      describe('page visibility init ->', function() {
+        return it('should have ran _listenVisibilityChange method ->', function() {
+          expect(typeof t._visibilityHidden).toBe('string');
+          return expect(typeof t._visibilityChange).toBe('string');
+        });
+      });
+      it('should set _visibilityHidden property', function() {
+        var isIE, isMozilla, isOldOpera, isWebkit;
+        t._visibilityHidden = null;
+        t._listenVisibilityChange();
+        isOldOpera = t._visibilityHidden === 'hidden';
+        isMozilla = t._visibilityHidden === 'mozHidden';
+        isIE = t._visibilityHidden === 'msHidden';
+        isWebkit = t._visibilityHidden === 'webkitHidden';
+        return expect(isOldOpera || isMozilla || isIE || isWebkit).toBe(true);
+      });
+      it('should set _visibilityChange property', function() {
+        var isIE, isMozilla, isOldOpera, isWebkit;
+        t._visibilityChange = null;
+        t._listenVisibilityChange();
+        isOldOpera = t._visibilityChange === 'visibilitychange';
+        isMozilla = t._visibilityChange === 'mozvisibilitychange';
+        isIE = t._visibilityChange === 'msvisibilitychange';
+        isWebkit = t._visibilityChange === 'webkitvisibilitychange';
+        return expect(isOldOpera || isMozilla || isIE || isWebkit).toBe(true);
+      });
+      return it('should set up visiblilityChange even listener', function() {
+        spyOn(document, 'addEventListener');
+        t._listenVisibilityChange();
+        return expect(document.addEventListener).toHaveBeenCalledWith(t._visibilityChange, t._onVisibilityChange, false);
+      });
+    });
+    describe('_savePlayingTweens method ->', function() {
+      it('should copy all playing tweens to _savedTweens array', function(done) {
+        var tw1, tw2, tw3;
+        tw1 = new Tween;
+        tw1._setStartTime();
+        tw2 = new Tween;
+        tw2._setStartTime();
+        tw3 = new Tween;
+        tw3._setStartTime();
+        t.add(tw1);
+        t.add(tw2);
+        t.add(tw3);
+        return setTimeout(function() {
+          t._savedTweens = [];
+          t._savePlayingTweens();
+          expect(t._savedTweens.length).toBe(3);
+          expect(t._savedTweens[0]).toBe(tw1);
+          expect(t._savedTweens[1]).toBe(tw2);
+          expect(t._savedTweens[2]).toBe(tw3);
+          return done();
+        }, 50);
+      });
+      return it('should call `pause` on each tween', function(done) {
+        var tw1, tw2, tw3;
+        tw1 = new Tween;
+        tw1._setStartTime();
+        tw2 = new Tween;
+        tw2._setStartTime();
+        tw3 = new Tween;
+        tw3._setStartTime();
+        t.add(tw1);
+        t.add(tw2);
+        t.add(tw3);
+        spyOn(tw1, 'pause');
+        spyOn(tw2, 'pause');
+        spyOn(tw3, 'pause');
+        return setTimeout(function() {
+          t._savedTweens = [];
+          t._savePlayingTweens();
+          expect(tw1.pause).toHaveBeenCalled();
+          expect(tw2.pause).toHaveBeenCalled();
+          expect(tw3.pause).toHaveBeenCalled();
+          return done();
+        }, 50);
+      });
+    });
+    describe('_restorePlayingTweens method ->', function() {
+      it('should copy all _savedTweens tweens to tweens array', function() {
+        var tw1, tw2, tw3;
+        tw1 = new Tween;
+        tw2 = new Tween;
+        tw3 = new Tween;
+        tw1.play();
+        tw2.play();
+        tw3.play();
+        t._savePlayingTweens();
+        t._restorePlayingTweens();
+        expect(t.tweens.length).toBe(3);
+        expect(t.tweens[0]).toBe(tw1);
+        expect(t.tweens[1]).toBe(tw2);
+        return expect(t.tweens[2]).toBe(tw3);
+      });
+      return it('should call `resume` on each tween', function() {
+        var tw1, tw2, tw3;
+        tw1 = new Tween;
+        tw1._setStartTime();
+        tw2 = new Tween;
+        tw2._setStartTime();
+        tw3 = new Tween;
+        tw3._setStartTime();
+        spyOn(tw1, 'resume');
+        spyOn(tw2, 'resume');
+        spyOn(tw3, 'resume');
+        t.tweens = [];
+        t._savedTweens = [tw1, tw2, tw3];
+        t._restorePlayingTweens();
+        expect(tw1.resume).toHaveBeenCalled();
+        expect(tw2.resume).toHaveBeenCalled();
+        return expect(tw3.resume).toHaveBeenCalled();
+      });
+    });
+    return describe('_onVisibilityChange method ->', function() {
+      it('should call _savePlayingTweens if hidden', function() {
+        t._visibilityHidden = 'mojs-tweener-visibility-test';
+        document[t._visibilityHidden] = true;
+        spyOn(t, '_savePlayingTweens');
+        t._onVisibilityChange();
+        return expect(t._savePlayingTweens).toHaveBeenCalled();
+      });
+      return it('should call _restorePlayingTweens if visible', function() {
+        t._visibilityHidden = 'mojs-tweener-visibility-test';
+        document[t._visibilityHidden] = false;
+        spyOn(t, '_restorePlayingTweens');
+        t._onVisibilityChange();
+        return expect(t._restorePlayingTweens).toHaveBeenCalled();
       });
     });
   });

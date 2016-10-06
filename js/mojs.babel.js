@@ -1,8 +1,9 @@
 import h            from './h';
 import shapesMap    from './shapes/shapesMap';
-import Burst        from './burst';
 import Shape        from './shape';
 import ShapeSwirl   from './shape-swirl';
+import Burst        from './burst';
+import Html         from './html';
 import stagger      from './stagger';
 import Spriter      from './spriter';
 import MotionPath   from './motion-path';
@@ -12,15 +13,17 @@ import Tweener      from './tween/tweener';
 import Tweenable    from './tween/tweenable';
 import Thenable     from './thenable';
 import Tunable      from './tunable';
+import Delta        from './delta/delta';
+import Deltas       from './delta/deltas';
 import Module       from './module';
 import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.265.9', isDebug: true, helpers: h,
-  Shape, ShapeSwirl, Burst, stagger, Spriter, MotionPath,
+  revision:   '0.288.1', isDebug: true, helpers: h,
+  Shape, ShapeSwirl, Burst, Html, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
-  tweener, easing, shapesMap
+  tweener, easing, shapesMap, _pool: { Delta, Deltas }
 }
 
 // functions alias
@@ -35,7 +38,7 @@ mojs.Swirl   = mojs.ShapeSwirl;
 
 // TODO:
 /*
-  performance
+  H/V in paths
 
   rand for direction
   burst children angle after tune
@@ -48,6 +51,23 @@ mojs.Swirl   = mojs.ShapeSwirl;
   swirls in then chains for x/y
   parse rand(stagger(20, 10), 20) values
   percentage for radius
+
+  issue:
+    const shape = new mojs.Shape({
+      scale: { 0: 1 },
+      duration: 1000
+    })
+    .then({ scale: 0 })
+    .then({ scale: 1, onComplete () { this.pause(); } })
+    .then({ scale: 0 })
+    .then({ scale: 1 })
+    ;
+
+    document.addEventListener('click', () => {
+      shape
+        .tune({ fill: 'cyan' })
+        .play();
+    });
 */
 
 // istanbul ignore next
