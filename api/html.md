@@ -15,10 +15,10 @@ Contents:
 
 ### Full API Reference:
 
-The module has `transforms/opacity` (`x`, `y`, `opacity` etc.) predefined properties listed below.
+The module has `transforms/opacity` (`x`, `y`, `opacity` etc.) predefined properties listed below. Browsers can handle animation of that properties easily, so idealy you should not use properties besides predefined set.
 
 ```javascript
-const html = new mojs.html({
+const html = new mojs.Html({
   
   /* SHAPE PROPERTIES */
 
@@ -196,9 +196,9 @@ const html = new mojs.html({
 Other `CSS` properties would be inferred automatically, please set them in `camelCase`:
 
 ```javascript
-const html = new mojs.html({
+const html = new mojs.Html({
   el: '#js-el',
-  backgroundColor: { 'cyan': '#FA3204' },
+  borderColor: { 'cyan': '#FA3204' },
   borderWidth: { 2: 12 }
 });
 ```
@@ -210,7 +210,7 @@ const html = new mojs.html({
 If property doesn't work as expected you can teach `mojs` with a `sutomProperties` definition:
 
 ```javascript
-const html = new mojs.html({
+const html = new mojs.Html({
   el: '#js-el',
   customProperties: {
     originY: 50,

@@ -196,6 +196,19 @@
         s._init(options, mojs.MotionPath);
         return expect(s._modules[0].o.isRunLess).toBe(true);
       });
+      it('should pass index to the module', function() {
+        var div, options, s;
+        div = document.createElement('div');
+        options = {
+          el: [div, div],
+          path: 'M0,0 L100,100',
+          delay: '200'
+        };
+        s = new Stagger(options);
+        s._init(options, mojs.Shape);
+        expect(s._modules[0]._o.index).toBe(0);
+        return expect(s._modules[1]._o.index).toBe(1);
+      });
       return it('should return self', function() {
         var div, options, s;
         div = document.createElement('div');

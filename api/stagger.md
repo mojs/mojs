@@ -16,9 +16,9 @@ Contents:
 
 ```javascript
 // wrap shape in stagger
-const StaggeredShape = mojs.stagger( mojs.Shape );
+const Shapes = mojs.stagger( mojs.Shape );
 // now you can have staggered syntax on the shape and create multiple shapes at once. the next code will produce 5 shapes
-const shapes = new StaggeredShape({
+const shapes = new Shapes({
   // quantifier defines number of modules to create
   quantifier:   5,
   // each module will have the same scale transition
@@ -39,31 +39,12 @@ const shapes = new StaggeredShape({
   // quantifier defines number of modules to create
   quantifier:   5,
   // each module will receive value from this array. if array is smaller than amount of modules (4 vs 5), the stagger prism will loop on the array, thus `5th` item will receive value by `index = 0`, `6th` item will receive value by `index = 1` and so on. This is called `property map` because it maps properties array to modules inside stagger.
-  scale: [ 1, 2, 2.5, 3 ]
+  scale: [{ 0: 1 }, {0: 1.25}, { 0: 1.5 }, { 0: 2 }],
 });
 
 ```
 
 [CodePen Example](http://codepen.io/sol0mka/pen/78c17f405451e644cb424db364266015?editors=0010)
-
-Since `stagger` is just a prism that splits input options evenly, you can use the `property maps` with `delta` values too - it will just split that values among modules:
-
-```javascript
-// wrap shape in stagger
-const StaggeredShape = mojs.stagger( mojs.Shape );
-// now you can have staggered syntax on the shape and create multiple shapes at once. the next code will produce 5 shapes
-const shapes = new StaggeredShape({
-  // quantifier defines number of modules to create
-  quantifier:   5,
-  // each odd module will receive `{ 1 : 0 }` delta, each even one will receive `{ 0 : 1 }` delta
-  scale: [ { 1 : 0 }, { 0 : 1 } ],
-  // static values for x
-  x: [ 50, 100, 150, 200, 250 ]
-});
-
-```
-
-[CodePen Example](http://codepen.io/sol0mka/pen/f5362ba5fb0cf9091a6997a82f1cba73?editors=0010)
 
 You can use `stagger` string incremental properties:
 
@@ -86,20 +67,20 @@ The `initial value` could be omitted - it will fallback to `0`:
 
 ```javascript
 // wrap shape in stagger
-const StaggeredShape = mojs.stagger( mojs.Shape );
+const Shapes = mojs.stagger( mojs.Shape );
 // now you can have staggered syntax on the shape and create multiple shapes at once. the next code will produce 5 shapes
-const shapes = new StaggeredShape({
+const shapes = new Shapes({
   // quantifier defines number of modules to create
   quantifier:   5,
-  // this means stagger with step of `.5` starting from 0
-  scale: 'stagger(.5)'
+  // this means stagger with step of `50` starting from `0`
+  x:            'stagger(50)'
 });
 
 ```
 
 [CodePen Example](http://codepen.io/sol0mka/pen/39a051dfdaed0d565c1acef5117effc7?editors=0010)
 
-`stagger` strings can be used inside `deltas` and `rand` expressions:
+`stagger` strings can be used inside `deltas` and can contain `rand` expressions:
 
 ```javascript
 // wrap shape in stagger
@@ -111,7 +92,7 @@ const shapes = new StaggeredShape({
   // animate scale from `0` to staggered value (`1` for 1st module, `1.25` for 2nd, `1.5` for 3rd etc.)
   scale: { 0: 'stagger(1, .25)' },
   // random value in range from `0` to staggered value (`200` for 1st module, `400` for 2nd, `600` for 3rd etc.)
-  x: 'rand(0, stagger(200))'
+  x: 'stagger(-300, rand(100, 200))'
 });
 
 ```
