@@ -207,7 +207,7 @@ const html = new mojs.Html({
 
 ### Teach mojs with customProperties
 
-If property doesn't work as expected you can teach `mojs` with a `sutomProperties` definition:
+If property doesn't work as expected you can teach `mojs` with a `customProperties` definition:
 
 ```javascript
 const html = new mojs.Html({
