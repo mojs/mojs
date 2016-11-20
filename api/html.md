@@ -15,7 +15,7 @@ Contents:
 
 ### Full API Reference:
 
-The module has `transforms/opacity` (`x`, `y`, `opacity` etc.) predefined properties listed below. Browsers can handle animation of that properties easily, so idealy you should not use properties besides predefined set.
+The module has `transforms/opacity` (`x`, `y`, `opacity` etc.) predefined properties listed below. Browsers can handle animation of that properties easily, so ideally you should not use properties besides predefined set.
 
 ```javascript
 const html = new mojs.Html({
