@@ -8,7 +8,7 @@
 Full API reference:
 
 ```javascript
-const shape = new mojs.Shape({
+const shapeSwirl = new mojs.ShapeSwirl({
 
   // ∆ :: Diviation size of sine. {Number}
   swirlSize:          10,
