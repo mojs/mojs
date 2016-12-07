@@ -30,7 +30,8 @@
   },
   "homepage": "https://github.com/legomushroom/mojs",
   "dependencies": {
-    "babel-runtime": "^6.5.0"
+    "babel-runtime": "^6.5.0",
+    "gulp-babel": "^6.1.2"
   },
   "devDependencies": {
     "6to5-loader": "^3.0.0",

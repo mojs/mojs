@@ -172,7 +172,10 @@ describe 'Tweener ->', ->
       , 2*duration
 
   isPageVisibility = ->
-    return (typeof document.hidden != "undefined") or (typeof document.mozHidden != "undefined") or (typeof document.msHidden != "undefined") or (typeof document.webkitHidden != "undefined")
+    return (typeof document.hidden != "undefined") or
+      (typeof document.mozHidden != "undefined") or
+      (typeof document.msHidden != "undefined") or
+      (typeof document.webkitHidden != "undefined")
 
   describe '_listenVisibilityChange method ->', ->
     if !isPageVisibility() then return
@@ -294,6 +297,11 @@ describe 'Tweener ->', ->
       expect(tw1.resume).toHaveBeenCalled()
       expect(tw2.resume).toHaveBeenCalled()
       expect(tw3.resume).toHaveBeenCalled()
+
+    it 'should check for empty array before resuming', ->
+      t.tweens = []
+
+      expect(-> t._restorePlayingTweens()).not.toThrow()
 
   describe '_onVisibilityChange method ->', ->
     it 'should call _savePlayingTweens if hidden', ->
