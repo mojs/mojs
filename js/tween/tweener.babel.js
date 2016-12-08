@@ -13,6 +13,7 @@ class Tweener {
     this.tweens = [];
     this._loop = this._loop.bind(this);
     this._onVisibilityChange = this._onVisibilityChange.bind(this);
+    this._savedTweens = [];
   }
   /*
     Main animation loop. Should have only one concurrent loop.
@@ -134,10 +135,10 @@ class Tweener {
     @private
   */
   _restorePlayingTweens () {
-    if (this._savedTweens !== undefined && this._savedTweens.constructor === Array && this._savedTweens.length) {
-      for (let i = 0; i < this._savedTweens.length; i++ ) {
-        this._savedTweens[i].resume();
-      }
+    if (this._savedTweens === null) { return; }
+
+    for (let i = 0; i < this._savedTweens.length; i++ ) {
+      this._savedTweens[i].resume();
     }
   }
 }
