@@ -30,8 +30,7 @@
   },
   "homepage": "https://github.com/legomushroom/mojs",
   "dependencies": {
-    "babel-runtime": "^6.5.0",
-    "gulp-babel": "^6.1.2"
+    "babel-runtime": "^6.5.0"
   },
   "devDependencies": {
     "6to5-loader": "^3.0.0",
@@ -56,6 +55,7 @@
     "grock": "git+https://github.com/legomushroom/grock.git",
     "gulp": "latest",
     "gulp-autoprefixer": "0.0.6",
+    "gulp-babel": "^6.1.2",
     "gulp-browserify": "latest",
     "gulp-changed": "~0.2.0",
     "gulp-coffee": "~1.4.1",
