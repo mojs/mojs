@@ -8,7 +8,7 @@ class Tweener {
     this._listenVisibilityChange();
     return this;
   }
-  
+
   _vars () {
     this.tweens = [];
     this._loop = this._loop.bind(this);
@@ -134,11 +134,13 @@ class Tweener {
     @private
   */
   _restorePlayingTweens () {
+    if (this._savedTweens == null) { return; }
+
     for (let i = 0; i < this._savedTweens.length; i++ ) {
       this._savedTweens[i].resume();
     }
   }
 }
-  
+
 var t = new Tweener
 export default t;

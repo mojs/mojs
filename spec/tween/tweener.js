@@ -341,7 +341,7 @@
         expect(t.tweens[1]).toBe(tw2);
         return expect(t.tweens[2]).toBe(tw3);
       });
-      return it('should call `resume` on each tween', function() {
+      it('should call `resume` on each tween', function() {
         var tw1, tw2, tw3;
         tw1 = new Tween;
         tw1._setStartTime();
@@ -358,6 +358,12 @@
         expect(tw1.resume).toHaveBeenCalled();
         expect(tw2.resume).toHaveBeenCalled();
         return expect(tw3.resume).toHaveBeenCalled();
+      });
+      return it('should check for empty array before resuming', function() {
+        t.tweens = [];
+        return expect(function() {
+          return t._restorePlayingTweens();
+        }).not.toThrow();
       });
     });
     return describe('_onVisibilityChange method ->', function() {
