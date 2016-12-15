@@ -19,9 +19,6 @@ The module has `transforms/opacity` (`x`, `y`, `opacity` etc.) predefined proper
 
 ```javascript
 const html = new mojs.Html({
-  
-  /* SHAPE PROPERTIES */
-
   // HTMLElement to animate. {String, Object} [selector, HTMLElement]
   el:           null,
   // ∆ :: translateX property. {String, Number, Object} [value, delta]
@@ -145,6 +142,13 @@ const html = new mojs.Html({
     @param options {Object} Next shape state.
   */
   .then({ /* next state options */ })
+  
+  
+  /*
+    Tunes properties to new values.
+    @param options {Object} New props to tune to.
+  */
+  .tune({ /* next state options */ })
 
   /*
     Starts playback.
@@ -166,6 +170,11 @@ const html = new mojs.Html({
   */
   .pause()
   /*
+    Stops playback.
+    @param {Number} Progress to set after the stop [0...1].
+  */
+  .stop( progress = 0 )
+  /*
     Restarts playback.
     @param shift {Number} Start progress shift in milliseconds.
   */
@@ -184,10 +193,10 @@ const html = new mojs.Html({
     Sets speed of the tween.
     @param speed {Number} Progress to set [ 0..∞ ].
   */
-  setSpeed ( speed )
+  .setSpeed ( speed )
 
   /* Stops and resets the tween. */
-  reset ( speed )
+  .reset ( speed )
 
 ```
 
