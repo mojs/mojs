@@ -65,6 +65,8 @@ Working hard on `APIs`, `tutorials` and `website`. Follow [@legomushroom](https:
 Kudos to supporters on [Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare):
 
 - [Zak Frisch](https://github.com/zfrisch)
+- [Erhan Karadeniz](https://twitter.com/erhankaradeniz)
+- [Jorge Antunes]()
 
 [full list of mojs patrons](./patrons.md)
 
