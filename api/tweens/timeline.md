@@ -4,7 +4,7 @@
 - [Tween API](./tween.md)
 - [back](/api/readme.md)
 
-`Timeline` inheritas all properties, callbacks and public methods from `Tween`, the only difference between `Tween` and `Timeline` is that the later doesn't have the `duration` property - it gets calculated from durations/delays of children. Also `Timeline` add two public methods that can recieve children. Please check the Tween API for reference.
+`Timeline` inherits all properties, callbacks and public methods from `Tween`, the only difference between `Tween` and `Timeline` is that the later doesn't have the `duration` property - it gets calculated from durations/delays of children. Also `Timeline` add two public methods that can recieve children. Please check the Tween API for reference.
 
 Full API reference:
 
