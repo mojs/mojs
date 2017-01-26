@@ -142,13 +142,6 @@ const html = new mojs.Html({
     @param options {Object} Next shape state.
   */
   .then({ /* next state options */ })
-  
-  
-  /*
-    Tunes properties to new values.
-    @param options {Object} New props to tune to.
-  */
-  .tune({ /* next state options */ })
 
   /*
     Starts playback.
