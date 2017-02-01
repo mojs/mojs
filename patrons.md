@@ -4,7 +4,7 @@ Meet some of the outstanding guys that support `mojs` on [Patreon](https://patre
 
 - [Zak Frisch](https://github.com/zfrisch)
 - [Erhan Karadeniz](https://twitter.com/erhankaradeniz)
-- [Jorge Antunes]()
+- [Jorge Antunes](https://github.com/stoikerty)
 - [Daniel C. Henning](https://github.com/danielsdesk)
 - [Chris Dolphin](https://github.com/likethemammal/)
 - [Volodymyr Kushnir](https://twitter.com/VovaKushnir)
