@@ -66,7 +66,7 @@ Kudos to supporters on [Patreon](https://patreon.com/user?u=3219311&utm_medium=s
 
 - [Zak Frisch](https://github.com/zfrisch)
 - [Erhan Karadeniz](https://twitter.com/erhankaradeniz)
-- [Jorge Antunes](github.com/stoikerty)
+- [Jorge Antunes](https://github.com/stoikerty)
 
 [full list of mojs patrons](./patrons.md)
 
