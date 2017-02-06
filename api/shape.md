@@ -108,7 +108,7 @@ const shape = new mojs.Shape({
   isRefreshState:   true,
 
   // Context callbacks will be called with. {Object}
-  callbacksContext: this
+  callbacksContext: this,
   
   /* TWEEN PROPERTIES */
   // Duration {Number}
