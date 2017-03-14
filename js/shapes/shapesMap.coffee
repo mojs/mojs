@@ -25,7 +25,7 @@ class BitsMap
   equal:    Equal
   curve:    Curve
   getShape:(name)-> @[name] or h.error "no \"#{name}\" shape available yet,
-      please choose from this list:", @
+      please choose from this list:", [ 'circle', 'line', 'zigzag', 'rect', 'polygon', 'cross', 'equal', 'curve' ]
 
   ###
     Method to add shape to the map.

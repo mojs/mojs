@@ -7,7 +7,7 @@
   "authors": [
     "Oleg Solomka @legomushroom <legomushroom@gmail.com>"
   ],
-  "main": "build/mojs.min.js",
+  "main": "build/mo.min.js",
   "keywords": [
     "motion",
     "graphics",

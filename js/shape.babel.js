@@ -262,7 +262,7 @@ class Shape extends Tunable {
     if (!this.isForeign) {
       this._isPropChanged('left')  && (style.left = p.left);
       this._isPropChanged('top')   && (style.top = p.top);
-      
+
       var isX = this._isPropChanged('x'),
           isY = this._isPropChanged('y'),
           isTranslate = isX || isY,
@@ -397,7 +397,7 @@ class Shape extends Tunable {
     this._getShapeSize();
     // don't create actual shape if !`isWithShape`
     if ( !this._props.isWithShape ) { return; }
-    
+
     var p      = this._props;
     // get shape's class
     var Shape  = shapesMap.getShape(this._props.shape);
@@ -481,7 +481,7 @@ class Shape extends Tunable {
   /*
     Method to setup tween and timeline options before creating them.
     @override @ Tweenable
-    @private  
+    @private
   */
   _transformTweenOptions () { this._applyCallbackOverrides( this._o ); }
   /*

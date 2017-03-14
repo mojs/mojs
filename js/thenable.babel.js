@@ -29,7 +29,7 @@ class Thenable extends Tweenable {
     this._modules.push( module );
     // add module's tween into master timeline
     this.timeline.append( module );
-    
+
     return this;
   }
 

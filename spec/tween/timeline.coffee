@@ -514,6 +514,7 @@ describe 'Timeline ->', ->
       delay  = 200
       t   = new Timeline delay: delay; t1  = new Timeline
       t1.add new Tween duration: 500, delay: 200
+
       t.add(t1)
       spyOn t, '_update'
       t.setProgress 1.5

@@ -1,7 +1,8 @@
 # mo · js [![Build Status](https://travis-ci.org/legomushroom/mojs.svg?branch=dev)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.svg?branch=dev)](https://coveralls.io/r/legomushroom/mojs?branch=dev)
 
-#### motion graphics toolbelt for the web
-[mojs.io](http://mojs.io/)
+<img width="410" src="https://github.com/legomushroom/mojs/blob/master/motion-for-the-web-3.png?raw=true" alt="large mojs logo" />
+
+#### motion graphics toolbelt for the web [[mojs.io](http://mojs.io/)]
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom-dev.svg)](https://saucelabs.com/u/legomushroom-dev)
 
@@ -13,6 +14,8 @@
   - [Love or Hate Modal](http://codepen.io/sol0mka/full/812699ce32c9a7aeb70c9384b32a533a/)
   - [Mograph](http://codepen.io/sol0mka/full/39427561a8a0b15d7896480a7d96d3d1/)
   - [Word Reveal](http://codepen.io/sol0mka/full/c94452fb65dbf676b0ae8a12d4267473/)
+  - [Jump and Squash](http://codepen.io/sol0mka/full/pEagoL/)
+  - [video] [mojs workflow with tools](https://vimeo.com/185587462)
   - [Physical Balls](http://codepen.io/sol0mka/full/7315f4364360ec87a6655d33782702fe/)
   - [Dust Trail](http://codepen.io/sol0mka/full/633e6aa52d40691cca2f2cda91650bae/)
   - [Bubble Modal](http://codepen.io/sol0mka/full/3c49de2d7d0ca3e92bf5db5bf7a2687d/)
@@ -37,6 +40,7 @@
 ## Tools
   - [MojsPlayer](https://github.com/legomushroom/mojs-player)
   - [MojsCurveEditor](https://github.com/legomushroom/mojs-curve-editor)
+  - [Video with MojsPlayer and MojsCurveEditor](https://vimeo.com/185587462)
 
 ## Installation
 
@@ -60,7 +64,9 @@ Working hard on `APIs`, `tutorials` and `website`. Follow [@legomushroom](https:
 
 Kudos to supporters on [Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare):
 
-- Zak Frisch
+- [Zak Frisch](https://github.com/zfrisch)
+- [Erhan Karadeniz](https://twitter.com/erhankaradeniz)
+- [Jorge Antunes](https://github.com/stoikerty)
 
 [full list of mojs patrons](./patrons.md)
 

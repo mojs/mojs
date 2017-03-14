@@ -103,6 +103,12 @@ const tween = new mojs.Tween({
     @param shift {Number} Start progress shift in milliseconds.
   */
   .playBackward( shift = 0 )
+  
+  /*
+    Stops playback.
+    @param progress {Number} Progress to set after stop [0..1]. *Default* is `0`.
+  */
+  .stop( progress = 0 )
   /*
     Pauses playback.
   */
@@ -131,11 +137,11 @@ const tween = new mojs.Tween({
     Sets speed of the tween.
     @param speed {Number} Progress to set [ 0..∞ ].
   */
-  setSpeed ( speed )
+  .setSpeed( speed )
 
-  /* Stops and resets the tween. */
-  reset ( speed )
-
+  /* Stops and resets the tween state. */
+  .reset()
+  
 ```
 
 - [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0011)

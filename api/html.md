@@ -15,13 +15,10 @@ Contents:
 
 ### Full API Reference:
 
-The module has `transforms/opacity` (`x`, `y`, `opacity` etc.) predefined properties listed below. Browsers can handle animation of that properties easily, so idealy you should not use properties besides predefined set.
+The module has `transforms/opacity` (`x`, `y`, `opacity` etc.) predefined properties listed below. Browsers can handle animation of that properties easily, so ideally you should not use properties besides predefined set.
 
 ```javascript
 const html = new mojs.Html({
-  
-  /* SHAPE PROPERTIES */
-
   // HTMLElement to animate. {String, Object} [selector, HTMLElement]
   el:           null,
   // ∆ :: translateX property. {String, Number, Object} [value, delta]
@@ -166,6 +163,11 @@ const html = new mojs.Html({
   */
   .pause()
   /*
+    Stops playback.
+    @param {Number} Progress to set after the stop [0...1].
+  */
+  .stop( progress = 0 )
+  /*
     Restarts playback.
     @param shift {Number} Start progress shift in milliseconds.
   */
@@ -184,10 +186,10 @@ const html = new mojs.Html({
     Sets speed of the tween.
     @param speed {Number} Progress to set [ 0..∞ ].
   */
-  setSpeed ( speed )
+  .setSpeed ( speed )
 
   /* Stops and resets the tween. */
-  reset ( speed )
+  .reset ( speed )
 
 ```
 
@@ -207,7 +209,7 @@ const html = new mojs.Html({
 
 ### Teach mojs with customProperties
 
-If property doesn't work as expected you can teach `mojs` with a `sutomProperties` definition:
+If property doesn't work as expected you can teach `mojs` with a `customProperties` definition:
 
 ```javascript
 const html = new mojs.Html({
