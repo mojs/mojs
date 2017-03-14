@@ -21,7 +21,7 @@ var insert        = require('gulp-insert');
 var jeditor       = require("gulp-json-editor");
 var shell         = require("gulp-shell");
 var grock         = require("grock");
-var babel         = require("gulp-babel");
+// var babel         = require("gulp-babel");
 
 var devFolder   = '', distFolder  = '', currentVersion = 0;
 var distMoFile = devFolder + 'build/mo.js';
@@ -138,11 +138,3 @@ gulp.task('default', function(){
   // gulp.watch(paths.src.index,['index:jade']);
   gulp.watch('package.json', ['update-version']);
 });
-
-
-
-
-
-
-
-

@@ -58,7 +58,7 @@ module.exports = function(config) {
       platform: 'Windows 8.1',
       version: '11'
     }
-   
+
   };
 
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
@@ -96,7 +96,7 @@ module.exports = function(config) {
 
       // 'build/html.js',
       // 'spec/html.js',
-      
+
       // 'build/shape.js',
       // 'spec/shape.js',
       // 'build/shape-swirl.js',
@@ -112,7 +112,7 @@ module.exports = function(config) {
       // 'spec/tunable.js',
       // 'build/thenable.js',
       // 'spec/thenable.js',
-      
+
       // 'build/spriter.js',
       // 'spec/spriter.js',
       // // 'build/stagger.js',
@@ -148,11 +148,8 @@ module.exports = function(config) {
     // },
     coverageReporter: {
       reporters:[
-        {type: 'html', dir:'coverage/'},
-        // {type: 'teamcity'},
+        {type: 'html', dir:' coverage/'},
         {type: 'text-summary'},
-        // {type: 'coverage'},
-        // {type: 'growl'}
         {type: 'lcov', subdir: 'lcov-report'}
       ],
     },

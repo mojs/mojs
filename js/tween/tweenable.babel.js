@@ -107,10 +107,10 @@ class Tweenable extends Module {
     this.timeline.setSpeed.apply( this.timeline, arguments );
     return this;
   }
-  
+
   // ^ PUBLIC  METHOD(S) ^
   // v PRIVATE METHOD(S) v
-  
+
   constructor ( o = {} ) {
     // super of Module
     super( o );
@@ -158,5 +158,5 @@ class Tweenable extends Module {
     this.tween && this.timeline.add( this.tween );
   }
 }
- 
+
 export default Tweenable;
