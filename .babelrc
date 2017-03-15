@@ -1,0 +1,3 @@
+{
+  "presets": [ "es2015", "babel-preset-stage-2" ]
+}
