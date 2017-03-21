@@ -178,11 +178,11 @@ class Timeline extends Tween {
       this._timelines[j]._update(
         timeToTimelines,
         prevTimeToTimelines,
-        this._prevYoyo,
+        this._isPrevYoyo,
         this._onEdge
       );
     }
-    this._prevYoyo = isYoyo;
+    this._isPrevYoyo = isYoyo;
   }
   /*
     Method calculate self duration based on timeline's duration.

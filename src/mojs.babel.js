@@ -1,4 +1,4 @@
-// import Tween    from './tween/tween';
+import Tween    from './tween/tween-scope';
 // import Timeline from './tween/timeline';
 import tweener  from './tween/tweener';
 
