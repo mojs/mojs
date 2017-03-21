@@ -6,8 +6,10 @@
   "private": false,
   "scripts": {
     "start": "webpack",
-    "test":  "karma start --single-run",
-    "test-dev":  "karma start"
+    "test": "karma start --single-run",
+    "build": "webpack --production --optimize-minimize",
+    "test-dev": "karma start",
+    "analyze": "webpack --json > stats.json"
   },
   "main": "build/mo.js",
   "keywords": [
@@ -34,7 +36,20 @@
   "devDependencies": {
     "babel-core": "^6.24.0",
     "babel-loader": "^6.4.0",
+    "babel-plugin-check-es2015-constants": "^6.22.0",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
+    "babel-plugin-transform-es2015-block-scoping": "^6.23.0",
+    "babel-plugin-transform-es2015-classes": "^6.23.0",
+    "babel-plugin-transform-es2015-destructuring": "^6.23.0",
+    "babel-plugin-transform-es2015-for-of": "^6.23.0",
+    "babel-plugin-transform-es2015-parameters": "^6.23.0",
+    "babel-plugin-transform-es2015-shorthand-properties": "^6.22.0",
+    "babel-plugin-transform-es2015-spread": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-plugin-transform-strict-mode": "^6.22.0",
+    "babel-preset-babili": "0.0.12",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-stage-2": "^6.22.0",
     "babel-runtime": "^6.23.0",

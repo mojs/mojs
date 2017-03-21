@@ -4,7 +4,7 @@ import parseEasing from './helpers/parse-easing';
 /**
  * `easing` - object that holds all easing avaliable in `mojs`.
  */
-export default easing {
+export default {
 
   /**
    * `Linear` easing, also `null` or `id` easing - simply returns whatever

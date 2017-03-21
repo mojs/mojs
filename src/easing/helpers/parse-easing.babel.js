@@ -1,6 +1,8 @@
-import { defaultEasing } from '../constants';
-import splitEasing from './splitEasing';
-
+import {
+  defaultEasing,
+  defaultEasingString,
+  consoleName
+} from '../../constants';
 
 /**
  * parseEasing - function to parse all easing values to a function.
@@ -8,17 +10,18 @@ import splitEasing from './splitEasing';
  * @param  {String, Function, Array} Easing representation.
  * @return {Function} Parsed Easing.
  */
-export default (easing = defaultEasing.join('.'), easings) => {
+export default (easing = defaultEasingString, easings) => {
   const type = typeof easing;
 
   switch (type) {
-    case 'function' { return easing; }
+    case 'function': { return easing; }
     case 'string': {
-      easing = splitEasing(easing);
+      easing = easing.toLowerCase().split('.');
       const easingParent = easings[easing[0]];
       if (!easingParent) {
-        console.error(`:mojs: Easing with name ${easing[0]} was not found,
-                      fallback to "linear.none" instead`);
+        console.error(`${consoleName} Easing with name ${easing[0]} wasn't
+          found, fallback to "${defaultEasingString}" instead.`, easings
+        );
         return easings[defaultEasing[0]][defaultEasing[1]];
       }
       return easingParent[easing[1]];
@@ -32,7 +35,7 @@ export default (easing = defaultEasing.join('.'), easings) => {
     // //   - if array passed - parse as `bezier` function
     // // ---
     // case 'object' {
-    //   if (easing instanceof Array.constructor) {
+    //   if (easing instanceof Array) {
     //     return this.bezier.apply(this, easing);
     //   } else {
     //     console.error(

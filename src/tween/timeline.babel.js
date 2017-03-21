@@ -1,6 +1,5 @@
-import h from '../h';
-import t from './tweener';
 import Tween from './tween';
+import { consoleName } from '../constants';
 
 class Timeline extends Tween {
   /*
@@ -9,7 +8,7 @@ class Timeline extends Tween {
     @param {Object, Array} Tween/Timeline or an array of such.
     @returns {Object} Self.
   */
-  add (...args) {
+  add(...args) {
     this._pushTimelineArray(args);
     this._calcDimentions();
     return this;
@@ -17,12 +16,12 @@ class Timeline extends Tween {
   /*
     API method to append the Tween/Timeline to the end of the
     timeline. Each argument is treated as a new append.
-    Array of tweens is treated as a parallel sequence. 
+    Array of tweens is treated as a parallel sequence.
     @public
     @param {Object, Array} Tween/Timeline to append or array of such.
     @returns {Object} Self.
   */
-  append (...timeline) {
+  append(...timeline) {
     for (var tm of timeline) {
       if (h.isArray(tm)) { this._appendTimelineArray(tm); }
       else { this._appendTimeline(tm, this._timelines.length); }
@@ -36,7 +35,7 @@ class Timeline extends Tween {
     @param   {Number} Progress [0..1] to set when stopped.
     @returns {Object} Self.
   */
-  stop ( progress ) {
+  stop(progress) {
     super.stop( progress );
     this._stopChildren( progress );
     return this;
@@ -47,7 +46,7 @@ class Timeline extends Tween {
     @overrides @ Tween
     @returns this.
   */
-  reset () {
+  reset() {
     super.reset();
     this._resetChildren();
     return this;
@@ -56,7 +55,7 @@ class Timeline extends Tween {
     Method to call `reset` method on all children.
     @private
   */
-  _resetChildren () {
+  _resetChildren() {
     for ( var i = 0; i < this._timelines.length; i++ ) {
       this._timelines[i].reset();
     }
@@ -66,9 +65,9 @@ class Timeline extends Tween {
     @private
     @param   {Number} Progress [0..1] to set when stopped.
   */
-  _stopChildren ( progress ) {
+  _stopChildren(progress) {
     for ( var i = this._timelines.length-1; i >= 0; i-- ) {
-      this._timelines[i].stop( progress );
+      this._timelines[i].stop(progress);
     }
   }
   /*
@@ -87,13 +86,13 @@ class Timeline extends Tween {
 
   // ^ PUBLIC  METHOD(S) ^
   // v PRIVATE METHOD(S) v
-  
+
   /*
     Method to append Tween/Timeline array or mix of such.
     @private
     @param {Array} Array of Tweens/Timelines.
   */
-  _appendTimelineArray (timelineArray) {
+  _appendTimelineArray(timelineArray) {
     var i     = timelineArray.length,
         time  = this._props.repeatTime - this._props.delay,
         len   = this._timelines.length;
@@ -107,13 +106,13 @@ class Timeline extends Tween {
     @param {Number} Index of the append.
     @param {Number} Shift time.
   */
-  _appendTimeline (timeline, index, time) {
+  _appendTimeline(timeline, index, time) {
     // if timeline is a module with timeline property then extract it
     if (timeline.timeline instanceof Timeline) { timeline = timeline.timeline; }
     if (timeline.tween instanceof Tween) { timeline = timeline.tween; }
 
     var shift = (time != null) ? time : this._props.duration;
-    shift    += timeline._props.shiftTime || 0;
+    shift += timeline._props.shiftTime || 0;
     timeline.index = index; this._pushTimeline(timeline, shift);
   }
   /*
@@ -121,11 +120,11 @@ class Timeline extends Tween {
     @private
     @param {Array} Array of Tweens/Timelines.
   */
-  _pushTimelineArray (array) {
+  _pushTimelineArray(array) {
     for (var i = 0; i < array.length; i++) {
       var tm = array[i];
       // recursive push to handle arrays of arrays
-      if ( h.isArray(tm) ) {
+      if (tm instanceof Array) {
         this._pushTimelineArray(tm)
       } else { this._pushTimeline(tm); }
     };
@@ -137,7 +136,7 @@ class Timeline extends Tween {
     @param {Number} Number of milliseconds to shift the start time
                     of the Tween/Timeline.
   */
-  _pushTimeline (timeline, shift) {
+  _pushTimeline(timeline, shift) {
     // if timeline is a module with timeline property then extract it
     if (timeline.timeline instanceof Timeline) { timeline = timeline.timeline; }
     if (timeline.tween instanceof Tween) { timeline = timeline.tween; }
@@ -152,7 +151,7 @@ class Timeline extends Tween {
     @param {Number} Progress to set.
     @param {Number} Current update time.
   */
-  _setProgress (p, time, isYoyo) {
+  _setProgress(p, time, isYoyo) {
     // we need to pass self previous time to children
     // to prevent initial _wasUnknownUpdate nested waterfall
     // if not yoyo option set, pass the previous time
@@ -160,11 +159,11 @@ class Timeline extends Tween {
 
     // COVER CURRENT SWAPPED ORDER
     this._updateChildren( p, time, isYoyo );
-    
+
     Tween.prototype._setProgress.call( this, p, time );
   }
 
-  _updateChildren ( p, time, isYoyo ) {
+  _updateChildren(p, time, isYoyo) {
     var coef = ( time > this._prevTime ) ? -1 : 1;
     if ( this._props.isYoyo && isYoyo ) { coef *= -1; }
     var timeToTimelines     = this._props.startTime + p*(this._props.duration),
@@ -190,9 +189,10 @@ class Timeline extends Tween {
     @private
     @param {Object} Tween or Timeline to calculate.
   */
-  _recalcDuration (timeline) {
-    var p             = timeline._props,
-        timelineTime  = p.repeatTime/p.speed + (p.shiftTime || 0) + timeline._negativeShift;
+  _recalcDuration(timeline) {
+    const { _props, _negativeShift } = timeline;
+    const { repeatTime, speed, shiftTime = 0 } = _props;
+    const timelineTime = repeatTime/speed + shiftTime + _negativeShift;
 
     this._props.duration = Math.max(timelineTime, this._props.duration);
   }
@@ -200,7 +200,7 @@ class Timeline extends Tween {
     Method calculate self duration from skretch.
     @private
   */
-  _recalcTotalDuration () {
+  _recalcTotalDuration() {
     var i = this._timelines.length;
     this._props.duration = 0;
     while(i--) {
@@ -217,7 +217,7 @@ class Timeline extends Tween {
     @private
     @param {Number, Null} Time to start with.
   */
-  _setStartTime ( time, isReset = true ) {
+  _setStartTime(time, isReset = true) {
     super._setStartTime(time);
     this._startTimelines(this._props.startTime, isReset);
   }
@@ -226,11 +226,11 @@ class Timeline extends Tween {
     @private
     @param {Number, Null} Time to start with.
   */
-  _startTimelines (time, isReset = true) {
+  _startTimelines(time, isReset = true) {
     var p = this._props,
         isStop = this._state === 'stop';
 
-    ( time == null) && (time = this._props.startTime);
+    (time == null) && (time = this._props.startTime);
 
     for (var i = 0; i < this._timelines.length; i++) {
       var tm = this._timelines[i];
@@ -250,36 +250,39 @@ class Timeline extends Tween {
     @overrides @ Tween
     @param {Boolean} If refresh even before start time.
   */
-  _refresh ( isBefore ) {
+  _refresh(isBefore) {
     const len = this._timelines.length;
     for (var i = 0; i < len; i++) {
       this._timelines[i]._refresh( isBefore );
     }
-    super._refresh( isBefore );
+    super._refresh(isBefore);
   }
   /*
     Method do declare defaults by this._defaults object
     @private
   */
-  _declareDefaults () {
+  _declareDefaults() {
     // if duration was passed on initialization stage, warn user and reset it.
     if ( this._o.duration != null ) {
-      h.error(`Duration can not be declared on Timeline, but "${this._o.duration}" is. You probably want to use Tween instead.`);
+      console.warn(`${consoleName} Duration can not be declared on Timeline,
+              but "${this._o.duration}" is. You probably want to use
+              Tween instead.`
+      );
       this._o.duration = 0;
     }
     super._declareDefaults();
-    // remove default 
+    // reset default tween properties
     this._defaults.duration       = 0;
     this._defaults.easing         = 'Linear.None';
     this._defaults.backwardEasing = 'Linear.None';
-    this._defaults.nameBase = 'Timeline';
+    this._defaults.nameBase       = 'Timeline';
   }
 
-  constructor ( o = {} ) { super(o); }
-  /*
-    Method to declare some vars.
-    @private
-  */
+  constructor(o = {}) { super(o); }
+
+  /**
+   * _vars - declare vars
+   */
   _vars () {
     this._timelines = [];
     super._vars();

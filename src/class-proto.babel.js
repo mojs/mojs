@@ -28,10 +28,10 @@ class ClassProto {
     @private
   */
   _extendDefaults () {
-    this._props  = {
-      ...this._defaults,
-      ...this._o
-    };
+    // this._props  = {
+    //   ...this._defaults,
+    //   ...this._o
+    // };
   }
 
   /**
@@ -48,4 +48,4 @@ class ClassProto {
   render () { }
 }
 
-export default Module;
+export default ClassProto;

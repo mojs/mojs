@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 const root = path.resolve('./');
 
@@ -23,7 +24,15 @@ module.exports = {
     libraryTarget:    'umd',
     umdNamedDefine:   true
   },
-  plugins: [],
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+     minimize: true,
+     compress: true
+   }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': "production"
+    })
+  ],
   resolve: {
     modules: ['node_modules'],
     extensions: [ '.babel.js' ]
