@@ -122,7 +122,7 @@ const tweenerFactory = () => {
    */
   const add = (tween) => {
     // return if tween is already running
-    if ( tween._isRunning ) { return; }
+    if (tween._isRunning) { return; }
     tween._isRunning = true;
     tweens.push(tween);
     startLoop();
@@ -148,10 +148,10 @@ const tweenerFactory = () => {
 
     if (index !== -1) {
       tween = tweens[index];
-      if ( tween ) {
+      if (tween) {
         tween._isRunning = false;
         tweens.splice(index, 1);
-        tween._onTweenerRemove();
+        tween.onTweenerRemove();
       }
     }
   }

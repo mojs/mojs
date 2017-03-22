@@ -2,6 +2,11 @@ const { cos, sin, pow, sqrt, PI } = Math;
 import parseEasing from './helpers/parse-easing';
 
 /**
+ * TODO:
+ *  [] add `setParent` public method.
+ */
+
+/**
  * `easing` - object that holds all easing avaliable in `mojs`.
  */
 export default {

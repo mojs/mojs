@@ -3,6 +3,7 @@ import {
   defaultEasingString,
   consoleName
 } from '../../constants';
+import easings from '../easing';
 
 /**
  * parseEasing - function to parse all easing values to a function.
@@ -10,7 +11,7 @@ import {
  * @param  {String, Function, Array} Easing representation.
  * @return {Function} Parsed Easing.
  */
-export default (easing = defaultEasingString, easings) => {
+export default (easing = defaultEasingString) => {
   const type = typeof easing;
 
   switch (type) {
