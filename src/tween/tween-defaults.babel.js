@@ -43,20 +43,22 @@ export default {
                       `true` for forward direction.
                       `false` for backward direction(tween runs in reverse).
   */
-  onStart:                null,
-  onRefresh:              null,
-  onComplete:             null,
-  onRepeatStart:          null,
-  onRepeatComplete:       null,
-  onFirstUpdate:          null,
-  onUpdate:               null,
+  onStart:                function() {},
+  onRefresh:              function() {},
+  onComplete:             function() {},
+  onRepeatStart:          function() {},
+  onRepeatComplete:       function() {},
+  onFirstUpdate:          function() {},
+  onUpdate:               function() {},
   isChained:              false,
   // playback callbacks, these fire only when
   // `play`, `replay`, `playBackward`, `replayBackward` were called
-  onPlaybackStart:        null,
-  onPlaybackPause:        null,
-  onPlaybackStop:         null,
-  onPlaybackComplete:     null,
+  onPlaybackStart:        function() {},
+  onPlaybackPause:        function() {},
+  onPlaybackStop:         function() {},
+  onPlaybackComplete:     function() {},
   // context which all callbacks will be called with
-  callbacksContext:       null
+  callbacksContext:       null,
+  // callback for `setting` start time event
+  onSetStartTime:         function () {}
 };

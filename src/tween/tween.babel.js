@@ -634,7 +634,7 @@ class Tween extends ClassProto {
       this._isInActiveArea = true; this._isRepeatCompleted = false;
       this._isRepeatStart = false; this._isStarted = false;
       // active zone or larger then end
-      var elapsed2 = (time - props.startTime) % delayDuration,
+      var elapsed2 = ( time - props.startTime) % delayDuration,
           proc = elapsed2 / props.duration;
       // |=====|=====|=====| >>>
       //      ^1^2
@@ -989,6 +989,7 @@ class Tween extends ClassProto {
     }
     this._isRepeatStart = true;
   }
+
   /*
     Method to launch onProgress callback.
     @method _progress

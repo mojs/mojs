@@ -1,9 +1,10 @@
-import Tween    from './tween/tween-scope';
-// import Timeline from './tween/timeline';
-import tweener  from './tween/tweener';
+import Tween from './tween/tween-scope';
+import Timeline from './tween/timeline-scope';
+import tweener from './tween/tweener';
 
 var mojs = {
-  revision:   '2.1.0'
+  revision:   '2.2.0',
+  Tween, Timeline
 }
 
 /**
