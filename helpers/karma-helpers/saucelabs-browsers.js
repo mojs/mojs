@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   sl_chrome_35: {
     base: 'SauceLabs',
     browserName: 'chrome',

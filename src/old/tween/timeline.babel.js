@@ -13,6 +13,7 @@ class Timeline extends Tween {
     this._calcDimentions();
     return this;
   }
+
   /*
     API method to append the Tween/Timeline to the end of the
     timeline. Each argument is treated as a new append.
@@ -29,6 +30,7 @@ class Timeline extends Tween {
     }
     return this;
   }
+
   /*
     API method to stop the Tween.
     @public
@@ -40,6 +42,7 @@ class Timeline extends Tween {
     this._stopChildren( progress );
     return this;
   }
+
   /*
     Method to reset tween's state and properties.
     @public
@@ -51,6 +54,7 @@ class Timeline extends Tween {
     this._resetChildren();
     return this;
   }
+
   /*
     Method to call `reset` method on all children.
     @private

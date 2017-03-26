@@ -1,7 +1,7 @@
-import customLaunchers from './helpers/karma-helpers/saucelabs-browsers';
-const { SAUCE_USERNAME, SAUCE_USERNAME } = process.env;
+const customLaunchers = require('./helpers/karma-helpers/saucelabs-browsers');
+const { SAUCE_USERNAME, SAUCE_ACCESS_KEY } = process.env;
 
-const isSauceLabs = SAUCE_USERNAME && SAUCE_USERNAME;
+const isSauceLabs = SAUCE_USERNAME && SAUCE_ACCESS_KEY;
 
 module.exports = function(config) {
 
@@ -11,6 +11,7 @@ module.exports = function(config) {
   } else {
     reporters = ['progress', 'coverage', 'clear-screen'];
     browsers = ['PhantomJS'];
+    // browsers = [];
   }
 
   config.set({
@@ -21,16 +22,15 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'build/mo.js',
-      'spec/**/*.js'
+      'spec/**/*.spec.js'
     ],
     // list of files to exclude
     exclude: [],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-      'src/**/*.babel.js'
-    },
+    preprocessors: {},
+
     coverageReporter: {
       reporters:[
         {type: 'html', dir:' coverage/'},

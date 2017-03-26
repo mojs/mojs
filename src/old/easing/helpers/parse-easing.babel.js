@@ -20,9 +20,7 @@ export default (easing = defaultEasingString) => {
       easing = easing.toLowerCase().split('.');
       const easingParent = easings[easing[0]];
       if (!easingParent) {
-        console.error(`${consoleName} Easing with name ${easing[0]} wasn't
-          found, fallback to "${defaultEasingString}" instead.`, easings
-        );
+        console.error(`${consoleName} Easing with name ${easing[0]} wasn't found, fallback to "${defaultEasingString}" instead.`, easings);
         return easings[defaultEasing[0]][defaultEasing[1]];
       }
       return easingParent[easing[1]];

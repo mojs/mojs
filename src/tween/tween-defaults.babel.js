@@ -35,7 +35,7 @@ export default {
                       `true` for forward direction.
                       `false` for backward direction(tween runs in reverse).
   */
-  onProgress:             null,
+  onProgress:             function() {},
   /*
     onStart callback runs on very start of the tween just after onProgress
     one. Runs on very end of the tween if tween is reversed.
@@ -60,5 +60,6 @@ export default {
   // context which all callbacks will be called with
   callbacksContext:       null,
   // callback for `setting` start time event
-  onSetStartTime:         function () {}
+  onSetStartTime:         function () {},
+  onInternalUpdate:       function () {}
 };

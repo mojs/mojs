@@ -1,13 +1,16 @@
 import tweener from './tweener';
 import easing from '../easing/easing';
+import parseEasing from '../easing/helpers/parse-easing';
 import ClassProto from '../class-proto';
 
-class Tween extends ClassProto {
+var eps = 0.0000001;
 
-  /**
-   * declareDefaults - Method do declare `_defaults` object.
-   */
-  declareDefaults() {
+class Tween extends ClassProto {
+  /*
+    Method do declare defaults with this._defaults object.
+    @private
+  */
+  _declareDefaults () {
     // DEFAULTS
     this._defaults = {
       /* duration of the tween [0..∞] */
@@ -62,8 +65,7 @@ class Tween extends ClassProto {
       onFirstUpdate:          null,
       onUpdate:               null,
       isChained:              false,
-      // playback callbacks, these fire only when
-      // `play`, `replay`, `playBackward`, `replayBackward` were called
+      // playback callbacks
       onPlaybackStart:        null,
       onPlaybackPause:        null,
       onPlaybackStop:         null,
@@ -72,28 +74,26 @@ class Tween extends ClassProto {
       callbacksContext:       null
     }
   }
-
-  /**
-   * play - API method to play the Tween.
-   *
-   * @param  {Number} Shift time in milliseconds.
-   * @return {Object} Self.
-   */
-  play( shift = 0 ) {
+  /*
+    API method to play the Tween.
+    @public
+    @param  {Number} Shift time in milliseconds.
+    @return {Object} Self.
+  */
+  play ( shift = 0 ) {
     if ( this._state === 'play' && this._isRunning ) { return this; }
     this._props.isReversed = false;
     this._subPlay( shift, 'play' );
     this._setPlaybackState( 'play' );
     return this;
   }
-
-  /**
-   * playBackward - API method to play the Tween in reverse.
-   *
-   * @param  {Number} Shift time in milliseconds.
-   * @return {Object} Self.
-   */
-  playBackward( shift = 0 ) {
+  /*
+    API method to play the Tween in reverse.
+    @public
+    @param  {Number} Shift time in milliseconds.
+    @return {Object} Self.
+  */
+  playBackward ( shift = 0 ) {
     if ( this._state === 'reverse' && this._isRunning)  { return this; }
     this._props.isReversed = true;
     this._subPlay( shift, 'reverse' );
@@ -105,8 +105,8 @@ class Tween extends ClassProto {
     @public
     @returns {Object} Self.
   */
-  pause() {
-    if (this._state === 'pause' || this._state === 'stop')  { return this; }
+  pause () {
+    if ( this._state === 'pause' || this._state === 'stop' )  { return this; }
     this._removeFromTweener();
     this._setPlaybackState('pause');
     return this;
@@ -117,17 +117,17 @@ class Tween extends ClassProto {
     @param   {Number} Progress [0..1] to set when stopped.
     @returns {Object} Self.
   */
-  stop( progress ) {
+  stop ( progress ) {
     if ( this._state === 'stop' ) { return this; }
 
-    this._wasUknownUpdate = undefined;
+    this._wasUknownUpdate  = undefined;
 
     var stopProc = (progress != null) ? progress
       /* if no progress passsed - set 1 if tween
          is playingBackward, otherwise set to 0 */
       : ( this._state === 'reverse' ) ? 1 : 0
 
-    this.setProgress(stopProc);
+    this.setProgress( stopProc );
 
     this.reset();
     return this;
@@ -180,7 +180,7 @@ class Tween extends ClassProto {
     @param {Number} Progress to set.
     @returns {Object} Self.
   */
-  setProgress( progress ) {
+  setProgress ( progress ) {
     var p = this._props;
     // set start time if there is no one yet.
     !p.startTime && this._setStartTime();
@@ -190,7 +190,7 @@ class Tween extends ClassProto {
     ( progress < 0 ) && ( progress = 0 );
     ( progress > 1 ) && ( progress = 1 );
     // update self with calculated time
-    this._update( (p.startTime - p.delay) + progress*p.repeatTime );
+    this.update( (p.startTime - p.delay) + progress*p.repeatTime );
     return this;
   }
   /*
@@ -199,7 +199,7 @@ class Tween extends ClassProto {
     @param {Number} Speed value.
     @returns this.
   */
-  setSpeed( speed ) {
+  setSpeed ( speed ) {
     this._props.speed = speed;
     // if playing - normalize _startTime and _prevTime to the current point.
     if ( this._state === 'play' || this._state === 'reverse' ) {
@@ -212,7 +212,7 @@ class Tween extends ClassProto {
     @public
     @returns this.
   */
-  reset() {
+  reset () {
     this._removeFromTweener();
     this._setPlaybackState('stop');
     this._progressTime     = 0;
@@ -238,7 +238,7 @@ class Tween extends ClassProto {
     @param  {String} Play or reverse state.
     @return {Object} Self.
   */
-  _subPlay(shift = 0, state) {
+  _subPlay ( shift = 0, state ) {
     var resumeTime, startTime,
         p = this._props,
         // check if direction of playback changes,
@@ -267,7 +267,7 @@ class Tween extends ClassProto {
     @param {String} Current state. [play, reverse]
     @param {Number} Time shift. *Default* is 0.
   */
-  _setResumeTime(state, shift = 0) {
+  _setResumeTime ( state, shift = 0 ) {
     // get current moment as resume time
     this._resumeTime = performance.now();
     // set start time regarding passed `shift` and `procTime`
@@ -286,7 +286,7 @@ class Tween extends ClassProto {
     @private
     @return {Number} Normalized prev time.
   */
-  _normPrevTimeForward() {
+  _normPrevTimeForward () {
     var p = this._props;
     return p.startTime + this._progressTime - p.delay;
   }
@@ -294,28 +294,28 @@ class Tween extends ClassProto {
     Constructor of the class.
     @private
   */
-  constructor(o = {}) {
+  constructor ( o = {} ) {
     super(o);
-    (this._props.name == null) && this._setSelfName();
+    // ( this._props.name == null ) && this._setSelfName();
     return this;
   }
   /*
     Method to set self name to generic one.
     @private
   */
-  _setSelfName() {
-    var globalName = `_${this._props.nameBase}s`;
-    // track amount of tweens globally
-    t[globalName] = ( t[globalName] == null ) ? 1 : ++t[globalName];
-    // and set generic tween's name  || Tween # ||
-    this._props.name = `${this._props.nameBase} ${t[globalName]}`;
-  }
+  // _setSelfName () {
+  //   var globalName = `_${this._props.nameBase}s`;
+  //   // track amount of tweens globally
+  //   t[globalName] = ( t[globalName] == null ) ? 1 : ++t[globalName];
+  //   // and set generic tween's name  || Tween # ||
+  //   this._props.name = `${this._props.nameBase} ${t[globalName]}`;
+  // }
   /*
     Method set playback state string.
     @private
     @param {String} State name
   */
-  _setPlaybackState(state) {
+  _setPlaybackState ( state ) {
     // save previous state
     this._prevState = this._state;
     this._state     = state;
@@ -342,7 +342,7 @@ class Tween extends ClassProto {
     Method to declare some vars.
     @private
   */
-  _vars() {
+  _vars () {
     this.progress       = 0;
     this._prevTime      = undefined;
     this._progressTime  = 0;
@@ -395,7 +395,7 @@ class Tween extends ClassProto {
     @param {Boolean} Should reset flags.
     @returns this
   */
-  _setStartTime( time, isResetFlags = true ) {
+  _setStartTime ( time, isResetFlags = true ) {
     var p = this._props,
         shiftTime = (p.shiftTime || 0);
     // reset flags
@@ -405,6 +405,7 @@ class Tween extends ClassProto {
     }
     // set start time to passed time or to the current moment
     var startTime = (time == null) ? performance.now() : time;
+
     // calculate bounds
     // - negativeShift is negative delay in options hash
     // - shift time is shift of the parent
@@ -431,7 +432,7 @@ class Tween extends ClassProto {
                     0 = no edge jump.
                     1 = edge jump in positive direction.
   */
-  _update(time, timelinePrevTime, wasYoyo, onEdge) {
+  update ( time, timelinePrevTime, wasYoyo, onEdge ) {
     var p       = this._props;
     // if we don't the _prevTime thus the direction we are heading to,
     // but prevTime was passed thus we are child of a Timeline
@@ -471,7 +472,7 @@ class Tween extends ClassProto {
       // notify children about edge jump
       if ( this._timelines ) {
         for (var i = 0; i < this._timelines.length; i++) {
-          this._timelines[i]._update( time, timelinePrevTime, wasYoyo, onEdge );
+          this._timelines[i].update( time, timelinePrevTime, wasYoyo, onEdge );
         }
       }
       // forward edge direction
@@ -557,6 +558,7 @@ class Tween extends ClassProto {
           this._isRefreshed = true;
         // after endTime
         }
+        // else if ( time > p.endTime ) { }
       }
     }
 
@@ -568,7 +570,7 @@ class Tween extends ClassProto {
     @private
     @param {Number} Current update time.
   */
-  _updateInInactiveArea(time) {
+  _updateInInactiveArea ( time ) {
     if ( !this._isInActiveArea ) { return; }
     var p = this._props;
     // complete if time is larger then end time
@@ -598,7 +600,8 @@ class Tween extends ClassProto {
     @private
     @param {Number} Current update time.
   */
-  _updateInActiveArea(time) {
+  _updateInActiveArea ( time ) {
+
     var props         = this._props,
         delayDuration = props.delay + props.duration,
         startPoint    = props.startTime - props.delay,
@@ -796,14 +799,14 @@ class Tween extends ClassProto {
     @private
     @returns {Object} Self.
   */
-  _removeFromTweener() { tweener.remove(this); return this; }
+  _removeFromTweener () { tweener.remove(this); return this; }
   /*
     Method to get current period number.
     @private
     @param {Number} Time to get the period for.
     @returns {Number} Current period number.
   */
-  _getPeriod(time) {
+  _getPeriod ( time ) {
     var p       = this._props,
         TTime   = p.delay + p.duration,
         dTime   = p.delay + time - p.startTime,
@@ -811,19 +814,20 @@ class Tween extends ClassProto {
         // if time if equal to endTime we need to set the elapsed
         // time to 0 to fix the occasional precision js bug, which
         // causes 0 to be something like 1e-12
-        elapsed = ( time < p.endTime ) ? dTime % TTime : 0;
+        elapsed = (time < p.endTime) ? dTime % TTime : 0;
+
     // If the latest period, round the result, otherwise floor it.
     // Basically we always can floor the result, but because of js
     // precision issues, sometimes the result is 2.99999998 which
     // will result in 2 instead of 3 after the floor operation.
-    T = ( time >= p.endTime ) ? Math.round(T) : Math.floor(T);
+    T = (time >= p.endTime) ? Math.round(T) : Math.floor(T);
     // if time is larger then the end time
     if ( time > p.endTime ) {
       // set equal to the periods count
       T = Math.round( (p.endTime - p.startTime + p.delay) / TTime );
     // if in delay gap, set _delayT to current
     // period number and return "delay"
-    } else if ( elapsed > 0 && elapsed < p.delay ) {
+    } else if (elapsed > 0 && elapsed < p.delay) {
       this._delayT = T; T = 'delay';
     }
     // if the end of period and there is a delay
@@ -838,7 +842,7 @@ class Tween extends ClassProto {
     @param {Boolean} Is yoyo perido. Used in Timeline to pass to Tween.
     @returns {Object} Self.
   */
-  _setProgress(proc, time, isYoyo) {
+  _setProgress ( proc, time, isYoyo ) {
     var p             = this._props,
         isYoyoChanged = p.wasYoyo !== isYoyo,
         isForward     = time > this._prevTime;
@@ -876,7 +880,7 @@ class Tween extends ClassProto {
     @param {Number} Progress to set.
     @param {Boolean} Is yoyo period.
   */
-  _start(time, isYoyo) {
+  _start ( time, isYoyo ) {
     if ( this._isStarted ) { return; }
     var p = this._props;
     if (p.onStart != null && typeof p.onStart === 'function') {
@@ -889,15 +893,17 @@ class Tween extends ClassProto {
     Method to call onPlaybackStart callback
     @private
   */
-  _playbackStart() {
-    const {onPlaybackStart} = this._props;
-    onPlaybackStart && onPlaybackStart();
+  _playbackStart ( ) {
+    var p = this._props;
+    if (p.onPlaybackStart != null && typeof p.onPlaybackStart === 'function') {
+      p.onPlaybackStart.call(p.callbacksContext || this);
+    }
   }
   /*
     Method to call onPlaybackPause callback
     @private
   */
-  _playbackPause() {
+  _playbackPause ( ) {
     var p = this._props;
     if (p.onPlaybackPause != null && typeof p.onPlaybackPause === 'function') {
       p.onPlaybackPause.call(p.callbacksContext || this);
@@ -907,7 +913,7 @@ class Tween extends ClassProto {
     Method to call onPlaybackStop callback
     @private
   */
-  _playbackStop() {
+  _playbackStop ( ) {
     var p = this._props;
     if (p.onPlaybackStop != null && typeof p.onPlaybackStop === 'function') {
       p.onPlaybackStop.call(p.callbacksContext || this);
@@ -917,7 +923,7 @@ class Tween extends ClassProto {
     Method to call onPlaybackComplete callback
     @private
   */
-  _playbackComplete(){
+  _playbackComplete ( ) {
     var p = this._props;
     if (p.onPlaybackComplete != null && typeof p.onPlaybackComplete === 'function') {
       p.onPlaybackComplete.call(p.callbacksContext || this);
@@ -930,7 +936,7 @@ class Tween extends ClassProto {
     @param {Number} Current time.
     @param {Boolean} Is yoyo period.
   */
-  _complete(time, isYoyo) {
+  _complete ( time, isYoyo ) {
     if ( this._isCompleted ) { return; }
     var p = this._props;
     if (p.onComplete != null && typeof p.onComplete === 'function') {
@@ -950,7 +956,7 @@ class Tween extends ClassProto {
     @param {Number} Current update time.
     @param {Boolean} Is yoyo period.
   */
-  _firstUpdate( time, isYoyo) {
+  _firstUpdate ( time, isYoyo ) {
     if ( this._isFirstUpdate ) { return; }
     var p = this._props;
     if (p.onFirstUpdate != null && typeof p.onFirstUpdate === 'function') {
@@ -966,13 +972,14 @@ class Tween extends ClassProto {
     @param {Number} Current update time.
     @param {Boolean} Is repeat period.
   */
-  _repeatComplete(time, isYoyo) {
+  _repeatComplete( time, isYoyo ) {
     if (this._isRepeatCompleted) { return; }
     var p = this._props;
     if (p.onRepeatComplete != null && typeof p.onRepeatComplete === 'function') {
       p.onRepeatComplete.call( p.callbacksContext || this, time > this._prevTime, isYoyo );
     }
     this._isRepeatCompleted = true;
+    // this._prevYoyo = null;
   }
 
   /*
@@ -981,7 +988,7 @@ class Tween extends ClassProto {
     @param {Number} Current update time.
     @param {Boolean} Is yoyo period.
   */
-  _repeatStart(time, isYoyo) {
+  _repeatStart ( time, isYoyo ) {
     if (this._isRepeatStart) { return; }
     var p = this._props;
     if (p.onRepeatStart != null && typeof p.onRepeatStart === 'function') {
@@ -989,14 +996,13 @@ class Tween extends ClassProto {
     }
     this._isRepeatStart = true;
   }
-
   /*
     Method to launch onProgress callback.
     @method _progress
     @private
     @param {Number} Progress to set.
   */
-  _progress(progress, time) {
+  _progress ( progress, time ) {
     var p = this._props;
     if (p.onProgress != null && typeof p.onProgress === 'function') {
       p.onProgress.call( p.callbacksContext || this, progress, time > this._prevTime );
@@ -1008,7 +1014,7 @@ class Tween extends ClassProto {
     @private
     @param {Boolean} If refresh even before start time.
   */
-  _refresh(isBefore) {
+  _refresh ( isBefore ) {
     var p = this._props;
     if ( p.onRefresh != null ) {
       var context  = p.callbacksContext || this,
@@ -1021,13 +1027,13 @@ class Tween extends ClassProto {
     Method which is called when the tween is removed from tweener.
     @private
   */
-  _onTweenerRemove() {}
+  _onTweenerRemove () {}
   /*
     Method which is called when the tween is removed
     from tweener when finished.
     @private
   */
-  _onTweenerFinish() {
+  onTweenerFinish () {
     this._setPlaybackState('stop');
     this._playbackComplete();
   }
@@ -1038,9 +1044,9 @@ class Tween extends ClassProto {
     @param {Object, String} Hash object of key/value pairs, or property name.
     @param {_} Property's value to set.
   */
-  _setProp(key, value, isRecalc = true) {
-    this._props[key] = value;
-    isRecalc && this._calcDimentions();
+  _setProp( obj, value ) {
+    super._setProp(obj, value);
+    this._calcDimentions();
   }
   /*
     Method to set single property.
@@ -1049,7 +1055,7 @@ class Tween extends ClassProto {
     @param {String} Name of the property.
     @param {Any} Value for the property.
   */
-  _assignProp(key, value) {
+  _assignProp (key, value) {
     // fallback to defaults
     if ( value == null ) { value = this._defaults[key]; }
     // parse easing
@@ -1072,7 +1078,7 @@ class Tween extends ClassProto {
     @param {String}    Callback name.
     @parma {Function}  Method to call
   */
-  _overrideCallback(callback, fun) {
+  _overrideCallback (callback, fun) {
     var isCallback = (callback && typeof callback === 'function'),
         override   = function callbackOverride () {
       // call overriden callback if it exists
@@ -1084,6 +1090,7 @@ class Tween extends ClassProto {
     override.isMojsCallbackOverride = true;
     return override;
   }
+
 
   // _visualizeProgress(time) {
   //   var str = '|',

@@ -29,7 +29,201 @@
 
     <!-- <script src="node_modules/mojs-player/build/mojs-player.js"></script> -->
     <!-- <script src="http://cdn.jsdelivr.net/mojs/latest/mo.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/mojs/0.288.1/mo.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js"></script> -->
     <script src="build/mo.js"></script>
+
+
+    <script>
+
+      console.log(mojs);
+
+      // const tweenData = [0, 0, 0, 0, 0, 0, 0, 30, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 48, 0, 0, 0, 0, 0, 0, 20, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 112];
+      //
+      // const twee = (o = {}) => {
+      //   let i = 0;
+      //   let time = 0;
+      //
+      //   const duration = 300;
+      //   const repeat = 1;
+      //   const delay = 100;
+      //   const totalTime = (repeat+1)*(duration + delay);
+      //
+      //   const { onRefresh, onStart, onRepeatStart, onFirstUpdate, onUpdate, onRepeatComplete, onComplete } = o;
+      //
+      //   const tween = {};
+      //   const _setStartTime = () => { return performance.now(); };
+      //   let startTime;
+      //
+      //   const play = () => {
+      //     startTime = _setStartTime();
+      //
+      //     mojs.default.tweener.add(tween);
+      //   }
+      //
+      //   const _runCallBacks = (id) => {
+      //     if (id === 0) { return };
+      //
+      //     let mask = 1;
+      //
+      //     (id & mask) && onRefresh();
+      //     (id & (mask <<= 1)) && onStart();
+      //     (id & (mask <<= 1)) && onRepeatStart();
+      //     (id & (mask <<= 1)) && onFirstUpdate();
+      //     (id & (mask <<= 1)) && onUpdate();
+      //     (id & (mask <<= 1)) && onRepeatComplete();
+      //     (id & (mask <<= 1)) && onComplete();
+      //   }
+      //
+      //   const update = (time) => {
+      //     const deltaTime = time - startTime;
+      //     if (deltaTime > totalTime) {
+      //       while (i < tweenData.length) {
+      //         const id = tweenData[i];
+      //         _runCallBacks(id);
+      //         i++;
+      //       }
+      //       return true;
+      //     }
+      //
+      //     while (time < deltaTime) {
+      //        const id = tweenData[i];
+      //        _runCallBacks(id);
+      //        time += 16;
+      //        i++;
+      //     }
+      //   }
+      //
+      //   tween.play = play;
+      //   tween.update = update;
+      //   tween.onTweenerFinish = () => {};
+      //
+      //   return tween;
+      // };
+      //
+      // window.onload = () => {
+      //   setTimeout(() => {
+      //     for (let i = 0; i < 40001; i++) {
+      //       const tw = twee({
+      //         onUpdate() {
+      //           // (i === 0) && console.log( 'update' );
+      //         },
+      //         onStart() {
+      //           // (i === 0) && console.log( 'start' );
+      //         },
+      //         onRepeatStart() {
+      //           // (i === 0) && console.log( 'repeatStart' );
+      //         },
+      //         onRepeatComplete() {
+      //           // (i === 0) && console.log( 'repeatComplete' );
+      //         },
+      //         onComplete() {
+      //           // (i === 0) && console.log( 'complete' );
+      //         },
+      //         onFirstUpdate() {
+      //           // (i === 0) && console.log( 'first update' );
+      //         },
+      //         onRefresh() {
+      //           // (i === 0) && console.log( 'refresh' );
+      //         }
+      //       }).play();
+      //     }
+      //   }, 2000);
+      // };
+
+    </script>
+
+
+    <!-- <script>
+
+      const arr = [];
+      let number;
+
+      const step = 16;
+      let start = 0;
+      const duration = 300;
+      const repeat = 1;
+      const delay = 100;
+
+      // ((id & (1 << 0))) && (this._o.onRefresh());
+      // ((id & (1 << 1))) && (this._o.onStart());
+      // ((id & (1 << 2))) && (this._o.onRepeatStart());
+      // ((id & (1 << 3))) && (this._o.onFirstUpdate());
+      // ((id & (1 << 4)) && (this._o.onUpdate());
+      // ((id & (1 << 5))) && (this._o.onRepeatComplete());
+      // ((id & (1 << 6))) && (this._o.onComplete());
+
+      const tween = new mojs.Tween({
+        duration: duration,
+        repeat: repeat,
+        delay: delay,
+        onUpdate() {
+          // console.log( 'update' );
+          number = number | (1 << 4);
+        },
+        onStart() {
+          // console.log( 'start' );
+          number = number | (1 << 1);
+        },
+        onRepeatStart() {
+          // console.log( 'repeatStart' );
+          number = number | (1 << 2);
+        },
+        onRepeatComplete() {
+          // console.log( 'repeatComplete' );
+          number = number | (1 << 5);
+        },
+        onComplete() {
+          // console.log( 'complete' );
+          number = number | (1 << 6);
+        },
+        onFirstUpdate() {
+          // console.log( 'first update' );
+          number = number | (1 << 3);
+        },
+        onRefresh() {
+          // console.log( 'refresh' );
+          number = number | (1 << 0);
+        }
+      });
+
+      tween._setStartTime(start);
+      while (start < (repeat+1)*(duration + delay) + 10) {
+        number = 0;
+        tween._update(start);
+        start += step;
+        arr.push(number);
+      }
+
+      console.log(arr);
+    </script> -->
+
+    <!-- <script>
+      window.onload = () => {
+        console.log('yep');
+        setTimeout( () => {
+          for (let i = 0; i < 1000; i++) {
+            const obj = { top: 20 };
+            var tl = new TimelineMax();
+            tl
+              .from(obj, 0.25, {top:0})
+              .to(obj, 2.25, {top:250})
+
+            tl.play();
+            // setTimeout( () => {
+            //   console.log(obj.scale);
+            // }, 350 );
+          }
+
+          // for (let i = 0; i < 1000; i++) {
+          //   const tw = new mojs.Tween({
+          //     duration: 2000,
+          //     onUpdate() {}
+          //   }).play();
+          // }
+        }, 3000 );
+      }
+    </script> -->
 
   </body>
 </html>

@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const root = path.resolve('./');
 
 module.exports = {
+  devtool: 'source-map',
   watch: true,
   context: __dirname + "/",
   entry: [ __dirname + '/src/mojs.babel.js' ],
@@ -21,17 +22,16 @@ module.exports = {
     filename:         'mo.js',
     publicPath:       'build/',
     library:          'mojs',
-    libraryTarget:    'umd',
-    umdNamedDefine:   true
+    libraryTarget:    'umd'
   },
   plugins: [
     new webpack.optimize.UglifyJsPlugin({
      minimize: true,
      compress: true
-   }),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': "production"
-    })
+   })
+    // new webpack.DefinePlugin({
+    //   'process.env.NODE_ENV': "production"
+    // })
   ],
   resolve: {
     modules: ['node_modules'],

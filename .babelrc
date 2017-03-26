@@ -1,4 +1,6 @@
 {
+  "moduleId": "mojs",
+  "passPerPreset": true,
   "presets": [ "babili" ],
   "plugins": [
     "transform-es2015-shorthand-properties",
@@ -13,6 +15,8 @@
     "check-es2015-constants",
     "transform-strict-mode",
     "transform-es2015-for-of",
-    "transform-object-rest-spread"
+    "transform-object-rest-spread",
+    "add-module-exports",
+    "transform-es2015-modules-umd"
   ]
 }

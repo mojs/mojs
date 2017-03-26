@@ -46,6 +46,10 @@ const tweenFactory = (o = {}) => {
   let onEdge = 0;
   // if previous update was in `yoyo` period
   let wasYoyo = false;
+  // one repeat period time
+  let time = 0;
+  // total time of the tween
+  let repeatTime = 0;
   // tween object to return
   const tween = {};
 
@@ -81,7 +85,7 @@ const tweenFactory = (o = {}) => {
 
   const $shiftTime = o.shiftTime || 0;
   let $delay = fallback('delay');
-  const $duration = fallback('duration');
+  let $duration = fallback('duration');
   const $repeat = fallback('repeat');
   let $speed = fallback('speed');
   const $isYoyo = fallback('isYoyo');
@@ -102,11 +106,12 @@ const tweenFactory = (o = {}) => {
   const $onPlaybackComplete = fallback('onPlaybackComplete');
   // lifecycle callbacks
   const $onSetStartTime = fallback('onSetStartTime');
+  const $onInternalUpdate = fallback('onInternalUpdate');
 
   // easing
   const $easing = fallback('easing');
   const $parsedEasing = parseEasing($easing);
-  $parsedEasing.setParent(tween);
+  // $parsedEasing.setParent(tween);
 
   const $backEasing = o.backwardEasing;
   let $parsedBackEasing;
@@ -115,7 +120,7 @@ const tweenFactory = (o = {}) => {
   let $ensuredBackEasing = $parsedEasing;
   if ($backEasing) {
     $parsedBackEasing = $ensuredBackEasing = parseEasing($backEasing);
-    $parsedBackEasing.setParent(tween);
+    // $parsedBackEasing.setParent(tween);
   }
 
   /***** Private Methods *****/
@@ -126,12 +131,18 @@ const tweenFactory = (o = {}) => {
   }
 
   /**
-   * Calculate dimentions.
+   * const _calcDimentions - Method to calculate tween's dimentions.
+   *
+   * @private
    */
-  // one repeat period time
-  let time = $delay + $duration;
-  // total time of the tween
-  let repeatTime = time * ($repeat + 1);
+  const _calcDimentions = () => {
+    // one repeat period time
+    time = $delay + $duration;
+    // total time of the tween
+    repeatTime = time * ($repeat + 1);
+  }
+
+  _calcDimentions();
 
   /**
    * _removeFromTweener - Method to remove the Tween from the tweener.
@@ -150,7 +161,7 @@ const tweenFactory = (o = {}) => {
    */
   const _start = (time, isYoyo) => {
     if (isStarted) { return; }
-    $onStart(time > this._prevTime, isYoyo);
+    $onStart(time > prevTime, isYoyo);
     isCompleted = isFirstUpdate = false;
     isStarted = true;
   }
@@ -180,7 +191,7 @@ const tweenFactory = (o = {}) => {
    */
   const _repeatStart = (time, isYoyo) => {
     if (isRepeatStart) { return; }
-    $onRepeatStart(time > this._prevTime, isYoyo);
+    $onRepeatStart(time > prevTime, isYoyo);
     isRepeatStart = true;
   }
 
@@ -192,9 +203,9 @@ const tweenFactory = (o = {}) => {
    * @param {Boolean} Is repeat period.
    */
   const _repeatComplete = (time, isYoyo) => {
-    if (this._isRepeatCompleted) { return; }
-    $onRepeatComplete(time > this._prevTime, isYoyo);
-    this._isRepeatCompleted = true;
+    if (isRepeatCompleted) { return; }
+    $onRepeatComplete(time > prevTime, isYoyo);
+    isRepeatCompleted = true;
   }
 
   /**
@@ -237,7 +248,7 @@ const tweenFactory = (o = {}) => {
     // set resume time and normalize prev/start times
     _setResumeTime(state, shift);
     // add self to tweener = play
-    tweener.add(this);
+    tweener.add(tween);
   }
 
   /**
@@ -251,7 +262,7 @@ const tweenFactory = (o = {}) => {
   }
 
   /**
-   * _setResumeTime - Method to set _resumeTime, _startTime and _prevTime.
+   * _setResumeTime - Method to set _resumeTime, _startTime and prevTime.
    *
    * @private
    * @param {String} Current state. ['play', 'reverse']
@@ -261,7 +272,7 @@ const tweenFactory = (o = {}) => {
     // get current moment as resume time
     resumeTime = performance.now();
     // set start time regarding passed `shift` and `procTime`
-    const startTime = resumeTime - Math.abs(shift) - progressTime;
+    const startTime = resumeTime - shift - progressTime;
     setStartTime(startTime, false);
     // if we have prevTime - we need to normalize
     // it for the current resume time
@@ -324,7 +335,7 @@ const tweenFactory = (o = {}) => {
       T = Math.round((endTime - startTime + $delay) / TTime);
     // if in delay gap, set _delayT to current
     // period number and return "delay"
-    } else if (elapsed > 0 && elapsed < p.delay) {
+    } else if (elapsed > 0 && elapsed < $delay) {
       delayT = T; T = 'delay';
     }
     // if the end of period and there is a delay
@@ -343,7 +354,7 @@ const tweenFactory = (o = {}) => {
     if (time > endTime && !isCompleted) {
       $onProgress(1, time > prevTime);
       // get period number
-      const T = this._getPeriod( p.endTime );
+      const T = _getPeriod( endTime );
       const isYoyo = $isYoyo && (T % 2 === 0);
 
       _setProgress((isYoyo) ? 0 : 1, time, isYoyo);
@@ -374,7 +385,7 @@ const tweenFactory = (o = {}) => {
     const TCount = Math.round((endTime - startTime + $delay) / delayDuration);
     const T = _getPeriod(time);
     const TValue = delayT;
-    const prevT = _getPeriod(_prevTime);
+    const prevT = _getPeriod(prevTime);
     const TPrevValue = delayT;
 
     // "zero" and "one" value regarding yoyo and it's period
@@ -402,7 +413,7 @@ const tweenFactory = (o = {}) => {
       isRepeatCompleted = isRepeatStart = isStarted = false;
       // active zone or larger then end
       const elapsed2 = (time - startTime) % delayDuration;
-      const proc = elapsed2 / props.duration;
+      const proc = elapsed2 / $duration;
       // |=====|=====|=====| >>>
       //      ^1^2
       const isOnEdge = (T > 0) && (prevT < T);
@@ -417,16 +428,16 @@ const tweenFactory = (o = {}) => {
 
       if (wasUknownUpdate) {
         if (time > prevTime) {
-          start(time, isYoyo);
-          repeatStart(time, isYoyo);
-          firstUpdate(time, isYoyo);
+          _start(time, isYoyo);
+          _repeatStart(time, isYoyo);
+          _firstUpdate(time, isYoyo);
         }
         // if backward direction and
-        // if ( time < this._prevTime && time !== this._props.startTime ) {
+        // if ( time < this.prevTime && time !== this._props.startTime ) {
         if (time < prevTime) {
-          complete(time, isYoyo);
-          repeatComplete(time, isYoyo);
-          firstUpdate(time, isYoyo);
+          _complete(time, isYoyo);
+          _repeatComplete(time, isYoyo);
+          _firstUpdate(time, isYoyo);
           // reset isCompleted immediately
           isCompleted = false;
         }
@@ -439,27 +450,27 @@ const tweenFactory = (o = {}) => {
         // because we have already handled
         // 1 and onRepeatComplete in delay gap
         if (progress !== 1) {
-          repeatComplete(time, $isYoyo && ((T-1) % 2 === 1));
+          _repeatComplete(time, $isYoyo && ((T-1) % 2 === 1));
         }
         // if on edge but not at very start
         // |=====|=====|=====| >>>
         // ^!    ^here ^here
-        if (prevT >= 0) { repeatStart(time, isYoyo); }
+        if (prevT >= 0) { _repeatStart(time, isYoyo); }
       }
 
       if (time > prevTime) {
         //  |=====|=====|=====| >>>
         // ^1  ^2
         if ( !isStarted && prevTime <= startTime ) {
-          start(time, isYoyo);
-          repeatStart(time, isYoyo);
+          _start(time, isYoyo);
+          _repeatStart(time, isYoyo);
           // it was zero anyways
 
           // restart flags immediately in case if we will
           // return to '-' inactive area on the next step
           isStarted = isRepeatStart = false;
         }
-        firstUpdate(time, isYoyo);
+        _firstUpdate(time, isYoyo);
       }
 
       if (isOnReverseEdge) {
@@ -468,7 +479,7 @@ const tweenFactory = (o = {}) => {
         // |=====|=====|=====| <<<
         //       ^here ^here ^not here
         if ( progress !== 0 && progress !== 1 && isPrevEqualToCount) {
-          repeatStart(time, isYoyoPrev);
+          _repeatStart(time, isYoyoPrev);
         }
         // if on very end edge
         // |=====|=====|=====| <<<
@@ -476,26 +487,26 @@ const tweenFactory = (o = {}) => {
         // we have handled the case in this.wasUknownUpdate
         // block so filter that
         if (isPrevEqualToCount && !wasUknownUpdate) {
-          complete(time, isYoyo);
-          repeatComplete(time, isYoyo);
-          firstUpdate(time, isYoyo);
+          _complete(time, isYoyo);
+          _repeatComplete(time, isYoyo);
+          _firstUpdate(time, isYoyo);
           // reset isComplete flag call
           // cuz we returned to active area
           // isRepeatCompleted = false;
           isCompleted = false;
         }
-        repeatComplete(time, isYoyo);
+        _repeatComplete(time, isYoyo);
       }
 
       if (prevT === 'delay') {
         // if just before delay gap
         // |---=====|---=====|---=====| <<<
         //               ^2    ^1
-        if ( T < TPrevValue ) { repeatComplete(time, isYoyo); }
+        if ( T < TPrevValue ) { _repeatComplete(time, isYoyo); }
         // if just after delay gap
         // |---=====|---=====|---=====| >>>
         //            ^1  ^2
-        if ( T === TPrevValue && T > 0 ) { repeatStart(time, isYoyo); }
+        if ( T === TPrevValue && T > 0 ) { _repeatStart(time, isYoyo); }
       }
 
       const isProcZero = proc === 0;
@@ -503,7 +514,7 @@ const tweenFactory = (o = {}) => {
       // swap progress and repeatStart based on direction
       if (time > prevTime) {
         // if progress is equal 0 and progress grows
-        if (isProcZero) { repeatStart(time, isYoyo); }
+        if (isProcZero) { _repeatStart(time, isYoyo); }
         if (time !== endTime) {
           _setProgress(((isYoyo) ? 1-proc : proc), time, isYoyo);
         }
@@ -512,16 +523,16 @@ const tweenFactory = (o = {}) => {
           _setProgress(((isYoyo) ? 1-proc : proc), time, isYoyo);
         }
         // if progress is equal 0 and progress grows
-        if (isProcZero) { this._repeatStart( time, isYoyo ); }
+        if (isProcZero) { _repeatStart( time, isYoyo ); }
       }
 
-      if ( time === startTime ) { start(time, isYoyo); }
+      if ( time === startTime ) { _start(time, isYoyo); }
     // delay gap - react only once
     } else if ( isInActiveArea ) {
       // because T will be string of "delay" here,
       // let's normalize it be setting to TValue
       const t = (T === 'delay') ? TValue : T;
-      const isGrows = time > this._prevTime;
+      const isGrows = time > prevTime;
       // decrement period if forward direction of update
       isGrows && t--;
       // calculate normalized yoyoZero value
@@ -532,7 +543,7 @@ const tweenFactory = (o = {}) => {
       const isntYoyoZero = yoyoZero === 1;
       if (time < prevTime) {
         _setProgress(yoyoZero, time, isntYoyoZero);
-        repeatStart(time, isntYoyoZero);
+        _repeatStart(time, isntYoyoZero);
       }
       // set 1 or 0 regarding direction and yoyo
       _setProgress(((isGrows) ? 1-yoyoZero : yoyoZero ), time, isntYoyoZero);
@@ -547,18 +558,18 @@ const tweenFactory = (o = {}) => {
           // since we repeatComplete for previous period
           // invert isYoyo option
           // is elapsed is 0 - count as previous period
-          repeatComplete( time, isntYoyoZero);
+          _repeatComplete( time, isntYoyoZero);
         }
       }
       // set flag to indicate inactive area
       isInActiveArea = false;
     }
     // we've got the first update now
-    this.wasUknownUpdate = false;
+    wasUknownUpdate = false;
   }
 
   /**
-   * _update - Method to update tween's progress.
+   * update - Method to update tween's progress.
    *
    * @private
    * @param {Number} Current update time.
@@ -570,10 +581,14 @@ const tweenFactory = (o = {}) => {
    *               0 = no edge jump.
    *               1 = edge jump in positive direction.
    */
-  const _update = (time, timelinePrevTime, wasYoyo, onEdge) => {
-    // if we don't the _prevTime thus the direction we are heading to,
+  const update = (time, timelinePrevTime, wasYoyo, onEdge) => {
+    if (time === prevTime) {
+      cosnole.log('equal')
+      return false;
+    }
+    // if we don't the prevTime thus the direction we are heading to,
     // but prevTime was passed thus we are child of a Timeline
-    // set _prevTime to passed one and pretent that there was unknown
+    // set prevTime to passed one and pretent that there was unknown
     // update to not to block start/complete callbacks
     if (prevTime === undefined && timelinePrevTime !== undefined) {
       if ($speed && playTime) {
@@ -594,7 +609,7 @@ const tweenFactory = (o = {}) => {
     // due to javascript precision issues, after speed mapping
     // we can get very close number that was made from progress of 1
     // and in fact represents `endTime` if so, set the time to `endTime`
-    if ( Math.abs(endTime - time) < 0.00000001 ) { time = endTime; }
+    if ( endTime - time < 0.00000001 ) { time = endTime; }
 
     // if parent is onEdge but not very start nor very end
     if (onEdge && wasYoyo !== undefined)  {
@@ -605,7 +620,7 @@ const tweenFactory = (o = {}) => {
       // notify children about edge jump
       if (timelines) {
         for (var i = 0; i < timelines.length; i++) {
-          timelines[i]._update(time, timelinePrevTime, wasYoyo, onEdge);
+          timelines[i].update(time, timelinePrevTime, wasYoyo, onEdge);
         }
       }
 
@@ -640,7 +655,7 @@ const tweenFactory = (o = {}) => {
           }
         }
       }
-      // reset the _prevTime - drop one frame to undestand
+      // reset the prevTime - drop one frame to undestand
       // where we are heading
       prevTime = undefined;
     }
@@ -693,6 +708,9 @@ const tweenFactory = (o = {}) => {
         }
       }
     }
+
+    // run `$onInternalUpdate();` lifecycle callback
+    $onInternalUpdate(time, prevTime, wasYoyo, onEdge);
 
     prevTime = time;
     return (time >= endTime) || (time <= startPoint);
@@ -870,7 +888,7 @@ const tweenFactory = (o = {}) => {
    */
   const setSpeed = (speed = 1) => {
     $speed = speed;
-    // if playing - normalize _startTime and _prevTime to the current point.
+    // if playing - normalize _startTime and prevTime to the current point.
     if ( state === 'play' || state === 'reverse' ) { setResumeTime( state ); }
     return tween;
   }
@@ -925,15 +943,15 @@ const tweenFactory = (o = {}) => {
     // - shift time is shift of the parent
     startTime = startSpot + $delay + negativeShift + $shiftTime;
     // because `startTime` is shifted on `$delay` => remocve one `$delay`
-    // from the $repeatTime
-    endTime = startTime + ($repeatTime - $delay);
+    // from the repeatTime
+    endTime = startTime + (repeatTime - $delay);
     // set play time to the startTimes
     // if playback controls are used - use _resumeTime as play time,
     // else use shifted startTime -- shift is needed for timelines append chains
     playTime = (resumeTime !== undefined) ? resumeTime : startTime + $shiftTime;
-    this._resumeTime = undefined;
+    resumeTime = undefined;
 
-    // if from `_subPlay` and `_prevTime` is set and state is `stop`
+    // if from `_subPlay` and `prevTime` is set and state is `stop`
     // prevTime normalizing is for play/pause functionality, so no
     // need to normalize if the timeline is in `stop` state.
     if (!isResetFlags && prevTime !== undefined && !(state === 'stop')) {
@@ -945,13 +963,14 @@ const tweenFactory = (o = {}) => {
   }
 
   /**
-   * Method which is called when the tween is removed
+   * onTweenerFinish - Method which is called when the tween is removed
    * from tweener when finished.
    *
-   * @private
+   * @public
    */
   const onTweenerFinish = () => {
     _setPlaybackState('stop');
+    reset();
     $onPlaybackComplete();
   }
 
@@ -966,6 +985,37 @@ const tweenFactory = (o = {}) => {
   }
 
   /**
+   * getTime - function to get tween duration.
+   *
+   * @public
+   * @returns {Number} Total tween duration.
+   */
+  const getTime = () => {
+    return repeatTime - $delay;
+  }
+
+  /**
+   * getShiftTime - function to get shift time.
+   *
+   * @public
+   * @returns {Number} Shift time.
+   */
+  const getShiftTime = () => { return $shiftTime; }
+
+  /**
+   * setDuration - function to set duration.
+   *
+   * @public
+   * @param {Number} Positive duration value.
+   * @returns {Object} Tween instance(self).
+   */
+  const setDuration = (value) => {
+    $duration = (value < 0) ? 0 : value;
+    _calcDimentions();
+    return tween;
+  }
+
+  /**
    * Expose public methods:
    */
   tween.play = play;
@@ -977,8 +1027,16 @@ const tweenFactory = (o = {}) => {
   tween.setProgress = setProgress;
   tween.setSpeed = setSpeed;
   tween.reset = reset;
+
+  // util functions
   tween.onTweenerFinish = onTweenerFinish;
   tween.setStartTime = setStartTime;
+  tween.setDuration = setDuration;
+  tween.getTime = getTime;
+  tween.getShiftTime = getShiftTime;
+  tween.update = update;
 
   return tween;
 }
+
+export default tweenFactory;

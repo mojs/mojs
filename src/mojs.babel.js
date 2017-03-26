@@ -1,14 +1,14 @@
-import Tween from './tween/tween-scope';
-import Timeline from './tween/timeline-scope';
-import tweener from './tween/tweener';
+import ClassProto from './class-proto';
+import TweenPlanner from './tween/planner';
+import tweenDefaults from './tween/tween-defaults';
 
 var mojs = {
-  revision:   '2.2.0',
-  Tween, Timeline
+  revision:   '2.0.0',
+  __helpers__: {
+    ClassProto,
+    TweenPlanner,
+    tweenDefaults
+  }
 }
 
-/**
- * Definitions - ES2015, Global
- */
 export default mojs;
-(typeof window !== 'undefined') && (window.mojs = mojs);
