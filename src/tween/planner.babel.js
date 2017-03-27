@@ -2,7 +2,6 @@ import ClassProto from '../class-proto';
 import defaults from './tween-defaults';
 
 export default class Planner extends ClassProto {
-
   /**
    * _declareDefaults - function to declare module defaults.
    *                    In this case defaults are the `tween defaults`
@@ -11,6 +10,37 @@ export default class Planner extends ClassProto {
    * @private
    */
   _declareDefaults() { return this._defaults = {...defaults}; }
+
+  /**
+   * _extendDefaults - Method to copy `_o` options to `_props` object
+   *                  with fallback to `_defaults`.
+   * @private
+   */
+  _extendDefaults() {
+    super._extendDefaults();
+
+    const { delay, duration, speed } = this._props;
+    // save the original `delay` property
+    this._originalDelay = delay;
+    // save the original `duration` property
+    this._originalDuration = duration;
+    // normalize `delay` and `duration` regarding `speed`
+    this._normalizeDelayAndDuration();
+  }
+
+  /**
+   * _normalizeDelayAndDuration - function to normalize `delay` and `duration`
+   *                              regarding `speed` property.
+   *
+   * @return {type}  description
+   */
+  _normalizeDelayAndDuration() {
+    const { speed } = this._props;
+    // normalize `delay` regarding `speed`
+    this._props.delay = this._originalDelay/speed;
+    // normalize `duration` regarding `speed`
+    this._props.duration = this._originalDuration/speed;
+  }
 
   /**
    * _vars - function do declare `variables` after `_defaults` were extended
@@ -26,13 +56,11 @@ export default class Planner extends ClassProto {
   }
 
   /**
-   * _createPlan - function to create an tween animation plan.
+   * createPlan - function to create an tween animation plan.
    *
-   * @private
+   * @public
    */
-  _createPlan() {
-    const { duration } = this._props;
-
+  createPlan() {
     // reset plan
     this._plan.length = 0;
     // recalculate total duration time
@@ -43,59 +71,48 @@ export default class Planner extends ClassProto {
     // current time
     let time = 0;
 
-    while (time < duration) {
-      const prevPeriod = this._getPeriod(time-step);
+    while (time < this._totalTime) {
+      const prevPeriod = this._getPeriod(time - step);
       const period = this._getPeriod(time);
-      const nextPeriod = this._getPeriod(time+step);
+      const nextPeriod = this._getPeriod(time + step);
       const prevFrame = this._plan[this._plan.length-1];
       let frameSnapshot = 0;
 
       if (period === 'delay') {
-        this._plan.push(0);
+        this._plan.push(frameSnapshot);
+        time += step;
         continue;
       }
 
-      // ((id & (1 << 0))) && (this._o.onRefresh());
-      // ((id & (1 << 1))) && (this._o.onStart());
-      // ((id & (1 << 2))) && (this._o.onRepeatStart());
-      // ((id & (1 << 3))) && (this._o.onFirstUpdate());
-      // ((id & (1 << 4)) && (this._o.onUpdate());
-      // ((id & (1 << 5))) && (this._o.onRepeatComplete());
-      // ((id & (1 << 6))) && (this._o.onComplete());
+      // onUpdate
+      frameSnapshot = frameSnapshot | (1 << 3);
 
-      // ((id & (1 << 0))) && (this._o.onRefresh());
-      // ((id & (1 << 1))) && (this._o.onStart());
-      // ((id & (1 << 2))) && (this._o.onRepeatStart());
-      // ((id & (1 << 3))) && (this._o.onFirstUpdate());
-      // ((id & (1 << 4)) && (this._o.onUpdate());
-      // ((id & (1 << 5))) && (this._o.onRepeatComplete());
-      // ((id & (1 << 6))) && (this._o.onComplete());
+      const isPrevFrame = prevFrame !== undefined;
 
-      if (period != 'delay') {
-        // onUpdate
-        frameSnapshot = frameSnapshot | (1 << 4);
-
-        const isPrevFrame = prevFrame !== undefined;
-
-        if (!isPrevFrame) {
-          // onRefresh
-          frameSnapshot = frameSnapshot | (1 << 0);
-          // onStart
-          frameSnapshot = frameSnapshot | (1 << 1);
-        }
-
-        const isPrevDelay = prevPeriod === 'delay';
-        // onRepeatStart
-        if (!isPrevFrame || isPrevDelay || prevPeriod === period - 1) {
-          frameSnapshot = frameSnapshot | (1 << 2);
-        }
+      if (!isPrevFrame) {
+        // onStart
+        frameSnapshot = frameSnapshot | (1 << 1);
       }
 
+      const isPrevDelay = prevPeriod === 'delay';
+      // onRepeatStart
+      if (!isPrevFrame || isPrevDelay || prevPeriod === period - 1) {
+        frameSnapshot = frameSnapshot | (1 << 2);
+      }
+
+      // onRepeatComplete
+      if (nextPeriod === 'delay' || nextPeriod === period + 1) {
+        frameSnapshot = frameSnapshot | (1 << 4);
+      }
 
       this._plan.push(frameSnapshot);
 
       time += step;
     }
+
+    // onComplete
+    const lastIndex = this._plan.length - 1;
+    this._plan[lastIndex] = this._plan[lastIndex] | (1 << 5);
   }
 
 

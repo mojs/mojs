@@ -15,7 +15,6 @@ class ClassProto {
     this._declareDefaults();
     this._extendDefaults();
     this._vars();
-    this._render();
   }
 
   /**
@@ -32,7 +31,6 @@ class ClassProto {
    */
   _declareDefaults() { this._defaults = {}; }
 
-
   /**
    * _extendDefaults - Method to copy `_o` options to `_props` object
    *                  with fallback to `_defaults`.
@@ -44,9 +42,6 @@ class ClassProto {
       ...this._o
     };
   }
-
-  _render() { }
-
 
   /**
    * _setProp - Method to set property on the module.

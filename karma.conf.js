@@ -1,4 +1,4 @@
-const customLaunchers = require('./helpers/karma-helpers/saucelabs-browsers');
+const customLaunchers = require('./build-helpers/karma-helpers/saucelabs-browsers');
 const { SAUCE_USERNAME, SAUCE_ACCESS_KEY } = process.env;
 
 const isSauceLabs = SAUCE_USERNAME && SAUCE_ACCESS_KEY;

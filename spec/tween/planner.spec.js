@@ -28,15 +28,48 @@ describe('tween planner', function() {
       var planner = new TweenPlanner;
       expect(planner._plan).toEqual([]);
     });
+
+    it('should normalize `delay` and `duration regarding `speed` #slow ->', function () {
+      var duration = 2000;
+      var delay = 200;
+      var speed = .2;
+      var planner = new TweenPlanner({
+        speed: speed,
+        delay: delay,
+        duration: duration
+      });
+      var props = planner._props;
+
+      expect(props.delay).toBe(delay/speed);
+      expect(props.duration).toBe(duration/speed);
+      expect(planner._originalDelay).toBe(delay);
+      expect(planner._originalDuration).toBe(duration);
+    });
+
+    it('should normalize `delay` and `duration regarding `speed` #fast ->', function () {
+      var duration = 2000;
+      var delay = 200;
+      var speed = 4;
+      var planner = new TweenPlanner({
+        speed: speed,
+        delay: delay,
+        duration: duration
+      });
+      var props = planner._props;
+
+      expect(props.delay).toBe(delay/speed);
+      expect(props.duration).toBe(duration/speed);
+    });
+
   });
 
-  describe('_createPlan function ->', function() {
+  describe('createPlan function ->', function() {
     it('should call _calcTotalTime function', function () {
       var planner = new TweenPlanner({
         duration: 2000
       });
       spyOn(planner, '_calcTotalTime');
-      planner._createPlan();
+      planner.createPlan();
       expect(planner._calcTotalTime).toHaveBeenCalled();
     });
 
@@ -44,10 +77,47 @@ describe('tween planner', function() {
       var planner = new TweenPlanner({
         duration: 200
       });
-      planner._createPlan();
-      expect(planner._plan).toBe([16, 16]);
+      planner.createPlan();
+
+      expect(planner._plan)
+        .toEqual([ 14, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 56 ]);
     });
 
+    it('should create a plan #delay #duration', function () {
+      var planner = new TweenPlanner({
+        duration: 200,
+        delay: 50
+      });
+      planner.createPlan();
+
+      expect(planner._plan)
+        .toEqual([ 14, 8, 8, 8, 8, 8, 8, 8, 8, 24, 12, 8, 40 ]);
+    });
+
+    it('should create a plan #delay #duration #repeat', function () {
+      var planner = new TweenPlanner({
+        duration: 100,
+        delay: 50,
+        repeat: 2
+      });
+      planner.createPlan();
+
+      expect(planner._plan)
+        .toEqual([ 14, 8, 8, 8, 8, 8, 24, 0, 0, 0, 12, 8, 8, 8, 8, 24, 0, 0, 0, 12, 8, 24, 12, 8, 40 ]);
+    });
+
+    it('should create a plan #delay #duration #repeat #speed #fast', function () {
+      var planner = new TweenPlanner({
+        repeat: 2,
+        duration: 100,
+        delay: 50,
+        speed: 4
+      });
+      planner.createPlan();
+
+      expect(planner._plan)
+        .toEqual([ 14, 24, 0, 28, 0, 28, 44 ]);
+    });
   });
 
   describe('_calcTotalTime function ->', function() {
