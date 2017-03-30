@@ -78,7 +78,7 @@ const getVisiblityEvent = () => {
        if ( tween ) {
          tween._isRunning = false;
          this.tweens.splice(index, 1);
-         tween._onTweenerRemove();
+        //  tween._onTweenerRemove();
        }
      }
     }
@@ -123,7 +123,7 @@ const getVisiblityEvent = () => {
      this._savedTweens[i].pause();
    }
   }
-  
+
   /*
    Method to restore all playing tweens.
    @private

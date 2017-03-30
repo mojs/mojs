@@ -28,10 +28,10 @@ module.exports = {
     new webpack.optimize.UglifyJsPlugin({
      minimize: true,
      compress: true
-   })
-    // new webpack.DefinePlugin({
-    //   'process.env.NODE_ENV': "production"
-    // })
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': "production"
+    })
   ],
   resolve: {
     modules: ['node_modules'],

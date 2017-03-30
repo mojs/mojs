@@ -113,6 +113,8 @@ export default class Planner extends ClassProto {
     // onComplete
     const lastIndex = this._plan.length - 1;
     this._plan[lastIndex] = this._plan[lastIndex] | (1 << 5);
+
+    return this._plan;
   }
 
 
@@ -137,7 +139,6 @@ export default class Planner extends ClassProto {
    */
   _getPeriod(time) {
     const { delay, duration } = this._props;
-
     /**
      * Time normalization. Since we omit the first `delay` period when setting
      * a starttime, we can drop the first `delay` period entirely, but here,

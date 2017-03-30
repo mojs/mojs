@@ -37,7 +37,7 @@ class ClassProto {
    * @private
    */
   _extendDefaults() {
-    this._props  = {
+    this._props = {
       ...this._defaults,
       ...this._o
     };
