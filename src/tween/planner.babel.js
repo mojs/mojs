@@ -9,7 +9,7 @@ export default class Planner extends ClassProto {
    *
    * @private
    */
-  _declareDefaults() { return this._defaults = {...defaults}; }
+  _declareDefaults() { return this._defaults = defaults; }
 
   /**
    * _extendDefaults - Method to copy `_o` options to `_props` object

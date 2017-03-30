@@ -10,7 +10,7 @@ export default class Tween extends ClassProto {
    *                    since we will plan for tween.
    * @private
    */
-  _declareDefaults() { return this._defaults = {...defaults}; }
+  _declareDefaults() { return this._defaults = defaults; }
 
   /**
    * _vars - function do declare `variables` after `_defaults` were extended
