@@ -28,7 +28,7 @@ const getVisiblityEvent = () => {
 
     _vars () {
       this.tweens = [];
-      this._loop = this._loop.bind(this);
+      // this._loop = this._loop.bind(this);
       this._savedTweens = [];
       this._onVisibilityChange = this._onVisibilityChange.bind(this);
     }
@@ -38,26 +38,30 @@ const getVisiblityEvent = () => {
      @private
      @returns this
     */
-    _loop() {
-     if (!this._isRunning) { return false; }
-     this.update(window.performance.now());
-     if (!this.tweens.length) { return this._isRunning = false; }
-     requestAnimationFrame(this._loop);
-     return this;
+    _loop = () => {
+      if (this.tweens.length === 0) { return this._stopLoop(); }
+      this.update(performance.now());
+      // if (!this.tweens.length) { return this._isRunning = false; }
+      requestAnimationFrame(this._loop);
     }
     /*
      Method to start animation loop.
      @private
     */
     _startLoop() {
-     if (this._isRunning) { return; }; this._isRunning = true
+      if (this._isRunning) { return; };
+      this._isRunning = true;
+      //  if (this.tweens.length > 0) { return; };
      requestAnimationFrame(this._loop);
     }
     /*
      Method to stop animation loop.
      @private
     */
-    _stopLoop() { this._isRunning = false; }
+    _stopLoop() {
+      this.tweens.length = 0;
+      this._isRunning = false;
+    }
 
     /*
      Method stop updating all the child tweens/timelines.
@@ -69,18 +73,16 @@ const getVisiblityEvent = () => {
      @private
     */
     remove(tween) {
-     var index = (typeof tween === 'number')
+      var index = (typeof tween === 'number')
        ? tween
        : this.tweens.indexOf(tween);
 
-     if (index !== -1) {
-       tween = this.tweens[index];
-       if ( tween ) {
-         tween._isRunning = false;
-         this.tweens.splice(index, 1);
+      if (index !== -1) {
+        tween = this.tweens[index];
+        tween._isRunning = false;
+        this.tweens.splice(index, 1);
         //  tween._onTweenerRemove();
-       }
-     }
+      }
     }
 
     /*
@@ -143,7 +145,7 @@ const getVisiblityEvent = () => {
    while(i--) {
      // cache the current tween
      var tween = this.tweens[i];
-     if (tween && tween.update(time) === true) {
+     if (tween.update(time) === true) {
        this.remove(tween);
        tween.onTweenerFinish();
        tween._prevTime = undefined;
@@ -157,7 +159,7 @@ const getVisiblityEvent = () => {
   */
   add(tween) {
    // return if tween is already running
-   if ( tween._isRunning ) { return; }
+   if (tween._isRunning) { return; }
    tween._isRunning = true;
    this.tweens.push(tween);
    this._startLoop();

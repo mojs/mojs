@@ -86,8 +86,7 @@ export default class Tween extends ClassProto {
     }
 
     while (this._elapsed <= deltaTime) {
-      const snapshot = this._plan[this._frameIndex];
-      this._envokeCallBacks(snapshot);
+      this._envokeCallBacks(this._plan[this._frameIndex]);
       this._elapsed += 16;
       this._frameIndex++;
     }
