@@ -30,7 +30,6 @@ const getVisiblityEvent = () => {
       this.tweens = [];
       // this._loop = this._loop.bind(this);
       this._savedTweens = [];
-      this._onVisibilityChange = this._onVisibilityChange.bind(this);
     }
 
     /*
@@ -52,7 +51,7 @@ const getVisiblityEvent = () => {
       if (this._isRunning) { return; };
       this._isRunning = true;
       //  if (this.tweens.length > 0) { return; };
-     requestAnimationFrame(this._loop);
+      requestAnimationFrame(this._loop);
     }
     /*
      Method to stop animation loop.
@@ -90,40 +89,40 @@ const getVisiblityEvent = () => {
      @private
     */
     _listenVisibilityChange () {
-    if (typeof document.hidden !== "undefined") {
-     this._visibilityHidden = "hidden";
-     this._visibilityChange = "visibilitychange";
-    } else if (typeof document.mozHidden !== "undefined") {
-     this._visibilityHidden = "mozHidden";
-     this._visibilityChange = "mozvisibilitychange";
-    } else if (typeof document.msHidden !== "undefined") {
-     this._visibilityHidden = "msHidden";
-     this._visibilityChange = "msvisibilitychange";
-    } else if (typeof document.webkitHidden !== "undefined") {
-     this._visibilityHidden = "webkitHidden";
-     this._visibilityChange = "webkitvisibilitychange";
-    }
+      if (typeof document.hidden !== "undefined") {
+        this._visibilityHidden = "hidden";
+        this._visibilityChange = "visibilitychange";
+      } else if (typeof document.mozHidden !== "undefined") {
+        this._visibilityHidden = "mozHidden";
+        this._visibilityChange = "mozvisibilitychange";
+      } else if (typeof document.msHidden !== "undefined") {
+        this._visibilityHidden = "msHidden";
+        this._visibilityChange = "msvisibilitychange";
+      } else if (typeof document.webkitHidden !== "undefined") {
+        this._visibilityHidden = "webkitHidden";
+        this._visibilityChange = "webkitvisibilitychange";
+      }
 
-    document.addEventListener(this._visibilityChange,
-      this._onVisibilityChange, false);
+      document.addEventListener(this._visibilityChange,
+        this._onVisibilityChange, false);
   }
 
   /*
    Method that will fire on visibility change.
   */
-  _onVisibilityChange () {
-   if (document[this._visibilityHidden]) { this._savePlayingTweens() }
-   else { this._restorePlayingTweens(); }
+  _onVisibilityChange = () => {
+    if (document[this._visibilityHidden]) { this._savePlayingTweens() }
+    else { this._restorePlayingTweens(); }
   }
   /*
    Method to save all playing tweens.
    @private
   */
   _savePlayingTweens () {
-   this._savedTweens = this.tweens.slice(0);
-   for (let i = 0; i < this._savedTweens.length; i++ ) {
-     this._savedTweens[i].pause();
-   }
+    this._savedTweens = this.tweens.slice(0);
+    for (let i = 0; i < this._savedTweens.length; i++ ) {
+      this._savedTweens[i].pause();
+    }
   }
 
   /*
@@ -131,9 +130,9 @@ const getVisiblityEvent = () => {
    @private
   */
   _restorePlayingTweens () {
-   for (let i = 0; i < this._savedTweens.length; i++ ) {
-     this._savedTweens[i].resume();
-   }
+    for (let i=0; i < this._savedTweens.length; i++ ) {
+      this._savedTweens[i].resume();
+    }
   }
 
   /*
@@ -141,16 +140,15 @@ const getVisiblityEvent = () => {
    @private
   */
   update(time) {
-   var i = this.tweens.length;
-   while(i--) {
-     // cache the current tween
-     var tween = this.tweens[i];
-     if (tween.update(time) === true) {
-       this.remove(tween);
-       tween.onTweenerFinish();
-       tween._prevTime = undefined;
-     }
-   }
+    var i = this.tweens.length;
+    while(i--) {
+      var tween = this.tweens[i];
+      if (tween.update(time) === true) {
+        this.remove(tween);
+        tween.onTweenerFinish();
+        tween._prevTime = undefined;
+      }
+    }
   }
 
   /*
@@ -158,11 +156,11 @@ const getVisiblityEvent = () => {
    @param {Object} Tween/Timeline to add.
   */
   add(tween) {
-   // return if tween is already running
-   if (tween._isRunning) { return; }
-   tween._isRunning = true;
-   this.tweens.push(tween);
-   this._startLoop();
+    // return if tween is already running
+    if (tween._isRunning) { return; }
+    tween._isRunning = true;
+    this.tweens.push(tween);
+    this._startLoop();
   }
 
   /**
