@@ -238,7 +238,7 @@ class Tween extends ClassProto {
     @param  {String} Play or reverse state.
     @return {Object} Self.
   */
-  _subPlay ( shift = 0, state ) {
+  _subPlay(shift = 0, state) {
     var resumeTime, startTime,
         p = this._props,
         // check if direction of playback changes,
@@ -246,15 +246,16 @@ class Tween extends ClassProto {
         _state     = this._state,
         _prevState = this._prevState,
         isPause    = _state === 'pause',
-        wasPlay    = ( _state === 'play' || ( isPause && _prevState === 'play' ) ),
-        wasReverse = ( _state === 'reverse' || ( isPause && _prevState === 'reverse' ) ),
+
+        wasPlay    = (_state === 'play' || ( isPause && _prevState === 'play')),
+        wasReverse = (_state === 'reverse' || ( isPause && _prevState === 'reverse')),
         isFlip     = (wasPlay && state === 'reverse') || (wasReverse && state === 'play');
 
     // if tween was ended, set progress to 0 if not, set to elapsed progress
     this._progressTime = ( this._progressTime >= p.repeatTime )
       ? 0 : this._progressTime;
     // flip the _progressTime if playback direction changed
-    if ( isFlip ) { this._progressTime = p.repeatTime - this._progressTime; }
+    if (isFlip) { this._progressTime = p.repeatTime - this._progressTime; }
     // set resume time and normalize prev/start times
     this._setResumeTime( state, shift );
     // add self to tweener = play
@@ -267,7 +268,7 @@ class Tween extends ClassProto {
     @param {String} Current state. [play, reverse]
     @param {Number} Time shift. *Default* is 0.
   */
-  _setResumeTime ( state, shift = 0 ) {
+  _setResumeTime( state, shift = 0 ) {
     // get current moment as resume time
     this._resumeTime = performance.now();
     // set start time regarding passed `shift` and `procTime`

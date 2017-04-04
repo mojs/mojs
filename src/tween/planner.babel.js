@@ -117,11 +117,8 @@ export default class Planner extends ClassProto {
     return this._plan;
   }
 
-
   /**
    * _calcBounds - function to calculate `totalTime`
-   *
-   * @return {type}  description
    */
   _calcTotalTime() {
     const { delay, duration, repeat } = this._props;

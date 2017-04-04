@@ -19,7 +19,7 @@ var mojs = {
 window.onload = () => {
   const items = [];
   setTimeout(() => {
-    for (let i = 0; i < 40000; i++) {
+    for (let i = 0; i < 50000; i++) {
       const tw = new mojs.Tween({
         duration: 2000,
         onUpdate() {
@@ -37,8 +37,15 @@ window.onload = () => {
         onComplete() {
           // (i === 0) && console.log( 'complete' );
         }
-      }).play();
+      });
+      items.push(tw);;
     }
+
+    setTimeout(function() {
+      for (let i = 0; i < items.length; i++) {
+        items[i].play();
+      }
+    }, 2000);
   }, 2000);
 };
 

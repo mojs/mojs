@@ -25,6 +25,8 @@ export default {
   backwardEasing:         null,
   /* custom tween's name */
   name:                   null,
+  /* shift time on a timeline */
+  shiftTime:              0,
   /* custom tween's base name */
   nameBase:               'Tween',
   /*

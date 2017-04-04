@@ -74,11 +74,6 @@ class ClassProto {
    * @return {type}  description
    */
   _vars() {}
-
-  /**
-   * _render - method to render on initialization.
-   */
-  _render() {}
 }
 
 export default ClassProto;
