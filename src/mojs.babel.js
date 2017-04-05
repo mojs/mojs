@@ -16,37 +16,4 @@ var mojs = {
   }
 };
 
-window.onload = () => {
-  const items = [];
-  setTimeout(() => {
-    for (let i = 0; i < 50000; i++) {
-      const tw = new mojs.Tween({
-        duration: 2000,
-        onUpdate() {
-          // (i === 0) && console.log( 'update' );
-        },
-        onStart() {
-          // (i === 0) && console.log( 'start' );
-        },
-        onRepeatStart() {
-          // (i === 0) && console.log( 'repeatStart' );
-        },
-        onRepeatComplete() {
-          // (i === 0) && console.log( 'repeatComplete' );
-        },
-        onComplete() {
-          // (i === 0) && console.log( 'complete' );
-        }
-      });
-      items.push(tw);;
-    }
-
-    setTimeout(function() {
-      for (let i = 0; i < items.length; i++) {
-        items[i].play();
-      }
-    }, 2000);
-  }, 2000);
-};
-
 export default mojs;

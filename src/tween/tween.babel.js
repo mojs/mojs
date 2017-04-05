@@ -276,7 +276,7 @@ export default class Tween extends ClassProto {
   replayBackward(shift = 0) {
     this.reset();
     this.playBackward(shift);
-    
+
     return this;
   }
 
@@ -375,7 +375,7 @@ export default class Tween extends ClassProto {
     (progress > 1) && (progress = 1);
     // update self with calculated time
     const startPoint = this._startTime - this._props.delay;
-    this.update(startPoint + progress*this._totalTime);
+    this.update(startPoint + progress * this._totalTime);
 
     return this;
   }

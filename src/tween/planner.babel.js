@@ -37,9 +37,9 @@ export default class Planner extends ClassProto {
   _normalizeDelayAndDuration() {
     const { speed } = this._props;
     // normalize `delay` regarding `speed`
-    this._props.delay = this._originalDelay/speed;
+    this._props.delay = this._originalDelay / speed;
     // normalize `duration` regarding `speed`
-    this._props.duration = this._originalDuration/speed;
+    this._props.duration = this._originalDuration / speed;
   }
 
   /**
@@ -69,13 +69,16 @@ export default class Planner extends ClassProto {
     // frame size (60fps)
     const step = 16;
     // current time
-    let time = 0;
+    let time = this._props.delay;
 
-    while (time < this._totalTime) {
+    // this._o.isIt && console.log(this._totalTime);
+    while (time <= this._totalTime) {
       const prevPeriod = this._getPeriod(time - step);
       const period = this._getPeriod(time);
       const nextPeriod = this._getPeriod(time + step);
       const prevFrame = this._plan[this._plan.length-1];
+
+      // this._o.isIt && console.log(`time: ${time}, prevPeriod: ${prevPeriod}, period: ${period}, nextPeriod: ${nextPeriod}`);
       let frameSnapshot = 0;
 
       if (period === 'delay') {
@@ -102,8 +105,11 @@ export default class Planner extends ClassProto {
 
       // onRepeatComplete
       if (nextPeriod === 'delay' || nextPeriod === period + 1) {
+        this._o.isIt && console.log(`yep`);
         frameSnapshot = frameSnapshot | (1 << 4);
       }
+
+      // this._o.isIt && console.log(`frameSnapshot: ${frameSnapshot}`);
 
       this._plan.push(frameSnapshot);
 
@@ -112,6 +118,7 @@ export default class Planner extends ClassProto {
 
     // onComplete
     const lastIndex = this._plan.length - 1;
+    this._o.isIt && console.log(`lastItem: ${this._plan[lastIndex]}`);
     this._plan[lastIndex] = this._plan[lastIndex] | (1 << 5);
 
     return this._plan;
@@ -124,7 +131,7 @@ export default class Planner extends ClassProto {
     const { delay, duration, repeat } = this._props;
     const time = duration + delay;
 
-    this._totalTime = (time * (repeat + 1)) - delay;
+    this._totalTime = time * (repeat + 1);
   }
 
   /**
@@ -136,12 +143,6 @@ export default class Planner extends ClassProto {
    */
   _getPeriod(time) {
     const { delay, duration } = this._props;
-    /**
-     * Time normalization. Since we omit the first `delay` period when setting
-     * a starttime, we can drop the first `delay` period entirely, but here,
-     * we need to add the `delay` pretending the delay already elapsed.
-     */
-    time += delay;
 
     const TTime = delay + duration;
     let period = time / TTime;
@@ -153,15 +154,22 @@ export default class Planner extends ClassProto {
     // Basically we always can floor the result, but because of js
     // precision issues, sometimes the result is 2.99999998 which
     // will result in 2 instead of 3 after the floor operation.
-    period = (time >= this._totalTime) ? Math.round(period) : Math.floor(period);
+    period = (time >= this._totalTime)
+      ? Math.round(period) : Math.floor(period);
     // if time is larger then the end time
     if (time > this._totalTime) {
       // set equal to the periods count
-      period = Math.round(this._totalTime / TTime );
+      return Math.round(this._totalTime/TTime);
     // if in delay gap, set _delayT to current
     // period number and return "delay"
     } else if (elapsed > 0 && elapsed < delay) {
-      period = 'delay';
+      return 'delay';
+    // if right at the end of one repeat period and there is delay
+    // period should be `delay` vs `period + 1`
+    } else if (elapsed === 0 && time < this._totalTime && time < delay) {
+      return 'delay';
+    } else if (elapsed === 0 && time > delay) {
+      return period-1;
     }
     // if the end of period and there is a delay
     return period;
