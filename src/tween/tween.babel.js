@@ -3,6 +3,8 @@ import defaults from './tween-defaults';
 import TweenPlanner from './planner';
 import tweener from './tweener';
 
+let i = 0;
+
 export default class Tween extends ClassProto {
   /**
    * _declareDefaults - function to declare module defaults.
@@ -27,6 +29,11 @@ export default class Tween extends ClassProto {
     /**
      * TODO: cover
      */
+    this._prevTime = -Infinity;
+
+    /**
+     * TODO: cover
+     */
     this._totalTime = this._planner._totalTime;
 
     /**
@@ -38,7 +45,7 @@ export default class Tween extends ClassProto {
      * TODO: cover
      */
     this._elapsed = 0;
-    this._frameIndex = 0;
+    this._frameIndex = -1;
 
     /**
      * TODO: cover
@@ -166,7 +173,7 @@ export default class Tween extends ClassProto {
     this._setStartTime(startTime, false);
     // if we have prevTime - we need to normalize
     // it for the current resume time
-    if (this._prevTime !== undefined) {
+    if (this._prevTime > -Infinity) {
       const { _startTime, _elapsed, _totalTime } = this;
       this._prevTime = (state === 'play')
         ? _startTime + _elapsed - this._props.delay
@@ -185,12 +192,15 @@ export default class Tween extends ClassProto {
     let mask = 1;
 
     const props = this._props;
+    if (snapshot & (mask <<= 1)) {
+      // this._frameIndex = -1;
+      props.onStart()
+    }
 
-    (snapshot & (mask <<= 1)) && props.onStart();
     (snapshot & (mask <<= 1)) && props.onRepeatStart();
     (snapshot & (mask <<= 1)) && props.onUpdate();
     (snapshot & (mask <<= 1)) && props.onRepeatComplete();
-    (snapshot & (mask <<= 1)) && props.onComplete();
+    ((snapshot & (mask <<= 1)) > 0) && props.onComplete();
   }
 
   /** PUBLIC FUNCTIONS **/
@@ -202,23 +212,63 @@ export default class Tween extends ClassProto {
    * @param {Number} Current time.
    */
   update(time) {
-    const deltaTime = time - this._startTime;
 
-    if (deltaTime > this._totalTime) {
-      while (this._frameIndex < this._plan.length) {
-        const snapshot = this._plan[this._frameIndex];
-        this._envokeCallBacks(snapshot);
-        this._elapsed += 16;
-        this._frameIndex++;
+    this._o.isIt && console.log(`time: ${time}, prevTime: ${this._prevTime}`);
+
+    if (time > this._prevTime) {
+
+      if (time > (this._startTime + this._totalTime - this._props.delay)) {
+        /**
+         * TODO: cover jump
+         */
+      //   while (this._frameIndex < this._plan.length) {
+      //     this._frameIndex++;
+      //     this._envokeCallBacks(this._plan[this._frameIndex]);
+      //   }
+        this._prevTime = +Infinity;
+        this._frameIndex = this._plan.length;
+        return true;
       }
-      return true;
+
+      this._o.isIt && console.log(`time: ${time}, startTime: ${this._startTime}`);
+
+      if (time >= this._startTime) {
+        while (this._frameIndex*16 < time - this._startTime) {
+          this._frameIndex++;
+          this._envokeCallBacks(this._plan[this._frameIndex]);
+          this._prevTime = time;
+        }
+
+      }
+
+    } else if (time < this._prevTime) {
+
+      if (time < this._startTime) {
+
+        /**
+         * TODO: cover jump
+         */
+        // while (this._frameIndex > 0) {
+        //   this._frameIndex--;
+        //   this._envokeCallBacks(this._plan[this._frameIndex]);
+        // }
+        this._prevTime = -Infinity;
+        this._frameIndex = -1;
+        return true;
+      }
+
+
+      if (time <= this._startTime + this._totalTime) {
+        while (this._frameIndex*16 > time - this._startTime) {
+          this._frameIndex--;
+          this._envokeCallBacks(this._plan[this._frameIndex]);
+          this._prevTime = time;
+        }
+      }
+
     }
 
-    while (this._elapsed <= deltaTime) {
-      this._envokeCallBacks(this._plan[this._frameIndex]);
-      this._elapsed += 16;
-      this._frameIndex++;
-    }
+
   }
 
   /**
@@ -348,7 +398,7 @@ export default class Tween extends ClassProto {
     tweener.remove(this);
     this._setPlaybackState('stop');
     this._elapsed = 0;
-    this._frameIndex = 0;
+    this._frameIndex = -1;
     // this._isCompleted      = false;
     // this._isStarted        = false;
     // this._isFirstUpdate    = false;

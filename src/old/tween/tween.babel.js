@@ -396,7 +396,7 @@ class Tween extends ClassProto {
     @param {Boolean} Should reset flags.
     @returns this
   */
-  _setStartTime ( time, isResetFlags = true ) {
+  _setStartTime(time, isResetFlags = true) {
     var p = this._props,
         shiftTime = (p.shiftTime || 0);
     // reset flags

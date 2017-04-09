@@ -105,7 +105,6 @@ export default class Planner extends ClassProto {
 
       // onRepeatComplete
       if (nextPeriod === 'delay' || nextPeriod === period + 1) {
-        this._o.isIt && console.log(`yep`);
         frameSnapshot = frameSnapshot | (1 << 4);
       }
 
@@ -118,7 +117,6 @@ export default class Planner extends ClassProto {
 
     // onComplete
     const lastIndex = this._plan.length - 1;
-    this._o.isIt && console.log(`lastItem: ${this._plan[lastIndex]}`);
     this._plan[lastIndex] = this._plan[lastIndex] | (1 << 5);
 
     return this._plan;
