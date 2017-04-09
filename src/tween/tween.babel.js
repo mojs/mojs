@@ -192,15 +192,11 @@ export default class Tween extends ClassProto {
     let mask = 1;
 
     const props = this._props;
-    if (snapshot & (mask <<= 1)) {
-      // this._frameIndex = -1;
-      props.onStart()
-    }
-
+    (snapshot & (mask <<= 1)) && props.onStart();
     (snapshot & (mask <<= 1)) && props.onRepeatStart();
     (snapshot & (mask <<= 1)) && props.onUpdate();
     (snapshot & (mask <<= 1)) && props.onRepeatComplete();
-    ((snapshot & (mask <<= 1)) > 0) && props.onComplete();
+    (snapshot & (mask <<= 1)) && props.onComplete();
   }
 
   /** PUBLIC FUNCTIONS **/
@@ -212,25 +208,22 @@ export default class Tween extends ClassProto {
    * @param {Number} Current time.
    */
   update(time) {
-
-    this._o.isIt && console.log(`time: ${time}, prevTime: ${this._prevTime}`);
-
+    // if forward direction
     if (time > this._prevTime) {
 
       if (time > (this._startTime + this._totalTime - this._props.delay)) {
-        /**
-         * TODO: cover jump
-         */
-      //   while (this._frameIndex < this._plan.length) {
-      //     this._frameIndex++;
-      //     this._envokeCallBacks(this._plan[this._frameIndex]);
-      //   }
+        // if jumped over the end time of the tween - make continious updates
+        // and envoke callbacks until the end time is reached
+        while (this._frameIndex < this._plan.length) {
+          this._frameIndex++;
+          this._envokeCallBacks(this._plan[this._frameIndex]);
+        }
+        // reset flags because tween is ended
         this._prevTime = +Infinity;
         this._frameIndex = this._plan.length;
+        // return `true` indicating that tween is completed
         return true;
       }
-
-      this._o.isIt && console.log(`time: ${time}, startTime: ${this._startTime}`);
 
       if (time >= this._startTime) {
         while (this._frameIndex*16 < time - this._startTime) {
@@ -241,22 +234,22 @@ export default class Tween extends ClassProto {
 
       }
 
+    // if backward direction
     } else if (time < this._prevTime) {
 
       if (time < this._startTime) {
-
-        /**
-         * TODO: cover jump
-         */
-        // while (this._frameIndex > 0) {
-        //   this._frameIndex--;
-        //   this._envokeCallBacks(this._plan[this._frameIndex]);
-        // }
+        // if jumped over the start time of the tween - make continious updates
+        // and envoke callbacks until the start time is reached
+        while (this._frameIndex > 0) {
+          this._frameIndex--;
+          this._envokeCallBacks(this._plan[this._frameIndex]);
+        }
+        // reset flags because tween is ended
         this._prevTime = -Infinity;
         this._frameIndex = -1;
+        // return `true` indicating that tween is completed
         return true;
       }
-
 
       if (time <= this._startTime + this._totalTime) {
         while (this._frameIndex*16 > time - this._startTime) {
@@ -267,7 +260,6 @@ export default class Tween extends ClassProto {
       }
 
     }
-
 
   }
 

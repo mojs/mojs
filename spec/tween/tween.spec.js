@@ -115,8 +115,181 @@ describe('tween ->', function () {
       expect(tween._frameIndex).toBe(tween._planner._plan.length);
     });
 
-    it('should envoke callbacks #backward ->', function () {
+    it('should envoke callbacks and jump if ended #delay #duration ->', function () {
+      var duration = 100;
+      var delay = 50;
 
+      var options = {
+        duration: duration,
+        delay: delay,
+        onStart: function() {},
+        onRepeatStart: function() {},
+        onUpdate: function() {},
+        onRepeatComplete: function() {},
+        onComplete: function() {}
+      };
+
+      var tween = new Tween(options);
+      var props = tween._props;
+
+      tween._setStartTime(200);
+      var startTime = tween._startTime;
+      spyOn(props, 'onStart').and.callThrough();
+      spyOn(props, 'onRepeatStart').and.callThrough();
+      spyOn(props, 'onUpdate').and.callThrough();
+      spyOn(props, 'onRepeatComplete').and.callThrough();
+      spyOn(props, 'onComplete').and.callThrough();
+
+      tween.update(startTime - 10);
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(0);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween.update(startTime);
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween.update(startTime + duration/2);
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(5);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween.update(startTime + duration);
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(7);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
+      expect(props.onComplete.calls.count()).toBe(1);
+    });
+
+    it('should envoke callbacks and jump if ended #delay #duration ->', function () {
+      var duration = 100;
+      var delay = 50;
+
+      var options = {
+        duration: duration,
+        delay: delay,
+        onStart: function() {},
+        onRepeatStart: function() {},
+        onUpdate: function() {},
+        onRepeatComplete: function() {},
+        onComplete: function() {}
+      };
+
+      var tween = new Tween(options);
+      var props = tween._props;
+
+      tween._setStartTime(200);
+      var startTime = tween._startTime;
+      spyOn(props, 'onStart').and.callThrough();
+      spyOn(props, 'onRepeatStart').and.callThrough();
+      spyOn(props, 'onUpdate').and.callThrough();
+      spyOn(props, 'onRepeatComplete').and.callThrough();
+      spyOn(props, 'onComplete').and.callThrough();
+
+      tween.update(startTime - 10);
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(0);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween.update(startTime);
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween.update(startTime + 10);
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(2);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      expect(tween.update(startTime + duration + 10)).toBe(true);
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(7);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
+      expect(props.onComplete.calls.count()).toBe(1);
+
+      expect(tween._prevTime).toBe(+Infinity);
+      expect(tween._frameIndex).toBe(tween._planner._plan.length);
+    });
+
+    it('should envoke callbacks and jump if ended #delay #duration #backward ->', function () {
+      var duration = 100;
+      var delay = 50;
+
+      var options = {
+        isIt: 1,
+        duration: duration,
+        delay: delay,
+        onStart: function() {},
+        onRepeatStart: function() {},
+        onUpdate: function() {},
+        onRepeatComplete: function() {},
+        onComplete: function() {}
+      };
+
+      var tween = new Tween(options);
+      var props = tween._props;
+
+      tween._setStartTime(200);
+      var startTime = tween._startTime;
+
+      tween.update(startTime - 10);
+      tween.update(startTime);
+      tween.update(startTime + duration/2);
+      tween.update(startTime + duration);
+      tween.update(startTime + duration + 10);
+
+      spyOn(props, 'onStart').and.callThrough();
+      spyOn(props, 'onRepeatStart').and.callThrough();
+      spyOn(props, 'onUpdate').and.callThrough();
+      spyOn(props, 'onRepeatComplete').and.callThrough();
+      spyOn(props, 'onComplete').and.callThrough();
+
+      var endTime = startTime + duration;
+
+      tween.update(endTime);
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
+      expect(props.onComplete.calls.count()).toBe(1);
+
+      tween.update(endTime - 10);
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(2);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
+      expect(props.onComplete.calls.count()).toBe(1);
+
+      expect(tween.update(endTime - duration - 10)).toBe(true);
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(7);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
+      expect(props.onComplete.calls.count()).toBe(1);
+
+      expect(tween._prevTime).toBe(-Infinity);
+      expect(tween._frameIndex).toBe(-1);
+    });
+
+    it('should envoke callbacks #backward ->', function () {
       var duration = 50;
 
       var options = {
