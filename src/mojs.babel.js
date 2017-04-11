@@ -6,7 +6,7 @@ import tweenDefaults from './tween/tween-defaults';
 import tweener from './tween/tweener';
 
 var mojs = {
-  revision: '2.2.1',
+  revision: '2.3.0',
   Tween,
   tweener,
   __helpers__: {
