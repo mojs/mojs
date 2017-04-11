@@ -46,7 +46,6 @@ export default {
   onComplete:             function() {},
   onRepeatStart:          function() {},
   onRepeatComplete:       function() {},
-  onFirstUpdate:          function() {},
   onUpdate:               function() {},
   // playback callbacks, these fire only when
   // `play`, `replay`, `playBackward`, `replayBackward` were called

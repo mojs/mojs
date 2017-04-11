@@ -958,6 +958,53 @@ describe('tween ->', function () {
         expect(tween._cbr).toHaveBeenCalled();
       });
     });
+  });
+
+  describe('`onRefresh` callback', function() {
+    it('should be called when tween should be refreshed', function() {
+      var options = {
+        duration: 500,
+        onRefresh: function() {}
+      };
+
+      var tween = new Tween(options);
+      tween._setStartTime();
+      var startTime = tween._startTime;
+
+      var result = false;
+      var i = 0;
+      // update the tween to the end
+      while (!result) {
+        result = tween.update(++i*16);
+      }
+
+      spyOn(tween._props, 'onRefresh');
+      tween.update(startTime - 10);
+      expect(tween._props.onRefresh).toHaveBeenCalledWith(false);
+    });
+
+    it('should be called when tween should be refreshed #reverse', function() {
+      var options = {
+        duration: 500,
+        onRefresh: function() {},
+        isReverse: true
+      };
+
+      var tween = new Tween(options);
+      tween._setStartTime();
+      var startTime = tween._startTime;
+
+      var result = false;
+      var i = 0;
+      // update the tween to the end
+      while (!result) {
+        result = tween.update(++i*16);
+      }
+
+      spyOn(tween._props, 'onRefresh');
+      tween.update(startTime - 10);
+      expect(tween._props.onRefresh).toHaveBeenCalledWith(true);
+    });
 
   });
 

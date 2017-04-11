@@ -3,14 +3,27 @@ import defaults from './tween-defaults';
 import TweenPlanner from './planner';
 import tweener from './tweener';
 
+/**
+ * TODO:
+ *  - cover `_vars`
+ *  - add `onProgress` callback
+ *  - make new `playBackward` function
+ *  - make new `replayBackward` function
+ *  - add `reverse` function
+ *  - add `p`, `isForward` and `isYoyo` parameters for `onUpdate`
+ *  - add `p` and `isForward` parameter for `onProgress`
+ *  - if jump - the `onUpdate` should be called just once
+ *  - make `setSpeed` work
+ */
+
 export default class Tween extends ClassProto {
-
-
   /**
    * constructor - needed to get to bounded `_envokeCallBacks`
    *               and `_envokeCallBacksRev` functions.
    *
    * @param  {Object} Options.
+   *
+   * @extends ClassProto.
    * @return {Object} This tween.
    */
   constructor(o) {
@@ -27,12 +40,14 @@ export default class Tween extends ClassProto {
    *                    In this case defaults are the `tween defaults`
    *                    since we will plan for tween.
    * @private
+   * @extends ClassProto.
    */
   _declareDefaults() { return this._defaults = defaults; }
 
   /**
    * _vars - function do declare `variables` after `_defaults` were extended
    *         by `options` and saved to `_props`
+   * @extends ClassProto.
    */
   _vars() {
     this._planner = new TweenPlanner(this._o);
@@ -82,9 +97,6 @@ export default class Tween extends ClassProto {
      * TODO: cover
      */
     this._prevState = 'stop';
-
-    this._cb = this._envokeCallBacks;
-    // this._callbacksRev = this._envokeCallBacksRev;
   }
 
   /**
@@ -211,6 +223,7 @@ export default class Tween extends ClassProto {
    * _envokeCallBacks - function to envoke callbacks regarding frame snapshot.
    *
    * @private
+   * @bound
    * @param {Number} Frame snapshot.
    */
   _envokeCallBacks = (snapshot) => {
@@ -230,6 +243,7 @@ export default class Tween extends ClassProto {
    *                        in reverse direction.
    *
    * @private
+   * @bound
    * @param {Number} Frame snapshot.
    */
   _envokeCallBacksRev = (snapshot) => {
@@ -255,7 +269,8 @@ export default class Tween extends ClassProto {
   update(time) {
     // if forward direction
     if (time > this._prevTime) {
-
+      // if update time jumped after end time, make sure that
+      // all appropriate callbacks called
       if (time > (this._startTime + this._totalTime - this._props.delay)) {
         // if jumped over the end time of the tween - make continious updates
         // and envoke callbacks until the end time is reached
@@ -270,6 +285,7 @@ export default class Tween extends ClassProto {
         return true;
       }
 
+      // normal update in forward direction
       if (time >= this._startTime) {
         while (this._frameIndex*16 < time - this._startTime) {
           this._frameIndex++;
@@ -281,7 +297,14 @@ export default class Tween extends ClassProto {
 
     // if backward direction
     } else if (time < this._prevTime) {
+      // if update time jumped before start time, make sure that
+      // all appropriate callbacks called
       if (time < this._startTime) {
+        // if tween ended and suddenly updated with the time that os smaller
+        // than `_startTime` - need to fire the `onRefresh`
+        if (this._prevTime === +Infinity) {
+          this._props.onRefresh(this._props.isReverse);
+        }
         // if jumped over the start time of the tween - make continious updates
         // and envoke callbacks until the start time is reached
         while (this._frameIndex > 0) {
@@ -295,6 +318,7 @@ export default class Tween extends ClassProto {
         return true;
       }
 
+      // normal update in backward direction
       if (time <= this._startTime + this._totalTime) {
         while (this._frameIndex*16 > time - this._startTime) {
           this._frameIndex--;
@@ -392,10 +416,10 @@ export default class Tween extends ClassProto {
 
     switch (this._prevState) {
       case 'play':
-        this.play( shift );
+        this.play(shift);
         break;
       case 'playbackward':
-        this.playBackward( shift );
+        this.playBackward(shift);
         break;
     }
 
