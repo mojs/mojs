@@ -3,9 +3,25 @@ import defaults from './tween-defaults';
 import TweenPlanner from './planner';
 import tweener from './tweener';
 
-let i = 0;
-
 export default class Tween extends ClassProto {
+
+
+  /**
+   * constructor - needed to get to bounded `_envokeCallBacks`
+   *               and `_envokeCallBacksRev` functions.
+   *
+   * @param  {Object} Options.
+   * @return {Object} This tween.
+   */
+  constructor(o) {
+    super(o);
+
+    const { isReverse } = this._props;
+    // `shorthand` to `_envokeCallBacks`
+    this._cb = (!isReverse) ? this._envokeCallBacks : this._envokeCallBacksRev;
+    // `shorthand` to `_envokeCallBacksRev`
+    this._cbr = (isReverse) ? this._envokeCallBacks : this._envokeCallBacksRev;
+  }
   /**
    * _declareDefaults - function to declare module defaults.
    *                    In this case defaults are the `tween defaults`
@@ -66,6 +82,9 @@ export default class Tween extends ClassProto {
      * TODO: cover
      */
     this._prevState = 'stop';
+
+    this._cb = this._envokeCallBacks;
+    // this._callbacksRev = this._envokeCallBacksRev;
   }
 
   /**
@@ -75,20 +94,28 @@ export default class Tween extends ClassProto {
    * @param {Number} Time to set.
    */
   _setStartTime(time) {
+    const { shiftTime, isReverse } = this._props;
+    let { delay } = this._props;
+
     if (time === undefined) { time = performance.now(); }
-
-    const { delay, shiftTime } = this._props;
-
-    // calculate bounds
+    // set starting point for tween animation
+    this._startPoint = time;
+    // for reverse tweens the start time should not be delayed since tween can't
+    // have delay at the end:
+    // |---=====|---=====|---=====|  <<< backward
+    //                            ^
+    delay = (isReverse) ? 0 : delay;
+    // start time of the tween is `startPoint` + `delay`
+    this._startTime = this._startPoint + delay;
+    // add shifts to the start time
     // - negativeShift is negative delay in options hash
     // - shift time is shift of the parent
-    this._startTime = time + this._negativeShift + delay + shiftTime;
+    this._startTime += this._negativeShift + shiftTime;
     // set play time to the startTimes
     // if playback controls are used - use _resumeTime as play time,
     // else use shifted startTime -- shift is needed for timelines append chains
     this._playTime = (this._resumeTime !== undefined)
       ? this._resumeTime : time + shiftTime;
-
     // reset the resume time
     this._resumeTime = undefined;
   }
@@ -122,7 +149,6 @@ export default class Tween extends ClassProto {
       this._props.onPlaybackStop();
     }
   }
-
 
   /**
    * _subPlay - Method to launch play. Used as launch
@@ -176,7 +202,7 @@ export default class Tween extends ClassProto {
     if (this._prevTime > -Infinity) {
       const { _startTime, _elapsed, _totalTime } = this;
       this._prevTime = (state === 'play')
-        ? _startTime + _elapsed - this._props.delay
+        ? this._startPoint + _elapsed
         : (_startTime + _totalTime - this._props.delay) - this._elapsed;
     }
   }
@@ -187,16 +213,35 @@ export default class Tween extends ClassProto {
    * @private
    * @param {Number} Frame snapshot.
    */
-  _envokeCallBacks(snapshot) {
+  _envokeCallBacks = (snapshot) => {
     if (snapshot === 0) { return; };
     let mask = 1;
 
     const props = this._props;
-    (snapshot & (mask <<= 1)) && props.onStart();
-    (snapshot & (mask <<= 1)) && props.onRepeatStart();
-    (snapshot & (mask <<= 1)) && props.onUpdate();
-    (snapshot & (mask <<= 1)) && props.onRepeatComplete();
-    (snapshot & (mask <<= 1)) && props.onComplete();
+    (snapshot & (mask <<= 1)) && props.onStart(); // 2
+    (snapshot & (mask <<= 1)) && props.onRepeatStart(); // 4
+    (snapshot & (mask <<= 1)) && props.onUpdate(); // 8
+    (snapshot & (mask <<= 1)) && props.onRepeatComplete(); // 16
+    (snapshot & (mask <<= 1)) && props.onComplete(); // 32
+  }
+
+  /**
+   * _envokeCallBacksRev - function to envoke callbacks regarding frame snapshot
+   *                        in reverse direction.
+   *
+   * @private
+   * @param {Number} Frame snapshot.
+   */
+  _envokeCallBacksRev = (snapshot) => {
+    if (snapshot === 0) { return; };
+    let mask = 64;
+
+    const props = this._props;
+    (snapshot & (mask >>= 1)) && props.onComplete(); // 32
+    (snapshot & (mask >>= 1)) && props.onRepeatComplete(); // 16
+    (snapshot & (mask >>= 1)) && props.onUpdate(); // 8
+    (snapshot & (mask >>= 1)) && props.onRepeatStart(); // 4
+    (snapshot & (mask >>= 1)) && props.onStart(); // 2
   }
 
   /** PUBLIC FUNCTIONS **/
@@ -216,7 +261,7 @@ export default class Tween extends ClassProto {
         // and envoke callbacks until the end time is reached
         while (this._frameIndex < this._plan.length) {
           this._frameIndex++;
-          this._envokeCallBacks(this._plan[this._frameIndex]);
+          this._cb(this._plan[this._frameIndex]);
         }
         // reset flags because tween is ended
         this._prevTime = +Infinity;
@@ -228,7 +273,7 @@ export default class Tween extends ClassProto {
       if (time >= this._startTime) {
         while (this._frameIndex*16 < time - this._startTime) {
           this._frameIndex++;
-          this._envokeCallBacks(this._plan[this._frameIndex]);
+          this._cb(this._plan[this._frameIndex]);
           this._prevTime = time;
         }
 
@@ -236,13 +281,12 @@ export default class Tween extends ClassProto {
 
     // if backward direction
     } else if (time < this._prevTime) {
-
       if (time < this._startTime) {
         // if jumped over the start time of the tween - make continious updates
         // and envoke callbacks until the start time is reached
         while (this._frameIndex > 0) {
           this._frameIndex--;
-          this._envokeCallBacks(this._plan[this._frameIndex]);
+          this._cbr(this._plan[this._frameIndex]);
         }
         // reset flags because tween is ended
         this._prevTime = -Infinity;
@@ -254,7 +298,7 @@ export default class Tween extends ClassProto {
       if (time <= this._startTime + this._totalTime) {
         while (this._frameIndex*16 > time - this._startTime) {
           this._frameIndex--;
-          this._envokeCallBacks(this._plan[this._frameIndex]);
+          this._cbr(this._plan[this._frameIndex]);
           this._prevTime = time;
         }
       }
@@ -407,7 +451,6 @@ export default class Tween extends ClassProto {
    * @returns {Object} This tween.
    */
   setProgress(progress) {
-    var props = this._props;
     // set start time if there is no one yet.
     !this._startTime && this._setStartTime();
     // reset play time
@@ -430,6 +473,9 @@ export default class Tween extends ClassProto {
    * @returns {Object} This tween.
    */
   setSpeed(speed) {
+    /**
+     * TODO: recalculate `plan` if speed changes.
+     */
     this._props.speed = speed;
     // if playing - normalize _startTime and _prevTime to the current point.
     if (this._state === 'play' || this._state === 'playingBackward') {

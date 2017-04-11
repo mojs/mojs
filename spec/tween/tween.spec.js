@@ -9,7 +9,6 @@ var tweenDefaults = helpers.tweenDefaults;
 var eps = 0.0000001;
 
 describe('tween ->', function () {
-
   describe('extension', function() {
     it('should extend `ClassProto`', function () {
       var tween = new Tween;
@@ -28,20 +27,21 @@ describe('tween ->', function () {
       expect(tween._planner instanceof TweenPlanner).toBe(true);
       expect(tween._planner._o).toBe(tween._o);
     });
-  });
 
-  describe('_setStartTime function ->', function() {
-    it('should set start time ->', function () {
-      var tween = new Tween;
-      var startTime = 0;
-      tween._setStartTime(startTime);
-      expect(tween._startTime).toBe(startTime);
+    it('should set `_cb` and `_cbr` functions ->', function () {
+      var tween = new Tween({ duration: 2000 });
+      expect(tween._cb).toBe(tween._envokeCallBacks);
+      expect(tween._cbr).toBe(tween._envokeCallBacksRev);
     });
 
-    it('should set start time to performance.now() ->', function () {
-      var tween = new Tween;
-      tween._setStartTime();
-      expect(tween._startTime).toEqual(jasmine.any(Number));
+    it('should set `_cb` and `_cbr` functions #reverse ->', function () {
+      var tween = new Tween({
+        isIt: 1,
+        duration: 2000,
+        isReverse: true
+      });
+      expect(tween._cb).toBe(tween._envokeCallBacksRev);
+      expect(tween._cbr).toBe(tween._envokeCallBacks);
     });
   });
 
@@ -231,7 +231,6 @@ describe('tween ->', function () {
       var delay = 50;
 
       var options = {
-        isIt: 1,
         duration: duration,
         delay: delay,
         onStart: function() {},
@@ -770,7 +769,6 @@ describe('tween ->', function () {
       expect(tween.update(startTime + period + delay + duration + 10)).toBe(true);
     });
 
-
     it('should envoke callbacks #duration #delay #repeat #backward ->', function () {
       var duration = 100;
       var delay = 50;
@@ -931,6 +929,36 @@ describe('tween ->', function () {
       expect(tween.update(endTime - period - duration - 10)).toBe(true);
     });
 
+    describe('callback functions used ->', function () {
+      it('should call `_cb` on forward direction', function() {
+        var tween = new Tween();
+
+        tween._setStartTime();
+
+        var startTime = tween._startTime;
+
+        spyOn(tween, '_cb');
+        tween.update(startTime);
+        expect(tween._cb).toHaveBeenCalled();
+      });
+
+      it('should call `_cbr` on backward direction', function() {
+        var tween = new Tween();
+
+        tween._setStartTime();
+        var startTime = tween._startTime;
+
+        tween.update(startTime);
+        tween.update(startTime + 16);
+        tween.update(startTime + 32);
+
+        spyOn(tween, '_cbr');
+        tween.update(startTime + 16);
+
+        expect(tween._cbr).toHaveBeenCalled();
+      });
+    });
+
   });
 
   describe('_envokeCallBacks function ->', function() {
@@ -1052,6 +1080,126 @@ describe('tween ->', function () {
     });
   });
 
+
+  describe('_envokeCallBacksRev function ->', function() {
+    it('should envoke callbacks regarding snapshot ->', function () {
+      var options = {
+        duration: 50,
+        onStart: function() {},
+        onRepeatStart: function() {},
+        onUpdate: function() {},
+        onRepeatComplete: function() {},
+        onComplete: function() {}
+      };
+
+      var tween = new Tween(options);
+      var props = tween._props;
+
+      spyOn(props, 'onStart').and.callThrough();
+      spyOn(props, 'onRepeatStart').and.callThrough();
+      spyOn(props, 'onUpdate').and.callThrough();
+      spyOn(props, 'onRepeatComplete').and.callThrough();
+      spyOn(props, 'onComplete').and.callThrough();
+
+      tween._envokeCallBacksRev(0);
+      tween._envokeCallBacksRev(0);
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(0);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(1);
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(0);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(1 << 1);
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(0);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(1 << 1 | 1 << 2);
+
+      expect(props.onStart.calls.count()).toBe(2);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(0);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(1 << 2);
+
+      expect(props.onStart.calls.count()).toBe(2);
+      expect(props.onRepeatStart.calls.count()).toBe(2);
+      expect(props.onUpdate.calls.count()).toBe(0);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(1 << 3);
+
+      expect(props.onStart.calls.count()).toBe(2);
+      expect(props.onRepeatStart.calls.count()).toBe(2);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(1 << 3 | 1 << 4);
+
+      expect(props.onStart.calls.count()).toBe(2);
+      expect(props.onRepeatStart.calls.count()).toBe(2);
+      expect(props.onUpdate.calls.count()).toBe(2);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(1 << 3 | 1 << 4 | 1 << 2);
+
+      expect(props.onStart.calls.count()).toBe(2);
+      expect(props.onRepeatStart.calls.count()).toBe(3);
+      expect(props.onUpdate.calls.count()).toBe(3);
+      expect(props.onRepeatComplete.calls.count()).toBe(2);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(1 << 3 | 1 << 4 | 1 << 2 | 1 << 5);
+
+      expect(props.onStart.calls.count()).toBe(2);
+      expect(props.onRepeatStart.calls.count()).toBe(4);
+      expect(props.onUpdate.calls.count()).toBe(4);
+      expect(props.onRepeatComplete.calls.count()).toBe(3);
+      expect(props.onComplete.calls.count()).toBe(1);
+
+      tween._envokeCallBacksRev(1 << 5);
+
+      expect(props.onStart.calls.count()).toBe(2);
+      expect(props.onRepeatStart.calls.count()).toBe(4);
+      expect(props.onUpdate.calls.count()).toBe(4);
+      expect(props.onRepeatComplete.calls.count()).toBe(3);
+      expect(props.onComplete.calls.count()).toBe(2);
+
+      tween._envokeCallBacksRev(1 << 4 | 1 << 5);
+
+      expect(props.onStart.calls.count()).toBe(2);
+      expect(props.onRepeatStart.calls.count()).toBe(4);
+      expect(props.onUpdate.calls.count()).toBe(4);
+      expect(props.onRepeatComplete.calls.count()).toBe(4);
+      expect(props.onComplete.calls.count()).toBe(3);
+
+      tween._envokeCallBacksRev(1 << 3);
+
+      expect(props.onStart.calls.count()).toBe(2);
+      expect(props.onRepeatStart.calls.count()).toBe(4);
+      expect(props.onUpdate.calls.count()).toBe(5);
+      expect(props.onRepeatComplete.calls.count()).toBe(4);
+      expect(props.onComplete.calls.count()).toBe(3);
+    });
+  });
+
   describe('_setPlaybackState function ->', function() {
     it('should set playback state', function() {
       var tween = new Tween;
@@ -1118,14 +1266,61 @@ describe('tween ->', function () {
         var expectedTime = performance.now() + delay;
         expect(tween._startTime).toBeGreaterThan(expectedTime - delay/10);
         expect(tween._startTime).not.toBeGreaterThan(expectedTime);
+        expect(tween._startPoint).toBeCloseTo(tween._startTime - delay, 2);
       });
       it('should receive the start time', function() {
         var tween = new Tween({
           duration: 1000
         });
         tween._setStartTime(1);
-        return expect(tween._startTime).toBe(1);
+        expect(tween._startTime).toBe(1);
+        expect(tween._startPoint).toBe(tween._startTime);
       });
+
+      it('should set start time ->', function () {
+        var tween = new Tween;
+        var startTime = 0;
+        tween._setStartTime(startTime);
+        expect(tween._startTime).toBe(startTime);
+        expect(tween._startPoint).toBe(startTime);
+      });
+
+      it('should set start time #delay ->', function () {
+        var delay = 200;
+        var tween = new Tween({ delay: delay });
+        var startTime = 0;
+        tween._setStartTime(startTime);
+        expect(tween._startTime).toBe(startTime + delay);
+        expect(tween._startPoint).toBe(startTime);
+      });
+
+      it('should set start time #reverse ->', function () {
+        var tween = new Tween({ isReverse: true });
+        var startTime = 0;
+        tween._setStartTime(startTime);
+        expect(tween._startTime).toBe(startTime);
+        expect(tween._startPoint).toBe(startTime);
+      });
+
+      it('should set start time #reverse #delay ->', function () {
+        var delay = 200;
+        var tween = new Tween({
+          isReverse: true,
+          delay: delay
+        });
+        var startTime = 0;
+        tween._setStartTime(startTime);
+        expect(tween._startTime).toBe(startTime);
+        expect(tween._startPoint).toBe(startTime);
+      });
+
+      it('should set start time to performance.now() ->', function () {
+        var tween = new Tween;
+        tween._setStartTime();
+        expect(tween._startTime).toEqual(jasmine.any(Number));
+        expect(tween._startPoint).toEqual(tween._startTime);
+      });
+
       //
       // commented out because not using `endTime` at the moment
       // it('should calculate end time', function() {
@@ -1167,8 +1362,7 @@ describe('tween ->', function () {
       //   time = t._props.startTime + (3 * (duration + delay)) - delay;
       //   return expect(t._props.endTime).toBe(time);
       // });
-      //
-      // commented out because not using `endTime` at the moment
+
       it('should calculate startTime if shifted', function() {
         var duration = 1000;
         var delay = 500;
@@ -1183,6 +1377,9 @@ describe('tween ->', function () {
         expectedTime = performance.now() + shiftTime + delay;
         expect(tween._startTime).toBeGreaterThan(expectedTime - 50);
         expect(tween._startTime).not.toBeGreaterThan(expectedTime);
+        expect(tween._startPoint).toBeCloseTo(tween._startTime - 2*delay, 2);
+        //
+        // commented out because not using _endTime at the moment
         // endTime = tween._startTime + (3 * (duration + delay)) - delay;
         // expect(tween._props.endTime).toBe(endTime);
       });

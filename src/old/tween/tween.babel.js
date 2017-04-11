@@ -28,7 +28,7 @@ class Tween extends ClassProto {
       /*  flip onUpdate's progress on each even period.
           note that callbacks order won't flip at least
           for now (under consideration). */
-      isYoyo:                   false,
+      isYoyo:                 false,
       /* easing for the tween, could be any easing type [link to easing-types.md] */
       easing:                 'Sin.Out',
       /*

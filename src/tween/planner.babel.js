@@ -71,14 +71,12 @@ export default class Planner extends ClassProto {
     // current time
     let time = this._props.delay;
 
-    // this._o.isIt && console.log(this._totalTime);
     while (time <= this._totalTime) {
       const prevPeriod = this._getPeriod(time - step);
       const period = this._getPeriod(time);
       const nextPeriod = this._getPeriod(time + step);
       const prevFrame = this._plan[this._plan.length-1];
 
-      // this._o.isIt && console.log(`time: ${time}, prevPeriod: ${prevPeriod}, period: ${period}, nextPeriod: ${nextPeriod}`);
       let frameSnapshot = 0;
 
       if (period === 'delay') {
@@ -108,8 +106,6 @@ export default class Planner extends ClassProto {
         frameSnapshot = frameSnapshot | (1 << 4);
       }
 
-      // this._o.isIt && console.log(`frameSnapshot: ${frameSnapshot}`);
-
       this._plan.push(frameSnapshot);
 
       time += step;
@@ -118,6 +114,9 @@ export default class Planner extends ClassProto {
     // onComplete
     const lastIndex = this._plan.length - 1;
     this._plan[lastIndex] = this._plan[lastIndex] | (1 << 5);
+    if (this._props.isReverse) {
+      this._plan.reverse();
+    }
 
     return this._plan;
   }

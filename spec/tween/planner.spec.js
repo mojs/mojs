@@ -73,51 +73,105 @@ describe('tween planner ->', function() {
       expect(planner._calcTotalTime).toHaveBeenCalled();
     });
 
-    it('should create a plan #duration', function () {
-      var planner = new TweenPlanner({
-        duration: 200
-      });
-      planner.createPlan();
+    describe('plan creaton ->', function() {
+      it('should create a plan #duration', function () {
+        var planner = new TweenPlanner({
+          duration: 200
+        });
+        planner.createPlan();
 
-      expect(planner._plan)
-        .toEqual([ 14, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 56 ]);
+        expect(planner._plan)
+          .toEqual([ 14, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 56 ]);
+      });
+
+      it('should create a plan #delay #duration', function () {
+        var planner = new TweenPlanner({
+          duration: 200,
+          delay: 50
+        });
+        planner.createPlan();
+
+        expect(planner._plan)
+          .toEqual([ 14, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 56 ]);
+      });
+
+      it('should create a plan #delay #duration #repeat', function () {
+        var planner = new TweenPlanner({
+          duration: 100,
+          delay: 50,
+          repeat: 2,
+          isIt: 1
+        });
+        planner.createPlan();
+
+        expect(planner._plan)
+          .toEqual([ 14, 8, 8, 8, 8, 8, 24, 0, 0, 0, 12, 8, 8, 8, 8, 24, 0, 0, 0, 12, 8, 8, 8, 8, 8, 56 ]);
+      });
+
+      it('should create a plan #delay #duration #repeat #speed #fast', function () {
+        var planner = new TweenPlanner({
+          repeat: 2,
+          duration: 100,
+          delay: 50,
+          speed: 2
+        });
+        planner.createPlan();
+
+        expect(planner._plan)
+          .toEqual([ 14, 8, 8, 24, 0, 12, 8, 24, 0, 0, 12, 8, 56 ]);
+      });
     });
 
-    it('should create a plan #delay #duration', function () {
-      var planner = new TweenPlanner({
-        duration: 200,
-        delay: 50
+    describe('plan creaton #backward ->', function() {
+      it('should create a plan #duration', function () {
+        var planner = new TweenPlanner({
+          duration: 200,
+          isReverse: true
+        });
+        planner.createPlan();
+
+        expect(planner._plan)
+          .toEqual([ 56, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 14 ]);
       });
-      planner.createPlan();
 
-      expect(planner._plan)
-        .toEqual([ 14, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 56 ]);
-    });
+      it('should create a plan #delay #duration', function () {
+        var planner = new TweenPlanner({
+          duration: 200,
+          delay: 50,
+          isReverse: true
+        });
+        planner.createPlan();
 
-    it('should create a plan #delay #duration #repeat', function () {
-      var planner = new TweenPlanner({
-        duration: 100,
-        delay: 50,
-        repeat: 2,
-        isIt: 1
+        expect(planner._plan)
+          .toEqual([ 56, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 14 ]);
       });
-      planner.createPlan();
 
-      expect(planner._plan)
-        .toEqual([ 14, 8, 8, 8, 8, 8, 24, 0, 0, 0, 12, 8, 8, 8, 8, 24, 0, 0, 0, 12, 8, 8, 8, 8, 8, 56 ]);
-    });
+      it('should create a plan #delay #duration #repeat', function () {
+        var planner = new TweenPlanner({
+          duration: 100,
+          delay: 50,
+          repeat: 2,
+          isReverse: true
+        });
+        planner.createPlan();
 
-    it('should create a plan #delay #duration #repeat #speed #fast', function () {
-      var planner = new TweenPlanner({
-        repeat: 2,
-        duration: 100,
-        delay: 50,
-        speed: 2
+        expect(planner._plan)
+          .toEqual([ 56, 8, 8, 8, 8, 8, 12, 0, 0, 0, 24, 8, 8, 8, 8, 12, 0, 0, 0, 24, 8, 8, 8, 8, 8, 14 ]);
       });
-      planner.createPlan();
 
-      expect(planner._plan)
-        .toEqual([ 14, 8, 8, 24, 0, 12, 8, 24, 0, 0, 12, 8, 56 ]);
+      it('should create a plan #delay #duration #repeat #speed #fast', function () {
+        var planner = new TweenPlanner({
+          repeat: 2,
+          duration: 100,
+          delay: 50,
+          speed: 2,
+          isReverse: true
+        });
+        planner.createPlan();
+
+        expect(planner._plan)
+          .toEqual([ 56, 8, 12, 0, 0, 24, 8, 12, 0, 24, 8, 8, 14 ]);
+      });
     });
 
   });

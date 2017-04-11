@@ -23,12 +23,8 @@ export default {
     forward direction in `yoyo` period is treated as backward for the easing.
   */
   backwardEasing:         null,
-  /* custom tween's name */
-  name:                   null,
-  /* shift time on a timeline */
-  shiftTime:              0,
-  /* custom tween's base name */
-  nameBase:               'Tween',
+  // if should reverse the tween
+  isReverse:              false,
   /*
     onProgress callback runs before any other callback.
     @param {Number}   The entire, not eased, progress
@@ -52,16 +48,17 @@ export default {
   onRepeatComplete:       function() {},
   onFirstUpdate:          function() {},
   onUpdate:               function() {},
-  isChained:              false,
   // playback callbacks, these fire only when
   // `play`, `replay`, `playBackward`, `replayBackward` were called
   onPlaybackStart:        function() {},
   onPlaybackPause:        function() {},
   onPlaybackStop:         function() {},
   onPlaybackComplete:     function() {},
-  // context which all callbacks will be called with
-  callbacksContext:       null,
-  // callback for `setting` start time event
-  onSetStartTime:         function () {},
-  onInternalUpdate:       function () {}
+  /* custom tween's name */
+  name:                   null,
+  /* shift time on a timeline */
+  shiftTime:              0,
+  /* custom tween's base name */
+  nameBase:               'Tween',
+  isChained:              false
 };
