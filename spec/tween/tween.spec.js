@@ -11,14 +11,14 @@ var eps = 0.0000001;
 describe('tween ->', function () {
   describe('extension', function() {
     it('should extend `ClassProto`', function () {
-      var tween = new Tween;
+      var tween = new Tween();
       expect(tween instanceof ClassProto).toBe(true);
     });
   });
 
   describe('initialization ->', function() {
     it('should have `defaults` of `tween` ->', function () {
-      var tween = new Tween;
+      var tween = new Tween();
       expect(tween._defaults).toEqual(tweenDefaults);
     });
 
@@ -1249,13 +1249,13 @@ describe('tween ->', function () {
 
   describe('_setPlaybackState function ->', function() {
     it('should set playback state', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       tween._setPlaybackState('play');
       expect(tween._state).toBe('play');
       expect(tween._prevState).toBe('stop');
     });
     it('should track previous playback state', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       tween._setPlaybackState('play');
       tween._setPlaybackState('pause');
       expect(tween._prevState).toBe('play');
@@ -1265,7 +1265,7 @@ describe('tween ->', function () {
 
   describe('_setResumeTime function ->', function() {
     it('should call _setStartTime method', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       spyOn(tween, '_setStartTime');
       var shift = 20;
       tween._setResumeTime('play', shift);
@@ -1273,7 +1273,7 @@ describe('tween ->', function () {
       expect(tween._setStartTime).toHaveBeenCalledWith(time, false);
     });
     it('should have default of 0 shift', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       spyOn(tween, '_setStartTime');
       tween._setResumeTime('play');
       var time = tween._resumeTime - Math.abs(0) - tween._elapsed;
@@ -1282,18 +1282,18 @@ describe('tween ->', function () {
 
     describe('_prevTime normalization ->', function() {
       it('should not set _prevTime if it is undefined', function() {
-        var tween = new Tween;
+        var tween = new Tween();
         tween._setResumeTime('play');
         expect(tween._prevTime).toBe(-Infinity);
       });
       it('should set prevTime to (`startTime` + `elapsed` + `delay`) if `play`', function() {
-        var tween = new Tween;
+        var tween = new Tween();
         tween._prevTime = 200;
         tween._setResumeTime('play');
         expect(tween._prevTime).toBe(tween._startTime + tween._elapsed - tween._props.delay);
       });
       it('should set prevTime to (`startTime` + `elapsed` + `delay`) if `playBackward`', function() {
-        var tween = new Tween;
+        var tween = new Tween();
         tween._prevTime = 200;
         tween._setResumeTime('playBackward');
         var endTime = tween._startTime + tween._totalTime - tween._props.delay;
@@ -1325,7 +1325,7 @@ describe('tween ->', function () {
       });
 
       it('should set start time ->', function () {
-        var tween = new Tween;
+        var tween = new Tween();
         var startTime = 0;
         tween._setStartTime(startTime);
         expect(tween._startTime).toBe(startTime);
@@ -1362,7 +1362,7 @@ describe('tween ->', function () {
       });
 
       it('should set start time to performance.now() ->', function () {
-        var tween = new Tween;
+        var tween = new Tween();
         tween._setStartTime();
         expect(tween._startTime).toEqual(jasmine.any(Number));
         expect(tween._startPoint).toEqual(tween._startTime);
@@ -1485,7 +1485,7 @@ describe('tween ->', function () {
         expect(tween._playTime).toBe(now);
       });
       it('should set _playTime to _resumeTime if present', function() {
-        var tween = new Tween;
+        var tween = new Tween();
         var resumeTime = 3200;
         tween._resumeTime = resumeTime;
         tween._setStartTime();
@@ -1547,42 +1547,42 @@ describe('tween ->', function () {
 
   describe('play function ->', function() {
     it('should get the start time', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       tween.play();
       expect(tween._startTime).toBeDefined();
     });
     it('should set _state to "play"', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       tween.play();
       return expect(tween._state).toBe('play');
     });
     it('should reset _elpased to 0 if tween ended', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       tween._setStartTime();
       var time = tween._startTime;
       tween.setProgress(1).play();
       expect(Math.abs(time - tween._startTime)).not.toBeGreaterThan(5);
     });
     it('should reset isReversed to false', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       tween._isReversed = true;
       tween.play();
       expect(tween._isReversed).toBe(false);
     });
     it('should call the setStartTime method', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       spyOn(tween, '_setStartTime');
       tween.play();
       expect(tween._setStartTime).toHaveBeenCalled();
     });
     it('should add itself to tweener', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       spyOn(tweener, 'add');
       tween.play();
       return expect(tweener.add).toHaveBeenCalledWith(tween);
     });
     it('should receive progress time', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       tween._setStartTime();
       var time = tween._startTime;
       var shift = 200;
@@ -1591,7 +1591,7 @@ describe('tween ->', function () {
       expect(startTime - tween._startTime).not.toBeGreaterThan(5);
     });
     it('should treat negative progress time as positive', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       tween._setStartTime();
       var time = tween._startTime;
       var shift = -200;
@@ -1663,7 +1663,7 @@ describe('tween ->', function () {
       expect(tweener.remove).toHaveBeenCalledWith(tween);
     });
     it('should set _state to "pause"', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       tween
         .play()
         .pause();
@@ -1671,7 +1671,7 @@ describe('tween ->', function () {
       expect(tween._state).toBe('pause');
     });
     it('should `remove` immediately if paused', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       tween
         .play()
         .pause();
@@ -1685,17 +1685,17 @@ describe('tween ->', function () {
 
   describe('playBackward function ->', function() {
     it('should set _state to "playBlackward"', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       tween.playBackward();
       return expect(tween._state).toBe('playBackward');
     });
     it('should return `this`', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       var obj = tween.playBackward(200);
       return expect(obj).toBe(tween);
     });
     it('should overwrite play state', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       tween.playBackward(200);
       expect(tween._prevState).toBe('stop');
       return expect(tween._state).toBe('playBackward');
@@ -1855,7 +1855,7 @@ describe('tween ->', function () {
 
   describe('setProgress function ->', function() {
     it('should call _setStartTime if there is no this._startTime', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       spyOn(tween, '_setStartTime');
       tween.setProgress(.5);
       expect(tween._setStartTime).toHaveBeenCalled();
@@ -1900,7 +1900,7 @@ describe('tween ->', function () {
       expect(tween._playTime).not.toBeDefined();
     });
     it('should return `this`', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       var result = tween.setProgress(.5);
       expect(result).toBe(tween);
     });
@@ -1939,7 +1939,7 @@ describe('tween ->', function () {
 
   describe('replay method ->', function() {
     it('should call reset and play methods', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       spyOn(tween, 'reset').and.callThrough();
       spyOn(tween, 'play').and.callThrough();
       tween.replay(200);
@@ -1947,12 +1947,12 @@ describe('tween ->', function () {
       expect(tween.play).toHaveBeenCalledWith(200);
     });
     it('should return this', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       var result = tween.replay(200);
       expect(result).toBe(tween);
     });
     return it('should fallback to 0 shift', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       spyOn(tween, 'play').and.callThrough();
       tween.replay();
       return expect(tween.play).toHaveBeenCalledWith(0);
@@ -1961,7 +1961,7 @@ describe('tween ->', function () {
 
   describe('replayBackward method ->', function() {
     it('should call reset and playBackward methods', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       spyOn(tween, 'reset').and.callThrough();
       spyOn(tween, 'playBackward').and.callThrough();
       tween.replayBackward(200);
@@ -1969,12 +1969,12 @@ describe('tween ->', function () {
       expect(tween.playBackward).toHaveBeenCalledWith(200);
     });
     it('should return this', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       var result = tween.replayBackward(200);
       expect(result).toBe(tween);
     });
     return it('should fallback to 0 shift', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       spyOn(tween, 'playBackward').and.callThrough();
       tween.replayBackward();
       expect(tween.playBackward).toHaveBeenCalledWith(0);
@@ -1983,17 +1983,17 @@ describe('tween ->', function () {
 
   describe('setSpeed method ->', function() {
     it('should return this', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       expect(tween.setSpeed(.5)).toBe(tween);
     });
     it('should set speed', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       var speed = 3.2;
       tween.setSpeed(speed);
       expect(tween._props.speed).toBe(speed);
     });
     it('should call _setResume time if playing', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       var speed = 3.2;
       tween._setPlaybackState('play');
       spyOn(tween, '_setResumeTime');
@@ -2001,7 +2001,7 @@ describe('tween ->', function () {
       return expect(tween._setResumeTime).toHaveBeenCalledWith('play');
     });
     it('should call _setResume time if playingBackward', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       var speed = 3.2;
       tween._setPlaybackState('playingBackward');
       spyOn(tween, '_setResumeTime');
@@ -2009,7 +2009,7 @@ describe('tween ->', function () {
       expect(tween._setResumeTime).toHaveBeenCalledWith('playingBackward');
     });
     it('should not call _setResume time if stopped', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       var speed = 3.2;
       spyOn(tween, '_setResumeTime');
       tween.setSpeed(speed);
@@ -2017,12 +2017,66 @@ describe('tween ->', function () {
         .not.toHaveBeenCalledWith('stop');
     });
     it('should not call _setResume time if paused', function() {
-      var tween = new Tween;
+      var tween = new Tween();
       var speed = 3.2;
       spyOn(tween, '_setResumeTime');
       tween.setSpeed(speed);
       expect(tween._setResumeTime)
         .not.toHaveBeenCalledWith('pause');
+    });
+  });
+
+
+  describe('reverse function ->', function() {
+    it('should reverse plan', function() {
+      var tween = new Tween();
+
+      spyOn(tween._planner, 'reverse');
+      tween.reverse();
+      expect(tween._planner.reverse).toHaveBeenCalled();
+    });
+
+    it('should update plan', function() {
+      var tween = new Tween();
+
+      tween.reverse();
+      expect(tween._plan).toEqual(tween._planner._plan);
+    });
+
+    it('should update `_frameIndex`', function() {
+      var tween = new Tween();
+
+      tween._setStartTime();
+      var startTime = tween._startTime;
+      tween.update(startTime);
+      tween.update(startTime + 16);
+      tween.update(startTime + 32);
+      tween.update(startTime + 48);
+
+      var frameIndex = tween._frameIndex;
+      tween.reverse();
+      expect(tween._frameIndex).toEqual(tween._plan.length-1 - frameIndex);
+    });
+
+    it('should update `_props.isReverse`', function() {
+      var tween = new Tween();
+      tween.reverse();
+      expect(tween._props.isReverse).toEqual(true);
+    });
+
+    it('should update `_props.isReverse` #reverse', function() {
+      var tween = new Tween({
+        isReverse: true
+      });
+      tween.reverse();
+      expect(tween._props.isReverse).toEqual(false);
+    });
+
+    it('should return `this`', function() {
+      var tween = new Tween();
+
+      var result = tween.reverse();
+      expect(result).toBe(tween);
     });
   });
 

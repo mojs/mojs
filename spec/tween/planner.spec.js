@@ -24,9 +24,9 @@ describe('tween planner ->', function() {
       expect(planner._defaults).toEqual(tweenDefaults);
     });
 
-    it('should create plan array ->', function () {
+    it('should call `createPlan` ->', function () {
       var planner = new TweenPlanner;
-      expect(planner._plan).toEqual([]);
+      expect(planner._plan).toEqual([ 14, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 56 ]);
     });
 
     it('should normalize `delay` and `duration regarding `speed` #slow ->', function () {
@@ -381,5 +381,41 @@ describe('tween planner ->', function() {
     });
   });
 
+  describe('reverse function ->', function () {
+    it('should reverse plan', function() {
+      var planner = new TweenPlanner({
+        repeat: 2,
+        duration: 100,
+        delay: 50,
+        speed: 2
+      });
+
+      expect(planner._plan)
+        .toEqual([ 14, 8, 8, 24, 0, 12, 8, 24, 0, 0, 12, 8, 56 ]);
+
+      var result = planner.reverse();
+
+      expect(planner._plan)
+        .toEqual([ 56, 8, 12, 0, 0, 24, 8, 12, 0, 24, 8, 8, 14 ]);
+
+      expect(result).toBe(planner);
+
+    });
+  });
+
+  describe('getPlan function ->', function () {
+    it('should return plan', function() {
+      var planner = new TweenPlanner({
+        repeat: 2,
+        duration: 100,
+        delay: 50,
+        speed: 2
+      });
+
+      expect(planner.getPlan())
+        .toEqual(planner._plan);
+
+    });
+  });
 
 });

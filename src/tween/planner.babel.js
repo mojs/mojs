@@ -50,9 +50,10 @@ export default class Planner extends ClassProto {
    */
   _vars() {
     this._plan = [];
-
     // get total duration time
     this._calcTotalTime();
+    // create plan
+    this.createPlan();
   }
 
   /**
@@ -115,7 +116,7 @@ export default class Planner extends ClassProto {
     const lastIndex = this._plan.length - 1;
     this._plan[lastIndex] = this._plan[lastIndex] | (1 << 5);
     if (this._props.isReverse) {
-      this._plan.reverse();
+      this.reverse();
     }
 
     return this._plan;
@@ -170,6 +171,26 @@ export default class Planner extends ClassProto {
     }
     // if the end of period and there is a delay
     return period;
+  }
+
+  /**
+   * reverse - function to reverse the plan.
+   *
+   * @return {Object} This planner.
+   */
+  reverse() {
+    this._plan.reverse();
+
+    return this;
+  }
+
+  /**
+   * getPlan - function to get plan.
+   *
+   * @return {Object} Plan.
+   */
+  getPlan() {
+    return this._plan;
   }
 
 }

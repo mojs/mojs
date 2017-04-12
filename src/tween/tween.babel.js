@@ -5,15 +5,15 @@ import tweener from './tweener';
 
 /**
  * TODO:
- *  - cover `_vars`
  *  - add `onProgress` callback
  *  - make new `playBackward` function
  *  - make new `replayBackward` function
- *  - add `reverse` function
  *  - add `p`, `isForward` and `isYoyo` parameters for `onUpdate`
  *  - add `p` and `isForward` parameter for `onProgress`
  *  - if jump - the `onUpdate` should be called just once
  *  - make `setSpeed` work
+ *  - get rid of `_elapsed`
+ *  - cover `_vars`
  */
 
 export default class Tween extends ClassProto {
@@ -51,11 +51,7 @@ export default class Tween extends ClassProto {
    */
   _vars() {
     this._planner = new TweenPlanner(this._o);
-
-    /**
-     * TODO: cover
-     */
-    this._plan = this._planner.createPlan();
+    this._plan = this._planner.getPlan();
 
     /**
      * TODO: cover
@@ -151,7 +147,7 @@ export default class Tween extends ClassProto {
     const wasPlaying = wasPlay || wasReverse;
     const wasStill = wasStop || wasPause;
 
-    if ((state === 'play' || state === 'playBackward') && wasStill ) {
+    if ((state === 'play' || state === 'playBackward') && wasStill) {
       this._props.onPlaybackStart();
     }
     if (state === 'pause' && wasPlaying) {
@@ -181,7 +177,7 @@ export default class Tween extends ClassProto {
     const isPlayBackward = _state === 'playBackward';
     const isPrevPlayBackward = _prevState === 'playBackward';
     const wasPlay = (isPlay || ( isPause && _prevState === 'play'));
-    const wasReverse = (isPlayBackward || ( isPause && isPrevPlayBackward));
+    const wasReverse = (isPlayBackward || (isPause && isPrevPlayBackward));
     const isFlip = (wasPlay && state === 'playBackward') ||
                    (wasReverse && state === 'play');
     // if tween was ended, set progress to 0 if not, set to elapsed progress
@@ -355,7 +351,7 @@ export default class Tween extends ClassProto {
    */
   playBackward(shift = 0) {
     if (this._state === 'playBackward' && this._isRunning) { return this; }
-    this._props.isReversed = true;
+    this._isReversed = true;
     this._subPlay(shift, 'playBackward');
     this._setPlaybackState('playBackward');
 
@@ -436,7 +432,7 @@ export default class Tween extends ClassProto {
   stop(progress) {
     if ( this._state === 'stop' ) { return this; }
 
-    this._elapsed  = 0;
+    this._elapsed = 0;
     const stopProc = (progress != null) ? progress
       /* if no progress passsed - set 1 if tween
          is playingBackward, otherwise set to 0 */
@@ -459,10 +455,6 @@ export default class Tween extends ClassProto {
     this._setPlaybackState('stop');
     this._elapsed = 0;
     this._frameIndex = -1;
-    // this._isCompleted      = false;
-    // this._isStarted        = false;
-    // this._isFirstUpdate    = false;
-    // this._props.isReversed = false;
 
     return this;
   }
@@ -518,6 +510,25 @@ export default class Tween extends ClassProto {
   onTweenerFinish() {
     this._setPlaybackState('stop');
     this._props.onPlaybackComplete();
+
+    return this;
+  }
+
+
+  /**
+   * reverse - function to reverse the tween.
+   *
+   * @return {Obejct} This tween.
+   */
+  reverse() {
+    this._planner.reverse();
+
+    // reverse the `_frameIndex` to stay on the same index in `_plan`
+    if (this._frameIndex !== -1 && this._frameIndex !== this._plan.length) {
+      this._frameIndex = this._plan.length-1 - this._frameIndex;
+    }
+
+    this._props.isReverse = !this._props.isReverse;
 
     return this;
   }
