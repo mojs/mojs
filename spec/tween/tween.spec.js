@@ -36,7 +36,6 @@ describe('tween ->', function () {
 
     it('should set `_cb` and `_cbr` functions #reverse ->', function () {
       var tween = new Tween({
-        isIt: 1,
         duration: 2000,
         isReverse: true
       });
@@ -2026,7 +2025,6 @@ describe('tween ->', function () {
     });
   });
 
-
   describe('reverse function ->', function() {
     it('should reverse plan', function() {
       var tween = new Tween();
@@ -2072,6 +2070,28 @@ describe('tween ->', function () {
       expect(tween._props.isReverse).toEqual(false);
     });
 
+    it('should swap `_cb` and `_cbr`', function() {
+      var tween = new Tween();
+      var cb = tween._cb;
+      var cbr = tween._cbr;
+      tween.reverse();
+
+      expect(tween._cb).toBe(cbr);
+      expect(tween._cbr).toBe(cb);
+    });
+
+    it('should swap `_cb` and `_cbr` #reverse', function() {
+      var tween = new Tween({
+        isReverse: true
+      });
+      var cb = tween._cb;
+      var cbr = tween._cbr;
+      tween.reverse();
+
+      expect(tween._cb).toBe(cbr);
+      expect(tween._cbr).toBe(cb);
+    });
+
     it('should return `this`', function() {
       var tween = new Tween();
 
@@ -2079,5 +2099,15 @@ describe('tween ->', function () {
       expect(result).toBe(tween);
     });
   });
+
+  // describe('reverse function ->', function() {
+  //   it('should reverse plan', function() {
+  //     var tween = new Tween();
+  //
+  //     spyOn(tween._planner, 'reverse');
+  //     tween.reverse();
+  //     expect(tween._planner.reverse).toHaveBeenCalled();
+  //   });
+  // });
 
 });

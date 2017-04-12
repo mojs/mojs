@@ -5,10 +5,11 @@ import tweener from './tweener';
 
 /**
  * TODO:
+ *  - add `p`, `isForward` and `isYoyo` parameters for `onUpdate`
+ *  - add `reverse` callback
  *  - add `onProgress` callback
  *  - make new `playBackward` function
  *  - make new `replayBackward` function
- *  - add `p`, `isForward` and `isYoyo` parameters for `onUpdate`
  *  - add `p` and `isForward` parameter for `onProgress`
  *  - if jump - the `onUpdate` should be called just once
  *  - make `setSpeed` work
@@ -52,6 +53,8 @@ export default class Tween extends ClassProto {
   _vars() {
     this._planner = new TweenPlanner(this._o);
     this._plan = this._planner.getPlan();
+
+    this._reverseTime = 0;
 
     /**
      * TODO: cover
@@ -263,6 +266,10 @@ export default class Tween extends ClassProto {
    * @param {Number} Current time.
    */
   update(time) {
+
+    time += this._reverseTime;
+    // console.log(`---------------`);
+    // console.log(`update: ${time}, prevTime: ${this._prevTime}, frameIndex: ${this._frameIndex}`);
     // if forward direction
     if (time > this._prevTime) {
       // if update time jumped after end time, make sure that
@@ -292,6 +299,7 @@ export default class Tween extends ClassProto {
       }
 
     // if backward direction
+    // can be called only on `seek` backward
     } else if (time < this._prevTime) {
       // if update time jumped before start time, make sure that
       // all appropriate callbacks called
@@ -514,7 +522,6 @@ export default class Tween extends ClassProto {
     return this;
   }
 
-
   /**
    * reverse - function to reverse the tween.
    *
@@ -523,10 +530,18 @@ export default class Tween extends ClassProto {
   reverse() {
     this._planner.reverse();
 
+    // console.log(`-> reverse`);
+
     // reverse the `_frameIndex` to stay on the same index in `_plan`
     if (this._frameIndex !== -1 && this._frameIndex !== this._plan.length) {
       this._frameIndex = this._plan.length-1 - this._frameIndex;
     }
+
+    this._reverseTime = this._frameIndex*16;
+
+    const { _cb, _cbr } = this;
+    this._cb = _cbr;
+    this._cbr = _cb;
 
     this._props.isReverse = !this._props.isReverse;
 

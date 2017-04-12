@@ -49,7 +49,10 @@ export default class Planner extends ClassProto {
    * @return {type}  description
    */
   _vars() {
+    // blueprint plan for callbacks
     this._plan = [];
+    // update plan for `onUpdate` callback
+    this._updatePlan = [];
     // get total duration time
     this._calcTotalTime();
     // create plan
@@ -64,13 +67,19 @@ export default class Planner extends ClassProto {
   createPlan() {
     // reset plan
     this._plan.length = 0;
+    // reset update plan
+    this._updatePlan.length = 0;
     // recalculate total duration time
     this._calcTotalTime();
 
     // frame size (60fps)
     const step = 16;
+
+    const { delay, duration } = this._props;
     // current time
-    let time = this._props.delay;
+    let time = delay;
+
+    let periodStart;
 
     while (time <= this._totalTime) {
       const prevPeriod = this._getPeriod(time - step);
@@ -83,8 +92,17 @@ export default class Planner extends ClassProto {
       if (period === 'delay') {
         this._plan.push(frameSnapshot);
         time += step;
+        periodStart = undefined;
         continue;
       }
+
+      // catch the start of `update` period
+      if (periodStart === undefined) {
+        this._o.isIt && console.log('yep', time, period);
+        periodStart = time;
+      }
+      // calculate current progress
+      this._updatePlan.push((time - periodStart) / duration);
 
       // onUpdate
       frameSnapshot = frameSnapshot | (1 << 3);
@@ -118,6 +136,13 @@ export default class Planner extends ClassProto {
     if (this._props.isReverse) {
       this.reverse();
     }
+
+    this._o.isIt && console.log(this._plan.length);
+
+    // the first one should be always 0
+    // this._updatePlan[0] = 0;
+    // the last one should be always 1
+    // this._updatePlan[this._updatePlan.length-1] = 1;
 
     return this._plan;
   }
