@@ -5,9 +5,6 @@ import TweenPlanner from './tween/planner';
 import tweenDefaults from './tween/tween-defaults';
 import tweener from './tween/tweener';
 
-// helpers
-import numberToFrame from './helpers/numberToFrame';
-
 var mojs = {
   revision: '2.3.0',
   Tween,
@@ -15,12 +12,11 @@ var mojs = {
   __helpers__: {
     ClassProto,
     TweenPlanner,
-    tweenDefaults,
-    numberToFrame
+    tweenDefaults
   }
 };
 
-window.onload = () => {
+// window.onload = () => {
   // const items = [];
   // setTimeout(() => {
   //   for (let i = 0; i < 1; i++) {
@@ -54,6 +50,6 @@ window.onload = () => {
   //     }
   //   }, 10);
   // }, 10);
-};
+// };
 
 export default mojs;

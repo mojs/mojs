@@ -52,7 +52,7 @@ export default class Tween extends ClassProto {
    */
   _vars() {
     this._planner = new TweenPlanner(this._o);
-    this._plan = this._planner.getPlan();
+    this._plan = this._planner._plan;
 
     this._reverseTime = 0;
 
@@ -266,10 +266,7 @@ export default class Tween extends ClassProto {
    * @param {Number} Current time.
    */
   update(time) {
-
     time += this._reverseTime;
-    // console.log(`---------------`);
-    // console.log(`update: ${time}, prevTime: ${this._prevTime}, frameIndex: ${this._frameIndex}`);
     // if forward direction
     if (time > this._prevTime) {
       // if update time jumped after end time, make sure that
