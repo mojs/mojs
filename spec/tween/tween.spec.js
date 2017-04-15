@@ -45,888 +45,888 @@ describe('tween ->', function () {
   });
 
   describe('update function ->', function() {
-    it('should envoke callbacks ->', function () {
-      var options = {
-        duration: 50,
-        onStart: function() {},
-        onRepeatStart: function() {},
-        onUpdate: function() {},
-        onRepeatComplete: function() {},
-        onComplete: function() {}
-      };
-
-      var tween = new Tween(options);
-      var props = tween._props;
-
-      var startTime = 200;
-
-      tween._setStartTime(startTime);
-      spyOn(props, 'onStart').and.callThrough();
-      spyOn(props, 'onRepeatStart').and.callThrough();
-      spyOn(props, 'onUpdate').and.callThrough();
-      spyOn(props, 'onRepeatComplete').and.callThrough();
-      spyOn(props, 'onComplete').and.callThrough();
-
-      tween.update(startTime - 10);
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(1);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime += 16; // 16
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(2);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime += 16; // 32
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(3);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime += 16; // 48
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(4);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      startTime += 16; // 64
-      expect(tween.update(startTime)).toBe(true);
-      expect(tween._frameIndex).toBe(tween._planner._plan.length);
-    });
-
-    it('should envoke callbacks and jump if ended #delay #duration ->', function () {
-      var duration = 100;
-      var delay = 50;
-
-      var options = {
-        duration: duration,
-        delay: delay,
-        onStart: function() {},
-        onRepeatStart: function() {},
-        onUpdate: function() {},
-        onRepeatComplete: function() {},
-        onComplete: function() {}
-      };
-
-      var tween = new Tween(options);
-      var props = tween._props;
-
-      tween._setStartTime(200);
-      var startTime = tween._startTime;
-      spyOn(props, 'onStart').and.callThrough();
-      spyOn(props, 'onRepeatStart').and.callThrough();
-      spyOn(props, 'onUpdate').and.callThrough();
-      spyOn(props, 'onRepeatComplete').and.callThrough();
-      spyOn(props, 'onComplete').and.callThrough();
-
-      tween.update(startTime - 10);
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime);
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(1);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + duration/2);
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(5);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + duration);
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(7);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-    });
-
-    it('should envoke callbacks and jump if ended #delay #duration ->', function () {
-      var duration = 100;
-      var delay = 50;
-
-      var options = {
-        duration: duration,
-        delay: delay,
-        onStart: function() {},
-        onRepeatStart: function() {},
-        onUpdate: function() {},
-        onRepeatComplete: function() {},
-        onComplete: function() {}
-      };
-
-      var tween = new Tween(options);
-      var props = tween._props;
-
-      tween._setStartTime(200);
-      var startTime = tween._startTime;
-      spyOn(props, 'onStart').and.callThrough();
-      spyOn(props, 'onRepeatStart').and.callThrough();
-      spyOn(props, 'onUpdate').and.callThrough();
-      spyOn(props, 'onRepeatComplete').and.callThrough();
-      spyOn(props, 'onComplete').and.callThrough();
-
-      tween.update(startTime - 10);
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime);
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(1);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + 10);
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(2);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      expect(tween.update(startTime + duration + 10)).toBe(true);
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(7);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      expect(tween._prevTime).toBe(+Infinity);
-      expect(tween._frameIndex).toBe(tween._planner._plan.length);
-    });
-
-    it('should envoke callbacks and jump if ended #delay #duration #backward ->', function () {
-      var duration = 100;
-      var delay = 50;
-
-      var options = {
-        duration: duration,
-        delay: delay,
-        onStart: function() {},
-        onRepeatStart: function() {},
-        onUpdate: function() {},
-        onRepeatComplete: function() {},
-        onComplete: function() {}
-      };
-
-      var tween = new Tween(options);
-      var props = tween._props;
-
-      tween._setStartTime(200);
-      var startTime = tween._startTime;
-
-      tween.update(startTime - 10);
-      tween.update(startTime);
-      tween.update(startTime + duration/2);
-      tween.update(startTime + duration);
-      tween.update(startTime + duration + 10);
-
-      spyOn(props, 'onStart').and.callThrough();
-      spyOn(props, 'onRepeatStart').and.callThrough();
-      spyOn(props, 'onUpdate').and.callThrough();
-      spyOn(props, 'onRepeatComplete').and.callThrough();
-      spyOn(props, 'onComplete').and.callThrough();
-
-      var endTime = startTime + duration;
-
-      tween.update(endTime);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(1);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime - 10);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(2);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      expect(tween.update(endTime - duration - 10)).toBe(true);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(7);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      expect(tween._prevTime).toBe(-Infinity);
-      expect(tween._frameIndex).toBe(-1);
-    });
-
-    it('should envoke callbacks #backward ->', function () {
-      var duration = 50;
-
-      var options = {
-        duration: duration,
-        onStart: function() {},
-        onRepeatStart: function() {},
-        onUpdate: function() {},
-        onRepeatComplete: function() {},
-        onComplete: function() {}
-      };
-
-      var tween = new Tween(options);
-      var props = tween._props;
-
-      var startTime = 350;
-
-      tween._setStartTime(startTime);
-
-      tween.update(startTime);
-      tween.update(startTime + duration / 4);
-      tween.update(startTime + duration / 2);
-
-      spyOn(props, 'onStart').and.callThrough();
-      spyOn(props, 'onRepeatStart').and.callThrough();
-      spyOn(props, 'onUpdate').and.callThrough();
-      spyOn(props, 'onRepeatComplete').and.callThrough();
-      spyOn(props, 'onComplete').and.callThrough();
-
-      tween.update(startTime + duration);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(1);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      var endTime = startTime + duration;
-
-      tween.update(endTime + 10);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(1);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(2);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(2);
-
-      tween.update(endTime -= 16); // 34
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(3);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(2);
-
-      tween.update(endTime -= 16); // 18
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(4);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(2);
-
-      tween.update(endTime -= 16); // 2
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(5);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(2);
-
-      tween.update(endTime -= 16); // -14
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(5);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(2);
-
-      expect(tween._prevTime).toBe(-Infinity);
-      expect(tween._frameIndex).toBe(-1);
-    });
-
-    it('should not envoke callbacks twice ->', function () {
-      var options = {
-        duration: 50,
-        onStart: function() {},
-        onRepeatStart: function() {},
-        onUpdate: function() {},
-        onRepeatComplete: function() {},
-        onComplete: function() {}
-      };
-
-      var tween = new Tween(options);
-      var props = tween._props;
-
-      var startTime = 150;
-
-      tween._setStartTime(startTime);
-
-      spyOn(props, 'onStart').and.callThrough();
-      spyOn(props, 'onRepeatStart').and.callThrough();
-      spyOn(props, 'onUpdate').and.callThrough();
-      spyOn(props, 'onRepeatComplete').and.callThrough();
-      spyOn(props, 'onComplete').and.callThrough();
-
-      tween.update(startTime - 10);
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(1);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(1);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime += 16;
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(2);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(2);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime += 16;
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(3);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(3);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime += 16;
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(4);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(4);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      startTime += 16;
-      expect(tween.update(startTime)).toBe(true);
-      expect(tween._frameIndex).toBe(tween._plan.length);
-      expect(tween._prevTime).toBe(+Infinity);
-    });
-
-    it('should save previous time to `_prevTime` ->', function () {
-      var options = {
-        duration: 50,
-        onStart: function() {},
-        onRepeatStart: function() {},
-        onUpdate: function() {},
-        onRepeatComplete: function() {},
-        onComplete: function() {}
-      };
-
-      var tween = new Tween(options);
-      tween._setStartTime(0);
-
-      var startTime = 0;
-      tween.update(startTime);
-      expect(tween._prevTime).toBe(0);
-
-      tween.update(startTime + 1*16);
-      expect(tween._prevTime).toBe(startTime + 1*16);
-
-      tween.update(startTime + 2*16);
-      expect(tween._prevTime).toBe(startTime + 2*16);
-
-      tween.update(startTime + 3*16);
-      expect(tween._prevTime).toBe(startTime + 3*16);
-    });
-
-    it('should be able to switch direction ->', function () {
-      var options = {
-        duration: 50,
-        onStart: function() {},
-        onRepeatStart: function() {},
-        onUpdate: function() {},
-        onRepeatComplete: function() {},
-        onComplete: function() {}
-      };
-
-      var tween = new Tween(options);
-      var props = tween._props;
-
-      tween._setStartTime(0);
-
-      spyOn(props, 'onStart').and.callThrough();
-      spyOn(props, 'onRepeatStart').and.callThrough();
-      spyOn(props, 'onUpdate').and.callThrough();
-      spyOn(props, 'onRepeatComplete').and.callThrough();
-      spyOn(props, 'onComplete').and.callThrough();
-
-      var startTime = 0;
-
-      tween.update(startTime - 10);
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(1);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime += 16; // 16
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(2);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime += 16; // 32
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(3);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime -= 16; // 16
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(4);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime -= 16; // 0
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(5);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime += 16; // 16
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(6);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime -= 16; // 0
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(3);
-      expect(props.onRepeatStart.calls.count()).toBe(3);
-      expect(props.onUpdate.calls.count()).toBe(7);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      startTime -= 16; // -16
-      expect(tween.update(startTime)).toBe(true);
-      expect(tween._prevTime).toBe(-Infinity);
-      expect(tween._frameIndex).toBe(-1);
-    });
-
-    it('should envoke callbacks #duration #delay #repeat ->', function () {
-      var duration = 100;
-      var delay = 50;
-      var repeat = 2;
-
-      var options = {
-        duration: duration,
-        delay: delay,
-        repeat: repeat,
-        onStart: function() {},
-        onRepeatStart: function() {},
-        onUpdate: function() {},
-        onRepeatComplete: function() {},
-        onComplete: function() {}
-      };
-
-      var tween = new Tween(options);
-      var props = tween._props;
-
-      tween._setStartTime();
-      var startTime = tween._startTime;
-      spyOn(props, 'onStart').and.callThrough();
-      spyOn(props, 'onRepeatStart').and.callThrough();
-      spyOn(props, 'onUpdate').and.callThrough();
-      spyOn(props, 'onRepeatComplete').and.callThrough();
-      spyOn(props, 'onComplete').and.callThrough();
-
-      tween.update(startTime - 10);
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(1);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + duration/2);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(5);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + duration);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(7);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + duration + 10);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(7);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + duration + delay/2);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(7);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + duration + delay - 10);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(7);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + duration + delay);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(8);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-
-      var period = duration + delay;
-
-      tween.update(startTime + period + duration/2);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(11);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + period + duration);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(13);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      period += duration;
-
-      tween.update(startTime + period + 10);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(13);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + period + delay/2);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(13);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + period + delay);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(3);
-      expect(props.onUpdate.calls.count()).toBe(14);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + period + delay + 10);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(3);
-      expect(props.onUpdate.calls.count()).toBe(15);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + period + delay + duration/2);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(3);
-      expect(props.onUpdate.calls.count()).toBe(17);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween.update(startTime + period + delay + duration);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(3);
-      expect(props.onUpdate.calls.count()).toBe(20);
-      expect(props.onRepeatComplete.calls.count()).toBe(3);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      expect(tween.update(startTime + period + delay + duration + 10)).toBe(true);
-    });
-
-    it('should envoke callbacks #duration #delay #repeat #backward ->', function () {
-      var duration = 100;
-      var delay = 50;
-      var repeat = 2;
-
-      var options = {
-        duration: duration,
-        delay: delay,
-        repeat: repeat,
-        onStart: function() {},
-        onRepeatStart: function() {},
-        onUpdate: function() {},
-        onRepeatComplete: function() {},
-        onComplete: function() {}
-      };
-
-      var tween = new Tween(options);
-      var props = tween._props;
-
-      tween._setStartTime();
-      var startTime = tween._startTime;
-
-      tween.update(startTime - 10);
-      tween.update(startTime + duration/2);
-      tween.update(startTime + duration);
-      tween.update(startTime + duration + delay/2);
-      tween.update(startTime + duration + delay);
-      tween.update(startTime + duration + delay + duration/2);
-      tween.update(startTime + duration + delay + duration);
-      tween.update(startTime + duration + delay + duration + delay/2);
-      tween.update(startTime + duration + delay + duration + delay);
-      tween.update(startTime + duration + delay + duration + delay + duration);
-      tween.update(startTime + duration + delay + duration + delay + duration + 10);
-
-      spyOn(props, 'onStart').and.callThrough();
-      spyOn(props, 'onRepeatStart').and.callThrough();
-      spyOn(props, 'onUpdate').and.callThrough();
-      spyOn(props, 'onRepeatComplete').and.callThrough();
-      spyOn(props, 'onComplete').and.callThrough();
-
-      var endTime = startTime + duration + delay + duration + delay + duration;
-
-      tween.update(endTime);
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(1);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime - duration/2);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(5);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime - duration);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(7);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime - duration - 10);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(7);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime - duration - delay/2);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(7);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime - duration - delay + 10);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(7);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      var period = duration + delay;
-
-      tween.update(endTime - period);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(8);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime - period - duration/2);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(11);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime - period - duration);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(13);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime - period - duration - delay/2);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(13);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      period = period + duration + delay;
-
-      tween.update(endTime - period);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(14);
-      expect(props.onRepeatComplete.calls.count()).toBe(3);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime - period - 10);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(15);
-      expect(props.onRepeatComplete.calls.count()).toBe(3);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime - period - duration/2);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(17);
-      expect(props.onRepeatComplete.calls.count()).toBe(3);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween.update(endTime - period - duration);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(3);
-      expect(props.onUpdate.calls.count()).toBe(20);
-      expect(props.onRepeatComplete.calls.count()).toBe(3);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      expect(tween.update(endTime - period - duration - 10)).toBe(true);
-    });
+    // it('should envoke callbacks ->', function () {
+    //   var options = {
+    //     duration: 50,
+    //     onStart: function() {},
+    //     onRepeatStart: function() {},
+    //     onUpdate: function() {},
+    //     onRepeatComplete: function() {},
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tween = new Tween(options);
+    //   var props = tween._props;
+    //
+    //   var startTime = 200;
+    //
+    //   tween._setStartTime(startTime);
+    //   spyOn(props, 'onStart').and.callThrough();
+    //   spyOn(props, 'onRepeatStart').and.callThrough();
+    //   spyOn(props, 'onUpdate').and.callThrough();
+    //   spyOn(props, 'onRepeatComplete').and.callThrough();
+    //   spyOn(props, 'onComplete').and.callThrough();
+    //
+    //   tween.update(startTime - 10);
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(0);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime += 16; // 16
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(2);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime += 16; // 32
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(3);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime += 16; // 48
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(4);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   startTime += 16; // 64
+    //   expect(tween.update(startTime)).toBe(true);
+    //   expect(tween._frameIndex).toBe(tween._planner._plan.length);
+    // });
+    //
+    // it('should envoke callbacks and jump if ended #delay #duration ->', function () {
+    //   var duration = 100;
+    //   var delay = 50;
+    //
+    //   var options = {
+    //     duration: duration,
+    //     delay: delay,
+    //     onStart: function() {},
+    //     onRepeatStart: function() {},
+    //     onUpdate: function() {},
+    //     onRepeatComplete: function() {},
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tween = new Tween(options);
+    //   var props = tween._props;
+    //
+    //   tween._setStartTime(200);
+    //   var startTime = tween._startTime;
+    //   spyOn(props, 'onStart').and.callThrough();
+    //   spyOn(props, 'onRepeatStart').and.callThrough();
+    //   spyOn(props, 'onUpdate').and.callThrough();
+    //   spyOn(props, 'onRepeatComplete').and.callThrough();
+    //   spyOn(props, 'onComplete').and.callThrough();
+    //
+    //   tween.update(startTime - 10);
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(0);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime);
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + duration/2);
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(5);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + duration);
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    // });
+    //
+    // it('should envoke callbacks and jump if ended #delay #duration ->', function () {
+    //   var duration = 100;
+    //   var delay = 50;
+    //
+    //   var options = {
+    //     duration: duration,
+    //     delay: delay,
+    //     onStart: function() {},
+    //     onRepeatStart: function() {},
+    //     onUpdate: function() {},
+    //     onRepeatComplete: function() {},
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tween = new Tween(options);
+    //   var props = tween._props;
+    //
+    //   tween._setStartTime(200);
+    //   var startTime = tween._startTime;
+    //   spyOn(props, 'onStart').and.callThrough();
+    //   spyOn(props, 'onRepeatStart').and.callThrough();
+    //   spyOn(props, 'onUpdate').and.callThrough();
+    //   spyOn(props, 'onRepeatComplete').and.callThrough();
+    //   spyOn(props, 'onComplete').and.callThrough();
+    //
+    //   tween.update(startTime - 10);
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(0);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime);
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + 10);
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(2);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   expect(tween.update(startTime + duration + 10)).toBe(true);
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   expect(tween._prevTime).toBe(+Infinity);
+    //   expect(tween._frameIndex).toBe(tween._planner._plan.length);
+    // });
+    //
+    // it('should envoke callbacks and jump if ended #delay #duration #backward ->', function () {
+    //   var duration = 100;
+    //   var delay = 50;
+    //
+    //   var options = {
+    //     duration: duration,
+    //     delay: delay,
+    //     onStart: function() {},
+    //     onRepeatStart: function() {},
+    //     onUpdate: function() {},
+    //     onRepeatComplete: function() {},
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tween = new Tween(options);
+    //   var props = tween._props;
+    //
+    //   tween._setStartTime(200);
+    //   var startTime = tween._startTime;
+    //
+    //   tween.update(startTime - 10);
+    //   tween.update(startTime);
+    //   tween.update(startTime + duration/2);
+    //   tween.update(startTime + duration);
+    //   tween.update(startTime + duration + 10);
+    //
+    //   spyOn(props, 'onStart').and.callThrough();
+    //   spyOn(props, 'onRepeatStart').and.callThrough();
+    //   spyOn(props, 'onUpdate').and.callThrough();
+    //   spyOn(props, 'onRepeatComplete').and.callThrough();
+    //   spyOn(props, 'onComplete').and.callThrough();
+    //
+    //   var endTime = startTime + duration;
+    //
+    //   tween.update(endTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime - 10);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(2);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   expect(tween.update(endTime - duration - 10)).toBe(true);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   expect(tween._prevTime).toBe(-Infinity);
+    //   expect(tween._frameIndex).toBe(-1);
+    // });
+    //
+    // it('should envoke callbacks #backward ->', function () {
+    //   var duration = 50;
+    //
+    //   var options = {
+    //     duration: duration,
+    //     onStart: function() {},
+    //     onRepeatStart: function() {},
+    //     onUpdate: function() {},
+    //     onRepeatComplete: function() {},
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tween = new Tween(options);
+    //   var props = tween._props;
+    //
+    //   var startTime = 350;
+    //
+    //   tween._setStartTime(startTime);
+    //
+    //   tween.update(startTime);
+    //   tween.update(startTime + duration / 4);
+    //   tween.update(startTime + duration / 2);
+    //
+    //   spyOn(props, 'onStart').and.callThrough();
+    //   spyOn(props, 'onRepeatStart').and.callThrough();
+    //   spyOn(props, 'onUpdate').and.callThrough();
+    //   spyOn(props, 'onRepeatComplete').and.callThrough();
+    //   spyOn(props, 'onComplete').and.callThrough();
+    //
+    //   tween.update(startTime + duration);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   var endTime = startTime + duration;
+    //
+    //   tween.update(endTime + 10);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(2);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(2);
+    //
+    //   tween.update(endTime -= 16); // 34
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(3);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(2);
+    //
+    //   tween.update(endTime -= 16); // 18
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(4);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(2);
+    //
+    //   tween.update(endTime -= 16); // 2
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(5);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(2);
+    //
+    //   tween.update(endTime -= 16); // -14
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(5);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(2);
+    //
+    //   expect(tween._prevTime).toBe(-Infinity);
+    //   expect(tween._frameIndex).toBe(-1);
+    // });
+    //
+    // it('should not envoke callbacks twice ->', function () {
+    //   var options = {
+    //     duration: 50,
+    //     onStart: function() {},
+    //     onRepeatStart: function() {},
+    //     onUpdate: function() {},
+    //     onRepeatComplete: function() {},
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tween = new Tween(options);
+    //   var props = tween._props;
+    //
+    //   var startTime = 150;
+    //
+    //   tween._setStartTime(startTime);
+    //
+    //   spyOn(props, 'onStart').and.callThrough();
+    //   spyOn(props, 'onRepeatStart').and.callThrough();
+    //   spyOn(props, 'onUpdate').and.callThrough();
+    //   spyOn(props, 'onRepeatComplete').and.callThrough();
+    //   spyOn(props, 'onComplete').and.callThrough();
+    //
+    //   tween.update(startTime - 10);
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(0);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime += 16;
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(2);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(2);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime += 16;
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(3);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(3);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime += 16;
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(4);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(4);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   startTime += 16;
+    //   expect(tween.update(startTime)).toBe(true);
+    //   expect(tween._frameIndex).toBe(tween._plan.length);
+    //   expect(tween._prevTime).toBe(+Infinity);
+    // });
+    //
+    // it('should save previous time to `_prevTime` ->', function () {
+    //   var options = {
+    //     duration: 50,
+    //     onStart: function() {},
+    //     onRepeatStart: function() {},
+    //     onUpdate: function() {},
+    //     onRepeatComplete: function() {},
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tween = new Tween(options);
+    //   tween._setStartTime(0);
+    //
+    //   var startTime = 0;
+    //   tween.update(startTime);
+    //   expect(tween._prevTime).toBe(0);
+    //
+    //   tween.update(startTime + 1*16);
+    //   expect(tween._prevTime).toBe(startTime + 1*16);
+    //
+    //   tween.update(startTime + 2*16);
+    //   expect(tween._prevTime).toBe(startTime + 2*16);
+    //
+    //   tween.update(startTime + 3*16);
+    //   expect(tween._prevTime).toBe(startTime + 3*16);
+    // });
+    //
+    // it('should be able to switch direction ->', function () {
+    //   var options = {
+    //     duration: 50,
+    //     onStart: function() {},
+    //     onRepeatStart: function() {},
+    //     onUpdate: function() {},
+    //     onRepeatComplete: function() {},
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tween = new Tween(options);
+    //   var props = tween._props;
+    //
+    //   tween._setStartTime(0);
+    //
+    //   spyOn(props, 'onStart').and.callThrough();
+    //   spyOn(props, 'onRepeatStart').and.callThrough();
+    //   spyOn(props, 'onUpdate').and.callThrough();
+    //   spyOn(props, 'onRepeatComplete').and.callThrough();
+    //   spyOn(props, 'onComplete').and.callThrough();
+    //
+    //   var startTime = 0;
+    //
+    //   tween.update(startTime - 10);
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(0);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime += 16; // 16
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(2);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime += 16; // 32
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(3);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime -= 16; // 16
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(4);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime -= 16; // 0
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(2);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(5);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime += 16; // 16
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(2);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(6);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime -= 16; // 0
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(3);
+    //   expect(props.onRepeatStart.calls.count()).toBe(3);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   startTime -= 16; // -16
+    //   expect(tween.update(startTime)).toBe(true);
+    //   expect(tween._prevTime).toBe(-Infinity);
+    //   expect(tween._frameIndex).toBe(-1);
+    // });
+    //
+    // it('should envoke callbacks #duration #delay #repeat ->', function () {
+    //   var duration = 100;
+    //   var delay = 50;
+    //   var repeat = 2;
+    //
+    //   var options = {
+    //     duration: duration,
+    //     delay: delay,
+    //     repeat: repeat,
+    //     onStart: function() {},
+    //     onRepeatStart: function() {},
+    //     onUpdate: function() {},
+    //     onRepeatComplete: function() {},
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tween = new Tween(options);
+    //   var props = tween._props;
+    //
+    //   tween._setStartTime();
+    //   var startTime = tween._startTime;
+    //   spyOn(props, 'onStart').and.callThrough();
+    //   spyOn(props, 'onRepeatStart').and.callThrough();
+    //   spyOn(props, 'onUpdate').and.callThrough();
+    //   spyOn(props, 'onRepeatComplete').and.callThrough();
+    //   spyOn(props, 'onComplete').and.callThrough();
+    //
+    //   tween.update(startTime - 10);
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(0);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + duration/2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(5);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + duration);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + duration + 10);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + duration + delay/2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + duration + delay - 10);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + duration + delay);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(8);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //
+    //   var period = duration + delay;
+    //
+    //   tween.update(startTime + period + duration/2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(11);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + period + duration);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(13);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   period += duration;
+    //
+    //   tween.update(startTime + period + 10);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(13);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + period + delay/2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(13);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + period + delay);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(3);
+    //   expect(props.onUpdate.calls.count()).toBe(14);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + period + delay + 10);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(3);
+    //   expect(props.onUpdate.calls.count()).toBe(15);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + period + delay + duration/2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(3);
+    //   expect(props.onUpdate.calls.count()).toBe(17);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween.update(startTime + period + delay + duration);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(3);
+    //   expect(props.onUpdate.calls.count()).toBe(20);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(3);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   expect(tween.update(startTime + period + delay + duration + 10)).toBe(true);
+    // });
+    //
+    // it('should envoke callbacks #duration #delay #repeat #backward ->', function () {
+    //   var duration = 100;
+    //   var delay = 50;
+    //   var repeat = 2;
+    //
+    //   var options = {
+    //     duration: duration,
+    //     delay: delay,
+    //     repeat: repeat,
+    //     onStart: function() {},
+    //     onRepeatStart: function() {},
+    //     onUpdate: function() {},
+    //     onRepeatComplete: function() {},
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tween = new Tween(options);
+    //   var props = tween._props;
+    //
+    //   tween._setStartTime();
+    //   var startTime = tween._startTime;
+    //
+    //   tween.update(startTime - 10);
+    //   tween.update(startTime + duration/2);
+    //   tween.update(startTime + duration);
+    //   tween.update(startTime + duration + delay/2);
+    //   tween.update(startTime + duration + delay);
+    //   tween.update(startTime + duration + delay + duration/2);
+    //   tween.update(startTime + duration + delay + duration);
+    //   tween.update(startTime + duration + delay + duration + delay/2);
+    //   tween.update(startTime + duration + delay + duration + delay);
+    //   tween.update(startTime + duration + delay + duration + delay + duration);
+    //   tween.update(startTime + duration + delay + duration + delay + duration + 10);
+    //
+    //   spyOn(props, 'onStart').and.callThrough();
+    //   spyOn(props, 'onRepeatStart').and.callThrough();
+    //   spyOn(props, 'onUpdate').and.callThrough();
+    //   spyOn(props, 'onRepeatComplete').and.callThrough();
+    //   spyOn(props, 'onComplete').and.callThrough();
+    //
+    //   var endTime = startTime + duration + delay + duration + delay + duration;
+    //
+    //   tween.update(endTime);
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime - duration/2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(5);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime - duration);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime - duration - 10);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime - duration - delay/2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime - duration - delay + 10);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   var period = duration + delay;
+    //
+    //   tween.update(endTime - period);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(8);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime - period - duration/2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(11);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime - period - duration);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(13);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime - period - duration - delay/2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(13);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   period = period + duration + delay;
+    //
+    //   tween.update(endTime - period);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(14);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(3);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime - period - 10);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(15);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(3);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime - period - duration/2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(17);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(3);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween.update(endTime - period - duration);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(3);
+    //   expect(props.onUpdate.calls.count()).toBe(20);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(3);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   expect(tween.update(endTime - period - duration - 10)).toBe(true);
+    // });
 
     describe('callback functions used ->', function () {
       it('should call `_cb` on forward direction', function() {
@@ -1008,7 +1008,7 @@ describe('tween ->', function () {
   });
 
   describe('_envokeCallBacks function ->', function() {
-    it('should envoke callbacks regarding snapshot ->', function () {
+    it('should envoke callbacks regarding snapshot #basic ->', function () {
       var options = {
         duration: 50,
         onStart: function() {},
@@ -1040,210 +1040,267 @@ describe('tween ->', function () {
 
       expect(props.onStart.calls.count()).toBe(0);
       expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacks(1 << 1);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacks(1 << 1 | 1 << 2);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacks(1 << 2);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacks(1 << 3);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
       expect(props.onUpdate.calls.count()).toBe(1);
       expect(props.onRepeatComplete.calls.count()).toBe(0);
       expect(props.onComplete.calls.count()).toBe(0);
 
-      tween._envokeCallBacks(1 << 3 | 1 << 4);
+      var num = 1000000000;
 
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(2);
+      tween._envokeCallBacks(num | 12); // isYoyo
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacks(num | 16); // onStart
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacks(num | 64); // onRepeatStart
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacks(num | 256); // onRepeatComplete
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(1);
       expect(props.onRepeatComplete.calls.count()).toBe(1);
       expect(props.onComplete.calls.count()).toBe(0);
 
-      tween._envokeCallBacks(1 << 3 | 1 << 4 | 1 << 2);
+      tween._envokeCallBacks(num | 1024); // onComplete
 
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(3);
-      expect(props.onUpdate.calls.count()).toBe(3);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacks(1 << 3 | 1 << 4 | 1 << 2 | 1 << 5);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(4);
-      expect(props.onUpdate.calls.count()).toBe(4);
-      expect(props.onRepeatComplete.calls.count()).toBe(3);
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
       expect(props.onComplete.calls.count()).toBe(1);
-
-      tween._envokeCallBacks(1 << 5);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(4);
-      expect(props.onUpdate.calls.count()).toBe(4);
-      expect(props.onRepeatComplete.calls.count()).toBe(3);
-      expect(props.onComplete.calls.count()).toBe(2);
-
-      tween._envokeCallBacks(1 << 4 | 1 << 5);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(4);
-      expect(props.onUpdate.calls.count()).toBe(4);
-      expect(props.onRepeatComplete.calls.count()).toBe(4);
-      expect(props.onComplete.calls.count()).toBe(3);
-
-      tween._envokeCallBacks(1 << 3);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(4);
-      expect(props.onUpdate.calls.count()).toBe(5);
-      expect(props.onRepeatComplete.calls.count()).toBe(4);
-      expect(props.onComplete.calls.count()).toBe(3);
     });
+
+    // it('should envoke callbacks regarding snapshot #combos ->', function () {
+    //   var options = {
+    //     duration: 50,
+    //     onStart: function() {},
+    //     onRepeatStart: function() {},
+    //     onUpdate: function() {},
+    //     onRepeatComplete: function() {},
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tween = new Tween(options);
+    //   var props = tween._props;
+    //
+    //   spyOn(props, 'onStart').and.callThrough();
+    //   spyOn(props, 'onRepeatStart').and.callThrough();
+    //   spyOn(props, 'onUpdate').and.callThrough();
+    //   spyOn(props, 'onRepeatComplete').and.callThrough();
+    //   spyOn(props, 'onComplete').and.callThrough();
+    //
+    //   tween._envokeCallBacks(0);
+    //   tween._envokeCallBacks(0);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(0);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween._envokeCallBacks(1);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween._envokeCallBacks(81); // onStart + onRepeatStart + onUpdate
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(2);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween._envokeCallBacks(2561); // onComplete + onRepeatComplete + onUpdate
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(3);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween._envokeCallBacks(641); // onRepeatStartBackward + onRepeatCompleteBackward + onUpdate
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(4);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween._envokeCallBacks(321); // onRepeatStart + onRepeatComplete + onUpdate
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(3);
+    //   expect(props.onUpdate.calls.count()).toBe(5);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(3);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween._envokeCallBacks(513); // onRepeatComplete + delay
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(3);
+    //   expect(props.onUpdate.calls.count()).toBe(6);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(4);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween._envokeCallBacks(65); // onRepeatStart + onUpdate
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(4);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(4);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween._envokeCallBacks(128); // onRepeatStartBackward + delay
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(5);
+    //   expect(props.onUpdate.calls.count()).toBe(7);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(4);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    // });
+
   });
 
 
   describe('_envokeCallBacksRev function ->', function() {
-    it('should envoke callbacks regarding snapshot ->', function () {
-      var options = {
-        duration: 50,
-        onStart: function() {},
-        onRepeatStart: function() {},
-        onUpdate: function() {},
-        onRepeatComplete: function() {},
-        onComplete: function() {}
-      };
-
-      var tween = new Tween(options);
-      var props = tween._props;
-
-      spyOn(props, 'onStart').and.callThrough();
-      spyOn(props, 'onRepeatStart').and.callThrough();
-      spyOn(props, 'onUpdate').and.callThrough();
-      spyOn(props, 'onRepeatComplete').and.callThrough();
-      spyOn(props, 'onComplete').and.callThrough();
-
-      tween._envokeCallBacksRev(0);
-      tween._envokeCallBacksRev(0);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacksRev(1);
-
-      expect(props.onStart.calls.count()).toBe(0);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacksRev(1 << 1);
-
-      expect(props.onStart.calls.count()).toBe(1);
-      expect(props.onRepeatStart.calls.count()).toBe(0);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacksRev(1 << 1 | 1 << 2);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(1);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacksRev(1 << 2);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(0);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacksRev(1 << 3);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(1);
-      expect(props.onRepeatComplete.calls.count()).toBe(0);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacksRev(1 << 3 | 1 << 4);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(2);
-      expect(props.onUpdate.calls.count()).toBe(2);
-      expect(props.onRepeatComplete.calls.count()).toBe(1);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacksRev(1 << 3 | 1 << 4 | 1 << 2);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(3);
-      expect(props.onUpdate.calls.count()).toBe(3);
-      expect(props.onRepeatComplete.calls.count()).toBe(2);
-      expect(props.onComplete.calls.count()).toBe(0);
-
-      tween._envokeCallBacksRev(1 << 3 | 1 << 4 | 1 << 2 | 1 << 5);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(4);
-      expect(props.onUpdate.calls.count()).toBe(4);
-      expect(props.onRepeatComplete.calls.count()).toBe(3);
-      expect(props.onComplete.calls.count()).toBe(1);
-
-      tween._envokeCallBacksRev(1 << 5);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(4);
-      expect(props.onUpdate.calls.count()).toBe(4);
-      expect(props.onRepeatComplete.calls.count()).toBe(3);
-      expect(props.onComplete.calls.count()).toBe(2);
-
-      tween._envokeCallBacksRev(1 << 4 | 1 << 5);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(4);
-      expect(props.onUpdate.calls.count()).toBe(4);
-      expect(props.onRepeatComplete.calls.count()).toBe(4);
-      expect(props.onComplete.calls.count()).toBe(3);
-
-      tween._envokeCallBacksRev(1 << 3);
-
-      expect(props.onStart.calls.count()).toBe(2);
-      expect(props.onRepeatStart.calls.count()).toBe(4);
-      expect(props.onUpdate.calls.count()).toBe(5);
-      expect(props.onRepeatComplete.calls.count()).toBe(4);
-      expect(props.onComplete.calls.count()).toBe(3);
-    });
+    // it('should envoke callbacks regarding snapshot ->', function () {
+    //   var options = {
+    //     duration: 50,
+    //     onStart: function() {},
+    //     onRepeatStart: function() {},
+    //     onUpdate: function() {},
+    //     onRepeatComplete: function() {},
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tween = new Tween(options);
+    //   var props = tween._props;
+    //
+    //   spyOn(props, 'onStart').and.callThrough();
+    //   spyOn(props, 'onRepeatStart').and.callThrough();
+    //   spyOn(props, 'onUpdate').and.callThrough();
+    //   spyOn(props, 'onRepeatComplete').and.callThrough();
+    //   spyOn(props, 'onComplete').and.callThrough();
+    //
+    //   tween._envokeCallBacksRev(0);
+    //   tween._envokeCallBacksRev(0);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(0);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween._envokeCallBacksRev(1);
+    //
+    //   expect(props.onStart.calls.count()).toBe(0);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(0);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween._envokeCallBacksRev(1 << 1);
+    //
+    //   expect(props.onStart.calls.count()).toBe(1);
+    //   expect(props.onRepeatStart.calls.count()).toBe(0);
+    //   expect(props.onUpdate.calls.count()).toBe(0);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween._envokeCallBacksRev(1 << 1 | 1 << 2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(2);
+    //   expect(props.onRepeatStart.calls.count()).toBe(1);
+    //   expect(props.onUpdate.calls.count()).toBe(0);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween._envokeCallBacksRev(1 << 2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(2);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(0);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween._envokeCallBacksRev(1 << 3);
+    //
+    //   expect(props.onStart.calls.count()).toBe(2);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(1);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween._envokeCallBacksRev(1 << 3 | 1 << 4);
+    //
+    //   expect(props.onStart.calls.count()).toBe(2);
+    //   expect(props.onRepeatStart.calls.count()).toBe(2);
+    //   expect(props.onUpdate.calls.count()).toBe(2);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween._envokeCallBacksRev(1 << 3 | 1 << 4 | 1 << 2);
+    //
+    //   expect(props.onStart.calls.count()).toBe(2);
+    //   expect(props.onRepeatStart.calls.count()).toBe(3);
+    //   expect(props.onUpdate.calls.count()).toBe(3);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
+    //   expect(props.onComplete.calls.count()).toBe(0);
+    //
+    //   tween._envokeCallBacksRev(1 << 3 | 1 << 4 | 1 << 2 | 1 << 5);
+    //
+    //   expect(props.onStart.calls.count()).toBe(2);
+    //   expect(props.onRepeatStart.calls.count()).toBe(4);
+    //   expect(props.onUpdate.calls.count()).toBe(4);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(3);
+    //   expect(props.onComplete.calls.count()).toBe(1);
+    //
+    //   tween._envokeCallBacksRev(1 << 5);
+    //
+    //   expect(props.onStart.calls.count()).toBe(2);
+    //   expect(props.onRepeatStart.calls.count()).toBe(4);
+    //   expect(props.onUpdate.calls.count()).toBe(4);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(3);
+    //   expect(props.onComplete.calls.count()).toBe(2);
+    //
+    //   tween._envokeCallBacksRev(1 << 4 | 1 << 5);
+    //
+    //   expect(props.onStart.calls.count()).toBe(2);
+    //   expect(props.onRepeatStart.calls.count()).toBe(4);
+    //   expect(props.onUpdate.calls.count()).toBe(4);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(4);
+    //   expect(props.onComplete.calls.count()).toBe(3);
+    //
+    //   tween._envokeCallBacksRev(1 << 3);
+    //
+    //   expect(props.onStart.calls.count()).toBe(2);
+    //   expect(props.onRepeatStart.calls.count()).toBe(4);
+    //   expect(props.onUpdate.calls.count()).toBe(5);
+    //   expect(props.onRepeatComplete.calls.count()).toBe(4);
+    //   expect(props.onComplete.calls.count()).toBe(3);
+    // });
   });
 
   describe('_setPlaybackState function ->', function() {
@@ -1806,7 +1863,6 @@ describe('tween ->', function () {
       expect(tween._isReversed).toBe(true);
       expect(result).toBe(tween);
     });
-    //
     // commented out until `_wasUknownUpdate` needed
     // it('should set `_wasUknownUpdate` to undefined', function() {
     //   var tween = new Tween();
@@ -1936,169 +1992,173 @@ describe('tween ->', function () {
     });
   });
 
-  describe('replay method ->', function() {
-    it('should call reset and play methods', function() {
-      var tween = new Tween();
-      spyOn(tween, 'reset').and.callThrough();
-      spyOn(tween, 'play').and.callThrough();
-      tween.replay(200);
-      expect(tween.reset).toHaveBeenCalled();
-      expect(tween.play).toHaveBeenCalledWith(200);
-    });
-    it('should return this', function() {
-      var tween = new Tween();
-      var result = tween.replay(200);
-      expect(result).toBe(tween);
-    });
-    return it('should fallback to 0 shift', function() {
-      var tween = new Tween();
-      spyOn(tween, 'play').and.callThrough();
-      tween.replay();
-      return expect(tween.play).toHaveBeenCalledWith(0);
-    });
-  });
+  // `replay` is not used yet
+  // describe('replay method ->', function() {
+  //   it('should call reset and play methods', function() {
+  //     var tween = new Tween();
+  //     spyOn(tween, 'reset').and.callThrough();
+  //     spyOn(tween, 'play').and.callThrough();
+  //     tween.replay(200);
+  //     expect(tween.reset).toHaveBeenCalled();
+  //     expect(tween.play).toHaveBeenCalledWith(200);
+  //   });
+  //   it('should return this', function() {
+  //     var tween = new Tween();
+  //     var result = tween.replay(200);
+  //     expect(result).toBe(tween);
+  //   });
+  //   return it('should fallback to 0 shift', function() {
+  //     var tween = new Tween();
+  //     spyOn(tween, 'play').and.callThrough();
+  //     tween.replay();
+  //     return expect(tween.play).toHaveBeenCalledWith(0);
+  //   });
+  // });
 
-  describe('replayBackward method ->', function() {
-    it('should call reset and playBackward methods', function() {
-      var tween = new Tween();
-      spyOn(tween, 'reset').and.callThrough();
-      spyOn(tween, 'playBackward').and.callThrough();
-      tween.replayBackward(200);
-      expect(tween.reset).toHaveBeenCalled();
-      expect(tween.playBackward).toHaveBeenCalledWith(200);
-    });
-    it('should return this', function() {
-      var tween = new Tween();
-      var result = tween.replayBackward(200);
-      expect(result).toBe(tween);
-    });
-    return it('should fallback to 0 shift', function() {
-      var tween = new Tween();
-      spyOn(tween, 'playBackward').and.callThrough();
-      tween.replayBackward();
-      expect(tween.playBackward).toHaveBeenCalledWith(0);
-    });
-  });
+  // `replayBackward` is not used yet
+  // describe('replayBackward method ->', function() {
+  //   it('should call reset and playBackward methods', function() {
+  //     var tween = new Tween();
+  //     spyOn(tween, 'reset').and.callThrough();
+  //     spyOn(tween, 'playBackward').and.callThrough();
+  //     tween.replayBackward(200);
+  //     expect(tween.reset).toHaveBeenCalled();
+  //     expect(tween.playBackward).toHaveBeenCalledWith(200);
+  //   });
+  //   it('should return this', function() {
+  //     var tween = new Tween();
+  //     var result = tween.replayBackward(200);
+  //     expect(result).toBe(tween);
+  //   });
+  //   it('should fallback to 0 shift', function() {
+  //     var tween = new Tween();
+  //     spyOn(tween, 'playBackward').and.callThrough();
+  //     tween.replayBackward();
+  //     expect(tween.playBackward).toHaveBeenCalledWith(0);
+  //   });
+  // });
 
-  describe('setSpeed method ->', function() {
-    it('should return this', function() {
-      var tween = new Tween();
-      expect(tween.setSpeed(.5)).toBe(tween);
-    });
-    it('should set speed', function() {
-      var tween = new Tween();
-      var speed = 3.2;
-      tween.setSpeed(speed);
-      expect(tween._props.speed).toBe(speed);
-    });
-    it('should call _setResume time if playing', function() {
-      var tween = new Tween();
-      var speed = 3.2;
-      tween._setPlaybackState('play');
-      spyOn(tween, '_setResumeTime');
-      tween.setSpeed(speed);
-      return expect(tween._setResumeTime).toHaveBeenCalledWith('play');
-    });
-    it('should call _setResume time if playingBackward', function() {
-      var tween = new Tween();
-      var speed = 3.2;
-      tween._setPlaybackState('playingBackward');
-      spyOn(tween, '_setResumeTime');
-      tween.setSpeed(speed);
-      expect(tween._setResumeTime).toHaveBeenCalledWith('playingBackward');
-    });
-    it('should not call _setResume time if stopped', function() {
-      var tween = new Tween();
-      var speed = 3.2;
-      spyOn(tween, '_setResumeTime');
-      tween.setSpeed(speed);
-      expect(tween._setResumeTime)
-        .not.toHaveBeenCalledWith('stop');
-    });
-    it('should not call _setResume time if paused', function() {
-      var tween = new Tween();
-      var speed = 3.2;
-      spyOn(tween, '_setResumeTime');
-      tween.setSpeed(speed);
-      expect(tween._setResumeTime)
-        .not.toHaveBeenCalledWith('pause');
-    });
-  });
+  // `speed` is not used yet
+  // describe('setSpeed method ->', function() {
+  //   it('should return this', function() {
+  //     var tween = new Tween();
+  //     expect(tween.setSpeed(.5)).toBe(tween);
+  //   });
+  //   it('should set speed', function() {
+  //     var tween = new Tween();
+  //     var speed = 3.2;
+  //     tween.setSpeed(speed);
+  //     expect(tween._props.speed).toBe(speed);
+  //   });
+  //   it('should call _setResume time if playing', function() {
+  //     var tween = new Tween();
+  //     var speed = 3.2;
+  //     tween._setPlaybackState('play');
+  //     spyOn(tween, '_setResumeTime');
+  //     tween.setSpeed(speed);
+  //     return expect(tween._setResumeTime).toHaveBeenCalledWith('play');
+  //   });
+  //   it('should call _setResume time if playingBackward', function() {
+  //     var tween = new Tween();
+  //     var speed = 3.2;
+  //     tween._setPlaybackState('playingBackward');
+  //     spyOn(tween, '_setResumeTime');
+  //     tween.setSpeed(speed);
+  //     expect(tween._setResumeTime).toHaveBeenCalledWith('playingBackward');
+  //   });
+  //   it('should not call _setResume time if stopped', function() {
+  //     var tween = new Tween();
+  //     var speed = 3.2;
+  //     spyOn(tween, '_setResumeTime');
+  //     tween.setSpeed(speed);
+  //     expect(tween._setResumeTime)
+  //       .not.toHaveBeenCalledWith('stop');
+  //   });
+  //   it('should not call _setResume time if paused', function() {
+  //     var tween = new Tween();
+  //     var speed = 3.2;
+  //     spyOn(tween, '_setResumeTime');
+  //     tween.setSpeed(speed);
+  //     expect(tween._setResumeTime)
+  //       .not.toHaveBeenCalledWith('pause');
+  //   });
+  // });
 
-  describe('reverse function ->', function() {
-    it('should reverse plan', function() {
-      var tween = new Tween();
-
-      spyOn(tween._planner, 'reverse');
-      tween.reverse();
-      expect(tween._planner.reverse).toHaveBeenCalled();
-    });
-
-    it('should update plan', function() {
-      var tween = new Tween();
-
-      tween.reverse();
-      expect(tween._plan).toEqual(tween._planner._plan);
-    });
-
-    it('should update `_frameIndex`', function() {
-      var tween = new Tween();
-
-      tween._setStartTime();
-      var startTime = tween._startTime;
-      tween.update(startTime);
-      tween.update(startTime + 16);
-      tween.update(startTime + 32);
-      tween.update(startTime + 48);
-
-      var frameIndex = tween._frameIndex;
-      tween.reverse();
-      expect(tween._frameIndex).toEqual(tween._plan.length-1 - frameIndex);
-    });
-
-    it('should update `_props.isReverse`', function() {
-      var tween = new Tween();
-      tween.reverse();
-      expect(tween._props.isReverse).toEqual(true);
-    });
-
-    it('should update `_props.isReverse` #reverse', function() {
-      var tween = new Tween({
-        isReverse: true
-      });
-      tween.reverse();
-      expect(tween._props.isReverse).toEqual(false);
-    });
-
-    it('should swap `_cb` and `_cbr`', function() {
-      var tween = new Tween();
-      var cb = tween._cb;
-      var cbr = tween._cbr;
-      tween.reverse();
-
-      expect(tween._cb).toBe(cbr);
-      expect(tween._cbr).toBe(cb);
-    });
-
-    it('should swap `_cb` and `_cbr` #reverse', function() {
-      var tween = new Tween({
-        isReverse: true
-      });
-      var cb = tween._cb;
-      var cbr = tween._cbr;
-      tween.reverse();
-
-      expect(tween._cb).toBe(cbr);
-      expect(tween._cbr).toBe(cb);
-    });
-
-    it('should return `this`', function() {
-      var tween = new Tween();
-
-      var result = tween.reverse();
-      expect(result).toBe(tween);
-    });
-  });
+  // `isReverse` is not used yet
+  // describe('reverse function ->', function() {
+  //   it('should reverse plan', function() {
+  //     var tween = new Tween();
+  //
+  //     spyOn(tween._planner, 'reverse');
+  //     tween.reverse();
+  //     expect(tween._planner.reverse).toHaveBeenCalled();
+  //   });
+  //
+  //   it('should update plan', function() {
+  //     var tween = new Tween();
+  //
+  //     tween.reverse();
+  //     expect(tween._plan).toEqual(tween._planner._plan);
+  //   });
+  //
+  //   it('should update `_frameIndex`', function() {
+  //     var tween = new Tween();
+  //
+  //     tween._setStartTime();
+  //     var startTime = tween._startTime;
+  //     tween.update(startTime);
+  //     tween.update(startTime + 16);
+  //     tween.update(startTime + 32);
+  //     tween.update(startTime + 48);
+  //
+  //     var frameIndex = tween._frameIndex;
+  //     tween.reverse();
+  //     expect(tween._frameIndex).toEqual(tween._plan.length-1 - frameIndex);
+  //   });
+  //
+  //   it('should update `_props.isReverse`', function() {
+  //     var tween = new Tween();
+  //     tween.reverse();
+  //     expect(tween._props.isReverse).toEqual(true);
+  //   });
+  //
+  //   it('should update `_props.isReverse` #reverse', function() {
+  //     var tween = new Tween({
+  //       isReverse: true
+  //     });
+  //     tween.reverse();
+  //     expect(tween._props.isReverse).toEqual(false);
+  //   });
+  //
+  //   it('should swap `_cb` and `_cbr`', function() {
+  //     var tween = new Tween();
+  //     var cb = tween._cb;
+  //     var cbr = tween._cbr;
+  //     tween.reverse();
+  //
+  //     expect(tween._cb).toBe(cbr);
+  //     expect(tween._cbr).toBe(cb);
+  //   });
+  //
+  //   it('should swap `_cb` and `_cbr` #reverse', function() {
+  //     var tween = new Tween({
+  //       isReverse: true
+  //     });
+  //     var cb = tween._cb;
+  //     var cbr = tween._cbr;
+  //     tween.reverse();
+  //
+  //     expect(tween._cb).toBe(cbr);
+  //     expect(tween._cbr).toBe(cb);
+  //   });
+  //
+  //   it('should return `this`', function() {
+  //     var tween = new Tween();
+  //
+  //     var result = tween.reverse();
+  //     expect(result).toBe(tween);
+  //   });
+  // });
 
   // describe('reverse function ->', function() {
   //   it('should reverse plan', function() {

@@ -221,20 +221,34 @@ export default class Tween extends ClassProto {
   /**
    * _envokeCallBacks - function to envoke callbacks regarding frame snapshot.
    *
+   *  0 -> isDelay
+   *  1 -> onUpdate
+   *  2 -> isYoyo
+   *  3 -> isYoyoBackward
+   *  4 -> onStart
+   *  5 -> onStartBackward
+   *  6 -> onRepeatStart
+   *  7 -> onRepeatStartBackward
+   *  8 -> onRepeatComplete
+   *  9 -> onRepeatCompleteBackward
+   *  10 -> onComplete
+   *  11 -> onCompleteBackward
+   *
    * @private
    * @bound
    * @param {Number} Frame snapshot.
    */
   _envokeCallBacks = (snapshot) => {
-    if (snapshot === 0) { return; };
-    let mask = 1;
+      if (snapshot === 0) { return; }; // delay
 
-    const props = this._props;
-    (snapshot & (mask <<= 1)) && props.onStart(); // 2
-    (snapshot & (mask <<= 1)) && props.onRepeatStart(); // 4
-    (snapshot & (mask <<= 1)) && props.onUpdate(); // 8
-    (snapshot & (mask <<= 1)) && props.onRepeatComplete(); // 16
-    (snapshot & (mask <<= 1)) && props.onComplete(); // 32
+      const props = this._props;
+      const isYoyo = (snapshot & 12) > 0;
+
+      ((snapshot & 16) > 0) && props.onStart(true, isYoyo);
+      ((snapshot & 256) > 0) && props.onRepeatComplete(true, isYoyo);
+      ((snapshot & 64) > 0) && props.onRepeatStart(true, isYoyo);
+      ((snapshot & 1) > 0) && props.onUpdate(0, 0, true, isYoyo);
+      ((snapshot & 1024) > 0) && props.onComplete(true, isYoyo);
   }
 
   /**
@@ -524,24 +538,24 @@ export default class Tween extends ClassProto {
    *
    * @return {Obejct} This tween.
    */
-  reverse() {
-    this._planner.reverse();
-
-    // console.log(`-> reverse`);
-
-    // reverse the `_frameIndex` to stay on the same index in `_plan`
-    if (this._frameIndex !== -1 && this._frameIndex !== this._plan.length) {
-      this._frameIndex = this._plan.length-1 - this._frameIndex;
-    }
-
-    this._reverseTime = this._frameIndex*16;
-
-    const { _cb, _cbr } = this;
-    this._cb = _cbr;
-    this._cbr = _cb;
-
-    this._props.isReverse = !this._props.isReverse;
-
-    return this;
-  }
+  // reverse() {
+  //   this._planner.reverse();
+  //
+  //   // console.log(`-> reverse`);
+  //
+  //   // reverse the `_frameIndex` to stay on the same index in `_plan`
+  //   if (this._frameIndex !== -1 && this._frameIndex !== this._plan.length) {
+  //     this._frameIndex = this._plan.length-1 - this._frameIndex;
+  //   }
+  //
+  //   this._reverseTime = this._frameIndex*16;
+  //
+  //   const { _cb, _cbr } = this;
+  //   this._cb = _cbr;
+  //   this._cbr = _cb;
+  //
+  //   this._props.isReverse = !this._props.isReverse;
+  //
+  //   return this;
+  // }
 }

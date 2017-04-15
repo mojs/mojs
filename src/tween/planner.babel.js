@@ -12,37 +12,6 @@ export default class Planner extends ClassProto {
   _declareDefaults() { return this._defaults = defaults; }
 
   /**
-   * _extendDefaults - Method to copy `_o` options to `_props` object
-   *                  with fallback to `_defaults`.
-   * @private
-   */
-  _extendDefaults() {
-    super._extendDefaults();
-
-    const { delay, duration, speed } = this._props;
-    // save the original `delay` property
-    this._originalDelay = delay;
-    // save the original `duration` property
-    this._originalDuration = duration;
-    // normalize `delay` and `duration` regarding `speed`
-    this._normalizeDelayAndDuration();
-  }
-
-  /**
-   * _normalizeDelayAndDuration - function to normalize `delay` and `duration`
-   *                              regarding `speed` property.
-   *
-   * @return {type}  description
-   */
-  _normalizeDelayAndDuration() {
-    const { speed } = this._props;
-    // normalize `delay` regarding `speed`
-    this._props.delay = this._originalDelay / speed;
-    // normalize `duration` regarding `speed`
-    this._props.duration = this._originalDuration / speed;
-  }
-
-  /**
    * _vars - function do declare `variables` after `_defaults` were extended
    *         by `options` and saved to `_props`
    *
@@ -60,6 +29,19 @@ export default class Planner extends ClassProto {
   /**
    * createPlan - function to create an tween animation plan.
    *
+   *  0 -> isDelay
+   *  1 -> onUpdate
+   *  2 -> isYoyo
+   *  3 -> isYoyoBackward
+   *  4 -> onStart
+   *  5 -> onStartBackward
+   *  6 -> onRepeatStart
+   *  7 -> onRepeatStartBackward
+   *  8 -> onRepeatComplete
+   *  9 -> onRepeatCompleteBackward
+   *  10 -> onComplete
+   *  11 -> onCompleteBackward
+   *
    * @public
    */
   createPlan() {
@@ -71,9 +53,10 @@ export default class Planner extends ClassProto {
     // frame size (60fps)
     const step = 16;
 
-    const { delay, duration } = this._props;
-    // current time
-    let time = delay;
+    const { delay, duration, repeat } = this._props;
+    // current time shift by `delay`
+    // then add `8` to be sure we always are in the middle of the frame
+    let time = delay + (step/2);
 
     while (time <= this._totalTime) {
       const prevPeriod = this._getPeriod(time - step);
@@ -81,45 +64,62 @@ export default class Planner extends ClassProto {
       const nextPeriod = this._getPeriod(time + step);
       const prevFrame = this._plan[this._plan.length-1];
 
+      // delay
       let frameSnapshot = 0;
-
-      if (period === 'delay') {
-        this._plan.push(frameSnapshot);
-        time += step;
-        continue;
+      if (period !== 'delay') {
+        frameSnapshot = 1;
       }
 
-      // onUpdate
-      frameSnapshot = frameSnapshot | (1 << 3);
+      // *  0 -> isDelay
+      // *  1 -> onUpdate
+      // *  2 -> isYoyo
+      // *  3 -> isYoyoBackward
+      // *  4 -> onStart
+      // *  5 -> onStartBackward
+      // *  6 -> onRepeatStart
+      // *  7 -> onRepeatStartBackward
+      // *  8 -> onRepeatComplete
+      // *  9 -> onRepeatCompleteBackward
+      // *  10 -> onComplete
+      // *  11 -> onCompleteBackward
 
       const isPrevFrame = prevFrame !== undefined;
-      if (!isPrevFrame) {
-        // onStart
-        frameSnapshot = frameSnapshot | (1 << 1);
-      }
-
       const isPrevDelay = prevPeriod === 'delay';
-      // onRepeatStart
-      if (!isPrevFrame || isPrevDelay || prevPeriod === period - 1) {
-        frameSnapshot = frameSnapshot | (1 << 2);
-      }
 
-      // onRepeatComplete
-      if (nextPeriod === 'delay' || nextPeriod === period + 1) {
+      // onStart
+      if (!isPrevFrame) {
         frameSnapshot = frameSnapshot | (1 << 4);
       }
 
-      this._plan.push(frameSnapshot);
+      // onRepeatStart
+      if (!isPrevFrame || (isPrevDelay && period !== 'delay') || prevPeriod === period - 1) {
+        frameSnapshot = frameSnapshot | (1 << 6);
+      }
 
+      // onRepeatStartBackward
+      if ((period === 'delay' && nextPeriod !== 'delay') || (nextPeriod === period + 1 && nextPeriod < this._props.repeat+1) ) {
+        frameSnapshot = frameSnapshot | (1 << 7);
+      }
+
+      // onRepeatComplete
+      if ((period === 'delay' && prevPeriod !== 'delay') || (prevPeriod === period - 1 && prevPeriod !== -1)) {
+        frameSnapshot = frameSnapshot | (1 << 8);
+      }
+
+      // onRepeatCompleteBackward
+      if (period !== 'delay' && nextPeriod === 'delay' || nextPeriod === period + 1) {
+        frameSnapshot = frameSnapshot | (1 << 9);
+      }
+
+      this._plan.push(frameSnapshot);
       time += step;
     }
 
-    // onComplete
+    // onCompleteBackward
     const lastIndex = this._plan.length - 1;
-    this._plan[lastIndex] = this._plan[lastIndex] | (1 << 5);
-    if (this._props.isReverse) {
-      this.reverse();
-    }
+    this._plan[lastIndex] = this._plan[lastIndex] | (1 << 11);
+
+    // if (this._props.isReverse) { this.reverse(); }
 
     return this._plan;
   }
@@ -180,19 +180,10 @@ export default class Planner extends ClassProto {
    *
    * @return {Object} This planner.
    */
-  reverse() {
-    this._plan.reverse();
-
-    return this;
-  }
-
-  /**
-   * getPlan - function to get plan.
-   *
-   * @return {Object} Plan.
-   */
-  // getPlan() {
-  //   return this._plan;
+  // reverse() {
+  //   this._plan.reverse();
+  //
+  //   return this;
   // }
 
 }
