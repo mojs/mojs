@@ -242,7 +242,7 @@ export default class Tween extends ClassProto {
       if (snapshot === 0) { return; }; // delay
 
       const props = this._props;
-      const isYoyo = (snapshot & 12) > 0;
+      const isYoyo = (snapshot & 4) > 0;
 
       ((snapshot & 16) > 0) && props.onStart(true, isYoyo);
       ((snapshot & 256) > 0) && props.onRepeatComplete(true, isYoyo);
@@ -255,20 +255,34 @@ export default class Tween extends ClassProto {
    * _envokeCallBacksRev - function to envoke callbacks regarding frame snapshot
    *                        in reverse direction.
    *
+   *  0 -> isDelay
+   *  1 -> onUpdate
+   *  2 -> isYoyo
+   *  3 -> isYoyoBackward
+   *  4 -> onStart
+   *  5 -> onStartBackward
+   *  6 -> onRepeatStart
+   *  7 -> onRepeatStartBackward
+   *  8 -> onRepeatComplete
+   *  9 -> onRepeatCompleteBackward
+   *  10 -> onComplete
+   *  11 -> onCompleteBackward
+   *
    * @private
    * @bound
    * @param {Number} Frame snapshot.
    */
   _envokeCallBacksRev = (snapshot) => {
-    if (snapshot === 0) { return; };
-    let mask = 64;
+    if (snapshot === 0) { return; }; // delay
 
     const props = this._props;
-    (snapshot & (mask >>= 1)) && props.onComplete(); // 32
-    (snapshot & (mask >>= 1)) && props.onRepeatComplete(); // 16
-    (snapshot & (mask >>= 1)) && props.onUpdate(); // 8
-    (snapshot & (mask >>= 1)) && props.onRepeatStart(); // 4
-    (snapshot & (mask >>= 1)) && props.onStart(); // 2
+    const isYoyo = (snapshot & 8) > 0;
+
+    ((snapshot & 32) > 0) && props.onStart(true, isYoyo);
+    ((snapshot & 512) > 0) && props.onRepeatComplete(true, isYoyo);
+    ((snapshot & 128) > 0) && props.onRepeatStart(true, isYoyo);
+    ((snapshot & 1) > 0) && props.onUpdate(0, 0, true, isYoyo);
+    ((snapshot & 2048) > 0) && props.onComplete(true, isYoyo);
   }
 
   /** PUBLIC FUNCTIONS **/

@@ -1044,9 +1044,7 @@ describe('tween ->', function () {
       expect(props.onRepeatComplete.calls.count()).toBe(0);
       expect(props.onComplete.calls.count()).toBe(0);
 
-      var num = 1000000000;
-
-      tween._envokeCallBacks(num | 12); // isYoyo
+      tween._envokeCallBacks(4); // isYoyo
 
       expect(props.onStart.calls.count()).toBe(0);
       expect(props.onRepeatStart.calls.count()).toBe(0);
@@ -1054,7 +1052,7 @@ describe('tween ->', function () {
       expect(props.onRepeatComplete.calls.count()).toBe(0);
       expect(props.onComplete.calls.count()).toBe(0);
 
-      tween._envokeCallBacks(num | 16); // onStart
+      tween._envokeCallBacks(16); // onStart
 
       expect(props.onStart.calls.count()).toBe(1);
       expect(props.onRepeatStart.calls.count()).toBe(0);
@@ -1062,7 +1060,7 @@ describe('tween ->', function () {
       expect(props.onRepeatComplete.calls.count()).toBe(0);
       expect(props.onComplete.calls.count()).toBe(0);
 
-      tween._envokeCallBacks(num | 64); // onRepeatStart
+      tween._envokeCallBacks(64); // onRepeatStart
 
       expect(props.onStart.calls.count()).toBe(1);
       expect(props.onRepeatStart.calls.count()).toBe(1);
@@ -1070,7 +1068,7 @@ describe('tween ->', function () {
       expect(props.onRepeatComplete.calls.count()).toBe(0);
       expect(props.onComplete.calls.count()).toBe(0);
 
-      tween._envokeCallBacks(num | 256); // onRepeatComplete
+      tween._envokeCallBacks(256); // onRepeatComplete
 
       expect(props.onStart.calls.count()).toBe(1);
       expect(props.onRepeatStart.calls.count()).toBe(1);
@@ -1078,7 +1076,7 @@ describe('tween ->', function () {
       expect(props.onRepeatComplete.calls.count()).toBe(1);
       expect(props.onComplete.calls.count()).toBe(0);
 
-      tween._envokeCallBacks(num | 1024); // onComplete
+      tween._envokeCallBacks(1024); // onComplete
 
       expect(props.onStart.calls.count()).toBe(1);
       expect(props.onRepeatStart.calls.count()).toBe(1);
@@ -1087,220 +1085,227 @@ describe('tween ->', function () {
       expect(props.onComplete.calls.count()).toBe(1);
     });
 
-    // it('should envoke callbacks regarding snapshot #combos ->', function () {
-    //   var options = {
-    //     duration: 50,
-    //     onStart: function() {},
-    //     onRepeatStart: function() {},
-    //     onUpdate: function() {},
-    //     onRepeatComplete: function() {},
-    //     onComplete: function() {}
-    //   };
-    //
-    //   var tween = new Tween(options);
-    //   var props = tween._props;
-    //
-    //   spyOn(props, 'onStart').and.callThrough();
-    //   spyOn(props, 'onRepeatStart').and.callThrough();
-    //   spyOn(props, 'onUpdate').and.callThrough();
-    //   spyOn(props, 'onRepeatComplete').and.callThrough();
-    //   spyOn(props, 'onComplete').and.callThrough();
-    //
-    //   tween._envokeCallBacks(0);
-    //   tween._envokeCallBacks(0);
-    //
-    //   expect(props.onStart.calls.count()).toBe(0);
-    //   expect(props.onRepeatStart.calls.count()).toBe(0);
-    //   expect(props.onUpdate.calls.count()).toBe(0);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
-    //   expect(props.onComplete.calls.count()).toBe(0);
-    //
-    //   tween._envokeCallBacks(1);
-    //
-    //   expect(props.onStart.calls.count()).toBe(0);
-    //   expect(props.onRepeatStart.calls.count()).toBe(0);
-    //   expect(props.onUpdate.calls.count()).toBe(1);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
-    //   expect(props.onComplete.calls.count()).toBe(0);
-    //
-    //   tween._envokeCallBacks(81); // onStart + onRepeatStart + onUpdate
-    //
-    //   expect(props.onStart.calls.count()).toBe(1);
-    //   expect(props.onRepeatStart.calls.count()).toBe(1);
-    //   expect(props.onUpdate.calls.count()).toBe(2);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
-    //   expect(props.onComplete.calls.count()).toBe(0);
-    //
-    //   tween._envokeCallBacks(2561); // onComplete + onRepeatComplete + onUpdate
-    //
-    //   expect(props.onStart.calls.count()).toBe(1);
-    //   expect(props.onRepeatStart.calls.count()).toBe(1);
-    //   expect(props.onUpdate.calls.count()).toBe(3);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
-    //   expect(props.onComplete.calls.count()).toBe(1);
-    //
-    //   tween._envokeCallBacks(641); // onRepeatStartBackward + onRepeatCompleteBackward + onUpdate
-    //
-    //   expect(props.onStart.calls.count()).toBe(1);
-    //   expect(props.onRepeatStart.calls.count()).toBe(2);
-    //   expect(props.onUpdate.calls.count()).toBe(4);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
-    //   expect(props.onComplete.calls.count()).toBe(1);
-    //
-    //   tween._envokeCallBacks(321); // onRepeatStart + onRepeatComplete + onUpdate
-    //
-    //   expect(props.onStart.calls.count()).toBe(1);
-    //   expect(props.onRepeatStart.calls.count()).toBe(3);
-    //   expect(props.onUpdate.calls.count()).toBe(5);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(3);
-    //   expect(props.onComplete.calls.count()).toBe(1);
-    //
-    //   tween._envokeCallBacks(513); // onRepeatComplete + delay
-    //
-    //   expect(props.onStart.calls.count()).toBe(1);
-    //   expect(props.onRepeatStart.calls.count()).toBe(3);
-    //   expect(props.onUpdate.calls.count()).toBe(6);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(4);
-    //   expect(props.onComplete.calls.count()).toBe(1);
-    //
-    //   tween._envokeCallBacks(65); // onRepeatStart + onUpdate
-    //
-    //   expect(props.onStart.calls.count()).toBe(1);
-    //   expect(props.onRepeatStart.calls.count()).toBe(4);
-    //   expect(props.onUpdate.calls.count()).toBe(7);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(4);
-    //   expect(props.onComplete.calls.count()).toBe(1);
-    //
-    //   tween._envokeCallBacks(128); // onRepeatStartBackward + delay
-    //
-    //   expect(props.onStart.calls.count()).toBe(1);
-    //   expect(props.onRepeatStart.calls.count()).toBe(5);
-    //   expect(props.onUpdate.calls.count()).toBe(7);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(4);
-    //   expect(props.onComplete.calls.count()).toBe(1);
-    //
-    // });
+    it('should envoke callbacks regarding snapshot #combos ->', function () {
+      var options = {
+        duration: 50,
+        onStart: function() {},
+        onRepeatStart: function() {},
+        onUpdate: function() {},
+        onRepeatComplete: function() {},
+        onComplete: function() {}
+      };
 
+      var tween = new Tween(options);
+      var props = tween._props;
+
+      spyOn(props, 'onStart').and.callThrough();
+      spyOn(props, 'onRepeatStart').and.callThrough();
+      spyOn(props, 'onUpdate').and.callThrough();
+      spyOn(props, 'onRepeatComplete').and.callThrough();
+      spyOn(props, 'onComplete').and.callThrough();
+
+      tween._envokeCallBacks(0);
+      tween._envokeCallBacks(0);
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(0);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacks(1);
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacks(81); // onStart + onRepeatStart + onUpdate
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(2);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacks(321); // onRepeatStart + onRepeatComplete + onUpdate
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(2);
+      expect(props.onUpdate.calls.count()).toBe(3);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacks(513); // onRepeatComplete + delay
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(2);
+      expect(props.onUpdate.calls.count()).toBe(4);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacks(65); // onRepeatStart + onUpdate
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(3);
+      expect(props.onUpdate.calls.count()).toBe(5);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
+      expect(props.onComplete.calls.count()).toBe(0);
+    });
   });
 
-
   describe('_envokeCallBacksRev function ->', function() {
-    // it('should envoke callbacks regarding snapshot ->', function () {
-    //   var options = {
-    //     duration: 50,
-    //     onStart: function() {},
-    //     onRepeatStart: function() {},
-    //     onUpdate: function() {},
-    //     onRepeatComplete: function() {},
-    //     onComplete: function() {}
-    //   };
-    //
-    //   var tween = new Tween(options);
-    //   var props = tween._props;
-    //
-    //   spyOn(props, 'onStart').and.callThrough();
-    //   spyOn(props, 'onRepeatStart').and.callThrough();
-    //   spyOn(props, 'onUpdate').and.callThrough();
-    //   spyOn(props, 'onRepeatComplete').and.callThrough();
-    //   spyOn(props, 'onComplete').and.callThrough();
-    //
-    //   tween._envokeCallBacksRev(0);
-    //   tween._envokeCallBacksRev(0);
-    //
-    //   expect(props.onStart.calls.count()).toBe(0);
-    //   expect(props.onRepeatStart.calls.count()).toBe(0);
-    //   expect(props.onUpdate.calls.count()).toBe(0);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
-    //   expect(props.onComplete.calls.count()).toBe(0);
-    //
-    //   tween._envokeCallBacksRev(1);
-    //
-    //   expect(props.onStart.calls.count()).toBe(0);
-    //   expect(props.onRepeatStart.calls.count()).toBe(0);
-    //   expect(props.onUpdate.calls.count()).toBe(0);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
-    //   expect(props.onComplete.calls.count()).toBe(0);
-    //
-    //   tween._envokeCallBacksRev(1 << 1);
-    //
-    //   expect(props.onStart.calls.count()).toBe(1);
-    //   expect(props.onRepeatStart.calls.count()).toBe(0);
-    //   expect(props.onUpdate.calls.count()).toBe(0);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
-    //   expect(props.onComplete.calls.count()).toBe(0);
-    //
-    //   tween._envokeCallBacksRev(1 << 1 | 1 << 2);
-    //
-    //   expect(props.onStart.calls.count()).toBe(2);
-    //   expect(props.onRepeatStart.calls.count()).toBe(1);
-    //   expect(props.onUpdate.calls.count()).toBe(0);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
-    //   expect(props.onComplete.calls.count()).toBe(0);
-    //
-    //   tween._envokeCallBacksRev(1 << 2);
-    //
-    //   expect(props.onStart.calls.count()).toBe(2);
-    //   expect(props.onRepeatStart.calls.count()).toBe(2);
-    //   expect(props.onUpdate.calls.count()).toBe(0);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
-    //   expect(props.onComplete.calls.count()).toBe(0);
-    //
-    //   tween._envokeCallBacksRev(1 << 3);
-    //
-    //   expect(props.onStart.calls.count()).toBe(2);
-    //   expect(props.onRepeatStart.calls.count()).toBe(2);
-    //   expect(props.onUpdate.calls.count()).toBe(1);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(0);
-    //   expect(props.onComplete.calls.count()).toBe(0);
-    //
-    //   tween._envokeCallBacksRev(1 << 3 | 1 << 4);
-    //
-    //   expect(props.onStart.calls.count()).toBe(2);
-    //   expect(props.onRepeatStart.calls.count()).toBe(2);
-    //   expect(props.onUpdate.calls.count()).toBe(2);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(1);
-    //   expect(props.onComplete.calls.count()).toBe(0);
-    //
-    //   tween._envokeCallBacksRev(1 << 3 | 1 << 4 | 1 << 2);
-    //
-    //   expect(props.onStart.calls.count()).toBe(2);
-    //   expect(props.onRepeatStart.calls.count()).toBe(3);
-    //   expect(props.onUpdate.calls.count()).toBe(3);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(2);
-    //   expect(props.onComplete.calls.count()).toBe(0);
-    //
-    //   tween._envokeCallBacksRev(1 << 3 | 1 << 4 | 1 << 2 | 1 << 5);
-    //
-    //   expect(props.onStart.calls.count()).toBe(2);
-    //   expect(props.onRepeatStart.calls.count()).toBe(4);
-    //   expect(props.onUpdate.calls.count()).toBe(4);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(3);
-    //   expect(props.onComplete.calls.count()).toBe(1);
-    //
-    //   tween._envokeCallBacksRev(1 << 5);
-    //
-    //   expect(props.onStart.calls.count()).toBe(2);
-    //   expect(props.onRepeatStart.calls.count()).toBe(4);
-    //   expect(props.onUpdate.calls.count()).toBe(4);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(3);
-    //   expect(props.onComplete.calls.count()).toBe(2);
-    //
-    //   tween._envokeCallBacksRev(1 << 4 | 1 << 5);
-    //
-    //   expect(props.onStart.calls.count()).toBe(2);
-    //   expect(props.onRepeatStart.calls.count()).toBe(4);
-    //   expect(props.onUpdate.calls.count()).toBe(4);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(4);
-    //   expect(props.onComplete.calls.count()).toBe(3);
-    //
-    //   tween._envokeCallBacksRev(1 << 3);
-    //
-    //   expect(props.onStart.calls.count()).toBe(2);
-    //   expect(props.onRepeatStart.calls.count()).toBe(4);
-    //   expect(props.onUpdate.calls.count()).toBe(5);
-    //   expect(props.onRepeatComplete.calls.count()).toBe(4);
-    //   expect(props.onComplete.calls.count()).toBe(3);
-    // });
+    it('should envoke callbacks regarding snapshot #basic ->', function () {
+      var options = {
+        duration: 50,
+        onStart: function() {},
+        onRepeatStart: function() {},
+        onUpdate: function() {},
+        onRepeatComplete: function() {},
+        onComplete: function() {}
+      };
+
+      var tween = new Tween(options);
+      var props = tween._props;
+
+      spyOn(props, 'onStart').and.callThrough();
+      spyOn(props, 'onRepeatStart').and.callThrough();
+      spyOn(props, 'onUpdate').and.callThrough();
+      spyOn(props, 'onRepeatComplete').and.callThrough();
+      spyOn(props, 'onComplete').and.callThrough();
+
+      tween._envokeCallBacksRev(0);
+      tween._envokeCallBacksRev(0);
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(0);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(1);
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      // *  0 -> isDelay
+      // *  1 -> onUpdate
+      // *  2 -> isYoyo
+      // *  3 -> isYoyoBackward
+      // *  4 -> onStart
+      // *  5 -> onStartBackward
+      // *  6 -> onRepeatStart
+      // *  7 -> onRepeatStartBackward
+      // *  8 -> onRepeatComplete
+      // *  9 -> onRepeatCompleteBackward
+      // *  10 -> onComplete
+      // *  11 -> onCompleteBackward
+
+      tween._envokeCallBacksRev(8); // isYoyoBackward
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(32); // onStartBackward
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(128); // onRepeatStartBackward
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(512); // onRepeatCompleteBackward
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(2048); // onCompleteBackward
+
+      expect(props.onStart.calls.count()).toBe(1);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
+      expect(props.onComplete.calls.count()).toBe(1);
+    });
+
+    it('should envoke callbacks regarding snapshot #combos ->', function () {
+      var options = {
+        duration: 50,
+        onStart: function() {},
+        onRepeatStart: function() {},
+        onUpdate: function() {},
+        onRepeatComplete: function() {},
+        onComplete: function() {}
+      };
+
+      var tween = new Tween(options);
+      var props = tween._props;
+
+      spyOn(props, 'onStart').and.callThrough();
+      spyOn(props, 'onRepeatStart').and.callThrough();
+      spyOn(props, 'onUpdate').and.callThrough();
+      spyOn(props, 'onRepeatComplete').and.callThrough();
+      spyOn(props, 'onComplete').and.callThrough();
+
+      tween._envokeCallBacksRev(0);
+      tween._envokeCallBacksRev(0);
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(0);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(1);
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(1);
+      expect(props.onRepeatComplete.calls.count()).toBe(0);
+      expect(props.onComplete.calls.count()).toBe(0);
+
+      tween._envokeCallBacksRev(2561); // onCompleteBackward + onRepeatCompleteBackward + onUpdate
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(0);
+      expect(props.onUpdate.calls.count()).toBe(2);
+      expect(props.onRepeatComplete.calls.count()).toBe(1);
+      expect(props.onComplete.calls.count()).toBe(1);
+
+      tween._envokeCallBacksRev(641); // onRepeatStartBackward + onRepeatCompleteBackward + onUpdate
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(1);
+      expect(props.onUpdate.calls.count()).toBe(3);
+      expect(props.onRepeatComplete.calls.count()).toBe(2);
+      expect(props.onComplete.calls.count()).toBe(1);
+
+      tween._envokeCallBacksRev(128); // onRepeatStartBackward + delay
+
+      expect(props.onStart.calls.count()).toBe(0);
+      expect(props.onRepeatStart.calls.count()).toBe(2);
+      expect(props.onUpdate.calls.count()).toBe(3);
+      expect(props.onRepeatComplete.calls.count()).toBe(2);
+      expect(props.onComplete.calls.count()).toBe(1);
+    });
   });
 
   describe('_setPlaybackState function ->', function() {
