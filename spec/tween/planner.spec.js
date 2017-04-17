@@ -124,7 +124,7 @@ describe('tween planner ->', function() {
       });
     });
 
-    // `isReverse` is not used yet
+    // `isReverve` is not used yet
     // describe('plan creaton #backward ->', function() {
     //   it('should create a plan #duration', function () {
     //     var planner = new TweenPlanner({
