@@ -77,7 +77,7 @@ const html = new mojs.Html({
   // Speed of the tween {Number}[0..∞]
   speed:          1,
   // If the progress should be flipped on repeat animation end {Boolean}
-  yoyo:           false,
+  isYoyo:         false,
   // Easing function {String, Function}[ easing name, path coordinates, bezier string, easing function ]
   easing:         'sin.out',
   // Easing function for backward direction of the tween animation (fallbacks to `easing`) {String, Function}[ easing name, path coordinates, bezier string, easing function ]
