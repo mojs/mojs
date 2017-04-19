@@ -55,6 +55,7 @@
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-stage-2": "^6.22.0",
     "babel-runtime": "^6.23.0",
+    "compression-webpack-plugin": "^0.4.0",
     "coveralls": "^2.12.0",
     "jasmine-core": "^2.5.2",
     "karma": "^1.5.0",

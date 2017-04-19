@@ -6,30 +6,27 @@
  *   - declare `_vars` after extention
  *   - call `_render` eventually
  */
-class ClassProto {
-  constructor (o = {}) {
-    // save options
-    this._o = o;
-
-    this._init();
-    this._declareDefaults();
-    this._extendDefaults();
-    this._vars();
-  }
-
+const ClassProto = {
   /**
    * _init - lifecycle initialization function.
    *
    * @private
    */
-  _init() {}
+  init(o = {}) {
+    // save options
+    this._o = o;
+
+    this._declareDefaults();
+    this._extendDefaults();
+    this._vars();
+  },
 
   /**
    * _declareDefaults - function to declare `_defaults` object.
    *
    * @private
    */
-  _declareDefaults() { this._defaults = {}; }
+  _declareDefaults() { this._defaults = {}; },
 
   /**
    * _extendDefaults - Method to copy `_o` options to `_props` object
@@ -41,7 +38,7 @@ class ClassProto {
       ...this._defaults,
       ...this._o
     };
-  }
+  },
 
   /**
    * _setProp - Method to set property on the module.
@@ -52,11 +49,11 @@ class ClassProto {
    * @param {Any} Value for the property to set. Could be
    *              undefined if the first param is object.
    */
-  _setProp(attr, value) {
-    if ( typeof attr === 'object' ) {
-      for ( var key in attr ) { this._assignProp( key, attr[key] ); }
-    } else { this._assignProp( attr, value ); }
-  }
+  // _setProp(attr, value) {
+  //   if ( typeof attr === 'object' ) {
+  //     for ( var key in attr ) { this._assignProp( key, attr[key] ); }
+  //   } else { this._assignProp( attr, value ); }
+  // },
 
   /**
    * _assignProp - Method to assign single property's value.
@@ -65,7 +62,7 @@ class ClassProto {
    * @param {String} Property name.
    * @param {Any}    Property value.
    */
-  _assignProp(key, value) { this._props[key] = value; }
+  // _assignProp(key, value) { this._props[key] = value; },
 
   /**
    * _vars - function do declare `variables` after `_defaults` were extended
@@ -76,4 +73,4 @@ class ClassProto {
   _vars() {}
 }
 
-export default ClassProto;
+export { ClassProto as ClassProto };

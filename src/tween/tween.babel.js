@@ -32,9 +32,9 @@ export default class Tween extends ClassProto {
 
     const { isReverse } = this._props;
     // `shorthand` to `_envokeCallBacks`
-    this._cb = (!isReverse) ? this._envokeCallBacks : this._envokeCallBacksRev;
+    this._cb = this._envokeCallBacks;
     // `shorthand` to `_envokeCallBacksRev`
-    // this._cbr = (isReverse) ? this._envokeCallBacks : this._envokeCallBacksRev;
+    this._cbr = this._envokeCallBacksRev;
   }
   /**
    * _declareDefaults - function to declare module defaults.
@@ -53,8 +53,6 @@ export default class Tween extends ClassProto {
   _vars() {
     this._planner = new TweenPlanner(this._o);
     this._plan = this._planner._plan;
-
-    this._reverseTime = 0;
 
     /**
      * TODO: cover
@@ -255,27 +253,31 @@ export default class Tween extends ClassProto {
       const isYoyo = (snapshot & triggers[0]) > 0;
       const isOnRepeatStart = (snapshot & triggers[3]) > 0;
       const isOnRepeatComplete = (snapshot & triggers[2]) > 0;
+      let isUpdate = false;
 
       // `onStart` callback
       ((snapshot & triggers[1]) > 0) && props.onStart(true, isYoyo);
 
       // `onRepeatComplete` callback
-      if (isOnRepeatComplete) {
-        const { duration } = this._props;
-        const updateTime = Math.min(time, this._periodStart + duration);
-        const progress = (updateTime - this._periodStart) / duration;
-        props.onUpdate(progress, progress, true, isYoyo);
+      if (isOnRepeatComplete === true) {
+        if (isOnRepeatStart === false) {
+          const { duration } = this._props;
+          const updateTime = Math.min(time, this._periodStart + duration);
+          const progress = (updateTime - this._periodStart) / duration;
+          props.onUpdate(progress, progress, true, isYoyo);
+          isUpdate = true;
+        }
         props.onRepeatComplete(true, isYoyo);
       }
 
-      if (isOnRepeatStart) {
+      if (isOnRepeatStart === true) {
         props.onRepeatStart(true, isYoyo);
         // recalculate period start on each repeat start
         const {duration, delay} = this._props;
         this._periodStart = this._periodStart + delay + duration;
       };
 
-      if ((snapshot & 1) > 0 && isOnRepeatComplete === false) {
+      if ((snapshot & 1) > 0 && isUpdate === false) {
         const {duration} = this._props;
         const updateTime = Math.min(time, this._periodStart + duration);
         const progress = (updateTime - this._periodStart) / duration;
@@ -283,6 +285,61 @@ export default class Tween extends ClassProto {
       }
 
       ((snapshot & triggers[4]) > 0) && props.onComplete(true, isYoyo);
+  }
+
+  /**
+   * _envokeCallBacksRev - function to envoke callbacks regarding frame snapshot.
+   *
+   *  0 -> isDelay
+   *  1 -> onUpdate
+   *  2 -> isYoyo
+   *  3 -> isYoyoBackward
+   *  4 -> onStart
+   *  5 -> onStartBackward
+   *  6 -> onRepeatStart
+   *  7 -> onRepeatStartBackward
+   *  8 -> onRepeatComplete
+   *  9 -> onRepeatCompleteBackward
+   *  10 -> onComplete
+   *  11 -> onCompleteBackward
+   *
+   * @private
+   * @bound
+   * @param {Number} Frame snapshot.
+   */
+  _envokeCallBacksRev = (snapshot, time) => {
+    this._o.isIt && console.log(`snapshot: ${snapshot}, time: ${time}`);
+      if (snapshot === 0) { return; }; // delay
+
+      const props = this._props;
+      const triggers = this._trg;
+      const isYoyo = (snapshot & triggers[0]) > 0;
+      const isOnRepeatStart = (snapshot & triggers[3]) > 0;
+      const isOnRepeatComplete = (snapshot & triggers[2]) > 0;
+
+      ((snapshot & triggers[4]) > 0) && props.onComplete(false, isYoyo);
+
+      // `onRepeatComplete` callback
+      if (isOnRepeatComplete === true) {
+        props.onRepeatComplete(true, isYoyo);
+      }
+
+      if ((snapshot & 1) > 0) {
+        const {duration} = this._props;
+        const updateTime = Math.min(time, this._periodStart + duration);
+        const progress = (updateTime - this._periodStart) / duration;
+        props.onUpdate(progress, progress, false, isYoyo);
+      }
+
+      if (isOnRepeatStart === true) {
+        props.onRepeatStart(true, isYoyo);
+        // recalculate period start on each repeat start
+        const {duration, delay} = this._props;
+        this._periodStart = this._periodStart + delay + duration;
+      };
+
+      // `onStart` callback
+      ((snapshot & triggers[1]) > 0) && props.onStart(false, isYoyo);
   }
 
   /** PUBLIC FUNCTIONS **/
@@ -294,9 +351,13 @@ export default class Tween extends ClassProto {
    * @param {Number} Current time.
    */
   update(time) {
-    time += this._reverseTime;
+    if (this._prevUpdateTime === time) { return; }
+
+    this._o.isIt && console.log(`update: ${time - this._startTime}`);
+
     // if forward direction
     if (time > this._prevTime) {
+      this._prevUpdateTime = time;
       // normal update in forward direction
       if (time >= this._startTime) {
         let isUpdate = false;
@@ -306,15 +367,14 @@ export default class Tween extends ClassProto {
           this._prevTime = time;
           isUpdate = true;
         }
-
         // if update time jumped after end time, make sure that
         // all appropriate callbacks called
         if (time >= (this._startTime + this._totalTime - this._props.delay)) {
+          // onRepeatComplete + onComplete + onUpdate
+          this._cb(1281, time);
           // reset flags because tween is ended
           this._prevTime = +Infinity;
           this._frameIndex = this._plan.length;
-          // onRepeatComplete + onComplete + onUpdate
-          this._envokeCallBacks(1281, time);
           // return `true` indicating that tween is completed
           return true;
         }
@@ -327,36 +387,34 @@ export default class Tween extends ClassProto {
 
     // if backward direction
     // can be called only on `seek` backward
-    } else if (time < this._prevTime) {
-      // // if update time jumped before start time, make sure that
-      // // all appropriate callbacks called
-      // if (time < this._startTime) {
-      //   // if tween ended and suddenly updated with the time that os smaller
-      //   // than `_startTime` - need to fire the `onRefresh`
-      //   if (this._prevTime === +Infinity) {
-      //     this._props.onRefresh(this._props.isReverse);
-      //   }
-      //   // if jumped over the start time of the tween - make continious updates
-      //   // and envoke callbacks until the start time is reached
-      //   while (this._frameIndex > 0) {
-      //     this._frameIndex--;
-      //     this._cbr(this._plan[this._frameIndex]);
-      //   }
-      //   // reset flags because tween is ended
-      //   this._prevTime = -Infinity;
-      //   this._frameIndex = -1;
-      //   // return `true` indicating that tween is completed
-      //   return true;
-      // }
-      //
-      // // normal update in backward direction
-      // if (time <= this._startTime + this._totalTime) {
-      //   while (this._frameIndex*16 > time - this._startTime) {
-      //     this._frameIndex--;
-      //     this._cbr(this._plan[this._frameIndex]);
-      //     this._prevTime = time;
-      //   }
-      // }
+  } else if (time < this._prevTime) {
+      this._prevUpdateTime = time;
+
+      this._trg = this._trgRev;
+
+      this._o.isIt && console.log(`elpased: ${this._frameIndex*16}, frameIndex: ${this._frameIndex}, time: ${time - this._startTime}`, this._plan);
+
+      let isUpdate = false;
+      while (this._frameIndex*16 >= time - this._startTime) {
+        this._frameIndex--;
+        this._cbr(this._plan[this._frameIndex], time);
+        this._prevTime = time;
+        isUpdate = true;
+        // should react on `endTime` but not inside the reapeat time,
+        // so we have `>=` in the loop body and this `if` here
+        if (this._frameIndex*16 === time - this._startTime) { break; }
+      }
+      // if update time jumped after end time, make sure that
+      // all appropriate callbacks called
+      if (time <= this._startTime) {
+        // onRepeatStart + onStart + onUpdate
+        this._cbr(161, time);
+        // reset flags because tween is ended
+        this._prevTime = -Infinity;
+        this._frameIndex = -1;
+        // return `true` indicating that tween is completed
+        return true;
+      }
     }
 
   }

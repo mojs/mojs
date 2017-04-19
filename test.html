@@ -43,44 +43,41 @@
     <button id="js-stop">stop</button>
 
     <script>
-      var el = document.querySelector('#js-el');
-      var playBtn = document.querySelector('#js-play');
-      var reverseBtn = document.querySelector('#js-reverse');
-
-      var tween = new mojs.Tween({
-        // isReverse: true,
-        repeat: 1,
-        duration: 2000,
-        delay: 500,
-        onUpdate(p) {
-          console.log('update', p);
-        },
-        onStart() {
-          console.log( 'start' );
-        },
-        onRepeatStart() {
-          console.log( 'repeatStart' );
-        },
-        onRepeatComplete() {
-          console.log( 'repeatComplete' );
-        },
-        onComplete() {
-          console.log( 'complete' );
-        }
-      });
-
-      playBtn.addEventListener('click', function() {
-        console.log('::: play click');
-        tween.play();
-      });
-
-      reverseBtn.addEventListener('click', function() {
-        console.log('::: reverse click');
-        tween.reverse();
-      });
-
-
-
+      // var el = document.querySelector('#js-el');
+      // var playBtn = document.querySelector('#js-play');
+      // var reverseBtn = document.querySelector('#js-reverse');
+      //
+      // var tween = new mojs.Tween({
+      //   // isReverse: true,
+      //   repeat: 1,
+      //   duration: 2000,
+      //   delay: 500,
+      //   onUpdate(p) {
+      //     console.log('update', p);
+      //   },
+      //   onStart() {
+      //     console.log( 'start' );
+      //   },
+      //   onRepeatStart() {
+      //     console.log( 'repeatStart' );
+      //   },
+      //   onRepeatComplete() {
+      //     console.log( 'repeatComplete' );
+      //   },
+      //   onComplete() {
+      //     console.log( 'complete' );
+      //   }
+      // });
+      //
+      // playBtn.addEventListener('click', function() {
+      //   console.log('::: play click');
+      //   tween.play();
+      // });
+      //
+      // reverseBtn.addEventListener('click', function() {
+      //   console.log('::: reverse click');
+      //   tween.reverse();
+      // });
     </script>
 
   </body>
