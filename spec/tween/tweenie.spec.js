@@ -19,7 +19,7 @@ describe('tween ->', function () {
     });
   });
 
-  describe('update function ->', function() {
+  describe('`update` function ->', function() {
     it('should pass current `progress` to `onUpdate`', function () {
       var progress = -1;
       var options = {
@@ -184,6 +184,82 @@ describe('tween ->', function () {
       tweenie.update(endTime + 20);
       expect(progress).toBe(-1);
     });
+
+    it('should pass current `progress` to `onUpdate` #reverse', function () {
+      var progress = -1;
+      var duration = 50;
+
+      var options = {
+        isReverse: true,
+        duration: duration,
+        onUpdate: function(p) {
+          progress = p;
+        }
+      };
+      var tweenie = Tweenie(options);
+
+      var startTime = 200;
+      tweenie.setStartTime(startTime);
+
+      tweenie.update(startTime);
+
+      expect(progress).toBe(1);
+
+      tweenie.update(startTime += 15);
+
+      expect(progress).toBeCloseTo(0.7, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(progress).toBeCloseTo(0.4, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(progress).toBeCloseTo(0.1, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(progress).toBe(0);
+    });
+
+    it('should pass current `progress` to `onUpdate` #reverse #backward', function () {
+      var progress = -1;
+      var duration = 50;
+
+      var options = {
+        isReverse: true,
+        duration: duration,
+        onUpdate: function(p) {
+          progress = p;
+        }
+      };
+      var tweenie = Tweenie(options);
+
+      var startTime = 200;
+      tweenie.setStartTime(startTime);
+
+      var endTime = startTime + duration;
+      tweenie.update(endTime);
+
+      expect(progress).toBe(0);
+
+      tweenie.update(endTime -= 15);
+
+      expect(progress).toBeCloseTo(0.3, 3);
+
+      tweenie.update(endTime -= 15);
+
+      expect(progress).toBeCloseTo(0.6, 3);
+
+      tweenie.update(endTime -= 15);
+
+      expect(progress).toBeCloseTo(0.9, 3);
+
+      tweenie.update(endTime -= 15);
+
+      expect(progress).toBe(1);
+    });
+
   });
 
   describe('`onComplete` callback ->', function() {
@@ -197,7 +273,7 @@ describe('tween ->', function () {
       };
       var tweenie = Tweenie(options);
 
-      spyOn(tweenie._props, 'onComplete');
+      spyOn(tweenie._cbs, 1);
 
       var startTime = 200;
       tweenie.setStartTime(startTime);
@@ -206,7 +282,7 @@ describe('tween ->', function () {
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime + duration + 10);
 
-      expect(tweenie._props.onComplete).toHaveBeenCalled();
+      expect(tweenie._cbs[1]).toHaveBeenCalled();
     });
 
     it('should be called on exact end', function() {
@@ -219,7 +295,7 @@ describe('tween ->', function () {
       };
       var tweenie = Tweenie(options);
 
-      spyOn(tweenie._props, 'onComplete');
+      spyOn(tweenie._cbs, 1);
 
       var startTime = 200;
       tweenie.setStartTime(startTime);
@@ -228,7 +304,7 @@ describe('tween ->', function () {
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime + duration);
 
-      expect(tweenie._props.onComplete).toHaveBeenCalled();
+      expect(tweenie._cbs[1]).toHaveBeenCalled();
     });
 
     it('should be called on if complete and returned', function() {
@@ -247,10 +323,10 @@ describe('tween ->', function () {
       tweenie.update(startTime);
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime + duration + 10);
-      spyOn(tweenie._props, 'onComplete');
+      spyOn(tweenie._cbs, 1);
       tweenie.update(startTime + duration - 10);
 
-      expect(tweenie._props.onComplete).toHaveBeenCalled();
+      expect(tweenie._cbs[1]).toHaveBeenCalled();
     });
 
     it('should be called on if complete and returned #2', function() {
@@ -270,15 +346,15 @@ describe('tween ->', function () {
       tweenie.update(startTime);
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime + duration);
-      spyOn(tweenie._props, 'onComplete');
+      spyOn(tweenie._cbs, 1);
       tweenie.update(startTime + duration - 10);
 
-      expect(tweenie._props.onComplete).toHaveBeenCalled();
+      expect(tweenie._cbs[1]).toHaveBeenCalled();
     });
 
   });
 
-  describe('`onComplete` callback', function() {
+  describe('`onStart` callback ->', function() {
     it('should be called on start', function() {
       var progress = -1;
       var duration = 50;
@@ -295,10 +371,10 @@ describe('tween ->', function () {
 
       tweenie.update(startTime);
       tweenie.update(startTime + duration/2);
-      spyOn(tweenie._props, 'onStart');
+      spyOn(tweenie._cbs, 0);
       tweenie.update(startTime - 10);
 
-      expect(tweenie._props.onStart).toHaveBeenCalled();
+      expect(tweenie._cbs[0]).toHaveBeenCalled();
     });
 
     it('should be called on exact start', function() {
@@ -317,10 +393,10 @@ describe('tween ->', function () {
 
       tweenie.update(startTime);
       tweenie.update(startTime + duration/2);
-      spyOn(tweenie._props, 'onStart');
+      spyOn(tweenie._cbs, 0);
       tweenie.update(startTime);
 
-      expect(tweenie._props.onStart).toHaveBeenCalled();
+      expect(tweenie._cbs[0]).toHaveBeenCalled();
     });
 
     it('should be called on if went before start and returned', function() {
@@ -332,7 +408,6 @@ describe('tween ->', function () {
         onStart: function() {}
       };
       var tweenie = Tweenie(options);
-
 
       var startTime = 200;
       tweenie.setStartTime(startTime);
@@ -340,10 +415,10 @@ describe('tween ->', function () {
       tweenie.update(startTime);
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime);
-      spyOn(tweenie._props, 'onStart');
+      spyOn(tweenie._cbs, 0);
       tweenie.update(startTime + 10);
 
-      expect(tweenie._props.onStart).toHaveBeenCalled();
+      expect(tweenie._cbs[0]).toHaveBeenCalled();
     });
 
     it('should be called on if went before start and returned', function() {
@@ -355,7 +430,6 @@ describe('tween ->', function () {
         onStart: function() {}
       };
       var tweenie = Tweenie(options);
-
 
       var startTime = 200;
       tweenie.setStartTime(startTime);
@@ -363,11 +437,30 @@ describe('tween ->', function () {
       tweenie.update(startTime);
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime - 10);
-      spyOn(tweenie._props, 'onStart');
+      spyOn(tweenie._cbs, 0);
       tweenie.update(startTime + 10);
 
-      expect(tweenie._props.onStart).toHaveBeenCalled();
+      expect(tweenie._cbs[0]).toHaveBeenCalled();
     });
+  });
 
+  describe('`isReverse` option ->', function() {
+    it('should flip callbacks and numbers in `_cbs`', function() {
+      var duration = 50;
+
+      var options = {
+        duration: duration,
+        onStart: function() {},
+        onComplete: function() {},
+        isReverse: true
+      };
+      var tweenie = Tweenie(options);
+
+      expect(tweenie._cbs[0]).toBe(options.onComplete);
+      expect(tweenie._cbs[1]).toBe(options.onStart);
+
+      expect(tweenie._cbs[2]).toBe(1);
+      expect(tweenie._cbs[3]).toBe(0);
+    });
   });
 });

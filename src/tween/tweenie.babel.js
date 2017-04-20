@@ -12,6 +12,25 @@ const Tweenie = {
     this._defaults = tweenieDefaults;
   },
 
+  /**
+   * _vars - function do declare `variables` after `_defaults` were extended
+   *         by `options` and saved to `_props`
+   *
+   * @return {type}  description
+   */
+  _vars() {
+    const { isReverse } = this._props;
+    const { onStart, onComplete } = this._props;
+
+    // callbacks array - used to flip the callbacks order on `isReverse`
+    this._cbs = [ onStart, onComplete, 0, 1 ];
+
+    // if `isReverse` - flip the callbacks
+    if (isReverse === true) {
+      this._cbs = [ this._cbs[1], this._cbs[0], 1 - this._cbs[2], 1 - this._cbs[3] ];
+    }
+  },
+
   // TODO: cover
   /**
    * setStartTime - function to set `startTime`
@@ -31,28 +50,33 @@ const Tweenie = {
    * update - function to update `Tweenie` with current time.
    */
   update(time) {
-    const { onUpdate } = this._props;
+    const { onUpdate, isReverse } = this._props;
 
     if (time >= this._start && time <= this._end) {
       let isActive;
 
       if (time > this._start && this._isActive === false) {
-        this._props.onStart();
+        // `onStart`
+        this._cbs[0]();
       }
 
       if (time === this._start) {
-        this._props.onStart();
+        // `onStart`
+        this._cbs[0]();
         isActive = false;
       }
 
-      onUpdate((time - this._start) / this._props.duration);
+      const p = (time - this._start) / this._props.duration;
+      onUpdate( isReverse === false ? p : 1 - p);
 
       if (time < this._prevTime && this._isActive === false) {
-        this._props.onComplete();
+        // `onComplete`
+        this._cbs[1]();
       }
 
       if (time === this._end) {
-        this._props.onComplete();
+        // `onComplete`
+        this._cbs[1]();
         isActive = false;
       }
 
@@ -60,8 +84,10 @@ const Tweenie = {
     }
 
     if (time > this._end && this._isActive === true) {
-      onUpdate(1);
-      this._props.onComplete();
+      // one
+      onUpdate(this._cbs[3]);
+      // `onComplete`
+      this._cbs[1]();
       this._isActive = false;
       // TODO: cover
       this._prevTime = time;
@@ -70,8 +96,10 @@ const Tweenie = {
     }
 
     if (time < this._start && this._isActive === true) {
-      this._props.onStart();
-      onUpdate(0);
+      // `onStart`
+      this._cbs[0]();
+      // zero
+      onUpdate(this._cbs[2]);
       this._isActive = false;
     }
 

@@ -14,6 +14,8 @@ const tweenieDefaults = {
     forward direction in `yoyo` period is treated as backward for the easing.
   */
   backwardEasing:         null,
+  /* if should reverse the tween */
+  isReverse:              false,
   /*
     onStart callback runs on very start of the tween just after onProgress
     one. Runs on very end of the tween if tween is reversed.
