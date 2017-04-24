@@ -26,6 +26,12 @@ const tweenieDefaults = {
   onStart:                function() {},
   onComplete:             function() {},
   onUpdate:               function() {},
+  // `onChimeIn` is invoked when the `Tweenie` becomes active
+  // kind of like `onStart` but regardless `isReverse` option
+  onChimeIn:              function() {},
+  // `onChimeOut` is invoked when the `Tweenie` becomes active
+  // kind of like `onComplete` but regardless `isReverse` option
+  onChimeOut:             function() {},
   // playback callbacks, these fire only when
   /* shift time on a timeline */
   shiftTime:              0

@@ -20,11 +20,12 @@ const Tweenie = {
    */
   _vars() {
     const { isReverse } = this._props;
-    const { onStart, onComplete } = this._props;
+    const { onStart, onComplete, onChimeIn, onChimeOut } = this._props;
 
     // callbacks array - used to flip the callbacks order on `isReverse`
     this._cbs = [ onStart, onComplete, 0, 1 ];
-
+    // chime callbacks
+    this._chCbs = [ onChimeIn, onChimeOut ];
     // if `isReverse` - flip the callbacks
     if (isReverse === true) {
       this._cbs = [ this._cbs[1], this._cbs[0], 1 - this._cbs[2], 1 - this._cbs[3] ];
@@ -39,8 +40,10 @@ const Tweenie = {
    */
   setStartTime(startTime = 0) {
     const { delay, duration } = this._props;
+
     this._start = startTime + delay;
     this._end = this._start + duration;
+    this._time = delay + duration;
     this._isActive = false;
   },
 
@@ -56,27 +59,35 @@ const Tweenie = {
       let isActive;
 
       if (time > this._start && this._isActive === false) {
+        // `onChimeIn`
+        this._chCbs[0]();
         // `onStart`
         this._cbs[0]();
       }
 
       if (time === this._start) {
+        // `onChimeIn`
+        this._chCbs[0]();
         // `onStart`
         this._cbs[0]();
         isActive = false;
       }
 
       const p = (time - this._start) / this._props.duration;
-      onUpdate( isReverse === false ? p : 1 - p);
+      onUpdate(isReverse === false ? p : 1 - p);
 
       if (time < this._prevTime && this._isActive === false) {
         // `onComplete`
         this._cbs[1]();
+        // `onChimeOut`
+        this._chCbs[1]();
       }
 
       if (time === this._end) {
         // `onComplete`
         this._cbs[1]();
+        // `onChimeOut`
+        this._chCbs[1]();
         isActive = false;
       }
 
@@ -88,6 +99,8 @@ const Tweenie = {
       onUpdate(this._cbs[3]);
       // `onComplete`
       this._cbs[1]();
+      // `onChimeOut`
+      this._chCbs[1]();
       this._isActive = false;
       // TODO: cover
       this._prevTime = time;
@@ -96,6 +109,8 @@ const Tweenie = {
     }
 
     if (time < this._start && this._isActive === true) {
+      // `onChimeIn`
+      this._chCbs[0]();
       // `onStart`
       this._cbs[0]();
       // zero
