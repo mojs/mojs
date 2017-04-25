@@ -59,15 +59,17 @@ const Tweenie = {
       let isActive;
 
       if (time > this._start && this._isActive === false) {
+        // TODO: cover passing time to the callback
         // `onChimeIn`
-        this._chCbs[0]();
+        this._chCbs[0](time);
         // `onStart`
         this._cbs[0]();
       }
 
       if (time === this._start) {
+        // TODO: cover passing time to the callback
         // `onChimeIn`
-        this._chCbs[0]();
+        this._chCbs[0](time);
         // `onStart`
         this._cbs[0]();
         isActive = false;
@@ -79,15 +81,17 @@ const Tweenie = {
       if (time < this._prevTime && this._isActive === false) {
         // `onComplete`
         this._cbs[1]();
+        // TODO: cover passing time to the callback
         // `onChimeOut`
-        this._chCbs[1]();
+        this._chCbs[1](time);
       }
 
       if (time === this._end) {
         // `onComplete`
         this._cbs[1]();
+        // TODO: cover passing time to the callback
         // `onChimeOut`
-        this._chCbs[1]();
+        this._chCbs[1](time);
         isActive = false;
       }
 
@@ -99,8 +103,9 @@ const Tweenie = {
       onUpdate(this._cbs[3]);
       // `onComplete`
       this._cbs[1]();
+      // TODO: cover passing time to the callback
       // `onChimeOut`
-      this._chCbs[1]();
+      this._chCbs[1](time);
       this._isActive = false;
       // TODO: cover
       this._prevTime = time;
@@ -109,8 +114,9 @@ const Tweenie = {
     }
 
     if (time < this._start && this._isActive === true) {
+      // TODO: cover passing time to the callback
       // `onChimeIn`
-      this._chCbs[0]();
+      this._chCbs[0](time);
       // `onStart`
       this._cbs[0]();
       // zero

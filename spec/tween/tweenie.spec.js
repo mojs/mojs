@@ -6,7 +6,7 @@ var tweenieDefaults = helpers.tweenieDefaults;
 
 var eps = 0.0000001;
 
-describe('tween ->', function () {
+describe('tweenie ->', function () {
   describe('extension ->', function() {
     it('should extend `ClassProto`', function () {
       var tweenie = Tweenie();

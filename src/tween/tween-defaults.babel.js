@@ -1,4 +1,4 @@
-export default {
+const tweenDefaults = {
   /* duration of the tween [0..∞] */
   duration:               350,
   /* delay of the tween [-∞..∞] */
@@ -14,7 +14,7 @@ export default {
   /*  flip onUpdate's progress on each even period.
       note that callbacks order won't flip at least
       for now (under consideration). */
-  isYoyo:                   false,
+  isYoyo:                 false,
   /* easing for the tween, could be any easing type [link to easing-types.md] */
   easing:                 'Sin.Out',
   /*
@@ -56,8 +56,11 @@ export default {
   /* custom tween's name */
   name:                   null,
   /* shift time on a timeline */
-  shiftTime:              0,
+  // shiftTime:              0,
   /* custom tween's base name */
-  nameBase:               'Tween',
-  isChained:              false
+  nameBase:               'Tween'
+  // isChained:              false
 };
+
+
+export { tweenDefaults as tweenDefaults };
