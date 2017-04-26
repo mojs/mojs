@@ -46,6 +46,15 @@ describe('tween ->', function () {
       }
     });
 
+    it('should pass `index` to tweenies', function () {
+      var n = 5;
+      var tween = new Tween({ repeat: n });
+      expect(tween._tweenies.length).toBe(n + 1);
+      for (var i = 0; i <= n; i++) {
+        expect(tween._tweenies[i]._props.index).toBe(i);
+      }
+    });
+
     it('should set `_currentTween` to `0`', function () {
       var n = 5;
       var tween = new Tween({ repeat: n });
@@ -182,7 +191,7 @@ describe('tween ->', function () {
   });
 
   describe('`onChimeOut` callback ->', function () {
-    it('should should be set to `_chimeOut`', function () {
+    it('should be set to `_chimeOut`', function () {
       var options = {
         onUpdate: function() {},
         repeat: 5
@@ -214,7 +223,7 @@ describe('tween ->', function () {
   });
 
   describe('`_chimeOut` function ->', function () {
-    it('should should increase `_active`', function () {
+    it('should increase `_active`', function () {
       var options = {
         onUpdate: function() {},
         repeat: 5
@@ -223,30 +232,57 @@ describe('tween ->', function () {
       var tween = new Tween(options);
       tween.setStartTime();
 
-      tween._tweenies[0]._props.onChimeOut();
+      tween._tweenies[0]._props.onChimeOut(true);
       expect(tween._active).toBe(1);
 
-      tween._tweenies[1]._props.onChimeOut();
+      tween._tweenies[1]._props.onChimeOut(true);
       expect(tween._active).toBe(2);
 
-      tween._tweenies[2]._props.onChimeOut();
+      tween._tweenies[2]._props.onChimeOut(true);
       expect(tween._active).toBe(3);
 
-      tween._tweenies[3]._props.onChimeOut();
+      tween._tweenies[3]._props.onChimeOut(true);
       expect(tween._active).toBe(4);
 
-      tween._tweenies[4]._props.onChimeOut();
+      tween._tweenies[4]._props.onChimeOut(true);
       expect(tween._active).toBe(5);
 
-      tween._tweenies[5]._props.onChimeOut();
-      expect(tween._active).toBe(6);
+      tween._tweenies[5]._props.onChimeOut(true);
+      expect(tween._active).toBe(5);
     });
 
-    it('should should update the newly `_active` tweenie', function () {
+    it('should not increase `_active` if backward', function () {
       var options = {
         onUpdate: function() {},
-        repeat: 5,
-        isIt: 1
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      tween._tweenies[0]._props.onChimeOut(false);
+      expect(tween._active).toBe(0);
+
+      tween._tweenies[1]._props.onChimeOut(false);
+      expect(tween._active).toBe(0);
+
+      tween._tweenies[2]._props.onChimeOut(false);
+      expect(tween._active).toBe(0);
+
+      tween._tweenies[3]._props.onChimeOut(false);
+      expect(tween._active).toBe(0);
+
+      tween._tweenies[4]._props.onChimeOut(false);
+      expect(tween._active).toBe(0);
+
+      tween._tweenies[5]._props.onChimeOut(false);
+      expect(tween._active).toBe(0);
+    });
+
+    it('should update the newly `_active` tweenie', function () {
+      var options = {
+        onUpdate: function() {},
+        repeat: 5
       };
 
       var tween = new Tween(options);
@@ -260,8 +296,7 @@ describe('tween ->', function () {
       spyOn(tween._tweenies[5], 'update');
 
       var time = 200;
-      console.log(time);
-      tween._tweenies[0]._props.onChimeOut(time);
+      tween._tweenies[0]._props.onChimeOut(true, time);
       expect(tween._active).toBe(1);
 
       expect(tween._tweenies[0].update).not.toHaveBeenCalledWith(time);
@@ -271,8 +306,9 @@ describe('tween ->', function () {
       expect(tween._tweenies[4].update).not.toHaveBeenCalled();
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
 
-      tween._tweenies[1]._props.onChimeOut(time += 10);
+      tween._tweenies[1]._props.onChimeOut(true, time += 10);
       expect(tween._active).toBe(2);
+      expect(tween._act).toBe(tween._tweenies[2]);
 
       expect(tween._tweenies[0].update).not.toHaveBeenCalledWith(time);
       expect(tween._tweenies[1].update.calls.count()).toBe(1);
@@ -281,8 +317,9 @@ describe('tween ->', function () {
       expect(tween._tweenies[4].update).not.toHaveBeenCalled();
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
 
-      tween._tweenies[2]._props.onChimeOut(time += 10);
+      tween._tweenies[2]._props.onChimeOut(true, time += 10);
       expect(tween._active).toBe(3);
+      expect(tween._act).toBe(tween._tweenies[3]);
 
       expect(tween._tweenies[0].update).not.toHaveBeenCalledWith(time);
       expect(tween._tweenies[1].update.calls.count()).toBe(1);
@@ -291,8 +328,9 @@ describe('tween ->', function () {
       expect(tween._tweenies[4].update).not.toHaveBeenCalled();
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
 
-      tween._tweenies[3]._props.onChimeOut(time += 10);
+      tween._tweenies[3]._props.onChimeOut(true, time += 10);
       expect(tween._active).toBe(4);
+      expect(tween._act).toBe(tween._tweenies[4]);
 
       expect(tween._tweenies[0].update).not.toHaveBeenCalledWith(time);
       expect(tween._tweenies[1].update.calls.count()).toBe(1);
@@ -301,8 +339,9 @@ describe('tween ->', function () {
       expect(tween._tweenies[4].update).toHaveBeenCalledWith(time);
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
 
-      tween._tweenies[4]._props.onChimeOut(time += 10);
+      tween._tweenies[4]._props.onChimeOut(true, time += 10);
       expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
 
       expect(tween._tweenies[0].update).not.toHaveBeenCalledWith(time);
       expect(tween._tweenies[1].update.calls.count()).toBe(1);
@@ -311,8 +350,9 @@ describe('tween ->', function () {
       expect(tween._tweenies[4].update.calls.count()).toBe(1);
       expect(tween._tweenies[5].update).toHaveBeenCalledWith(time);
 
-      tween._tweenies[5]._props.onChimeOut(time += 10);
-      expect(tween._active).toBe(6);
+      tween._tweenies[5]._props.onChimeOut(true, time += 10);
+      expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
 
       expect(tween._tweenies[0].update).not.toHaveBeenCalledWith(time);
       expect(tween._tweenies[1].update.calls.count()).toBe(1);
@@ -320,6 +360,462 @@ describe('tween ->', function () {
       expect(tween._tweenies[3].update.calls.count()).toBe(1);
       expect(tween._tweenies[4].update.calls.count()).toBe(1);
       expect(tween._tweenies[5].update.calls.count()).toBe(1);
+    });
+
+    it('should not update the newly `_active` tweenie if backward', function () {
+      var options = {
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._tweenies[0], 'update');
+      spyOn(tween._tweenies[1], 'update');
+      spyOn(tween._tweenies[2], 'update');
+      spyOn(tween._tweenies[3], 'update');
+      spyOn(tween._tweenies[4], 'update');
+      spyOn(tween._tweenies[5], 'update');
+
+      var time = 200;
+      tween._tweenies[0]._props.onChimeOut(false, time);
+      expect(tween._active).toBe(0);
+
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+
+      tween._tweenies[1]._props.onChimeOut(false, time += 10);
+      expect(tween._active).toBe(0);
+      expect(tween._act).toBe(tween._tweenies[0]);
+
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+
+      tween._tweenies[2]._props.onChimeOut(false, time += 10);
+      expect(tween._active).toBe(0);
+      expect(tween._act).toBe(tween._tweenies[0]);
+
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+
+      tween._tweenies[3]._props.onChimeOut(false, time += 10);
+      expect(tween._active).toBe(0);
+      expect(tween._act).toBe(tween._tweenies[0]);
+
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+
+      tween._tweenies[4]._props.onChimeOut(false, time += 10);
+      expect(tween._active).toBe(0);
+      expect(tween._act).toBe(tween._tweenies[0]);
+
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+
+      tween._tweenies[5]._props.onChimeOut(false, time += 10);
+      expect(tween._active).toBe(0);
+      expect(tween._act).toBe(tween._tweenies[0]);
+
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('`_chimeIn` function ->', function () {
+    it('should decrease `_active`', function () {
+      var options = {
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      tween._active = 5;
+      tween._act = tween._tweenies[tween._active];
+
+      tween._tweenies[5]._props.onChimeIn(false);
+      expect(tween._active).toBe(4);
+      expect(tween._act).toBe(tween._tweenies[4]);
+
+      tween._tweenies[4]._props.onChimeIn(false);
+      expect(tween._active).toBe(3);
+      expect(tween._act).toBe(tween._tweenies[3]);
+
+      tween._tweenies[3]._props.onChimeIn(false);
+      expect(tween._active).toBe(2);
+      expect(tween._act).toBe(tween._tweenies[2]);
+
+      tween._tweenies[2]._props.onChimeIn(false);
+      expect(tween._active).toBe(1);
+      expect(tween._act).toBe(tween._tweenies[1]);
+
+      tween._tweenies[1]._props.onChimeIn(false);
+      expect(tween._active).toBe(0);
+      expect(tween._act).toBe(tween._tweenies[0]);
+
+      tween._tweenies[0]._props.onChimeIn(false);
+      expect(tween._active).toBe(0);
+      expect(tween._act).toBe(tween._tweenies[0]);
+    });
+
+    it('should not decrease `_active` if forward', function () {
+      var options = {
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      tween._active = 5;
+      tween._act = tween._tweenies[tween._active];
+
+      tween._tweenies[5]._props.onChimeIn(true);
+      expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
+
+      tween._tweenies[4]._props.onChimeIn(true);
+      expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
+
+      tween._tweenies[3]._props.onChimeIn(true);
+      expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
+
+      tween._tweenies[2]._props.onChimeIn(true);
+      expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
+
+      tween._tweenies[1]._props.onChimeIn(true);
+      expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
+
+      tween._tweenies[0]._props.onChimeIn(true);
+      expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
+    });
+
+    it('should update the newly `_active` tweenie', function () {
+      var options = {
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._tweenies[0], 'update');
+      spyOn(tween._tweenies[1], 'update');
+      spyOn(tween._tweenies[2], 'update');
+      spyOn(tween._tweenies[3], 'update');
+      spyOn(tween._tweenies[4], 'update');
+      spyOn(tween._tweenies[5], 'update');
+
+      tween._active = 5;
+
+      var time = 200;
+      tween._tweenies[5]._props.onChimeIn(false, time);
+      expect(tween._active).toBe(4);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalledWith(time);
+      expect(tween._tweenies[4].update).toHaveBeenCalledWith(time);
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+
+      tween._tweenies[4]._props.onChimeIn(false, time -= 10);
+      expect(tween._active).toBe(3);
+      expect(tween._act).toBe(tween._tweenies[3]);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalledWith(time);
+      expect(tween._tweenies[4].update.calls.count()).toBe(1);
+      expect(tween._tweenies[3].update).toHaveBeenCalledWith(time);
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+
+      tween._tweenies[3]._props.onChimeIn(false, time -= 10);
+      expect(tween._active).toBe(2);
+      expect(tween._act).toBe(tween._tweenies[2]);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalledWith(time);
+      expect(tween._tweenies[4].update.calls.count()).toBe(1);
+      expect(tween._tweenies[3].update.calls.count()).toBe(1);
+      expect(tween._tweenies[2].update).toHaveBeenCalledWith(time);
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+
+      tween._tweenies[2]._props.onChimeIn(false, time -= 10);
+      expect(tween._active).toBe(1);
+      expect(tween._act).toBe(tween._tweenies[1]);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalledWith(time);
+      expect(tween._tweenies[4].update.calls.count()).toBe(1);
+      expect(tween._tweenies[3].update.calls.count()).toBe(1);
+      expect(tween._tweenies[2].update.calls.count()).toBe(1);
+      expect(tween._tweenies[1].update).toHaveBeenCalledWith(time);
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+
+      tween._tweenies[1]._props.onChimeIn(false, time -= 10);
+      expect(tween._active).toBe(0);
+      expect(tween._act).toBe(tween._tweenies[0]);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalledWith(time);
+      expect(tween._tweenies[4].update.calls.count()).toBe(1);
+      expect(tween._tweenies[3].update.calls.count()).toBe(1);
+      expect(tween._tweenies[2].update.calls.count()).toBe(1);
+      expect(tween._tweenies[1].update.calls.count()).toBe(1);
+      expect(tween._tweenies[0].update).toHaveBeenCalledWith(time);
+
+      tween._tweenies[0]._props.onChimeIn(false, time -= 10);
+      expect(tween._active).toBe(0);
+      expect(tween._act).toBe(tween._tweenies[0]);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalledWith(time);
+      expect(tween._tweenies[4].update.calls.count()).toBe(1);
+      expect(tween._tweenies[3].update.calls.count()).toBe(1);
+      expect(tween._tweenies[2].update.calls.count()).toBe(1);
+      expect(tween._tweenies[1].update.calls.count()).toBe(1);
+      expect(tween._tweenies[0].update.calls.count()).toBe(1);
+    });
+
+    it('should not update the newly `_active` tweenie if forward', function () {
+      var options = {
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._tweenies[0], 'update');
+      spyOn(tween._tweenies[1], 'update');
+      spyOn(tween._tweenies[2], 'update');
+      spyOn(tween._tweenies[3], 'update');
+      spyOn(tween._tweenies[4], 'update');
+      spyOn(tween._tweenies[5], 'update');
+
+      tween._active = 5;
+      tween._act = tween._tweenies[tween._active];
+
+      var time = 200;
+      tween._tweenies[5]._props.onChimeIn(true, time);
+      expect(tween._active).toBe(5);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+
+      tween._tweenies[4]._props.onChimeIn(true, time -= 10);
+      expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+
+      tween._tweenies[3]._props.onChimeIn(true, time -= 10);
+      expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+
+      tween._tweenies[2]._props.onChimeIn(true, time -= 10);
+      expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+
+      tween._tweenies[1]._props.onChimeIn(true, time -= 10);
+      expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+
+      tween._tweenies[0]._props.onChimeIn(true, time -= 10);
+      expect(tween._active).toBe(5);
+      expect(tween._act).toBe(tween._tweenies[5]);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('`_onStart` function ->', function () {
+    it('should be called by tweenies `onStart` callback', function () {
+      var options = {
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween, '_onStart');
+
+      tween._tweenies[0]._props.onStart();
+      expect(tween._onStart.calls.count()).toBe(1);
+
+      tween._tweenies[1]._props.onStart();
+      expect(tween._onStart.calls.count()).toBe(2);
+
+      tween._tweenies[2]._props.onStart();
+      expect(tween._onStart.calls.count()).toBe(3);
+
+      tween._tweenies[3]._props.onStart();
+      expect(tween._onStart.calls.count()).toBe(4);
+
+      tween._tweenies[4]._props.onStart();
+      expect(tween._onStart.calls.count()).toBe(5);
+
+      tween._tweenies[5]._props.onStart();
+      expect(tween._onStart.calls.count()).toBe(6);
+    });
+
+    it('should be call `onRepeatStart` callback', function () {
+      var options = {
+        onRepeatStart: function() {},
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._props, 'onRepeatStart');
+      // TODO: add arguments to the callback pass
+      tween._tweenies[0]._props.onStart();
+      expect(tween._props.onRepeatStart.calls.count()).toBe(1);
+
+      tween._tweenies[1]._props.onStart();
+      expect(tween._props.onRepeatStart.calls.count()).toBe(2);
+
+      tween._tweenies[2]._props.onStart();
+      expect(tween._props.onRepeatStart.calls.count()).toBe(3);
+
+      tween._tweenies[3]._props.onStart();
+      expect(tween._props.onRepeatStart.calls.count()).toBe(4);
+
+      tween._tweenies[4]._props.onStart();
+      expect(tween._props.onRepeatStart.calls.count()).toBe(5);
+
+      tween._tweenies[5]._props.onStart();
+      expect(tween._props.onRepeatStart.calls.count()).toBe(6);
+    });
+  });
+
+  describe('`_onComplete` function ->', function () {
+    it('should be called by tweenies `onStart` callback', function () {
+      var options = {
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween, '_onComplete');
+
+      tween._tweenies[0]._props.onComplete();
+      expect(tween._onComplete.calls.count()).toBe(1);
+
+      tween._tweenies[1]._props.onComplete();
+      expect(tween._onComplete.calls.count()).toBe(2);
+
+      tween._tweenies[2]._props.onComplete();
+      expect(tween._onComplete.calls.count()).toBe(3);
+
+      tween._tweenies[3]._props.onComplete();
+      expect(tween._onComplete.calls.count()).toBe(4);
+
+      tween._tweenies[4]._props.onComplete();
+      expect(tween._onComplete.calls.count()).toBe(5);
+
+      tween._tweenies[5]._props.onComplete();
+      expect(tween._onComplete.calls.count()).toBe(6);
+    });
+
+    it('should be call `onRepeatStart` callback', function () {
+      var options = {
+        onRepeatComplete: function() {},
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._props, 'onRepeatComplete');
+      // TODO: add arguments to the callback pass
+      tween._tweenies[0]._props.onComplete();
+      expect(tween._props.onRepeatComplete.calls.count()).toBe(1);
+
+      tween._tweenies[1]._props.onComplete();
+      expect(tween._props.onRepeatComplete.calls.count()).toBe(2);
+
+      tween._tweenies[2]._props.onComplete();
+      expect(tween._props.onRepeatComplete.calls.count()).toBe(3);
+
+      tween._tweenies[3]._props.onComplete();
+      expect(tween._props.onRepeatComplete.calls.count()).toBe(4);
+
+      tween._tweenies[4]._props.onComplete();
+      expect(tween._props.onRepeatComplete.calls.count()).toBe(5);
+
+      tween._tweenies[5]._props.onComplete();
+      expect(tween._props.onRepeatComplete.calls.count()).toBe(6);
     });
   });
 

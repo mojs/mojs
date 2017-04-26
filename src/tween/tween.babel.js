@@ -33,13 +33,18 @@ const Tween = {
    */
   _createTweenies() {
     const { repeat, delay, duration, onUpdate } = this._props;
+
     for (let i = 0; i <= repeat; i++) {
       this._tweenies.push(
         Tweenie({
+          index: i,
           onUpdate,
           delay,
           duration,
-          onChimeOut: (time) => { this._chimeOut(time); }
+          onStart: time => this._onStart(time),
+          onComplete: time => this._onComplete(time),
+          onChimeOut: (isForward, time) => { this._chimeOut(isForward, time); },
+          onChimeIn: (isForward, time) => { this._chimeIn(isForward, time); }
         })
       );
     }
@@ -76,18 +81,53 @@ const Tween = {
 
   /**
    * _chimeOut - Tweenies `onChimeOut` callback handler.
+   * @param {Boolean} Is forward direction.
+   * @param {Number} The current update time.
    */
-  _chimeOut(time) {
+  _chimeOut(isForward, time) {
+    if (isForward === false) { return; }
+
     this._active++;
     const tweenie = this._tweenies[this._active];
     if (tweenie !== void 0) {
       this._act = tweenie;
       tweenie.update(time);
-    }
+    } else { this._active--; }
+  },
+
+  /**
+   * _chimeIn - Tweenies `onChimeIn` callback handler.
+   */
+  _chimeIn(isForward, time) {
+    if (isForward === true) { return; }
+
+    this._active--;
+    const tweenie = this._tweenies[this._active];
+    if (tweenie !== void 0) {
+      this._act = tweenie;
+      tweenie.update(time);
+    } else { this._active++; }
+  },
+
+  /**
+   * `_onComplete` - Tweenies `onStart` callback handler
+   */
+  _onComplete() {
+    const { onRepeatComplete } = this._props;
+
+    onRepeatComplete();
+  },
+
+  /**
+   * `_onStart` - Tweenies `onStart` callback handler
+   */
+  _onStart() {
+    const { onRepeatStart } = this._props;
+
+    onRepeatStart();
   },
 
   onTweenerFinish() {},
-
 };
 // extend classProto
 Tween.__proto__ = ClassProto;

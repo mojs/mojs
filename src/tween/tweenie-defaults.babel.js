@@ -34,7 +34,9 @@ const tweenieDefaults = {
   onChimeOut:             function() {},
   // playback callbacks, these fire only when
   /* shift time on a timeline */
-  shiftTime:              0
+  shiftTime:              0,
+  // tweenie index
+  index:                  0
 };
 
 export { tweenieDefaults as tweenieDefaults };

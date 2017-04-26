@@ -282,7 +282,7 @@ describe('tweenie ->', function () {
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime + duration + 10);
 
-      expect(tweenie._cbs[1]).toHaveBeenCalled();
+      expect(tweenie._cbs[1]).toHaveBeenCalledWith(true, false, startTime + duration + 10, 0);
     });
 
     it('should be called on exact end', function() {
@@ -290,6 +290,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 4,
         duration: duration,
         onComplete: function() {}
       };
@@ -304,7 +305,7 @@ describe('tweenie ->', function () {
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime + duration);
 
-      expect(tweenie._cbs[1]).toHaveBeenCalled();
+      expect(tweenie._cbs[1]).toHaveBeenCalledWith(true, false, startTime + duration, options.index);
     });
 
     it('should be called on if complete and returned', function() {
@@ -312,6 +313,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 2,
         duration: duration,
         onComplete: function() {}
       };
@@ -326,7 +328,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 1);
       tweenie.update(startTime + duration - 10);
 
-      expect(tweenie._cbs[1]).toHaveBeenCalled();
+      expect(tweenie._cbs[1]).toHaveBeenCalledWith(false, false, startTime + duration - 10, options.index);
     });
 
     it('should be called on if complete and returned #2', function() {
@@ -334,6 +336,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 1,
         duration: duration,
         onComplete: function() {}
       };
@@ -348,7 +351,28 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 1);
       tweenie.update(startTime + duration - 10);
 
-      expect(tweenie._cbs[1]).toHaveBeenCalled();
+      expect(tweenie._cbs[1]).toHaveBeenCalledWith(false, false, startTime + duration - 10, options.index);
+    });
+
+    it('should be called on if complete and returned #reverse', function() {
+      var progress = -1;
+      var duration = 50;
+
+      var options = {
+        index: 2,
+        isReverse: true,
+        duration: duration,
+        onComplete: function() {}
+      };
+      var tweenie = Tweenie(options);
+
+      var startTime = 200;
+      tweenie.setStartTime(startTime);
+
+      spyOn(tweenie._cbs, 0);
+      tweenie.update(startTime);
+
+      expect(tweenie._cbs[0]).toHaveBeenCalledWith(true, true, startTime, options.index);
     });
   });
 
@@ -363,7 +387,6 @@ describe('tweenie ->', function () {
       };
       var tweenie = Tweenie(options);
 
-
       var startTime = 200;
       tweenie.setStartTime(startTime);
 
@@ -372,7 +395,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 0);
       tweenie.update(startTime - 10);
 
-      expect(tweenie._cbs[0]).toHaveBeenCalled();
+      expect(tweenie._cbs[0]).toHaveBeenCalledWith(false, false, startTime - 10, 0);
     });
 
     it('should be called on exact start', function() {
@@ -380,6 +403,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 3,
         duration: duration,
         onStart: function() {}
       };
@@ -394,7 +418,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 0);
       tweenie.update(startTime);
 
-      expect(tweenie._cbs[0]).toHaveBeenCalled();
+      expect(tweenie._cbs[0]).toHaveBeenCalledWith(false, false, startTime, options.index);
     });
 
     it('should be called on if went before start and returned', function() {
@@ -402,6 +426,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 6,
         duration: duration,
         onStart: function() {}
       };
@@ -416,7 +441,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 0);
       tweenie.update(startTime + 10);
 
-      expect(tweenie._cbs[0]).toHaveBeenCalled();
+      expect(tweenie._cbs[0]).toHaveBeenCalledWith(true, false, startTime + 10, options.index);
     });
 
     it('should be called on if went before start and returned', function() {
@@ -424,6 +449,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 1,
         duration: duration,
         onStart: function() {}
       };
@@ -438,7 +464,30 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 0);
       tweenie.update(startTime + 10);
 
-      expect(tweenie._cbs[0]).toHaveBeenCalled();
+      expect(tweenie._cbs[0]).toHaveBeenCalledWith(true, false, startTime + 10, options.index);
+    });
+
+    it('should be called on if went before start and returned #reverse', function() {
+      var progress = -1;
+      var duration = 50;
+
+      var options = {
+        index: 1,
+        isReverse: true,
+        duration: duration,
+        onStart: function() {}
+      };
+      var tweenie = Tweenie(options);
+
+      var startTime = 200;
+      tweenie.setStartTime(startTime);
+
+      tweenie.update(startTime);
+      tweenie.update(startTime + duration/2);
+      spyOn(tweenie._cbs, 1);
+      tweenie.update(startTime + duration);
+
+      expect(tweenie._cbs[1]).toHaveBeenCalledWith(true, true, startTime + duration, options.index);
     });
   });
 
@@ -462,7 +511,7 @@ describe('tweenie ->', function () {
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime + duration + 10);
 
-      expect(tweenie._chCbs[1]).toHaveBeenCalled();
+      expect(tweenie._chCbs[1]).toHaveBeenCalledWith(true, startTime + duration + 10, 0);
     });
 
     it('should be called on end #reverse', function() {
@@ -470,6 +519,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 4,
         isReverse: true,
         duration: duration,
         onComplete: function() {}
@@ -485,7 +535,7 @@ describe('tweenie ->', function () {
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime + duration + 10);
 
-      expect(tweenie._chCbs[1]).toHaveBeenCalled();
+      expect(tweenie._chCbs[1]).toHaveBeenCalledWith(true, startTime + duration + 10, options.index);
     });
 
     it('should be called on exact end', function() {
@@ -493,6 +543,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 2,
         duration: duration,
         onComplete: function() {}
       };
@@ -507,7 +558,7 @@ describe('tweenie ->', function () {
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime + duration);
 
-      expect(tweenie._chCbs[1]).toHaveBeenCalled();
+      expect(tweenie._chCbs[1]).toHaveBeenCalledWith(true, startTime + duration, options.index);
     });
 
     it('should be called on exact end #reverse', function() {
@@ -515,6 +566,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 5,
         isReverse: true,
         duration: duration,
         onComplete: function() {}
@@ -530,7 +582,7 @@ describe('tweenie ->', function () {
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime + duration);
 
-      expect(tweenie._chCbs[1]).toHaveBeenCalled();
+      expect(tweenie._chCbs[1]).toHaveBeenCalledWith(true, startTime + duration, options.index);
     });
 
     it('should be called on if complete and returned', function() {
@@ -538,6 +590,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 3,
         duration: duration,
         onComplete: function() {}
       };
@@ -552,7 +605,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._chCbs, 1);
       tweenie.update(startTime + duration - 10);
 
-      expect(tweenie._chCbs[1]).toHaveBeenCalled();
+      expect(tweenie._chCbs[1]).toHaveBeenCalledWith(false, startTime + duration - 10, options.index);
     });
 
     it('should be called on if complete and returned', function() {
@@ -560,6 +613,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 1,
         isReverse: true,
         duration: duration,
         onComplete: function() {}
@@ -575,7 +629,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._chCbs, 1);
       tweenie.update(startTime + duration - 10);
 
-      expect(tweenie._chCbs[1]).toHaveBeenCalled();
+      expect(tweenie._chCbs[1]).toHaveBeenCalledWith(false, startTime + duration - 10, options.index);
     });
 
     it('should be called on if complete and returned #2', function() {
@@ -597,7 +651,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._chCbs, 1);
       tweenie.update(startTime + duration - 10);
 
-      expect(tweenie._chCbs[1]).toHaveBeenCalled();
+      expect(tweenie._chCbs[1]).toHaveBeenCalledWith(false, startTime + duration - 10, 0);
     });
 
     it('should be called on if complete and returned #2 #reverse', function() {
@@ -605,6 +659,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 4,
         isReverse: true,
         duration: duration,
         onComplete: function() {}
@@ -620,7 +675,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._chCbs, 1);
       tweenie.update(startTime + duration - 10);
 
-      expect(tweenie._chCbs[1]).toHaveBeenCalled();
+      expect(tweenie._chCbs[1]).toHaveBeenCalledWith(false, startTime + duration - 10, options.index);
     });
 
   });
@@ -646,7 +701,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._chCbs, 0);
       tweenie.update(startTime - 10);
 
-      expect(tweenie._chCbs[0]).toHaveBeenCalled();
+      expect(tweenie._chCbs[0]).toHaveBeenCalledWith(false, startTime - 10, 0);
     });
 
     it('should be called on start #reverse', function() {
@@ -654,6 +709,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 4,
         isReverse: true,
         duration: duration,
         onChimeIn: function() {},
@@ -670,7 +726,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._chCbs, 0);
       tweenie.update(startTime - 10);
 
-      expect(tweenie._chCbs[0]).toHaveBeenCalled();
+      expect(tweenie._chCbs[0]).toHaveBeenCalledWith(false, startTime - 10, options.index);
     });
 
     it('should be called on exact start', function() {
@@ -678,6 +734,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 7,
         duration: duration,
         onStart: function() {}
       };
@@ -692,7 +749,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._chCbs, 0);
       tweenie.update(startTime);
 
-      expect(tweenie._chCbs[0]).toHaveBeenCalled();
+      expect(tweenie._chCbs[0]).toHaveBeenCalledWith(false, startTime, options.index);
     });
 
     it('should be called on exact start #reverse', function() {
@@ -700,6 +757,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 3,
         isReverse: true,
         duration: duration,
         onStart: function() {}
@@ -715,7 +773,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._chCbs, 0);
       tweenie.update(startTime);
 
-      expect(tweenie._chCbs[0]).toHaveBeenCalled();
+      expect(tweenie._chCbs[0]).toHaveBeenCalledWith(false, startTime, options.index);
     });
 
     it('should be called on if went before start and returned', function() {
@@ -723,6 +781,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 4,
         duration: duration,
         onStart: function() {}
       };
@@ -737,7 +796,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._chCbs, 0);
       tweenie.update(startTime + 10);
 
-      expect(tweenie._chCbs[0]).toHaveBeenCalled();
+      expect(tweenie._chCbs[0]).toHaveBeenCalledWith(true, startTime + 10, options.index);
     });
 
     it('should be called on if went before start and returned #reverse', function() {
@@ -745,6 +804,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 0,
         isReverse: true,
         duration: duration,
         onStart: function() {}
@@ -760,7 +820,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._chCbs, 0);
       tweenie.update(startTime + 10);
 
-      expect(tweenie._chCbs[0]).toHaveBeenCalled();
+      expect(tweenie._chCbs[0]).toHaveBeenCalledWith(true, startTime + 10, options.index);
     });
 
     it('should be called on if went before start and returned', function() {
@@ -782,7 +842,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._chCbs, 0);
       tweenie.update(startTime + 10);
 
-      expect(tweenie._chCbs[0]).toHaveBeenCalled();
+      expect(tweenie._chCbs[0]).toHaveBeenCalledWith(true, startTime + 10, 0);
     });
 
     it('should be called on if went before start and returned #reverse', function() {
@@ -790,6 +850,7 @@ describe('tweenie ->', function () {
       var duration = 50;
 
       var options = {
+        index: 5,
         isReverse: true,
         duration: duration,
         onStart: function() {}
@@ -805,7 +866,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._chCbs, 0);
       tweenie.update(startTime + 10);
 
-      expect(tweenie._chCbs[0]).toHaveBeenCalled();
+      expect(tweenie._chCbs[0]).toHaveBeenCalledWith(true, startTime + 10, options.index);
     });
   });
 
