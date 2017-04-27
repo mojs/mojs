@@ -1,7 +1,7 @@
 import { ClassProto } from '../class-proto';
 import { tweenDefaults } from './tween-defaults';
-import tweener from './tweener';
 import { Tweenie } from './tweenie';
+import tweener from './tweener';
 
 const Tween = {
   /**
@@ -23,6 +23,7 @@ const Tween = {
    */
   _vars() {
     this._tweenies = [];
+    this._p = 0;
 
     this._createTweenies();
   },
@@ -41,8 +42,12 @@ const Tween = {
           onUpdate,
           delay,
           duration,
-          onStart: time => this._onStart(time),
-          onComplete: time => this._onComplete(time),
+          onStart: (isForward, isYoyo, time, index) => {
+            this._onStart(isForward, isYoyo, time, index);
+          },
+          onComplete: (isForward, isYoyo, time, index) => {
+            this._onComplete(isForward, isYoyo, time, index);
+          },
           onChimeOut: (isForward, time) => { this._chimeOut(isForward, time); },
           onChimeIn: (isForward, time) => { this._chimeIn(isForward, time); }
         })
@@ -59,9 +64,11 @@ const Tween = {
    * @param {Number, Undefined} Start time to set.
    */
   setStartTime(startTime = performance.now()) {
-    const { delay, duration } = this._props;
+    const { delay, duration, repeat } = this._props;
 
+    this._spot = startTime;
     this._start = startTime + delay;
+    this._time = (repeat + 1) * (delay + duration);
 
     this._tweenies[0].setStartTime(this._start);
     for (let i = 1; i < this._tweenies.length; i++) {
@@ -75,8 +82,12 @@ const Tween = {
    * update - function to update `Tween` with current time.
    */
   update(time) {
+    if (time >= this._spot && time <= this._end) {
+      this._p = (time - this._spot) / this._time;
+      this._props.onProgress(this._p);
+    }
+
     this._act.update(time);
-    this._prevTime = time;
   },
 
   /**
@@ -88,6 +99,8 @@ const Tween = {
     if (isForward === false) { return; }
 
     this._active++;
+    // if the next tween is present, update it with
+    // the current time and set it as active(`_act`)
     const tweenie = this._tweenies[this._active];
     if (tweenie !== void 0) {
       this._act = tweenie;
@@ -102,6 +115,8 @@ const Tween = {
     if (isForward === true) { return; }
 
     this._active--;
+    // if the previous tween is present, update it with
+    // the current time and set it as active(`_act`)
     const tweenie = this._tweenies[this._active];
     if (tweenie !== void 0) {
       this._act = tweenie;
@@ -110,21 +125,41 @@ const Tween = {
   },
 
   /**
-   * `_onComplete` - Tweenies `onStart` callback handler
+   * `_onComplete` - Tweenies `onComplete` callback handler.
+   * @param {Boolean} isForward direction.
+   * @param {Boolean} isYoyo period.
+   * @param {Number} Update time that triggers the callback.
+   * @param {Number} Update period.
    */
-  _onComplete() {
-    const { onRepeatComplete } = this._props;
-
-    onRepeatComplete();
+  _onComplete(isForward, isYoyo, time, index) {
+    const { onRepeatComplete, onComplete } = this._props;
+    // if forward direction call the `onRepeatComplete` before `onComplete`
+    if (isForward === true) {
+      onRepeatComplete(isForward, isYoyo, time, index);
+    }
+    if (index === this._tweenies.length-1) {
+      onComplete(isForward, isYoyo, time, index);
+    }
+    // if forward direction call the `onRepeatComplete` after `onComplete`
+    if (isForward === false) {
+      onRepeatComplete(isForward, isYoyo, time, index);
+    }
   },
 
   /**
    * `_onStart` - Tweenies `onStart` callback handler
+   * @param {Boolean} isForward direction.
+   * @param {Boolean} isYoyo period.
+   * @param {Number} Update time that triggers the callback.
+   * @param {Number} Update period.
    */
-  _onStart() {
-    const { onRepeatStart } = this._props;
-
-    onRepeatStart();
+  _onStart(isForward, isYoyo, time, index) {
+    const { onRepeatStart, onStart } = this._props;
+    // if forward direction call the `onRepeatStart` before `onStart`
+    if (isForward === false) { onRepeatStart(isForward, isYoyo, time, index); }
+    if (index === 0) { onStart(isForward, isYoyo, time, index); }
+    // if forward direction call the `onRepeatStart` before `onStart`
+    if (isForward === true) { onRepeatStart(isForward, isYoyo, time, index); }
   },
 
   onTweenerFinish() {},
