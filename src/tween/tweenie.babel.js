@@ -62,12 +62,15 @@ const Tweenie = {
     if (time >= this._start && time <= this._end) {
       let isActive;
 
-      if (time > this._start && this._isActive === false) {
+      const p = (time - this._start) / this._props.duration;
+      onUpdate(isReverse === false ? p : 1 - p);
+
+      if (time > this._start && this._isActive === false && isForward == true) {
         // TODO: cover passing time to the callback
         // `onChimeIn`
         this._chCbs[0](isForward, time, index);
         // `onStart`
-        this._cbs[0](isForward, isReverse, time, index);
+        this._cbs[0](isForward, isReverse, index);
       }
 
       if (time === this._start) {
@@ -75,16 +78,15 @@ const Tweenie = {
         // `onChimeIn`
         this._chCbs[0](isForward, time, index);
         // `onStart`
-        this._cbs[0](isForward, isReverse, time, index);
-        isActive = false;
+        this._cbs[0](isForward, isReverse, index);
+        // set `isActive` to `true` for forward direction
+        // but set it to `false` for backward
+        isActive = isForward;
       }
-
-      const p = (time - this._start) / this._props.duration;
-      onUpdate(isReverse === false ? p : 1 - p);
 
       if (time < this._prevTime && this._isActive === false) {
         // `onComplete`
-        this._cbs[1](false, isReverse, time, index);
+        this._cbs[1](false, isReverse, index);
         // TODO: cover passing time to the callback
         // `onChimeOut`
         this._chCbs[1](isForward, time, index);
@@ -92,11 +94,13 @@ const Tweenie = {
 
       if (time === this._end) {
         // `onComplete`
-        this._cbs[1](isForward, isReverse, time, index);
+        this._cbs[1](isForward, isReverse, index);
         // TODO: cover passing time to the callback
         // `onChimeOut`
         this._chCbs[1](isForward, time, index);
-        isActive = false;
+        // set `isActive` to `false` for forward direction
+        // but set it to `true` for backward
+        isActive = !isForward;
       }
 
       this._isActive = (isActive === undefined) ? true : isActive;
@@ -106,7 +110,7 @@ const Tweenie = {
       // one
       onUpdate(this._cbs[3]);
       // `onComplete`
-      this._cbs[1](isForward, isReverse, time, index);
+      this._cbs[1](isForward, isReverse, index);
       // TODO: cover passing time to the callback
       // `onChimeOut`
       this._chCbs[1](isForward, time, index);
@@ -117,15 +121,22 @@ const Tweenie = {
       return true;
     }
 
-    if (time < this._start && this._isActive === true) {
-      // TODO: cover passing time to the callback
-      // `onChimeIn`
-      this._chCbs[0](isForward, time, index);
-      // `onStart`
-      this._cbs[0](isForward, isReverse, time, index);
-      // zero
-      onUpdate(this._cbs[2]);
-      this._isActive = false;
+    if (time < this._start) {
+      // if `prevTime` was >= `_endTime` might need a refresh
+      if (this._prevTime >= this._end) {
+        this._props.onRefresh(true);
+      }
+
+      if (this._isActive === true) {
+        // zero
+        onUpdate(this._cbs[2]);
+        // TODO: cover passing time to the callback
+        // `onChimeIn`
+        this._chCbs[0](isForward, time, index);
+        // `onStart`
+        this._cbs[0](isForward, isReverse, index);
+        this._isActive = false;
+      }
     }
 
     this._prevTime = time;

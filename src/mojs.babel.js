@@ -20,25 +20,28 @@ var mojs = {
 // window.onload = () => {
 //   const items = [];
 //   setTimeout(() => {
-//     for (let i = 0; i < 1; i++) {
+//     for (let i = 0; i < 1000; i++) {
 //       const tweenie = Tween({
 //         repeat: 2,
 //         duration: 500,
-//         delay: 2000,
+//         delay: 200,
 //         onUpdate(p) {
-//           (i === 0) && console.log('update', p);
+//           // (i === 0) && console.log('update', p);
+//         },
+//         onProgress(p) {
+//           // (i === 0) && console.log('progress', p);
 //         },
 //         onStart() {
-//           (i === 0) && console.log('start');
+//           // (i === 0) && console.log('start');
 //         },
 //         onRepeatStart() {
-//           (i === 0) && console.log('repeat start');
+//           // (i === 0) && console.log('repeat start');
 //         },
 //         onRepeatComplete() {
-//           (i === 0) && console.log('repeat complete');
+//           // (i === 0) && console.log('repeat complete');
 //         },
 //         onComplete() {
-//           (i === 0) && console.log('complete');
+//           // (i === 0) && console.log('complete');
 //         }
 //         // onChimeIn() {
 //         //   (i === 0) && console.log('chime in');
@@ -57,7 +60,7 @@ var mojs = {
 //         tweener.add(tweenie);
 //       }
 //     }, 0);
-//   }, 2000);
+//   }, 1000);
 // };
 
 export default mojs;

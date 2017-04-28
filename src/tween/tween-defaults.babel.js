@@ -26,15 +26,6 @@ const tweenDefaults = {
   // if should reverse the tween
   isReverse:              false,
   /*
-    onProgress callback runs before any other callback.
-    @param {Number}   The entire, not eased, progress
-                      of the tween regarding repeat option.
-    @param {Boolean}  The direction of the tween.
-                      `true` for forward direction.
-                      `false` for backward direction(tween runs in reverse).
-  */
-  onProgress:             function() {},
-  /*
     onStart callback runs on very start of the tween just after onProgress
     one. Runs on very end of the tween if tween is reversed.
     @param {Boolean}  Direction of the tween.
@@ -42,7 +33,6 @@ const tweenDefaults = {
                       `false` for backward direction(tween runs in reverse).
   */
   onStart:                function() {},
-  onRefresh:              function() {},
   onComplete:             function() {},
   onRepeatStart:          function() {},
   onRepeatComplete:       function() {},

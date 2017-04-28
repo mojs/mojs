@@ -260,6 +260,80 @@ describe('tweenie ->', function () {
       expect(progress).toBe(1);
     });
 
+    it('should not call `onStart` twice', function () {
+      var cnt = 0;
+      var options = {
+        duration: 500,
+        onStart: function() {
+          cnt++;
+        }
+      };
+
+      var tweenie = Tweenie(options);
+      tweenie.setStartTime(200);
+
+      var startTime = tweenie._start;
+
+      tweenie.update(startTime - 10);
+      tweenie.update(startTime);
+      tweenie.update(startTime + 10);
+
+      expect(cnt).toBe(1);
+    });
+
+    it('should not call `onStart` on backward', function () {
+      var cnt = 0;
+      var duration = 500;
+      var options = {
+        duration: duration,
+        onStart: function() {
+          cnt++;
+        }
+      };
+
+      var tweenie = Tweenie(options);
+      tweenie.setStartTime(200);
+
+      var startTime = tweenie._start;
+
+      tweenie.update(startTime - 10);
+      tweenie.update(startTime);
+      tweenie.update(startTime + duration/2);
+      tweenie.update(startTime + duration);
+      tweenie.update(startTime + duration + 10);
+      cnt = 0;
+      tweenie.update(startTime + duration);
+
+      expect(cnt).toBe(0);
+    });
+
+    it('should not call `onComplete` twice', function () {
+      var cnt = 0;
+      var duration = 500;
+
+      var options = {
+        duration: duration,
+        onComplete: function() {
+          cnt++;
+        }
+      };
+
+      var tweenie = Tweenie(options);
+      tweenie.setStartTime(200);
+
+      var startTime = tweenie._start;
+
+      tweenie.update(startTime - 10);
+      tweenie.update(startTime + duration/2);
+      tweenie.update(startTime + duration);
+      tweenie.update(startTime + duration + 10);
+      tweenie.update(startTime + duration);
+      cnt = 0;
+      tweenie.update(startTime + duration - 10);
+
+      expect(cnt).toBe(0);
+    });
+
   });
 
   describe('`onComplete` callback ->', function() {
@@ -282,7 +356,7 @@ describe('tweenie ->', function () {
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime + duration + 10);
 
-      expect(tweenie._cbs[1]).toHaveBeenCalledWith(true, false, startTime + duration + 10, 0);
+      expect(tweenie._cbs[1]).toHaveBeenCalledWith(true, false, 0);
     });
 
     it('should be called on exact end', function() {
@@ -305,7 +379,7 @@ describe('tweenie ->', function () {
       tweenie.update(startTime + duration/2);
       tweenie.update(startTime + duration);
 
-      expect(tweenie._cbs[1]).toHaveBeenCalledWith(true, false, startTime + duration, options.index);
+      expect(tweenie._cbs[1]).toHaveBeenCalledWith(true, false, options.index);
     });
 
     it('should be called on if complete and returned', function() {
@@ -328,7 +402,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 1);
       tweenie.update(startTime + duration - 10);
 
-      expect(tweenie._cbs[1]).toHaveBeenCalledWith(false, false, startTime + duration - 10, options.index);
+      expect(tweenie._cbs[1]).toHaveBeenCalledWith(false, false, options.index);
     });
 
     it('should be called on if complete and returned #2', function() {
@@ -351,7 +425,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 1);
       tweenie.update(startTime + duration - 10);
 
-      expect(tweenie._cbs[1]).toHaveBeenCalledWith(false, false, startTime + duration - 10, options.index);
+      expect(tweenie._cbs[1]).toHaveBeenCalledWith(false, false, options.index);
     });
 
     it('should be called on if complete and returned #reverse', function() {
@@ -372,7 +446,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 0);
       tweenie.update(startTime);
 
-      expect(tweenie._cbs[0]).toHaveBeenCalledWith(true, true, startTime, options.index);
+      expect(tweenie._cbs[0]).toHaveBeenCalledWith(true, true, options.index);
     });
   });
 
@@ -395,7 +469,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 0);
       tweenie.update(startTime - 10);
 
-      expect(tweenie._cbs[0]).toHaveBeenCalledWith(false, false, startTime - 10, 0);
+      expect(tweenie._cbs[0]).toHaveBeenCalledWith(false, false, 0);
     });
 
     it('should be called on exact start', function() {
@@ -418,7 +492,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 0);
       tweenie.update(startTime);
 
-      expect(tweenie._cbs[0]).toHaveBeenCalledWith(false, false, startTime, options.index);
+      expect(tweenie._cbs[0]).toHaveBeenCalledWith(false, false, options.index);
     });
 
     it('should be called on if went before start and returned', function() {
@@ -441,7 +515,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 0);
       tweenie.update(startTime + 10);
 
-      expect(tweenie._cbs[0]).toHaveBeenCalledWith(true, false, startTime + 10, options.index);
+      expect(tweenie._cbs[0]).toHaveBeenCalledWith(true, false, options.index);
     });
 
     it('should be called on if went before start and returned', function() {
@@ -464,7 +538,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 0);
       tweenie.update(startTime + 10);
 
-      expect(tweenie._cbs[0]).toHaveBeenCalledWith(true, false, startTime + 10, options.index);
+      expect(tweenie._cbs[0]).toHaveBeenCalledWith(true, false, options.index);
     });
 
     it('should be called on if went before start and returned #reverse', function() {
@@ -487,7 +561,7 @@ describe('tweenie ->', function () {
       spyOn(tweenie._cbs, 1);
       tweenie.update(startTime + duration);
 
-      expect(tweenie._cbs[1]).toHaveBeenCalledWith(true, true, startTime + duration, options.index);
+      expect(tweenie._cbs[1]).toHaveBeenCalledWith(true, true, options.index);
     });
   });
 
@@ -921,6 +995,33 @@ describe('tweenie ->', function () {
       expect(tweenie._start).toBe(startTime + delay);
       expect(tweenie._end).toBe(startTime + delay + duration);
       expect(tweenie._time).toBe(delay + duration);
+    });
+  });
+
+  describe('`onRefresh` callback ->', function() {
+    it('should be called when greater or equal than _end and suddenly smaller than `_start`', function() {
+      var duration = 400;
+      var tweenie = Tweenie({
+        duration: duration,
+        onRefresh: function() {}
+      });
+
+      tweenie.setStartTime(250);
+      var startTime = tweenie._start;
+
+      tweenie.update(startTime);
+      tweenie.update(startTime + duration/2);
+      tweenie.update(startTime + duration);
+      tweenie.update(startTime + duration + 10);
+
+      spyOn(tweenie._props, 'onRefresh');
+
+      tweenie.update(startTime - 10);
+      expect(tweenie._props.onRefresh).toHaveBeenCalledWith(true);
+      expect(tweenie._prevTime).toBe(startTime - 10);
+
+      tweenie.update(startTime - 5);
+      expect(tweenie._props.onRefresh.calls.count()).toBe(1);
     });
   });
 });

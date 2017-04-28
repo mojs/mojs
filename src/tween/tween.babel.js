@@ -23,7 +23,7 @@ const Tween = {
    */
   _vars() {
     this._tweenies = [];
-    this._p = 0;
+    this._state = 'stop';
 
     this._createTweenies();
   },
@@ -33,20 +33,21 @@ const Tween = {
    *
    */
   _createTweenies() {
-    const { repeat, delay, duration, onUpdate } = this._props;
+    const { repeat, delay, duration, onUpdate, onRefresh } = this._props;
 
     for (let i = 0; i <= repeat; i++) {
       this._tweenies.push(
         Tweenie({
           index: i,
-          onUpdate,
           delay,
           duration,
-          onStart: (isForward, isYoyo, time, index) => {
-            this._onStart(isForward, isYoyo, time, index);
+          onUpdate,
+          onRefresh,
+          onStart: (isForward, isYoyo, index) => {
+            this._onStart(isForward, isYoyo, index);
           },
-          onComplete: (isForward, isYoyo, time, index) => {
-            this._onComplete(isForward, isYoyo, time, index);
+          onComplete: (isForward, isYoyo, index) => {
+            this._onComplete(isForward, isYoyo, index);
           },
           onChimeOut: (isForward, time) => { this._chimeOut(isForward, time); },
           onChimeIn: (isForward, time) => { this._chimeIn(isForward, time); }
@@ -66,11 +67,9 @@ const Tween = {
   setStartTime(startTime = performance.now()) {
     const { delay, duration, repeat } = this._props;
 
-    this._spot = startTime;
     this._start = startTime + delay;
-    this._time = (repeat + 1) * (delay + duration);
 
-    this._tweenies[0].setStartTime(this._start);
+    this._tweenies[0].setStartTime(this._start - delay);
     for (let i = 1; i < this._tweenies.length; i++) {
       this._tweenies[i].setStartTime(this._tweenies[i-1]._end);
     }
@@ -82,11 +81,6 @@ const Tween = {
    * update - function to update `Tween` with current time.
    */
   update(time) {
-    if (time >= this._spot && time <= this._end) {
-      this._p = (time - this._spot) / this._time;
-      this._props.onProgress(this._p);
-    }
-
     this._act.update(time);
   },
 
@@ -128,21 +122,20 @@ const Tween = {
    * `_onComplete` - Tweenies `onComplete` callback handler.
    * @param {Boolean} isForward direction.
    * @param {Boolean} isYoyo period.
-   * @param {Number} Update time that triggers the callback.
    * @param {Number} Update period.
    */
-  _onComplete(isForward, isYoyo, time, index) {
+  _onComplete(isForward, isYoyo, index) {
     const { onRepeatComplete, onComplete } = this._props;
     // if forward direction call the `onRepeatComplete` before `onComplete`
     if (isForward === true) {
-      onRepeatComplete(isForward, isYoyo, time, index);
+      onRepeatComplete(isForward, isYoyo, index);
     }
     if (index === this._tweenies.length-1) {
-      onComplete(isForward, isYoyo, time, index);
+      onComplete(isForward, isYoyo, index);
     }
     // if forward direction call the `onRepeatComplete` after `onComplete`
     if (isForward === false) {
-      onRepeatComplete(isForward, isYoyo, time, index);
+      onRepeatComplete(isForward, isYoyo, index);
     }
   },
 
@@ -150,16 +143,50 @@ const Tween = {
    * `_onStart` - Tweenies `onStart` callback handler
    * @param {Boolean} isForward direction.
    * @param {Boolean} isYoyo period.
-   * @param {Number} Update time that triggers the callback.
    * @param {Number} Update period.
    */
-  _onStart(isForward, isYoyo, time, index) {
+  _onStart(isForward, isYoyo, index) {
     const { onRepeatStart, onStart } = this._props;
     // if forward direction call the `onRepeatStart` before `onStart`
-    if (isForward === false) { onRepeatStart(isForward, isYoyo, time, index); }
-    if (index === 0) { onStart(isForward, isYoyo, time, index); }
+    if (isForward === false) { onRepeatStart(isForward, isYoyo, index); }
+    if (index === 0) { onStart(isForward, isYoyo, index); }
     // if forward direction call the `onRepeatStart` before `onStart`
-    if (isForward === true) { onRepeatStart(isForward, isYoyo, time, index); }
+    if (isForward === true) { onRepeatStart(isForward, isYoyo, index); }
+  },
+
+  /* ------------------- */
+  /* The `Playback` part */
+  /* ------------------- */
+
+  /*
+   * Method set playback `_state` string and call appropriate callbacks.
+   *
+   * @private
+   * @param {String} State name [play, pause, 'stop', 'reverse']
+   */
+  _setPlaybackState(state) {
+    // save previous state
+    this._prevState = this._state;
+    this._state     = state;
+
+    // callbacks
+    var wasPause   = this._prevState === 'pause',
+        wasStop    = this._prevState === 'stop',
+        wasPlay    = this._prevState === 'play',
+        wasReverse = this._prevState === 'reverse',
+        wasPlaying = wasPlay || wasReverse,
+        wasStill   = wasStop || wasPause;
+
+    console.log(state, this._prevState)
+    if ((state === 'play' || state === 'reverse') && wasStill) {
+      this._props.onPlaybackStart(state, this._prevState);
+    }
+    if ( state === 'pause' && wasPlaying ) {
+      this._props.onPlaybackPause();
+    }
+    if ( state === 'stop' && (wasPlaying || wasPause)) {
+      this._props.onPlaybackStop();
+    }
   },
 
   onTweenerFinish() {},
