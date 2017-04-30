@@ -33,6 +33,9 @@ describe('tweenie ->', function () {
       var startTime = 200;
       tweenie.setStartTime(startTime);
 
+      // the first update to set the `_prevTime`
+      tweenie.update(startTime - 10);
+
       tweenie.update(startTime);
 
       expect(progress).toBe(0);
@@ -70,6 +73,9 @@ describe('tweenie ->', function () {
       tweenie.setStartTime(startTime);
 
       var endTime = startTime + duration;
+      // the first update to set the `_prevTime`
+      tweenie.update(endTime + 15);
+
       tweenie.update(endTime);
 
       expect(progress).toBe(1);
@@ -201,6 +207,8 @@ describe('tweenie ->', function () {
       var startTime = 200;
       tweenie.setStartTime(startTime);
 
+      // the first update to set the `_prevTime`
+      tweenie.update(startTime - 10);
       tweenie.update(startTime);
 
       expect(progress).toBe(1);
@@ -239,6 +247,8 @@ describe('tweenie ->', function () {
       tweenie.setStartTime(startTime);
 
       var endTime = startTime + duration;
+      // the first update to set the `_prevTime`
+      tweenie.update(endTime + 10);
       tweenie.update(endTime);
 
       expect(progress).toBe(0);
@@ -443,11 +453,41 @@ describe('tweenie ->', function () {
       var startTime = 200;
       tweenie.setStartTime(startTime);
 
+      // the first update to set the `_prevTime`
+      tweenie.update(startTime - 10);
+
       spyOn(tweenie._cbs, 0);
       tweenie.update(startTime);
 
       expect(tweenie._cbs[0]).toHaveBeenCalledWith(true, true, options.index);
     });
+
+    it('should not be called twice on if complete and returned #reverse', function() {
+      var progress = -1;
+      var duration = 50;
+      var cnt = 0;
+
+      var options = {
+        index: 1,
+        duration: duration,
+        onComplete: function() {
+          cnt++;
+        }
+      };
+      var tweenie = Tweenie(options);
+
+      var startTime = 200;
+      tweenie.setStartTime(startTime);
+
+      tweenie.update(startTime);
+      tweenie.update(startTime + duration/2);
+      tweenie.update(startTime + duration + 10);
+      cnt = 0;
+      tweenie.update(startTime + duration);
+
+      expect(cnt).toBe(1);
+    });
+
   });
 
   describe('`onStart` callback ->', function() {

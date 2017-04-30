@@ -19,10 +19,20 @@ const Tweenie = {
    * @return {type}  description
    */
   _vars() {
-    const { isReverse } = this._props;
-    const { onStart, onComplete, onChimeIn, onChimeOut } = this._props;
+    const {
+      isReverse,
+      onStart,
+      onComplete,
+      onChimeIn,
+      onChimeOut,
+      delay,
+      duration
+    } = this._props;
 
-    this._prevTime = -Infinity;
+    this._time = delay + duration;
+
+    // this._prevTime = -Infinity;
+    this._prevTime;
 
     // callbacks array - used to flip the callbacks order on `isReverse`
     this._cbs = [ onStart, onComplete, 0, 1 ];
@@ -45,7 +55,6 @@ const Tweenie = {
 
     this._start = startTime + delay;
     this._end = this._start + duration;
-    this._time = delay + duration;
     this._isActive = false;
   },
 
@@ -58,10 +67,8 @@ const Tweenie = {
     const { onUpdate, isReverse, index } = this._props;
     // if forward progress
     const isForward = time > this._prevTime;
-
-    if (time >= this._start && time <= this._end) {
+    if (time >= this._start && time <= this._end && this._prevTime !== void 0) {
       let isActive;
-
       const p = (time - this._start) / this._props.duration;
       onUpdate(isReverse === false ? p : 1 - p);
 
@@ -84,7 +91,7 @@ const Tweenie = {
         isActive = isForward;
       }
 
-      if (time < this._prevTime && this._isActive === false) {
+      if (time < this._end && this._isActive === false && isForward === false) {
         // `onComplete`
         this._cbs[1](false, isReverse, index);
         // TODO: cover passing time to the callback

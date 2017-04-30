@@ -14,6 +14,21 @@ const Tween = {
     this._defaults = tweenDefaults;
   },
 
+  /* -------------------- */
+  /* The `Public` methods */
+  /* -------------------- */
+
+  // /**
+  //  * reverse - function to reverse tween direction.
+  //  *
+  //  * @private
+  //  * @override ClassProto
+  //  */
+  // reverse() {
+  //   // change the update function
+  //   this.update = this._updateRev();
+  // },
+
   /**
    * _vars - function do declare `variables` after `_defaults` were extended
    *         by `options` and saved to `_props`
@@ -25,7 +40,18 @@ const Tween = {
     this._tweenies = [];
     this._state = 'stop';
 
+    // create period tweenies
     this._createTweenies();
+
+    const { repeat, isReverse } = this._props;
+    // setup `update` function to `updateFwd` by default
+    // and to `updateRev` if reversed, add `U` suffix if
+    // update should go `undefined` tweenie
+    const suffix = (repeat > 0) ? 'U' : '';
+    const ending = (isReverse === true) ? 'Rev' : 'Fwd';
+    const name = `_update${suffix}${ending}`;
+
+    this.update = this[name];
   },
 
   /**
@@ -33,13 +59,21 @@ const Tween = {
    *
    */
   _createTweenies() {
-    const { repeat, delay, duration, onUpdate, onRefresh } = this._props;
+    const {
+      repeat,
+      delay,
+      duration,
+      onUpdate,
+      onRefresh,
+      isReverse
+    } = this._props;
 
+    let end = 0;
     for (let i = 0; i <= repeat; i++) {
       this._tweenies.push(
         Tweenie({
           index: i,
-          delay,
+          delay: delay,
           duration,
           onUpdate,
           onRefresh,
@@ -55,8 +89,12 @@ const Tween = {
       );
     }
     // setup active `Tweenie` index
-    this._active = 0;
-    this._act = this._tweenies[0];
+    // TODO: cover
+    this._active = (isReverse) ? this._tweenies.length-1 : 0;
+    this._act = this._tweenies[this._active];
+
+    this._first = this._tweenies[0];
+    this._last = this._tweenies[this._tweenies.length-1];
   },
 
   /**
@@ -78,10 +116,81 @@ const Tween = {
   },
 
   /**
-   * update - function to update `Tween` with current time.
+   * _updateFwd - function to update `Tween` with forward current time.
+   *
+   * @private
+   * @param {Number} Current update time.
    */
-  update(time) {
+  _updateFwd(time) {
     this._act.update(time);
+  },
+
+  /**
+   * _updateRev - function to update `Tween` with reversed current time.
+   * @param {Number} Current update time.
+   */
+  _updateRev(time) {
+    this._act.update(this._end + (this._start - time));
+  },
+
+  /**
+   * _updateFwd - function to update `Tween` with forward current time
+   *              for `undefined` tweenies.
+   *
+   * @private
+   * @param {Number} Current update time.
+   */
+  _updateUFwd(time) {
+    if (time < this._start || time > this._end) {
+      // cover
+      this._first._prevTime = time;
+      this._last._prevTime = time;
+      return;
+    }
+
+    this._first.update(time);
+    this._last.update(time);
+
+    if (this._first._isActive === true) {
+      this._active = 0;
+      this._act = this._first;
+      this.update = this._updateFwd;
+      return;
+    }
+    if (this._last._isActive === true) {
+      this._active = this._tweenies.length-1;
+      this._act = this._last;
+      this.update = this._updateFwd;
+    }
+  },
+
+  /**
+   * _updateRev - function to update `Tween` with reversed current time
+   *              for `undefined` tweenies.
+   * @param {Number} Current update time.
+   */
+  _updateURev(time) {
+    time = this._end + (this._start - time);
+    if (time < this._start || time > this._end) {
+      this._first._prevTime = time;
+      this._last._prevTime = time;
+      return;
+    }
+
+    this._first.update(time);
+    this._last.update(time);
+
+    if (this._first._isActive === true) {
+      this._active = 0;
+      this._act = this._first;
+      this.update = this._updateRev;
+      return;
+    }
+    if (this._last._isActive === true) {
+      this._active = this._tweenies.length-1;
+      this._act = this._last;
+      this.update = this._updateRev;
+    }
   },
 
   /**
@@ -164,7 +273,7 @@ const Tween = {
    * @private
    * @param {String} State name [play, pause, 'stop', 'reverse']
    */
-  _setPlaybackState(state) {
+  _setState(state) {
     // save previous state
     this._prevState = this._state;
     this._state     = state;
@@ -177,7 +286,6 @@ const Tween = {
         wasPlaying = wasPlay || wasReverse,
         wasStill   = wasStop || wasPause;
 
-    console.log(state, this._prevState)
     if ((state === 'play' || state === 'reverse') && wasStill) {
       this._props.onPlaybackStart(state, this._prevState);
     }
@@ -188,6 +296,21 @@ const Tween = {
       this._props.onPlaybackStop();
     }
   },
+
+  // /*
+  //  * Method to set _resumeTime, _startTime and _prevTime.
+  //  *
+  //  * @private
+  //  * @param {String} Current state. [play, reverse]
+  //  * @param {Number} Time shift.
+  //  */
+  // _setResumeTime(state, shift = 0) {
+  //   // get current moment as resume time
+  //   this._resumeTime = performance.now();
+  //   // set start time regarding passed `shift` and `procTime`
+  //   const startTime = this._resumeTime - Math.abs(shift) - this._progressTime;
+  //   this.setStartTime(startTime, false);
+  // },
 
   onTweenerFinish() {},
 };

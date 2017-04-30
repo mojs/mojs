@@ -9,7 +9,8 @@
     "test": "karma start --single-run",
     "build": "webpack --production --optimize-minimize",
     "test-dev": "karma start",
-    "analyze": "webpack --json > stats.json"
+    "analyze": "webpack --json > stats.json",
+    "stats:js": "echo \"Size of mo.js is $(gzip -c build/mo.js | wc -c) bytes gzipped\""
   },
   "main": "build/mo.js",
   "keywords": [
