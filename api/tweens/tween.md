@@ -63,14 +63,6 @@ const tween = new mojs.Tween({
   */
   onUpdate (ep, p, isForward, isYoyo) {},
   /*
-    Fires on every update of the tween in sufficiently active period (excluding delay periods).
-    @param ep {Number} Eased progress.
-    @param p {Number} Normal (not eased) progress.
-    @param isForward {Boolean} Direction of the progress.
-    @param isYoyo {Boolean} If in `yoyo` period.
-  */
-  onUpdate (ep, p, isForward, isYoyo) {},
-  /*
     Fires when tween's the progress reaches `1` point in normal or repeat period.
     @param isForward {Boolean} If progress moves in forward direction.
     @param isYoyo {Boolean} If progress inside `yoyo` flip period.
