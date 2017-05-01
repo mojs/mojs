@@ -38,20 +38,21 @@
     <script src="build/mo.js"></script>
 
     <button id="js-play">play</button>
-    <!-- <button id="js-reverse">reverse</button> -->
     <button id="js-pause">pause</button>
     <!-- <button id="js-stop">stop</button> -->
+    <button id="js-reverse">reverse</button>
 
     <script>
       var el = document.querySelector('#js-el');
       var playBtn = document.querySelector('#js-play');
       var pauseBtn = document.querySelector('#js-pause');
-      // var reverseBtn = document.querySelector('#js-reverse');
+      var reverseBtn = document.querySelector('#js-reverse');
+
       var prevP = 0;
       const tween = new mojs.Tween({
-        delay: 1000,
-        duration: 2000,
-        isReverse: true,
+        delay: 50,
+        duration: 100,
+        // isReverse: true,
         // repeat: 5,
         onUpdate(p) {
           console.log('[update]', p, p - prevP);
@@ -72,13 +73,20 @@
       });
 
       playBtn.addEventListener('click', function() {
-        console.log('::: play click', tween._elapsed);
+        console.log('::: play click');
         tween.play();
       });
 
       pauseBtn.addEventListener('click', function() {
-        console.log('::: pause click', tween._elapsed);
+        console.log('::: pause click');
         tween.pause();
+      });
+
+      reverseBtn.addEventListener('click', function() {
+        console.log('::: reverse click');
+        tween.pause()
+             .reverse()
+             .play();
       });
     </script>
 

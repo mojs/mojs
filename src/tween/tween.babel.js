@@ -49,6 +49,27 @@ const Tween = {
   },
 
   /**
+   * reverse - function to `reverse` the tween.
+   *
+   * @public
+   * @returns {Object} This tween.
+   */
+  reverse() {
+    this._props.isReverse = !this._props.isReverse;
+
+    this.update = (this._props.isReverse === true)
+                    ? this._updateRev
+                    : this._updateFwd;
+
+    console.log(`time: ${(this._end - this._spot)}, elapsed: ${this._elapsed}`);
+    this._elapsed = (this._end - this._spot) - (this._elapsed - this._props.delay);
+    // this._prevTime = this._spot - this._elapsed;
+    console.log(`elapsed: ${this._elapsed}`);
+
+    return this;
+  },
+
+  /**
    * play - function to declare `play` the tween.
    *
    * @public
@@ -147,6 +168,11 @@ const Tween = {
     // `_elapsed` is how much time elapsed in the `active` period,
     // needed for `play`/`pause` functionality
     this._spot = (startTime - this._elapsed);
+
+    // 1 TODO: cover!
+    this._prevTime = this._spot - 1;
+    // 1 TODO: cover!
+    //
     // `_start` - is the active animation start time bound
     this._start = this._spot + delay;
     // set start time on all tweenies

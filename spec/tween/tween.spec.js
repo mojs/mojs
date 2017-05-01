@@ -1743,16 +1743,50 @@ describe('tween ->', function () {
 
       expect(result).toBe(tween);
     });
+  });
 
-    // it('should return if already pauseing', function() {
-    //   var tween = new Tween();
-    //   tween._state = 'pause';
-    //   spyOn(tween, 'setStartTime');
-    //   var result = tween.pause();
-    //
-    //   expect(result).toBe(tween);
-    //   expect(tween.setStartTime).not.toHaveBeenCalled();
-    // });
+  describe('`reverse` function ->', function() {
+    it('should flip `isReverse` in `_props`', function() {
+      var tween = new Tween();
+      tween.reverse();
+      expect(tween._props.isReverse).toBe(true);
+      tween.reverse();
+      expect(tween._props.isReverse).toBe(false);
+    });
+    it('should flip the `_update` function', function() {
+      var tween = new Tween();
+      tween.reverse();
+      expect(tween._props.isReverse).toBe(true);
+      expect(tween.update).toBe(tween._updateRev);
+      tween.reverse();
+      expect(tween._props.isReverse).toBe(false);
+      expect(tween.update).toBe(tween._updateFwd);
+    });
+    it('should flip the `_elapsed` time', function() {
+      var delay = 200;
+      var duration = 800;
+      var tween = new Tween({
+        delay: delay,
+        duration: duration
+      });
+
+      tween.setStartTime();
+      var start = tween._start;
+      tween.update(start - delay);
+      tween.update(start);
+      tween.update(start + duration / 2);
+
+      var elapsed = tween._elapsed;
+
+      tween.reverse();
+      expect(tween._elapsed).toBe((tween._end - tween._spot) - elapsed);
+    });
+    it('should return `this`', function() {
+      var tween = new Tween();
+      var result = tween.reverse();
+
+      expect(result).toBe(tween);
+    });
   });
 
   describe('`_setupPlay` function ->', function() {
