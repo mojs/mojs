@@ -18,16 +18,47 @@ const Tween = {
   /* The `Public` methods */
   /* -------------------- */
 
-  // /**
-  //  * reverse - function to reverse tween direction.
-  //  *
-  //  * @private
-  //  * @override ClassProto
-  //  */
-  // reverse() {
-  //   // change the update function
-  //   this.update = this._updateRev();
-  // },
+  /**
+   * play - function to `play` the tween.
+   *
+   * @public
+   * @returns {Object} This tween.
+   */
+  play() {
+    if (this._state === 'play') { return this; }
+
+    this._setState('play');
+    this._setupPlay('play');
+
+    return this;
+  },
+
+  /**
+   * pause - function to `pause` the tween.
+   *
+   * @public
+   * @returns {Object} This tween.
+   */
+  pause() {
+    if (this._state === 'pause' || this._state === 'stop') { return this; }
+
+    tweener.remove(this);
+    this._setState('pause');
+
+    return this;
+  },
+
+  /**
+   * play - function to declare `play` the tween.
+   *
+   * @public
+   * @param {Sting} Direction ['play', 'reverse']
+   * @returns {Object} This tween.
+   */
+  _setupPlay(type) {
+    this.setStartTime();
+    tweener.add(this);
+  },
 
   /**
    * _vars - function do declare `variables` after `_defaults` were extended
@@ -39,6 +70,8 @@ const Tween = {
   _vars() {
     this._tweenies = [];
     this._state = 'stop';
+    // time progress
+    this._elapsed = 0;
 
     // create period tweenies
     this._createTweenies();
@@ -105,13 +138,23 @@ const Tween = {
   setStartTime(startTime = performance.now()) {
     const { delay, duration, repeat } = this._props;
 
-    this._start = startTime + delay;
+    // if `elapsed` is greated that end bound -> reset it to `0`
+    if (this._elapsed >= (this._end - this._spot)) {
+      this._elapsed = 0;
+    }
 
+    // `_spot` - is the animation initialization spot
+    // `_elapsed` is how much time elapsed in the `active` period,
+    // needed for `play`/`pause` functionality
+    this._spot = (startTime - this._elapsed);
+    // `_start` - is the active animation start time bound
+    this._start = this._spot + delay;
+    // set start time on all tweenies
     this._tweenies[0].setStartTime(this._start - delay);
     for (let i = 1; i < this._tweenies.length; i++) {
       this._tweenies[i].setStartTime(this._tweenies[i-1]._end);
     }
-
+    // `_end` - is the active animation end time bound
     this._end = this._tweenies[this._tweenies.length-1]._end;
   },
 
@@ -122,7 +165,10 @@ const Tween = {
    * @param {Number} Current update time.
    */
   _updateFwd(time) {
-    this._act.update(time);
+    // save elapsed time
+    this._elapsed = time - this._spot;
+
+    return this._act.update(time);
   },
 
   /**
@@ -130,7 +176,10 @@ const Tween = {
    * @param {Number} Current update time.
    */
   _updateRev(time) {
-    this._act.update(this._end + (this._start - time));
+    // save elapsed time
+    this._elapsed = time - this._spot;
+
+    return this._act.update(this._end + (this._start - time));
   },
 
   /**
@@ -312,7 +361,16 @@ const Tween = {
   //   this.setStartTime(startTime, false);
   // },
 
-  onTweenerFinish() {},
+
+  /**
+   * onTweenerFinish - function that is called when the tweeener finished
+   *                   playback for this tween and removed it from the queue
+   *
+   */
+  onTweenerFinish() {
+    this._setState('stop');
+    this._props.onPlaybackComplete();
+  },
 };
 // extend classProto
 Tween.__proto__ = ClassProto;

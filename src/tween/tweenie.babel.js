@@ -29,6 +29,8 @@ const Tweenie = {
       duration
     } = this._props;
 
+    this._isActive = false;
+
     this._time = delay + duration;
 
     // this._prevTime = -Infinity;
@@ -53,9 +55,9 @@ const Tweenie = {
   setStartTime(startTime = 0) {
     const { delay, duration } = this._props;
 
+    console.log(startTime);
     this._start = startTime + delay;
     this._end = this._start + duration;
-    this._isActive = false;
   },
 
   onTweenerFinish() {},
@@ -65,6 +67,7 @@ const Tweenie = {
    */
   update(time) {
     const { onUpdate, isReverse, index } = this._props;
+    this._o.isIt && console.log(`time: ${time}`);
     // if forward progress
     const isForward = time > this._prevTime;
     if (time >= this._start && time <= this._end && this._prevTime !== void 0) {
@@ -89,6 +92,7 @@ const Tweenie = {
         // set `isActive` to `true` for forward direction
         // but set it to `false` for backward
         isActive = isForward;
+        this._o.isIt && console.log(`equal: ${time}`);
       }
 
       if (time < this._end && this._isActive === false && isForward === false) {
@@ -111,6 +115,9 @@ const Tweenie = {
       }
 
       this._isActive = (isActive === undefined) ? true : isActive;
+
+      this._prevTime = time;
+      return !this._isActive;
     }
 
     if (time > this._end && this._isActive === true) {
@@ -122,9 +129,7 @@ const Tweenie = {
       // `onChimeOut`
       this._chCbs[1](isForward, time, index);
       this._isActive = false;
-      // TODO: cover
       this._prevTime = time;
-      // TODO: cover
       return true;
     }
 
@@ -143,6 +148,9 @@ const Tweenie = {
         // `onStart`
         this._cbs[0](isForward, isReverse, index);
         this._isActive = false;
+        this._prevTime = time;
+
+        return true;
       }
     }
 

@@ -9,39 +9,14 @@ var mojs = {
   revision: '2.2.0',
   Tweenie,
   Tween,
-  // tweener,
   __helpers__: {
     ClassProto,
     tweenieDefaults,
-    tweenDefaults
+    tweenDefaults,
+    tweener
   }
 };
 
-// const tween = new mojs.Tween({
-//   delay: 200,
-//   duration: 1000,
-//   // isReverse: true,
-//   repeat: 1,
-//   onUpdate(p) {
-//     console.log('[update]', p);
-//   },
-//   onStart() {
-//     console.log('[start]');
-//   },
-//   onRepeatStart() {
-//     console.log('[repeat start]');
-//   },
-//   onRepeatComplete() {
-//     console.log('[repeat complete]');
-//   },
-//   onComplete() {
-//     console.log('[complete]');
-//   }
-// });
-//
-// tween.setStartTime();
-// const end = tween._end;
-//
 // // console.log(`=== update: end + 100`, end + 100);
 // // tween.update(end + 100);
 // console.log(`=== update: end - 10`, end - 10);

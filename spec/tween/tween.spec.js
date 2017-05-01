@@ -2,6 +2,7 @@ var Tweenie = mojs.Tweenie;
 var Tween = mojs.Tween;
 
 var helpers = mojs.__helpers__;
+var tweener = helpers.tweener;
 var ClassProto = helpers.ClassProto;
 var tweenieDefaults = helpers.tweenieDefaults;
 var tweenDefaults = helpers.tweenDefaults;
@@ -82,6 +83,20 @@ describe('tween ->', function () {
 
       tween.setStartTime(startTime);
       expect(tween._start).toBe(startTime);
+      expect(tween._spot).toBe(tween._start - tween._props.delay);
+    });
+
+    it('should set `_start` time regarding `_elapsed`', function () {
+      var delay = 50;
+      var tween = new Tween({
+        delay: delay
+      });
+      var startTime = 500;
+      tween._elapsed = 200;
+
+      tween.setStartTime(startTime);
+      expect(tween._spot).toBe(startTime - tween._elapsed);
+      expect(tween._start).toBe(tween._spot + delay);
     });
 
     it('should set `_start` time #delay', function () {
@@ -161,6 +176,40 @@ describe('tween ->', function () {
 
       expect(tween._end).toBe(tween._tweenies[tween._tweenies.length-1]._end);
     });
+
+    it('should recalculate `_elapsed` if >= `_end`', function () {
+      var duration = 500;
+      var tween = new Tween({
+        duration: duration
+      });
+      tween.setStartTime();
+
+      var start = tween._start;
+      tween.update(start);
+      tween.update(start + duration/2);
+      tween.update(start + duration);
+
+      tween.setStartTime();
+
+      expect(tween._elapsed).toBe(0);
+    });
+
+    it('should recalculate `_elapsed` if > `_end`', function () {
+      var duration = 500;
+      var tween = new Tween({
+        duration: duration
+      });
+      tween.setStartTime();
+
+      var start = tween._start;
+      tween.update(start);
+      tween.update(start + duration/2);
+      tween.update(start + duration + 20);
+
+      tween.setStartTime();
+
+      expect(tween._elapsed).toBe(0);
+    });
   });
 
   describe('`update` function ->', function () {
@@ -232,6 +281,48 @@ describe('tween ->', function () {
       expect(tween._tweenies[4].update).not.toHaveBeenCalled();
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
     });
+
+    it('should return result of inner update', function () {
+      var duration = 200;
+      var options = {
+        onUpdate: function() {},
+        duration: duration
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      var updateTime = tween._start + 10;
+
+      tween._updateFwd(updateTime);
+      tween._updateFwd(updateTime + duration/2);
+      var result = tween._updateFwd(updateTime + duration);
+      expect(result).toBe(true);
+    });
+
+    it('should save `_elapsed`', function () {
+      var duration = 200;
+      var options = {
+        onUpdate: function() {},
+        duration: duration
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      var updateTime = tween._start + 10;
+
+      tween._updateFwd(updateTime);
+      expect(tween._elapsed).toBe(updateTime - tween._spot);
+
+      updateTime += duration/2;
+      tween._updateFwd(updateTime);
+      expect(tween._elapsed).toBe(updateTime - tween._spot);
+
+      updateTime += duration/2;
+      tween._updateFwd(updateTime);
+      expect(tween._elapsed).toBe(updateTime - tween._spot);
+    });
   });
 
   describe('`_updateRev` function ->', function () {
@@ -283,6 +374,49 @@ describe('tween ->', function () {
       expect(tween._tweenies[3].update).not.toHaveBeenCalled();
       expect(tween._tweenies[4].update).not.toHaveBeenCalled();
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+    });
+
+    it('should return result of inner update', function () {
+      var duration = 200;
+      var options = {
+        onUpdate: function() {},
+        duration: duration
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      var updateTime = tween._end;
+
+      tween._updateRev(updateTime);
+      tween._updateRev(updateTime - duration/2);
+      var result = tween._updateRev(updateTime - duration);
+      expect(result).toBe(true);
+    });
+
+    it('should save `_elapsed`', function () {
+      var duration = 200;
+      var options = {
+        onUpdate: function() {},
+        duration: duration
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      var updateTime = tween._end;
+      var start = tween._start;
+
+      tween._updateRev(updateTime);
+      expect(tween._elapsed).toBe(updateTime - tween._spot);
+
+      updateTime -= duration/2;
+      tween._updateRev(updateTime);
+      expect(tween._elapsed).toBe(updateTime - tween._spot);
+
+      updateTime -= duration/2;
+      tween._updateRev(updateTime);
+      expect(tween._elapsed).toBe(updateTime - tween._spot);
     });
   });
 
@@ -1112,6 +1246,7 @@ describe('tween ->', function () {
       expect(tween._props.onComplete.calls.mostRecent().args).toEqual(args);
     });
   });
+
   // `onProgress` is not needed yet
   // describe('`onProgress` callback ->', function () {
   //   it('should be called with current `progress`', function () {
@@ -1529,4 +1664,130 @@ describe('tween ->', function () {
       });
     });
   });
+
+  describe('`play` function ->', function() {
+    it('should call the `_setState` function', function() {
+      var tween = new Tween();
+      spyOn(tween, '_setState');
+      tween.play();
+
+      expect(tween._setState).toHaveBeenCalledWith('play');
+    });
+
+    it('should call the `_setupPlay` function', function() {
+      var tween = new Tween();
+      spyOn(tween, '_setupPlay');
+      tween.play();
+
+      expect(tween._setupPlay).toHaveBeenCalledWith('play');
+    });
+
+    it('should return `this`', function() {
+      var tween = new Tween();
+      var result = tween.play();
+
+      expect(result).toBe(tween);
+    });
+
+    it('should return if already playing', function() {
+      var tween = new Tween();
+      tween._state = 'play';
+      spyOn(tween, 'setStartTime');
+      var result = tween.play();
+
+      expect(result).toBe(tween);
+      expect(tween.setStartTime).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('`pause` function ->', function() {
+    it('should call the `tweener.remove` function', function() {
+      var tween = new Tween();
+      tween.play();
+      spyOn(tweener, 'remove');
+      tween.pause();
+
+      expect(tweener.remove).toHaveBeenCalledWith(tween);
+    });
+
+    it('should call the `_setState` function', function() {
+      var tween = new Tween();
+      tween.play();
+      spyOn(tween, '_setState');
+      tween.pause();
+
+      expect(tween._setState).toHaveBeenCalledWith('pause');
+    });
+
+    it('should not call the `_setState` if already `paused`', function() {
+      var tween = new Tween();
+      tween.pause();
+      spyOn(tween, '_setState');
+      tween.pause();
+
+      expect(tween._setState).not.toHaveBeenCalledWith('pause');
+    });
+
+    it('should not call the `_setState` if already `stopped`', function() {
+      var tween = new Tween();
+      tween._state = 'stop';
+      spyOn(tween, '_setState');
+      tween.pause();
+
+      expect(tween._setState).not.toHaveBeenCalledWith('pause');
+    });
+
+    it('should return `this`', function() {
+      var tween = new Tween();
+      var result = tween.pause();
+
+      expect(result).toBe(tween);
+    });
+
+    // it('should return if already pauseing', function() {
+    //   var tween = new Tween();
+    //   tween._state = 'pause';
+    //   spyOn(tween, 'setStartTime');
+    //   var result = tween.pause();
+    //
+    //   expect(result).toBe(tween);
+    //   expect(tween.setStartTime).not.toHaveBeenCalled();
+    // });
+  });
+
+  describe('`_setupPlay` function ->', function() {
+    it('should call the `setStartTime` function', function() {
+      var tween = new Tween();
+      spyOn(tween, 'setStartTime');
+      tween._setupPlay();
+
+      expect(tween.setStartTime).toHaveBeenCalledWith();
+    });
+    it('should add the tween to the `tweener`', function() {
+      var tween = new Tween();
+      spyOn(tweener, 'add');
+      tween._setupPlay();
+
+      expect(tweener.add).toHaveBeenCalledWith(tween);
+    });
+  });
+
+  describe('`onTweenerFinish` function ->', function() {
+    it('should call the `_setState` function', function() {
+      var tween = new Tween();
+      spyOn(tween, '_setState');
+      tween.onTweenerFinish();
+
+      expect(tween._setState).toHaveBeenCalledWith('stop');
+    });
+
+    it('should envoke `onPlaybackComplete` callback', function() {
+      var tween = new Tween();
+      spyOn(tween._props, 'onPlaybackComplete');
+      tween.onTweenerFinish();
+
+      expect(tween._props.onPlaybackComplete).toHaveBeenCalled();
+    });
+  });
+
 });

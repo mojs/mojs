@@ -344,6 +344,90 @@ describe('tweenie ->', function () {
       expect(cnt).toBe(0);
     });
 
+    it('should return when active period is completed', function () {
+      var duration = 500;
+
+      var options = {
+        duration: duration,
+        onComplete: function() {}
+      };
+
+      var tweenie = Tweenie(options);
+      tweenie.setStartTime(200);
+
+      var startTime = tweenie._start;
+
+      tweenie.update(startTime - 10);
+      tweenie.update(startTime + duration/2);
+      var result = tweenie.update(startTime + duration);
+
+      expect(tweenie._prevTime).toBe(startTime + duration);
+      expect(result).toBe(true);
+    });
+
+    it('should return when active period is completed #2', function () {
+      var duration = 500;
+
+      var options = {
+        duration: duration,
+        onComplete: function() {}
+      };
+
+      var tweenie = Tweenie(options);
+      tweenie.setStartTime(200);
+
+      var startTime = tweenie._start;
+
+      tweenie.update(startTime - 10);
+      tweenie.update(startTime + duration/2);
+      var result = tweenie.update(startTime + duration + 10);
+
+      expect(tweenie._prevTime).toBe(startTime + duration + 10);
+      expect(result).toBe(true);
+    });
+
+    it('should return when active period is completed #backward', function () {
+      var duration = 500;
+
+      var options = {
+        duration: duration,
+        onComplete: function() {},
+        isIt: 1
+      };
+
+      var tweenie = Tweenie(options);
+      tweenie.setStartTime(200);
+
+      var end = tweenie._end;
+
+      tweenie.update(end + 10);
+      tweenie.update(end - duration/2);
+      var result = tweenie.update(end - duration);
+
+      expect(tweenie._prevTime).toBe(end - duration);
+      expect(result).toBe(true);
+    });
+
+    // it('should return when active period is completed #backward #2', function () {
+    //   var duration = 500;
+    //
+    //   var options = {
+    //     duration: duration,
+    //     onComplete: function() {}
+    //   };
+    //
+    //   var tweenie = Tweenie(options);
+    //   tweenie.setStartTime(200);
+    //
+    //   var end = tweenie._end;
+    //
+    //   tweenie.update(end + 10);
+    //   tweenie.update(end - duration/2);
+    //   var result = tweenie.update(end - duration - 10);
+    //
+    //   expect(tweenie._prevTime).toBe(end - duration - 10);
+    //   expect(result).toBe(true);
+    // });
   });
 
   describe('`onComplete` callback ->', function() {
