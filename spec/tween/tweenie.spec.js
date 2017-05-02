@@ -1148,4 +1148,20 @@ describe('tweenie ->', function () {
       expect(tweenie._props.onRefresh.calls.count()).toBe(1);
     });
   });
+
+  describe('`reset` dunction ->', function() {
+    it('should reset the tweenie', function() {
+      var duration = 400;
+      var tweenie = Tweenie({
+        duration: duration,
+        onRefresh: function() {}
+      });
+
+      tweenie._isActive = true;
+      tweenie.reset();
+
+      expect(tweenie._isActive).toBe(false);
+      expect(tweenie._prevTime).not.toBeDefined();
+    });
+  });
 });

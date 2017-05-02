@@ -55,9 +55,9 @@ const Tweenie = {
   setStartTime(startTime = 0) {
     const { delay, duration } = this._props;
 
-    console.log(startTime);
     this._start = startTime + delay;
     this._end = this._start + duration;
+    delete this._prevTime;
   },
 
   onTweenerFinish() {},
@@ -67,7 +67,6 @@ const Tweenie = {
    */
   update(time) {
     const { onUpdate, isReverse, index } = this._props;
-    this._o.isIt && console.log(`time: ${time}`);
     // if forward progress
     const isForward = time > this._prevTime;
     if (time >= this._start && time <= this._end && this._prevTime !== void 0) {
@@ -75,7 +74,7 @@ const Tweenie = {
       const p = (time - this._start) / this._props.duration;
       onUpdate(isReverse === false ? p : 1 - p);
 
-      if (time > this._start && this._isActive === false && isForward == true) {
+      if (time > this._start && this._isActive === false && isForward === true) {
         // TODO: cover passing time to the callback
         // `onChimeIn`
         this._chCbs[0](isForward, time, index);
@@ -92,7 +91,6 @@ const Tweenie = {
         // set `isActive` to `true` for forward direction
         // but set it to `false` for backward
         isActive = isForward;
-        this._o.isIt && console.log(`equal: ${time}`);
       }
 
       if (time < this._end && this._isActive === false && isForward === false) {
@@ -155,6 +153,14 @@ const Tweenie = {
     }
 
     this._prevTime = time;
+  },
+
+  /**
+   * reset - function to reset the `Tweenie`.
+   */
+  reset() {
+    this._isActive = false;
+    delete this._prevTime;
   }
 }
 // extend classProto

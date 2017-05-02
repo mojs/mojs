@@ -50,10 +50,10 @@
 
       var prevP = 0;
       const tween = new mojs.Tween({
-        delay: 50,
-        duration: 100,
+        delay: 500,
+        duration: 2000,
         // isReverse: true,
-        // repeat: 5,
+        repeat: 2,
         onUpdate(p) {
           console.log('[update]', p, p - prevP);
           prevP = p;
@@ -83,7 +83,8 @@
       });
 
       reverseBtn.addEventListener('click', function() {
-        console.log('::: reverse click');
+        console.log('::: revert click');
+
         tween.pause()
              .reverse()
              .play();

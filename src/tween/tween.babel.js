@@ -57,14 +57,12 @@ const Tween = {
   reverse() {
     this._props.isReverse = !this._props.isReverse;
 
-    this.update = (this._props.isReverse === true)
-                    ? this._updateRev
-                    : this._updateFwd;
+    if (this._elapsed > 0) {
+      const { isReverse, delay } = this._props;
+      this.update = (isReverse === true) ? this._updateRev : this._updateFwd;
+      this._elapsed = (this._end - this._spot) - (this._elapsed - delay);
 
-    console.log(`time: ${(this._end - this._spot)}, elapsed: ${this._elapsed}`);
-    this._elapsed = (this._end - this._spot) - (this._elapsed - this._props.delay);
-    // this._prevTime = this._spot - this._elapsed;
-    console.log(`elapsed: ${this._elapsed}`);
+    } else { this._setupUpdateFunction(); }
 
     return this;
   },
@@ -97,6 +95,17 @@ const Tween = {
     // create period tweenies
     this._createTweenies();
 
+    // TODO: cover the call
+    this._setupUpdateFunction();
+  },
+
+  /**
+   * _setupUpdateFunction - function to set up the intial `update` function
+   *                        regarding `isReverse` and `repeat` options.
+   *
+   * @return {type}  description
+   */
+  _setupUpdateFunction() {
     const { repeat, isReverse } = this._props;
     // setup `update` function to `updateFwd` by default
     // and to `updateRev` if reversed, add `U` suffix if
@@ -105,12 +114,17 @@ const Tween = {
     const ending = (isReverse === true) ? 'Rev' : 'Fwd';
     const name = `_update${suffix}${ending}`;
 
+    if (repeat === 0) {
+      this._active = (isReverse === false) ? 0 : this._tweenies.length-1;
+      this._act = this._tweenies[this._active];
+      this._o.isIt && console.log('yep', this._active, this._act);
+    }
+
     this.update = this[name];
   },
 
   /**
    * Function to create tweenies.
-   *
    */
   _createTweenies() {
     const {
@@ -142,10 +156,6 @@ const Tween = {
         })
       );
     }
-    // setup active `Tweenie` index
-    // TODO: cover
-    this._active = (isReverse) ? this._tweenies.length-1 : 0;
-    this._act = this._tweenies[this._active];
 
     this._first = this._tweenies[0];
     this._last = this._tweenies[this._tweenies.length-1];
@@ -168,11 +178,6 @@ const Tween = {
     // `_elapsed` is how much time elapsed in the `active` period,
     // needed for `play`/`pause` functionality
     this._spot = (startTime - this._elapsed);
-
-    // 1 TODO: cover!
-    this._prevTime = this._spot - 1;
-    // 1 TODO: cover!
-    //
     // `_start` - is the active animation start time bound
     this._start = this._spot + delay;
     // set start time on all tweenies
@@ -193,8 +198,8 @@ const Tween = {
   _updateFwd(time) {
     // save elapsed time
     this._elapsed = time - this._spot;
-
-    return this._act.update(time);
+    this._o.isIt && console.log(this._act);
+    this._act.update(time);
   },
 
   /**
@@ -204,8 +209,7 @@ const Tween = {
   _updateRev(time) {
     // save elapsed time
     this._elapsed = time - this._spot;
-
-    return this._act.update(this._end + (this._start - time));
+    this._act.update(this._end + (this._start - time));
   },
 
   /**
@@ -309,13 +313,14 @@ const Tween = {
    * @param {Number} Update period.
    */
   _onComplete(isForward, isYoyo, index) {
-    const { onRepeatComplete, onComplete } = this._props;
+    const { onRepeatComplete, onComplete, isReverse } = this._props;
     // if forward direction call the `onRepeatComplete` before `onComplete`
     if (isForward === true) {
       onRepeatComplete(isForward, isYoyo, index);
     }
     if (index === this._tweenies.length-1) {
       onComplete(isForward, isYoyo, index);
+      this._ac = isForward;
     }
     // if forward direction call the `onRepeatComplete` after `onComplete`
     if (isForward === false) {
@@ -330,10 +335,13 @@ const Tween = {
    * @param {Number} Update period.
    */
   _onStart(isForward, isYoyo, index) {
-    const { onRepeatStart, onStart } = this._props;
+    const { onRepeatStart, onStart, isReverse } = this._props;
     // if forward direction call the `onRepeatStart` before `onStart`
     if (isForward === false) { onRepeatStart(isForward, isYoyo, index); }
-    if (index === 0) { onStart(isForward, isYoyo, index); }
+    if (index === 0) {
+      onStart(isForward, isYoyo, index);
+      this._ac = !isForward;
+    }
     // if forward direction call the `onRepeatStart` before `onStart`
     if (isForward === true) { onRepeatStart(isForward, isYoyo, index); }
   },
@@ -395,8 +403,24 @@ const Tween = {
    */
   onTweenerFinish() {
     this._setState('stop');
+    this.reset();
     this._props.onPlaybackComplete();
   },
+
+  /**
+   * reset - function to reset the tween.
+   */
+  reset() {
+    // reset all tweenies
+    for (let i = 0; i < this._tweenies.length; i++) {
+      this._tweenies[i].reset();
+    }
+
+    this._ac = false;
+    this._elapsed = 0;
+  },
+
+
 };
 // extend classProto
 Tween.__proto__ = ClassProto;

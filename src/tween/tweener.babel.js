@@ -143,7 +143,8 @@ const getVisiblityEvent = () => {
     var i = this.tweens.length;
     while(i--) {
       var tween = this.tweens[i];
-      if (tween.update(time) === true) {
+      tween.update(time)
+      if (tween._ac === true) {
         this.remove(tween);
         tween.onTweenerFinish();
         tween._prevTime = undefined;
