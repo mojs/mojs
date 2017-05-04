@@ -87,6 +87,7 @@ describe('tween ->', function () {
       tween.setStartTime(startTime);
       expect(tween._start).toBe(startTime);
       expect(tween._spot).toBe(tween._start - tween._props.delay);
+      expect(tween._playTime).toBe(tween._spot);
     });
 
     it('should set `_start` time regarding `_elapsed`', function () {
@@ -287,25 +288,6 @@ describe('tween ->', function () {
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
     });
 
-    // not need for now
-    // it('should return result of inner update', function () {
-    //   var duration = 200;
-    //   var options = {
-    //     onUpdate: function() {},
-    //     duration: duration
-    //   };
-    //
-    //   var tween = new Tween(options);
-    //   tween.setStartTime();
-    //
-    //   var updateTime = tween._start + 10;
-    //
-    //   tween._updateFwd(updateTime);
-    //   tween._updateFwd(updateTime + duration/2);
-    //   var result = tween._updateFwd(updateTime + duration);
-    //   expect(result).toBe(true);
-    // });
-
     it('should save `_elapsed`', function () {
       var duration = 200;
       var options = {
@@ -328,6 +310,50 @@ describe('tween ->', function () {
       updateTime += duration/2;
       tween._updateFwd(updateTime);
       expect(tween._elapsed).toBe(updateTime - tween._spot);
+    });
+
+    it('should recalculate `time` regarding `speed`', function() {
+      var duration = 500;
+      var tween = new Tween({
+        duration: duration,
+        repeat: 5
+      });
+      tween.setStartTime();
+
+      tween._playTime = 200;
+      tween._speed = 2;
+      var time = tween._start + duration/2;
+      var normalizedTime = tween._playTime + tween._speed * (time - tween._playTime);
+
+      tween._act = tween._tweenies[0];
+
+      spyOn(tween._act, 'update');
+
+      tween._updateFwd(time);
+
+      expect(tween._act.update).toHaveBeenCalledWith(normalizedTime);
+    });
+
+    it('should recalculate `time` regarding `speed` #2', function() {
+      var duration = 500;
+      var tween = new Tween({
+        duration: duration,
+        repeat: 5
+      });
+      tween.setStartTime();
+
+      tween._playTime = 200;
+      tween._speed = .5;
+      var time = tween._start + duration/2;
+      var normalizedTime = tween._playTime + tween._speed * (time - tween._playTime);
+
+      tween._act = tween._tweenies[0];
+
+      spyOn(tween._act, 'update');
+
+      tween._updateFwd(time);
+
+      expect(tween._act.update).toHaveBeenCalledWith(normalizedTime);
     });
   });
 
@@ -385,25 +411,6 @@ describe('tween ->', function () {
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
     });
 
-    // not need for now
-    // it('should return result of inner update', function () {
-    //   var duration = 200;
-    //   var options = {
-    //     onUpdate: function() {},
-    //     duration: duration
-    //   };
-    //
-    //   var tween = new Tween(options);
-    //   tween.setStartTime();
-    //
-    //   var updateTime = tween._end;
-    //
-    //   tween._updateRev(updateTime);
-    //   tween._updateRev(updateTime - duration/2);
-    //   var result = tween._updateRev(updateTime - duration);
-    //   expect(result).toBe(true);
-    // });
-
     it('should save `_elapsed`', function () {
       var duration = 200;
       var options = {
@@ -427,6 +434,54 @@ describe('tween ->', function () {
       updateTime -= duration/2;
       tween._updateRev(updateTime);
       expect(tween._elapsed).toBe(updateTime - tween._spot);
+    });
+
+    it('should recalculate `time` regarding `speed`', function() {
+      var duration = 500;
+      var tween = new Tween({
+        duration: duration
+      });
+      tween.setStartTime();
+
+      var start = tween._start;
+      var end = tween._end;
+
+      tween._playTime = 200;
+      tween._speed = 2;
+      var time = tween._start + duration/2;
+      var normalizedTime = tween._playTime + tween._speed * (time - tween._playTime);
+      var normalizedRevTime = end + (start - normalizedTime);
+
+      tween._act = tween._tweenies[0];
+      spyOn(tween._act, 'update');
+
+      tween._updateRev(time);
+
+      expect(tween._act.update).toHaveBeenCalledWith(normalizedRevTime);
+    });
+
+    it('should recalculate `time` regarding `speed` #2', function() {
+      var duration = 500;
+      var tween = new Tween({
+        duration: duration
+      });
+      tween.setStartTime();
+
+      var start = tween._start;
+      var end = tween._end;
+
+      tween._playTime = 200;
+      tween._speed = .5;
+      var time = tween._start + duration/2;
+      var normalizedTime = tween._playTime + tween._speed * (time - tween._playTime);
+      var normalizedRevTime = end + (start - normalizedTime);
+
+      tween._act = tween._tweenies[0];
+      spyOn(tween._act, 'update');
+
+      tween._updateRev(time);
+
+      expect(tween._act.update).toHaveBeenCalledWith(normalizedRevTime);
     });
   });
 
@@ -1615,6 +1670,50 @@ describe('tween ->', function () {
       expect(tween._tweenies[0].update).not.toHaveBeenCalledWith(end);
       expect(tween._tweenies[tween._tweenies.length-1].update).not.toHaveBeenCalledWith(end);
     });
+
+    it('should recalculate `time` regarding `speed`', function() {
+      var duration = 500;
+      var tween = new Tween({
+        duration: duration,
+        repeat: 5
+      });
+      tween.setStartTime();
+
+      tween._playTime = 200;
+      tween._speed = 2;
+      var time = tween._start + duration/2;
+      var normalizedTime = tween._playTime + tween._speed * (time - tween._playTime);
+
+      spyOn(tween._tweenies[0], 'update').and.callThrough();
+      spyOn(tween._tweenies[tween._tweenies.length-1], 'update').and.callThrough();
+
+      tween._updateUFwd(time);
+
+      expect(tween._tweenies[0].update).toHaveBeenCalledWith(normalizedTime);
+      expect(tween._tweenies[tween._tweenies.length-1].update).toHaveBeenCalledWith(normalizedTime);
+    });
+
+    it('should recalculate `time` regarding `speed` #2', function() {
+      var duration = 500;
+      var tween = new Tween({
+        duration: duration,
+        repeat: 5
+      });
+      tween.setStartTime();
+
+      tween._playTime = 200;
+      tween._speed = .5;
+      var time = tween._start + duration/2;
+      var normalizedTime = tween._playTime + tween._speed * (time - tween._playTime);
+
+      spyOn(tween._tweenies[0], 'update').and.callThrough();
+      spyOn(tween._tweenies[tween._tweenies.length-1], 'update').and.callThrough();
+
+      tween._updateUFwd(time);
+
+      expect(tween._tweenies[0].update).toHaveBeenCalledWith(normalizedTime);
+      expect(tween._tweenies[tween._tweenies.length-1].update).toHaveBeenCalledWith(normalizedTime);
+    });
   });
 
   describe('`_updateURev` function ->', function() {
@@ -1717,6 +1816,60 @@ describe('tween ->', function () {
       expect(tween._tweenies[0].update).not.toHaveBeenCalledWith(time - 200);
       expect(tween._tweenies[tween._tweenies.length-1].update).not.toHaveBeenCalledWith(time - 200);
     });
+
+    it('should recalculate `time` regarding `speed`', function() {
+      var duration = 500;
+      var tween = new Tween({
+        duration: duration,
+        repeat: 5
+      });
+      tween.setStartTime();
+
+      var start = tween._start;
+      var end = tween._end;
+
+      tween._playTime = 200;
+      tween._speed = 2;
+      var time = tween._start + duration/2;
+      var normalizedTime = tween._playTime + tween._speed * (time - tween._playTime);
+
+      var normalizedRevTime = end + (start - normalizedTime);
+
+      spyOn(tween._tweenies[0], 'update').and.callThrough();
+      spyOn(tween._tweenies[tween._tweenies.length-1], 'update').and.callThrough();
+
+      tween._updateURev(time);
+
+      expect(tween._tweenies[0].update).toHaveBeenCalledWith(normalizedRevTime);
+      expect(tween._tweenies[tween._tweenies.length-1].update).toHaveBeenCalledWith(normalizedRevTime);
+    });
+
+    it('should recalculate `time` regarding `speed` #2', function() {
+      var duration = 500;
+      var tween = new Tween({
+        duration: duration,
+        repeat: 5
+      });
+      tween.setStartTime();
+
+      var start = tween._start;
+      var end = tween._end;
+
+      tween._playTime = 200;
+      tween._speed = .5;
+      var time = tween._start + duration/2;
+      var normalizedTime = tween._playTime + tween._speed * (time - tween._playTime);
+
+      var normalizedRevTime = end + (start - normalizedTime);
+
+      spyOn(tween._tweenies[0], 'update').and.callThrough();
+      spyOn(tween._tweenies[tween._tweenies.length-1], 'update').and.callThrough();
+
+      tween._updateURev(time);
+
+      expect(tween._tweenies[0].update).toHaveBeenCalledWith(normalizedRevTime);
+      expect(tween._tweenies[tween._tweenies.length-1].update).toHaveBeenCalledWith(normalizedRevTime);
+    });
   });
 
   describe('`play` function ->', function() {
@@ -1751,6 +1904,28 @@ describe('tween ->', function () {
 
       expect(result).toBe(tween);
       expect(tween.setStartTime).not.toHaveBeenCalled();
+    });
+
+    it('should set `_playTime`', function() {
+      var tween = new Tween();
+      tween.play();
+
+      var time = performance.now();
+      expect(tween._playTime).toBeDefined();
+      expect(time - tween._playTime).not.toBeGreaterThan(10);
+    });
+
+    it('should set `_speed`', function() {
+      var speed = 2;
+
+      var tween = new Tween({
+        speed: speed
+      });
+      tween._speed = -1;
+
+      tween.play();
+
+      expect(tween._speed).toBe(speed);
     });
   });
 
@@ -1797,6 +1972,22 @@ describe('tween ->', function () {
 
       expect(result).toBe(tween);
     });
+
+    it('should reset `_speed` to `1`', function() {
+      var speed = 2;
+
+      var tween = new Tween({
+        speed: speed
+      });
+      tween._speed = -1;
+
+      tween.play();
+      expect(tween._speed).toBe(speed);
+
+      tween.pause();
+      expect(tween._speed).toBe(1);
+
+    });
   });
 
   describe('`reverse` function ->', function() {
@@ -1807,6 +1998,7 @@ describe('tween ->', function () {
       tween.reverse();
       expect(tween._props.isReverse).toBe(false);
     });
+
     it('should flip the `_update` function if `_elapsed`', function() {
       var tween = new Tween();
       tween.reverse();
@@ -1824,6 +2016,7 @@ describe('tween ->', function () {
       tween.reverse();
       expect(tween._setupUpdateFunction).toHaveBeenCalled();
     });
+
     it('should flip the `_elapsed` time', function() {
       var delay = 200;
       var duration = 800;
@@ -1857,6 +2050,29 @@ describe('tween ->', function () {
       tween.reverse();
       expect(tween._elapsed).toBe(0);
     });
+
+    it('should call the `_checkActiveTweenie` function', function() {
+      var delay = 200;
+      var duration = 800;
+      var tween = new Tween({
+        delay: delay,
+        duration: duration
+      });
+
+      tween.setStartTime();
+      var start = tween._start;
+      tween.update(start - delay);
+      tween.update(start);
+      tween.update(start + duration / 2);
+
+      var elapsed = tween._elapsed;
+
+      spyOn(tween, '_checkActiveTweenie');
+
+      tween.reverse();
+      expect(tween._checkActiveTweenie).toHaveBeenCalled();
+    });
+
     it('should return `this`', function() {
       var tween = new Tween();
       var result = tween.reverse();
@@ -1933,16 +2149,16 @@ describe('tween ->', function () {
       expect(tween._elapsed).toBe(0);
     });
 
-    // nope
-    // it('should call `_setupUpdateFunction`', function () {
-    //   var tween = new Tween();
-    //   spyOn(tween, '_setupUpdateFunction');
-    //   tween.reset();
-    //   expect(tween._setupUpdateFunction).toHaveBeenCalled();
-    // });
+    it('should call `_setupUpdateFunction`', function() {
+      var tween = new Tween();
+      spyOn(tween, '_setupUpdateFunction');
+      tween.reset();
+      expect(tween._setupUpdateFunction).toHaveBeenCalled();
+    });
+
   });
 
-  describe('`setupUpdateFunction` function ->', function() {
+  describe('`_setupUpdateFunction` function ->', function() {
     it('should set to `_updateUFwd`', function() {
       var tween = new Tween({
         repeat: 2
@@ -1984,6 +2200,51 @@ describe('tween ->', function () {
 
       tween._setupUpdateFunction();
       expect(tween.update).toBe(tween._updateRev);
+    });
+  });
+
+  describe('`_checkActiveTweenie` function ->', function() {
+    it('should normalize in reverse direction', function() {
+      var delay = 100;
+      var duration = 500;
+      var tween = new Tween({
+        delay: delay,
+        duration: duration,
+        repeat: 2,
+        isReverse: true
+      });
+
+      tween.setStartTime();
+
+      tween._active = 1;
+      tween._act = tween._tweenies[tween._active];
+
+      tween._elpased = delay + duration + delay/2;
+      tween._checkActiveTweenie();
+
+      expect(tween._active).toBe(0);
+      expect(tween._act).toBe(tween._tweenies[0]);
+    });
+
+    it('should normalize in reverse direction', function() {
+      var delay = 100;
+      var duration = 500;
+      var tween = new Tween({
+        delay: delay,
+        duration: duration,
+        repeat: 2
+      });
+
+      tween.setStartTime();
+
+      tween._active = 0;
+      tween._act = tween._tweenies[tween._active];
+
+      tween._elapsed = delay + duration + delay/2;
+      tween._checkActiveTweenie();
+
+      expect(tween._active).toBe(1);
+      expect(tween._act).toBe(tween._tweenies[1]);
     });
   });
 });

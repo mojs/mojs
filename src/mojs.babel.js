@@ -17,29 +17,6 @@ var mojs = {
   }
 };
 
-// // console.log(`=== update: end + 100`, end + 100);
-// // tween.update(end + 100);
-// console.log(`=== update: end - 10`, end - 10);
-// tween.update(end - 10);
-// console.log(`=== update: end - 100`, end - 100);
-// tween.update(end - 100);
-// console.log(`=== update: end - 200`, end - 200);
-// tween.update(end - 200);
-// console.log(`=== update: end - 300`, end - 300);
-// tween.update(end - 300);
-// console.log(`=== update: end - 800`, end - 800);
-// tween.update(end - 800);
-// console.log(`=== update: end - 1100`, end - 1100);
-// tween.update(end - 1100);
-// console.log(`=== update: end - 1200`, end - 1200);
-// tween.update(end - 1200);
-// console.log(`=== update: end - 1500`, end - 1500);
-// tween.update(end - 1500);
-// console.log(`=== update: end - 2000`, end - 2000);
-// tween.update(end - 2000);
-// console.log(`=== update: end - 2300`, end - 2300);
-// tween.update(end - 2300);
-
 // window.onload = () => {
 //   const items = [];
 //   setTimeout(() => {
@@ -63,12 +40,6 @@ var mojs = {
 //         onComplete() {
 //           // (i === 0) && console.log('complete');
 //         }
-//         // onChimeIn() {
-//         //   (i === 0) && console.log('chime in');
-//         // },
-//         // onChimeOut() {
-//         //   (i === 0) && console.log('chime out');
-//         // }
 //       });
 //       items.push(tweenie);
 //     }

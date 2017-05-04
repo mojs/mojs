@@ -11,6 +11,7 @@ const Tween = {
    * @override ClassProto
    */
   _declareDefaults() {
+    // ! see tween defaults for public properties and callbacks !
     this._defaults = tweenDefaults;
   },
 
@@ -25,10 +26,16 @@ const Tween = {
    * @returns {Object} This tween.
    */
   play() {
-    if (this._state === 'play') { return this; }
+    if (this._state === 'play') {
+      console.log('-=-=-=-=-=-=-=- return');
+      return this;
+    }
 
     this._setState('play');
     this._setupPlay('play');
+
+    this._playTime = performance.now();
+    this._speed = this._props.speed;
 
     return this;
   },
@@ -44,6 +51,9 @@ const Tween = {
 
     tweener.remove(this);
     this._setState('pause');
+    // reset speed variable to `1` because speed should not be applied
+    // when setProgress is used
+    this._speed = 1;
 
     return this;
   },
@@ -59,12 +69,29 @@ const Tween = {
 
     if (this._elapsed > 0) {
       const { isReverse, delay } = this._props;
+      this._checkActiveTweenie();
       this.update = (isReverse === true) ? this._updateRev : this._updateFwd;
       this._elapsed = (this._end - this._spot) - (this._elapsed - delay);
-
     } else { this._setupUpdateFunction(); }
 
     return this;
+  },
+
+  /**
+   * _checkActiveTweenie - function to check if active tweenie was set right on
+   *                       `reverse` function.
+   * @private
+   */
+  _checkActiveTweenie() {
+    const { isReverse } = this._props;
+
+    if ((isReverse === true) && (this._spot + this._elapsed < this._act._start)) {
+      this._active--;
+      this._act = this._tweenies[this._active];
+    } else if ((isReverse === false) && (this._spot + this._elapsed > this._act._end)) {
+      this._active++;
+      this._act = this._tweenies[this._active];
+    }
   },
 
   /**
@@ -91,11 +118,11 @@ const Tween = {
     this._state = 'stop';
     // time progress
     this._elapsed = 0;
-
+    // set "id" speed
+    this._speed = 1;
     // create period tweenies
     this._createTweenies();
-
-    // TODO: cover the call
+    // setup initial update function
     this._setupUpdateFunction();
   },
 
@@ -114,10 +141,11 @@ const Tween = {
     const ending = (isReverse === true) ? 'Rev' : 'Fwd';
     const name = `_update${suffix}${ending}`;
 
+    // if ne repeat - there is just one tweenie,
+    // so we need to set up it as active for further updates
     if (repeat === 0) {
       this._active = (isReverse === false) ? 0 : this._tweenies.length-1;
       this._act = this._tweenies[this._active];
-      this._o.isIt && console.log('yep', this._active, this._act);
     }
 
     this.update = this[name];
@@ -137,11 +165,11 @@ const Tween = {
     } = this._props;
 
     let end = 0;
-    for (let i = 0; i <= repeat; i++) {
+    for (let index = 0; index <= repeat; index++) {
       this._tweenies.push(
         Tweenie({
-          index: i,
-          delay: delay,
+          index,
+          delay,
           duration,
           onUpdate,
           onRefresh,
@@ -173,11 +201,12 @@ const Tween = {
     if (this._elapsed >= (this._end - this._spot)) {
       this._elapsed = 0;
     }
-
     // `_spot` - is the animation initialization spot
     // `_elapsed` is how much time elapsed in the `active` period,
     // needed for `play`/`pause` functionality
-    this._spot = (startTime - this._elapsed);
+    this._spot = startTime - this._elapsed;
+    // play time is needed to recalculate time regarding `speed`
+    this._playTime = this._spot;
     // `_start` - is the active animation start time bound
     this._start = this._spot + delay;
     // set start time on all tweenies
@@ -196,9 +225,10 @@ const Tween = {
    * @param {Number} Current update time.
    */
   _updateFwd(time) {
+    time = this._playTime + this._speed*(time - this._playTime);
     // save elapsed time
     this._elapsed = time - this._spot;
-    this._o.isIt && console.log(this._act);
+
     this._act.update(time);
   },
 
@@ -207,8 +237,10 @@ const Tween = {
    * @param {Number} Current update time.
    */
   _updateRev(time) {
+    time = this._playTime + this._speed*(time - this._playTime);
     // save elapsed time
     this._elapsed = time - this._spot;
+
     this._act.update(this._end + (this._start - time));
   },
 
@@ -220,6 +252,8 @@ const Tween = {
    * @param {Number} Current update time.
    */
   _updateUFwd(time) {
+    time = this._playTime + this._speed*(time - this._playTime);
+
     if (time < this._start || time > this._end) {
       // cover
       this._first._prevTime = time;
@@ -249,7 +283,10 @@ const Tween = {
    * @param {Number} Current update time.
    */
   _updateURev(time) {
+    time = this._playTime + this._speed*(time - this._playTime);
+
     time = this._end + (this._start - time);
+
     if (time < this._start || time > this._end) {
       this._first._prevTime = time;
       this._last._prevTime = time;
@@ -380,22 +417,6 @@ const Tween = {
     }
   },
 
-  // /*
-  //  * Method to set _resumeTime, _startTime and _prevTime.
-  //  *
-  //  * @private
-  //  * @param {String} Current state. [play, reverse]
-  //  * @param {Number} Time shift.
-  //  */
-  // _setResumeTime(state, shift = 0) {
-  //   // get current moment as resume time
-  //   this._resumeTime = performance.now();
-  //   // set start time regarding passed `shift` and `procTime`
-  //   const startTime = this._resumeTime - Math.abs(shift) - this._progressTime;
-  //   this.setStartTime(startTime, false);
-  // },
-
-
   /**
    * onTweenerFinish - function that is called when the tweeener finished
    *                   playback for this tween and removed it from the queue
@@ -418,6 +439,7 @@ const Tween = {
 
     this._ac = false;
     this._elapsed = 0;
+    this._setupUpdateFunction();
   },
 
 

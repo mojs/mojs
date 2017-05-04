@@ -50,8 +50,9 @@
 
       var prevP = 0;
       const tween = new mojs.Tween({
-        delay: 500,
-        duration: 2000,
+        delay: 5000,
+        duration: 1000,
+        speed: 2,
         // isReverse: true,
         repeat: 2,
         onUpdate(p) {
@@ -59,13 +60,16 @@
           prevP = p;
         },
         onStart() {
+          console.timeEnd('start');
           console.log('[start]');
         },
         onRepeatStart() {
           console.log('[repeat start]');
+          console.time('period time');
         },
         onRepeatComplete() {
           console.log('[repeat complete]');
+          console.timeEnd('period time');
         },
         onComplete() {
           console.log('[complete]');
@@ -74,6 +78,7 @@
 
       playBtn.addEventListener('click', function() {
         console.log('::: play click');
+        console.time('start');
         tween.play();
       });
 
