@@ -2,6 +2,7 @@ import { ClassProto } from '../class-proto';
 import { tweenDefaults } from './tween-defaults';
 import { Tweenie } from './tweenie';
 import tweener from './tweener';
+import { staggerProperty } from '../helpers/stagger-property';
 
 const Tween = {
   /**

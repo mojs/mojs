@@ -3,6 +3,7 @@ import { Tweenie } from './tween/tweenie';
 import { Tween } from './tween/tween';
 import { tweenDefaults } from './tween/tween-defaults';
 import { tweenieDefaults } from './tween/tweenie-defaults';
+import { staggerProperty } from './helpers/stagger-property';
 import tweener from './tween/tweener';
 
 var mojs = {
@@ -13,6 +14,7 @@ var mojs = {
     ClassProto,
     tweenieDefaults,
     tweenDefaults,
+    staggerProperty,
     tweener
   }
 };

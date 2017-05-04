@@ -11,10 +11,12 @@ const tweenDefaults = {
      will slowdown playback, for instance .5 will make tween
      run 2x slower. Speed of 2 will speedup the tween to 2x. */
   speed:                  1,
+  // if should reverse the tween
+  isReverse:              false,
   /*  flip onUpdate's progress on each even period.
       note that callbacks order won't flip at least
       for now (under consideration). */
-  isYoyo:                 false,
+  isPeriodReverse:        false,
   /* easing for the tween, could be any easing type [link to easing-types.md] */
   easing:                 'Sin.Out',
   /*
@@ -23,8 +25,6 @@ const tweenDefaults = {
     forward direction in `yoyo` period is treated as backward for the easing.
   */
   backwardEasing:         null,
-  // if should reverse the tween
-  isReverse:              false,
   /*
     onStart callback runs on very start of the tween just after onProgress
     one. Runs on very end of the tween if tween is reversed.
