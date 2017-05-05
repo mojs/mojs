@@ -33,6 +33,7 @@
 
     <!-- <script src="node_modules/mojs-player/build/mojs-player.js"></script> -->
     <!-- <script src="http://cdn.jsdelivr.net/mojs/latest/mo.min.js"></script> -->
+    <!-- <script src="vendor/mo-js/build/mo.min.js"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/mojs/0.288.1/mo.min.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js"></script> -->
     <script src="build/mo.js"></script>
@@ -50,10 +51,10 @@
 
       var prevP = 0;
       const tween = new mojs.Tween({
-        delay: 50,
-        duration: 200,
+        // delay: 30,
+        duration: 70,
         // speed: 2,
-        // isPeriodReverse: [true, false],
+        isPeriodReverse: [false, true, false],
         // isReverse: true,
         repeat: 2,
         onUpdate(p) {
@@ -61,16 +62,13 @@
           prevP = p;
         },
         onStart() {
-          console.timeEnd('start');
           console.log('[start]');
         },
-        onRepeatStart() {
-          console.log('[repeat start]');
-          console.time('period time');
+        onRepeatStart(isForward, isReverse, index) {
+          console.log(`[repeat start]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
         },
-        onRepeatComplete() {
-          console.log('[repeat complete]');
-          console.timeEnd('period time');
+        onRepeatComplete(isForward, isReverse, index) {
+          console.log(`[repeat complete]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
         },
         onComplete() {
           console.log('[complete]');

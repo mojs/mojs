@@ -597,7 +597,7 @@ describe('tween ->', function () {
       spyOn(tween._tweenies[5], 'update');
 
       var time = 200;
-      tween._tweenies[0]._props.onChimeOut(true, time);
+      tween._tweenies[0]._props.onChimeOut(true, false, 0, time);
       expect(tween._active).toBe(1);
 
       expect(tween._tweenies[0].update).not.toHaveBeenCalledWith(time);
@@ -607,7 +607,7 @@ describe('tween ->', function () {
       expect(tween._tweenies[4].update).not.toHaveBeenCalled();
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
 
-      tween._tweenies[1]._props.onChimeOut(true, time += 10);
+      tween._tweenies[1]._props.onChimeOut(true, false, 0, time += 10);
       expect(tween._active).toBe(2);
       expect(tween._act).toBe(tween._tweenies[2]);
 
@@ -618,7 +618,7 @@ describe('tween ->', function () {
       expect(tween._tweenies[4].update).not.toHaveBeenCalled();
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
 
-      tween._tweenies[2]._props.onChimeOut(true, time += 10);
+      tween._tweenies[2]._props.onChimeOut(true, false, 0, time += 10);
       expect(tween._active).toBe(3);
       expect(tween._act).toBe(tween._tweenies[3]);
 
@@ -629,7 +629,7 @@ describe('tween ->', function () {
       expect(tween._tweenies[4].update).not.toHaveBeenCalled();
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
 
-      tween._tweenies[3]._props.onChimeOut(true, time += 10);
+      tween._tweenies[3]._props.onChimeOut(true, false, 0, time += 10);
       expect(tween._active).toBe(4);
       expect(tween._act).toBe(tween._tweenies[4]);
 
@@ -640,7 +640,7 @@ describe('tween ->', function () {
       expect(tween._tweenies[4].update).toHaveBeenCalledWith(time);
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
 
-      tween._tweenies[4]._props.onChimeOut(true, time += 10);
+      tween._tweenies[4]._props.onChimeOut(true, false, 0, time += 10);
       expect(tween._active).toBe(5);
       expect(tween._act).toBe(tween._tweenies[5]);
 
@@ -651,7 +651,7 @@ describe('tween ->', function () {
       expect(tween._tweenies[4].update.calls.count()).toBe(1);
       expect(tween._tweenies[5].update).toHaveBeenCalledWith(time);
 
-      tween._tweenies[5]._props.onChimeOut(true, time += 10);
+      tween._tweenies[5]._props.onChimeOut(true, false, 0, time += 10);
       expect(tween._active).toBe(5);
       expect(tween._act).toBe(tween._tweenies[5]);
 
@@ -746,6 +746,94 @@ describe('tween ->', function () {
       expect(tween._tweenies[3].update).not.toHaveBeenCalled();
       expect(tween._tweenies[4].update).not.toHaveBeenCalled();
       expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+    });
+
+    it('should be call `onComplete` callback if the last item', function () {
+      var options = {
+        onComplete: function() {},
+        onRepeatComplete: function() {},
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._props, 'onComplete').and.callThrough();
+
+      tween._tweenies[0]._props.onChimeOut();
+      expect(tween._props.onComplete.calls.count()).toBe(0);
+
+      tween._tweenies[1]._props.onChimeOut();
+      expect(tween._props.onComplete.calls.count()).toBe(0);
+
+      tween._tweenies[2]._props.onChimeOut();
+      expect(tween._props.onComplete.calls.count()).toBe(0);
+
+      tween._tweenies[3]._props.onChimeOut();
+      expect(tween._props.onComplete.calls.count()).toBe(0);
+
+      tween._tweenies[4]._props.onChimeOut();
+      expect(tween._props.onComplete.calls.count()).toBe(0);
+
+      tween._tweenies[5]._props.onChimeOut(true, false, 5);
+      expect(tween._props.onComplete.calls.count()).toBe(1);
+    });
+
+    it('should set the `_ac`', function () {
+      var options = {
+        onComplete: function() {},
+        onRepeatComplete: function() {},
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._props, 'onComplete').and.callThrough();
+
+      tween._tweenies[0]._props.onChimeOut(true, false, options.repeat);
+      expect(tween._props.onComplete.calls.count()).toBe(1);
+      expect(tween._ac).toBe(true);
+
+      tween._tweenies[0]._props.onChimeOut(false, false, options.repeat);
+      expect(tween._props.onComplete.calls.count()).toBe(2);
+      expect(tween._ac).toBe(false);
+    });
+
+    it('should pass the 3 arguments to the `onComplete`', function () {
+      var options = {
+        onComplete: function() {},
+        onRepeatComplete: function() {},
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._props, 'onComplete').and.callThrough();
+
+      var args = [true, false, 5];
+      tween._tweenies[0]._props.onChimeOut.apply(null, args);
+      expect(tween._props.onComplete.calls.mostRecent().args).toEqual(args);
+
+      var args = [true, true, 5];
+      tween._tweenies[1]._props.onChimeOut.apply(null, args);
+      expect(tween._props.onComplete.calls.mostRecent().args).toEqual(args);
+
+      var args = [false, true, 5];
+      tween._tweenies[2]._props.onChimeOut.apply(null, args);
+      expect(tween._props.onComplete.calls.mostRecent().args).toEqual(args);
+
+      var args = [false, true, 5];
+      tween._tweenies[3]._props.onChimeOut.apply(null, args);
+      expect(tween._props.onComplete.calls.mostRecent().args).toEqual(args);
+
+      var args = [false, true, 5];
+      tween._tweenies[4]._props.onChimeOut.apply(null, args);
+      expect(tween._props.onComplete.calls.mostRecent().args).toEqual(args);
     });
   });
 
@@ -843,7 +931,7 @@ describe('tween ->', function () {
       tween._active = 5;
 
       var time = 200;
-      tween._tweenies[5]._props.onChimeIn(false, time);
+      tween._tweenies[5]._props.onChimeIn(false, false, 0, time);
       expect(tween._active).toBe(4);
 
       expect(tween._tweenies[5].update).not.toHaveBeenCalledWith(time);
@@ -853,7 +941,7 @@ describe('tween ->', function () {
       expect(tween._tweenies[1].update).not.toHaveBeenCalled();
       expect(tween._tweenies[0].update).not.toHaveBeenCalled();
 
-      tween._tweenies[4]._props.onChimeIn(false, time -= 10);
+      tween._tweenies[4]._props.onChimeIn(false, false, 0, time -= 10);
       expect(tween._active).toBe(3);
       expect(tween._act).toBe(tween._tweenies[3]);
 
@@ -864,7 +952,7 @@ describe('tween ->', function () {
       expect(tween._tweenies[1].update).not.toHaveBeenCalled();
       expect(tween._tweenies[0].update).not.toHaveBeenCalled();
 
-      tween._tweenies[3]._props.onChimeIn(false, time -= 10);
+      tween._tweenies[3]._props.onChimeIn(false, false, 0, time -= 10);
       expect(tween._active).toBe(2);
       expect(tween._act).toBe(tween._tweenies[2]);
 
@@ -875,7 +963,7 @@ describe('tween ->', function () {
       expect(tween._tweenies[1].update).not.toHaveBeenCalled();
       expect(tween._tweenies[0].update).not.toHaveBeenCalled();
 
-      tween._tweenies[2]._props.onChimeIn(false, time -= 10);
+      tween._tweenies[2]._props.onChimeIn(false, false, 0, time -= 10);
       expect(tween._active).toBe(1);
       expect(tween._act).toBe(tween._tweenies[1]);
 
@@ -886,7 +974,7 @@ describe('tween ->', function () {
       expect(tween._tweenies[1].update).toHaveBeenCalledWith(time);
       expect(tween._tweenies[0].update).not.toHaveBeenCalled();
 
-      tween._tweenies[1]._props.onChimeIn(false, time -= 10);
+      tween._tweenies[1]._props.onChimeIn(false, false, 0, time -= 10);
       expect(tween._active).toBe(0);
       expect(tween._act).toBe(tween._tweenies[0]);
 
@@ -897,7 +985,7 @@ describe('tween ->', function () {
       expect(tween._tweenies[1].update.calls.count()).toBe(1);
       expect(tween._tweenies[0].update).toHaveBeenCalledWith(time);
 
-      tween._tweenies[0]._props.onChimeIn(false, time -= 10);
+      tween._tweenies[0]._props.onChimeIn(false, false, 0, time -= 10);
       expect(tween._active).toBe(0);
       expect(tween._act).toBe(tween._tweenies[0]);
 
@@ -994,6 +1082,95 @@ describe('tween ->', function () {
       expect(tween._tweenies[1].update).not.toHaveBeenCalled();
       expect(tween._tweenies[0].update).not.toHaveBeenCalled();
     });
+
+    it('should call `onStart` callback if the first item', function () {
+      var options = {
+        onComplete: function() {},
+        onRepeatComplete: function() {},
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._props, 'onStart').and.callThrough();
+
+      tween._tweenies[0]._props.onChimeIn(true, false, 0);
+      expect(tween._props.onStart.calls.count()).toBe(1);
+
+      tween._tweenies[1]._props.onChimeIn();
+      expect(tween._props.onStart.calls.count()).toBe(1);
+
+      tween._tweenies[2]._props.onChimeIn();
+      expect(tween._props.onStart.calls.count()).toBe(1);
+
+      tween._tweenies[3]._props.onChimeIn();
+      expect(tween._props.onStart.calls.count()).toBe(1);
+
+      tween._tweenies[4]._props.onChimeIn();
+      expect(tween._props.onStart.calls.count()).toBe(1);
+
+      tween._tweenies[5]._props.onChimeIn();
+      expect(tween._props.onStart.calls.count()).toBe(1);
+    });
+
+    it('should set the `_ac`', function () {
+      var options = {
+        onComplete: function() {},
+        onRepeatComplete: function() {},
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._props, 'onStart').and.callThrough();
+
+      tween._tweenies[0]._props.onChimeIn(false, false, 0);
+      expect(tween._props.onStart.calls.count()).toBe(1);
+      expect(tween._ac).toBe(true);
+
+      tween._tweenies[0]._props.onChimeIn(true, false, 0);
+      expect(tween._props.onStart.calls.count()).toBe(2);
+      expect(tween._ac).toBe(false);
+    });
+
+    it('should pass the 3 arguments to the `onStart`', function () {
+      var options = {
+        onStart: function() {},
+        onRepeatComplete: function() {},
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._props, 'onStart').and.callThrough();
+
+      var args = [true, false, 0];
+      tween._tweenies[0]._props.onChimeIn.apply(null, args);
+      expect(tween._props.onStart.calls.mostRecent().args).toEqual(args);
+
+      var args = [true, true, 0];
+      tween._tweenies[1]._props.onChimeIn.apply(null, args);
+      expect(tween._props.onStart.calls.mostRecent().args).toEqual(args);
+
+      var args = [false, true, 0];
+      tween._tweenies[2]._props.onChimeIn.apply(null, args);
+      expect(tween._props.onStart.calls.mostRecent().args).toEqual(args);
+
+      var args = [false, true, 0];
+      tween._tweenies[3]._props.onChimeIn.apply(null, args);
+      expect(tween._props.onStart.calls.mostRecent().args).toEqual(args);
+
+      var args = [false, true, 0];
+      tween._tweenies[4]._props.onChimeIn.apply(null, args);
+      expect(tween._props.onStart.calls.mostRecent().args).toEqual(args);
+    });
+
   });
 
   describe('`_onStart` function ->', function () {
@@ -1090,91 +1267,10 @@ describe('tween ->', function () {
       tween._tweenies[4]._props.onStart.apply(null, args);
       expect(tween._props.onRepeatStart.calls.mostRecent().args).toEqual(args);
     });
-
-    it('should be call `onStart` callback if the last item', function () {
-      var options = {
-        onComplete: function() {},
-        onRepeatComplete: function() {},
-        onUpdate: function() {},
-        repeat: 5
-      };
-
-      var tween = new Tween(options);
-      tween.setStartTime();
-
-      spyOn(tween._props, 'onStart').and.callThrough();
-
-      tween._tweenies[0]._props.onStart(true, false, 0);
-      expect(tween._props.onStart.calls.count()).toBe(1);
-
-      tween._tweenies[1]._props.onStart();
-      expect(tween._props.onStart.calls.count()).toBe(1);
-
-      tween._tweenies[2]._props.onStart();
-      expect(tween._props.onStart.calls.count()).toBe(1);
-
-      tween._tweenies[3]._props.onStart();
-      expect(tween._props.onStart.calls.count()).toBe(1);
-
-      tween._tweenies[4]._props.onStart();
-      expect(tween._props.onStart.calls.count()).toBe(1);
-
-      tween._tweenies[5]._props.onStart();
-      expect(tween._props.onStart.calls.count()).toBe(1);
-    });
-
-    it('should pass the 3 arguments to the `onStart`', function () {
-      var options = {
-        onStart: function() {},
-        onRepeatComplete: function() {},
-        onUpdate: function() {},
-        repeat: 5
-      };
-
-      var tween = new Tween(options);
-      tween.setStartTime();
-
-      spyOn(tween._props, 'onStart').and.callThrough();
-
-      var args = [true, false, 0];
-      tween._tweenies[0]._props.onStart.apply(null, args);
-      expect(tween._props.onStart.calls.mostRecent().args).toEqual(args);
-
-      var args = [true, true, 0];
-      tween._tweenies[1]._props.onStart.apply(null, args);
-      expect(tween._props.onStart.calls.mostRecent().args).toEqual(args);
-
-      var args = [false, true, 0];
-      tween._tweenies[2]._props.onStart.apply(null, args);
-      expect(tween._props.onStart.calls.mostRecent().args).toEqual(args);
-
-      var args = [false, true, 0];
-      tween._tweenies[3]._props.onStart.apply(null, args);
-      expect(tween._props.onStart.calls.mostRecent().args).toEqual(args);
-
-      var args = [false, true, 0];
-      tween._tweenies[4]._props.onStart.apply(null, args);
-      expect(tween._props.onStart.calls.mostRecent().args).toEqual(args);
-    });
-
-    it('should set `_ac` to `true`', function () {
-      var options = {
-        onUpdate: function() {},
-        repeat: 5
-      };
-
-      var tween = new Tween(options);
-
-      tween._onStart(false, false, 1);
-      expect(tween._ac).toBeFalsy();
-
-      tween._onStart(false, false, 0);
-      expect(tween._ac).toBe(true);
-    });
   });
 
   describe('`_onComplete` callback ->', function () {
-    it('should be called by tweenies `onComplete` callback', function () {
+    it('should be called by tweenies `onChimeOut` callback', function () {
       var options = {
         onUpdate: function() {},
         repeat: 5
@@ -1266,87 +1362,6 @@ describe('tween ->', function () {
       var args = [false, true, 5];
       tween._tweenies[4]._props.onComplete.apply(null, args);
       expect(tween._props.onRepeatComplete.calls.mostRecent().args).toEqual(args);
-    });
-
-    it('should be call `onComplete` callback if the last item', function () {
-      var options = {
-        onComplete: function() {},
-        onRepeatComplete: function() {},
-        onUpdate: function() {},
-        repeat: 5
-      };
-
-      var tween = new Tween(options);
-      tween.setStartTime();
-
-      spyOn(tween._props, 'onComplete').and.callThrough();
-
-      tween._tweenies[0]._props.onComplete();
-      expect(tween._props.onComplete.calls.count()).toBe(0);
-
-      tween._tweenies[1]._props.onComplete();
-      expect(tween._props.onComplete.calls.count()).toBe(0);
-
-      tween._tweenies[2]._props.onComplete();
-      expect(tween._props.onComplete.calls.count()).toBe(0);
-
-      tween._tweenies[3]._props.onComplete();
-      expect(tween._props.onComplete.calls.count()).toBe(0);
-
-      tween._tweenies[4]._props.onComplete();
-      expect(tween._props.onComplete.calls.count()).toBe(0);
-
-      tween._tweenies[5]._props.onComplete(true, false, 5);
-      expect(tween._props.onComplete.calls.count()).toBe(1);
-    });
-
-    it('should pass the 3 arguments to the `onComplete`', function () {
-      var options = {
-        onComplete: function() {},
-        onRepeatComplete: function() {},
-        onUpdate: function() {},
-        repeat: 5
-      };
-
-      var tween = new Tween(options);
-      tween.setStartTime();
-
-      spyOn(tween._props, 'onComplete').and.callThrough();
-
-      var args = [true, false, 5];
-      tween._tweenies[0]._props.onComplete.apply(null, args);
-      expect(tween._props.onComplete.calls.mostRecent().args).toEqual(args);
-
-      var args = [true, true, 5];
-      tween._tweenies[1]._props.onComplete.apply(null, args);
-      expect(tween._props.onComplete.calls.mostRecent().args).toEqual(args);
-
-      var args = [false, true, 5];
-      tween._tweenies[2]._props.onComplete.apply(null, args);
-      expect(tween._props.onComplete.calls.mostRecent().args).toEqual(args);
-
-      var args = [false, true, 5];
-      tween._tweenies[3]._props.onComplete.apply(null, args);
-      expect(tween._props.onComplete.calls.mostRecent().args).toEqual(args);
-
-      var args = [false, true, 5];
-      tween._tweenies[4]._props.onComplete.apply(null, args);
-      expect(tween._props.onComplete.calls.mostRecent().args).toEqual(args);
-    });
-
-    it('should set `_ac` to `true`', function () {
-      var options = {
-        onUpdate: function() {},
-        repeat: 5
-      };
-
-      var tween = new Tween(options);
-
-      tween._onComplete(true, false, 4);
-      expect(tween._ac).toBeFalsy();
-
-      tween._onComplete(true, false, 5);
-      expect(tween._ac).toBe(true);
     });
   });
 

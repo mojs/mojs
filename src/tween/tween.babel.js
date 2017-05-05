@@ -28,7 +28,6 @@ const Tween = {
    */
   play() {
     if (this._state === 'play') {
-      console.log('-=-=-=-=-=-=-=- return');
       return this;
     }
 
@@ -162,7 +161,8 @@ const Tween = {
       duration,
       onUpdate,
       onRefresh,
-      isReverse
+      isReverse,
+      isPeriodReverse
     } = this._props;
 
     let end = 0;
@@ -171,17 +171,18 @@ const Tween = {
         Tweenie({
           index,
           delay,
+          isReverse: staggerProperty(isPeriodReverse, index),
           duration,
           onUpdate,
           onRefresh,
-          onStart: (isForward, isYoyo, index) => {
-            this._onStart(isForward, isYoyo, index);
+          onStart: (isForward, isReverse, index) => {
+            this._onStart(isForward, isReverse, index);
           },
-          onComplete: (isForward, isYoyo, index) => {
-            this._onComplete(isForward, isYoyo, index);
+          onComplete: (isForward, isReverse, index) => {
+            this._onComplete(isForward, isReverse, index);
           },
-          onChimeOut: (isForward, time) => { this._chimeOut(isForward, time); },
-          onChimeIn: (isForward, time) => { this._chimeIn(isForward, time); }
+          onChimeOut: (isForward, isReverse, index, time) => { this._chimeOut(isForward, isReverse, index, time); },
+          onChimeIn: (isForward, isReverse, index, time) => { this._chimeIn(isForward, isReverse, index, time); }
         })
       );
     }
@@ -227,6 +228,9 @@ const Tween = {
    */
   _updateFwd(time) {
     time = this._playTime + this._speed*(time - this._playTime);
+
+    if (time > this._end) { this._ac = true; }
+
     // save elapsed time
     this._elapsed = time - this._spot;
 
@@ -241,6 +245,9 @@ const Tween = {
     time = this._playTime + this._speed*(time - this._playTime);
     // save elapsed time
     this._elapsed = time - this._spot;
+
+    if (time > this._end) { this._ac = true; }
+
 
     this._act.update(this._end + (this._start - time));
   },
@@ -312,10 +319,19 @@ const Tween = {
 
   /**
    * _chimeOut - Tweenies `onChimeOut` callback handler.
+   *
+   * @private
    * @param {Boolean} Is forward direction.
-   * @param {Number} The current update time.
+   * @param {Boolean} Is reversed.
+   * @param {Number} Period index.
+   * @param {Number} Update time.
    */
-  _chimeOut(isForward, time) {
+  _chimeOut(isForward, isPeriodReverse, index, time) {
+    if (index === this._tweenies.length-1) {
+      this._props.onComplete(isForward, isPeriodReverse, index);
+      this._ac = isForward;
+    }
+
     if (isForward === false) { return; }
 
     this._active++;
@@ -330,8 +346,19 @@ const Tween = {
 
   /**
    * _chimeIn - Tweenies `onChimeIn` callback handler.
+   *
+   * @private
+   * @param {Boolean} Is forward direction.
+   * @param {Boolean} Is reversed.
+   * @param {Number} Period index.
+   * @param {Number} Update time.
    */
-  _chimeIn(isForward, time) {
+  _chimeIn(isForward, isPeriodReverse, index, time) {
+    if (index === 0) {
+      this._props.onStart(isForward, isPeriodReverse, index);
+      this._ac = !isForward;
+    }
+
     if (isForward === true) { return; }
 
     this._active--;
@@ -351,15 +378,12 @@ const Tween = {
    * @param {Number} Update period.
    */
   _onComplete(isForward, isYoyo, index) {
-    const { onRepeatComplete, onComplete, isReverse } = this._props;
+    const { onRepeatComplete } = this._props;
     // if forward direction call the `onRepeatComplete` before `onComplete`
     if (isForward === true) {
       onRepeatComplete(isForward, isYoyo, index);
     }
-    if (index === this._tweenies.length-1) {
-      onComplete(isForward, isYoyo, index);
-      this._ac = isForward;
-    }
+
     // if forward direction call the `onRepeatComplete` after `onComplete`
     if (isForward === false) {
       onRepeatComplete(isForward, isYoyo, index);
@@ -376,10 +400,12 @@ const Tween = {
     const { onRepeatStart, onStart, isReverse } = this._props;
     // if forward direction call the `onRepeatStart` before `onStart`
     if (isForward === false) { onRepeatStart(isForward, isYoyo, index); }
-    if (index === 0) {
-      onStart(isForward, isYoyo, index);
-      this._ac = !isForward;
-    }
+
+    // if (index === 0) {
+    //   onStart(isForward, isYoyo, index);
+    //   this._ac = !isForward;
+    // }
+
     // if forward direction call the `onRepeatStart` before `onStart`
     if (isForward === true) { onRepeatStart(isForward, isYoyo, index); }
   },
