@@ -2014,6 +2014,18 @@ describe('tween ->', function () {
       expect(tween._props.isReverse).toBe(false);
     });
 
+    it('should functions in `_cb`', function() {
+      var tween = new Tween();
+      expect(tween._cb[0]).toBe(tween._props.onChimeIn);
+      expect(tween._cb[1]).toBe(tween._props.onChimeOut);
+      tween.reverse();
+      expect(tween._cb[1]).toBe(tween._props.onChimeIn);
+      expect(tween._cb[0]).toBe(tween._props.onChimeOut);
+      tween.reverse();
+      expect(tween._cb[0]).toBe(tween._props.onChimeIn);
+      expect(tween._cb[1]).toBe(tween._props.onChimeOut);
+    });
+
     it('should flip the `_update` function if `_elapsed`', function() {
       var tween = new Tween();
       tween.reverse();
@@ -2260,6 +2272,288 @@ describe('tween ->', function () {
 
       expect(tween._active).toBe(1);
       expect(tween._act).toBe(tween._tweenies[1]);
+    });
+  });
+
+  describe('`onChimeIn` callback', function () {
+    it('should be called on very start', function () {
+      var delay = 100;
+      var duration = 500;
+      var args;
+      var tween = new Tween({
+        delay: delay,
+        duration: duration,
+        repeat: 2,
+        onChimeIn: function () {
+          args = arguments;
+        }
+      });
+
+      tween.setStartTime();
+      var start = tween._start;
+
+      tween.update(start - 10);
+
+      args = null;
+
+      tween.update(start);
+
+      expect(args[0]).toBe(true);
+      expect(args[1]).toBe(false);
+      expect(args[2]).toBe(0);
+      expect(args[3]).toBe(start);
+    });
+
+    it('should be called on very start #backward', function () {
+      var delay = 100;
+      var duration = 500;
+      var args;
+      var tween = new Tween({
+        delay: delay,
+        duration: duration,
+        repeat: 2,
+        onChimeIn: function () {
+          args = arguments;
+        }
+      });
+
+      tween.setStartTime();
+      var start = tween._start;
+
+      tween.update(start - 10);
+      tween.update(start);
+      tween.update(start + duration/2);
+      tween.update(start + duration - 10);
+      tween.update(start + duration/2);
+
+      args = null;
+
+      tween.update(start);
+
+      expect(args[0]).toBe(false);
+      expect(args[1]).toBe(false);
+      expect(args[2]).toBe(0);
+      expect(args[3]).toBe(start);
+    });
+
+    it('should be called on very start #reverse', function () {
+      var delay = 100;
+      var duration = 500;
+      var args;
+      var tween = new Tween({
+        delay: delay,
+        duration: duration,
+        repeat: 2,
+        isReverse: true,
+        onChimeIn: function () {
+          args = arguments;
+        }
+      });
+
+      tween.setStartTime();
+      var start = tween._start;
+
+      tween.update(start - 10);
+
+      args = null;
+
+      tween.update(start);
+
+      expect(args[0]).toBe(false);
+      expect(args[1]).toBe(true);
+      expect(args[2]).toBe(0);
+      expect(args[3]).toBe(tween._end + (tween._start - start));
+    });
+
+    it('should be called on very start #reverse #backward', function () {
+      var delay = 100;
+      var duration = 500;
+      var args;
+      var tween = new Tween({
+        delay: delay,
+        duration: duration,
+        repeat: 2,
+        isReverse: true,
+        onChimeIn: function () {
+          args = arguments;
+        }
+      });
+
+      tween.setStartTime();
+      var start = tween._start;
+
+      tween.update(start - 10);
+      tween.update(start);
+      tween.update(start + duration/2);
+      tween.update(start + duration - 10);
+      tween.update(start + duration/2);
+
+      args = null;
+
+      tween.update(start);
+
+      expect(args[0]).toBe(true);
+      expect(args[1]).toBe(true);
+      expect(args[2]).toBe(0);
+      expect(args[3]).toBe(tween._end + (tween._start - start));
+    });
+  });
+
+  describe('`onChimeOut` callback', function () {
+    it('should be called on very end', function () {
+      var delay = 100;
+      var duration = 500;
+      var args;
+      var tween = new Tween({
+        delay: delay,
+        duration: duration,
+        repeat: 1,
+        onChimeOut: function () {
+          args = arguments;
+        }
+      });
+
+      tween.setStartTime();
+      var start = tween._start;
+      var end = tween._end;
+
+      tween.update(start - 10);
+      tween.update(start);
+      tween.update(start + duration/2);
+      tween.update(start + duration);
+      tween.update(start + duration + delay/2);
+
+      var period = duration + delay;
+      tween.update(start + period);
+      tween.update(start + period + duration/2);
+
+      args = null;
+
+      var time = start + period + duration;
+      tween.update(time);
+
+      expect(args[0]).toBe(true);
+      expect(args[1]).toBe(false);
+      expect(args[2]).toBe(0);
+      expect(args[3]).toBe(time);
+    });
+
+    it('should be called on very end #backward', function () {
+      var delay = 100;
+      var duration = 500;
+      var args;
+      var tween = new Tween({
+        delay: delay,
+        duration: duration,
+        repeat: 1,
+        onChimeOut: function () {
+          args = arguments;
+        }
+      });
+
+      tween.setStartTime();
+      var start = tween._start;
+      var end = tween._end;
+
+      tween.update(start - 10);
+      tween.update(start);
+      tween.update(start + duration/2);
+      tween.update(start + duration);
+      tween.update(start + duration + delay/2);
+
+      var period = duration + delay;
+      tween.update(start + period);
+      tween.update(start + period + duration/2);
+      tween.update(start + period + duration);
+      tween.update(start + period + duration + 10);
+
+      args = null;
+      var time = start + period + duration;
+      tween.update(time);
+
+      expect(args[0]).toBe(false);
+      expect(args[1]).toBe(false);
+      expect(args[2]).toBe(0);
+      expect(args[3]).toBe(time);
+    });
+
+    it('should be called on very end #reverse', function () {
+      var delay = 100;
+      var duration = 500;
+      var args;
+      var tween = new Tween({
+        delay: delay,
+        duration: duration,
+        repeat: 1,
+        isReverse: true,
+        onChimeOut: function () {
+          args = arguments;
+        }
+      });
+
+      tween.setStartTime();
+      var start = tween._start;
+      var end = tween._end;
+
+      tween.update(start - 10);
+      tween.update(start);
+      tween.update(start + duration/2);
+      tween.update(start + duration);
+      tween.update(start + duration + delay/2);
+
+      var period = duration + delay;
+      tween.update(start + period);
+      tween.update(start + period + duration/2);
+
+      args = null;
+
+      var time = start + period + duration;
+      tween.update(time);
+
+      expect(args[0]).toBe(false);
+      expect(args[1]).toBe(true);
+      expect(args[2]).toBe(0);
+      expect(args[3]).toBe(end + (start - time));
+    });
+
+    it('should be called on very end #backward #reverse', function () {
+      var delay = 100;
+      var duration = 500;
+      var args;
+      var tween = new Tween({
+        delay: delay,
+        duration: duration,
+        repeat: 1,
+        isReverse: true,
+        onChimeOut: function () {
+          args = arguments;
+        }
+      });
+
+      tween.setStartTime();
+      var start = tween._start;
+      var end = tween._end;
+
+      tween.update(start - 10);
+      tween.update(start);
+      tween.update(start + duration/2);
+      tween.update(start + duration);
+      tween.update(start + duration + delay/2);
+
+      var period = duration + delay;
+      tween.update(start + period);
+      tween.update(start + period + duration/2);
+      tween.update(start + period + duration);
+      tween.update(start + period + duration + 10);
+
+      args = null;
+      var time = start + period + duration;
+      tween.update(time);
+
+      expect(args[0]).toBe(true);
+      expect(args[1]).toBe(true);
+      expect(args[2]).toBe(0);
+      expect(args[3]).toBe(end + (start - time));
     });
   });
 });

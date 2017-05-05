@@ -34,15 +34,23 @@ const tweenDefaults = {
   */
   onStart:                function() {},
   onComplete:             function() {},
+  onUpdate:               function() {},
+
+  onChimeIn:              function() {},
+  onChimeOut:             function() {},
+
   onRepeatStart:          function() {},
   onRepeatComplete:       function() {},
-  onUpdate:               function() {},
+
+  // onRepeatChimeIn:        function() {},
+  // onRepeatChimeOut:       function() {},
   // playback callbacks, these fire only when
   // `play`, `replay`, `playBackward`, `replayBackward` were called
   onPlaybackStart:        function() {},
   onPlaybackPause:        function() {},
   onPlaybackStop:         function() {},
   onPlaybackComplete:     function() {},
+  index:                  0,
   /* custom tween's name */
   name:                   null,
   /* shift time on a timeline */

@@ -66,6 +66,8 @@ const Tween = {
    */
   reverse() {
     this._props.isReverse = !this._props.isReverse;
+    // flip the onChime* callbacks
+    this._cb.reverse();
 
     if (this._elapsed > 0) {
       const { isReverse, delay } = this._props;
@@ -120,6 +122,13 @@ const Tween = {
     this._elapsed = 0;
     // set "id" speed
     this._speed = 1;
+
+    const { isReverse, onChimeIn, onChimeOut } = this._props;
+    this._cb = [ onChimeIn, onChimeOut ];
+    if (isReverse) {
+      this._cb.reverse();
+    }
+
     // create period tweenies
     this._createTweenies();
     // setup initial update function
@@ -326,10 +335,14 @@ const Tween = {
    * @param {Number} Period index.
    * @param {Number} Update time.
    */
-  _chimeOut(isForward, isPeriodReverse, index, time) {
-    if (index === this._tweenies.length-1) {
-      this._props.onComplete(isForward, isPeriodReverse, index);
+  _chimeOut(isForward, isPeriodReverse, i, time) {
+    if (i === this._tweenies.length-1) {
+      this._props.onComplete(isForward, isPeriodReverse, i);
       this._ac = isForward;
+
+      const { isReverse, index } = this._props;
+      // chimeOut/chimeIn
+      this._cb[1](isForward, isReverse, index, time);
     }
 
     if (isForward === false) { return; }
@@ -353,10 +366,14 @@ const Tween = {
    * @param {Number} Period index.
    * @param {Number} Update time.
    */
-  _chimeIn(isForward, isPeriodReverse, index, time) {
-    if (index === 0) {
-      this._props.onStart(isForward, isPeriodReverse, index);
+  _chimeIn(isForward, isPeriodReverse, i, time) {
+    if (i === 0) {
+      this._props.onStart(isForward, isPeriodReverse, i);
       this._ac = !isForward;
+
+      const { isReverse, index } = this._props;
+      // chimeIn/chimeOut
+      this._cb[0](isForward, isReverse, index, time);
     }
 
     if (isForward === true) { return; }
