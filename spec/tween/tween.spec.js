@@ -835,6 +835,40 @@ describe('tween ->', function () {
       tween._tweenies[4]._props.onChimeOut.apply(null, args);
       expect(tween._props.onComplete.calls.mostRecent().args).toEqual(args);
     });
+
+    it('should call the `onRepeatChimeOut` callback', function () {
+      var options = {
+        onComplete: function() {},
+        onRepeatComplete: function() {},
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._props, 'onRepeatChimeOut').and.callThrough();
+
+      var args = [true, false, 5, 200];
+      tween._tweenies[0]._props.onChimeOut.apply(null, args);
+      expect(tween._props.onRepeatChimeOut.calls.mostRecent().args).toEqual(args);
+      expect(tween._props.onRepeatChimeOut.calls.count()).toBe(1);
+
+      var args = [true, false, 2, 100];
+      tween._tweenies[0]._props.onChimeOut.apply(null, args);
+      expect(tween._props.onRepeatChimeOut.calls.mostRecent().args).toEqual(args);
+      expect(tween._props.onRepeatChimeOut.calls.count()).toBe(2);
+
+      var args = [true, true, 3, 220];
+      tween._tweenies[0]._props.onChimeOut.apply(null, args);
+      expect(tween._props.onRepeatChimeOut.calls.mostRecent().args).toEqual(args);
+      expect(tween._props.onRepeatChimeOut.calls.count()).toBe(3);
+
+      var args = [false, true, 1, 0];
+      tween._tweenies[0]._props.onChimeOut.apply(null, args);
+      expect(tween._props.onRepeatChimeOut.calls.mostRecent().args).toEqual(args);
+      expect(tween._props.onRepeatChimeOut.calls.count()).toBe(4);
+    });
   });
 
   describe('`_chimeIn` function ->', function () {
@@ -1169,6 +1203,40 @@ describe('tween ->', function () {
       var args = [false, true, 0];
       tween._tweenies[4]._props.onChimeIn.apply(null, args);
       expect(tween._props.onStart.calls.mostRecent().args).toEqual(args);
+    });
+
+    it('should call the `onRepeatChimeIn` callback', function () {
+      var options = {
+        onComplete: function() {},
+        onRepeatComplete: function() {},
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+
+      spyOn(tween._props, 'onRepeatChimeIn').and.callThrough();
+
+      var args = [true, false, 5, 200];
+      tween._tweenies[0]._props.onChimeIn.apply(null, args);
+      expect(tween._props.onRepeatChimeIn.calls.mostRecent().args).toEqual(args);
+      expect(tween._props.onRepeatChimeIn.calls.count()).toBe(1);
+
+      var args = [true, false, 2, 100];
+      tween._tweenies[0]._props.onChimeIn.apply(null, args);
+      expect(tween._props.onRepeatChimeIn.calls.mostRecent().args).toEqual(args);
+      expect(tween._props.onRepeatChimeIn.calls.count()).toBe(2);
+
+      var args = [true, true, 3, 220];
+      tween._tweenies[0]._props.onChimeIn.apply(null, args);
+      expect(tween._props.onRepeatChimeIn.calls.mostRecent().args).toEqual(args);
+      expect(tween._props.onRepeatChimeIn.calls.count()).toBe(3);
+
+      var args = [false, true, 1, 0];
+      tween._tweenies[0]._props.onChimeIn.apply(null, args);
+      expect(tween._props.onRepeatChimeIn.calls.mostRecent().args).toEqual(args);
+      expect(tween._props.onRepeatChimeIn.calls.count()).toBe(4);
     });
 
   });

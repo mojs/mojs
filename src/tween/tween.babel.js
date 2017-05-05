@@ -345,6 +345,8 @@ const Tween = {
       this._cb[1](isForward, isReverse, index, time);
     }
 
+    this._props.onRepeatChimeOut(isForward, isPeriodReverse, i, time);
+
     if (isForward === false) { return; }
 
     this._active++;
@@ -375,6 +377,8 @@ const Tween = {
       // chimeIn/chimeOut
       this._cb[0](isForward, isReverse, index, time);
     }
+
+    this._props.onRepeatChimeIn(isForward, isPeriodReverse, i, time);
 
     if (isForward === true) { return; }
 

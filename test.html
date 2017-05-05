@@ -54,27 +54,39 @@
         // delay: 30,
         duration: 70,
         // speed: 2,
-        isPeriodReverse: [false, true, false],
+        isPeriodReverse: [true, true, false],
         // isReverse: true,
         repeat: 2,
-        onUpdate(p) {
-          console.log('[update]', p, p - prevP);
-          prevP = p;
+        onUpdate(ep, p, isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tween update]`, ep, ep - prevP);
+          prevP = ep;
         },
-        onStart() {
-          console.log('[start]');
+        onChimeIn(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
+        },
+        onChimeOut(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tween chime out]`);
+        },
+        onStart(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tween start]`);
         },
         onRepeatStart(isForward, isReverse, index) {
-          console.log(`[repeat start]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
+          console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat start]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
         },
         onRepeatComplete(isForward, isReverse, index) {
-          console.log(`[repeat complete]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
+          console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat complete]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
         },
-        onComplete() {
-          console.log('[complete]');
+        onRepeatChimeIn(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat chime in]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
         },
-        onChimeIn() {
-          console.log('[chime in]');
+        onRepeatChimeOut(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat chime out]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
+        },
+        onComplete(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tween complete]`);
+        },
+        onChimeIn(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
         }
       });
 

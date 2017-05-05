@@ -42,8 +42,9 @@ const tweenDefaults = {
   onRepeatStart:          function() {},
   onRepeatComplete:       function() {},
 
-  // onRepeatChimeIn:        function() {},
-  // onRepeatChimeOut:       function() {},
+  onRepeatChimeIn:        function() {},
+  onRepeatChimeOut:       function() {},
+
   // playback callbacks, these fire only when
   // `play`, `replay`, `playBackward`, `replayBackward` were called
   onPlaybackStart:        function() {},
