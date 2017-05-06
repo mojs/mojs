@@ -18,29 +18,35 @@ var mojs = {
     tweener
   }
 };
-
+//
+// var a = 0;
 // window.onload = () => {
 //   const items = [];
 //   setTimeout(() => {
-//     for (let i = 0; i < 1000; i++) {
+//     for (let i = 0; i < 100000; i++) {
 //       const tweenie = Tween({
 //         repeat: 1,
 //         duration: 500,
 //         delay: 20000,
-//         onUpdate(p) {
-//           // (i === 0) && console.log('update', p);
+//         onUpdate(ep, p, isForward, isReverse, index) {
 //         },
-//         onStart() {
-//           // (i === 0) && console.log('start');
+//         onChimeIn(isForward, isReverse, index) {
 //         },
-//         onRepeatStart() {
-//           // (i === 0) && console.log('repeat start');
+//         onChimeOut(isForward, isReverse, index) {
 //         },
-//         onRepeatComplete() {
-//           // (i === 0) && console.log('repeat complete');
+//         onStart(isForward, isReverse, index) {
 //         },
-//         onComplete() {
-//           // (i === 0) && console.log('complete');
+//         onRepeatStart(isForward, isReverse, index) {
+//         },
+//         onRepeatComplete(isForward, isReverse, index) {
+//         },
+//         onRepeatChimeIn(isForward, isReverse, index) {
+//         },
+//         onRepeatChimeOut(isForward, isReverse, index) {
+//         },
+//         onComplete(isForward, isReverse, index) {
+//         },
+//         onChimeIn(isForward, isReverse, index) {
 //         }
 //       });
 //       items.push(tweenie);

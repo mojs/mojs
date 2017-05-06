@@ -80,6 +80,25 @@ const Tween = {
   },
 
   /**
+   * setSpeed - function to set speed.
+   *
+   * @public
+   * @param {Number} Speed in [0..∞]
+   * @return {Object} This tween.
+   */
+  setSpeed(speed) {
+    this._props.speed = speed;
+
+    if (this._state === 'play') {
+      this.setStartTime();
+      this._speed = speed;
+      this._playTime = performance.now();
+    }
+
+    return this;
+  },
+
+  /**
    * _checkActiveTweenie - function to check if active tweenie was set right on
    *                       `reverse` function.
    * @private
@@ -340,8 +359,8 @@ const Tween = {
       this._props.onComplete(isForward, isPeriodReverse, i);
       this._ac = isForward;
 
-      const { isReverse, index } = this._props;
       // chimeOut/chimeIn
+      const { isReverse, index } = this._props;
       this._cb[1](isForward, isReverse, index, time);
     }
 
@@ -373,8 +392,8 @@ const Tween = {
       this._props.onStart(isForward, isPeriodReverse, i);
       this._ac = !isForward;
 
-      const { isReverse, index } = this._props;
       // chimeIn/chimeOut
+      const { isReverse, index } = this._props;
       this._cb[0](isForward, isReverse, index, time);
     }
 

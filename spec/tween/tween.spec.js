@@ -2624,4 +2624,57 @@ describe('tween ->', function () {
       expect(args[3]).toBe(end + (start - time));
     });
   });
+
+  describe('`setSpeed` function', function () {
+    it('should set `speed` on `_props`', function () {
+      var tween = new Tween();
+      var speed = 2;
+      var result = tween.setSpeed(speed);
+
+      expect(tween._props.speed).toBe(speed);
+    });
+
+    it('should set `_speed` if state is `play`', function () {
+      var tween = new Tween();
+      var speed = 2;
+      expect(tween._speed).toBe(1);
+      tween._setState('play');
+      var result = tween.setSpeed(speed);
+
+      expect(tween._speed).toBe(speed);
+    });
+
+    it('should call `setStartTime` if state is `play`', function () {
+      var tween = new Tween();
+      var speed = 2;
+      expect(tween._playTime).not.toBeDefined();
+      tween._setState('play');
+
+      var now = performance.now();
+
+      spyOn(tween, 'setStartTime');
+      var result = tween.setSpeed(speed);
+      expect(tween.setStartTime).toHaveBeenCalled()
+    });
+
+    it('should reset `_playTime` if state is `play`', function () {
+      var tween = new Tween();
+      var speed = 2;
+      expect(tween._playTime).not.toBeDefined();
+      tween._setState('play');
+
+      var now = performance.now();
+      var result = tween.setSpeed(speed);
+
+      expect(tween._playTime).toBeDefined();
+      expect(tween._playTime - now).not.toBeGreaterThan(10);
+    });
+
+    it('should return this', function () {
+      var tween = new Tween();
+      var result = tween.setSpeed(2);
+
+      expect(result).toBe(tween);
+    });
+  });
 });
