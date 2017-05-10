@@ -48,6 +48,12 @@
     <!-- <button id="js-stop">stop</button> -->
     <button id="js-reverse">reverse</button>
 
+    <br />
+    <br />
+    <br />
+
+    <input type="range" min="0" max="1000" value="0" id="js-slider" style="width: 500px" />
+
     <script>
       var el = document.querySelector('#js-el');
       var playBtn = document.querySelector('#js-play');
@@ -59,46 +65,46 @@
       var x2 = document.querySelector('#js-2x');
       var x5 = document.querySelector('#js-5x');
       var x10 = document.querySelector('#js-10x');
-
+      var slider = document.querySelector('#js-slider');
       var prevP = 0;
       const tween = new mojs.Tween({
-        // delay: 30,
-        duration: 20000,
-        speed: 2,
-        // isPeriodReverse: [true, true, false],
+        delay: 500,
+        duration: 2000,
+        // speed: 200,
+        isPeriodReverse: [false, true],
         // isReverse: true,
-        // repeat: 2,
+        repeat: 2,
         onUpdate(ep, p, isForward, isReverse, index) {
-          console.log(`[tween update]: ${ep}`);
-          // console.log(`{${index === void 0 ? '' : index}}, [tween update]`, ep);
+          console.log(`{${index === void 0 ? '' : index}}, [tween update]`, ep);
+          el.style.transform = `translate(${200*ep}px, 0)`;
         },
-        // onChimeIn(isForward, isReverse, index) {
-        //   console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
-        // },
-        // onChimeOut(isForward, isReverse, index) {
-        //   console.log(`{${index === void 0 ? '' : index}}, [tween chime out]`);
-        // },
-        // onStart(isForward, isReverse, index) {
-        //   console.log(`{${index === void 0 ? '' : index}}, [tween start]`);
-        // },
-        // onRepeatStart(isForward, isReverse, index) {
-        //   console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat start]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
-        // },
-        // onRepeatComplete(isForward, isReverse, index) {
-        //   console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat complete]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
-        // },
-        // onRepeatChimeIn(isForward, isReverse, index) {
-        //   console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat chime in]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
-        // },
-        // onRepeatChimeOut(isForward, isReverse, index) {
-        //   console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat chime out]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
-        // },
-        // onComplete(isForward, isReverse, index) {
-        //   console.log(`{${index === void 0 ? '' : index}}, [tween complete]`);
-        // },
-        // onChimeIn(isForward, isReverse, index) {
-        //   console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
-        // }
+        onChimeIn(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
+        },
+        onChimeOut(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tween chime out]`);
+        },
+        onStart(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tween start]`);
+        },
+        onRepeatStart(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat start]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
+        },
+        onRepeatComplete(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat complete]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
+        },
+        onRepeatChimeIn(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat chime in]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
+        },
+        onRepeatChimeOut(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat chime out]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
+        },
+        onComplete(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tween complete]`);
+        },
+        onChimeIn(isForward, isReverse, index) {
+          console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
+        }
       });
 
       playBtn.addEventListener('click', function() {
@@ -144,6 +150,49 @@
         console.log('::: speed: 10x');
         tween.setSpeed(10);
       });
+
+      slider.addEventListener('input', function() {
+        // console.log(':: slider value: ', this.value);
+        tween.setProgress(this.value/1000);
+      });
+
+
+      // -=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+      var duration = 2000;
+      var tweenie =  new mojs.Tweenie({
+        duration: duration,
+        onUpdate(p) {
+          console.log(`[update]: ${p}`);
+        },
+        onStart() {
+          console.log(`[on start]`);
+        },
+        onChimeIn() {
+          console.log(`[on chime in]`);
+        },
+        onChimeOut() {
+          console.log(`[on chime out]`);
+        },
+        onComplete() {
+          console.log(`[on complete]`);
+        },
+        onSkip() {
+          console.log(`[on skip]`);
+        }
+      });
+
+      tweenie.setStartTime();
+
+      var start = tweenie._start;
+      // tweenie._prevTime = start + duration - 10;
+      tweenie.update(start);
+      tweenie.update(start + duration + 10);
+
+
+      // -=-=-=-=-=-=-=-=-=-=-=-=-
+
 
     </script>
 

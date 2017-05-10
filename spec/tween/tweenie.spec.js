@@ -391,8 +391,7 @@ describe('tweenie ->', function () {
 
       var options = {
         duration: duration,
-        onComplete: function() {},
-        isIt: 1
+        onComplete: function() {}
       };
 
       var tweenie = Tweenie(options);
@@ -1122,12 +1121,14 @@ describe('tweenie ->', function () {
     });
   });
 
-  describe('`onRefresh` callback ->', function() {
+  describe('`onSkip` callback ->', function() {
     it('should be called when greater or equal than _end and suddenly smaller than `_start`', function() {
       var duration = 400;
+      var index = 3;
       var tweenie = Tweenie({
         duration: duration,
-        onRefresh: function() {}
+        onSkip: function() {},
+        index: index
       });
 
       tweenie.setStartTime(250);
@@ -1138,15 +1139,77 @@ describe('tweenie ->', function () {
       tweenie.update(startTime + duration);
       tweenie.update(startTime + duration + 10);
 
-      spyOn(tweenie._props, 'onRefresh');
+      spyOn(tweenie._props, 'onSkip');
 
       tweenie.update(startTime - 10);
-      expect(tweenie._props.onRefresh).toHaveBeenCalledWith(true);
-      expect(tweenie._prevTime).toBe(startTime - 10);
-
-      tweenie.update(startTime - 5);
-      expect(tweenie._props.onRefresh.calls.count()).toBe(1);
+      expect(tweenie._props.onSkip).toHaveBeenCalledWith(false, index, startTime - 10, startTime + duration + 10);
+      expect(tweenie._props.onSkip.calls.count()).toBe(1);
     });
+
+    it('should be called when greater or equal than _end and suddenly smaller than `_start` #2', function() {
+      var duration = 400;
+      var index = 3;
+      var tweenie = Tweenie({
+        duration: duration,
+        onSkip: function() {},
+        index: index,
+        isIt: 1
+      });
+
+      tweenie.setStartTime(250);
+      var startTime = tweenie._start;
+
+      tweenie.update(startTime + duration + 10);
+
+      spyOn(tweenie._props, 'onSkip');
+
+      tweenie.update(startTime);
+      expect(tweenie._props.onSkip).toHaveBeenCalledWith(false, index, startTime, startTime + duration + 10);
+      expect(tweenie._props.onSkip.calls.count()).toBe(1);
+    });
+
+    it('should be called when greater or equal than _end and suddenly smaller than `_start`', function() {
+      var duration = 400;
+      var index = 4;
+      var tweenie = Tweenie({
+        duration: duration,
+        onSkip: function() {},
+        index: index
+      });
+
+      tweenie.setStartTime(250);
+      var startTime = tweenie._start;
+
+      tweenie.update(startTime - 10);
+
+      spyOn(tweenie._props, 'onSkip');
+
+      tweenie.update(startTime + duration + 10);
+
+      expect(tweenie._props.onSkip).toHaveBeenCalledWith(true, index, startTime + duration + 10, startTime - 10);
+    });
+
+    it('should be called when greater or equal than _end and suddenly smaller than `_start` #2', function() {
+      var duration = 400;
+      var index = 4;
+      var tweenie = Tweenie({
+        duration: duration,
+        onSkip: function() {},
+        index: index
+      });
+
+      tweenie.setStartTime(250);
+      var startTime = tweenie._start;
+
+      tweenie.update(startTime - 10);
+
+      spyOn(tweenie._props, 'onSkip');
+
+      tweenie.update(startTime + duration);
+
+      expect(tweenie._props.onSkip).toHaveBeenCalledWith(true, index, startTime + duration, startTime - 10);
+    });
+
   });
 
   describe('`reset` dunction ->', function() {
@@ -1154,7 +1217,7 @@ describe('tweenie ->', function () {
       var duration = 400;
       var tweenie = Tweenie({
         duration: duration,
-        onRefresh: function() {}
+        onSkip: function() {}
       });
 
       tweenie._isActive = true;

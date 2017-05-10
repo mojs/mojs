@@ -26,10 +26,17 @@ const tweenieDefaults = {
   onStart:                function() {},
   onComplete:             function() {},
   onUpdate:               function() {},
-  // `onRefresh` callback is called when progress runs over the `_end` time
-  // and then suddenly goes before the `_start` time. Indecates that
-  // progress (1) should be refreshed to (0), or vice versa.
-  onRefresh:              function() {},
+
+  /**
+   * onSkip - callback is called when progress runs over the `_end` time
+   * and then suddenly goes before the `_start` time. Indecates that
+   * progress (1) should be refreshed to (0), or vice versa.
+   *
+   * @param {Boolean} isForward
+   *                    - `true` if skipped in forward direction
+   *                    - `false` if skipped in backward direction
+   */
+  onSkip:                 function() {},
   // `onChimeIn` is invoked when the `Tweenie` becomes active
   // kind of like `onStart` but regardless `isReverse` option
   onChimeIn:              function() {},

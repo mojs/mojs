@@ -663,6 +663,66 @@ describe('tween ->', function () {
       expect(tween._tweenies[5].update.calls.count()).toBe(1);
     });
 
+    it('should set `_prevTime` on the newly `_active` tweenie before `updating`', function () {
+      var options = {
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+      tween._active = 0;
+      tween._act = tween._tweenies[0];
+
+      // override update function to prevent internal `_prevTime` assignment
+      tween._tweenies[0].update = function() {};
+      tween._tweenies[1].update = function() {};
+      tween._tweenies[2].update = function() {};
+      tween._tweenies[3].update = function() {};
+      tween._tweenies[4].update = function() {};
+      tween._tweenies[5].update = function() {};
+
+      spyOn(tween._tweenies[0], 'update');
+      spyOn(tween._tweenies[1], 'update');
+      spyOn(tween._tweenies[2], 'update');
+      spyOn(tween._tweenies[3], 'update');
+      spyOn(tween._tweenies[4], 'update');
+      spyOn(tween._tweenies[5], 'update');
+
+      var time = 200;
+
+      var prevTime = -300;
+      tween._tweenies[0]._prevTime = prevTime;
+      tween._tweenies[0]._props.onChimeOut(true, false, 0, time);
+      expect(tween._active).toBe(1);
+
+      expect(tween._tweenies[0].update).not.toHaveBeenCalledWith(time);
+      expect(tween._tweenies[1].update).toHaveBeenCalledWith(time);
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+
+      expect(tween._tweenies[1]._prevTime).toBe(prevTime);
+
+      // -=-=-=-
+
+      var prevTime = -350;
+      tween._tweenies[1]._prevTime = prevTime;
+      tween._tweenies[1]._props.onChimeOut(true, false, 0, time += 10);
+      expect(tween._active).toBe(2);
+      expect(tween._act).toBe(tween._tweenies[2]);
+
+      expect(tween._tweenies[0].update).not.toHaveBeenCalledWith(time);
+      expect(tween._tweenies[1].update.calls.count()).toBe(1);
+      expect(tween._tweenies[2].update).toHaveBeenCalledWith(time);
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[4].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[5].update).not.toHaveBeenCalled();
+
+      expect(tween._tweenies[2]._prevTime).toBe(prevTime);
+    });
+
     it('should not update the newly `_active` tweenie if backward', function () {
       var options = {
         onUpdate: function() {},
@@ -1115,6 +1175,66 @@ describe('tween ->', function () {
       expect(tween._tweenies[2].update).not.toHaveBeenCalled();
       expect(tween._tweenies[1].update).not.toHaveBeenCalled();
       expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+    });
+
+    it('should set `_prevTime` on the newly `_active` tweenie before `updating`', function () {
+      var options = {
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tween = new Tween(options);
+      tween.setStartTime();
+      tween._active = 5;
+      tween._act = tween._tweenies[0];
+
+      // override update function to prevent internal `_prevTime` assignment
+      tween._tweenies[0].update = function() {};
+      tween._tweenies[1].update = function() {};
+      tween._tweenies[2].update = function() {};
+      tween._tweenies[3].update = function() {};
+      tween._tweenies[4].update = function() {};
+      tween._tweenies[5].update = function() {};
+
+      spyOn(tween._tweenies[0], 'update');
+      spyOn(tween._tweenies[1], 'update');
+      spyOn(tween._tweenies[2], 'update');
+      spyOn(tween._tweenies[3], 'update');
+      spyOn(tween._tweenies[4], 'update');
+      spyOn(tween._tweenies[5], 'update');
+
+      var time = 200;
+
+      var prevTime = -300;
+      tween._tweenies[5]._prevTime = prevTime;
+      tween._tweenies[5]._props.onChimeIn(false, false, 5, time);
+      expect(tween._active).toBe(4);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalledWith(time);
+      expect(tween._tweenies[4].update).toHaveBeenCalledWith(time);
+      expect(tween._tweenies[3].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+
+      expect(tween._tweenies[4]._prevTime).toBe(prevTime);
+
+      // -=-=-=-
+
+      var prevTime = -350;
+      tween._tweenies[4]._prevTime = prevTime;
+      tween._tweenies[4]._props.onChimeIn(false, false, 4, time -= 10);
+      expect(tween._active).toBe(3);
+      expect(tween._act).toBe(tween._tweenies[3]);
+
+      expect(tween._tweenies[5].update).not.toHaveBeenCalledWith(time);
+      expect(tween._tweenies[4].update.calls.count()).toBe(1);
+      expect(tween._tweenies[3].update).toHaveBeenCalledWith(time);
+      expect(tween._tweenies[2].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[1].update).not.toHaveBeenCalled();
+      expect(tween._tweenies[0].update).not.toHaveBeenCalled();
+
+      expect(tween._tweenies[3]._prevTime).toBe(prevTime);
     });
 
     it('should call `onStart` callback if the first item', function () {
@@ -2677,4 +2797,169 @@ describe('tween ->', function () {
       expect(result).toBe(tween);
     });
   });
+
+  // describe('`setProgress` function', function () {
+  //   it('should call `setStartTime` is `_start` is not set', function () {
+  //     var tween = new Tween();
+  //     spyOn(tween, 'setStartTime');
+  //     tween.setProgress(.5);
+  //     expect(tween.setStartTime).toHaveBeenCalled();
+  //   });
+  //
+  //   it('should call `update` with the progress time', function () {
+  //     var progress = .25;
+  //     var tween = new Tween();
+  //     spyOn(tween, 'update');
+  //     tween.setProgress(progress);
+  //     expect(tween.update).toHaveBeenCalledWith(tween._spot + progress*(tween._end - tween._spot));
+  //   });
+  //
+  //   it('should return `this`', function () {
+  //     var progress = .25;
+  //     var tween = new Tween();
+  //     var result = tween.setProgress(progress);
+  //     expect(result).toBe(tween);
+  //   });
+  // });
+  //
+  // describe('`_setProgressFwd` function', function () {
+  //   it('should update the current tweenie', function () {
+  //     var tween = new Tween({
+  //       repeat: 2
+  //     });
+  //
+  //     tween.setStartTime();
+  //
+  //     tween.update(tween._start-10);
+  //     tween.update(tween._start);
+  //
+  //     spyOn(tween, 'update');
+  //
+  //     var progress = .15;
+  //     tween.setProgress(progress);
+  //
+  //     expect(tween.update).toHaveBeenCalledWith(tween._spot + progress*(tween._end - tween._spot));
+  //     expect(tween.update.calls.count()).toBe(1);
+  //   });
+  //
+  //   it('should update all tweenies #2', function () {
+  //
+  //     var tween = new Tween({
+  //       repeat: 2
+  //     });
+  //
+  //     tween.setStartTime();
+  //
+  //     tween.update(tween._start-10);
+  //     tween.update(tween._start);
+  //
+  //     spyOn(tween, 'update');
+  //
+  //     tween.setProgress(1);
+  //
+  //     expect(tween.update).toHaveBeenCalledWith(tween._tweenies[0]._end);
+  //
+  //     expect(tween.update).toHaveBeenCalledWith(tween._tweenies[1]._start);
+  //     expect(tween.update).toHaveBeenCalledWith(tween._tweenies[1]._end);
+  //
+  //     expect(tween.update).toHaveBeenCalledWith(tween._tweenies[2]._start);
+  //     expect(tween.update).toHaveBeenCalledWith(tween._tweenies[2]._end);
+  //   });
+  //
+  //   it('should update all tweenies #2', function () {
+  //
+  //     var tween = new Tween({
+  //       repeat: 2
+  //     });
+  //
+  //     tween.setStartTime();
+  //
+  //     tween.update(tween._start-10);
+  //     tween.update(tween._start);
+  //
+  //     spyOn(tween, 'update');
+  //
+  //     tween.setProgress(.5);
+  //
+  //     expect(tween.update).toHaveBeenCalledWith(tween._tweenies[0]._end);
+  //
+  //     expect(tween.update).toHaveBeenCalledWith(tween._tweenies[1]._start);
+  //     expect(tween.update).not.toHaveBeenCalledWith(tween._tweenies[1]._end);
+  //
+  //     expect(tween.update).not.toHaveBeenCalledWith(tween._tweenies[2]._start);
+  //     expect(tween.update).not.toHaveBeenCalledWith(tween._tweenies[2]._end);
+  //   });
+  // });
+  //
+  // describe('`_setProgressBwd` function', function () {
+  //   it('should update the current tweenie', function () {
+  //     var tween = new Tween({
+  //       repeat: 2
+  //     });
+  //
+  //     tween.setStartTime();
+  //
+  //     tween.update(tween._start-10);
+  //     tween.update(tween._start);
+  //
+  //     var progress = .15;
+  //     tween.setProgress(progress + .1);
+  //
+  //     spyOn(tween, 'update');
+  //
+  //     tween.setProgress(progress);
+  //
+  //     expect(tween.update).toHaveBeenCalledWith(tween._spot + progress*(tween._end - tween._spot));
+  //     expect(tween.update.calls.count()).toBe(1);
+  //   });
+  //
+  //   it('should update all tweenies #2', function () {
+  //
+  //     var tween = new Tween({
+  //       repeat: 2
+  //     });
+  //
+  //     tween.setStartTime();
+  //
+  //     tween.update(tween._start-10);
+  //     tween.update(tween._start);
+  //
+  //     tween.setProgress(1);
+  //
+  //     spyOn(tween, 'update');
+  //
+  //     tween.setProgress(.25);
+  //
+  //     expect(tween.update).toHaveBeenCalledWith(tween._tweenies[2]._start);
+  //
+  //     expect(tween.update).toHaveBeenCalledWith(tween._tweenies[1]._end);
+  //     expect(tween.update).toHaveBeenCalledWith(tween._tweenies[1]._start);
+  //
+  //     expect(tween.update).toHaveBeenCalledWith(tween._tweenies[0]._end);
+  //   });
+  //
+  //   // it('should update all tweenies #2', function () {
+  //   //
+  //   //   var tween = new Tween({
+  //   //     repeat: 2
+  //   //   });
+  //   //
+  //   //   tween.setStartTime();
+  //   //
+  //   //   tween.update(tween._start-10);
+  //   //   tween.update(tween._start);
+  //   //
+  //   //   spyOn(tween, 'update');
+  //   //
+  //   //   tween.setProgress(.5);
+  //   //
+  //   //   expect(tween.update).toHaveBeenCalledWith(tween._tweenies[0]._end);
+  //   //
+  //   //   expect(tween.update).toHaveBeenCalledWith(tween._tweenies[1]._start);
+  //   //   expect(tween.update).not.toHaveBeenCalledWith(tween._tweenies[1]._end);
+  //   //
+  //   //   expect(tween.update).not.toHaveBeenCalledWith(tween._tweenies[2]._start);
+  //   //   expect(tween.update).not.toHaveBeenCalledWith(tween._tweenies[2]._end);
+  //   // });
+  // });
 });
