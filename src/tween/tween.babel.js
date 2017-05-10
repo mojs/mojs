@@ -153,8 +153,6 @@ const Tween = {
   //  * @param {Number} Time to update the tween with.
   //  */
   // _setProgressBwd(time) {
-  //   // console.log(`set backward: ${time}, ${this._active}`);
-  //
   //   for (let i = this._active; i >= 0; i--) {
   //     const tweenie = this._tweenies[i];
   //
@@ -303,9 +301,6 @@ const Tween = {
     if (this._elapsed >= (this._end - this._spot)) {
       this._elapsed = 0;
     }
-
-    this._importantSpots = [];
-
     // `_spot` - is the animation initialization spot
     // `_elapsed` is how much time elapsed in the `active` period,
     // needed for `play`/`pause` functionality
@@ -314,22 +309,11 @@ const Tween = {
     this._playTime = this._spot;
     // `_start` - is the active animation start time bound
     this._start = this._spot + delay;
-
-    this._importantSpots.push(this._start);
-
     // set start time on all tweenies
     this._tweenies[0].setStartTime(this._start - delay);
 
-    if (this._tweenies[0]._start !== this._start) {
-      this._importantSpots.push(this._tweenies[0]._start);
-    }
-
-    this._importantSpots.push(this._tweenies[0]._end);
-
     for (let i = 1; i < this._tweenies.length; i++) {
       this._tweenies[i].setStartTime(this._tweenies[i-1]._end);
-      this._importantSpots.push(this._tweenies[i]._start);
-      this._importantSpots.push(this._tweenies[i]._end);
     }
     // `_end` - is the active animation end time bound
     this._end = this._tweenies[this._tweenies.length-1]._end;

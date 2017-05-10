@@ -64,11 +64,12 @@ const Tweenie = {
 
   /**
    * update - function to update `Tweenie` with current time.
+   *
+   * @param {Number} The current update time.
    */
   update(time) {
     const { onUpdate, isReverse, index } = this._props;
 
-    // this._o.isIt && console.log(`time: ${time}, this._start: ${this._start}, this._prevTime: ${this._prevTime}, this._end: ${this._end}`);
     if (time <= this._start && this._prevTime >= this._end) {
       this._props.onSkip(false, index, time, this._prevTime);
     }
