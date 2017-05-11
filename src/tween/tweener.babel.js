@@ -28,7 +28,6 @@ const getVisiblityEvent = () => {
 
     _vars () {
       this.tweens = [];
-      // this._loop = this._loop.bind(this);
       this._savedTweens = [];
     }
 
@@ -143,11 +142,9 @@ const getVisiblityEvent = () => {
     var i = this.tweens.length;
     while(i--) {
       var tween = this.tweens[i];
-      tween.update(time)
-      if (tween._ac === true) {
+      if (tween.update(time) === true) {
         this.remove(tween);
         tween.onTweenerFinish();
-        tween._prevTime = undefined;
       }
     }
   }

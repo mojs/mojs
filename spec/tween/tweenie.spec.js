@@ -1,6 +1,7 @@
 var Tweenie = mojs.Tweenie;
 
 var helpers = mojs.__helpers__;
+var tweener = helpers.tweener;
 var ClassProto = helpers.ClassProto;
 var tweenieDefaults = helpers.tweenieDefaults;
 
@@ -230,6 +231,30 @@ describe('tweenie ->', function () {
       expect(progress).toBe(0);
     });
 
+    it('should save `_elapsed`', function () {
+      var duration = 200;
+      var options = {
+        onUpdate: function() {},
+        duration: duration
+      };
+
+      var tweenie = new Tweenie(options);
+      tweenie.setStartTime();
+
+      var updateTime = tweenie._start + 10;
+
+      tweenie.update(updateTime);
+      expect(tweenie._elapsed).toBe(updateTime - tweenie._spot);
+
+      updateTime += duration/2;
+      tweenie.update(updateTime);
+      expect(tweenie._elapsed).toBe(updateTime - tweenie._spot);
+
+      updateTime += duration/2;
+      tweenie.update(updateTime);
+      expect(tweenie._elapsed).toBe(updateTime - tweenie._spot);
+    });
+
     it('should pass current `progress` to `onUpdate` #reverse #backward', function () {
       var progress = -1;
       var duration = 50;
@@ -407,25 +432,65 @@ describe('tweenie ->', function () {
       expect(result).toBe(true);
     });
 
-    // it('should return when active period is completed #backward #2', function () {
+    it('should return when active period is completed #backward #2', function () {
+      var duration = 500;
+
+      var options = {
+        duration: duration,
+        onComplete: function() {}
+      };
+
+      var tweenie = Tweenie(options);
+      tweenie.setStartTime(200);
+
+      var end = tweenie._end;
+
+      tweenie.update(end + 10);
+      tweenie.update(end - duration/2);
+      var result = tweenie.update(end - duration - 10);
+
+      expect(tweenie._prevTime).toBe(end - duration - 10);
+      expect(result).toBe(true);
+    });
+
+    it('should recalculate `time` regarding `speed`', function() {
+      var duration = 500;
+      var tweenie = new Tweenie({
+        duration: duration,
+        repeat: 5
+      });
+      tweenie.setStartTime();
+
+      tweenie._playTime = 200;
+      tweenie._speed = 2;
+      var time = tweenie._start + duration/2;
+      var normalizedTime = tweenie._playTime + tweenie._speed * (time - tweenie._playTime);
+
+      tweenie.update(time);
+
+      expect(tweenie._prevTime).toBe(normalizedTime);
+    });
+
+    // it('should recalculate `time` regarding `speed` #2', function() {
     //   var duration = 500;
-    //
-    //   var options = {
+    //   var tweenie = new Tweenie({
     //     duration: duration,
-    //     onComplete: function() {}
-    //   };
+    //     repeat: 5
+    //   });
+    //   tweenie.setStartTime();
     //
-    //   var tweenie = Tweenie(options);
-    //   tweenie.setStartTime(200);
+    //   tweenie._playTime = 200;
+    //   tweenie._speed = .5;
+    //   var time = tweenie._start + duration/2;
+    //   var normalizedTime = tweenie._playTime + tweenie._speed * (time - tweenie._playTime);
     //
-    //   var end = tweenie._end;
+    //   tweenie._act = tweenie._tweenieies[0];
     //
-    //   tweenie.update(end + 10);
-    //   tweenie.update(end - duration/2);
-    //   var result = tweenie.update(end - duration - 10);
+    //   spyOn(tweenie._act, 'update');
     //
-    //   expect(tweenie._prevTime).toBe(end - duration - 10);
-    //   expect(result).toBe(true);
+    //   tweenie._updateFwd(time);
+    //
+    //   expect(tweenie._act.update).toHaveBeenCalledWith(normalizedTime);
     // });
   });
 
@@ -1225,6 +1290,607 @@ describe('tweenie ->', function () {
 
       expect(tweenie._isActive).toBe(false);
       expect(tweenie._prevTime).not.toBeDefined();
+    });
+  });
+
+  describe('_setState function ->', function() {
+    it('should set playback state', function() {
+      var tweenie = new Tweenie();
+      tweenie._setState('play');
+      expect(tweenie._state).toBe('play');
+    });
+    it('should track previous playback state', function() {
+      var t;
+      t = new Tweenie();
+      t._setState('play');
+      t._setState('pause');
+      expect(t._prevState).toBe('play');
+      expect(t._state).toBe('pause');
+    });
+    describe('onPlaybackStart / play callback ->', function() {
+      it('should call `onPlaybackStart` method if `play`', function() {
+        var duration = 50;
+        var tweenie = new Tweenie({
+          duration: duration,
+          onPlaybackStart: function() {}
+        });
+        spyOn(tweenie._props, 'onPlaybackStart');
+        tweenie._setState('play');
+        expect(tweenie._props.onPlaybackStart).toHaveBeenCalledWith('play', 'stop');
+      });
+      it('should call `onPlaybackStart` method if `play` after `pause`', function() {
+        var duration = 50;
+        var tweenie = new Tweenie({
+          duration: duration
+        });
+        tweenie._setState('play');
+        tweenie._setState('pause');
+        spyOn(tweenie._props, 'onPlaybackStart');
+        tweenie._setState('play');
+        expect(tweenie._props.onPlaybackStart).toHaveBeenCalledWith('play', 'pause');
+      });
+      it('should not call `onPlaybackStart` method if already `play`', function() {
+        var duration = 50;
+        var tweenie = new Tweenie({
+          duration: duration
+        });
+        tweenie._setState('play');
+        spyOn(tweenie._props, 'onPlaybackStart');
+        tweenie._setState('play');
+        expect(tweenie._props.onPlaybackStart).not.toHaveBeenCalled();
+      });
+      it('should not call `onPlaybackStart` method if already `reverse`', function() {
+        var duration = 50;
+        var tweenie = new Tweenie({
+          duration: duration
+        });
+        tweenie._setState('reverse');
+        spyOn(tweenie._props, 'onPlaybackStart');
+        tweenie._setState('play');
+        expect(tweenie._props.onPlaybackStart).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('onPlaybackStart / reverse callback ->', function() {
+      it('should call `onPlaybackStart` method if `reverse`', function() {
+        var duration = 50;
+        var tweenie = new Tweenie({
+          duration: duration
+        });
+        spyOn(tweenie._props, 'onPlaybackStart');
+        tweenie._setState('reverse');
+        expect(tweenie._props.onPlaybackStart).toHaveBeenCalled();
+      });
+      it('should call onPlaybackStart method if reverse', function() {
+        var duration = 50;
+        var tweenie = new Tweenie({
+          duration: duration
+        });
+        tweenie._setState('reverse');
+        tweenie._setState('pause');
+        spyOn(tweenie._props, 'onPlaybackStart');
+        tweenie._setState('reverse');
+        expect(tweenie._props.onPlaybackStart).toHaveBeenCalled();
+      });
+      it('should not call onPlaybackStart method if already reverse', function() {
+        var duration = 50;
+        var tweenie = new Tweenie({
+          duration: duration
+        });
+        tweenie._setState('reverse');
+        spyOn(tweenie._props, 'onPlaybackStart');
+        tweenie._setState('reverse');
+        expect(tweenie._props.onPlaybackStart).not.toHaveBeenCalled();
+      });
+      it('should not call onPlaybackStart method if already play', function() {
+        var duration = 50;
+        var tweenie = new Tweenie({
+          duration: duration
+        });
+        tweenie._setState('play');
+        spyOn(tweenie._props, 'onPlaybackStart');
+        tweenie._setState('reverse');
+        expect(tweenie._props.onPlaybackStart).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('onPlaybackPause / pause callback ->', function() {
+      it('should call onPlaybackPause method if pause', function() {
+        var tweenie = new Tweenie();
+        tweenie._setState('play');
+        spyOn(tweenie._props, 'onPlaybackPause');
+        tweenie._setState('pause');
+        return expect(tweenie._props.onPlaybackPause).toHaveBeenCalled();
+      });
+      it('should call onPlaybackPause method if play', function() {
+        var tweenie = new Tweenie();
+        tweenie._setState('play');
+        spyOn(tweenie._props, 'onPlaybackPause');
+        tweenie._setState('pause');
+        expect(tweenie._props.onPlaybackPause).toHaveBeenCalled();
+      });
+      it('should call onPlaybackPause method if already was reverse', function() {
+        var tweenie = new Tweenie();
+        tweenie._setState('reverse');
+        spyOn(tweenie._props, 'onPlaybackPause');
+        tweenie._setState('pause');
+        expect(tweenie._props.onPlaybackPause).toHaveBeenCalled();
+      });
+      it('should not call onPlaybackPause method if already stopped', function() {
+        var tweenie = new Tweenie();
+        spyOn(tweenie._props, 'onPlaybackPause');
+        tweenie._setState('pause');
+        expect(tweenie._props.onPlaybackPause).not.toHaveBeenCalled();
+      });
+      it('should not call onPlaybackPause method if already paused', function() {
+        var tweenie = new Tweenie();
+        tweenie._setState('play');
+        tweenie._setState('pause');
+        spyOn(tweenie._props, 'onPlaybackPause');
+        tweenie._setState('pause');
+        expect(tweenie._props.onPlaybackPause).not.toHaveBeenCalled();
+      });
+    });
+    describe('onPlaybackStop / stop callback ->', function() {
+      it('should call onPlaybackStop method if stop', function() {
+        var tweenie = new Tweenie();
+        tweenie._setState('play');
+        spyOn(tweenie._props, 'onPlaybackStop');
+        tweenie._setState('stop');
+        expect(tweenie._props.onPlaybackStop).toHaveBeenCalled();
+      });
+      it('should call onPlaybackStop method if stop', function() {
+        var tweenie = new Tweenie();
+        tweenie._setState('play');
+        spyOn(tweenie._props, 'onPlaybackStop');
+        tweenie._setState('stop');
+        expect(tweenie._props.onPlaybackStop).toHaveBeenCalled();
+      });
+      it('should call onPlaybackStop method if was play', function() {
+        var tweenie = new Tweenie();
+        tweenie._setState('play');
+        spyOn(tweenie._props, 'onPlaybackStop');
+        tweenie._setState('stop');
+        expect(tweenie._props.onPlaybackStop).toHaveBeenCalled();
+      });
+      it('should call onPlaybackStop method if already paused', function() {
+        var tweenie = new Tweenie();
+        tweenie._setState('play');
+        tweenie._setState('pause');
+        spyOn(tweenie._props, 'onPlaybackStop');
+        tweenie._setState('stop');
+        expect(tweenie._props.onPlaybackStop).toHaveBeenCalled();
+      });
+      it('should not call onPlaybackStop method if already stopped', function() {
+        var tweenie = new Tweenie();
+        spyOn(tweenie._props, 'onPlaybackStop');
+        tweenie._setState('stop');
+        expect(tweenie._props.onPlaybackStop).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('`_setupPlay` function ->', function() {
+    it('should call the `setStartTime` function', function() {
+      var tweenie = new Tweenie();
+      spyOn(tweenie, 'setStartTime');
+      tweenie._setupPlay();
+
+      expect(tweenie.setStartTime).toHaveBeenCalledWith();
+    });
+    it('should add the tweenie to the `tweener`', function() {
+      var tweenie = new Tweenie();
+      spyOn(tweener, 'add');
+      tweenie._setupPlay();
+
+      expect(tweener.add).toHaveBeenCalledWith(tweenie);
+    });
+  });
+
+  describe('`play` function ->', function() {
+    it('should call the `_setState` function', function() {
+      var tweenie = new Tweenie();
+      spyOn(tweenie, '_setState');
+      tweenie.play();
+
+      expect(tweenie._setState).toHaveBeenCalledWith('play');
+    });
+
+    it('should call the `_setupPlay` function', function() {
+      var tweenie = new Tweenie();
+      spyOn(tweenie, '_setupPlay');
+      tweenie.play();
+
+      expect(tweenie._setupPlay).toHaveBeenCalledWith('play');
+    });
+
+    it('should return `this`', function() {
+      var tweenie = new Tweenie();
+      var result = tweenie.play();
+
+      expect(result).toBe(tweenie);
+    });
+
+    it('should return if already playing', function() {
+      var tweenie = new Tweenie();
+      tweenie._state = 'play';
+      spyOn(tweenie, 'setStartTime');
+      var result = tweenie.play();
+
+      expect(result).toBe(tweenie);
+      expect(tweenie.setStartTime).not.toHaveBeenCalled();
+    });
+
+    it('should set `_playTime`', function() {
+      var tweenie = new Tweenie();
+      tweenie.play();
+
+      var time = performance.now();
+      expect(tweenie._playTime).toBeDefined();
+      expect(time - tweenie._playTime).not.toBeGreaterThan(10);
+    });
+
+    it('should set `_speed`', function() {
+      var speed = 2;
+
+      var tweenie = new Tweenie({
+        speed: speed
+      });
+      tweenie._speed = -1;
+
+      tweenie.play();
+
+      expect(tweenie._speed).toBe(speed);
+    });
+  });
+
+  describe('`pause` function ->', function() {
+    it('should call the `tweener.remove` function', function() {
+      var tweenie = new Tweenie();
+      tweenie.play();
+      spyOn(tweener, 'remove');
+      tweenie.pause();
+
+      expect(tweener.remove).toHaveBeenCalledWith(tweenie);
+    });
+
+    it('should call the `_setState` function', function() {
+      var tweenie = new Tweenie();
+      tweenie.play();
+      spyOn(tweenie, '_setState');
+      tweenie.pause();
+
+      expect(tweenie._setState).toHaveBeenCalledWith('pause');
+    });
+
+    it('should not call the `_setState` if already `paused`', function() {
+      var tweenie = new Tweenie();
+      tweenie.pause();
+      spyOn(tweenie, '_setState');
+      tweenie.pause();
+
+      expect(tweenie._setState).not.toHaveBeenCalledWith('pause');
+    });
+
+    it('should not call the `_setState` if already `stopped`', function() {
+      var tweenie = new Tweenie();
+      tweenie._state = 'stop';
+      spyOn(tweenie, '_setState');
+      tweenie.pause();
+
+      expect(tweenie._setState).not.toHaveBeenCalledWith('pause');
+    });
+
+    it('should return `this`', function() {
+      var tweenie = new Tweenie();
+      var result = tweenie.pause();
+
+      expect(result).toBe(tweenie);
+    });
+
+    it('should reset `_speed` to `1`', function() {
+      var speed = 2;
+
+      var tweenie = new Tweenie({
+        speed: speed
+      });
+      tweenie._speed = -1;
+
+      tweenie.play();
+      expect(tweenie._speed).toBe(speed);
+
+      tweenie.pause();
+      expect(tweenie._speed).toBe(1);
+
+    });
+  });
+
+  describe('`setSpeed` function ->', function () {
+    it('should set `speed` on `_props`', function () {
+      var tweenie = new Tweenie();
+      var speed = 2;
+      var result = tweenie.setSpeed(speed);
+
+      expect(tweenie._props.speed).toBe(speed);
+    });
+
+    it('should set `_speed` if state is `play`', function () {
+      var tweenie = new Tweenie();
+      var speed = 2;
+      expect(tweenie._speed).toBe(1);
+      tweenie._setState('play');
+      var result = tweenie.setSpeed(speed);
+
+      expect(tweenie._speed).toBe(speed);
+    });
+
+    it('should call `setStartTime` if state is `play`', function () {
+      var tweenie = new Tweenie();
+      var speed = 2;
+      expect(tweenie._playTime).not.toBeDefined();
+      tweenie._setState('play');
+
+      var now = performance.now();
+
+      spyOn(tweenie, 'setStartTime');
+      var result = tweenie.setSpeed(speed);
+      expect(tweenie.setStartTime).toHaveBeenCalled()
+    });
+
+    it('should reset `_playTime` if state is `play`', function () {
+      var tweenie = new Tweenie();
+      var speed = 2;
+      expect(tweenie._playTime).not.toBeDefined();
+      tweenie._setState('play');
+
+      var now = performance.now();
+      var result = tweenie.setSpeed(speed);
+
+      expect(tweenie._playTime).toBeDefined();
+      expect(tweenie._playTime - now).not.toBeGreaterThan(10);
+    });
+
+    it('should return this', function () {
+      var tweenie = new Tweenie();
+      var result = tweenie.setSpeed(2);
+
+      expect(result).toBe(tweenie);
+    });
+  });
+
+  describe('`reset` function ->', function() {
+    it('should set `_elapsed` to 0', function() {
+      var tweenie = new Tweenie({
+        repeat: 2
+      });
+
+      tweenie._elapsed = 100;
+      tweenie.reset();
+      expect(tweenie._elapsed).toBe(0);
+    });
+  });
+
+  describe('`onTweenerFinish` function ->', function() {
+    it('should call the `_setState` function', function() {
+      var tweenie = new Tweenie();
+      spyOn(tweenie, '_setState');
+      tweenie.onTweenerFinish();
+
+      expect(tweenie._setState).toHaveBeenCalledWith('stop');
+    });
+
+    it('should envoke `onPlaybackComplete` callback', function() {
+      var tweenie = new Tweenie();
+      spyOn(tweenie._props, 'onPlaybackComplete');
+      tweenie.onTweenerFinish();
+
+      expect(tweenie._props.onPlaybackComplete).toHaveBeenCalled();
+    });
+
+    it('should call the `reset` function', function() {
+      var tweenie = new Tweenie();
+      spyOn(tweenie, 'reset');
+      tweenie.onTweenerFinish();
+
+      expect(tweenie.reset).toHaveBeenCalled();
+    });
+  });
+
+  describe('`setStartTime` function ->', function () {
+    it('should set `_start` time', function () {
+      var tweenie = new Tweenie();
+      var startTime = 500;
+
+      tweenie.setStartTime(startTime);
+      expect(tweenie._start).toBe(startTime);
+      expect(tweenie._spot).toBe(tweenie._start - tweenie._props.delay);
+      expect(tweenie._playTime).toBe(tweenie._spot);
+    });
+
+    it('should set `_start` time regarding `_elapsed`', function () {
+      var delay = 50;
+      var tweenie = new Tweenie({
+        delay: delay
+      });
+      var startTime = 500;
+      tweenie._elapsed = 200;
+
+      tweenie.setStartTime(startTime);
+      expect(tweenie._spot).toBe(startTime - tweenie._elapsed);
+      expect(tweenie._start).toBe(tweenie._spot + delay);
+    });
+
+    it('should set `_start` time #delay', function () {
+      var delay = 200;
+      var duration = 500;
+      var tweenie = new Tweenie({
+        delay: delay,
+        duration: duration
+      });
+      var startTime = 200;
+
+      tweenie.setStartTime(startTime);
+      expect(tweenie._start).toBe(startTime + delay);
+    });
+
+    it('should set `_time` regarding `repeat`', function () {
+      var delay = 200;
+      var duration = 500;
+      var repeat = 3;
+      var tweenie = new Tweenie({
+        delay: delay,
+        duration: duration,
+        repeat: repeat
+      });
+      var startTime = 200;
+
+      tweenie.setStartTime(startTime);
+    });
+
+    it('should set `_start` time to `performance.now` if not set', function () {
+      var tweenie = new Tweenie();
+      tweenie.setStartTime();
+      var newTime = performance.now();
+      expect(Math.abs(newTime - tweenie._start)).not.toBeGreaterThan(5);
+    });
+
+    it('should set `_start` time to `performance.now` if not set #delay', function () {
+      var delay = 150;
+      var tweenie = new Tweenie({ delay: delay });
+      tweenie.setStartTime();
+      var newTime = performance.now();
+      expect(Math.abs(tweenie._start - (newTime + delay))).not.toBeGreaterThan(5);
+    });
+
+    it('should set `_end` to the `_start` + `duration`', function () {
+      var duration = 2000;
+      var options = {
+        duration: duration,
+        onUpdate: function() {},
+        repeat: 5
+      };
+
+      var tweenie = new Tweenie(options);
+      tweenie.setStartTime();
+
+      expect(tweenie._end).toBe(tweenie._start + duration);
+    });
+
+    it('should recalculate `_elapsed` if >= `_end`', function () {
+      var duration = 500;
+      var tweenie = new Tweenie({
+        duration: duration
+      });
+      tweenie.setStartTime();
+
+      var start = tweenie._start;
+      tweenie.update(start);
+      tweenie.update(start + duration/2);
+      tweenie.update(start + duration);
+
+      tweenie.setStartTime();
+
+      expect(tweenie._elapsed).toBe(0);
+    });
+
+    it('should recalculate `_elapsed` if > `_end`', function () {
+      var duration = 500;
+      var tweenie = new Tweenie({
+        duration: duration
+      });
+      tweenie.setStartTime();
+
+      var start = tweenie._start;
+      tweenie.update(start);
+      tweenie.update(start + duration/2);
+      tweenie.update(start + duration + 20);
+
+      tweenie.setStartTime();
+
+      expect(tweenie._elapsed).toBe(0);
+    });
+  });
+
+  describe('`reverse` function ->', function() {
+    it('should flip `isReverse` in `_props`', function() {
+      var tweenie = new Tweenie();
+      tweenie.reverse();
+      expect(tweenie._props.isReverse).toBe(true);
+      tweenie.reverse();
+      expect(tweenie._props.isReverse).toBe(false);
+    });
+
+    it('should call the `_reverseCallbacks` function', function() {
+      var tweenie = new Tweenie();
+
+      spyOn(tweenie, '_reverseCallbacks');
+      tweenie.reverse();
+      expect(tweenie._reverseCallbacks).toHaveBeenCalled();
+    });
+
+    it('should flip the `_elapsed` time', function() {
+      var delay = 200;
+      var duration = 800;
+      var tweenie = new Tweenie({
+        delay: delay,
+        duration: duration
+      });
+
+      tweenie.setStartTime();
+      var start = tweenie._start;
+      tweenie.update(start - delay);
+      tweenie.update(start);
+      tweenie.update(start + duration / 2);
+
+      var elapsed = tweenie._elapsed;
+
+      tweenie.reverse();
+      expect(tweenie._elapsed).toBe((tweenie._end - tweenie._spot) - (elapsed - delay));
+    });
+
+    it('should not flip the `_elapsed` time if `0`', function() {
+      var delay = 200;
+      var duration = 800;
+      var tweenie = new Tweenie({
+        delay: delay,
+        duration: duration
+      });
+
+      var elapsed = tweenie._elapsed;
+
+      tweenie.reverse();
+      expect(tweenie._elapsed).toBe(0);
+    });
+
+    it('should return this', function() {
+      var tweenie = new Tweenie();
+      var result = tweenie.reverse();
+      expect(result).toBe(tweenie);
+    });
+  });
+
+  describe('`_reverseCallbacks` function ->', function() {
+    it('should reverse the `_cb` in pairs', function() {
+      var tweenie = new Tweenie();
+      var cbs = [ Math.random(), Math.random(), Math.random(), Math.random() ];
+      tweenie._cbs = cbs;
+
+      tweenie._reverseCallbacks();
+
+      expect(tweenie._cbs[0]).toBe(cbs[1]);
+      expect(tweenie._cbs[1]).toBe(cbs[0]);
+
+      expect(tweenie._cbs[2]).toBe(cbs[3]);
+      expect(tweenie._cbs[3]).toBe(cbs[2]);
+
+      tweenie._reverseCallbacks();
+
+      expect(tweenie._cbs[0]).toBe(cbs[0]);
+      expect(tweenie._cbs[1]).toBe(cbs[1]);
+
+      expect(tweenie._cbs[2]).toBe(cbs[2]);
+      expect(tweenie._cbs[3]).toBe(cbs[3]);
+
     });
   });
 });

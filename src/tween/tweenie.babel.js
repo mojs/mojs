@@ -12,6 +12,102 @@ const Tweenie = {
     this._defaults = tweenieDefaults;
   },
 
+  /* -------------------- */
+  /* The `Public` methods */
+  /* -------------------- */
+
+  /**
+   * play - function to `play` the tween.
+   *
+   * @public
+   * @returns {Object} This tween.
+   */
+  play() {
+    if (this._state === 'play') {
+      return this;
+    }
+
+    this._playTime = performance.now();
+    this._speed = this._props.speed;
+
+    this._setState('play');
+    this._setupPlay('play');
+
+    return this;
+  },
+
+  /**
+   * pause - function to `pause` the tween.
+   *
+   * @public
+   * @returns {Object} This tween.
+   */
+  pause() {
+    if (this._state === 'pause' || this._state === 'stop') { return this; }
+
+    tweener.remove(this);
+    this._setState('pause');
+    // reset speed variable to `1` because speed should not be applied
+    // when setProgress is used
+    this._speed = 1;
+
+    return this;
+  },
+
+  /**
+   * setSpeed - function to set speed.
+   *
+   * @public
+   * @param {Number} Speed in [0..∞]
+   * @return {Object} This tween.
+   */
+  setSpeed(speed) {
+    this._props.speed = speed;
+
+    if (this._state === 'play') {
+      this.setStartTime();
+      this._speed = speed;
+      this._playTime = performance.now();
+    }
+
+    return this;
+  },
+
+  /**
+   * reverse - function to `reverse` the tween.
+   *
+   * @public
+   * @returns {Object} This tween.
+   */
+  reverse() {
+    this._props.isReverse = !this._props.isReverse;
+    // reverse callbacks in the `_cbs`
+    this._reverseCallbacks();
+
+    if (this._elapsed > 0) {
+      const { delay } = this._props;
+      this._elapsed = (this._end - this._spot) - (this._elapsed - delay);
+    }
+
+    return this;
+  },
+
+  /* --------------------- */
+  /* The `Private` methods */
+  /* --------------------- */
+
+  /**
+   * _setupPlay - function to setup before `play`.
+   *
+   * @public
+   * @param {Sting} Direction ['play', 'reverse']
+   * @returns {Object} This tween.
+   */
+  _setupPlay(type) {
+    this.setStartTime();
+    tweener.add(this);
+  },
+
   /**
    * _vars - function do declare `variables` after `_defaults` were extended
    *         by `options` and saved to `_props`
@@ -30,6 +126,12 @@ const Tweenie = {
     } = this._props;
 
     this._isActive = false;
+    // time progress
+    this._elapsed = 0;
+    // initial state
+    this._state = 'stop';
+    // set "id" speed
+    this._speed = 1;
 
     this._time = delay + duration;
 
@@ -42,25 +144,33 @@ const Tweenie = {
     this._chCbs = [ onChimeIn, onChimeOut ];
     // if `isReverse` - flip the callbacks
     if (isReverse === true) {
-      this._cbs = [ this._cbs[1], this._cbs[0], 1 - this._cbs[2], 1 - this._cbs[3] ];
+      this._reverseCallbacks();
     }
   },
 
-  // TODO: cover
   /**
    * setStartTime - function to set `startTime`
    *
-   * @param {Number} Start time to set.
+   * @param {Number, Undefined} Start time to set.
    */
-  setStartTime(startTime = 0) {
-    const { delay, duration } = this._props;
+  setStartTime(startTime = performance.now()) {
+    const { delay, duration, repeat } = this._props;
 
-    this._start = startTime + delay;
+    // if `elapsed` is greated that end bound -> reset it to `0`
+    if (this._elapsed >= (this._end - this._spot)) {
+      this._elapsed = 0;
+    }
+    // `_spot` - is the animation initialization spot
+    // `_elapsed` is how much time elapsed in the `active` period,
+    // needed for `play`/`pause` functionality
+    this._spot = startTime - this._elapsed;
+    // play time is needed to recalculate time regarding `speed`
+    this._playTime = this._spot;
+    // `_start` - is the active animation start time bound
+    this._start = this._spot + delay;
+    // `_end` - is the active animation end time bound
     this._end = this._start + duration;
-    delete this._prevTime;
   },
-
-  onTweenerFinish() {},
 
   /**
    * update - function to update `Tweenie` with current time.
@@ -70,13 +180,21 @@ const Tweenie = {
   update(time) {
     const { onUpdate, isReverse, index } = this._props;
 
-    if (time <= this._start && this._prevTime >= this._end) {
-      this._props.onSkip(false, index, time, this._prevTime);
-    }
+    // recalculate `time` regarding `speed`
+    time = this._playTime + this._speed*(time - this._playTime);
 
+    // save elapsed time
+    this._elapsed = time - this._spot;
+
+    // `onSkip` forward
     if (time >= this._end && this._prevTime <= this._start) {
       // if `prevTime` was <= `_start` might need a refresh
       this._props.onSkip(true, index, time, this._prevTime);
+    }
+
+    // `onSkip` backward
+    if (time <= this._start && this._prevTime >= this._end) {
+      this._props.onSkip(false, index, time, this._prevTime);
     }
 
     // if forward progress
@@ -87,7 +205,6 @@ const Tweenie = {
       onUpdate(isReverse === false ? p : 1 - p);
 
       if (time > this._start && this._isActive === false && isForward === true) {
-        // TODO: cover passing time to the callback
         // `onStart`
         this._cbs[0](isForward, isReverse, index);
         // `onChimeIn`
@@ -95,7 +212,6 @@ const Tweenie = {
       }
 
       if (time === this._start) {
-        // TODO: cover passing time to the callback
         // `onStart`
         this._cbs[0](isForward, isReverse, index);
         // `onChimeIn`
@@ -108,7 +224,6 @@ const Tweenie = {
       if (time < this._end && this._isActive === false && isForward === false) {
         // `onComplete`
         this._cbs[1](false, isReverse, index);
-        // TODO: cover passing time to the callback
         // `onChimeOut`
         this._chCbs[1](isForward, isReverse, index, time);
       }
@@ -116,7 +231,6 @@ const Tweenie = {
       if (time === this._end) {
         // `onComplete`
         this._cbs[1](isForward, isReverse, index);
-        // TODO: cover passing time to the callback
         // `onChimeOut`
         this._chCbs[1](isForward, isReverse, index, time);
         // set `isActive` to `false` for forward direction
@@ -136,7 +250,6 @@ const Tweenie = {
       onUpdate(this._cbs[3]);
       // `onComplete`
       this._cbs[1](isForward, isReverse, index);
-      // TODO: cover passing time to the callback
       // `onChimeOut`
       this._chCbs[1](isForward, isReverse, index, time);
       this._isActive = false;
@@ -147,7 +260,6 @@ const Tweenie = {
     if (time < this._start && this._isActive === true) {
       // zero
       onUpdate(this._cbs[2]);
-      // TODO: cover passing time to the callback
       // `onStart`
       this._cbs[0](isForward, isReverse, index);
       // `onChimeIn`
@@ -167,8 +279,58 @@ const Tweenie = {
    */
   reset() {
     this._isActive = false;
+    this._elapsed = 0;
     delete this._prevTime;
-  }
+  },
+
+  /**
+   * Function to reverse callbacks.
+   */
+  _reverseCallbacks() {
+    this._cbs = [ this._cbs[1], this._cbs[0], this._cbs[3], this._cbs[2] ];
+  },
+
+  /*
+   * Method set playback `_state` string and call appropriate callbacks.
+   *
+   * @private
+   * @param {String} State name [play, pause, 'stop', 'reverse']
+   */
+  _setState(state) {
+    // save previous state
+    this._prevState = this._state;
+    this._state = state;
+
+    // callbacks
+    var wasPause = this._prevState === 'pause',
+        wasStop = this._prevState === 'stop',
+        wasPlay = this._prevState === 'play',
+        wasReverse = this._prevState === 'reverse',
+        wasPlaying = wasPlay || wasReverse,
+        wasStill = wasStop || wasPause;
+
+    if ((state === 'play' || state === 'reverse') && wasStill) {
+      this._props.onPlaybackStart(state, this._prevState);
+    }
+    if ( state === 'pause' && wasPlaying ) {
+      this._props.onPlaybackPause();
+    }
+    if ( state === 'stop' && (wasPlaying || wasPause)) {
+      this._props.onPlaybackStop();
+    }
+  },
+
+  /**
+   * onTweenerFinish - function that is called when the tweeener finished
+   *                   playback for this tween and removed it from the queue
+   *
+   */
+  onTweenerFinish() {
+    this._setState('stop');
+    this.reset();
+    this._props.onPlaybackComplete();
+  },
+
 }
 // extend classProto
 Tweenie.__proto__ = ClassProto;

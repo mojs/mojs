@@ -3,6 +3,10 @@ const tweenieDefaults = {
   duration:               350,
   /* delay of the tween [-∞..∞] */
   delay:                  0,
+  /* speed of playback [0..∞], speed that is less then 1
+     will slowdown playback, for instance .5 will make tween
+     run 2x slower. Speed of 2 will speedup the tween to 2x. */
+  speed:                  1,
   /* repeat of the tween [0..∞], means how much to
      repeat the tween regardless first run,
      for instance repeat: 2 will make the tween run 3 times */
@@ -16,6 +20,9 @@ const tweenieDefaults = {
   backwardEasing:         null,
   /* if should reverse the tween */
   isReverse:              false,
+
+  onUpdate:               function() {},
+
   /*
     onStart callback runs on very start of the tween just after onProgress
     one. Runs on very end of the tween if tween is reversed.
@@ -25,8 +32,12 @@ const tweenieDefaults = {
   */
   onStart:                function() {},
   onComplete:             function() {},
-  onUpdate:               function() {},
-
+  // `onChimeIn` is invoked when the `Tweenie` becomes active
+  // kind of like `onStart` but regardless `isReverse` option
+  onChimeIn:              function() {},
+  // `onChimeOut` is invoked when the `Tweenie` becomes active
+  // kind of like `onComplete` but regardless `isReverse` option
+  onChimeOut:             function() {},
   /**
    * onSkip - callback is called when progress runs over the `_end` time
    * and then suddenly goes before the `_start` time. Indecates that
@@ -37,15 +48,12 @@ const tweenieDefaults = {
    *                    - `false` if skipped in backward direction
    */
   onSkip:                 function() {},
-  // `onChimeIn` is invoked when the `Tweenie` becomes active
-  // kind of like `onStart` but regardless `isReverse` option
-  onChimeIn:              function() {},
-  // `onChimeOut` is invoked when the `Tweenie` becomes active
-  // kind of like `onComplete` but regardless `isReverse` option
-  onChimeOut:             function() {},
   // playback callbacks, these fire only when
-  /* shift time on a timeline */
-  shiftTime:              0,
+  // `play`, `replay`, `playBackward`, `replayBackward` were called
+  onPlaybackStart:        function() {},
+  onPlaybackPause:        function() {},
+  onPlaybackStop:         function() {},
+  onPlaybackComplete:     function() {},
   // tweenie index
   index:                  0
 };

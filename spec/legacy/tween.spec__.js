@@ -2370,7 +2370,6 @@ describe('tween ->', function () {
       tween.reset();
       expect(tween._setupUpdateFunction).toHaveBeenCalled();
     });
-
   });
 
   describe('`_setupUpdateFunction` function ->', function() {
