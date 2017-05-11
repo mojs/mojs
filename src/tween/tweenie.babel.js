@@ -1,5 +1,6 @@
 import { ClassProto } from '../class-proto';
 import { tweenieDefaults } from './tweenie-defaults';
+import tweener from './tweener';
 
 const Tweenie = {
   /**
@@ -88,6 +89,8 @@ const Tweenie = {
       const { delay } = this._props;
       this._elapsed = (this._end - this._spot) - (this._elapsed - delay);
     }
+
+    this.setStartTime();
 
     return this;
   },

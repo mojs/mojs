@@ -1862,6 +1862,13 @@ describe('tweenie ->', function () {
       expect(tweenie._elapsed).toBe(0);
     });
 
+    it('should call `setStartTime`', function() {
+      var tweenie = new Tweenie();
+      spyOn(tweenie, 'setStartTime');
+      tweenie.reverse();
+      expect(tweenie.setStartTime).toHaveBeenCalled();
+    });
+
     it('should return this', function() {
       var tweenie = new Tweenie();
       var result = tweenie.reverse();

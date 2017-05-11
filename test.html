@@ -67,13 +67,11 @@
       var x10 = document.querySelector('#js-10x');
       var slider = document.querySelector('#js-slider');
       var prevP = 0;
-      const tween = new mojs.Tween({
+      const tween = new mojs.Tweenie({
         delay: 500,
         duration: 2000,
         // speed: 200,
-        isPeriodReverse: [false, true],
         // isReverse: true,
-        repeat: 2,
         onUpdate(ep, p, isForward, isReverse, index) {
           console.log(`{${index === void 0 ? '' : index}}, [tween update]`, ep);
           el.style.transform = `translate(${200*ep}px, 0)`;
@@ -86,18 +84,6 @@
         },
         onStart(isForward, isReverse, index) {
           console.log(`{${index === void 0 ? '' : index}}, [tween start]`);
-        },
-        onRepeatStart(isForward, isReverse, index) {
-          console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat start]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
-        },
-        onRepeatComplete(isForward, isReverse, index) {
-          console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat complete]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
-        },
-        onRepeatChimeIn(isForward, isReverse, index) {
-          console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat chime in]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
-        },
-        onRepeatChimeOut(isForward, isReverse, index) {
-          console.log(`{${index === void 0 ? '' : index}}, [tweennie repeat chime out]: ${index} -=-=-=-=-=-=-=-=-=-=-=-=-`);
         },
         onComplete(isForward, isReverse, index) {
           console.log(`{${index === void 0 ? '' : index}}, [tween complete]`);
@@ -121,9 +107,7 @@
       reverseBtn.addEventListener('click', function() {
         console.log('::: revert click');
 
-        tween.pause()
-             .reverse()
-             .play();
+        tween.reverse();
       });
 
       one10.addEventListener('click', function() {
