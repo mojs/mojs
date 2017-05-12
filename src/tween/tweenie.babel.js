@@ -41,7 +41,6 @@ const Tweenie = {
     this._playTime = performance.now();
     this._speed = this._props.speed;
 
-
     return this;
   },
 

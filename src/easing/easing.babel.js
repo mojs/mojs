@@ -94,10 +94,10 @@ const easing = {
 			}
 
 			if ((k *= 2) < 1) {
-				return 0.5 * Math.pow(1024, k - 1);
+				return 0.5 * pow(1024, k - 1);
 			}
 
-			return 0.5 * (- Math.pow(2, - 10 * (k - 1)) + 2);
+			return 0.5 * (- pow(2, - 10 * (k - 1)) + 2);
     }
   },
 
@@ -111,9 +111,9 @@ const easing = {
     out: (k) => { return sqrt(1 - (--k * k)); },
     inout: function(k) {
       if ((k *= 2) < 1) {
-				return - 0.5 * (Math.sqrt(1 - k * k) - 1);
+				return - 0.5 * (sqrt(1 - k * k) - 1);
 			}
-      return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
+      return 0.5 * (sqrt(1 - (k -= 2) * k) + 1);
     }
   },
 
@@ -147,10 +147,10 @@ const easing = {
 			k *= 2;
 
 			if (k < 1) {
-				return -0.5 * Math.pow(2, 10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI);
+				return -0.5 * pow(2, 10 * (k - 1)) * sin((k - 1.1) * 5 * PI);
 			}
 
-			return 0.5 * Math.pow(2, -10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI) + 1;
+			return 0.5 * pow(2, -10 * (k - 1)) * sin((k - 1.1) * 5 * PI) + 1;
     }
   },
 

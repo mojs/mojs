@@ -1,6 +1,7 @@
 import { ClassProto } from './class-proto';
 import { Tweenie } from './tween/tweenie';
 import { tweenieDefaults } from './tween/tweenie-defaults';
+import { Timeline } from './tween/timeline';
 import { tweener } from './tween/tweener';
 import { easing } from './easing/easing';
 import { parseEasing } from './easing/parse-easing';
@@ -8,6 +9,7 @@ import { parseEasing } from './easing/parse-easing';
 var mojs = {
   revision: '2.3.0',
   Tweenie,
+  Timeline,
   easing,
   __helpers__: {
     parseEasing,
