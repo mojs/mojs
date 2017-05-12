@@ -33,6 +33,8 @@ const Tweenie = {
 
     this._setState('play');
     this._setupPlay('play');
+    // this._playTime = performance.now();
+
 
     return this;
   },
@@ -51,6 +53,30 @@ const Tweenie = {
     // reset speed variable to `1` because speed should not be applied
     // when setProgress is used
     this._speed = 1;
+
+    return this;
+  },
+
+  /*
+   * stop - function to stop the tween.
+   *
+   * @public
+   * @param {Number} Progress to stop with in [0...1]
+   * @returns {Object} This tweenie.
+   */
+  stop(progress) {
+    if (this._state === 'stop') { return this; }
+
+    var stopProc = (progress !== void 0) ? progress
+      /* if no progress passsed - set 1 if tween
+         is playingBackward, otherwise set to 0 */
+      : (this._props.isReverse === true) ? 0 : 1
+
+    this.setProgress( stopProc );
+
+    this.reset();
+
+    this._setState('stop');
 
     return this;
   },
@@ -91,6 +117,29 @@ const Tweenie = {
     }
 
     this.setStartTime();
+
+    return this;
+  },
+
+  /**
+   * setProgress - function to set tween progress.
+   *
+   * @public
+   * @param {Number} Progress to set.
+   * @return {Object} This tween.
+   */
+  setProgress(progress = 0) {
+    (this._start === void 0) && this.setStartTime();
+
+    const time = (progress === 1)
+      ? this._end : this._spot + progress*(this._end - this._spot);
+
+    // set initial time
+    if (this._prevTime === void 0) {
+      this._prevTime = this._start;
+    }
+
+    this.update(time);
 
     return this;
   },

@@ -68,9 +68,9 @@
       var slider = document.querySelector('#js-slider');
       var prevP = 0;
       const tween = new mojs.Tweenie({
-        delay: 500,
+        // delay: 500,
         duration: 2000,
-        // speed: 200,
+        // speed: 2000,
         // isReverse: true,
         onUpdate(ep, p, isForward, isReverse, index) {
           console.log(`{${index === void 0 ? '' : index}}, [tween update]`, ep);
@@ -144,35 +144,35 @@
       // -=-=-=-=-=-=-=-=-=-=-=-=-
 
 
-      var duration = 2000;
-      var tweenie =  new mojs.Tweenie({
-        duration: duration,
-        onUpdate(p) {
-          console.log(`[update]: ${p}`);
-        },
-        onStart() {
-          console.log(`[on start]`);
-        },
-        onChimeIn() {
-          console.log(`[on chime in]`);
-        },
-        onChimeOut() {
-          console.log(`[on chime out]`);
-        },
-        onComplete() {
-          console.log(`[on complete]`);
-        },
-        onSkip() {
-          console.log(`[on skip]`);
-        }
-      });
-
-      tweenie.setStartTime();
-
-      var start = tweenie._start;
-      // tweenie._prevTime = start + duration - 10;
-      tweenie.update(start);
-      tweenie.update(start + duration + 10);
+      // var duration = 2000;
+      // var tweenie =  new mojs.Tweenie({
+      //   duration: duration,
+      //   onUpdate(p) {
+      //     console.log(`[update]: ${p}`);
+      //   },
+      //   onStart() {
+      //     console.log(`[on start]`);
+      //   },
+      //   onChimeIn() {
+      //     console.log(`[on chime in]`);
+      //   },
+      //   onChimeOut() {
+      //     console.log(`[on chime out]`);
+      //   },
+      //   onComplete() {
+      //     console.log(`[on complete]`);
+      //   },
+      //   onSkip() {
+      //     console.log(`[on skip]`);
+      //   }
+      // });
+      //
+      // tweenie.setStartTime();
+      //
+      // var start = tweenie._start;
+      // // tweenie._prevTime = start + duration - 10;
+      // tweenie.update(start);
+      // tweenie.update(start + duration + 10);
 
 
       // -=-=-=-=-=-=-=-=-=-=-=-=-

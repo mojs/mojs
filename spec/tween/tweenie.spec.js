@@ -1845,7 +1845,7 @@ describe('tweenie ->', function () {
       var elapsed = tweenie._elapsed;
 
       tweenie.reverse();
-      expect(tweenie._elapsed).toBe((tweenie._end - tweenie._spot) - (elapsed - delay));
+      expect(tweenie._elapsed).toBeCloseTo((tweenie._end - tweenie._spot) - (elapsed - delay), 5);
     });
 
     it('should not flip the `_elapsed` time if `0`', function() {
@@ -1872,6 +1872,110 @@ describe('tweenie ->', function () {
     it('should return this', function() {
       var tweenie = new Tweenie();
       var result = tweenie.reverse();
+      expect(result).toBe(tweenie);
+    });
+  });
+
+  describe('`setProgress` function', function () {
+    it('should call `setStartTime` is `_start` is not set', function () {
+      var tweenie = new Tweenie();
+      spyOn(tweenie, 'setStartTime');
+      tweenie.setProgress(.5);
+      expect(tweenie.setStartTime).toHaveBeenCalled();
+    });
+
+    it('should call `update` with the progress time', function () {
+      var progress = .25;
+      var tweenie = new Tweenie();
+      spyOn(tweenie, 'update');
+      tweenie.setProgress(progress);
+      expect(tweenie.update).toHaveBeenCalledWith(tweenie._spot + progress*(tweenie._end - tweenie._spot));
+    });
+
+    it('should set `_prevTime` if not defined', function () {
+      var tweenie = new Tweenie();
+      // override `update` so `_prevTime` won't be set
+      tweenie.update = function() {}
+      tweenie.setProgress(.5);
+      expect(tweenie._prevTime).toBe(tweenie._start);
+    });
+
+    it('should set not `_prevTime` if defined', function () {
+      var tweenie = new Tweenie();
+      // override `update` so `_prevTime` won't be set
+      tweenie.update = function() {}
+      var prevTime = 500;
+      tweenie._prevTime = prevTime;
+      tweenie.setProgress(.5);
+      expect(tweenie._prevTime).toBe(prevTime);
+    });
+
+    it('should return `this`', function () {
+      var progress = .25;
+      var tweenie = new Tweenie();
+      var result = tweenie.setProgress(progress);
+      expect(result).toBe(tweenie);
+    });
+  });
+
+  describe('`stop` function', function () {
+
+    it('should call `setProgress`', function () {
+      var progress = .25;
+      var tweenie = new Tweenie();
+      tweenie.play();
+      spyOn(tweenie, 'setProgress');
+      tweenie.stop(progress);
+      expect(tweenie.setProgress).toHaveBeenCalledWith(progress);
+    });
+
+    it('should call `setProgress` if `progress` is not passed', function () {
+      var tweenie = new Tweenie();
+      tweenie.play();
+      spyOn(tweenie, 'setProgress');
+      tweenie.stop();
+      expect(tweenie.setProgress).toHaveBeenCalledWith(1);
+    });
+
+    it('should call `setProgress` if `progress` is not passed #reverse', function () {
+      var tweenie = new Tweenie({
+        isReverse: true
+      });
+      tweenie.play();
+      spyOn(tweenie, 'setProgress');
+      tweenie.stop();
+      expect(tweenie.setProgress).toHaveBeenCalledWith(0);
+    });
+
+    it('should not run if already stopped', function () {
+      var tweenie = new Tweenie();
+      tweenie.play().stop();
+      spyOn(tweenie, 'setProgress');
+      spyOn(tweenie, 'reset');
+      tweenie.stop();
+      expect(tweenie.reset).not.toHaveBeenCalled();
+      expect(tweenie.setProgress).not.toHaveBeenCalled();
+    });
+
+    it('should call `_setState`', function () {
+      var tweenie = new Tweenie();
+      tweenie.play();
+      spyOn(tweenie, '_setState');
+      tweenie.stop();
+      expect(tweenie._setState).toHaveBeenCalledWith('stop');
+    });
+
+    it('should call `reset`', function () {
+      var tweenie = new Tweenie();
+      tweenie.play();
+      spyOn(tweenie, 'reset');
+      tweenie.stop();
+      expect(tweenie.reset).toHaveBeenCalled();
+    });
+
+    it('should return `this`', function () {
+      var tweenie = new Tweenie();
+      var result = tweenie.stop();
       expect(result).toBe(tweenie);
     });
   });
