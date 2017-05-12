@@ -172,4 +172,5 @@ const getVisiblityEvent = () => {
   }
  }
 
- export default new Tweener;
+const tweener = new Tweener;
+export { tweener as tweener };

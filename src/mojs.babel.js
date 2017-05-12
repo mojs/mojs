@@ -4,24 +4,26 @@ import { Tweenie } from './tween/tweenie';
 // import { tweenDefaults } from './tween/tween-defaults';
 import { tweenieDefaults } from './tween/tweenie-defaults';
 // import { staggerProperty } from './helpers/stagger-property';
-import tweener from './tween/tweener';
+import { tweener } from './tween/tweener';
+import { easing } from './easing/easing';
 
 var mojs = {
-  revision: '2.2.0',
+  revision: '2.3.0',
   Tweenie,
+  easing,
   __helpers__: {
     ClassProto,
     tweenieDefaults,
     tweener
   }
 };
-//
+
 // var a = 0;
 // window.onload = () => {
 //   const items = [];
 //   setTimeout(() => {
-//     for (let i = 0; i < 100000; i++) {
-//       const tweenie = Tween({
+//     for (let i = 0; i < 1000; i++) {
+//       const tweenie = Tweenie({
 //         repeat: 1,
 //         duration: 500,
 //         delay: 20000,
@@ -51,9 +53,7 @@ var mojs = {
 //
 //     setTimeout(function() {
 //       for (let i = 0; i < items.length; i++) {
-//         var tweenie = items[i];
-//         tweenie.setStartTime(performance.now());
-//         tweener.add(tweenie);
+//         items[i].play();
 //       }
 //     }, 0);
 //   }, 1000);

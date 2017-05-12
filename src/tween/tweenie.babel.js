@@ -1,6 +1,6 @@
 import { ClassProto } from '../class-proto';
 import { tweenieDefaults } from './tweenie-defaults';
-import tweener from './tweener';
+import { tweener } from './tweener';
 
 const Tweenie = {
   /**
