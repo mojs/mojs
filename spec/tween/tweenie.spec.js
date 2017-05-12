@@ -1542,6 +1542,61 @@ describe('tweenie ->', function () {
 
       expect(tweenie._speed).toBe(speed);
     });
+
+    it('should set the `_repeat` property', function() {
+      var tweenie = new Tweenie();
+      tweenie._repeat = 0;
+
+      var repeat = 12;
+      tweenie.play(repeat);
+
+      expect(tweenie._repeat).toBe(repeat);
+    });
+
+    it('should not set the `_repeat` property', function() {
+      var tweenie = new Tweenie();
+
+      var repeat = 12;
+      tweenie._repeat = repeat;
+      tweenie.play();
+
+      expect(tweenie._repeat).toBe(repeat);
+    });
+  });
+
+
+  describe('`replay` function ->', function() {
+    it('should call the `reset` function', function() {
+      var tweenie = new Tweenie();
+      spyOn(tweenie, 'reset');
+      tweenie.replay();
+
+      expect(tweenie.reset).toHaveBeenCalled();
+    });
+
+    it('should call the `play` function', function() {
+      var tweenie = new Tweenie();
+      spyOn(tweenie, 'play');
+      tweenie.replay();
+
+      expect(tweenie.play).toHaveBeenCalled();
+    });
+
+    it('should pass `repeat` to the `play` function', function() {
+      var tweenie = new Tweenie();
+      var repeat = 5;
+      spyOn(tweenie, 'play');
+      tweenie.replay(repeat);
+
+      expect(tweenie.play).toHaveBeenCalledWith(repeat);
+    });
+
+    it('should return `this`', function() {
+      var tweenie = new Tweenie();
+      var result = tweenie.replay();
+
+      expect(result).toBe(tweenie);
+    });
   });
 
   describe('`pause` function ->', function() {
@@ -1685,6 +1740,57 @@ describe('tweenie ->', function () {
       tweenie.onTweenerFinish();
 
       expect(tweenie._props.onPlaybackComplete).toHaveBeenCalled();
+    });
+
+    it('should pass `repeat` count to the `onPlaybackComplete`', function() {
+      var tweenie = new Tweenie();
+
+      var repeat = 2;
+      tweenie._repeat = repeat;
+      spyOn(tweenie._props, 'onPlaybackComplete');
+      tweenie.onTweenerFinish();
+
+      expect(tweenie._props.onPlaybackComplete).toHaveBeenCalledWith(true, repeat - 1);
+    });
+
+    it('should not pass `repeat` count to the `onPlaybackComplete`', function() {
+      var tweenie = new Tweenie();
+      spyOn(tweenie._props, 'onPlaybackComplete');
+      tweenie.onTweenerFinish();
+
+      expect(tweenie._props.onPlaybackComplete).toHaveBeenCalledWith(true, 0);
+    });
+
+    it('should call `play` if `_repeat`', function() {
+      var tweenie = new Tweenie();
+
+      var repeat = 2;
+      tweenie._repeat = repeat;
+      spyOn(tweenie, 'play');
+      tweenie.onTweenerFinish();
+
+      expect(tweenie.play).toHaveBeenCalledWith(repeat-1);
+    });
+
+    it('should not call `play` if not `_repeat`', function() {
+      var tweenie = new Tweenie();
+
+      tweenie._repeat = 0;
+      spyOn(tweenie, 'play');
+      tweenie.onTweenerFinish();
+
+      expect(tweenie.play).not.toHaveBeenCalled();
+    });
+
+    it('should not call `play` if not `_repeat`', function() {
+      var tweenie = new Tweenie();
+
+      var repeat = 0;
+      tweenie._repeat = undefined;
+      spyOn(tweenie, 'play');
+      tweenie.onTweenerFinish();
+
+      expect(tweenie.play).not.toHaveBeenCalled();
     });
 
     it('should call the `reset` function', function() {

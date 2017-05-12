@@ -45,8 +45,9 @@
     <button id="js-2x">2x</button>
     <button id="js-5x">5x</button>
     <button id="js-10x">10x</button>
-    <!-- <button id="js-stop">stop</button> -->
+    <button id="js-stop">stop</button>
     <button id="js-reverse">reverse</button>
+    <button id="js-replay">replay</button>
 
     <br />
     <br />
@@ -59,6 +60,8 @@
       var playBtn = document.querySelector('#js-play');
       var pauseBtn = document.querySelector('#js-pause');
       var reverseBtn = document.querySelector('#js-reverse');
+      var stopBtn = document.querySelector('#js-stop');
+      var replayBtn = document.querySelector('#js-replay');
       // speeds
       var one10 = document.querySelector('#js--1x');
       var five10 = document.querySelector('#js--5x');
@@ -66,7 +69,7 @@
       var x5 = document.querySelector('#js-5x');
       var x10 = document.querySelector('#js-10x');
       var slider = document.querySelector('#js-slider');
-      var prevP = 0;
+
       const tween = new mojs.Tweenie({
         // delay: 500,
         duration: 2000,
@@ -108,6 +111,18 @@
         console.log('::: revert click');
 
         tween.reverse();
+      });
+
+      stopBtn.addEventListener('click', function() {
+        console.log('::: stop click');
+
+        tween.stop();
+      });
+
+      replayBtn.addEventListener('click', function() {
+        console.log('::: replay click');
+
+        tween.replay();
       });
 
       one10.addEventListener('click', function() {

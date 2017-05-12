@@ -21,11 +21,17 @@ const Tweenie = {
    * play - function to `play` the tween.
    *
    * @public
+   * @param {Number} Repeat count
    * @returns {Object} This tween.
    */
-  play() {
+  play(repeat) {
     if (this._state === 'play') {
       return this;
+    }
+
+    // if repeat passed - save it
+    if (repeat !== void 0) {
+      this._repeat = repeat;
     }
 
     this._playTime = performance.now();
@@ -73,10 +79,21 @@ const Tweenie = {
       : (this._props.isReverse === true) ? 0 : 1
 
     this.setProgress( stopProc );
-
     this.reset();
 
-    this._setState('stop');
+    return this;
+  },
+
+  /**
+   * play - function to `replay`(`retart`) the tween.
+   *
+   * @public
+   * @param {Number} Repeat count.
+   * @returns {Object} This tween.
+   */
+  replay(repeat) {
+    this.reset();
+    this.play(repeat);
 
     return this;
   },
@@ -332,6 +349,7 @@ const Tweenie = {
   reset() {
     this._isActive = false;
     this._elapsed = 0;
+    this._setState('stop');
     delete this._prevTime;
   },
 
@@ -378,9 +396,15 @@ const Tweenie = {
    *
    */
   onTweenerFinish() {
-    this._setState('stop');
+    const count = this._repeat - 1;
+    const isForward = !this._props.isReverse;
+    this._props.onPlaybackComplete(isForward, count > 0 ? count : 0);
+
     this.reset();
-    this._props.onPlaybackComplete();
+
+    if (this._repeat > 0) {
+      this.play(count);
+    }
   },
 
 }
