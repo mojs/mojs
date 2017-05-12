@@ -34,12 +34,11 @@ const Tweenie = {
       this._repeat = repeat;
     }
 
-    this._playTime = performance.now();
-    this._speed = this._props.speed;
-
     this._setState('play');
     this._setupPlay('play');
     // this._playTime = performance.now();
+    this._playTime = performance.now();
+    this._speed = this._props.speed;
 
 
     return this;
@@ -76,9 +75,10 @@ const Tweenie = {
     var stopProc = (progress !== void 0) ? progress
       /* if no progress passsed - set 1 if tween
          is playingBackward, otherwise set to 0 */
-      : (this._props.isReverse === true) ? 0 : 1
+      : (this._props.isReverse === true) ? 1 : 0
 
-    this.setProgress( stopProc );
+    tweener.remove(this);
+    this.setProgress(stopProc);
     this.reset();
 
     return this;

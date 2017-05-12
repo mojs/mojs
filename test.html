@@ -42,6 +42,7 @@
     <button id="js-pause">pause</button>
     <button id="js--1x">.1x</button>
     <button id="js--5x">.5x</button>
+    <button id="js-1x">1x</button>
     <button id="js-2x">2x</button>
     <button id="js-5x">5x</button>
     <button id="js-10x">10x</button>
@@ -65,6 +66,7 @@
       // speeds
       var one10 = document.querySelector('#js--1x');
       var five10 = document.querySelector('#js--5x');
+      var x1 = document.querySelector('#js-1x');
       var x2 = document.querySelector('#js-2x');
       var x5 = document.querySelector('#js-5x');
       var x10 = document.querySelector('#js-10x');
@@ -72,7 +74,7 @@
 
       const tween = new mojs.Tweenie({
         // delay: 500,
-        duration: 2000,
+        duration: 5000,
         // speed: 2000,
         // isReverse: true,
         onUpdate(ep, p, isForward, isReverse, index) {
@@ -133,6 +135,11 @@
       five10.addEventListener('click', function() {
         console.log('::: speed: .5x');
         tween.setSpeed(.5);
+      });
+
+      x1.addEventListener('click', function() {
+        console.log('::: speed: 1x');
+        tween.setSpeed(1);
       });
 
       x2.addEventListener('click', function() {

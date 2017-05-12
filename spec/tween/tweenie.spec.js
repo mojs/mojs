@@ -2025,7 +2025,6 @@ describe('tweenie ->', function () {
   });
 
   describe('`stop` function', function () {
-
     it('should call `setProgress`', function () {
       var progress = .25;
       var tweenie = new Tweenie();
@@ -2040,7 +2039,7 @@ describe('tweenie ->', function () {
       tweenie.play();
       spyOn(tweenie, 'setProgress');
       tweenie.stop();
-      expect(tweenie.setProgress).toHaveBeenCalledWith(1);
+      expect(tweenie.setProgress).toHaveBeenCalledWith(0);
     });
 
     it('should call `setProgress` if `progress` is not passed #reverse', function () {
@@ -2050,7 +2049,7 @@ describe('tweenie ->', function () {
       tweenie.play();
       spyOn(tweenie, 'setProgress');
       tweenie.stop();
-      expect(tweenie.setProgress).toHaveBeenCalledWith(0);
+      expect(tweenie.setProgress).toHaveBeenCalledWith(1);
     });
 
     it('should not run if already stopped', function () {
@@ -2077,6 +2076,15 @@ describe('tweenie ->', function () {
       spyOn(tweenie, 'reset');
       tweenie.stop();
       expect(tweenie.reset).toHaveBeenCalled();
+    });
+
+    it('should call the `tweener.remove` function', function() {
+      var tweenie = new Tweenie();
+      tweenie.play();
+      spyOn(tweener, 'remove');
+      tweenie.stop();
+
+      expect(tweener.remove).toHaveBeenCalledWith(tweenie);
     });
 
     it('should return `this`', function () {
