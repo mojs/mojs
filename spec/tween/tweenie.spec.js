@@ -25,6 +25,7 @@ describe('tweenie ->', function () {
       var progress = -1;
       var options = {
         duration: 50,
+        easing: 'linear.none',
         onUpdate: function(p) {
           progress = p;
         }
@@ -64,6 +65,7 @@ describe('tweenie ->', function () {
 
       var options = {
         duration: duration,
+        easing: 'linear.none',
         onUpdate: function(p) {
           progress = p;
         }
@@ -198,6 +200,7 @@ describe('tweenie ->', function () {
 
       var options = {
         isReverse: true,
+        easing: 'linear.none',
         duration: duration,
         onUpdate: function(p) {
           progress = p;
@@ -261,6 +264,7 @@ describe('tweenie ->', function () {
 
       var options = {
         isReverse: true,
+        easing: 'linear.none',
         duration: duration,
         onUpdate: function(p) {
           progress = p;
@@ -471,27 +475,203 @@ describe('tweenie ->', function () {
       expect(tweenie._prevTime).toBe(normalizedTime);
     });
 
-    // it('should recalculate `time` regarding `speed` #2', function() {
-    //   var duration = 500;
-    //   var tweenie = new Tweenie({
-    //     duration: duration,
-    //     repeat: 5
-    //   });
-    //   tweenie.setStartTime();
-    //
-    //   tweenie._playTime = 200;
-    //   tweenie._speed = .5;
-    //   var time = tweenie._start + duration/2;
-    //   var normalizedTime = tweenie._playTime + tweenie._speed * (time - tweenie._playTime);
-    //
-    //   tweenie._act = tweenie._tweenieies[0];
-    //
-    //   spyOn(tweenie._act, 'update');
-    //
-    //   tweenie._updateFwd(time);
-    //
-    //   expect(tweenie._act.update).toHaveBeenCalledWith(normalizedTime);
-    // });
+    it('should recalculate `time` regarding `speed` #2', function() {
+      var duration = 500;
+      var tweenie = new Tweenie({
+        duration: duration,
+        repeat: 5
+      });
+      tweenie.setStartTime();
+
+      tweenie._playTime = 200;
+      tweenie._speed = .5;
+      var time = tweenie._start + duration/2;
+      var normalizedTime = tweenie._playTime + tweenie._speed * (time - tweenie._playTime);
+
+      tweenie.update(time);
+
+      expect(tweenie._prevTime).toBe(normalizedTime);
+    });
+
+    it('should pass current `progress` to `onUpdate` with `easing`', function () {
+      var ep = -1;
+      var p = -1;
+      var easing = mojs.easing.cubic.in;
+
+      var options = {
+        duration: 50,
+        easing: easing,
+        onUpdate: function(eproc, proc) {
+          ep = eproc;
+          p = proc
+        }
+      };
+      var tweenie = Tweenie(options);
+      tweenie.setStartTime();
+
+      var startTime = tweenie._start;
+
+      tweenie.update(startTime - 10);
+      tweenie.update(startTime);
+
+      expect(ep).toBe(easing(0));
+      expect(p).toBe(0);
+
+      tweenie.update(startTime += 15);
+
+      expect(ep).toBeCloseTo(easing(0.3), 3);
+      expect(p).toBeCloseTo(0.3, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(ep).toBeCloseTo(easing(0.6), 3);
+      expect(p).toBeCloseTo(0.6, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(ep).toBeCloseTo(easing(0.9), 3);
+      expect(p).toBeCloseTo(0.9, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(ep).toBeCloseTo(easing(1), 3);
+      expect(p).toBeCloseTo(1, 3);
+    });
+
+    it('should pass current `progress` to `onUpdate` with `backwardEasingeasing`', function () {
+      var ep = -1;
+      var p = -1;
+      var backwardEasing = mojs.easing.sin.inout;
+
+      var options = {
+        duration: 50,
+        backwardEasing: backwardEasing,
+        onUpdate: function(eproc, proc) {
+          ep = eproc;
+          p = proc
+        }
+      };
+      var tweenie = Tweenie(options);
+      tweenie.setStartTime();
+
+      var end = tweenie._end;
+      tweenie.update(end + 10);
+      tweenie.update(end);
+
+      expect(ep).toBe(backwardEasing(1));
+      expect(p).toBe(1);
+
+      tweenie.update(end -= 15);
+
+      expect(ep).toBeCloseTo(backwardEasing(0.7), 3);
+      expect(p).toBeCloseTo(0.7, 3);
+
+      tweenie.update(end -= 15);
+
+      expect(ep).toBeCloseTo(backwardEasing(0.4), 3);
+      expect(p).toBeCloseTo(0.4, 3);
+
+      tweenie.update(end -= 15);
+
+      expect(ep).toBeCloseTo(backwardEasing(0.1), 3);
+      expect(p).toBeCloseTo(0.1, 3);
+
+      tweenie.update(end -= 15);
+
+      expect(ep).toBeCloseTo(backwardEasing(0), 3);
+      expect(p).toBeCloseTo(0, 3);
+    });
+
+    it('should pass current `progress` to `onUpdate` with `easing` #reverse', function () {
+      var ep = -1;
+      var p = -1;
+      var backwardEasing = mojs.easing.cubic.in;
+
+      var options = {
+        duration: 50,
+        isReverse: true,
+        backwardEasing: backwardEasing,
+        onUpdate: function(eproc, proc) {
+          ep = eproc;
+          p = proc
+        }
+      };
+      var tweenie = Tweenie(options);
+      tweenie.setStartTime();
+
+      var startTime = tweenie._start;
+
+      tweenie.update(startTime - 10);
+      tweenie.update(startTime);
+
+      expect(ep).toBe(backwardEasing(1));
+      expect(p).toBe(1);
+
+      tweenie.update(startTime += 15);
+
+      expect(ep).toBeCloseTo(backwardEasing(0.7), 3);
+      expect(p).toBeCloseTo(0.7, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(ep).toBeCloseTo(backwardEasing(0.4), 3);
+      expect(p).toBeCloseTo(0.4, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(ep).toBeCloseTo(backwardEasing(0.1), 3);
+      expect(p).toBeCloseTo(0.1, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(ep).toBeCloseTo(backwardEasing(0), 3);
+      expect(p).toBeCloseTo(0, 3);
+    });
+
+    it('should pass current `progress` to `onUpdate` with `easing` #reverse', function () {
+      var ep = -1;
+      var p = -1;
+      var easing = mojs.easing.sin.inout;
+
+      var options = {
+        duration: 50,
+        isReverse: true,
+        easing: easing,
+        onUpdate: function(eproc, proc) {
+          ep = eproc;
+          p = proc
+        }
+      };
+      var tweenie = Tweenie(options);
+      tweenie.setStartTime();
+
+      var end = tweenie._end;
+      tweenie.update(end + 10);
+      tweenie.update(end);
+
+      expect(ep).toBe(easing(0));
+      expect(p).toBe(0);
+
+      tweenie.update(end -= 15);
+
+      expect(ep).toBeCloseTo(easing(0.3), 3);
+      expect(p).toBeCloseTo(0.3, 3);
+
+      tweenie.update(end -= 15);
+
+      expect(ep).toBeCloseTo(easing(0.6), 3);
+      expect(p).toBeCloseTo(0.6, 3);
+
+      tweenie.update(end -= 15);
+
+      expect(ep).toBeCloseTo(easing(0.9), 3);
+      expect(p).toBeCloseTo(0.9, 3);
+
+      tweenie.update(end -= 15);
+
+      expect(ep).toBeCloseTo(easing(1), 3);
+      expect(p).toBeCloseTo(1, 3);
+    });
   });
 
   describe('`onComplete` callback ->', function() {
@@ -2116,6 +2296,39 @@ describe('tweenie ->', function () {
       expect(tweenie._cbs[2]).toBe(cbs[2]);
       expect(tweenie._cbs[3]).toBe(cbs[3]);
 
+    });
+  });
+
+  describe('`_extendDefaults` function ->', function() {
+    it('should call the super', function() {
+      spyOn(ClassProto, '_extendDefaults').and.callThrough();
+      var tweenie = new Tweenie();
+
+      expect(ClassProto._extendDefaults).toHaveBeenCalled();
+    });
+
+    it('should parse `easing`', function() {
+      var tweenie = new Tweenie({
+        easing: 'sin.in'
+      });
+
+      expect(tweenie._props.easing).toBe(mojs.easing.sin.in);
+    });
+
+    it('should parse `backwardEasing`', function() {
+      var tweenie = new Tweenie({
+        backwardEasing: 'sin.in'
+      });
+
+      expect(tweenie._props.backwardEasing).toBe(mojs.easing.sin.in);
+    });
+
+    it('`backwardEasing` should  fallback to `easing`', function() {
+      var tweenie = new Tweenie({
+        easing: 'sin.in'
+      });
+
+      expect(tweenie._props.backwardEasing).toBe(mojs.easing.sin.in);
     });
   });
 });

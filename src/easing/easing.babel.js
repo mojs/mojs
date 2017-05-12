@@ -1,5 +1,4 @@
 const { cos, sin, pow, sqrt, PI } = Math;
-import { parseEasing } from './parse-easing';
 
 /**
  * TODO:
@@ -10,7 +9,6 @@ import { parseEasing } from './parse-easing';
  * `easing` - object that holds all easing avaliable in `mojs`.
  */
 const easing = {
-  // parseEasing,
   /**
    * `Linear` easing, also `null` or `id` easing - simply returns whatever
    * passed to the function.

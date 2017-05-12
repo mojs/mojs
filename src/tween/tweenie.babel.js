@@ -1,6 +1,7 @@
 import { ClassProto } from '../class-proto';
 import { tweenieDefaults } from './tweenie-defaults';
 import { tweener } from './tweener';
+import { parseEasing } from '../easing/parse-easing';
 
 const Tweenie = {
   /**
@@ -36,7 +37,7 @@ const Tweenie = {
 
     this._setState('play');
     this._setupPlay('play');
-    // this._playTime = performance.now();
+
     this._playTime = performance.now();
     this._speed = this._props.speed;
 
@@ -247,7 +248,7 @@ const Tweenie = {
    * @param {Number} The current update time.
    */
   update(time) {
-    const { onUpdate, isReverse, index } = this._props;
+    const { onUpdate, isReverse, index, easing, backwardEasing } = this._props;
 
     // recalculate `time` regarding `speed`
     time = this._playTime + this._speed*(time - this._playTime);
@@ -268,10 +269,13 @@ const Tweenie = {
 
     // if forward progress
     const isForward = time > this._prevTime;
+    const ease = (isForward !== isReverse) ? easing : backwardEasing;
+
     if (time >= this._start && time <= this._end && this._prevTime !== void 0) {
       let isActive;
       const p = (time - this._start) / this._props.duration;
-      onUpdate(isReverse === false ? p : 1 - p);
+      const progress = isReverse === false ? p : 1 - p;
+      onUpdate(ease(progress), progress);
 
       if (time > this._start && this._isActive === false && isForward === true) {
         // `onStart`
@@ -316,7 +320,7 @@ const Tweenie = {
 
     if (time > this._end && this._isActive === true) {
       // one
-      onUpdate(this._cbs[3]);
+      onUpdate(ease(this._cbs[3]), this._cbs[3]);
       // `onComplete`
       this._cbs[1](isForward, isReverse, index);
       // `onChimeOut`
@@ -328,7 +332,7 @@ const Tweenie = {
 
     if (time < this._start && this._isActive === true) {
       // zero
-      onUpdate(this._cbs[2]);
+      onUpdate(ease(this._cbs[2]), this._cbs[2]);
       // `onStart`
       this._cbs[0](isForward, isReverse, index);
       // `onChimeIn`
@@ -407,7 +411,25 @@ const Tweenie = {
     }
   },
 
+  /**
+   * _extendDefaults - Method to copy `_o` options to `_props` object
+   *                  with fallback to `_defaults`.
+   * @private
+   * @extends @ ClassProto
+   */
+  _extendDefaults() {
+    // super call
+    ClassProto._extendDefaults.call(this);
+    // parse `easing`
+    this._props.easing = parseEasing(this._props.easing);
+    // parse `backwardEasing`, fallback to `easing` if
+    // `backwardEasing` is `null`/`undefined`
+    const { easing, backwardEasing } = this._props;
+    this._props.backwardEasing = (backwardEasing != null)
+                                  ? parseEasing(backwardEasing) : easing;
+  },
 }
+
 // extend classProto
 Tweenie.__proto__ = ClassProto;
 

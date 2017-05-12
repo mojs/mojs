@@ -1,6 +1,6 @@
 
 /**
- * Constants for easing.
+ * Constants.
  */
 export const defaultEasing = [ 'sin', 'out' ];
 export const defaultEasingString = defaultEasing.join('.');

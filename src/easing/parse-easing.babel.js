@@ -3,7 +3,7 @@ import {
   defaultEasingString,
   consoleName
 } from '../constants';
-import easings from './easing';
+import { easing } from './easing';
 
 /**
  * parseEasing - function to parse all easing values to a function.
@@ -11,19 +11,21 @@ import easings from './easing';
  * @param  {String, Function, Array} Easing representation.
  * @return {Function} Parsed Easing.
  */
-export default (easing = defaultEasingString) => {
-  const type = typeof easing;
+const parseEasing = (ease = defaultEasingString) => {
+  const type = typeof ease;
 
   switch (type) {
-    case 'function': { return easing; }
+    case 'function': { return ease; }
     case 'string': {
-      easing = easing.toLowerCase().split('.');
-      const easingParent = easings[easing[0]];
-      if (!easingParent) {
-        console.error(`${consoleName} Easing with name ${easing[0]} wasn't found, fallback to "${defaultEasingString}" instead.`, easings);
-        return easings[defaultEasing[0]][defaultEasing[1]];
+      ease = ease.toLowerCase().split('.');
+
+      const easeParent = easing[ease[0]];
+
+      if (!easeParent) {
+        console.error(`${consoleName} Easing with name ${ease[0]} wasn't found, fallback to "${defaultEasingString}" instead.`, easing);
+        return easing[defaultEasing[0]][defaultEasing[1]];
       }
-      return easingParent[easing[1]];
+      return easeParent[ease[1]];
       // comming soon:
       // parse `path` easing that can start with `M`, `SVG` command.
       // ---
@@ -42,9 +44,10 @@ export default (easing = defaultEasingString) => {
     //       easing,
     //       ` fallback to "linear.none" instead`
     //     );
-    //     return easings[defaultEasing[0]][defaultEasing[1]];
+    //     return easing[defaultEasing[0]][defaultEasing[1]];
     //   }
     // }
   }
-
 };
+
+export { parseEasing as parseEasing };
