@@ -5,8 +5,6 @@ var tweener = helpers.tweener;
 var ClassProto = helpers.ClassProto;
 var tweenieDefaults = helpers.tweenieDefaults;
 
-var eps = 0.0000001;
-
 describe('tweenie ->', function () {
   describe('extension ->', function() {
     it('should extend `ClassProto`', function () {
@@ -558,8 +556,8 @@ describe('tweenie ->', function () {
       tweenie.update(end + 10);
       tweenie.update(end);
 
-      expect(ep).toBe(backwardEasing(1));
-      expect(p).toBe(1);
+      expect(ep).toBeCloseTo(backwardEasing(1), 3);
+      expect(p).toBeCloseTo(1, 3);
 
       tweenie.update(end -= 15);
 
@@ -2329,6 +2327,41 @@ describe('tweenie ->', function () {
       });
 
       expect(tweenie._props.backwardEasing).toBe(mojs.easing.sin.in);
+    });
+  });
+
+  describe('`onUpdate` callback ->', function() {
+    it('should pass current `ep`, `p`, `isForward`, `time`', function () {
+      var duration = 50;
+
+      var options = {
+        easing: 'linear.none',
+        duration: duration,
+        onUpdate: function() {}
+      };
+      var tweenie = Tweenie(options);
+
+      tweenie.setStartTime(200);
+      var startTime = tweenie._start;
+
+      spyOn(tweenie._props, 'onUpdate')
+
+      tweenie.update(startTime - 10);
+      tweenie.update(startTime);
+
+      expect(tweenie._props.onUpdate).toHaveBeenCalledWith(0, 0, true, startTime);
+
+      tweenie.update(startTime + duration/2);
+
+      expect(tweenie._props.onUpdate).toHaveBeenCalledWith(.5, .5, true, startTime + duration/2);
+
+      tweenie.update(startTime + duration/4);
+
+      expect(tweenie._props.onUpdate).toHaveBeenCalledWith(.25, .25, false, startTime + duration/4);
+
+      tweenie.update(startTime);
+
+      expect(tweenie._props.onUpdate).toHaveBeenCalledWith(0, 0, false, startTime);
     });
   });
 });
