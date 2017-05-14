@@ -82,6 +82,17 @@ const ClassProto = {
   get(key) {
     return this._props[key];
   },
+
+  /**
+   * get - Method to get a property from `_props`.
+   *
+   * @public
+   * @param {String} Key.
+   * @param {Any} Value.
+   */
+  set(key, value) {
+    this._props[key] = value;
+  },
 }
 
 export { ClassProto as ClassProto };

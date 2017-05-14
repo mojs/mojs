@@ -237,7 +237,7 @@ Tweenie._vars = function() {
  * @param {Number, Undefined} Start time to set.
  */
 Tweenie.setStartTime = function(startTime = performance.now()) {
-  const { delay, duration, repeat } = this._props;
+  const { delay, duration, repeat, shiftTime } = this._props;
 
   // if `elapsed` is greated that end bound -> reset it to `0`
   if (this._elapsed >= (this._end - this._spot)) {
@@ -246,7 +246,7 @@ Tweenie.setStartTime = function(startTime = performance.now()) {
   // `_spot` - is the animation initialization spot
   // `_elapsed` is how much time elapsed in the `active` period,
   // needed for `play`/`pause` functionality
-  this._spot = startTime - this._elapsed;
+  this._spot = startTime - this._elapsed + shiftTime;
   // play time is needed to recalculate time regarding `speed`
   this._playTime = this._spot;
   // `_start` - is the active animation start time bound

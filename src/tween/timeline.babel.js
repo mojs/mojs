@@ -23,7 +23,7 @@ Timeline._declareDefaults = function() {
   Super._declareDefaults.call(this);
   // reset `duration` to `0` because user cannot set duration of a Timeline -
   // it is calculated automatically regarding child timelines durations
-  this._defaults.duration = 0;
+  // this._defaults.duration = 0;
   // reset the `easing` since timeline should not have easing by default
   this._defaults.easing = 'linear.none';
 };
@@ -31,6 +31,27 @@ Timeline._declareDefaults = function() {
 /* ---------------------- */
 /* The `Public` functions */
 /* ---------------------- */
+
+/**
+ * add - function a `Tweenie` to the timeline.
+ *
+ * @public
+ * @param   {Object, Array} A tweenie or array of tweenies to add.
+ * @param   {Number} Time shift.
+ * @returns {Object} Self.
+ */
+Timeline.add = function(tweenie, shift = 0) {
+  // set the `shiftTime` on tweenie
+  tweenie.set('shiftTime', shift);
+  // add to child timelines
+  this._items.push(tweenie);
+  // check if we need to increase timeline's bound
+  const { delay, duration, shiftTime } = tweenie._props;
+  const time = delay + duration + shiftTime;
+  this._props.duration = Math.max(this._props.duration, time);
+
+  return this;
+};
 
 /**
  * stop - function to stop the Timeline.
@@ -126,8 +147,11 @@ Timeline._createUpdate = function (onUpdate, context) {
  * @private
  */
 Timeline._vars = function () {
-  this._items = [];
   Super._vars.call(this);
+  // child `timelines`
+  this._items = [];
+  // reset the duraton because timeline cannot have it
+  this._props.duration = 0;
 };
 
 /**

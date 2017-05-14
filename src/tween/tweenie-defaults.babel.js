@@ -55,7 +55,9 @@ const tweenieDefaults = {
   onPlaybackStop:         function() {},
   onPlaybackComplete:     function() {},
   // tweenie index
-  index:                  0
+  index:                  0,
+  // shift time - mostly needed for timeline
+  shiftTime:              0
 };
 
 export { tweenieDefaults as tweenieDefaults };

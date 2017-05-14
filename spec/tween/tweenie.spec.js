@@ -1362,6 +1362,44 @@ describe('tweenie ->', function () {
       expect(tweenie._end).toBe(startTime + delay + duration);
       expect(tweenie._time).toBe(delay + duration);
     });
+
+    it('should set the `_start` time regarding `shiftTime`', function() {
+      var duration = 100;
+      var delay = 50;
+
+      var shiftTime = 200;
+
+      var options = {
+        duration: duration,
+        delay: delay,
+        shiftTime: shiftTime
+      };
+      var tweenie = Tweenie(options);
+      var startTime = 350;
+
+      tweenie.setStartTime(startTime);
+
+      expect(tweenie._start).toBe(startTime + delay + shiftTime);
+    });
+
+    it('should set the `_start` time regarding negative `shiftTime`', function() {
+      var duration = 100;
+      var delay = 50;
+
+      var shiftTime = -200;
+
+      var options = {
+        duration: duration,
+        delay: delay,
+        shiftTime: shiftTime
+      };
+      var tweenie = Tweenie(options);
+      var startTime = 350;
+
+      tweenie.setStartTime(startTime);
+
+      expect(tweenie._start).toBe(startTime + delay + shiftTime);
+    });
   });
 
   describe('`onSkip` callback ->', function() {

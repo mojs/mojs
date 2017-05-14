@@ -16,9 +16,11 @@ describe('timeline ->', function () {
   });
 
   describe('`_declareDefaults` function ->', function() {
-    it('should reset `duration` etc on `defaults`', function () {
+    it('should reset `easing` on `defaults`', function () {
       var timeline = Timeline();
-      expect(timeline._defaults.duration).toBe(0);
+      // // not needed until we will decide if timeline
+      // // should have the ablility to recieve duration
+      // expect(timeline._defaults.duration).toBe(0);
       expect(timeline._defaults.easing).toBe('linear.none');
     });
 
@@ -40,6 +42,11 @@ describe('timeline ->', function () {
       spyOn(Super, '_vars');
       var timeline = Timeline();
       expect(Super._vars).toHaveBeenCalled();
+    });
+
+    it('should reset `duration`', function () {
+      var timeline = Timeline({ duration: 2500 });
+      expect(timeline._props.duration).toBe(0);
     });
   });
 
@@ -229,4 +236,102 @@ describe('timeline ->', function () {
     });
   });
 
+  describe('`add` function ->', function() {
+    it('should add `tweenie` to the `_items`', function () {
+      var timeline = Timeline();
+      var tweenie1 = new Tweenie();
+      var tweenie2 = new Tweenie();
+      var tweenie3 = new Tweenie();
+
+      timeline.add(tweenie1);
+      timeline.add(tweenie2);
+      timeline.add(tweenie3);
+
+      expect(timeline._items.length).toBe(3);
+      expect(timeline._items[0]).toBe(tweenie1);
+      expect(timeline._items[1]).toBe(tweenie2);
+      expect(timeline._items[2]).toBe(tweenie3);
+    });
+
+    it('should increase `duration`', function () {
+      var timeline = Timeline();
+
+      var tweenie1 = new Tweenie({ duration: 200 });
+      var tweenie2 = new Tweenie({ duration: 500 });
+      var tweenie3 = new Tweenie({ duration: 600 });
+
+      timeline.add(tweenie1);
+      timeline.add(tweenie2);
+      timeline.add(tweenie3);
+
+      expect(timeline._props.duration).toBe(tweenie3._props.duration);
+    });
+
+    it('should increase `duration` #2', function () {
+      var timeline = Timeline();
+
+      var duration = 2000;
+      timeline._props.duration = duration;
+
+      var tweenie1 = new Tweenie({ duration: 250 });
+      var tweenie2 = new Tweenie({ duration: 300 });
+      var tweenie3 = new Tweenie({ duration: 700 });
+
+      timeline.add(tweenie1);
+      timeline.add(tweenie2);
+      timeline.add(tweenie3);
+
+      expect(timeline._props.duration).toBe(duration);
+    });
+
+    it('should increase `duration` according to `delay`', function () {
+      var timeline = Timeline();
+
+      var tweenie1 = new Tweenie({ duration: 200 });
+      var tweenie2 = new Tweenie({ duration: 500, delay: 700 });
+      var tweenie3 = new Tweenie({ duration: 600 });
+
+      timeline.add(tweenie1);
+      timeline.add(tweenie2);
+      timeline.add(tweenie3);
+
+      expect(timeline._props.duration).toBe(tweenie2._props.duration + tweenie2._props.delay);
+    });
+
+    it('should increase `duration` according to `shift`', function () {
+      var timeline = Timeline();
+
+      var tweenie1 = new Tweenie({ duration: 200 });
+      var tweenie2 = new Tweenie({ duration: 500, delay: 50 });
+      var tweenie3 = new Tweenie({ duration: 700 });
+
+      var shift = 200;
+      timeline.add(tweenie1);
+      timeline.add(tweenie2, shift);
+      timeline.add(tweenie3);
+
+      expect(timeline._props.duration).toBe(tweenie2._props.duration + tweenie2._props.delay + shift);
+    });
+
+    it('should set `shiftTime` on a `tweenie`', function () {
+      var timeline = Timeline();
+
+      var tweenie1 = new Tweenie({ duration: 200 });
+      var tweenie2 = new Tweenie({ duration: 500, delay: 50 });
+      var tweenie3 = new Tweenie({ duration: 700 });
+
+      var shift = 200;
+
+      tweenie2._props.shiftTime = 0
+      timeline.add(tweenie2, shift);
+
+      expect(tweenie2._props.shiftTime).toBe(shift);
+    });
+
+    it('should return `this`', function () {
+      var timeline = Timeline();
+
+      expect(timeline.add(new Tweenie())).toBe(timeline);
+    });
+  });
 });

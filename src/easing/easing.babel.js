@@ -62,9 +62,7 @@ const easing = {
   quart: {
     in: (k) => { return k * k * k * k; },
     out: (k) => { return 1 - (--k * k * k * k); },
-    inout: (k) => {
-      return k<.5 ? 8*k*k*k*k : 1-8*(--k)*k*k*k;
-    }
+    inout: (k) => { return k<.5 ? 8*k*k*k*k : 1-8*(--k)*k*k*k; }
   },
 
   /**
@@ -75,9 +73,7 @@ const easing = {
   quint: {
     in: (k) => { return k * k * k * k * k; },
     out: (k) => { return --k * k * k * k * k + 1; },
-    inout: (k) => {
-      return k<.5 ? 16*k*k*k*k*k : 1+16*(--k)*k*k*k*k;
-    }
+    inout: (k) => { return k<.5 ? 16*k*k*k*k*k : 1+16*(--k)*k*k*k*k; }
   },
 
   /**
@@ -111,7 +107,7 @@ const easing = {
     out: (k) => { return sqrt(1 - (--k * k)); },
     inout: function(k) {
       if ((k *= 2) < 1) {
-				return - 0.5 * (sqrt(1 - k * k) - 1);
+				return -0.5 * (sqrt(1 - k * k) - 1);
 			}
       return 0.5 * (sqrt(1 - (k -= 2) * k) + 1);
     }
