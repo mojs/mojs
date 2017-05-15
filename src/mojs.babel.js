@@ -1,8 +1,11 @@
 import { ClassProto } from './class-proto';
+// tween related
 import { Tweenie } from './tween/tweenie';
 import { tweenieDefaults } from './tween/tweenie-defaults';
 import { Timeline } from './tween/timeline';
+import { TweenPlanner } from './tween/planner';
 import { tweener } from './tween/tweener';
+// easing
 import { easing } from './easing/easing';
 import { parseEasing } from './easing/parse-easing';
 
@@ -16,6 +19,7 @@ var mojs = {
     parseEasing,
     ClassProto,
     tweenieDefaults,
+    TweenPlanner,
     tweener
   }
 };
