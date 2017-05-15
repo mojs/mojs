@@ -33,22 +33,46 @@ Timeline._declareDefaults = function() {
 /* ---------------------- */
 
 /**
- * add - function a `Tweenie` to the timeline.
+ * add - function to add `Tweenie` to the timeline.
  *
  * @public
  * @param   {Object, Array} A tweenie or array of tweenies to add.
- * @param   {Number} Time shift.
+ * @param   {Number} Time shift >= 0.
  * @returns {Object} Self.
  */
 Timeline.add = function(tweenie, shift = 0) {
-  // set the `shiftTime` on tweenie
-  tweenie.set('shiftTime', shift);
-  // add to child timelines
-  this._items.push(tweenie);
-  // check if we need to increase timeline's bound
-  const { delay, duration, shiftTime } = tweenie._props;
-  const time = delay + duration + shiftTime;
-  this._props.duration = Math.max(this._props.duration, time);
+  // make sure the shift is positive
+  shift = Math.abs(shift);
+  // if tweenie is really an array of tweenies,
+  // loop thru them and add one by one
+  if (tweenie instanceof Array) {
+    tweenie.forEach((tweenie) => { this.add(tweenie, shift); });
+  // if a single tweenie, add it to `_items`
+  } else {
+    // set the `shiftTime` on tweenie
+    tweenie.set('shiftTime', shift);
+    // add to child timelines
+    this._items.push(tweenie);
+    // check if we need to increase timeline's bound
+    const { delay, duration, shiftTime } = tweenie._props;
+    const time = delay + duration + shiftTime;
+    this._props.duration = Math.max(this._props.duration, time);
+  }
+
+  return this;
+};
+
+/**
+ * append - function to append `Tweenie` to the timeline.
+ *
+ * @public
+ * @param   {Object, Array} A tweenie or array of tweenies to append.
+ * @param   {Number} Time shift >= 0.
+ * @returns {Object} Self.
+ */
+Timeline.append = function(tweenie, shift = 0) {
+  // add the tweenies shifting them to the current `duration`
+  this.add(tweenie, this._props.duration + Math.abs(shift));
 
   return this;
 };

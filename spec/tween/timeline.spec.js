@@ -313,6 +313,21 @@ describe('timeline ->', function () {
       expect(timeline._props.duration).toBe(tweenie2._props.duration + tweenie2._props.delay + shift);
     });
 
+    it('should treat negative `shift` as positive', function () {
+      var timeline = Timeline();
+
+      var tweenie1 = new Tweenie({ duration: 200 });
+      var tweenie2 = new Tweenie({ duration: 500, delay: 50 });
+      var tweenie3 = new Tweenie({ duration: 700 });
+
+      var shift = -200;
+      timeline.add(tweenie1);
+      timeline.add(tweenie2, shift);
+      timeline.add(tweenie3);
+
+      expect(timeline._props.duration).toBe(tweenie2._props.duration + tweenie2._props.delay + Math.abs(shift));
+    });
+
     it('should set `shiftTime` on a `tweenie`', function () {
       var timeline = Timeline();
 
@@ -328,10 +343,121 @@ describe('timeline ->', function () {
       expect(tweenie2._props.shiftTime).toBe(shift);
     });
 
+    it('should always set positive `shiftTime`', function () {
+      var timeline = Timeline();
+
+      var tweenie1 = new Tweenie({ duration: 200 });
+      var tweenie2 = new Tweenie({ duration: 500, delay: 50 });
+      var tweenie3 = new Tweenie({ duration: 700 });
+
+      var shift = -200;
+
+      tweenie2._props.shiftTime = 0
+      timeline.add(tweenie2, shift);
+
+      expect(tweenie2._props.shiftTime).toBe(Math.abs(shift));
+    });
+
+    it('should work with arrays', function () {
+      var timeline = Timeline();
+      var tweenie1 = new Tweenie();
+      var tweenie2 = new Tweenie();
+      var tweenie3 = new Tweenie();
+
+      timeline.add([tweenie1, tweenie2]);
+      timeline.add(tweenie3);
+
+      expect(timeline._items.length).toBe(3);
+      expect(timeline._items[0]).toBe(tweenie1);
+      expect(timeline._items[1]).toBe(tweenie2);
+      expect(timeline._items[2]).toBe(tweenie3);
+    });
+
     it('should return `this`', function () {
       var timeline = Timeline();
 
       expect(timeline.add(new Tweenie())).toBe(timeline);
+    });
+  });
+
+  describe('`add` function ->', function() {
+    it('should call the `add` function with current as `shift`', function () {
+      var timeline = Timeline();
+
+      var duration = 2000*Math.random();
+      timeline._props.duration = duration;
+
+      var tweenie1 = new Tweenie();
+
+      spyOn(timeline, 'add');
+
+      timeline.append(tweenie1);
+
+      expect(timeline.add).toHaveBeenCalledWith(tweenie1, duration);
+    });
+
+    it('should call the `add` function with current as `shift` #array', function () {
+      var timeline = Timeline();
+
+      var duration = 2000*Math.random();
+      timeline._props.duration = duration;
+
+      var tweenie1 = new Tweenie();
+      var tweenie2 = new Tweenie();
+      var tweenie3 = new Tweenie();
+
+      spyOn(timeline, 'add');
+
+      var tweenies = [tweenie1, tweenie2, tweenie3];
+      timeline.append(tweenies);
+
+      expect(timeline.add).toHaveBeenCalledWith(tweenies, duration);
+    });
+
+    it('should add the `shift`', function () {
+      var timeline = Timeline();
+
+      var duration = 2000*Math.random();
+      timeline._props.duration = duration;
+
+      var shift = 200*Math.random();
+
+      var tweenie1 = new Tweenie();
+      var tweenie2 = new Tweenie();
+      var tweenie3 = new Tweenie();
+
+      spyOn(timeline, 'add');
+
+      var tweenies = [tweenie1, tweenie2, tweenie3];
+      timeline.append(tweenies, shift);
+
+      expect(timeline.add).toHaveBeenCalledWith(tweenies, duration + shift);
+    });
+
+    it('should always add the `shift` as positive', function () {
+      var timeline = Timeline();
+
+      var duration = 2000*Math.random();
+      timeline._props.duration = duration;
+
+      var shift = -200*Math.random();
+
+      var tweenie1 = new Tweenie();
+      var tweenie2 = new Tweenie();
+      var tweenie3 = new Tweenie();
+
+      spyOn(timeline, 'add');
+
+      var tweenies = [tweenie1, tweenie2, tweenie3];
+      timeline.append(tweenies, shift);
+
+      expect(timeline.add).toHaveBeenCalledWith(tweenies, duration + Math.abs(shift));
+    });
+
+    it('should return `this`', function () {
+      var timeline = Timeline();
+
+      expect(timeline.append(new Tweenie())).toBe(timeline);
     });
   });
 });
