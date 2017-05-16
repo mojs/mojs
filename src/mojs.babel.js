@@ -6,7 +6,6 @@ import { tweener } from './tween/tweener';
 import { easing } from './easing/easing';
 import { parseEasing } from './easing/parse-easing';
 
-
 var mojs = {
   revision: '2.3.0',
   Tweenie,
@@ -25,7 +24,6 @@ var mojs = {
 //   setTimeout(() => {
 //     for (let i = 0; i < 1000; i++) {
 //       const tweenie = Tweenie({
-//         repeat: 1,
 //         duration: 5000,
 //         delay: 200,
 //         onUpdate(ep, p, isForward, isReverse, index) {},

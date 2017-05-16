@@ -3,7 +3,9 @@ import {
   defaultEasingString,
   consoleName
 } from '../constants';
+
 import { easing } from './easing';
+// import { basicEasing } from './basic-easing';
 
 /**
  * parseEasing - function to parse all easing values to a function.
@@ -23,6 +25,7 @@ const parseEasing = (ease = defaultEasingString) => {
 
       if (!easeParent) {
         console.error(`${consoleName} Easing with name ${ease[0]} wasn't found, fallback to "${defaultEasingString}" instead.`, easing);
+
         return easing[defaultEasing[0]][defaultEasing[1]];
       }
       return easeParent[ease[1]];

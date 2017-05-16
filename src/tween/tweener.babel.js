@@ -7,7 +7,7 @@
 const tweener = {
   init() {
     this._vars();
-    this._listenVisibilityChange();
+    this._visibility();
     return this;
   },
 
@@ -22,7 +22,7 @@ const tweener = {
    @returns this
   */
   _loop() {
-    if (tweener.tweens.length === 0) { return tweener._stopLoop(); }
+    if (tweener.tweens.length === 0) { return tweener._stop(); }
     tweener.update(performance.now());
     // if (!this.tweens.length) { return this._isRunning = false; }
     requestAnimationFrame(tweener._loop);
@@ -32,7 +32,7 @@ const tweener = {
    Method to start animation loop.
    @private
   */
-  _startLoop() {
+  _start() {
     if (this._isRunning) { return; };
     this._isRunning = true;
     //  if (this.tweens.length > 0) { return; };
@@ -43,46 +43,23 @@ const tweener = {
    Method to stop animation loop.
    @private
   */
-  _stopLoop() {
+  _stop() {
     this.tweens.length = 0;
     this._isRunning = false;
-  },
-
-  /*
-   Method stop updating all the child tweens/timelines.
-   @private
-  */
-  removeAll() { this.tweens.length = 0; },
-
-  /*
-   Method to remove specific tween/timeline form updating.
-   @private
-  */
-  remove(tween) {
-    var index = (typeof tween === 'number')
-     ? tween
-     : this.tweens.indexOf(tween);
-
-    if (index !== -1) {
-      tween = this.tweens[index];
-      tween._isRunning = false;
-      this.tweens.splice(index, 1);
-      //  tween._onTweenerRemove();
-    }
   },
 
   /*
    Method to initialize event listeners to visibility change events.
    @private
   */
-  _listenVisibilityChange () {
-    document.addEventListener('visibilitychange', this._onVisibilityChange, false);
+  _visibility () {
+    document.addEventListener('visibilitychange', this._onVisibility, false);
   },
 
   /*
    Method that will fire on visibility change.
   */
-  _onVisibilityChange() {
+  _onVisibility() {
     if (document['hidden']) { tweener._savePlayingTweens() }
     else { tweener._restorePlayingTweens(); }
   },
@@ -102,7 +79,7 @@ const tweener = {
    Method to restore all playing tweens.
    @private
   */
-  _restorePlayingTweens () {
+  _restorePlayingTweens() {
     for (let i=0; i < this._savedTweens.length; i++ ) {
       this._savedTweens[i].resume();
     }
@@ -132,7 +109,7 @@ const tweener = {
     // if (tween._isRunning) { return; }
     // tween._isRunning = true;
     this.tweens.push(tween);
-    this._startLoop();
+    this._start();
   },
 
   /**
@@ -141,8 +118,31 @@ const tweener = {
    * @public
    */
   caffeinate() {
-    document.removeEventListener('visibilitychange', this._onVisibilityChange, false);
-  }
+    document.removeEventListener('visibilitychange', this._onVisibility, false);
+  },
+
+  /*
+   Method stop updating all the child tweens/timelines.
+   @private
+  */
+  removeAll() { this.tweens.length = 0; },
+
+  /*
+   Method to remove specific tween/timeline form updating.
+   @private
+  */
+  remove(tween) {
+    var index = (typeof tween === 'number')
+     ? tween
+     : this.tweens.indexOf(tween);
+
+    if (index !== -1) {
+      tween = this.tweens[index];
+      tween._isRunning = false;
+      this.tweens.splice(index, 1);
+      //  tween._onTweenerRemove();
+    }
+  },
 }
 
 tweener.init();
