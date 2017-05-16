@@ -6,93 +6,69 @@
  *   - declare `_vars` after extention
  *   - call `_render` eventually
  */
-const ClassProto = {
-  /**
-   * _init - lifecycle initialization function.
-   *
-   * @private
-   */
-  init(o = {}) {
-    // save options
-    this._o = o;
+const ClassProto = {};
 
-    this._declareDefaults();
-    this._extendDefaults();
-    this._vars();
-  },
+/**
+ * get - Method to get a property from `_props`.
+ *
+ * @public
+ * @param {String} Key.
+ * @returns {Any} Value from the `_props` by `key`.
+ */
+ClassProto.get = function(key) {
+  return this._props[key];
+};
 
-  /**
-   * _declareDefaults - function to declare `_defaults` object.
-   *
-   * @private
-   */
-  _declareDefaults() { this._defaults = {}; },
+/**
+ * get - Method to get a property from `_props`.
+ *
+ * @public
+ * @param {String} Key.
+ * @param {Any} Value.
+ */
+ClassProto.set = function(key, value) {
+  this._props[key] = value;
+};
 
-  /**
-   * _extendDefaults - Method to copy `_o` options to `_props` object
-   *                  with fallback to `_defaults`.
-   * @private
-   */
-  _extendDefaults() {
-    this._props = {
-      ...this._defaults,
-      ...this._o
-    };
-  },
+/**
+ * _init - lifecycle initialization function.
+ *
+ * @private
+ */
+ClassProto.init = function(o = {}) {
+  // save options
+  this._o = o;
 
-  /**
-   * _setProp - Method to set property on the module.
-   *
-   * @private
-   * @param {String, Object} Name of the property to set
-   *                         or object with properties to set.
-   * @param {Any} Value for the property to set. Could be
-   *              undefined if the first param is object.
-   */
-  // _setProp(attr, value) {
-  //   if ( typeof attr === 'object' ) {
-  //     for ( var key in attr ) { this._assignProp( key, attr[key] ); }
-  //   } else { this._assignProp( attr, value ); }
-  // },
+  this._declareDefaults();
+  this._extendDefaults();
+  this._vars();
+};
 
-  /**
-   * _assignProp - Method to assign single property's value.
-   *
-   * @private
-   * @param {String} Property name.
-   * @param {Any}    Property value.
-   */
-  // _assignProp(key, value) { this._props[key] = value; },
+/**
+ * _declareDefaults - function to declare `_defaults` object.
+ *
+ * @private
+ */
+ClassProto._declareDefaults = function() { this._defaults = {}; };
 
-  /**
-   * _vars - function do declare `variables` after `_defaults` were extended
-   *         by `options` and saved to `_props`
-   *
-   * @return {type}  description
-   */
-  _vars() {},
+/**
+ * _extendDefaults - Method to copy `_o` options to `_props` object
+ *                  with fallback to `_defaults`.
+ * @private
+ */
+ClassProto._extendDefaults = function() {
+  this._props = {
+    ...this._defaults,
+    ...this._o
+  };
+};
 
-  /**
-   * get - Method to get a property from `_props`.
-   *
-   * @public
-   * @param {String} Key.
-   * @returns {Any} Value from the `_props` by `key`.
-   */
-  get(key) {
-    return this._props[key];
-  },
-
-  /**
-   * get - Method to get a property from `_props`.
-   *
-   * @public
-   * @param {String} Key.
-   * @param {Any} Value.
-   */
-  set(key, value) {
-    this._props[key] = value;
-  },
-}
+/**
+ * _vars - function do declare `variables` after `_defaults` were extended
+ *         by `options` and saved to `_props`
+ *
+ * @return {type}  description
+ */
+ClassProto._vars = function() {};
 
 export { ClassProto as ClassProto };
