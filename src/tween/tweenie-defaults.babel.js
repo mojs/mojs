@@ -1,8 +1,8 @@
 const tweenieDefaults = {
-  /* duration of the tween [0..∞] */
-  duration:               350,
   /* delay of the tween [-∞..∞] */
   delay:                  0,
+  /* duration of the tween [0..∞] */
+  duration:               350,
   /* speed of playback [0..∞], speed that is less then 1
      will slowdown playback, for instance .5 will make tween
      run 2x slower. Speed of 2 will speedup the tween to 2x. */
@@ -22,7 +22,6 @@ const tweenieDefaults = {
   isReverse:              false,
 
   onUpdate:               function() {},
-
   /*
     onStart callback runs on very start of the tween just after onProgress
     one. Runs on very end of the tween if tween is reversed.

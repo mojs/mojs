@@ -204,6 +204,6 @@ const wrap = (o) => {
   instance.init(o);
 
   return instance;
-}
+};
 
 export { wrap as Timeline };

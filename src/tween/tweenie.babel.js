@@ -7,6 +7,12 @@ import { parseEasing } from '../easing/parse-easing';
 /* The `Tweenie` class  */
 /* -------------------- */
 
+/**
+ * TODO:
+ *    - add `onRefresh` callbacks
+ *    - add `yoyo` option for repeat
+ */
+
 const Tweenie = Object.create(ClassProto);
 /**
  * _declareDefaults - function to declare `_defaults` object.

@@ -23,16 +23,17 @@ const mojs = {
 
 /* Extensions */
 // `basic easing functions`
-// import { addBasicEasing } from './easing/basic-easing';
-// addBasicEasing(mojs);
+import { addBasicEasing } from './easing/basic-easing';
+addBasicEasing(mojs);
 
 // window.onload = () => {
 //   const items = [];
 //   setTimeout(() => {
-//     for (let i = 0; i < 1000; i++) {
+//     for (let i = 0; i < 200; i++) {
 //       const tweenie = Tweenie({
 //         duration: 5000,
 //         delay: 200,
+//         // easing: 'linear.none',
 //         onUpdate(ep, p, isForward, isReverse, index) {},
 //         onChimeIn(isForward, isReverse, index) {},
 //         onChimeOut(isForward, isReverse, index) {},

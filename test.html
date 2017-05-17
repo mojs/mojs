@@ -75,7 +75,7 @@
       const tween = new mojs.Tweenie({
         // delay: 500,
         duration: 5000,
-        easing: 'cubic.out',
+        easing: 'linear.none',
         onUpdate(ep, p, isForward, isReverse, index) {
           console.log(`{${index === void 0 ? '' : index}}, [tween update]`, ep);
           el.style.transform = `translate(${200*ep}px, 0)`;
@@ -160,44 +160,6 @@
         // console.log(':: slider value: ', this.value);
         tween.setProgress(this.value/1000);
       });
-
-
-      // -=-=-=-=-=-=-=-=-=-=-=-=-
-
-
-      // var duration = 2000;
-      // var tweenie =  new mojs.Tweenie({
-      //   duration: duration,
-      //   onUpdate(p) {
-      //     console.log(`[update]: ${p}`);
-      //   },
-      //   onStart() {
-      //     console.log(`[on start]`);
-      //   },
-      //   onChimeIn() {
-      //     console.log(`[on chime in]`);
-      //   },
-      //   onChimeOut() {
-      //     console.log(`[on chime out]`);
-      //   },
-      //   onComplete() {
-      //     console.log(`[on complete]`);
-      //   },
-      //   onSkip() {
-      //     console.log(`[on skip]`);
-      //   }
-      // });
-      //
-      // tweenie.setStartTime();
-      //
-      // var start = tweenie._start;
-      // // tweenie._prevTime = start + duration - 10;
-      // tweenie.update(start);
-      // tweenie.update(start + duration + 10);
-
-
-      // -=-=-=-=-=-=-=-=-=-=-=-=-
-
 
     </script>
 
