@@ -24,7 +24,7 @@ const parseEasing = (ease = defaultEasingString) => {
       const easeParent = easing[ease[0]];
 
       if (!easeParent) {
-        console.error(`${consoleName} Easing with name ${ease[0]} wasn't found, fallback to "${defaultEasingString}" instead.`, easing);
+        console.error(`${consoleName} Easing with name "${ease[0]}" wasn't found, fallback to "${defaultEasingString}" instead.`, easing);
 
         return easing[defaultEasing[0]][defaultEasing[1]];
       }

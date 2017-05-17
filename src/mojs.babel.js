@@ -3,13 +3,12 @@ import { ClassProto } from './class-proto';
 import { Tweenie } from './tween/tweenie';
 import { tweenieDefaults } from './tween/tweenie-defaults';
 import { Timeline } from './tween/timeline';
-import { TweenPlanner } from './tween/planner';
 import { tweener } from './tween/tweener';
 // easing
 import { easing } from './easing/easing';
 import { parseEasing } from './easing/parse-easing';
 
-var mojs = {
+const mojs = {
   revision: '2.3.0',
   Tweenie,
   Timeline,
@@ -18,10 +17,14 @@ var mojs = {
     parseEasing,
     ClassProto,
     tweenieDefaults,
-    TweenPlanner,
     tweener
   }
 };
+
+/* Extensions */
+// `basic easing functions`
+// import { addBasicEasing } from './easing/basic-easing';
+// addBasicEasing(mojs);
 
 // window.onload = () => {
 //   const items = [];

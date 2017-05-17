@@ -75,8 +75,7 @@
       const tween = new mojs.Tweenie({
         // delay: 500,
         duration: 5000,
-        // speed: 2000,
-        // isReverse: true,
+        easing: 'cubic.out',
         onUpdate(ep, p, isForward, isReverse, index) {
           console.log(`{${index === void 0 ? '' : index}}, [tween update]`, ep);
           el.style.transform = `translate(${200*ep}px, 0)`;

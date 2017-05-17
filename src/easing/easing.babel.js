@@ -4,7 +4,6 @@
  */
 
 import { pow } from './pow';
-const { basicEasing } = require('./basic-easing__stu');
 
 /**
  * `easing` - object that holds all easing avaliable in `mojs`.
@@ -29,9 +28,7 @@ const easing = {
      inout: (k) => { return 0.5 * (1 - Math.cos(Math.PI * k)); }
   },
 
-  pow,
-
-  ...basicEasing
+  pow
 };
 
 export { easing as easing };

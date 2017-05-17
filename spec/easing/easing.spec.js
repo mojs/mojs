@@ -14,14 +14,13 @@ describe('easing ->', function() {
       expect(easing.sin.out(.5)).toBe(Math.sin(.5 * Math.PI / 2));
     });
     it('should have InOut', function() {
-      var result;
-      result = 0.5 * (1 - Math.cos(Math.PI * .5));
+      var result = 0.5 * (1 - Math.cos(Math.PI * .5));
       expect(easing.sin.inout(.5)).toBe(result);
     });
   });
   describe('quad ->', function() {
-    it('should have In', function() {
-      expect(easing.quad["in"](.5)).toBe(.5 * .5);
+    it('should have `in`', function() {
+      expect(easing.quad['in'](.5)).toBe(.5 * .5);
     });
     it('should have Out', function() {
       expect(easing.quad.out(.5)).toBe(.5 * (2 - .5));
@@ -143,6 +142,8 @@ describe('easing ->', function() {
       expect(easing.bounce.inout(.75).toFixed(2)).toBe('0.88');
     });
   });
+
+  // not yet
   // describe('bezier ->', function() {
   //   it('should have bezier constructor', function() {
   //     expect(typeof easing.bezier).toBe('function');
