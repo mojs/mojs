@@ -20,7 +20,6 @@ const parseEasing = (ease = defaultEasingString) => {
     case 'function': { return ease; }
     case 'string': {
       ease = ease.toLowerCase().split('.');
-
       const easeParent = easing[ease[0]];
 
       if (!easeParent) {

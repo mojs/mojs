@@ -1,6 +1,5 @@
+import { parseEasing } from '../easing/parse-easing';
 import { tweenieDefaults } from '../tween/tweenie-defaults';
-// copy the defaults and add `curve` property
-const tweenieProperties = { ...tweenieDefaults, curve: true };
 
 /**
  * Function to split the delta object to `tweenie` options and actual `delta`.
@@ -8,12 +7,16 @@ const tweenieProperties = { ...tweenieDefaults, curve: true };
  * @param {Object} Object to split.
  * @returns {Object} Split `delta`.
  */
-const preparseDelta = (object) => {
+const splitDelta = (object) => {
   object = { ...object };
-
+  // save curve because we need it directly on the
+  // parsed `delta` object vs `tweenie`
+  const curve = (object.curve !== void 0)
+                  ? parseEasing(object.curve) : void 0;
+  delete object.curve;
   // loop thru tweenieDefaults and extract them from the object
   let tweenieOptions;
-  for (let option in tweenieProperties) {
+  for (let option in tweenieDefaults) {
     if (object[option] !== void 0) {
       tweenieOptions = tweenieOptions || {};
       tweenieOptions[option] = object[option];
@@ -24,7 +27,7 @@ const preparseDelta = (object) => {
   const start = Object.keys(object)[0];
   const end = object[start];
 
-  return { start, end, tweenieOptions };
+  return { start, end, curve, tweenieOptions };
 };
 
-export { preparseDelta as preparseDelta };
+export { splitDelta as splitDelta };

@@ -9,11 +9,12 @@ import { easing } from './easing/easing';
 import { parseEasing } from './easing/parse-easing';
 
 // temporary
-
 import { Delta } from './delta/delta';
 import { parseDelta } from './delta/parse-delta';
 
-import { preparseDelta } from './delta/preparse-delta';
+import { splitDelta } from './delta/split-delta';
+import { parseNumber } from './delta/parse-number';
+import { parseUnit } from './delta/parse-unit';
 
 const mojs = {
   revision: '2.3.0',
@@ -28,7 +29,9 @@ const mojs = {
     // temporary
     Delta,
     parseDelta,
-    preparseDelta
+    splitDelta,
+    parseNumber,
+    parseUnit
   }
 };
 
