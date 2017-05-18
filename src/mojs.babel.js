@@ -8,6 +8,13 @@ import { tweener } from './tween/tweener';
 import { easing } from './easing/easing';
 import { parseEasing } from './easing/parse-easing';
 
+// temporary
+
+import { Delta } from './delta/delta';
+import { parseDelta } from './delta/parse-delta';
+
+import { preparseDelta } from './delta/preparse-delta';
+
 const mojs = {
   revision: '2.3.0',
   Tweenie,
@@ -17,7 +24,11 @@ const mojs = {
     parseEasing,
     ClassProto,
     tweenieDefaults,
-    tweener
+    tweener,
+    // temporary
+    Delta,
+    parseDelta,
+    preparseDelta
   }
 };
 

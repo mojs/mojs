@@ -647,8 +647,8 @@ describe('tweenie ->', function () {
       tweenie.update(end + 10);
       tweenie.update(end);
 
-      expect(ep).toBe(easing(0));
-      expect(p).toBe(0);
+      expect(ep).toBeCloseTo(easing(0), 3);
+      expect(p).toBeCloseTo(0, 3);
 
       tweenie.update(end -= 15);
 
