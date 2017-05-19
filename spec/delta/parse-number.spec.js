@@ -15,15 +15,6 @@ describe('parseNumber ->', function () {
     expect(result.end).toBe(30);
     expect(result.delta).toBe(30 - 20);
     expect(result.tweenieOptions).toEqual(split.tweenieOptions);
-    expect(result.curve).not.toBeDefined();
-  });
-
-  it('should parse curve', function () {
-    var delta = { '20': 30, curve: 'sin.in'};
-    var split = splitDelta(delta);
-    var name = 'name';
-    var result = parseNumber(name, split);
-
     expect(result.curve).toBe(split.curve);
   });
 });
