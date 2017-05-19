@@ -14,7 +14,8 @@ describe('parseNumber ->', function () {
     expect(result.start).toBe(20);
     expect(result.end).toBe(30);
     expect(result.delta).toBe(30 - 20);
-    expect(result.tweenieOptions).toEqual(split.tweenieOptions);
     expect(result.curve).toBe(split.curve);
+    expect(result.tweenieOptions).toBeDefined();
+    expect(result.tweenieOptions).toBe(split.tweenieOptions);
   });
 });
