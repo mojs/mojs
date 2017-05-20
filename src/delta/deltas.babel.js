@@ -26,12 +26,16 @@ Deltas.init = function(o = {}) {
   const timelineOptions = options.timeline;
   delete options.timeline;
 
+  // save the el object and remove it immediately
+  this._el = options.el;
+  delete options.el;
+
   // set up the main `tweenie`
   this._setupTweenie(options);
   // set up the `timeline`
   this._setupTimeline(timelineOptions);
   // parse deltas from options that left so far
-  this._parseDeltas(options);
+  this._parseProperties(options);
 };
 
 /**
@@ -42,7 +46,18 @@ Deltas.init = function(o = {}) {
 Deltas._setupTweenie = function(options) {
   // separate main tweenie options
   const tweenieOptions = separateTweenieOptions(options);
-  this._tween = new Tweenie(tweenieOptions);
+  // create tween
+  this._tween = new Tweenie({
+    ...tweenieOptions,
+    // update plain deltas on update
+    // and call the previous `onUpdate` if present
+    onUpdate: (ep, p, isForward) => {
+      // update plain deltas
+      this._upd_deltas(ep, p, isForward);
+      // envoke onUpdate if present
+      tweenieOptions.onUpdate && tweenieOptions.onUpdate(ep, p, isForward);
+    }
+  });
 };
 
 /**
@@ -56,17 +71,18 @@ Deltas._setupTimeline = function(options) {
 };
 
 /**
- * `_parseDeltas` - function to parse deltas.
+ * `_parseProperties` - function to parse deltas.
  *
  * @param {Object} Options.
  */
-Deltas._parseDeltas = function(options) {
+Deltas._parseProperties = function(options) {
   // deltas that have tween
   this._tweenDeltas = [];
   // deltas that don't have tween
   this._plainDeltas = [];
   // static properties
   this._staticProps = {};
+
   // loop thru options and create deltas with objects
   for (let key in options) {
     const value = options[key];
@@ -76,7 +92,7 @@ Deltas._parseDeltas = function(options) {
       continue;
     }
     // if value is not static, create delta object
-    const delta = new Delta({ key, object: value });
+    const delta = new Delta({ key, object: value, target: this._el });
     // check if delta has own tween and add to `_tweenDeltas`
     if (delta._tween) { this._tweenDeltas.push(delta); }
     // else add to plain deltas
@@ -84,6 +100,22 @@ Deltas._parseDeltas = function(options) {
   }
   // add tween deltas to the timeline
   this._timeline.add(this._tweenDeltas);
+};
+
+/**
+ * `_upd_deltas` - function to update the plain deltas.
+ *
+ * @private
+ * @param {Number} Eased progress.
+ * @param {Number} Progress.
+ * @param {Boolean} If forward update direction.
+ * @returns {Object} This delta.
+ */
+Deltas._upd_deltas = function(ep, p, isForward) {
+  // update plain deltas
+  for (let i = 0; i < this._plainDeltas.length; i++ ) {
+    this._plainDeltas[i].update(ep, p, isForward);
+  }
 };
 
 /**

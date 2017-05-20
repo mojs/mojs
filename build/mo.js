@@ -2800,12 +2800,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var timelineOptions = options.timeline;
       delete options.timeline;
 
+      // save the el object and remove it immediately
+      this._el = options.el;
+      delete options.el;
+
       // set up the main `tweenie`
       this._setupTweenie(options);
       // set up the `timeline`
       this._setupTimeline(timelineOptions);
       // parse deltas from options that left so far
-      this._parseDeltas(options);
+      this._parseProperties(options);
     };
 
     /**
@@ -2814,9 +2818,21 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @param {Object} Options.
      */
     Deltas._setupTweenie = function (options) {
+      var _this = this;
+
       // separate main tweenie options
       var tweenieOptions = (0, _separateTweenieOptions.separateTweenieOptions)(options);
-      this._tween = new _tweenie.Tweenie(tweenieOptions);
+      // create tween
+      this._tween = new _tweenie.Tweenie(_extends({}, tweenieOptions, {
+        // update plain deltas on update
+        // and call the previous `onUpdate` if present
+        onUpdate: function (ep, p, isForward) {
+          // update plain deltas
+          _this._upd_deltas(ep, p, isForward);
+          // envoke onUpdate if present
+          tweenieOptions.onUpdate && tweenieOptions.onUpdate(ep, p, isForward);
+        }
+      }));
     };
 
     /**
@@ -2830,17 +2846,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     };
 
     /**
-     * `_parseDeltas` - function to parse deltas.
+     * `_parseProperties` - function to parse deltas.
      *
      * @param {Object} Options.
      */
-    Deltas._parseDeltas = function (options) {
+    Deltas._parseProperties = function (options) {
       // deltas that have tween
       this._tweenDeltas = [];
       // deltas that don't have tween
       this._plainDeltas = [];
       // static properties
       this._staticProps = {};
+
       // loop thru options and create deltas with objects
       for (var key in options) {
         var value = options[key];
@@ -2850,7 +2867,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           continue;
         }
         // if value is not static, create delta object
-        var delta = new _delta.Delta({ key: key, object: value });
+        var delta = new _delta.Delta({ key: key, object: value, target: this._el });
         // check if delta has own tween and add to `_tweenDeltas`
         if (delta._tween) {
           this._tweenDeltas.push(delta);
@@ -2862,6 +2879,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
       // add tween deltas to the timeline
       this._timeline.add(this._tweenDeltas);
+    };
+
+    /**
+     * `_upd_deltas` - function to update the plain deltas.
+     *
+     * @private
+     * @param {Number} Eased progress.
+     * @param {Number} Progress.
+     * @param {Boolean} If forward update direction.
+     * @returns {Object} This delta.
+     */
+    Deltas._upd_deltas = function (ep, p, isForward) {
+      // update plain deltas
+      for (var i = 0; i < this._plainDeltas.length; i++) {
+        this._plainDeltas[i].update(ep, p, isForward);
+      }
     };
 
     /**
