@@ -71,7 +71,7 @@ Deltas._setupTimeline = function(options) {
 };
 
 /**
- * `_parseProperties` - function to parse deltas.
+ * `_parseProperties` - function to parse deltas and static properties.
  *
  * @param {Object} Options.
  */

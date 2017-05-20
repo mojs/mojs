@@ -18,6 +18,17 @@ import { parseNumber } from './delta/parse-number';
 import { parseUnit } from './delta/parse-unit';
 import { separateTweenieOptions } from './delta/separate-tweenie-options';
 
+/*
+  TODO:
+    - fix timeline children update
+    - fix tweenie repeat isYoyo option
+    - add `onRefresh` callbacks for tweenie
+    - add MotionPath
+    - add MotionPath to delta
+    - add tweenie to tween
+    - add deltas to ObjectTween?
+*/
+
 const mojs = {
   revision: '2.3.0',
   Tweenie,
