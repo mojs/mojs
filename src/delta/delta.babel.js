@@ -18,15 +18,85 @@ const parsersMap = {
 const Delta = Object.create(ClassProto);
 
 /**
- * `init` = function init the class.
+ * `init` - function init the class.
  *
  * @extends @ClassProto
  * @public
  */
 Delta.init = function(o = {}) {
+  // super call
   ClassProto.init.call(this, o);
-
+  // parse delta
   this._parseDelta();
+  // set up the update function acording to the delta type
+  this.update = this[`_upd_${this._delta.type}`];
+  // set up the tweenie
+  this._setupTweenie();
+};
+
+/**
+ * `_upd_number` - function to update `number` delta.
+ *
+ * @private
+ * @param {Number} Eased progress.
+ * @param {Number} Progress.
+ * @param {Boolean} If forward update direction.
+ * @returns {Object} This delta.
+ */
+Delta._upd_number = function(ep, p, isForward) {
+  const { curve, delta, start, end } = this._delta;
+  const { target, key } = this._props;
+
+  target[key] = (curve === void 0)
+    ? start + ep*delta
+    : curve(p)*start + p*delta;
+
+  return this;
+};
+
+/**
+ * `_upd_unit` - function to update `unit` delta.
+ *
+ * @private
+ * @param {Number} Eased progress.
+ * @param {Number} Progress.
+ * @param {Boolean} If forward update direction.
+ * @returns {Object} This delta.
+ */
+Delta._upd_unit = function(ep, p, isForward) {
+  const { curve, delta, start, end, unit } = this._delta;
+  const { target, key } = this._props;
+
+  const value = (curve === void 0)
+    ? start + ep*delta
+    : curve(p)*start + p*delta;
+
+  target[key] = `${value}${unit}`;
+
+  return this;
+};
+
+/**
+ * `_setupTweenie` - function to set up tweenie if needed.
+ */
+Delta._setupTweenie = function () {
+  const { tweenieOptions } = this._delta;
+  // set up tweenie if `tweenOptions` is set
+  if (tweenieOptions === void 0) { return; }
+
+  // create tweenie with tweenie options
+  this._tween = new Tweenie({
+    ...tweenieOptions,
+    // send `onUpdate` function to call the `this.update` function
+    // and envoke previous `onUpdate`
+    onUpdate: (ep, p, isForward) => {
+      this.update(ep, p, isForward);
+      // envoke old `onUpdate` if is present
+      if (tweenieOptions.onUpdate !== void 0) {
+        tweenieOptions.onUpdate(ep, p, isForward);
+      }
+    }
+  });
 };
 
 /**
@@ -36,11 +106,11 @@ Delta.init = function(o = {}) {
  * @private
  */
 Delta._declareDefaults = function() {
-
   this._defaults = {
     key: null,
     object: null,
-    customProperties: null
+    customProperties: null,
+    target: null
   };
 };
 

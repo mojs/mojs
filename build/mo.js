@@ -1702,6 +1702,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     });
     exports.Delta = undefined;
 
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
 
     // map that holds all available parsers
     var parsersMap = {
@@ -1716,7 +1729,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var Delta = Object.create(_classProto.ClassProto);
 
     /**
-     * `init` = function init the class.
+     * `init` - function init the class.
      *
      * @extends @ClassProto
      * @public
@@ -1724,9 +1737,94 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     Delta.init = function () {
       var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
+      // super call
       _classProto.ClassProto.init.call(this, o);
-
+      // parse delta
       this._parseDelta();
+      // set up the update function acording to the delta type
+      this.update = this['_upd_' + this._delta.type];
+      // set up the tweenie
+      this._setupTweenie();
+    };
+
+    /**
+     * `_upd_number` - function to update `number` delta.
+     *
+     * @private
+     * @param {Number} Eased progress.
+     * @param {Number} Progress.
+     * @param {Boolean} If forward update direction.
+     * @returns {Object} This delta.
+     */
+    Delta._upd_number = function (ep, p, isForward) {
+      var _delta = this._delta,
+          curve = _delta.curve,
+          delta = _delta.delta,
+          start = _delta.start,
+          end = _delta.end;
+      var _props = this._props,
+          target = _props.target,
+          key = _props.key;
+
+
+      target[key] = curve === void 0 ? start + ep * delta : curve(p) * start + p * delta;
+
+      return this;
+    };
+
+    /**
+     * `_upd_unit` - function to update `unit` delta.
+     *
+     * @private
+     * @param {Number} Eased progress.
+     * @param {Number} Progress.
+     * @param {Boolean} If forward update direction.
+     * @returns {Object} This delta.
+     */
+    Delta._upd_unit = function (ep, p, isForward) {
+      var _delta2 = this._delta,
+          curve = _delta2.curve,
+          delta = _delta2.delta,
+          start = _delta2.start,
+          end = _delta2.end,
+          unit = _delta2.unit;
+      var _props2 = this._props,
+          target = _props2.target,
+          key = _props2.key;
+
+
+      var value = curve === void 0 ? start + ep * delta : curve(p) * start + p * delta;
+
+      target[key] = '' + value + unit;
+
+      return this;
+    };
+
+    /**
+     * `_setupTweenie` - function to set up tweenie if needed.
+     */
+    Delta._setupTweenie = function () {
+      var _this = this;
+
+      var tweenieOptions = this._delta.tweenieOptions;
+
+      // set up tweenie if `tweenOptions` is set
+      if (tweenieOptions === void 0) {
+        return;
+      }
+
+      // create tweenie with tweenie options
+      this._tween = new _tweenie.Tweenie(_extends({}, tweenieOptions, {
+        // send `onUpdate` function to call the `this.update` function
+        // and envoke previous `onUpdate`
+        onUpdate: function (ep, p, isForward) {
+          _this.update(ep, p, isForward);
+          // envoke old `onUpdate` if is present
+          if (tweenieOptions.onUpdate !== void 0) {
+            tweenieOptions.onUpdate(ep, p, isForward);
+          }
+        }
+      }));
     };
 
     /**
@@ -1736,11 +1834,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @private
      */
     Delta._declareDefaults = function () {
-
       this._defaults = {
         key: null,
         object: null,
-        customProperties: null
+        customProperties: null,
+        target: null
       };
     };
 
@@ -1750,9 +1848,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @private
      */
     Delta._parseDelta = function () {
-      var _props = this._props,
-          key = _props.key,
-          customProperties = _props.customProperties;
+      var _props3 = this._props,
+          key = _props3.key,
+          customProperties = _props3.customProperties;
 
 
       customProperties != null && customProperties[key] != null ? this._parseByCustom() : this._parseByGuess();
@@ -1764,10 +1862,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @private
      */
     Delta._parseByGuess = function () {
-      var _props2 = this._props,
-          key = _props2.key,
-          object = _props2.object,
-          customProperties = _props2.customProperties;
+      var _props4 = this._props,
+          key = _props4.key,
+          object = _props4.object,
+          customProperties = _props4.customProperties;
 
       var split = (0, _splitDelta.splitDelta)(object);
       var start = split.start,
@@ -1785,10 +1883,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @private
      */
     Delta._parseByCustom = function () {
-      var _props3 = this._props,
-          key = _props3.key,
-          object = _props3.object,
-          customProperties = _props3.customProperties;
+      var _props5 = this._props,
+          key = _props5.key,
+          object = _props5.object,
+          customProperties = _props5.customProperties;
 
 
       var customProperty = customProperties[key];
