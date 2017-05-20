@@ -1185,17 +1185,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(2), __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(exports, require('../easing/parse-easing'), require('../tween/tweenie-defaults'));
+    factory(exports, require('../easing/parse-easing'), require('../tween/tweenie-defaults'), require('../delta/separate-tweenie-options'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global.parseEasing, global.tweenieDefaults);
+    factory(mod.exports, global.parseEasing, global.tweenieDefaults, global.separateTweenieOptions);
     global.mojs = mod.exports;
   }
 })(this, function (exports) {
@@ -1203,7 +1203,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(2), __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1213,10 +1213,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var mod = {
         exports: {}
       };
-      factory(mod.exports, global.parseEasing, global.tweenieDefaults);
+      factory(mod.exports, global.parseEasing, global.tweenieDefaults, global.separateTweenieOptions);
       global.mojs = mod.exports;
     }
-  })(undefined, function (exports, _parseEasing, _tweenieDefaults) {
+  })(undefined, function (exports, _parseEasing, _tweenieDefaults, _separateTweenieOptions) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
@@ -1250,15 +1250,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       // parsed `delta` object vs `tweenie`
       var curve = object.curve !== void 0 ? (0, _parseEasing.parseEasing)(object.curve) : void 0;
       delete object.curve;
-      // loop thru tweenieDefaults and extract them from the object
-      var tweenieOptions = void 0;
-      for (var option in _tweenieDefaults.tweenieDefaults) {
-        if (object[option] !== void 0) {
-          tweenieOptions = tweenieOptions || {};
-          tweenieOptions[option] = object[option];
-          delete object[option];
-        }
-      }
+      // extract tweenie options
+      var tweenieOptions = (0, _separateTweenieOptions.separateTweenieOptions)(object);
       // at this point only the `start` -> `end` should left get the values
       var start = Object.keys(object)[0];
       var end = object[start];
@@ -2548,17 +2541,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(2), __webpack_require__(15), __webpack_require__(11), __webpack_require__(9), __webpack_require__(1), __webpack_require__(12), __webpack_require__(13), __webpack_require__(7), __webpack_require__(5), __webpack_require__(6), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(2), __webpack_require__(15), __webpack_require__(11), __webpack_require__(9), __webpack_require__(1), __webpack_require__(12), __webpack_require__(19), __webpack_require__(13), __webpack_require__(7), __webpack_require__(5), __webpack_require__(6), __webpack_require__(18), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./class-proto'), require('./tween/tweenie'), require('./tween/tweenie-defaults'), require('./tween/timeline'), require('./tween/tweener'), require('./easing/easing'), require('./easing/parse-easing'), require('./delta/delta'), require('./delta/parse-delta'), require('./delta/split-delta'), require('./delta/parse-number'), require('./delta/parse-unit'), require('./easing/basic-easing'));
+    factory(module, exports, require('./class-proto'), require('./tween/tweenie'), require('./tween/tweenie-defaults'), require('./tween/timeline'), require('./tween/tweener'), require('./easing/easing'), require('./easing/parse-easing'), require('./delta/delta'), require('./delta/deltas'), require('./delta/parse-delta'), require('./delta/split-delta'), require('./delta/parse-number'), require('./delta/parse-unit'), require('./delta/separate-tweenie-options'), require('./easing/basic-easing'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.classProto, global.tweenie, global.tweenieDefaults, global.timeline, global.tweener, global.easing, global.parseEasing, global.delta, global.parseDelta, global.splitDelta, global.parseNumber, global.parseUnit, global.basicEasing);
+    factory(mod, mod.exports, global.classProto, global.tweenie, global.tweenieDefaults, global.timeline, global.tweener, global.easing, global.parseEasing, global.delta, global.deltas, global.parseDelta, global.splitDelta, global.parseNumber, global.parseUnit, global.separateTweenieOptions, global.basicEasing);
     global.mojs = mod.exports;
   }
 })(this, function (module, exports) {
@@ -2566,7 +2559,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(2), __webpack_require__(15), __webpack_require__(11), __webpack_require__(9), __webpack_require__(1), __webpack_require__(12), __webpack_require__(13), __webpack_require__(7), __webpack_require__(5), __webpack_require__(6), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(2), __webpack_require__(15), __webpack_require__(11), __webpack_require__(9), __webpack_require__(1), __webpack_require__(12), __webpack_require__(19), __webpack_require__(13), __webpack_require__(7), __webpack_require__(5), __webpack_require__(6), __webpack_require__(18), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2576,10 +2569,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var mod = {
         exports: {}
       };
-      factory(mod, mod.exports, global.classProto, global.tweenie, global.tweenieDefaults, global.timeline, global.tweener, global.easing, global.parseEasing, global.delta, global.parseDelta, global.splitDelta, global.parseNumber, global.parseUnit, global.basicEasing);
+      factory(mod, mod.exports, global.classProto, global.tweenie, global.tweenieDefaults, global.timeline, global.tweener, global.easing, global.parseEasing, global.delta, global.deltas, global.parseDelta, global.splitDelta, global.parseNumber, global.parseUnit, global.separateTweenieOptions, global.basicEasing);
       global.mojs = mod.exports;
     }
-  })(undefined, function (module, exports, _classProto, _tweenie, _tweenieDefaults, _timeline, _tweener, _easing, _parseEasing, _delta, _parseDelta, _splitDelta, _parseNumber, _parseUnit, _basicEasing) {
+  })(undefined, function (module, exports, _classProto, _tweenie, _tweenieDefaults, _timeline, _tweener, _easing, _parseEasing, _delta, _deltas, _parseDelta, _splitDelta, _parseNumber, _parseUnit, _separateTweenieOptions, _basicEasing) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
@@ -2599,10 +2592,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         tweener: _tweener.tweener,
         // temporary
         Delta: _delta.Delta,
+        Deltas: _deltas.Deltas,
         parseDelta: _parseDelta.parseDelta,
         splitDelta: _splitDelta.splitDelta,
         parseNumber: _parseNumber.parseNumber,
-        parseUnit: _parseUnit.parseUnit
+        parseUnit: _parseUnit.parseUnit,
+        separateTweenieOptions: _separateTweenieOptions.separateTweenieOptions
       }
     };
 
@@ -2652,6 +2647,241 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 module.exports = __webpack_require__(16);
 
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../tween/tweenie-defaults'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.tweenieDefaults);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.tweenieDefaults);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _tweenieDefaults) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.separateTweenieOptions = undefined;
+
+
+    /**
+     * Function to split the delta object to `tweenie` options and actual `delta`.
+     *
+     * @param {Object} Object to split.
+     * @returns {Object} Split `delta`.
+     */
+    var separateTweenieOptions = function (object) {
+      var tweenieOptions = void 0;
+      for (var option in _tweenieDefaults.tweenieDefaults) {
+        if (object[option] !== void 0) {
+          tweenieOptions = tweenieOptions || {};
+          tweenieOptions[option] = object[option];
+          delete object[option];
+        }
+      }
+
+      return tweenieOptions;
+    };
+
+    exports.separateTweenieOptions = separateTweenieOptions;
+  });
+});
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(15), __webpack_require__(12), __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../class-proto'), require('../tween/tweenie'), require('../tween/timeline'), require('./delta'), require('./separate-tweenie-options'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.classProto, global.tweenie, global.timeline, global.delta, global.separateTweenieOptions);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(15), __webpack_require__(12), __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.classProto, global.tweenie, global.timeline, global.delta, global.separateTweenieOptions);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _classProto, _tweenie, _timeline, _delta, _separateTweenieOptions) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.Deltas = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    /* ------------------- */
+    /* The `Deltas` class  */
+    /* ------------------- */
+
+    var Deltas = Object.create(_classProto.ClassProto);
+
+    /**
+     * `init` - function init the class.
+     *
+     * @extends @ClassProto
+     * @public
+     */
+    Deltas.init = function () {
+      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      // super call
+      _classProto.ClassProto.init.call(this, o);
+
+      // clone the options
+      var options = _extends({}, o);
+      // get `timeline` options and remove them immediately
+      var timelineOptions = options.timeline;
+      delete options.timeline;
+
+      // set up the main `tweenie`
+      this._setupTweenie(options);
+      // set up the `timeline`
+      this._setupTimeline(timelineOptions);
+      // parse deltas from options that left so far
+      this._parseDeltas(options);
+    };
+
+    /**
+     * `_setupTweenie` - function to set up main tweenie.
+     *
+     * @param {Object} Options.
+     */
+    Deltas._setupTweenie = function (options) {
+      // separate main tweenie options
+      var tweenieOptions = (0, _separateTweenieOptions.separateTweenieOptions)(options);
+      this._tween = new _tweenie.Tweenie(tweenieOptions);
+    };
+
+    /**
+     * `_setupTimeline` - function to set up main timeline.
+     *
+     * @param {Object} Timeline options.
+     */
+    Deltas._setupTimeline = function (options) {
+      this._timeline = new _timeline.Timeline(options);
+      this._timeline.add(this._tween);
+    };
+
+    /**
+     * `_parseDeltas` - function to parse deltas.
+     *
+     * @param {Object} Options.
+     */
+    Deltas._parseDeltas = function (options) {
+      // deltas that have tween
+      this._tweenDeltas = [];
+      // deltas that don't have tween
+      this._plainDeltas = [];
+      // static properties
+      this._staticProps = {};
+      // loop thru options and create deltas with objects
+      for (var key in options) {
+        var value = options[key];
+        // if value is tatic save it to static props
+        if (typeof value !== 'object') {
+          this._staticProps[key] = value;
+          continue;
+        }
+        // if value is not static, create delta object
+        var delta = new _delta.Delta({ key: key, object: value });
+        // check if delta has own tween and add to `_tweenDeltas`
+        if (delta._tween) {
+          this._tweenDeltas.push(delta);
+        }
+        // else add to plain deltas
+        else {
+            this._plainDeltas.push(delta);
+          }
+      }
+      // add tween deltas to the timeline
+      this._timeline.add(this._tweenDeltas);
+    };
+
+    /**
+     * Imitate `class` with wrapper
+     *
+     * @param {Object} Options object.
+     * @returns {Object} Tweenie instance.
+     */
+    var wrap = function (o) {
+      var instance = Object.create(Deltas);
+      instance.init(o);
+
+      return instance;
+    };
+
+    wrap.__mojsClass = Deltas;
+
+    exports.Deltas = wrap;
+  });
+});
 
 /***/ })
 /******/ ]);

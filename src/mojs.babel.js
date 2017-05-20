@@ -10,11 +10,13 @@ import { parseEasing } from './easing/parse-easing';
 
 // temporary
 import { Delta } from './delta/delta';
+import { Deltas } from './delta/deltas';
 import { parseDelta } from './delta/parse-delta';
 
 import { splitDelta } from './delta/split-delta';
 import { parseNumber } from './delta/parse-number';
 import { parseUnit } from './delta/parse-unit';
+import { separateTweenieOptions } from './delta/separate-tweenie-options';
 
 const mojs = {
   revision: '2.3.0',
@@ -28,10 +30,12 @@ const mojs = {
     tweener,
     // temporary
     Delta,
+    Deltas,
     parseDelta,
     splitDelta,
     parseNumber,
-    parseUnit
+    parseUnit,
+    separateTweenieOptions
   }
 };
 
