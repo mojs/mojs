@@ -181,9 +181,9 @@ Tweenie.reset = function() {
   delete this._prevTime;
 };
 
-/* --------------------- */
+/* ----------------------- */
 /* The `Private` functions */
-/* --------------------- */
+/* ----------------------- */
 
 /**
  * _setupPlay - function to setup before `play`.

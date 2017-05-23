@@ -72,93 +72,102 @@
       var x10 = document.querySelector('#js-10x');
       var slider = document.querySelector('#js-slider');
 
-      const tween = new mojs.Tweenie({
+      const timeline = new mojs.Timeline({
         // delay: 500,
         duration: 5000,
         easing: 'linear.none',
         onUpdate(ep, p, isForward, isReverse, index) {
-          console.log(`{${index === void 0 ? '' : index}}, [tween update]`, ep);
-          el.style.transform = `translate(${200*ep}px, 0)`;
+          // console.log(`{${index === void 0 ? '' : index}}, [tween update]`, ep);
+          // el.style.transform = `translate(${200*ep}px, 0)`;
         },
         onChimeIn(isForward, isReverse, index) {
-          console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
+          // console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
         },
         onChimeOut(isForward, isReverse, index) {
-          console.log(`{${index === void 0 ? '' : index}}, [tween chime out]`);
+          // console.log(`{${index === void 0 ? '' : index}}, [tween chime out]`);
         },
         onStart(isForward, isReverse, index) {
-          console.log(`{${index === void 0 ? '' : index}}, [tween start]`);
+          // console.log(`{${index === void 0 ? '' : index}}, [tween start]`);
         },
         onComplete(isForward, isReverse, index) {
-          console.log(`{${index === void 0 ? '' : index}}, [tween complete]`);
+          // console.log(`{${index === void 0 ? '' : index}}, [tween complete]`);
         },
         onChimeIn(isForward, isReverse, index) {
-          console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
+          // console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
         }
       });
+
+      for (let i = 0; i < 20; i++) {
+        timeline.add(new mojs.Tweenie({
+          onUpdate(ep, p, isForward, isReverse, index) {
+            console.log(`[tween update]`, ep);
+            (i === 0) && (el.style.transform = `translate(${200*ep}px, 0)`);
+          },
+        }));
+      }
 
       playBtn.addEventListener('click', function() {
         console.log('::: play click');
         console.time('start');
-        tween.play();
+        timeline.play();
       });
 
       pauseBtn.addEventListener('click', function() {
         console.log('::: pause click');
-        tween.pause();
+        timeline.pause();
       });
 
       reverseBtn.addEventListener('click', function() {
         console.log('::: revert click');
 
-        tween.reverse();
+        timeline.reverse();
       });
 
       stopBtn.addEventListener('click', function() {
         console.log('::: stop click');
 
-        tween.stop();
+        timeline.stop();
       });
 
       replayBtn.addEventListener('click', function() {
         console.log('::: replay click');
 
-        tween.replay();
+        timeline.replay();
       });
 
       one10.addEventListener('click', function() {
         console.log('::: speed: .1x');
-        tween.setSpeed(.1);
+        timeline.setSpeed(.1);
       });
 
       five10.addEventListener('click', function() {
         console.log('::: speed: .5x');
-        tween.setSpeed(.5);
+        timeline.setSpeed(.5);
       });
 
       x1.addEventListener('click', function() {
         console.log('::: speed: 1x');
-        tween.setSpeed(1);
+        timeline.setSpeed(1);
       });
 
       x2.addEventListener('click', function() {
         console.log('::: speed: 2x');
-        tween.setSpeed(2);
+        timeline.setSpeed(2);
       });
 
       x5.addEventListener('click', function() {
         console.log('::: speed: 5x');
-        tween.setSpeed(5);
+        timeline.setSpeed(5);
       });
 
       x10.addEventListener('click', function() {
         console.log('::: speed: 10x');
-        tween.setSpeed(10);
+        timeline.setSpeed(10);
       });
 
       slider.addEventListener('input', function() {
         // console.log(':: slider value: ', this.value);
-        tween.setProgress(this.value/1000);
+        timeline.setProgress(this.value/1000);
       });
 
       // var el = {};

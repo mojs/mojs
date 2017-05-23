@@ -212,9 +212,9 @@ describe('timeline ->', function () {
       var options = [Math.random(), Math.random(), Math.random(), Math.random()];
       update(options[0], options[1], options[2], options[3]);
 
-      expect(timeline._items[0].update).toHaveBeenCalledWith(options[0], options[1], options[2], options[3]);
-      expect(timeline._items[1].update).toHaveBeenCalledWith(options[0], options[1], options[2], options[3]);
-      expect(timeline._items[2].update).toHaveBeenCalledWith(options[0], options[1], options[2], options[3]);
+      expect(timeline._items[0].update).toHaveBeenCalledWith(options[3]);
+      expect(timeline._items[1].update).toHaveBeenCalledWith(options[3]);
+      expect(timeline._items[2].update).toHaveBeenCalledWith(options[3]);
     });
 
     it('should call overwritten `onUpdate`', function () {

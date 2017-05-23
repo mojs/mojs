@@ -158,7 +158,9 @@ Timeline._createUpdate = function (onUpdate, context) {
    */
   return function(ep, p, isForward, time) {
     // 1. the order is important
-    context._callOnItems('update', ep, p, isForward, time);
+    for (var i = 0; i < context._items.length; i++) {
+      context._items[i].update(time);
+    }
     // 2. the order is important
     onUpdate(ep, p, isForward, time);
   };
