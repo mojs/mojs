@@ -16,7 +16,7 @@ const Tweenable = Object.create(Super);
 Tweenable.init = function(o) {
   Super.init.call(this, o);
   // proxy all tweenie public methods to `timeline` with fallback to `tween`
-  const methods = [ 'play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset' ];
+  const methods = [ 'play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset', 'setStartTime' ];
   for (let i = 0; i < methods.length; i++) {
     const method = methods[i];
     this[method] = (...rest) => {

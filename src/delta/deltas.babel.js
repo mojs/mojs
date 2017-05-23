@@ -27,6 +27,11 @@ Deltas.init = function(o = {}) {
   const timelineOptions = options.timeline;
   delete options.timeline;
 
+  // get `timeline` options and remove them immediately
+  this._customProperties = options.customProperties || {};
+  this._render = this._customProperties.render || (() => {});
+  delete options.customProperties;
+
   // save the el object and remove it immediately
   this._el = options.el;
   delete options.el;
@@ -55,6 +60,8 @@ Deltas._setupTweenie = function(options) {
     onUpdate: (ep, p, isForward) => {
       // update plain deltas
       this._upd_deltas(ep, p, isForward);
+      // call render function
+      this._render(this._el, ep, p, isForward);
       // envoke onUpdate if present
       tweenieOptions.onUpdate && tweenieOptions.onUpdate(ep, p, isForward);
     }
@@ -89,11 +96,17 @@ Deltas._parseProperties = function(options) {
     const value = options[key];
     // if value is tatic save it to static props
     if (typeof value !== 'object') {
+      this._el[key] = value;
       this._staticProps[key] = value;
       continue;
     }
     // if value is not static, create delta object
-    const delta = new Delta({ key, object: value, target: this._el });
+    const delta = new Delta({
+      key,
+      target: this._el,
+      object: value,
+      customProperties: this._customProperties
+    });
     // check if delta has own tween and add to `_tweenDeltas`
     if (delta.tween) { this._tweenDeltas.push(delta); }
     // else add to plain deltas

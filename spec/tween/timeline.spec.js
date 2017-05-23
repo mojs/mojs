@@ -378,6 +378,55 @@ describe('timeline ->', function () {
 
       expect(timeline.add(new Tweenie())).toBe(timeline);
     });
+
+    it('should add non-`tweenie` modules to the `_items` #timeline', function () {
+      var timeline = Timeline();
+
+      var module1 = {
+        timeline: new Timeline,
+        tween: new Tweenie
+      };
+
+      var module2 = {
+        timeline: new Timeline,
+        tween: new Tweenie
+      };
+
+      var module3 = {
+        timeline: new Timeline,
+        tween: new Tweenie
+      };
+
+      timeline.add([module1, module2, module3]);
+
+      expect(timeline._items.length).toBe(3);
+      expect(timeline._items[0]).toBe(module1.timeline);
+      expect(timeline._items[1]).toBe(module2.timeline);
+      expect(timeline._items[2]).toBe(module3.timeline);
+    });
+
+    it('should add non-`tweenie` modules to the `_items` #tween', function () {
+      var timeline = Timeline();
+
+      var module1 = {
+        tween: new Tweenie
+      };
+
+      var module2 = {
+        tween: new Tweenie
+      };
+
+      var module3 = {
+        tween: new Tweenie
+      };
+
+      timeline.add([module1, module2, module3]);
+
+      expect(timeline._items.length).toBe(3);
+      expect(timeline._items[0]).toBe(module1.tween);
+      expect(timeline._items[1]).toBe(module2.tween);
+      expect(timeline._items[2]).toBe(module3.tween);
+    });
   });
 
   describe('`add` function ->', function() {

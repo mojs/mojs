@@ -174,11 +174,15 @@
       // var deltas = new mojs.__helpers__.Deltas({
       //   el: el,
       //   x: { 200: 300 },
-      //   y: { 10: 0 },
       //   duration: 2000,
-      //   onUpdate(ep, p, isForward) {
-      //     console.log(`ep: ${ep}`, el);
+      //   customProperties: {
+      //     render(props) {
+      //       document.body.style.transform = `translate(${props.x}px, 0)`;
+      //     }
       //   }
+      //   // onUpdate(ep, p, isForward) {
+      //   //   console.log(`ep: ${ep}`, el);
+      //   // }
       // }).play();
 
     </script>

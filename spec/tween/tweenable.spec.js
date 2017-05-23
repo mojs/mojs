@@ -21,7 +21,7 @@ describe('timeline ->', function () {
     tweenable.timeline = new Timeline;
 
     it('should proxy public methods of `Tweenie`', function () {
-      var methods = ['play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset'];
+      var methods = ['play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset', 'setStartTime'];
 
       for (var i = 0; i < methods.length; i++) {
         var method = methods[i];
@@ -38,7 +38,7 @@ describe('timeline ->', function () {
     tweenable.tween = new Tweenie;
 
     it('should proxy public methods of `Tweenie`', function () {
-      var methods = ['play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset'];
+      var methods = ['play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset', 'setStartTime'];
 
       for (var i = 0; i < methods.length; i++) {
         var method = methods[i];

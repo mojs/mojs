@@ -49,6 +49,11 @@ Timeline.add = function(tweenie, shift = 0) {
     tweenie.forEach((tweenie) => { this.add(tweenie, shift); });
   // if a single tweenie, add it to `_items`
   } else {
+
+    // if it has child `timeline` or `tween` property - add it instead
+    const runner =  tweenie.timeline || tweenie.tween;
+    if (runner) { tweenie = runner; }
+
     // set the `shiftTime` on tweenie
     tweenie.set('shiftTime', shift);
     // add to child timelines

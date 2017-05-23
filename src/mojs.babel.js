@@ -59,11 +59,21 @@ addBasicEasing(mojs);
 // window.onload = () => {
 //   const items = [];
 //   setTimeout(() => {
-//     for (let i = 0; i < 200; i++) {
-//       const tweenie = Tweenie({
+//     for (let i = 0; i < 1; i++) {
+//       // var el = document.querySelector('#js-el');
+//       const tweenie = mojs.__helpers__.Deltas({
+//         el: {},
+//         z: {200: 300},
+//         y: {0: 50},
+//         z1: {200: 300, duration: 3000},
+//         y2: {0: 50},
+//         z3: {200: 300, duration: 3000},
+//         y4: {0: 50},
+//         z5: {200: 300, duration: 3000},
+//         y6: {0: 50},
 //         duration: 5000,
 //         delay: 200,
-//         // easing: 'linear.none',
+//         easing: 'linear.none',
 //         onUpdate(ep, p, isForward, isReverse, index) {},
 //         onChimeIn(isForward, isReverse, index) {},
 //         onChimeOut(isForward, isReverse, index) {},
