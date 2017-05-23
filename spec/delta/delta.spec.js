@@ -207,8 +207,8 @@ describe('`delta` ->', function () {
 
       var delta = Delta({ key: key, object: options });
 
-      expect(delta._tween).toBeDefined();
-      expect(delta._tween._props.duration).toBe(options.duration);
+      expect(delta.tween).toBeDefined();
+      expect(delta.tween._props.duration).toBe(options.duration);
     });
 
     it('should pass `update` as `onUpdate` callback', function () {
@@ -224,7 +224,7 @@ describe('`delta` ->', function () {
 
       var progress = Math.random();
       var isForward = true;
-      delta._tween._props.onUpdate(progress, progress, isForward);
+      delta.tween._props.onUpdate(progress, progress, isForward);
 
       expect(delta.update).toHaveBeenCalledWith(progress, progress, isForward);
     });
@@ -245,7 +245,7 @@ describe('`delta` ->', function () {
       var progress = Math.random();
       var isForward = true;
 
-      delta._tween._props.onUpdate(progress, progress, isForward);
+      delta.tween._props.onUpdate(progress, progress, isForward);
       expect(delta._delta.tweenieOptions.onUpdate).toHaveBeenCalledWith(progress, progress, isForward);
     });
 
@@ -257,7 +257,7 @@ describe('`delta` ->', function () {
       };
 
       var delta = Delta({ key: key, object: options });
-      expect(delta._tween).not.toBeDefined();
+      expect(delta.tween).not.toBeDefined();
     });
   });
 });

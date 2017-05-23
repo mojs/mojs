@@ -30,8 +30,8 @@ describe('`deltas` ->', function () {
 
       var deltas = Deltas(options);
 
-      expect(deltas._tween._props.delay).toBe(options.delay);
-      expect(deltas._tween._props.duration).toBe(options.duration);
+      expect(deltas.tween._props.delay).toBe(options.delay);
+      expect(deltas.tween._props.duration).toBe(options.duration);
     });
   });
 
@@ -48,9 +48,9 @@ describe('`deltas` ->', function () {
 
       var deltas = Deltas(options);
 
-      expect(deltas._timeline).toBeDefined();
-      expect(deltas._timeline._o).toBe(options.timeline);
-      expect(deltas._timeline._items[0]).toBe(deltas._tween);
+      expect(deltas.timeline).toBeDefined();
+      expect(deltas.timeline._o).toBe(options.timeline);
+      expect(deltas.timeline._items[0]).toBe(deltas.tween);
     });
   });
 
@@ -67,11 +67,11 @@ describe('`deltas` ->', function () {
 
       expect(deltas._tweenDeltas.length).toBe(2);
       expect(deltas._plainDeltas.length).toBe(1);
-      expect(deltas._timeline._items.length).toBe(1 + deltas._tweenDeltas.length);
+      expect(deltas.timeline._items.length).toBe(1 + deltas._tweenDeltas.length);
       expect(deltas._staticProps.f).toBe(5);
-      expect(deltas._timeline._items[0]).toBe(deltas._tween);
-      expect(deltas._timeline._items[1]).toBe(deltas._tweenDeltas[0]);
-      expect(deltas._timeline._items[2]).toBe(deltas._tweenDeltas[1]);
+      expect(deltas.timeline._items[0]).toBe(deltas.tween);
+      expect(deltas.timeline._items[1]).toBe(deltas._tweenDeltas[0]);
+      expect(deltas.timeline._items[2]).toBe(deltas._tweenDeltas[1]);
     });
 
     it('should pass `_el` as target to deltas', function () {
@@ -127,7 +127,7 @@ describe('`deltas` ->', function () {
 
       var progress = Math.random();
       var isForward = true;
-      deltas._tween._props.onUpdate(progress, progress, isForward);
+      deltas.tween._props.onUpdate(progress, progress, isForward);
 
       expect(deltas._upd_deltas).toHaveBeenCalledWith(progress, progress, isForward);
     });
@@ -148,7 +148,7 @@ describe('`deltas` ->', function () {
 
       var progress = Math.random();
       var isForward = true;
-      deltas._tween._props.onUpdate(progress, progress, isForward);
+      deltas.tween._props.onUpdate(progress, progress, isForward);
 
       expect(options.onUpdate).toHaveBeenCalledWith(progress, progress, isForward);
       expect(options.onUpdate.calls.count()).toBe(1);

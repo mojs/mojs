@@ -17,16 +17,16 @@ import { splitDelta } from './delta/split-delta';
 import { parseNumber } from './delta/parse-number';
 import { parseUnit } from './delta/parse-unit';
 import { separateTweenieOptions } from './delta/separate-tweenie-options';
+import { Tweenable } from './tween/tweenable';
 
 /*
   TODO:
-    - fix timeline children update
-    - fix tweenie repeat isYoyo option
+    - add tweenie repeat isYoyo option
     - add `onRefresh` callbacks for tweenie
     - add MotionPath
     - add MotionPath to delta
     - add tweenie to tween
-    - add deltas to ObjectTween?
+    - rename deltas to ObjectTween?
 */
 
 const mojs = {
@@ -46,7 +46,8 @@ const mojs = {
     splitDelta,
     parseNumber,
     parseUnit,
-    separateTweenieOptions
+    separateTweenieOptions,
+    Tweenable
   }
 };
 

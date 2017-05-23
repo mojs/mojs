@@ -85,7 +85,7 @@ Delta._setupTweenie = function () {
   if (tweenieOptions === void 0) { return; }
 
   // create tweenie with tweenie options
-  this._tween = new Tweenie({
+  this.tween = new Tweenie({
     ...tweenieOptions,
     // send `onUpdate` function to call the `this.update` function
     // and envoke previous `onUpdate`

@@ -1,6 +1,6 @@
-import { ClassProto } from '../class-proto';
 import { Tweenie } from '../tween/tweenie';
 import { Timeline } from '../tween/timeline';
+import { Tweenable } from '../tween/tweenable';
 import { Delta } from './delta';
 import { separateTweenieOptions } from './separate-tweenie-options';
 
@@ -8,17 +8,18 @@ import { separateTweenieOptions } from './separate-tweenie-options';
 /* The `Deltas` class  */
 /* ------------------- */
 
-const Deltas = Object.create(ClassProto);
+const Super = Tweenable.__mojsClass;
+const Deltas = Object.create(Super);
 
 /**
  * `init` - function init the class.
  *
- * @extends @ClassProto
+ * @extends @Tweenable
  * @public
  */
 Deltas.init = function(o = {}) {
   // super call
-  ClassProto.init.call(this, o);
+  Super.init.call(this, o);
 
   // clone the options
   const options = { ...o };
@@ -47,7 +48,7 @@ Deltas._setupTweenie = function(options) {
   // separate main tweenie options
   const tweenieOptions = separateTweenieOptions(options);
   // create tween
-  this._tween = new Tweenie({
+  this.tween = new Tweenie({
     ...tweenieOptions,
     // update plain deltas on update
     // and call the previous `onUpdate` if present
@@ -66,8 +67,8 @@ Deltas._setupTweenie = function(options) {
  * @param {Object} Timeline options.
  */
 Deltas._setupTimeline = function(options) {
-  this._timeline = new Timeline(options);
-  this._timeline.add(this._tween);
+  this.timeline = new Timeline(options);
+  this.timeline.add(this.tween);
 };
 
 /**
@@ -94,12 +95,12 @@ Deltas._parseProperties = function(options) {
     // if value is not static, create delta object
     const delta = new Delta({ key, object: value, target: this._el });
     // check if delta has own tween and add to `_tweenDeltas`
-    if (delta._tween) { this._tweenDeltas.push(delta); }
+    if (delta.tween) { this._tweenDeltas.push(delta); }
     // else add to plain deltas
     else { this._plainDeltas.push(delta); }
   }
   // add tween deltas to the timeline
-  this._timeline.add(this._tweenDeltas);
+  this.timeline.add(this._tweenDeltas);
 };
 
 /**
