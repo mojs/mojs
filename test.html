@@ -35,7 +35,6 @@
     <!-- <script src="http://cdn.jsdelivr.net/mojs/latest/mo.min.js"></script> -->
     <!-- <script src="vendor/mo-js/build/mo.min.js"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/mojs/0.288.1/mo.min.js"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js"></script> -->
     <script src="build/mo.js"></script>
 
     <button id="js-play">play</button>
@@ -97,14 +96,14 @@
         }
       });
 
-      for (let i = 0; i < 20; i++) {
-        timeline.add(new mojs.Tweenie({
-          onUpdate(ep, p, isForward, isReverse, index) {
-            console.log(`[tween update]`, ep);
-            (i === 0) && (el.style.transform = `translate(${200*ep}px, 0)`);
-          },
-        }));
-      }
+      // for (let i = 0; i < 20; i++) {
+      //   timeline.add(new mojs.Tweenie({
+      //     onUpdate(ep, p, isForward, isReverse, index) {
+      //       console.log(`[tween update]`, ep);
+      //       (i === 0) && (el.style.transform = `translate(${200*ep}px, 0)`);
+      //     },
+      //   }));
+      // }
 
       playBtn.addEventListener('click', function() {
         console.log('::: play click');
@@ -170,22 +169,78 @@
         timeline.setProgress(this.value/1000);
       });
 
-      // var el = {};
-      // var deltas = new mojs.__helpers__.Deltas({
-      //   el: el,
-      //   x: { 200: 300 },
-      //   duration: 2000,
-      //   customProperties: {
-      //     render(props) {
-      //       document.body.style.transform = `translate(${props.x}px, 0)`;
+      // window.onload = () => {
+      //   const items = [];
+      //   setTimeout(() => {
+      //     for (let i = 0; i < 1; i++) {
+      //       // var el = document.querySelector('#js-el');
+      //       const tweenie = mojs.__helpers__.Deltas({
+      //         el: {},
+      //         z: {200: 300},
+      //         y: {0: 50},
+      //         z1: {200: 300, duration: 3000},
+      //         y2: {0: 50},
+      //         z3: {200: 300, duration: 3000},
+      //         y4: {0: 50},
+      //         z5: {200: 300, duration: 3000},
+      //         y6: {0: 50},
+      //         duration: 5000,
+      //         delay: 200,
+      //         easing: 'linear.none',
+      //         onUpdate(ep, p, isForward, isReverse, index) {},
+      //         onChimeIn(isForward, isReverse, index) {},
+      //         onChimeOut(isForward, isReverse, index) {},
+      //         onStart(isForward, isReverse, index) {},
+      //         onComplete(isForward, isReverse, index) {}
+      //       });
+      //       items.push(tweenie);
       //     }
-      //   }
-      //   // onUpdate(ep, p, isForward) {
-      //   //   console.log(`ep: ${ep}`, el);
-      //   // }
-      // }).play();
-
+      //
+      //     for (let i = 0; i < items.length; i++) {
+      //       items[i].play();
+      //     }
+      //   }, 1000);
+      // };
+      //
     </script>
+
+    <!--
+
+    <script src="vendor/lodash.min.js"></script>
+    <script src="vendor/platform.js"></script>
+    <script src="vendor/benchmark.js"></script>
+
+    <script>
+      var el = {};
+      var motionPath = new mojs.MotionPath({
+        path: 'M0,0 L100,100',
+        el: {}
+      });
+
+      var suite = new Benchmark.Suite;
+      // add tests
+      suite.add('motion path', function() {
+        motionPath.update(Math.random());
+      })
+      .add('easing', function() {
+        var result = mojs.easing.sin.out(Math.random());
+        el['x'] = result;
+      })
+
+      .add('easing #linear', function() {
+        var result = mojs.easing.linear.none(Math.random());
+        el['x'] = result;
+      })
+      // add listeners
+      .on('cycle', function(event) {
+        console.log(String(event.target));
+      })
+      .on('complete', function() {
+        console.log('Fastest is ' + this.filter('fastest').map('name'));
+      })
+      // run async
+      .run({ 'async': true });
+    </script> -->
 
   </body>
 </html>

@@ -10,7 +10,6 @@ import { parseEasing } from './easing/parse-easing';
 
 // temporary
 import { Delta } from './delta/delta';
-import { Deltas } from './delta/deltas';
 import { parseDelta } from './delta/parse-delta';
 
 import { splitDelta } from './delta/split-delta';
@@ -25,7 +24,7 @@ import { Tweenable } from './tween/tweenable';
     - add `onRefresh` callbacks for tweenie
     - add MotionPath
     - add MotionPath to delta
-    - add tweenie to tween
+    - rename tweenie to tween
     - rename deltas to ObjectTween?
 */
 
@@ -41,7 +40,6 @@ const mojs = {
     tweener,
     // temporary
     Delta,
-    Deltas,
     parseDelta,
     splitDelta,
     parseNumber,
@@ -56,37 +54,12 @@ const mojs = {
 import { addBasicEasing } from './easing/basic-easing';
 addBasicEasing(mojs);
 
-// window.onload = () => {
-//   const items = [];
-//   setTimeout(() => {
-//     for (let i = 0; i < 1; i++) {
-//       // var el = document.querySelector('#js-el');
-//       const tweenie = mojs.__helpers__.Deltas({
-//         el: {},
-//         z: {200: 300},
-//         y: {0: 50},
-//         z1: {200: 300, duration: 3000},
-//         y2: {0: 50},
-//         z3: {200: 300, duration: 3000},
-//         y4: {0: 50},
-//         z5: {200: 300, duration: 3000},
-//         y6: {0: 50},
-//         duration: 5000,
-//         delay: 200,
-//         easing: 'linear.none',
-//         onUpdate(ep, p, isForward, isReverse, index) {},
-//         onChimeIn(isForward, isReverse, index) {},
-//         onChimeOut(isForward, isReverse, index) {},
-//         onStart(isForward, isReverse, index) {},
-//         onComplete(isForward, isReverse, index) {}
-//       });
-//       items.push(tweenie);
-//     }
-//
-//     for (let i = 0; i < items.length; i++) {
-//       items[i].play();
-//     }
-//   }, 1000);
-// };
+// Deltas
+import { Deltas } from './delta/deltas';
+mojs.Deltas = Deltas;
+
+// MotionPath
+import { MotionPath } from './delta/motion-path';
+mojs.MotionPath = MotionPath;
 
 export default mojs;

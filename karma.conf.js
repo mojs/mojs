@@ -3,6 +3,7 @@ const { SAUCE_USERNAME, SAUCE_ACCESS_KEY } = process.env;
 
 const isSauceLabs = SAUCE_USERNAME && SAUCE_ACCESS_KEY;
 
+var browsers = [];
 module.exports = function(config) {
 
   if (isSauceLabs) {
@@ -10,8 +11,7 @@ module.exports = function(config) {
     browsers = Object.keys(customLaunchers);
   } else {
     reporters = ['progress', 'coverage', 'clear-screen'];
-    browsers = ['PhantomJS'];
-    // browsers = [];
+    // browsers = ['PhantomJS'];
   }
 
   config.set({

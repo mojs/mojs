@@ -100,13 +100,24 @@ Deltas._parseProperties = function(options) {
       this._staticProps[key] = value;
       continue;
     }
-    // if value is not static, create delta object
-    const delta = new Delta({
-      key,
-      target: this._el,
-      object: value,
-      customProperties: this._customProperties
-    });
+
+    let delta;
+    if (value.path !== undefined) {
+      delta = new mojs.MotionPath({
+        el: this._el,
+        ...value,
+        property: key
+      });
+    } else {
+      // if value is not static, create delta object
+      delta = new Delta({
+        key,
+        target: this._el,
+        object: value,
+        customProperties: this._customProperties
+      });
+    }
+
     // check if delta has own tween and add to `_tweenDeltas`
     if (delta.tween) { this._tweenDeltas.push(delta); }
     // else add to plain deltas

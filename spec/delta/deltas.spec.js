@@ -1,5 +1,5 @@
+var Deltas = mojs.Deltas;
 var helpers = mojs.__helpers__;
-var Deltas = helpers.Deltas;
 var ClassProto = helpers.ClassProto;
 var Tweenable = helpers.Tweenable;
 
