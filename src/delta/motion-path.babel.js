@@ -62,20 +62,40 @@ MotionPath.update = function(ep, p, isForward) {
  * @param {Number} Number of floating point digits.
  */
 MotionPath._samplePath = function(n = this._props.precision) {
-  const totalLength = this._path.getTotalLength();
+  const  totalLength = this._path.getTotalLength();
   const step = 1/n;
-
+  // create the samples map and save main properties
   this._samples = new Map();
+  this._samples.step = step;
+  this._samples.totalLength = totalLength;
+  // samples the path, `key` is in range of [0..1]
   for (var i = 0; i < n; i++) {
     const key = i*step;
-    const point = this._path.getPointAtLength(key*totalLength);
-    this._samples.set(key, { x: point.x, y: point.y });
+    this._setForKey(key);
   }
+  // the last sample is for `1`
+  this._setForKey(1);
+};
 
-
-  const point = this._path.getPointAtLength(totalLength);
-  this._samples.set(1, { x: point.x, y: point.y });
-  this._samples.step = step;
+/**
+ * `_setForKey` - helpref function for `_samplePath`,
+ *                sets a key/value regarding `totalLength` on the map.
+ *
+ * @param  {Number} key Map key [0...1].
+ */
+MotionPath._setForKey = function(key) {
+  const { totalLength } = this._samples;
+  // x/y computation
+  const length = key*totalLength;
+  const point = this._path.getPointAtLength(length);
+  const prevPoint = this._path.getPointAtLength(length - 1);
+  // cangle computation
+  const dY = point.y - prevPoint.y;
+  const dX = point.x - prevPoint.x;
+  const atan = (!isFinite(Math.atan(dY/dX))) ? 0 : Math.atan(dY/dX);
+  const angle = atan*(180/Math.PI);
+  // set the point to the map
+  this._samples.set(key, { x: point.x, y: point.y, angle });
 };
 
 /**

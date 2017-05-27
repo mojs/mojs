@@ -43,28 +43,64 @@ describe('`motion-path` ->', function () {
 
     it('should sample path #2', function () {
       var precision = 200;
-      var step = 1/precision;
       var motionPath = MotionPath({ precision: precision, path: path, el: {} });
 
       var number = 0;
       expect(motionPath._samples.get(number).x).toBeCloseTo(0, 3);
       expect(motionPath._samples.get(number).y).toBeCloseTo(0, 3);
+      expect(motionPath._samples.get(number).angle).toBeCloseTo(0, 3);
 
       var number = .25;
       expect(motionPath._samples.get(number).x).toBeCloseTo(50, 3);
       expect(motionPath._samples.get(number).y).toBeCloseTo(100, 3);
+      expect(motionPath._samples.get(number).angle).toBeCloseTo(63.4, 1);
 
       var number = .5;
       expect(motionPath._samples.get(number).x).toBeCloseTo(100, 3);
       expect(motionPath._samples.get(number).y).toBeCloseTo(200, 3);
+      expect(motionPath._samples.get(number).angle).toBeCloseTo(63.4, 1);
 
       var number = .75;
       expect(motionPath._samples.get(number).x).toBeCloseTo(150, 3);
       expect(motionPath._samples.get(number).y).toBeCloseTo(300, 3);
+      expect(motionPath._samples.get(number).angle).toBeCloseTo(63.4, 1);
 
       var number = 1;
       expect(motionPath._samples.get(number).x).toBeCloseTo(200, 3);
       expect(motionPath._samples.get(number).y).toBeCloseTo(400, 3);
+      expect(motionPath._samples.get(number).angle).toBeCloseTo(63.4, 1);
+    });
+
+    it('should sample path #3', function () {
+      var precision = 200;
+      var step = 1/precision;
+      var path = 'M0,208.853153 C0,208.853153 514.306345,113.17046 550.332461,338.253735 C586.358576,563.337009 77.4077083,845.512996 171.50164,428.228405 C265.595571,10.9438136 1000,1 1000,1';
+      var motionPath = MotionPath({ precision: precision, path: path, el: {} });
+
+      var number = 0;
+      expect(motionPath._samples.get(number).x).toBeCloseTo(0, 3);
+      expect(Math.round(motionPath._samples.get(number).y)).toBe(209);
+      expect(Math.round(motionPath._samples.get(number).angle)).toBe(-90);
+
+      var number = .25;
+      expect(Math.round(motionPath._samples.get(number).x)).toBe(543);
+      expect(Math.round(motionPath._samples.get(number).y)).toBe(310);
+      expect(Math.round(motionPath._samples.get(number).angle)).toBe(69);
+
+      var number = .5;
+      expect(Math.round(motionPath._samples.get(number).x)).toBe(178);
+      expect(Math.round(motionPath._samples.get(number).y)).toBe(600);
+      expect(Math.round(motionPath._samples.get(number).angle)).toBe(59);
+
+      var number = .75;
+      expect(Math.round(motionPath._samples.get(number).x)).toBe(433);
+      expect(Math.round(motionPath._samples.get(number).y)).toBe(130);
+      expect(Math.round(motionPath._samples.get(number).angle)).toBe(-27);
+
+      var number = 1;
+      expect(Math.round(motionPath._samples.get(number).x)).toBe(1000);
+      expect(Math.round(motionPath._samples.get(number).y)).toBe(1);
+      expect(Math.round(motionPath._samples.get(number).angle)).toBe(-1);
     });
   });
 
