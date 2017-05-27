@@ -7,6 +7,7 @@ import { separateTweenieOptions } from './separate-tweenie-options';
 /* ----------------------- */
 
 // TODO:
+//  - add angle
 //  - add unit
 //  - add reverse
 //  - add bounds?
@@ -30,18 +31,52 @@ const MotionPath = Object.create(Super);
  */
 MotionPath.update = function(ep, p, isForward) {
   const { el, precision, coordinate, property } = this._props;
+  const { step } = this._samples;
 
-  const numberDecimals = +precision || 0; // +var magic!
-  const multiplyer = Math.pow(10.0, numberDecimals);
-  const key = Math.round(ep * multiplyer) / multiplyer;
+  const index = (ep/step) | 0; // convert to integer
+  const key = index*step;
+  const nextKey = (index + 1)*step;
 
-  el[property] = this._samples.get(key)[coordinate];
+  const diff = ep - key;
+  const value = this._samples.get(key)[coordinate];
+
+  let norm = value;
+  if (nextKey <= 1)  {
+    const nextValue = this._samples.get(nextKey)[coordinate];
+    norm = value + ((nextValue - value) * (diff/step));
+  }
+
+  el[property] = norm;
+
   return this;
 };
 
 /* ----------------------- */
 /* The `Private` functions */
 /* ----------------------- */
+
+/**
+ * `_samplePath` - function to sample path coordinates.
+ *
+ * @private
+ * @param {Number} Number of floating point digits.
+ */
+MotionPath._samplePath = function(n = this._props.precision) {
+  const totalLength = this._path.getTotalLength();
+  const step = 1/n;
+
+  this._samples = new Map();
+  for (var i = 0; i < n; i++) {
+    const key = i*step;
+    const point = this._path.getPointAtLength(key*totalLength);
+    this._samples.set(key, { x: point.x, y: point.y });
+  }
+
+
+  const point = this._path.getPointAtLength(totalLength);
+  this._samples.set(1, { x: point.x, y: point.y });
+  this._samples.step = step;
+};
 
 /**
  * `init` - function init the class.
@@ -96,7 +131,7 @@ MotionPath._setupTweenie = function() {
 MotionPath._declareDefaults = function(o={}) {
   this._defaults = {
     path: 'M0,0 L100,100',
-    precision: 2,
+    precision: 140,
     el: null,
     coordinate: 'x',
     property: 'x'
@@ -110,57 +145,6 @@ MotionPath._parsePath = function() {
   const { path } = this._props;
   this._path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   this._path.setAttributeNS(null, 'd', path);
-};
-
-/**
- * `_samplePath` - function to sample path coordinates.
- *
- * @private
- * @param {Number} Number of floating point digits.
- */
-MotionPath._samplePath = function(n = this._props.precision) {
-  const totalLength = this._path.getTotalLength();
-  const samplesCount = Math.pow(10, n);
-  const step = 1/samplesCount;
-
-  this._samples = new Map();
-  let p = 0;
-  for (let i = 0; i < samplesCount; i++) {
-    this._setSampleFor(p, n, totalLength);
-    p += step;
-  }
-
-  this._setSampleFor(1, n, totalLength);
-};
-
-/**
- * _setSampleFor - function to set some number to the map,
- *                 helper for `_samplePath`.
- *
- * @private
- * @param  {Number} Number to add [0...1].
- * @param  {Number} Precision.
- * @param  {Number} Total path length.
- */
-MotionPath._setSampleFor = function(number, n, totalLength) {
-  const key = this._toPrecision(number, n);
-  const point = this._path.getPointAtLength(key*totalLength);
-  this._samples.set(key, { x: point.x, y: point.y });
-};
-
-/**
- * `_toPrecision` - function to convert number to some precision,
- *                  helper for `_setSampleFor`.
- *
- * @private
- * @param {Number} Number to convert.
- * @param {Number} Precision.
- * @return {Number} Converted number.
- */
-MotionPath._toPrecision = function(number, precision) {
-  const numberDecimals = +precision || 0; // +var magic!
-  const multiplyer = Math.pow(10.0, numberDecimals);
-  return Math.round(number * multiplyer) / multiplyer;
 };
 
 /**

@@ -20,10 +20,11 @@ import { Tweenable } from './tween/tweenable';
 
 /*
   TODO:
+    - add MotionPath to delta
     - add tweenie repeat isYoyo option
     - add `onRefresh` callbacks for tweenie
-    - add MotionPath
-    - add MotionPath to delta
+    - add array deltas
+    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     - rename tweenie to tween
     - rename deltas to ObjectTween?
 */

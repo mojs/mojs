@@ -14,7 +14,7 @@ describe('`motion-path` ->', function () {
     it('should have `_defaults`', function () {
       var motionPath = MotionPath({ path: path, el: {} });
       expect(motionPath._defaults.path).toBe('M0,0 L100,100');
-      expect(motionPath._defaults.precision).toBe(2);
+      expect(motionPath._defaults.precision).toBe(140);
       expect(motionPath._defaults.el).toBe(null);
       expect(motionPath._defaults.coordinate).toBe('x');
       expect(motionPath._defaults.property).toBe('x');
@@ -36,31 +36,33 @@ describe('`motion-path` ->', function () {
     it('should sample path', function () {
       var motionPath = MotionPath({ path: path, el: {} });
       expect(motionPath._samples instanceof Map).toBe(true);
-      expect(motionPath._samples.size).toBe(Math.pow(10, 2) + 1);
+      expect(motionPath._samples.size).toBe(motionPath._defaults.precision + 1);
     });
 
     // TODO: add test for `precision` option
 
-    it('should sample path', function () {
-      var motionPath = MotionPath({ path: path, el: {} });
+    it('should sample path #2', function () {
+      var precision = 200;
+      var step = 1/precision;
+      var motionPath = MotionPath({ precision: precision, path: path, el: {} });
 
-      var number = parseFloat((0).toFixed(n));
+      var number = 0;
       expect(motionPath._samples.get(number).x).toBeCloseTo(0, 3);
       expect(motionPath._samples.get(number).y).toBeCloseTo(0, 3);
 
-      var number = parseFloat((.25).toFixed(n));
+      var number = .25;
       expect(motionPath._samples.get(number).x).toBeCloseTo(50, 3);
       expect(motionPath._samples.get(number).y).toBeCloseTo(100, 3);
 
-      var number = parseFloat((.5).toFixed(n));
+      var number = .5;
       expect(motionPath._samples.get(number).x).toBeCloseTo(100, 3);
       expect(motionPath._samples.get(number).y).toBeCloseTo(200, 3);
 
-      var number = parseFloat((.75).toFixed(n));
+      var number = .75;
       expect(motionPath._samples.get(number).x).toBeCloseTo(150, 3);
       expect(motionPath._samples.get(number).y).toBeCloseTo(300, 3);
 
-      var number = parseFloat((1).toFixed(n));
+      var number = 1;
       expect(motionPath._samples.get(number).x).toBeCloseTo(200, 3);
       expect(motionPath._samples.get(number).y).toBeCloseTo(400, 3);
     });
