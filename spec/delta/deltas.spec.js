@@ -1,4 +1,5 @@
 var Deltas = mojs.Deltas;
+var MotionPath = mojs.MotionPath;
 var helpers = mojs.__helpers__;
 var ClassProto = helpers.ClassProto;
 var Tweenable = helpers.Tweenable;
@@ -55,7 +56,7 @@ describe('`deltas` ->', function () {
     });
   });
 
-  describe('deltas parsing ->', function() {
+  describe('`_parseProperties` / deltas parsing ->', function() {
     it('should hold deltas with tweenies', function () {
       var options = {
         el: {},
@@ -104,6 +105,121 @@ describe('`deltas` ->', function () {
       expect(deltas._tweenDeltas[0]._props.target).toBe(deltas._el);
       expect(deltas._tweenDeltas[1]._props.target).toBe(deltas._el);
       expect(deltas._plainDeltas[0]._props.target).toBe(deltas._el);
+    });
+
+    it('should create motion paths if `path` set', function () {
+      var options = {
+        el: {},
+        x: { '200': 300, delay: 200, path: 'M0,0 L100,100' },
+        y: { '200': 300 },
+        f: 5,
+        z: { '200': 300, delay: 200, path: 'M0,0 L200,200' }
+      };
+
+      var deltas = Deltas(options);
+
+      expect(MotionPath.__mojsClass.isPrototypeOf(deltas._tweenDeltas[0])).toBe(true);
+      expect(MotionPath.__mojsClass.isPrototypeOf(deltas._tweenDeltas[1])).toBe(true);
+
+      expect(deltas._tweenDeltas.length).toBe(2);
+      expect(deltas._plainDeltas.length).toBe(1);
+      expect(deltas.timeline._items.length).toBe(1 + deltas._tweenDeltas.length);
+      expect(deltas._staticProps.f).toBe(5);
+      expect(deltas.timeline._items[0]).toBe(deltas.tween);
+      expect(deltas.timeline._items[1]).toBe(deltas._tweenDeltas[0].tween);
+      expect(deltas.timeline._items[2]).toBe(deltas._tweenDeltas[1].tween);
+    });
+
+    it('should add MotionPath instances', function () {
+      var motionPath1 = new MotionPath({
+        path: 'M100,200, L300,250',
+        delay: 200
+      });
+
+      var motionPath2 = new MotionPath({
+        path: 'M100,200, L300,250'
+      });
+
+      var options = {
+        el: {},
+        x: motionPath1,
+        z: motionPath2,
+        f: 5,
+        y: { '200': 300, delay: 200, path: 'M0,0 L200,200' }
+      };
+
+      var deltas = Deltas(options);
+
+      expect(MotionPath.__mojsClass.isPrototypeOf(deltas._tweenDeltas[0])).toBe(true);
+      expect(MotionPath.__mojsClass.isPrototypeOf(deltas._plainDeltas[0])).toBe(true);
+      expect(deltas._tweenDeltas.length).toBe(2);
+
+      expect(deltas._plainDeltas.length).toBe(1);
+      expect(deltas.timeline._items.length).toBe(1 + deltas._tweenDeltas.length);
+      expect(deltas._staticProps.f).toBe(5);
+      expect(deltas.timeline._items[0]).toBe(deltas.tween);
+      expect(deltas.timeline._items[1]).toBe(deltas._tweenDeltas[0].tween);
+      expect(deltas.timeline._items[2]).toBe(deltas._tweenDeltas[1].tween);
+
+      expect(motionPath1._props.el).toBe(options.el);
+      expect(motionPath2._props.el).toBe(options.el);
+
+      expect(motionPath1._props.property).toBe('x');
+      expect(motionPath2._props.property).toBe('z');
+    });
+
+    it('should update the coordinate if not set #y', function () {
+      var motionPath1 = new MotionPath({
+        path: 'M100,200, L300,250',
+        delay: 200,
+        coordinate: 'angle'
+      });
+
+      var motionPath2 = new MotionPath({
+        path: 'M100,200, L300,250'
+      });
+
+      var options = {
+        el: {},
+        z: motionPath1,
+        y: motionPath2,
+        f: 5,
+        t: { '200': 300, delay: 200, path: 'M0,0 L200,200' }
+      };
+
+      var deltas = Deltas(options);
+
+      expect(motionPath1._props.coordinate).toBe('angle');
+      expect(motionPath2._props.coordinate).toBe('y');
+    });
+
+    it('should update the coordinate if not set #x, #angle', function () {
+      var motionPath1 = new MotionPath({
+        path: 'M100,200, L300,250',
+        delay: 200
+      });
+
+      var motionPath2 = new MotionPath({
+        path: 'M100,200, L300,250'
+      });
+
+      var motionPath3 = new MotionPath({
+        path: 'M100,200, L300,250'
+      });
+
+      var options = {
+        el: {},
+        angle: motionPath1,
+        y: motionPath2,
+        f: 5,
+        t: motionPath3
+      };
+
+      var deltas = Deltas(options);
+
+      expect(motionPath1._props.coordinate).toBe('angle');
+      expect(motionPath2._props.coordinate).toBe('y');
+      expect(motionPath3._props.coordinate).toBe('x');
     });
   });
 

@@ -7,11 +7,10 @@ import { separateTweenieOptions } from './separate-tweenie-options';
 /* ----------------------- */
 
 // TODO:
-//  - add angle
 //  - add unit
-//  - add reverse
 //  - add bounds?
 //  - add offset?
+//  - add piple
 
 const Super = ClassProto;
 const MotionPath = Object.create(Super);

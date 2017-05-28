@@ -20,22 +20,18 @@ const Deltas = Object.create(Super);
 Deltas.init = function(o = {}) {
   // super call
   Super.init.call(this, o);
-
   // clone the options
   const options = { ...o };
   // get `timeline` options and remove them immediately
   const timelineOptions = options.timeline;
   delete options.timeline;
-
   // get `timeline` options and remove them immediately
   this._customProperties = options.customProperties || {};
   this._render = this._customProperties.render || (() => {});
   delete options.customProperties;
-
   // save the el object and remove it immediately
   this._el = options.el;
   delete options.el;
-
   // set up the main `tweenie`
   this._setupTweenie(options);
   // set up the `timeline`
@@ -90,7 +86,6 @@ Deltas._parseProperties = function(options) {
   this._plainDeltas = [];
   // static properties
   this._staticProps = {};
-
   // loop thru options and create deltas with objects
   for (let key in options) {
     const value = options[key];
@@ -100,9 +95,17 @@ Deltas._parseProperties = function(options) {
       this._staticProps[key] = value;
       continue;
     }
-
+    // check the delta type
     let delta;
-    if (value.path !== undefined) {
+    // if module has `update` function - add it
+    if (value.update) {
+      delta = value;
+      delta.set('el', this._el);
+      delta.set('property', key);
+      if (key === 'y' || key === 'angle') {
+        delta.setIfNotSet('coordinate', key);
+      }
+    } else if (value.path !== undefined) {
       delta = new mojs.MotionPath({
         el: this._el,
         ...value,

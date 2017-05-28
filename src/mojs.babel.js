@@ -24,6 +24,8 @@ import { Tweenable } from './tween/tweenable';
     - add tweenie repeat isYoyo option
     - add `onRefresh` callbacks for tweenie
     - add array deltas
+    - add stagger deltas
+    - add stagger
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     - rename tweenie to tween
     - rename deltas to ObjectTween?

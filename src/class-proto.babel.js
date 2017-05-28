@@ -30,6 +30,16 @@ ClassProto.set = function(key, value) {
   this._props[key] = value;
 };
 
+// TODO: cover
+ClassProto.setIfNotSet = function(key, value) {
+  console.log(key, this._o[key]);
+  if (this._o[key] === undefined) {
+      this.set(key, value);
+  }
+
+  return this;
+};
+
 /**
  * _init - lifecycle initialization function.
  *

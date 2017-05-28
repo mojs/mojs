@@ -5,6 +5,11 @@ import { parseUnit } from './parse-unit';
 import { parseNumber } from './parse-number';
 import { unitRegexp } from './unit-regexp';
 
+/*
+  TODO:
+    - rename `target` to `el`
+*/
+
 // map that holds all available parsers
 const parsersMap = {
   unit: parseUnit,
