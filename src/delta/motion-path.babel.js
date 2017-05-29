@@ -9,7 +9,6 @@ import { separateTweenieOptions } from './separate-tweenie-options';
 // TODO:
 //  - add unit
 //  - add bounds?
-//  - add offset?
 //  - add piple
 
 const Super = ClassProto;

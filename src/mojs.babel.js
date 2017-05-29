@@ -20,19 +20,18 @@ import { Tweenable } from './tween/tweenable';
 
 /*
   TODO:
-    - add MotionPath to delta
     - add tweenie repeat isYoyo option
     - add `onRefresh` callbacks for tweenie
-    - add array deltas
     - add stagger deltas
     - add stagger
+    - add array deltas
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     - rename tweenie to tween
     - rename deltas to ObjectTween?
 */
 
 const mojs = {
-  revision: '2.3.0',
+  revision: '2.4.0',
   Tweenie,
   Timeline,
   easing,

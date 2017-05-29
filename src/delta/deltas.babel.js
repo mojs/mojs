@@ -97,7 +97,7 @@ Deltas._parseProperties = function(options) {
     }
     // check the delta type
     let delta;
-    // if module has `update` function - add it
+    // if module has `update` use it as delta
     if (value.update) {
       delta = value;
       delta.set('el', this._el);
