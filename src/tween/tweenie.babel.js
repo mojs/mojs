@@ -270,15 +270,15 @@ Tweenie.update = function(time) {
   // save elapsed time
   this._elapsed = time - this._spot;
 
-  // `onSkip` forward
-  if (time >= this._end && this._prevTime <= this._start) {
-    // if `prevTime` was <= `_start` might need a refresh
-    this._props.onSkip(true, index, time, this._prevTime);
+  // if pregress is not right - call the `onRefresh` function #before
+  if (time < this._start && this._progress !== this._cbs[2]) {
+    this._props.onRefresh(false, index, time);
+    this._progress = this._cbs[2];
   }
-
-  // `onSkip` backward
-  if (time <= this._start && this._prevTime >= this._end) {
-    this._props.onSkip(false, index, time, this._prevTime);
+  // if pregress is not right - call the `onRefresh` function #after
+  if (time > this._end && this._progress !== this._cbs[3]) {
+    this._props.onRefresh(true, index, time);
+    this._progress = this._cbs[3];
   }
 
   // if forward progress
@@ -288,8 +288,8 @@ Tweenie.update = function(time) {
   if (time >= this._start && time <= this._end && this._prevTime !== void 0) {
     let isActive;
     const p = (time - this._start) / this._props.duration;
-    const progress = isReverse === false ? p : 1 - p;
-    onUpdate(ease(progress), progress, isForward, time);
+    this._progress = isReverse === false ? p : 1 - p;
+    onUpdate(ease(this._progress), this._progress, isForward, time);
 
     if (time > this._start && this._isActive === false && isForward === true) {
       // `onStart`
@@ -333,8 +333,9 @@ Tweenie.update = function(time) {
   }
 
   if (time > this._end && this._isActive === true) {
+    this._progress = this._cbs[3];
     // one
-    onUpdate(ease(this._cbs[3]), this._cbs[3], isForward, time);
+    onUpdate(ease(this._progress), this._progress, isForward, time);
     // `onComplete`
     this._cbs[1](isForward, isReverse, index);
     // `onChimeOut`
@@ -345,8 +346,9 @@ Tweenie.update = function(time) {
   }
 
   if (time < this._start && this._isActive === true) {
+    this._progress = this._cbs[2];
     // zero
-    onUpdate(ease(this._cbs[2]), this._cbs[2], isForward, time);
+    onUpdate(ease(this._progress), this._progress, isForward, time);
     // `onStart`
     this._cbs[0](isForward, isReverse, index);
     // `onChimeIn`

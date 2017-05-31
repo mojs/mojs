@@ -1,28 +1,23 @@
 const tweenieDefaults = {
-  /* delay of the tween [-∞..∞] */
+  // delay of the tween [-∞..∞]
   delay:                  0,
-  /* duration of the tween [0..∞] */
+  // duration of the tween [0..∞]
   duration:               350,
-  /* speed of playback [0..∞], speed that is less then 1
-     will slowdown playback, for instance .5 will make tween
-     run 2x slower. Speed of 2 will speedup the tween to 2x. */
+  // speed of playback [0..∞], speed that is less then 1
+  // will slowdown playback, for instance .5 will make tween
+  // run 2x slower. Speed of 2 will speedup the tween to 2x.
   speed:                  1,
-  /* repeat of the tween [0..∞], means how much to
-     repeat the tween regardless first run,
-     for instance repeat: 2 will make the tween run 3 times */
-  /* easing for the tween, could be any easing type [link to easing-types.md] */
+  // easing for the tween, could be any easing type
   easing:                 'Sin.Out',
-  /*
-    Easing for backward direction of the tweenthe tween,
-    if `null` - fallbacks to `easing` property.
-    forward direction in `yoyo` period is treated as backward for the easing.
-  */
+  // Easing for backward direction of the tweenthe tween,
+  // if `null` - fallbacks to `easing` property.
+  // forward direction in `yoyo` period is treated as backward for the easing.
   backwardEasing:         null,
-  /* if should reverse the tween */
+  // if should reverse the tween
   isReverse:              false,
-  // how many times repeat the tweenie
+  // how many times repeat the tweenie (excluding the first run)
   repeat:                 0,
-  /* if should `reverse` before repeating */
+  // if should `reverse` before repeating
   isReverseOnRepeat:      false,
   // `onUpdate` callback is called on every animation frame
   onUpdate:               function(ep, p, isForward) {},
@@ -41,18 +36,15 @@ const tweenieDefaults = {
   // `onChimeOut` is invoked when the `Tweenie` becomes active
   // kind of like `onComplete` but regardless `isReverse` option
   onChimeOut:             function() {},
-  /**
-   * onSkip - callback is called when progress runs over the `_end` time
-   * and then suddenly goes before the `_start` time. Indecates that
-   * progress (1) should be refreshed to (0), or vice versa.
-   *
-   * @param {Boolean} isForward
-   *                    - `true` if skipped in forward direction
-   *                    - `false` if skipped in backward direction
-   */
-  onSkip:                 function() {},
+  // onRefresh - callback is called when progress runs over the `_end` time
+  // and then suddenly goes before the `_start` time. Indecates that
+  // progress (1) should be refreshed to (0), or vice versa.
+  // @param {Boolean} isForward
+  //                    - `true` if skipped in forward direction
+  //                    - `false` if skipped in backward direction
+  onRefresh:              function() {},
   // playback callbacks, these fire only when
-  // `play`, `replay`, `playBackward`, `replayBackward` were called
+  // `play`, `replay`, `playBackward`, `replayBackward` called
   onPlaybackStart:        function() {},
   onPlaybackPause:        function() {},
   onPlaybackStop:         function() {},

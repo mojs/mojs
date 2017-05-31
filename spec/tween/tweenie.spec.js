@@ -670,6 +670,77 @@ describe('tweenie ->', function () {
       expect(ep).toBeCloseTo(easing(1), 3);
       expect(p).toBeCloseTo(1, 3);
     });
+
+    it('should save progress', function () {
+      var progress = -1;
+      var options = {
+        duration: 50,
+        easing: 'linear.none'
+      };
+      var tweenie = Tweenie(options);
+
+      var startTime = 200;
+      tweenie.setStartTime(startTime);
+
+      // the first update to set the `_prevTime`
+      tweenie.update(startTime - 10);
+
+      tweenie.update(startTime);
+
+      expect(tweenie._progress).toBe(0);
+
+      tweenie.update(startTime += 15);
+
+      expect(tweenie._progress).toBeCloseTo(0.3, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(tweenie._progress).toBeCloseTo(0.6, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(tweenie._progress).toBeCloseTo(0.9, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(tweenie._progress).toBe(1);
+    });
+
+    it('should save progress #reverse', function () {
+      var progress = -1;
+      var options = {
+        duration: 50,
+        isReverse: true,
+        easing: 'linear.none'
+      };
+      var tweenie = Tweenie(options);
+
+      var startTime = 200;
+      tweenie.setStartTime(startTime);
+
+      // the first update to set the `_prevTime`
+      tweenie.update(startTime - 10);
+
+      tweenie.update(startTime);
+
+      expect(tweenie._progress).toBe(1);
+
+      tweenie.update(startTime += 15);
+
+      expect(tweenie._progress).toBeCloseTo(0.7, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(tweenie._progress).toBeCloseTo(0.4, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(tweenie._progress).toBeCloseTo(0.1, 3);
+
+      tweenie.update(startTime += 15);
+
+      expect(tweenie._progress).toBe(0);
+    });
   });
 
   describe('`onComplete` callback ->', function() {
@@ -1402,92 +1473,98 @@ describe('tweenie ->', function () {
     });
   });
 
-  describe('`onSkip` callback ->', function() {
-    it('should be called when greater or equal than _end and suddenly smaller than `_start`', function() {
+  describe('`onRefresh` callback ->', function() {
+    it('should be called when `_progress` is not on the right side', function() {
       var duration = 400;
       var index = 3;
       var tweenie = Tweenie({
         duration: duration,
-        onSkip: function() {},
+        onRefresh: function() {},
         index: index
       });
 
-      tweenie.setStartTime(250);
+      tweenie.setStartTime();
+
       var startTime = tweenie._start;
 
-      tweenie.update(startTime);
-      tweenie.update(startTime + duration/2);
-      tweenie.update(startTime + duration);
-      tweenie.update(startTime + duration + 10);
+      tweenie._progress = 1;
 
-      spyOn(tweenie._props, 'onSkip');
+      spyOn(tweenie._props, 'onRefresh');
 
       tweenie.update(startTime - 10);
-      expect(tweenie._props.onSkip).toHaveBeenCalledWith(false, index, startTime - 10, startTime + duration + 10);
-      expect(tweenie._props.onSkip.calls.count()).toBe(1);
+      tweenie.update(startTime - 20);
+      expect(tweenie._props.onRefresh).toHaveBeenCalledWith(false, index, startTime - 10);
+      expect(tweenie._props.onRefresh.calls.count()).toBe(1);
     });
 
-    it('should be called when greater or equal than _end and suddenly smaller than `_start` #2', function() {
+    it('should be called when `_progress` is not on the right side', function() {
+      var duration = 400;
+      var index = 3;
+      var tweenie = Tweenie({
+        isReverse: true,
+        duration: duration,
+        onRefresh: function() {},
+        index: index
+      });
+
+      tweenie.setStartTime();
+
+      var startTime = tweenie._start;
+
+      tweenie._progress = 1;
+
+      spyOn(tweenie._props, 'onRefresh');
+
+      tweenie.update(startTime - 10);
+      expect(tweenie._props.onRefresh).not.toHaveBeenCalled();
+    });
+
+    it('should be called when `_progress` is not on the right side', function() {
+      var duration = 400;
+      var index = 3;
+      var tweenie = Tweenie({
+        isIt: 1,
+        isReverse: true,
+        duration: duration,
+        onRefresh: function() {},
+        index: index
+      });
+
+      tweenie.setStartTime();
+
+      var startTime = tweenie._start;
+
+      tweenie._progress = 0;
+
+      spyOn(tweenie._props, 'onRefresh');
+
+      tweenie.update(startTime - 10);
+      tweenie.update(startTime - 20);
+      expect(tweenie._props.onRefresh).toHaveBeenCalledWith(false, index, startTime - 10);
+      expect(tweenie._props.onRefresh.calls.count()).toBe(1);
+    });
+
+    it('should be called when `_progress` is not on the right side', function() {
       var duration = 400;
       var index = 3;
       var tweenie = Tweenie({
         duration: duration,
-        onSkip: function() {},
+        onRefresh: function() {},
         index: index
       });
 
-      tweenie.setStartTime(250);
-      var startTime = tweenie._start;
+      tweenie.setStartTime();
 
-      tweenie.update(startTime + duration + 10);
+      var endTime = tweenie._start + duration;
 
-      spyOn(tweenie._props, 'onSkip');
+      tweenie._progress = 0;
 
-      tweenie.update(startTime);
-      expect(tweenie._props.onSkip).toHaveBeenCalledWith(false, index, startTime, startTime + duration + 10);
-      expect(tweenie._props.onSkip.calls.count()).toBe(1);
-    });
+      spyOn(tweenie._props, 'onRefresh');
 
-    it('should be called when greater or equal than _end and suddenly smaller than `_start`', function() {
-      var duration = 400;
-      var index = 4;
-      var tweenie = Tweenie({
-        duration: duration,
-        onSkip: function() {},
-        index: index
-      });
-
-      tweenie.setStartTime(250);
-      var startTime = tweenie._start;
-
-      tweenie.update(startTime - 10);
-
-      spyOn(tweenie._props, 'onSkip');
-
-      tweenie.update(startTime + duration + 10);
-
-      expect(tweenie._props.onSkip).toHaveBeenCalledWith(true, index, startTime + duration + 10, startTime - 10);
-    });
-
-    it('should be called when greater or equal than _end and suddenly smaller than `_start` #2', function() {
-      var duration = 400;
-      var index = 4;
-      var tweenie = Tweenie({
-        duration: duration,
-        onSkip: function() {},
-        index: index
-      });
-
-      tweenie.setStartTime(250);
-      var startTime = tweenie._start;
-
-      tweenie.update(startTime - 10);
-
-      spyOn(tweenie._props, 'onSkip');
-
-      tweenie.update(startTime + duration);
-
-      expect(tweenie._props.onSkip).toHaveBeenCalledWith(true, index, startTime + duration, startTime - 10);
+      tweenie.update(endTime + 10);
+      tweenie.update(endTime + 20);
+      expect(tweenie._props.onRefresh).toHaveBeenCalledWith(true, index, endTime + 10);
+      expect(tweenie._props.onRefresh.calls.count()).toBe(1);
     });
 
   });
