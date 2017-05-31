@@ -20,8 +20,12 @@ const tweenieDefaults = {
   backwardEasing:         null,
   /* if should reverse the tween */
   isReverse:              false,
-
-  onUpdate:               function() {},
+  // how many times repeat the tweenie
+  repeat:                 0,
+  /* if should `reverse` before repeating */
+  isReverseOnRepeat:      false,
+  // `onUpdate` callback is called on every animation frame
+  onUpdate:               function(ep, p, isForward) {},
   /*
     onStart callback runs on very start of the tween just after onProgress
     one. Runs on very end of the tween if tween is reversed.

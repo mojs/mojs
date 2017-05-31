@@ -12,4 +12,4 @@ const staggerProperty = (prop, index) => {
   return prop;
 };
 
-export { staggerProperty as staggerProperty };
+export { staggerProperty };

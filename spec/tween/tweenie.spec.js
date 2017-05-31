@@ -1433,8 +1433,7 @@ describe('tweenie ->', function () {
       var tweenie = Tweenie({
         duration: duration,
         onSkip: function() {},
-        index: index,
-        isIt: 1
+        index: index
       });
 
       tweenie.setStartTime(250);
@@ -1493,7 +1492,7 @@ describe('tweenie ->', function () {
 
   });
 
-  describe('`reset` dunction ->', function() {
+  describe('`reset` function ->', function() {
     it('should reset the tweenie', function() {
       var duration = 400;
       var tweenie = Tweenie({
@@ -1502,10 +1501,12 @@ describe('tweenie ->', function () {
       });
 
       tweenie._isActive = true;
+      tweenie._repeatCount = 1000;
       tweenie.reset();
 
       expect(tweenie._isActive).toBe(false);
       expect(tweenie._prevTime).not.toBeDefined();
+      expect(tweenie._repeatCount).toBe(0);
     });
   });
 
@@ -1758,28 +1759,7 @@ describe('tweenie ->', function () {
 
       expect(tweenie._speed).toBe(speed);
     });
-
-    it('should set the `_repeat` property', function() {
-      var tweenie = new Tweenie();
-      tweenie._repeat = 0;
-
-      var repeat = 12;
-      tweenie.play(repeat);
-
-      expect(tweenie._repeat).toBe(repeat);
-    });
-
-    it('should not set the `_repeat` property', function() {
-      var tweenie = new Tweenie();
-
-      var repeat = 12;
-      tweenie._repeat = repeat;
-      tweenie.play();
-
-      expect(tweenie._repeat).toBe(repeat);
-    });
   });
-
 
   describe('`replay` function ->', function() {
     it('should call the `reset` function', function() {
@@ -1958,15 +1938,23 @@ describe('tweenie ->', function () {
       expect(tweenie._props.onPlaybackComplete).toHaveBeenCalled();
     });
 
-    it('should pass `repeat` count to the `onPlaybackComplete`', function() {
-      var tweenie = new Tweenie();
+    it('should increase `_repeatCount`', function() {
+      var tweenie = new Tweenie({
+        repeat: 5
+      });
 
-      var repeat = 2;
-      tweenie._repeat = repeat;
+      tweenie.onTweenerFinish();
+
+      expect(tweenie._repeatCount).toBe(1);
+    });
+
+    it('should pass `repeat` count to the `onPlaybackComplete`', function() {
+      var tweenie = new Tweenie({ repeat: 2 });
+
       spyOn(tweenie._props, 'onPlaybackComplete');
       tweenie.onTweenerFinish();
 
-      expect(tweenie._props.onPlaybackComplete).toHaveBeenCalledWith(true, repeat - 1);
+      expect(tweenie._props.onPlaybackComplete).toHaveBeenCalledWith(true, 0, 2);
     });
 
     it('should not pass `repeat` count to the `onPlaybackComplete`', function() {
@@ -1974,35 +1962,89 @@ describe('tweenie ->', function () {
       spyOn(tweenie._props, 'onPlaybackComplete');
       tweenie.onTweenerFinish();
 
-      expect(tweenie._props.onPlaybackComplete).toHaveBeenCalledWith(true, 0);
+      expect(tweenie._props.onPlaybackComplete).toHaveBeenCalledWith(true, 0, 0);
     });
 
     it('should call `play` if `_repeat`', function() {
-      var tweenie = new Tweenie();
+      var tweenie = new Tweenie({
+        repeat: 2
+      });
 
-      var repeat = 2;
-      tweenie._repeat = repeat;
       spyOn(tweenie, 'play');
+
+      tweenie.onTweenerFinish();
+      expect(tweenie.play).toHaveBeenCalled();
+
+      tweenie.onTweenerFinish();
+      expect(tweenie.play.calls.count()).toBe(2);
+
+      tweenie.onTweenerFinish();
+      expect(tweenie.play.calls.count()).toBe(2);
+    });
+
+    it('should flip the direction if `isReverseOnRepeat`', function() {
+      var tweenie = new Tweenie({
+        isReverseOnRepeat: true,
+        repeat: 2
+      });
+
+      spyOn(tweenie, 'reverse');
       tweenie.onTweenerFinish();
 
-      expect(tweenie.play).toHaveBeenCalledWith(repeat-1);
+      expect(tweenie.reverse).toHaveBeenCalled();
+    });
+
+    it('should flip the direction if `isReverseOnRepeat` #function', function() {
+      var tweenie = new Tweenie({
+        isReverseOnRepeat: function(count) {
+          return count % 2;
+        },
+        repeat: 4
+      });
+
+      spyOn(tweenie, 'reverse');
+
+      tweenie.onTweenerFinish(); // 0 % 2 = 0  => 0
+
+      expect(tweenie.reverse.calls.count()).toBe(0);
+
+      tweenie.onTweenerFinish(); // 1 % 2 = 1  => 1
+
+      expect(tweenie.reverse.calls.count()).toBe(1);
+
+      tweenie.onTweenerFinish(); // 2 % 2 = 0  => 1
+
+      expect(tweenie.reverse.calls.count()).toBe(1);
+
+      tweenie.onTweenerFinish(); // 3 % 2 = 1  => 2
+
+      expect(tweenie.reverse.calls.count()).toBe(2);
+    });
+
+    it('should flip the direction if `isReverseOnRepeat` #map', function() {
+      var tweenie = new Tweenie({
+        isReverseOnRepeat: [true, false],
+        repeat: 3
+      });
+
+      spyOn(tweenie, 'reverse');
+
+      tweenie.onTweenerFinish();
+
+      expect(tweenie.reverse.calls.count()).toBe(1); // true
+
+      tweenie.onTweenerFinish();
+
+      expect(tweenie.reverse.calls.count()).toBe(1); // false
+
+      tweenie.onTweenerFinish();
+
+      expect(tweenie.reverse.calls.count()).toBe(2); // true
     });
 
     it('should not call `play` if not `_repeat`', function() {
       var tweenie = new Tweenie();
 
-      tweenie._repeat = 0;
-      spyOn(tweenie, 'play');
-      tweenie.onTweenerFinish();
-
-      expect(tweenie.play).not.toHaveBeenCalled();
-    });
-
-    it('should not call `play` if not `_repeat`', function() {
-      var tweenie = new Tweenie();
-
-      var repeat = 0;
-      tweenie._repeat = undefined;
       spyOn(tweenie, 'play');
       tweenie.onTweenerFinish();
 

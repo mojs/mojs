@@ -2,6 +2,7 @@ import { ClassProto } from '../class-proto';
 import { tweenieDefaults } from './tweenie-defaults';
 import { tweener } from './tweener';
 import { parseEasing } from '../easing/parse-easing';
+import { staggerProperty } from '../helpers/stagger-property';
 
 /* -------------------- */
 /* The `Tweenie` class  */
@@ -32,17 +33,11 @@ Tweenie._declareDefaults = function() {
  * play - function to `play` the tween.
  *
  * @public
- * @param {Number} Repeat count
  * @returns {Object} This tween.
  */
-Tweenie.play = function(repeat) {
+Tweenie.play = function() {
   if (this._state === 'play') {
     return this;
-  }
-
-  // if repeat passed - save it
-  if (repeat !== void 0) {
-    this._repeat = repeat;
   }
 
   this._setState('play');
@@ -177,6 +172,7 @@ Tweenie.setProgress = function(progress = 0) {
 Tweenie.reset = function() {
   this._isActive = false;
   this._elapsed = 0;
+  this._repeatCount = 0;
   this._setState('stop');
   delete this._prevTime;
 };
@@ -221,12 +217,11 @@ Tweenie._vars = function() {
   this._state = 'stop';
   // set "id" speed
   this._speed = 1;
-
   this._time = delay + duration;
-
+  // how many times we have been repeating
+  this._repeatCount = 0;
   // this._prevTime = -Infinity;
   this._prevTime;
-
   // callbacks array - used to flip the callbacks order on `isReverse`
   this._cbs = [ onStart, onComplete, 0, 1 ];
   // chime callbacks
@@ -405,18 +400,24 @@ Tweenie._setState = function(state) {
 
 /**
  * onTweenerFinish - function that is called when the tweeener finished
- *                   playback for this tween and removed it from the queue
+ *                   playback for this tween and removemd it from the queue
  *
  */
 Tweenie.onTweenerFinish = function() {
-  const count = this._repeat - 1;
-  const isForward = !this._props.isReverse;
-  this._props.onPlaybackComplete(isForward, count > 0 ? count : 0);
+  const { isReverse, repeat, isReverseOnRepeat, onPlaybackComplete } = this._props;
+  const count = this._repeatCount;
+
+  onPlaybackComplete(!isReverse, count, repeat - count);
 
   this.reset();
 
-  if (this._repeat > 0) {
-    this.play(count);
+  if (repeat - count > 0) {
+    if (staggerProperty(isReverseOnRepeat, count)) {
+      this.reverse();
+    }
+
+    this._repeatCount = count + 1;
+    this.play();
   }
 };
 

@@ -9,7 +9,7 @@ import { separateTweenieOptions } from './separate-tweenie-options';
 // TODO:
 //  - add unit
 //  - add bounds?
-//  - add piple
+//  - add pipe
 
 const Super = ClassProto;
 const MotionPath = Object.create(Super);
