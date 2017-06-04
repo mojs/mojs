@@ -17,6 +17,8 @@ import { parseNumber } from './delta/parse-number';
 import { parseUnit } from './delta/parse-unit';
 import { separateTweenieOptions } from './delta/separate-tweenie-options';
 import { Tweenable } from './tween/tweenable';
+import { staggerProperty } from './helpers/stagger-property';
+import { parseStagger } from './helpers/parse-stagger';
 
 /*
   TODO:
@@ -46,7 +48,9 @@ const mojs = {
     parseNumber,
     parseUnit,
     separateTweenieOptions,
-    Tweenable
+    Tweenable,
+    staggerProperty,
+    parseStagger
   }
 };
 
