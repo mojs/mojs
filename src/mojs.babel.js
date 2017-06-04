@@ -20,10 +20,9 @@ import { Tweenable } from './tween/tweenable';
 
 /*
   TODO:
-    - add tweenie repeat isYoyo option
-    - add `onRefresh` callbacks for tweenie
-    - add stagger deltas
     - add stagger
+    - add color deltas
+    - add stagger deltas
     - add array deltas
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     - rename tweenie to tween

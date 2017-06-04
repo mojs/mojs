@@ -32,13 +32,15 @@ MotionPath.update = function(ep, p, isForward) {
   const { step } = this._samples;
 
   const index = (ep/step) | 0; // convert to integer
-  const key = index*step;
-  const nextKey = (index + 1)*step;
+  const key = index*step; // get the key
+  const nextKey = (index + 1)*step; // get the next key
 
-  const diff = ep - key;
-  const value = this._samples.get(key)[coordinate];
+  const diff = ep - key; // get error for the eased progress
+  const value = this._samples.get(key)[coordinate]; // get the value
 
   let norm = value;
+  // if next key is present, calculate the normalized value
+  // regarding the eased progress error
   if (nextKey <= 1)  {
     const nextValue = this._samples.get(nextKey)[coordinate];
     norm = value + ((nextValue - value) * (diff/step));
