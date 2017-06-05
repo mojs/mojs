@@ -3,6 +3,7 @@ import { Timeline } from '../tween/timeline';
 import { Tweenable } from '../tween/tweenable';
 import { Delta } from './delta';
 import { separateTweenieOptions } from './separate-tweenie-options';
+import { staggerProperty } from '../helpers/stagger-property';
 
 /* ------------------- */
 /* The `Deltas` class  */
@@ -91,14 +92,20 @@ Deltas._parseProperties = function(options) {
     const value = options[key];
     // if value is tatic save it to static props
     if (typeof value !== 'object') {
-      this._el[key] = value;
-      this._staticProps[key] = value;
+      // parse if `stagger(20, 40)` defined
+      this._el[key] = staggerProperty(value, this.index);
+      this._staticProps[key] = this._el[key];
       continue;
     }
     // check the delta type
     let delta;
     // if module has `update` use it as delta
     if (value.update) {
+      /*
+       * TODO:
+       *   - remove the MotionPath instance as it can not be used multiple time
+       *     with `coordinate` and `index` properties
+      */
       delta = value;
       delta.set('el', this._el);
       delta.set('property', key);
@@ -109,7 +116,8 @@ Deltas._parseProperties = function(options) {
       delta = new mojs.MotionPath({
         el: this._el,
         ...value,
-        property: key
+        property: key,
+        index: this.index
       });
     } else {
       // if value is not static, create delta object
@@ -117,7 +125,8 @@ Deltas._parseProperties = function(options) {
         key,
         target: this._el,
         object: value,
-        customProperties: this._customProperties
+        customProperties: this._customProperties,
+        index: this.index
       });
     }
 

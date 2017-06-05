@@ -427,7 +427,7 @@ Tweenie._extendDefaults = function() {
   ClassProto._extendDefaults.call(this);
   // parse stagger
   for (let key in this._props) {
-    this._props[key] = staggerProperty(this._props[key], this._props.index);
+    this._props[key] = staggerProperty(this._props[key], this.index);
   }
   // parse `easing`
   this._props.easing = parseEasing(this._props.easing);

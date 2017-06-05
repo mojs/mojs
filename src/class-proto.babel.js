@@ -47,7 +47,10 @@ ClassProto.setIfNotSet = function(key, value) {
 ClassProto.init = function(o = {}) {
   // save options
   this._o = o;
-
+  // parse index and delete it from options
+  this.index = this._o.index || 0;
+  delete this._o.index;
+  // invoke lifecycle functions
   this._declareDefaults();
   this._extendDefaults();
   this._vars();
