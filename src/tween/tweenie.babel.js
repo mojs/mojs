@@ -8,12 +8,6 @@ import { staggerProperty } from '../helpers/stagger-property';
 /* The `Tweenie` class  */
 /* -------------------- */
 
-/**
- * TODO:
- *    - add `onRefresh` callbacks
- *    - add `yoyo` option for repeat
- */
-
 const Tweenie = Object.create(ClassProto);
 /**
  * _declareDefaults - function to declare `_defaults` object.
@@ -380,7 +374,6 @@ Tweenie._setState = function(state) {
   // save previous state
   this._prevState = this._state;
   this._state = state;
-
   // callbacks
   var wasPause = this._prevState === 'pause',
       wasStop = this._prevState === 'stop',
@@ -432,6 +425,10 @@ Tweenie.onTweenerFinish = function() {
 Tweenie._extendDefaults = function() {
   // super call
   ClassProto._extendDefaults.call(this);
+  // parse stagger
+  for (let key in this._props) {
+    this._props[key] = staggerProperty(this._props[key], this._props.index);
+  }
   // parse `easing`
   this._props.easing = parseEasing(this._props.easing);
   // parse `backwardEasing`, fallback to `easing` if

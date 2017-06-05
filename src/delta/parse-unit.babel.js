@@ -19,11 +19,9 @@ const parseUnit = (name, object) => {
   const endUnit = getRegexpUnit(result.end);
   // get the unit for both with priority to startUnit
   result.unit = endUnit || startUnit || 'px';
-
   // parse the values in case we have strings there
   result.start = parseFloat(result.start);
   result.end = parseFloat(result.end);
-
   // calculate delta
   result.delta = result.end - result.start;
 

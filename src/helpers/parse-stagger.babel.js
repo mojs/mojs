@@ -14,7 +14,7 @@ const parseStagger = (value, index) => {
   // if string test it on `stagger` sequence, if not present
   // return the value as it is not a stagger string
   if (!value.match(/^stagger\(/)) { return value; }
-  
+
   // split the value `stagger([body])`
   const body = value.split(/stagger\(|\)$/)[1].toLowerCase();
   // split the body
@@ -22,6 +22,7 @@ const parseStagger = (value, index) => {
   // assume two values in the `stagger(20, 20)`
   let base = stagger[1];
   let step = stagger[3];
+  // if only one value provided in the `stagger(20)`
   if (stagger.length <= 3) {
     base = 0;
     step = stagger[1];
