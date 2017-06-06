@@ -289,6 +289,31 @@ describe('`motion-path` ->', function () {
 
       expect(motionPath._props.property).toBe(props[index % props.length]);
     });
+  });
 
+  describe('`coordinate` option ->', function() {
+    it('should set to `y` if key is `y` and no other defined', function () {
+      var motionPath = MotionPath({ property: 'y' });
+
+      expect(motionPath._props.coordinate).toBe('y');
+    });
+
+    it('should not set to `y` if it was defined', function () {
+      var motionPath = MotionPath({ property: 'y', coordinate: 'z' });
+
+      expect(motionPath._props.coordinate).toBe('z');
+    });
+
+    it('should set to `angle` if key is `angle` and no other defined', function () {
+      var motionPath = MotionPath({ property: 'angle' });
+
+      expect(motionPath._props.coordinate).toBe('angle');
+    });
+
+    it('should not set to `angle` if it was defined', function () {
+      var motionPath = MotionPath({ property: 'angle', coordinate: 'tale' });
+
+      expect(motionPath._props.coordinate).toBe('tale');
+    });
   });
 });

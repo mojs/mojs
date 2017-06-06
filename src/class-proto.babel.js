@@ -9,7 +9,7 @@
 const ClassProto = {};
 
 /**
- * get - Method to get a property from `_props`.
+ * `get` - Method to get a property from `_props`.
  *
  * @public
  * @param {String} Key.
@@ -20,7 +20,7 @@ ClassProto.get = function(key) {
 };
 
 /**
- * get - Method to get a property from `_props`.
+ * `set` - Method to get a property from `_props`.
  *
  * @public
  * @param {String} Key.
@@ -30,7 +30,15 @@ ClassProto.set = function(key, value) {
   this._props[key] = value;
 };
 
-// TODO: cover
+/**
+ * `setIfNotSet` - function to set a property if it isn't
+ *                 present in the initialization options.
+ *
+ * @public
+ * @param {String} Key.
+ * @param {Any} Value.
+ * @returns {Object} This instance.
+ */
 ClassProto.setIfNotSet = function(key, value) {
   if (this._o[key] === undefined) {
       this.set(key, value);

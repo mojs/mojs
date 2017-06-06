@@ -7,9 +7,9 @@ import { separateTweenieOptions } from './separate-tweenie-options';
 /* ----------------------- */
 
 // TODO:
-//  - add unit
+//  - add unit?
 //  - add bounds?
-//  - add pipe
+//  - add pipe?
 
 const Super = ClassProto;
 const MotionPath = Object.create(Super);
@@ -170,6 +170,11 @@ MotionPath._extendDefaults = function() {
   // parse stagger
   for (let key in this._props) {
     this._props[key] = staggerProperty(this._props[key], this.index);
+  }
+
+  const { property } = this._props;
+  if (property === 'y' || property === 'angle') {
+    this.setIfNotSet('coordinate', property);
   }
 };
 

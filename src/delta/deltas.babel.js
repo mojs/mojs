@@ -31,7 +31,7 @@ Deltas.init = function(o = {}) {
   this._render = this._customProperties.render || (() => {});
   delete options.customProperties;
   // save the el object and remove it immediately
-  this._el = options.el;
+  this._el = options.el || {};
   delete options.el;
   // set up the main `tweenie`
   this._setupTweenie(options);
@@ -99,20 +99,7 @@ Deltas._parseProperties = function(options) {
     }
     // check the delta type
     let delta;
-    // if module has `update` use it as delta
-    if (value.update) {
-      /*
-       * TODO:
-       *   - remove the MotionPath instance as it can not be used multiple time
-       *     with `coordinate` and `index` properties
-      */
-      delta = value;
-      delta.set('el', this._el);
-      delta.set('property', key);
-      if (key === 'y' || key === 'angle') {
-        delta.setIfNotSet('coordinate', key);
-      }
-    } else if (value.path !== undefined) {
+    if (value.path !== undefined) {
       delta = new mojs.MotionPath({
         el: this._el,
         ...value,
