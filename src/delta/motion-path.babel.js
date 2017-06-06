@@ -150,12 +150,27 @@ MotionPath._setupTweenie = function() {
  */
 MotionPath._declareDefaults = function(o={}) {
   this._defaults = {
+    el: null,
     path: 'M0,0 L100,100',
     precision: 140,
-    el: null,
     coordinate: 'x',
     property: 'x'
   };
+};
+
+/**
+ * _extendDefaults - Method to copy `_o` options to `_props` object
+ *                  with fallback to `_defaults`.
+ * @private
+ * @overrides @ ClassProto
+ */
+MotionPath._extendDefaults = function() {
+  // super call
+  ClassProto._extendDefaults.call(this);
+  // parse stagger
+  for (let key in this._props) {
+    this._props[key] = staggerProperty(this._props[key], this.index);
+  }
 };
 
 /**

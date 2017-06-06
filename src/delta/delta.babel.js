@@ -4,6 +4,7 @@ import { splitDelta } from './split-delta';
 import { parseUnit } from './parse-unit';
 import { parseNumber } from './parse-number';
 import { unitRegexp } from './unit-regexp';
+import { staggerProperty } from '../helpers/stagger-property';
 
 /*
   TODO:
@@ -50,7 +51,7 @@ Delta.init = function(o = {}) {
  */
 Delta._upd_number = function(ep, p, isForward) {
   const { curve, delta, start, end } = this._delta;
-  const { target, key } = this._props;
+  const { target, key } = this._props; 
 
   target[key] = (curve === void 0)
     ? start + ep*delta
@@ -139,13 +140,15 @@ Delta._parseDelta = function() {
  * @private
  */
 Delta._parseByGuess = function() {
-  const { key, object, customProperties } = this._props;
-  const split = splitDelta(object);
-  const { start, end } = split;
+  const { key, object } = this._props;
 
-  const isUnit = start.match(unitRegexp) || end.toString().match(unitRegexp);
-  const type = (isUnit) ? 'unit' : 'number';
-  this._delta = parsersMap[type](key, splitDelta(object));
+  const split = this._getSplit(object);
+  // conver the delta properties to string and check if unit is present
+  const isUnit = `${split.start}`.match(unitRegexp) ||
+                 `${split.end}`.toString().match(unitRegexp);
+  // parse regarding unit presence
+  const parseType = (isUnit) ? 'unit' : 'number';
+  this._delta = parsersMap[parseType](key, split);
 };
 
 /**
@@ -159,7 +162,23 @@ Delta._parseByCustom = function() {
   const customProperty = customProperties[key];
   const { type } = customProperty;
 
-  this._delta = parsersMap[type](key, splitDelta(object));
+  this._delta = parsersMap[type](key, this._getSplit(object));
+};
+
+/**
+ * `_getSplit` - function to get options split
+ *               and parse `stagger` in `start`/`end` properties.
+ *
+ * @param {Object} Object to split.
+ * @return {Object} Split.
+ */
+Delta._getSplit = function(object) {
+  const split = splitDelta(object);
+  // parse the `stagger` in `start`/`end` delta properties
+  split.start = staggerProperty(split.start, this.index);
+  split.end = staggerProperty(split.end, this.index);
+
+  return split;
 };
 
 /**

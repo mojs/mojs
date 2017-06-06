@@ -26,7 +26,7 @@ describe('`delta` ->', function () {
   });
 
   describe('delta parsing ->', function() {
-    it('should parse delta accourding to custom properties', function () {
+    it('should parse delta according to custom properties', function () {
       const customProperties = {
         x: {
           type: 'unit',
@@ -47,7 +47,7 @@ describe('`delta` ->', function () {
       expect(delta._delta).toEqual(parseUnit(key, splitDelta(options)));
     });
 
-    it('should parse delta accourding to custom properties #number', function () {
+    it('should parse delta according to custom properties #number', function () {
       const customProperties = {
         x: {
           type: 'number',
@@ -81,11 +81,71 @@ describe('`delta` ->', function () {
     it('should parse delta #unit', function () {
       var key = 'y';
       var options = {
-        '20': '30rem', delay: 200
+        '20': '30rem',
+        delay: 200
       };
 
       var delta = Delta({ key: key, object: options });
       expect(delta._delta).toEqual(parseUnit(key, splitDelta(options)));
+    });
+
+    it('should parse stagger #custom', function () {
+      const customProperties = {
+        x: {
+          type: 'number',
+          default: 0
+        }
+      }
+      var key = 'x';
+      var index = 3;
+      var options = {
+        'stagger(20, 20)': 'stagger(25, 200)', duration: 2000
+      };
+
+      var delta = Delta({
+        key: key,
+        object: options,
+        customProperties: customProperties,
+        index: index
+      });
+
+      expect(delta._delta.start).toBe(20 + index*20);
+      expect(delta._delta.end).toBe(25 + index*200);
+    });
+
+    it('should parse stagger delta #number', function () {
+      var key = 'x';
+      var index = 2;
+      var options = {
+        'stagger(45, -15)': 'stagger(200, 300)',
+        duration: 2000
+      };
+
+      var delta = Delta({
+        key: key,
+        object: options,
+        index: index
+      });
+      expect(delta._delta.start).toBe(45 + -15*index);
+      expect(delta._delta.end).toBe(200 + 300*index);
+    });
+
+    it('should parse stagger delta #unit', function () {
+      var key = 'x';
+      var index = 2;
+      var options = {
+        'stagger(45, -15)': 'stagger(200rem, 300rem)',
+        duration: 2000
+      };
+
+      var delta = Delta({
+        key: key,
+        object: options,
+        index: index
+      });
+      expect(delta._delta.start).toBe(45 + -15*index);
+      expect(delta._delta.end).toBe(200 + 300*index);
+      expect(delta._delta.unit).toBe('rem');
     });
   });
 
@@ -96,7 +156,7 @@ describe('`delta` ->', function () {
       var options = {
         '20': 30, duration: 2000
       };
-      var delta = Delta({ key: key, object: options, target: target, isIt: 1 });
+      var delta = Delta({ key: key, object: options, target: target });
       expect(delta.update).toBe(delta._upd_number);
     });
 
