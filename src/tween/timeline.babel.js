@@ -51,7 +51,7 @@ Timeline.add = function(tweenie, shift = 0) {
   } else {
 
     // if it has child `timeline` or `tween` property - add it instead
-    const runner =  tweenie.timeline || tweenie.tween;
+    const runner = tweenie.timeline || tweenie.tween;
     if (runner) { tweenie = runner; }
 
     // set the `shiftTime` on tweenie
@@ -212,5 +212,7 @@ const wrap = (o) => {
 
   return instance;
 };
+
+wrap.__mojsClass = Timeline;
 
 export { wrap as Timeline };

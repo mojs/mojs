@@ -22,17 +22,21 @@ import { parseStagger } from './helpers/parse-stagger';
 
 /*
   TODO:
-    - add stagger
     - add color deltas
-    - add stagger deltas
     - add array deltas
+    - add spring easing
+    - add bezier easing
+    - add surface
+    - add path generators
+    - add shape
+    - add burst
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     - rename tweenie to tween
     - rename deltas to ObjectTween?
 */
 
 const mojs = {
-  revision: '2.4.0',
+  revision: '2.5.0',
   Tweenie,
   Timeline,
   easing,
@@ -66,5 +70,9 @@ mojs.Deltas = Deltas;
 // MotionPath
 import { MotionPath } from './delta/motion-path';
 mojs.MotionPath = MotionPath;
+
+// stagger
+import { stagger } from './stagger';
+mojs.stagger = stagger;
 
 export default mojs;
