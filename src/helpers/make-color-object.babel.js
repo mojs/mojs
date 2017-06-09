@@ -11,6 +11,9 @@ const normalizeHex = (string) => {
   return (string.length === 2) ? string : string + string;
 };
 
+/**
+ * `parseHEXColor` - function to parse #HEX colors.
+ */
 const parseHEXColor = (color) => {
   const result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(color);
   const colorObj = {}
@@ -31,6 +34,7 @@ const parseHEXColor = (color) => {
  * @returns {Object} Color object.
  */
 const makeColorObject = (color) => {
+  const originColor = color;
   // #HEX
   if (color[0] === '#') {
     return parseHEXColor(color);
@@ -39,23 +43,30 @@ const makeColorObject = (color) => {
     // if color is not `rgb`, it is a shortcut (`cyan`, `hotpink` etc)
     // so we need to set the color on DOM element and get the calculated color
     if (!isRgb) {
+      div.style.color = 'black';
       div.style.color = color;
       color = window.getComputedStyle(div).color;
     }
+
     // parse `rgb` color
     const regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),';
     const regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$';
     const result = new RegExp(regexString1 + regexString2, 'gi').exec(color);
-    const alpha = parseFloat(result[4] || 1);
+    const a = parseFloat(result[4] || 1);
 
     if (result) {
-      return {
-        r: parseInt(result[1], 10),
-        g: parseInt(result[2], 10),
-        b: parseInt(result[3], 10),
-        a: alpha
-      }
+      const r = parseInt(result[1], 10);
+      const g = parseInt(result[2], 10);
+      const b = parseInt(result[3], 10);
+      // if origin color was not black but black
+      // returned from the DOM - that's an error
+      return (originColor !== 'black' && r === 0 && g === 0 && b === 0 && a === 1)
+        ? { isError: true } : { r, g, b, a };
     }
+  }
+
+  return {
+    isError: true
   }
 };
 

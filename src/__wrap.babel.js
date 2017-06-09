@@ -15,4 +15,4 @@ const wrap = (module) => {
   return w;
 }
 
-export { wrap as wrap };
+export { wrap };

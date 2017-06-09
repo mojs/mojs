@@ -91,4 +91,4 @@ ClassProto._extendDefaults = function() {
  */
 ClassProto._vars = function() {};
 
-export { ClassProto as ClassProto };
+export { ClassProto };

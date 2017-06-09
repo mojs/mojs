@@ -9,10 +9,10 @@ import { easing } from './easing/easing';
 import { parseEasing } from './easing/parse-easing';
 // temporary - not needed for base file
 import { Delta } from './delta/delta';
-import { parseDelta } from './delta/parse-delta';
 import { splitDelta } from './delta/split-delta';
 import { parseNumber } from './delta/parse-number';
 import { parseUnit } from './delta/parse-unit';
+import { parseColor } from './delta/parse-color';
 import { separateTweenieOptions } from './delta/separate-tweenie-options';
 import { Tweenable } from './tween/tweenable';
 import { staggerProperty } from './helpers/stagger-property';
@@ -45,10 +45,10 @@ const mojs = {
     tweener,
     // temporary
     Delta,
-    parseDelta,
     splitDelta,
     parseNumber,
     parseUnit,
+    parseColor,
     separateTweenieOptions,
     Tweenable,
     staggerProperty,

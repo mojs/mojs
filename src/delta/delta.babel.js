@@ -1,10 +1,12 @@
 import { ClassProto } from '../class-proto';
 import { Tweenie } from '../tween/tweenie';
 import { splitDelta } from './split-delta';
-import { parseUnit } from './parse-unit';
 import { parseNumber } from './parse-number';
+import { parseUnit } from './parse-unit';
+import { parseColor } from './parse-color';
 import { unitRegexp } from './unit-regexp';
 import { staggerProperty } from '../helpers/stagger-property';
+import { makeColorObject } from '../helpers/make-color-object';
 
 /*
   TODO:
@@ -13,8 +15,9 @@ import { staggerProperty } from '../helpers/stagger-property';
 
 // map that holds all available parsers
 const parsersMap = {
+  number: parseNumber,
   unit: parseUnit,
-  number: parseNumber
+  color: parseColor
 };
 
 /* ------------------ */
@@ -141,8 +144,13 @@ Delta._parseDelta = function() {
  */
 Delta._parseByGuess = function() {
   const { key, object } = this._props;
-
   const split = this._getSplit(object);
+  // // try to parse `start`/`end` as colors first, if ok - this is a color delta
+  const startColor = makeColorObject(split.start);
+  const endColor = makeColorObject(split.end);
+  if (!startColor.isError && !endColor.isError) {
+      return this._delta = parseColor(key, split);
+  }
   // conver the delta properties to string and check if unit is present
   const isUnit = `${split.start}`.match(unitRegexp) ||
                  `${split.end}`.toString().match(unitRegexp);

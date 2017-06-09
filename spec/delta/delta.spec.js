@@ -3,6 +3,7 @@ var Delta = helpers.Delta;
 var ClassProto = helpers.ClassProto;
 var parseNumber = helpers.parseNumber;
 var parseUnit = helpers.parseUnit;
+var parseColor = helpers.parseColor;
 var splitDelta = helpers.splitDelta;
 
 var key = 'x';
@@ -68,6 +69,28 @@ describe('`delta` ->', function () {
       expect(delta._delta).toEqual(parseNumber(key, splitDelta(options)));
     });
 
+    it('should parse delta according to custom properties #color', function () {
+      const customProperties = {
+        x: {
+          type: 'color',
+          default: 'cyan'
+        }
+      }
+      var key = 'x';
+      var options = {
+        '20': 30,
+        duration: 2000
+      };
+
+      var delta = Delta({
+        key: key,
+        object: options,
+        customProperties: customProperties
+      });
+
+      expect(delta._delta).toEqual(parseColor(key, splitDelta(options)));
+    });
+
     it('should parse delta #number', function () {
       var key = 'x';
       var options = {
@@ -87,6 +110,17 @@ describe('`delta` ->', function () {
 
       var delta = Delta({ key: key, object: options });
       expect(delta._delta).toEqual(parseUnit(key, splitDelta(options)));
+    });
+
+    it('should parse delta #color', function () {
+      var key = 'y';
+      var options = {
+        'cyan': 'rgba(230, 17, 1, .35)',
+        delay: 200
+      };
+
+      var delta = Delta({ key: key, object: options, isIt: 1 });
+      expect(delta._delta).toEqual(parseColor(key, splitDelta(options)));
     });
 
     it('should parse stagger #custom', function () {
@@ -124,7 +158,8 @@ describe('`delta` ->', function () {
       var delta = Delta({
         key: key,
         object: options,
-        index: index
+        index: index,
+        isIt: 1
       });
       expect(delta._delta.start).toBe(45 + -15*index);
       expect(delta._delta.end).toBe(200 + 300*index);
