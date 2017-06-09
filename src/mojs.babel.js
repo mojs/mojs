@@ -7,11 +7,9 @@ import { tweener } from './tween/tweener';
 // easing
 import { easing } from './easing/easing';
 import { parseEasing } from './easing/parse-easing';
-
-// temporary
+// temporary - not needed for base file
 import { Delta } from './delta/delta';
 import { parseDelta } from './delta/parse-delta';
-
 import { splitDelta } from './delta/split-delta';
 import { parseNumber } from './delta/parse-number';
 import { parseUnit } from './delta/parse-unit';
@@ -19,6 +17,7 @@ import { separateTweenieOptions } from './delta/separate-tweenie-options';
 import { Tweenable } from './tween/tweenable';
 import { staggerProperty } from './helpers/stagger-property';
 import { parseStagger } from './helpers/parse-stagger';
+import { makeColorObject } from './helpers/make-color-object';
 
 /*
   TODO:
@@ -30,9 +29,8 @@ import { parseStagger } from './helpers/parse-stagger';
     - add path generators
     - add shape
     - add burst
-    -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    -=-=-=-=-=-=-=-=-=-=-=-=-
     - rename tweenie to tween
-    - rename deltas to ObjectTween?
 */
 
 const mojs = {
@@ -54,7 +52,8 @@ const mojs = {
     separateTweenieOptions,
     Tweenable,
     staggerProperty,
-    parseStagger
+    parseStagger,
+    makeColorObject
   }
 };
 
@@ -62,15 +61,12 @@ const mojs = {
 // `basic easing functions`
 import { addBasicEasing } from './easing/basic-easing';
 addBasicEasing(mojs);
-
 // Deltas
 import { Deltas } from './delta/deltas';
 mojs.Deltas = Deltas;
-
 // MotionPath
 import { MotionPath } from './delta/motion-path';
 mojs.MotionPath = MotionPath;
-
 // stagger
 import { stagger } from './stagger';
 mojs.stagger = stagger;
