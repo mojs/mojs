@@ -86,6 +86,37 @@ Delta._upd_unit = function(ep, p, isForward) {
 };
 
 /**
+ * `_upd_color` - function to update `color` delta.
+ *
+ * @private
+ * @param {Number} Eased progress.
+ * @param {Number} Progress.
+ * @param {Boolean} If forward update direction.
+ * @returns {Object} This delta.
+ */
+Delta._upd_color = function(ep, p, isForward) {
+  const { curve, delta, start, end } = this._delta;
+  const { target, key } = this._props;
+
+  if (curve === void 0) {
+    const r = start.r + ep*delta.r;
+    const g = start.g + ep*delta.g;
+    const b = start.b + ep*delta.b;
+    const a = start.a + ep*delta.a;
+    target[key] = `rgba(${r | 0}, ${g | 0}, ${b | 0}, ${a})`;
+  } else {
+    const curveP = curve(p);
+    const r = curveP*start.r + p*delta.r;
+    const g = curveP*start.g + p*delta.g;
+    const b = curveP*start.b + p*delta.b;
+    const a = curveP*start.a + p*delta.a;
+    target[key] = `rgba(${r | 0}, ${g | 0}, ${b | 0}, ${a})`;
+  }
+
+  return this;
+};
+
+/**
  * `_setupTweenie` - function to set up tweenie if needed.
  */
 Delta._setupTweenie = function () {

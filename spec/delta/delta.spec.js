@@ -185,11 +185,12 @@ describe('`delta` ->', function () {
   });
 
   describe('update ->', function() {
-    it('should be set accirding to delta type', function () {
+    it('should be set accirding to delta type #number', function () {
       var key = 'z';
       var target = {};
       var options = {
-        '20': 30, duration: 2000
+        '20': 30,
+        duration: 2000
       };
       var delta = Delta({ key: key, object: options, target: target });
       expect(delta.update).toBe(delta._upd_number);
@@ -199,10 +200,22 @@ describe('`delta` ->', function () {
       var key = 'z';
       var target = {};
       var options = {
-        '20': '30%', duration: 2000
+        '20': '30%',
+        duration: 2000
       };
       var delta = Delta({ key: key, object: options, target: target });
       expect(delta.update).toBe(delta._upd_unit);
+    });
+
+    it('should be set accirding to delta type #color', function () {
+      var key = 'z';
+      var target = {};
+      var options = {
+        'cyan': 'yellow',
+        duration: 2000
+      };
+      var delta = Delta({ key: key, object: options, target: target });
+      expect(delta.update).toBe(delta._upd_color);
     });
   });
 
@@ -211,7 +224,8 @@ describe('`delta` ->', function () {
       var key = 'z';
       var target = {};
       var options = {
-        '20': 30, duration: 2000
+        '20': 30,
+        duration: 2000
       };
       var delta = Delta({ key: key, object: options, target: target });
 
@@ -224,7 +238,9 @@ describe('`delta` ->', function () {
       var key = 'z';
       var target = {};
       var options = {
-        '20': 30, duration: 2000, curve: mojs.easing.bounce.out
+        '20': 30,
+        duration: 2000,
+        curve: mojs.easing.bounce.out
       };
       var delta = Delta({ key: key, object: options, target: target });
 
@@ -287,6 +303,52 @@ describe('`delta` ->', function () {
 
       var progress = .75;
       const result = delta._upd_unit(progress, progress, true, false);
+
+      expect(result).toBe(delta);
+    });
+  });
+
+  describe('`_upd_color` function ->', function() {
+    it('should set current delta state', function () {
+      var key = 'z';
+      var target = {};
+      var options = {
+        'cyan': 'hotpink',
+        duration: 2000
+      };
+      var delta = Delta({ key: key, object: options, target: target });
+
+      var progress = .5;
+      delta._upd_color(progress, progress, true, false);
+
+      expect(target[key]).toBe('rgba(127, 180, 217, 1)');
+    });
+    it('should set current delta state regarding curve', function () {
+      var key = 'z';
+      var target = {};
+      var options = {
+        'deeppink': 'yellow',
+        duration: 2000,
+        curve: mojs.easing.bounce.out
+      };
+      var delta = Delta({ key: key, object: options, target: target });
+
+      var progress = .5;
+      delta._upd_color(progress, progress, true, false);
+
+      expect(target[key]).toBe('rgba(195, 132, 39, 0.765625)');
+    });
+
+    it('should return `this`', function () {
+      var key = 'z';
+      var target = {};
+      var options = {
+        'purple': 'rgba(0, 20, 12, 1)', curve: mojs.easing.cubic.in
+      };
+      var delta = Delta({ key: key, object: options, target: target });
+
+      var progress = .75;
+      const result = delta._upd_color(progress, progress, true, false);
 
       expect(result).toBe(delta);
     });

@@ -21,20 +21,20 @@ import { makeColorObject } from './helpers/make-color-object';
 
 /*
   TODO:
-    - add color deltas
-    - add array deltas
+    - add path easing
     - add spring easing
     - add bezier easing
     - add surface
     - add path generators
     - add shape
     - add burst
+    - add array deltas
     -=-=-=-=-=-=-=-=-=-=-=-=-
     - rename tweenie to tween
 */
 
 const mojs = {
-  revision: '2.5.0',
+  revision: '2.6.0',
   Tweenie,
   Timeline,
   easing,
