@@ -70,5 +70,8 @@ mojs.MotionPath = MotionPath;
 // stagger
 import { stagger } from './stagger';
 mojs.stagger = stagger;
+// path easing
+import { path } from './easing/path';
+mojs.easing.path = path;
 
 export default mojs;

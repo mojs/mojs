@@ -1,6 +1,7 @@
 import { Tweenie } from '../tween/tweenie';
 import { ClassProto } from '../class-proto';
 import { separateTweenieOptions } from './separate-tweenie-options';
+import { staggerProperty } from '../helpers/stagger-property';
 
 /* ----------------------- */
 /* The `MotionPath` class  */
@@ -78,7 +79,7 @@ MotionPath._samplePath = function(n = this._props.precision) {
 };
 
 /**
- * `_setForKey` - helpref function for `_samplePath`,
+ * `_setForKey` - helper function for `_samplePath`,
  *                sets a key/value regarding `totalLength` on the map.
  *
  * @param  {Number} key Map key [0...1].

@@ -56,126 +56,117 @@
     <input type="range" min="0" max="1000" value="0" id="js-slider" style="width: 500px" />
 
     <script>
-      var el = document.querySelector('#js-el');
-      var playBtn = document.querySelector('#js-play');
-      var pauseBtn = document.querySelector('#js-pause');
-      var reverseBtn = document.querySelector('#js-reverse');
-      var stopBtn = document.querySelector('#js-stop');
-      var replayBtn = document.querySelector('#js-replay');
-      // speeds
-      var one10 = document.querySelector('#js--1x');
-      var five10 = document.querySelector('#js--5x');
-      var x1 = document.querySelector('#js-1x');
-      var x2 = document.querySelector('#js-2x');
-      var x5 = document.querySelector('#js-5x');
-      var x10 = document.querySelector('#js-10x');
-      var slider = document.querySelector('#js-slider');
-
-      const timeline = new mojs.Tweenie({
-        // delay: 500,
-        duration: 2000,
-        repeat: 2,
-        easing: 'linear.none',
-        isYoyo: function (count) {
-          console.log(`count: ${count}`);
-          return count % 2;
-        },
-        onPlaybackStart() {
-          console.log(`onPlaybackStart`);
-        },
-        onUpdate(ep, p, isForward, isReverse, index) {
-          // console.log(`{${index === void 0 ? '' : index}}, [tween update]`, ep);
-          // el.style.transform = `translate(${200*ep}px, 0)`;
-        },
-        onChimeIn(isForward, isReverse, index) {
-          // console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
-        },
-        onChimeOut(isForward, isReverse, index) {
-          // console.log(`{${index === void 0 ? '' : index}}, [tween chime out]`);
-        },
-        onStart(isForward, isReverse, index) {
-          // console.log(`{${index === void 0 ? '' : index}}, [tween start]`);
-        },
-        onComplete(isForward, isReverse, index) {
-          // console.log(`{${index === void 0 ? '' : index}}, [tween complete]`);
-        },
-        onChimeIn(isForward, isReverse, index) {
-          // console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
-        }
-      });
-
-      // for (let i = 0; i < 20; i++) {
-      //   timeline.add(new mojs.Tweenie({
-      //     onUpdate(ep, p, isForward, isReverse, index) {
-      //       console.log(`[tween update]`, ep);
-      //       (i === 0) && (el.style.transform = `translate(${200*ep}px, 0)`);
-      //     },
-      //   }));
-      // }
-
-      playBtn.addEventListener('click', function() {
-        console.log('::: play click');
-        console.time('start');
-        timeline.play();
-      });
-
-      pauseBtn.addEventListener('click', function() {
-        console.log('::: pause click');
-        timeline.pause();
-      });
-
-      reverseBtn.addEventListener('click', function() {
-        console.log('::: revert click');
-
-        timeline.reverse();
-      });
-
-      stopBtn.addEventListener('click', function() {
-        console.log('::: stop click');
-
-        timeline.stop();
-      });
-
-      replayBtn.addEventListener('click', function() {
-        console.log('::: replay click');
-
-        timeline.replay();
-      });
-
-      one10.addEventListener('click', function() {
-        console.log('::: speed: .1x');
-        timeline.setSpeed(.1);
-      });
-
-      five10.addEventListener('click', function() {
-        console.log('::: speed: .5x');
-        timeline.setSpeed(.5);
-      });
-
-      x1.addEventListener('click', function() {
-        console.log('::: speed: 1x');
-        timeline.setSpeed(1);
-      });
-
-      x2.addEventListener('click', function() {
-        console.log('::: speed: 2x');
-        timeline.setSpeed(2);
-      });
-
-      x5.addEventListener('click', function() {
-        console.log('::: speed: 5x');
-        timeline.setSpeed(5);
-      });
-
-      x10.addEventListener('click', function() {
-        console.log('::: speed: 10x');
-        timeline.setSpeed(10);
-      });
-
-      slider.addEventListener('input', function() {
-        // console.log(':: slider value: ', this.value);
-        timeline.setProgress(this.value/1000);
-      });
+      // var el = document.querySelector('#js-el');
+      // var playBtn = document.querySelector('#js-play');
+      // var pauseBtn = document.querySelector('#js-pause');
+      // var reverseBtn = document.querySelector('#js-reverse');
+      // var stopBtn = document.querySelector('#js-stop');
+      // var replayBtn = document.querySelector('#js-replay');
+      // // speeds
+      // var one10 = document.querySelector('#js--1x');
+      // var five10 = document.querySelector('#js--5x');
+      // var x1 = document.querySelector('#js-1x');
+      // var x2 = document.querySelector('#js-2x');
+      // var x5 = document.querySelector('#js-5x');
+      // var x10 = document.querySelector('#js-10x');
+      // var slider = document.querySelector('#js-slider');
+      //
+      // const timeline = new mojs.Tweenie({
+      //   // delay: 500,
+      //   duration: 2000,
+      //   repeat: 2,
+      //   easing: 'linear.none',
+      //   isYoyo: function (count) {
+      //     console.log(`count: ${count}`);
+      //     return count % 2;
+      //   },
+      //   onPlaybackStart() {
+      //     console.log(`onPlaybackStart`);
+      //   },
+      //   onUpdate(ep, p, isForward, isReverse, index) {
+      //     // console.log(`{${index === void 0 ? '' : index}}, [tween update]`, ep);
+      //     // el.style.transform = `translate(${200*ep}px, 0)`;
+      //   },
+      //   onChimeIn(isForward, isReverse, index) {
+      //     // console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
+      //   },
+      //   onChimeOut(isForward, isReverse, index) {
+      //     // console.log(`{${index === void 0 ? '' : index}}, [tween chime out]`);
+      //   },
+      //   onStart(isForward, isReverse, index) {
+      //     // console.log(`{${index === void 0 ? '' : index}}, [tween start]`);
+      //   },
+      //   onComplete(isForward, isReverse, index) {
+      //     // console.log(`{${index === void 0 ? '' : index}}, [tween complete]`);
+      //   },
+      //   onChimeIn(isForward, isReverse, index) {
+      //     // console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
+      //   }
+      // });
+      //
+      // playBtn.addEventListener('click', function() {
+      //   console.log('::: play click');
+      //   console.time('start');
+      //   timeline.play();
+      // });
+      //
+      // pauseBtn.addEventListener('click', function() {
+      //   console.log('::: pause click');
+      //   timeline.pause();
+      // });
+      //
+      // reverseBtn.addEventListener('click', function() {
+      //   console.log('::: revert click');
+      //
+      //   timeline.reverse();
+      // });
+      //
+      // stopBtn.addEventListener('click', function() {
+      //   console.log('::: stop click');
+      //
+      //   timeline.stop();
+      // });
+      //
+      // replayBtn.addEventListener('click', function() {
+      //   console.log('::: replay click');
+      //
+      //   timeline.replay();
+      // });
+      //
+      // one10.addEventListener('click', function() {
+      //   console.log('::: speed: .1x');
+      //   timeline.setSpeed(.1);
+      // });
+      //
+      // five10.addEventListener('click', function() {
+      //   console.log('::: speed: .5x');
+      //   timeline.setSpeed(.5);
+      // });
+      //
+      // x1.addEventListener('click', function() {
+      //   console.log('::: speed: 1x');
+      //   timeline.setSpeed(1);
+      // });
+      //
+      // x2.addEventListener('click', function() {
+      //   console.log('::: speed: 2x');
+      //   timeline.setSpeed(2);
+      // });
+      //
+      // x5.addEventListener('click', function() {
+      //   console.log('::: speed: 5x');
+      //   timeline.setSpeed(5);
+      // });
+      //
+      // x10.addEventListener('click', function() {
+      //   console.log('::: speed: 10x');
+      //   timeline.setSpeed(10);
+      // });
+      //
+      // slider.addEventListener('input', function() {
+      //   // console.log(':: slider value: ', this.value);
+      //   timeline.setProgress(this.value/1000);
+      // });
 
       // var el = {};
       // // var path = 'M0,0 L1200,400';
@@ -239,32 +230,18 @@
       //
     </script>
 
-
-
     <script src="vendor/lodash.min.js"></script>
     <script src="vendor/platform.js"></script>
     <script src="vendor/benchmark.js"></script>
 
-    <!-- <script>
-      var el = {};
-      var motionPath = new mojs.MotionPath({
-        path: 'M0,0 L100,100',
-        el: {}
-      });
-
+    <script>
       var suite = new Benchmark.Suite;
       // add tests
-      suite.add('motion path', function() {
-        motionPath.update(Math.random());
+      suite.add('path sampling', function() {
+        mojs.easing.path('M0, 100, L100, 0');
       })
       .add('easing', function() {
-        var result = mojs.easing.sin.out(Math.random());
-        el['x'] = result;
-      })
-
-      .add('easing #linear', function() {
-        var result = mojs.easing.linear.none(Math.random());
-        el['x'] = result;
+        ;
       })
       // add listeners
       .on('cycle', function(event) {
@@ -275,7 +252,7 @@
       })
       // run async
       .run({ 'async': true });
-    </script> -->
+    </script>
 
   </body>
 </html>
