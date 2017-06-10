@@ -22,10 +22,10 @@ const sample = (path, n) => {
 };
 
 
-const findY = (key, samples) => {
+const findY = (key, samples, n) => {
   let start = 0;
   let end = samples.length-1;
-  const step = 1/end;
+  const step = 1/n;
   // find `start`/`end` bounds with binary search
   while (Math.abs(end - start) > 1) {
     const n = end - start;
@@ -54,21 +54,33 @@ const translateSamples = (samples, n) => {
   const map = new Map();
   const step = 1/n;
   // samples the path, `key` is in range of [0..1]
-  for (var i = 0; i < n; i++) {
+  for (var i = 0; i < n+1; i++) {
     const key = i*step;
-    const y = findY(key, samples, 0, samples.length-1);
-    map.set(key, y);
+    map.set(key, 1 - findY(key, samples, n));
   }
-
-  map.set(1, findY(1, samples, 0, samples.length-1));
 
   return map;
 };
 
-const path = (path, n = 50) => {
-  const domPath = parsePath(path);
-  const samples = sample(domPath, n);
-  const mappedsamples = translateSamples(samples, n);
+const path = (path, n = 200) => {
+  const preSamples = sample(parsePath(path), n);
+  const samples = translateSamples(preSamples, n);
+  const step = 1/n;
+
+  return (p) => {
+    const index = (p/step) | 0; // convert to integer
+    const key = index*step; // get the key
+    const nextKey = (index + 1)*step; // get the next key
+    let y = samples.get(key); // get the y
+    // if next key is present, calculate the normalized y
+    // regarding the progress error
+    if (nextKey <= 1)  {
+      const nextY = samples.get(nextKey);
+      y = y + ((nextY - y) * ((p - key)/step));
+    }
+
+    return y;
+  };
 };
 
 export { path };

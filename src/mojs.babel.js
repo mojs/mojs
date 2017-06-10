@@ -21,7 +21,7 @@ import { makeColorObject } from './helpers/make-color-object';
 
 /*
   TODO:
-    - add path easing
+    - add mojs.staggerFunction()
     - add spring easing
     - add bezier easing
     - add surface
@@ -34,7 +34,7 @@ import { makeColorObject } from './helpers/make-color-object';
 */
 
 const mojs = {
-  revision: '2.6.0',
+  revision: '2.7.0',
   Tweenie,
   Timeline,
   easing,
