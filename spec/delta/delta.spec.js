@@ -182,6 +182,20 @@ describe('`delta` ->', function () {
       expect(delta._delta.end).toBe(200 + 300*index);
       expect(delta._delta.unit).toBe('rem');
     });
+
+    it('should parse `path` easing', function () {
+      var key = 'z';
+      var target = {};
+      var options = {
+        '20': 30,
+        duration: 2000,
+        curve: 'M0,100 L100, 0'
+      };
+      var delta = Delta({ key: key, object: options, target: target });
+
+      expect(typeof delta._delta.curve).toBe('function');
+      expect(delta._delta.curve(.5)).toBeCloseTo(.5, 3);
+    });
   });
 
   describe('update ->', function() {
@@ -234,6 +248,7 @@ describe('`delta` ->', function () {
 
       expect(target[key]).toBe(25);
     });
+
     it('should set current delta state regarding curve', function () {
       var key = 'z';
       var target = {};

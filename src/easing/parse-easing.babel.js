@@ -5,6 +5,7 @@ import {
 } from '../constants';
 
 import { easing } from './easing';
+import { path } from './path';
 // import { basicEasing } from './basic-easing';
 
 /**
@@ -19,6 +20,11 @@ const parseEasing = (ease = defaultEasingString) => {
   switch (type) {
     case 'function': { return ease; }
     case 'string': {
+      // path easing
+      if (ease[0].toLowerCase() === 'm') {
+          return path(ease);
+      }
+
       ease = ease.toLowerCase().split('.');
       const easeParent = easing[ease[0]];
 
@@ -28,11 +34,6 @@ const parseEasing = (ease = defaultEasingString) => {
         return easing[defaultEasing[0]][defaultEasing[1]];
       }
       return easeParent[ease[1]];
-      // comming soon:
-      // parse `path` easing that can start with `M`, `SVG` command.
-      // ---
-      // if (easing.charAt(0).toLowerCase() !== 'm') { }
-      // else { return this.path(easing); }
     }
     // // comming soon:
     // //   - if array passed - parse as `bezier` function

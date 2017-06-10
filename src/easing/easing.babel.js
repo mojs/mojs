@@ -1,3 +1,4 @@
+import { path } from './path';
 /**
  * TODO:
  *  [] add `setParent` public method.
@@ -28,7 +29,8 @@ const easing = {
      inout: (k) => { return 0.5 * (1 - Math.cos(Math.PI * k)); }
   },
 
-  pow
+  pow,
+  path
 };
 
 export { easing as easing };

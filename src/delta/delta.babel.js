@@ -163,6 +163,8 @@ Delta._declareDefaults = function() {
 Delta._parseDelta = function() {
   const { key, customProperties } = this._props;
 
+  // console.log(this._props.object.curve);
+
   (customProperties != null && customProperties[key] != null)
       ? this._parseByCustom()
       : this._parseByGuess();

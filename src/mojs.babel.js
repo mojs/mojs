@@ -34,7 +34,7 @@ import { makeColorObject } from './helpers/make-color-object';
 */
 
 const mojs = {
-  revision: '2.7.0',
+  revision: '2.8.0',
   Tweenie,
   Timeline,
   easing,
@@ -70,8 +70,5 @@ mojs.MotionPath = MotionPath;
 // stagger
 import { stagger } from './stagger';
 mojs.stagger = stagger;
-// path easing
-import { path } from './easing/path';
-mojs.easing.path = path;
 
 export default mojs;
