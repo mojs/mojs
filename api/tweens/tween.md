@@ -20,7 +20,7 @@ const tween = new mojs.Tween({
   // Speed of the tween {Number}[0..∞]
   speed:          1,
   // If the progress should be flipped on repeat animation end {Boolean}
-  yoyo:           false,
+  isYoyo:         false,
   // Easing function {String, Function}[ easing name, path coordinates, bezier string, easing function ]
   easing:         'sin.out',
   // Easing function for backward direction of the tween animation (fallbacks to `easing`) {String, Function}[ easing name, path coordinates, bezier string, easing function ]
@@ -56,14 +56,6 @@ const tween = new mojs.Tween({
   onFirstUpdate (isForward, isYoyo) {},
   /*
     Fires on first update of the tween in sufficiently active period (excluding delay periods).
-    @param ep {Number} Eased progress.
-    @param p {Number} Normal (not eased) progress.
-    @param isForward {Boolean} Direction of the progress.
-    @param isYoyo {Boolean} If in `yoyo` period.
-  */
-  onUpdate (ep, p, isForward, isYoyo) {},
-  /*
-    Fires on every update of the tween in sufficiently active period (excluding delay periods).
     @param ep {Number} Eased progress.
     @param p {Number} Normal (not eased) progress.
     @param isForward {Boolean} Direction of the progress.
