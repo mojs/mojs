@@ -6,7 +6,6 @@ import {
 
 import { easing } from './easing';
 import { path } from './path';
-// import { basicEasing } from './basic-easing';
 
 /**
  * parseEasing - function to parse all easing values to a function.

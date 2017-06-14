@@ -25,9 +25,9 @@ import { makeColorObject } from './helpers/make-color-object';
     - add spring easing
     - add bezier easing
     - add surface
-    - add path generators
     - add shape
     - add burst
+    - add path generators
     - add array deltas
     -=-=-=-=-=-=-=-=-=-=-=-=-
     - rename tweenie to tween

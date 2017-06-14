@@ -29,7 +29,7 @@ const MotionPath = Object.create(Super);
  * @param {Object} This motion path.
  */
 MotionPath.update = function(ep, p, isForward) {
-  const { el, precision, coordinate, property } = this._props;
+  const { precision, coordinate, property } = this._props;
   const { step } = this._samples;
 
   const index = (ep/step) | 0; // convert to integer
@@ -47,7 +47,7 @@ MotionPath.update = function(ep, p, isForward) {
     norm = value + ((nextValue - value) * (diff/step));
   }
 
-  el[property] = norm;
+  this._target[property] = norm;
 
   return this;
 };
@@ -108,6 +108,11 @@ MotionPath._setForKey = function(key) {
 MotionPath.init = function(o={}) {
   // super call
   Super.init.call(this, o);
+  // get target, if the `isSkipRender` is set on `property`
+  // in `customProperties`, use `supportProps` otherwise use `el`
+  const { el, supportProps, property, customProperties } = this._props;
+  const custom = customProperties[property];
+  this._target = (custom && custom.isSkipRender) ? supportProps : el;
   // parse path
   this._parsePath();
   // precompute path
@@ -152,6 +157,8 @@ MotionPath._setupTweenie = function() {
 MotionPath._declareDefaults = function(o={}) {
   this._defaults = {
     el: null,
+    supportProps: null,
+    customProperties: {},
     path: 'M0,0 L100,100',
     precision: 140,
     coordinate: 'x',

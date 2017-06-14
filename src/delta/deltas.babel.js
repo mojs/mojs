@@ -4,6 +4,8 @@ import { Tweenable } from '../tween/tweenable';
 import { Delta } from './delta';
 import { separateTweenieOptions } from './separate-tweenie-options';
 import { staggerProperty } from '../helpers/stagger-property';
+// TODO: should point to paMotionPath stub
+import { MotionPath } from './motion-path';
 
 /* ------------------- */
 /* The `Deltas` class  */
@@ -33,6 +35,8 @@ Deltas.init = function(o = {}) {
   // save the el object and remove it immediately
   this._el = options.el || {};
   delete options.el;
+  // create support object for complex properties
+  this._supportProps = {};
   // set up the main `tweenie`
   this._setupTweenie(options);
   // set up the `timeline`
@@ -57,8 +61,6 @@ Deltas._setupTweenie = function(options) {
     onUpdate: (ep, p, isForward) => {
       // update plain deltas
       this._upd_deltas(ep, p, isForward);
-      // call render function
-      this._render(this._el, ep, p, isForward);
       // envoke onUpdate if present
       tweenieOptions.onUpdate && tweenieOptions.onUpdate(ep, p, isForward);
     }
@@ -70,9 +72,18 @@ Deltas._setupTweenie = function(options) {
  *
  * @param {Object} Timeline options.
  */
-Deltas._setupTimeline = function(options) {
-  this.timeline = new Timeline(options);
+Deltas._setupTimeline = function(options = {}) {
+  this.timeline = new Timeline({
+    ...options,
+    onUpdate: (ep, p, isForward) => {
+      // call render function
+      this._render(this._el, ep, p, isForward);
+      // envoke onUpdate if present
+      options.onUpdate && options.onUpdate(ep, p, isForward);
+    }
+  });
   this.timeline.add(this.tween);
+
 };
 
 /**
@@ -100,17 +111,19 @@ Deltas._parseProperties = function(options) {
     // check the delta type
     let delta;
     if (value.path !== undefined) {
-      delta = new mojs.MotionPath({
+      delta = new MotionPath({
         el: this._el,
         ...value,
+        supportProps: this._supportProps,
         property: key,
         index: this.index
       });
     } else {
-      // if value is not static, create delta object
+      // if value is not motion path, create delta object
       delta = new Delta({
         key,
         target: this._el,
+        supportProps: this._supportProps,
         object: value,
         customProperties: this._customProperties,
         index: this.index

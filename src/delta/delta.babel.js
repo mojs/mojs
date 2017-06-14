@@ -35,6 +35,12 @@ const Delta = Object.create(ClassProto);
 Delta.init = function(o = {}) {
   // super call
   ClassProto.init.call(this, o);
+  // save target
+  const { target, supportProps, customProperties = {}, key } = this._props;
+  // if the `isSkipRender` property is set, set the property on
+  // `supportProps` otherwise set is as ususal on the `target` object
+  this._target = (customProperties[key] && customProperties[key].isSkipRender)
+    ? supportProps : target;
   // parse delta
   this._parseDelta();
   // set up the update function acording to the delta type
@@ -54,9 +60,9 @@ Delta.init = function(o = {}) {
  */
 Delta._upd_number = function(ep, p, isForward) {
   const { curve, delta, start, end } = this._delta;
-  const { target, key } = this._props; 
+  const { key } = this._props; 
 
-  target[key] = (curve === void 0)
+  this._target[key] = (curve === void 0)
     ? start + ep*delta
     : curve(p)*start + p*delta;
 
@@ -74,13 +80,13 @@ Delta._upd_number = function(ep, p, isForward) {
  */
 Delta._upd_unit = function(ep, p, isForward) {
   const { curve, delta, start, end, unit } = this._delta;
-  const { target, key } = this._props;
+  const { key } = this._props;
 
   const value = (curve === void 0)
     ? start + ep*delta
     : curve(p)*start + p*delta;
 
-  target[key] = `${value}${unit}`;
+  this._target[key] = `${value}${unit}`;
 
   return this;
 };
@@ -96,21 +102,21 @@ Delta._upd_unit = function(ep, p, isForward) {
  */
 Delta._upd_color = function(ep, p, isForward) {
   const { curve, delta, start, end } = this._delta;
-  const { target, key } = this._props;
+  const { key } = this._props;
 
   if (curve === void 0) {
     const r = start.r + ep*delta.r;
     const g = start.g + ep*delta.g;
     const b = start.b + ep*delta.b;
     const a = start.a + ep*delta.a;
-    target[key] = `rgba(${r | 0}, ${g | 0}, ${b | 0}, ${a})`;
+    this._target[key] = `rgba(${r | 0}, ${g | 0}, ${b | 0}, ${a})`;
   } else {
     const curveP = curve(p);
     const r = curveP*start.r + p*delta.r;
     const g = curveP*start.g + p*delta.g;
     const b = curveP*start.b + p*delta.b;
     const a = curveP*start.a + p*delta.a;
-    target[key] = `rgba(${r | 0}, ${g | 0}, ${b | 0}, ${a})`;
+    this._target[key] = `rgba(${r | 0}, ${g | 0}, ${b | 0}, ${a})`;
   }
 
   return this;
@@ -150,8 +156,9 @@ Delta._declareDefaults = function() {
   this._defaults = {
     key: null,
     object: null,
-    customProperties: null,
-    target: null
+    customProperties: {},
+    target: null,
+    supportProps: null
   };
 };
 
@@ -163,9 +170,7 @@ Delta._declareDefaults = function() {
 Delta._parseDelta = function() {
   const { key, customProperties } = this._props;
 
-  // console.log(this._props.object.curve);
-
-  (customProperties != null && customProperties[key] != null)
+  (customProperties[key] != null)
       ? this._parseByCustom()
       : this._parseByGuess();
 };

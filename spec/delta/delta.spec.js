@@ -22,7 +22,32 @@ describe('`delta` ->', function () {
       var delta = Delta({ key: key, object: options });
       expect(delta._defaults.key).toBe(null);
       expect(delta._defaults.object).toBe(null);
-      expect(delta._defaults.customProperties).toBe(null);
+      expect(delta._defaults.customProperties).toEqual({});
+    });
+
+    it('should decide target #target', function () {
+      var target = {};
+      var delta = Delta({ key: key, object: options, target: target });
+      expect(delta._target).toBe(target);
+    });
+
+    it('should decide target #supportProps', function () {
+      var customProperties = {};
+      customProperties[key] = {
+        type: 'unit',
+        isSkipRender: true
+      };
+
+      var target = {};
+      var supportProps = {};
+      var delta = Delta({
+        key: key,
+        object: options,
+        target: target,
+        customProperties: customProperties,
+        supportProps: supportProps
+      });
+      expect(delta._target).toBe(supportProps);
     });
   });
 

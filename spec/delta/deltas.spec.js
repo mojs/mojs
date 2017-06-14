@@ -26,6 +26,12 @@ describe('`deltas` ->', function () {
       expect(deltas._el).not.toBe(null);
       expect(typeof deltas._el).toBe('object');
     });
+
+    it('should create support object', function () {
+      var deltas = Deltas();
+      expect(deltas._supportProps).not.toBe(null);
+      expect(typeof deltas._supportProps).toBe('object');
+    });
   });
 
   describe('main tweenie ->', function() {
@@ -59,8 +65,12 @@ describe('`deltas` ->', function () {
       var deltas = Deltas(options);
 
       expect(deltas.timeline).toBeDefined();
-      expect(deltas.timeline._o).toBe(options.timeline);
       expect(deltas.timeline._items[0]).toBe(deltas.tween);
+
+      // deltas class will always pass the `onUpdate`
+      // for internal purposes so delete it for asserting
+      delete deltas.timeline._o.onUpdate;
+      expect(deltas.timeline._o).toEqual(options.timeline);
     });
   });
 
@@ -129,6 +139,24 @@ describe('`deltas` ->', function () {
       expect(deltas._tweenDeltas[0]._props.target).toBe(deltas._el);
       expect(deltas._tweenDeltas[1]._props.target).toBe(deltas._el);
       expect(deltas._plainDeltas[0]._props.target).toBe(deltas._el);
+    });
+
+    it('should pass `_supportProps` as `supportProps` to deltas', function () {
+      var options = {
+        x: { '200': 300, delay: 200 },
+        y: { '200': 300 },
+        k: { path: 'M0,0 L100,100' },
+        f: 5,
+        z: { '200': 300, delay: 200 },
+        el: {}
+      };
+
+      var deltas = Deltas(options);
+
+      expect(deltas._tweenDeltas[0]._props.supportProps).toBe(deltas._supportProps);
+      expect(deltas._tweenDeltas[1]._props.supportProps).toBe(deltas._supportProps);
+      expect(deltas._plainDeltas[0]._props.supportProps).toBe(deltas._supportProps);
+      expect(deltas._plainDeltas[1]._props.supportProps).toBe(deltas._supportProps);
     });
 
     it('should create motion paths if `path` set', function () {
@@ -237,7 +265,7 @@ describe('`deltas` ->', function () {
       expect(deltas._upd_deltas).toHaveBeenCalledWith(progress, progress, isForward);
     });
 
-    it('should be call the render function', function () {
+    it('should call the render function', function () {
       var customProperties = {
         render: function() {}
       };
@@ -247,7 +275,8 @@ describe('`deltas` ->', function () {
         y: { '200': 300 },
         f: 5,
         z: { '50': 125 },
-        onUpdate: function() {}
+        onUpdate: function() {},
+        customProperties: customProperties
       };
 
       var deltas = Deltas(options);
@@ -255,9 +284,39 @@ describe('`deltas` ->', function () {
 
       var progress = Math.random();
       var isForward = true;
-      deltas.tween._props.onUpdate(progress, progress, isForward);
+      deltas.timeline._props.onUpdate(progress, progress, isForward);
 
       expect(deltas._render).toHaveBeenCalledWith(deltas._el, progress, progress, isForward);
+    });
+
+    it('should be call onUpdate on timeline', function () {
+      var customProperties = {
+        render: function() {}
+      };
+      var isCalled = null;
+
+      var options = {
+        el: {},
+        x: { '200': 300, delay: 200 },
+        y: { '200': 300 },
+        f: 5,
+        z: { '50': 125 },
+        onUpdate: function() {},
+        customProperties: customProperties,
+        timeline: {
+          onUpdate: function() {
+            isCalled = true;
+          }
+        }
+      };
+
+      var deltas = Deltas(options);
+
+      var progress = Math.random();
+      var isForward = true;
+      deltas.timeline._props.onUpdate(progress, progress, isForward);
+
+      expect(isCalled).toBe(true);
     });
 
     it('should call the onUpdate', function () {
@@ -280,6 +339,21 @@ describe('`deltas` ->', function () {
 
       expect(options.onUpdate).toHaveBeenCalledWith(progress, progress, isForward);
       expect(options.onUpdate.calls.count()).toBe(1);
+    });
+  });
+
+  describe('`index` ->', function() {
+    it('should extend `ClassProto`', function () {
+      var index = parseInt(Math.random()*10, 10);
+      var deltas = Deltas({ index: index });
+      expect(deltas.index).toBe(index);
+    });
+
+    it('should fallback to `0`', function () {
+      var deltas = Deltas();
+      expect(deltas.index).toBe(0);
+      expect(deltas._o.index).not.toBeDefined();
+      expect(deltas._props.index).not.toBeDefined();
     });
   });
 
@@ -326,21 +400,6 @@ describe('`deltas` ->', function () {
         customProperties: customProperties
       });
       expect(typeof deltas._render).toBe('function');
-    });
-  });
-
-  describe('`index` ->', function() {
-    it('should extend `ClassProto`', function () {
-      var index = parseInt(Math.random()*10, 10);
-      var deltas = Deltas({ index: index });
-      expect(deltas.index).toBe(index);
-    });
-
-    it('should fallback to `0`', function () {
-      var deltas = Deltas();
-      expect(deltas.index).toBe(0);
-      expect(deltas._o.index).not.toBeDefined();
-      expect(deltas._props.index).not.toBeDefined();
     });
   });
 });

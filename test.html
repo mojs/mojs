@@ -56,7 +56,24 @@
     <input type="range" min="0" max="1000" value="0" id="js-slider" style="width: 500px" />
 
     <script>
-      // var el = document.querySelector('#js-el');
+
+      var el = document.querySelector('#js-el');
+
+      var deltas = new mojs.Deltas({
+        el: {},
+        duration: 4000,
+        x: { 0: 200 },
+        opacity: { 1: 0, duration: 6000 },
+        customProperties: {
+          render: function (props) {
+            el.style.transform = `translateX(${props.x}px)`;
+            el.style.opacity = props.opacity;
+          }
+        }
+      });
+
+      deltas.play();
+
       // var playBtn = document.querySelector('#js-play');
       // var pauseBtn = document.querySelector('#js-pause');
       // var reverseBtn = document.querySelector('#js-reverse');
