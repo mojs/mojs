@@ -95,7 +95,7 @@ describe('`deltas` ->', function () {
       expect(deltas.timeline._items[2]).toBe(deltas._tweenDeltas[1].tween);
     });
 
-    it('should set static properties on target', function () {
+    it('should set static properties on target #el', function () {
       var el = {};
       var options = {
         el: el,
@@ -106,6 +106,27 @@ describe('`deltas` ->', function () {
       var deltas = Deltas(options);
 
       expect(el.f).toBe(options.f);
+      expect(el.z).toBe(options.z);
+    });
+
+    it('should set static properties on target #supportProps', function () {
+      var el = {};
+      var customProperties = {
+        f: {
+          type: 'number',
+          isSkipRender: true
+        }
+      }
+      var options = {
+        el: el,
+        f: 5,
+        z: 'a',
+        customProperties: customProperties
+      };
+
+      var deltas = Deltas(options);
+
+      expect(deltas._supportProps.f).toBe(options.f);
       expect(el.z).toBe(options.z);
     });
 
@@ -286,7 +307,7 @@ describe('`deltas` ->', function () {
       var isForward = true;
       deltas.timeline._props.onUpdate(progress, progress, isForward);
 
-      expect(deltas._render).toHaveBeenCalledWith(deltas._el, progress, progress, isForward);
+      expect(deltas._render).toHaveBeenCalledWith(deltas._el, deltas._supportProps, progress, progress, isForward);
     });
 
     it('should be call onUpdate on timeline', function () {

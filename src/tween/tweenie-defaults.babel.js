@@ -55,4 +55,4 @@ const tweenieDefaults = {
   shiftTime:              0
 };
 
-export { tweenieDefaults as tweenieDefaults };
+export { tweenieDefaults };

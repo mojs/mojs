@@ -77,7 +77,7 @@ Deltas._setupTimeline = function(options = {}) {
     ...options,
     onUpdate: (ep, p, isForward) => {
       // call render function
-      this._render(this._el, ep, p, isForward);
+      this._render(this._el, this._supportProps, ep, p, isForward);
       // envoke onUpdate if present
       options.onUpdate && options.onUpdate(ep, p, isForward);
     }
@@ -103,9 +103,15 @@ Deltas._parseProperties = function(options) {
     const value = options[key];
     // if value is tatic save it to static props
     if (typeof value !== 'object') {
+      // find out property `el`, it can be `supportProps` if the `isSkipRender`
+      // is set for the property in the `customProperties`
+      const custom = this._customProperties[key];
+      const target = (custom && custom.isSkipRender)
+        ? this._supportProps
+        : this._el;
       // parse if `stagger(20, 40)` defined
-      this._el[key] = staggerProperty(value, this.index);
-      this._staticProps[key] = this._el[key];
+      this._staticProps[key] = staggerProperty(value, this.index);
+      target[key] = this._staticProps[key];
       continue;
     }
     // check the delta type

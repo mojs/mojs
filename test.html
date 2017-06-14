@@ -57,22 +57,40 @@
 
     <script>
 
-      var el = document.querySelector('#js-el');
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout( () => {
+          var el = document.querySelector('#js-el');
 
-      var deltas = new mojs.Deltas({
-        el: {},
-        duration: 4000,
-        x: { 0: 200 },
-        opacity: { 1: 0, duration: 6000 },
-        customProperties: {
-          render: function (props) {
-            el.style.transform = `translateX(${props.x}px)`;
-            el.style.opacity = props.opacity;
-          }
-        }
+          var deltas = new mojs.Deltas({
+            el: {},
+            duration: 4000,
+            x: { 0: 200 },
+            angle: { 0: 180, easing: 'cubic.out' },
+            // z: { 200: 0 },
+            // opacity: { 1: 0, duration: 6000 },
+            // backgroundColor: { 'cyan': 'orange', duration: 6000 },
+            customProperties: {
+              render: function (props, supportProps) {
+
+                console.log(supportProps);
+
+                el.style.transform = `translateX(${supportProps.x}px) rotate(${supportProps.angle}deg)`;
+                // el.style.opacity = props.opacity;
+              },
+              angle: {
+                type: 'number',
+                isSkipRender: true
+              },
+              x: {
+                type: 'number',
+                isSkipRender: true
+              }
+            }
+          });
+
+          deltas.play();
+        }, 2000 );
       });
-
-      deltas.play();
 
       // var playBtn = document.querySelector('#js-play');
       // var pauseBtn = document.querySelector('#js-pause');
