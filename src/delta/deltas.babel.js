@@ -28,10 +28,14 @@ Deltas.init = function(o = {}) {
   // get `timeline` options and remove them immediately
   const timelineOptions = options.timeline;
   delete options.timeline;
-  // get `timeline` options and remove them immediately
+
+  // get `customProperties` options and remove them immediately
   this._customProperties = options.customProperties || {};
   this._render = this._customProperties.render || (() => {});
+  // create support render
+  this._supportRender = this._customProperties.supportRender || (() => {});
   delete options.customProperties;
+
   // save the el object and remove it immediately
   this._el = options.el || {};
   delete options.el;
@@ -61,6 +65,7 @@ Deltas._setupTweenie = function(options) {
     onUpdate: (ep, p, isForward) => {
       // update plain deltas
       this._upd_deltas(ep, p, isForward);
+
       // envoke onUpdate if present
       tweenieOptions.onUpdate && tweenieOptions.onUpdate(ep, p, isForward);
     }
@@ -73,11 +78,13 @@ Deltas._setupTweenie = function(options) {
  * @param {Object} Timeline options.
  */
 Deltas._setupTimeline = function(options = {}) {
+  const support = [ this._supportProps, this._supportRender ];
+
   this.timeline = new Timeline({
     ...options,
     onUpdate: (ep, p, isForward) => {
       // call render function
-      this._render(this._el, this._supportProps, ep, p, isForward);
+      this._render(this._el, support, ep, p, isForward);
       // envoke onUpdate if present
       options.onUpdate && options.onUpdate(ep, p, isForward);
     }
@@ -162,10 +169,10 @@ Deltas._upd_deltas = function(ep, p, isForward) {
 };
 
 /**
- * Imitate `class` with wrapper
+ * Imitate `class` with wrapper.
  *
  * @param {Object} Options object.
- * @returns {Object} Tweenie instance.
+ * @returns {Object} `Html` instance.
  */
 const wrap = (o) => {
   const instance = Object.create(Deltas);

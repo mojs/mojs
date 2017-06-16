@@ -307,7 +307,7 @@ describe('`deltas` ->', function () {
       var isForward = true;
       deltas.timeline._props.onUpdate(progress, progress, isForward);
 
-      expect(deltas._render).toHaveBeenCalledWith(deltas._el, deltas._supportProps, progress, progress, isForward);
+      expect(deltas._render).toHaveBeenCalledWith(deltas._el, [ deltas._supportProps, deltas._supportRender ], progress, progress, isForward);
     });
 
     it('should be call onUpdate on timeline', function () {

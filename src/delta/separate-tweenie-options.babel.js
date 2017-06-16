@@ -15,7 +15,7 @@ const separateTweenieOptions = (object) => {
       delete object[option];
     }
   }
-  
+
   return tweenieOptions;
 };
 

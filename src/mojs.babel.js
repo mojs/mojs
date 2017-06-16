@@ -21,6 +21,7 @@ import { makeColorObject } from './helpers/make-color-object';
 
 /*
   TODO:
+    - add html
     - add mojs.staggerFunction()
     - add spring easing
     - add bezier easing
@@ -70,5 +71,8 @@ mojs.MotionPath = MotionPath;
 // stagger
 import { stagger } from './stagger';
 mojs.stagger = stagger;
+// html
+import { Html } from './html';
+mojs.Html = Html;
 
 export default mojs;
