@@ -1,2 +1,4386 @@
-!function(t,e){"object"==typeof exports&&"object"==typeof module?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports.mojs=e():t.mojs=e()}(this,function(){return function(t){function e(i){if(n[i])return n[i].exports;var s=n[i]={i:i,l:!1,exports:{}};return t[i].call(s.exports,s,s.exports,e),s.l=!0,s.exports}var n={};return e.m=t,e.c=n,e.i=function(t){return t},e.d=function(t,n,i){e.o(t,n)||Object.defineProperty(t,n,{configurable:!1,enumerable:!0,get:i})},e.n=function(t){var n=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(n,"a",n),n},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="build/",e(e.s=29)}([function(t,e,n){var i,s,r,i,s,r;!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t){Object.defineProperty(t,"__esModule",{value:!0});var e=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},n={};n.get=function(t){return this._props[t]},n.set=function(t,e){this._props[t]=e},n.setIfNotSet=function(t,e){return void 0===this._o[t]&&this.set(t,e),this},n.init=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{};this._o=t,this.index=this._o.index||0,delete this._o.index,this._declareDefaults(),this._extendDefaults(),this._vars()},n._declareDefaults=function(){this._defaults={}},n._extendDefaults=function(){this._props=e({},this._defaults,this._o)},n._vars=function(){},t.ClassProto=n})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(21)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(21)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e){Object.defineProperty(t,"__esModule",{value:!0}),t.staggerProperty=void 0;var n=function(t,n){var i=t;return t instanceof Array&&(i=t[n%t.length]),"function"==typeof t&&t.__mojs__isStaggerFunction&&(i=t(n)),(0,e.parseStagger)(i,n)};t.staggerProperty=n})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(0),n(5),n(23),n(6),n(1)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(0),n(5),n(23),n(6),n(1)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e,n,i,s,r){Object.defineProperty(t,"__esModule",{value:!0}),t.Tweenie=void 0;var o=Object.create(e.ClassProto);o._declareDefaults=function(){this._defaults=n.tweenieDefaults},o.play=function(){return"play"===this._state?this:(this._setState("play"),this._setupPlay("play"),this._playTime=performance.now(),this._speed=this._props.speed,this)},o.pause=function(){return"pause"===this._state||"stop"===this._state?this:(i.tweener.remove(this),this._setState("pause"),this._speed=1,this)},o.stop=function(t){if("stop"===this._state)return this;var e=void 0!==t?t:this._props.isReverse===!0?1:0;return i.tweener.remove(this),this.setProgress(e),this.reset(),this},o.replay=function(t){return this.reset(),this.play(t),this},o.setSpeed=function(t){return this._props.speed=t,"play"===this._state&&(this.setStartTime(),this._speed=t,this._playTime=performance.now()),this},o.reverse=function(){if(this._props.isReverse=!this._props.isReverse,this._reverseCallbacks(),this._elapsed>0){var t=this._props.delay;this._elapsed=this._end-this._spot-(this._elapsed-t)}return this.setStartTime(),this},o.setProgress=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0;void 0===this._start&&this.setStartTime();var e=1===t?this._end:this._spot+t*(this._end-this._spot);return void 0===this._prevTime&&(this._prevTime=this._start),this.update(e),this},o.reset=function(){this._isActive=!1,this._elapsed=0,this._repeatCount=0,this._setState("stop"),delete this._prevTime},o._setupPlay=function(t){this.setStartTime(),i.tweener.add(this)},o._vars=function(){var t=this._props,e=t.isReverse,n=t.onStart,i=t.onComplete,s=t.onChimeIn,r=t.onChimeOut,o=t.delay,a=t.duration;this._isActive=!1,this._elapsed=0,this._state="stop",this._speed=1,this._time=o+a,this._repeatCount=0,this._prevTime,this._cbs=[n,i,0,1],this._chCbs=[s,r],e===!0&&this._reverseCallbacks()},o.setStartTime=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:performance.now(),e=this._props,n=e.delay,i=e.duration,s=(e.repeat,e.shiftTime);this._elapsed>=this._end-this._spot&&(this._elapsed=0),this._spot=t-this._elapsed+s,this._playTime=this._spot,this._start=this._spot+n,this._end=this._start+i},o.update=function(t){var e=this._props,n=e.onUpdate,i=e.isReverse,s=e.index,r=e.easing,o=e.backwardEasing;t=this._playTime+this._speed*(t-this._playTime),this._elapsed=t-this._spot,t<this._start&&this._progress!==this._cbs[2]&&(this._props.onRefresh(!1,s,t),this._progress=this._cbs[2]),t>this._end&&this._progress!==this._cbs[3]&&(this._props.onRefresh(!0,s,t),this._progress=this._cbs[3]);var a=t>this._prevTime,p=a!==i?r:o;if(t>=this._start&&t<=this._end&&void 0!==this._prevTime){var u=void 0,c=(t-this._start)/this._props.duration;return this._progress=i===!1?c:1-c,n(p(this._progress),this._progress,a,t),t>this._start&&this._isActive===!1&&a===!0&&(this._cbs[0](a,i,s),this._chCbs[0](a,i,s,t)),t===this._start&&(this._cbs[0](a,i,s),this._chCbs[0](a,i,s,t),u=a),t<this._end&&this._isActive===!1&&a===!1&&(this._cbs[1](!1,i,s),this._chCbs[1](a,i,s,t)),t===this._end&&(this._cbs[1](a,i,s),this._chCbs[1](a,i,s,t),u=!a),this._isActive=void 0===u||u,this._prevTime=t,!this._isActive}return t>this._end&&this._isActive===!0?(this._progress=this._cbs[3],n(p(this._progress),this._progress,a,t),this._cbs[1](a,i,s),this._chCbs[1](a,i,s,t),this._isActive=!1,this._prevTime=t,!0):t<this._start&&this._isActive===!0?(this._progress=this._cbs[2],n(p(this._progress),this._progress,a,t),this._cbs[0](a,i,s),this._chCbs[0](a,i,s,t),this._isActive=!1,this._prevTime=t,!0):void(this._prevTime=t)},o._reverseCallbacks=function(){this._cbs=[this._cbs[1],this._cbs[0],this._cbs[3],this._cbs[2]]},o._setState=function(t){this._prevState=this._state,this._state=t;var e="pause"===this._prevState,n="stop"===this._prevState,i="play"===this._prevState,s="reverse"===this._prevState,r=i||s,o=n||e;"play"!==t&&"reverse"!==t||!o||this._props.onPlaybackStart(t,this._prevState),"pause"===t&&r&&this._props.onPlaybackPause(),"stop"===t&&(r||e)&&this._props.onPlaybackStop()},o.onTweenerFinish=function(){var t=this._props,e=t.isReverse,n=t.repeat,i=t.isReverseOnRepeat,s=t.onPlaybackComplete,o=this._repeatCount;s(!e,o,n-o),this.reset(),n-o>0&&((0,r.staggerProperty)(i,o)&&this.reverse(),this._repeatCount=o+1,this.play())},o._extendDefaults=function(){e.ClassProto._extendDefaults.call(this);for(var t in this._props)this._props[t]=(0,r.staggerProperty)(this._props[t],this.index);this._props.easing=(0,s.parseEasing)(this._props.easing);var n=this._props,i=n.easing,o=n.backwardEasing;this._props.backwardEasing=null!=o?(0,s.parseEasing)(o):i};var a=function(t){var e=Object.create(o);return e.init(t),e};a.__mojsClass=o,t.Tweenie=a})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(5)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(5)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e){Object.defineProperty(t,"__esModule",{value:!0}),t.separateTweenieOptions=void 0;var n=function(t){var n=void 0;for(var i in e.tweenieDefaults)void 0!==t[i]&&(n=n||{},n[i]=t[i],delete t[i]);return n};t.separateTweenieOptions=n})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(0)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(0)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e){Object.defineProperty(t,"__esModule",{value:!0}),t.Tweenable=void 0;var n=e.ClassProto,i=Object.create(n);i.init=function(t){var e=this;n.init.call(this,t);for(var i=["play","pause","stop","replay","setSpeed","reverse","setProgress","reset","setStartTime"],s=function(t){var n=i[t];e[n]=function(){for(var t,i=arguments.length,s=Array(i),r=0;r<i;r++)s[r]=arguments[r];(t=e.timeline||e.tween)[n].apply(t,s)}},r=0;r<i.length;r++)s(r)};var s=function(t){var e=Object.create(i);return e.init(t),e};s.__mojsClass=i,t.Tweenable=s})})},function(t,e,n){var i,s,r,i,s,r;!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t){Object.defineProperty(t,"__esModule",{value:!0});var e={delay:0,duration:350,speed:1,easing:"Sin.Out",backwardEasing:null,isReverse:!1,repeat:0,isReverseOnRepeat:!1,onUpdate:function(t,e,n){},onStart:function(){},onComplete:function(){},onChimeIn:function(){},onChimeOut:function(){},onRefresh:function(){},onPlaybackStart:function(){},onPlaybackPause:function(){},onPlaybackStop:function(){},onPlaybackComplete:function(){},index:0,shiftTime:0};t.tweenieDefaults=e})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(8),n(18),n(19)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(8),n(18),n(19)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e,n,i){Object.defineProperty(t,"__esModule",{value:!0}),t.parseEasing=void 0;var s=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:e.defaultEasingString;switch(typeof t){case"function":return t;case"string":if("m"===t[0].toLowerCase())return(0,i.path)(t);t=t.toLowerCase().split(".");var s=n.easing[t[0]];return s?s[t[1]]:(console.error(e.consoleName+' Easing with name "'+t[0]+'" wasn\'t found, fallback to "'+e.defaultEasingString+'" instead.',n.easing),n.easing[e.defaultEasing[0]][e.defaultEasing[1]])}};t.parseEasing=s})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(25)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(25)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e){Object.defineProperty(t,"__esModule",{value:!0}),t.makeColorObject=void 0;var n=function(t){return 2===t.length?t:t+t},i=function(t){var e=/^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(t);if(e)return{r:parseInt(n(e[1]),16),g:parseInt(n(e[2]),16),b:parseInt(n(e[3]),16),a:1}},s=function(t){var n=t;if("#"===t[0])return i(t);"r"===t[0]&&"g"===t[1]&&"b"===t[2]||(e.div.style.color="black",e.div.style.color=t,t=window.getComputedStyle(e.div).color);var s="^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),",r="\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$",o=new RegExp(s+r,"gi").exec(t),a=parseFloat(o[4]||1);if(o){var p=parseInt(o[1],10),u=parseInt(o[2],10),c=parseInt(o[3],10);return"black"!==n&&0===p&&0===u&&0===c&&1===a?{isError:!0}:{r:p,g:u,b:c,a:a}}return{isError:!0}};t.makeColorObject=s})})},function(t,e,n){var i,s,r,i,s,r;!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t){Object.defineProperty(t,"__esModule",{value:!0});var e=t.defaultEasing=["sin","out"],n=(t.defaultEasingString=e.join("."),t.name="mojs");t.consoleName=":"+n+":",t.bundleLink="https://aka.ms/mojs-bundle"})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(0),n(2),n(16),n(14),n(15),n(13),n(17),n(1),n(7)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(0),n(2),n(16),n(14),n(15),n(13),n(17),n(1),n(7)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e,n,i,s,r,o,a,p,u){Object.defineProperty(t,"__esModule",{value:!0}),t.Delta=void 0;var c=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},l={number:s.parseNumber,unit:r.parseUnit,color:o.parseColor},f=Object.create(e.ClassProto);f.init=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{};e.ClassProto.init.call(this,t);var n=this._props,i=n.target,s=n.supportProps,r=n.customProperties,o=void 0===r?{}:r,a=n.key;this._target=o[a]&&o[a].isSkipRender?s:i,this._parseDelta(),this.update=this["_upd_"+this._delta.type],this._setupTweenie()},f._upd_number=function(t,e,n){var i=this._delta,s=i.curve,r=i.delta,o=i.start,a=(i.end,this._props.key);return this._target[a]=void 0===s?o+t*r:s(e)*o+e*r,this},f._upd_unit=function(t,e,n){var i=this._delta,s=i.curve,r=i.delta,o=i.start,a=(i.end,i.unit),p=this._props.key,u=void 0===s?o+t*r:s(e)*o+e*r;return this._target[p]=""+u+a,this},f._upd_color=function(t,e,n){var i=this._delta,s=i.curve,r=i.delta,o=i.start,a=(i.end,this._props.key);if(void 0===s){var p=o.r+t*r.r,u=o.g+t*r.g,c=o.b+t*r.b,l=o.a+t*r.a;this._target[a]="rgba("+(0|p)+", "+(0|u)+", "+(0|c)+", "+l+")"}else{var f=s(e),h=f*o.r+e*r.r,d=f*o.g+e*r.g,_=f*o.b+e*r.b,v=f*o.a+e*r.a;this._target[a]="rgba("+(0|h)+", "+(0|d)+", "+(0|_)+", "+v+")"}return this},f._setupTweenie=function(){var t=this,e=this._delta.tweenieOptions;void 0!==e&&(this.tween=new n.Tweenie(c({index:this.index},e,{onUpdate:function(n,i,s){t.update(n,i,s),void 0!==e.onUpdate&&e.onUpdate(n,i,s)}})))},f._declareDefaults=function(){this._defaults={key:null,object:null,customProperties:{},target:null,supportProps:null}},f._parseDelta=function(){var t=this._props,e=t.key;null!=t.customProperties[e]?this._parseByCustom():this._parseByGuess()},f._parseByGuess=function(){var t=this._props,e=t.key,n=t.object,i=this._getSplit(n),s=(0,u.makeColorObject)(i.start),r=(0,u.makeColorObject)(i.end);if(!s.isError&&!r.isError)return this._delta=(0,o.parseColor)(e,i);var p=(""+i.start).match(a.unitRegexp)||(""+i.end).toString().match(a.unitRegexp),c=p?"unit":"number";this._delta=l[c](e,i)},f._parseByCustom=function(){var t=this._props,e=t.key,n=t.object,i=t.customProperties,s=i[e],r=s.type;this._delta=l[r](e,this._getSplit(n))},f._getSplit=function(t){var e=(0,i.splitDelta)(t);return e.start=(0,p.staggerProperty)(e.start,this.index),e.end=(0,p.staggerProperty)(e.end,this.index),e};var h=function(t){var e=Object.create(f);return e.init(t),e};h.__mojsClass=f,t.Delta=h})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(2),n(22),n(4),n(9),n(3),n(1),n(12)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(2),n(22),n(4),n(9),n(3),n(1),n(12)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e,n,i,s,r,o,a){Object.defineProperty(t,"__esModule",{value:!0}),t.Deltas=void 0;var p=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},u=i.Tweenable.__mojsClass,c=Object.create(u);c.init=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{};u.init.call(this,t);var e=p({},t),n=e.timeline;delete e.timeline,this._customProperties=e.customProperties||{},this._render=this._customProperties.render||function(){},this._supportRender=this._customProperties.supportRender||function(){},delete e.customProperties,this._el=e.el||{},delete e.el,this._supportProps={},this._setupTweenie(e),this._setupTimeline(n),this._parseProperties(e)},c._setupTweenie=function(t){var n=this,i=(0,r.separateTweenieOptions)(t);this.tween=new e.Tweenie(p({},i,{onUpdate:function(t,e,s){n._upd_deltas(t,e,s),i.onUpdate&&i.onUpdate(t,e,s)}}))},c._setupTimeline=function(){var t=this,e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},i=[this._supportProps,this._supportRender];this.timeline=new n.Timeline(p({},e,{onUpdate:function(n,s,r){t._render(t._el,i,n,s,r),e.onUpdate&&e.onUpdate(n,s,r)}})),this.timeline.add(this.tween)},c._parseProperties=function(t){this._tweenDeltas=[],this._plainDeltas=[],this._staticProps={};for(var e in t){var n=t[e];if("object"==typeof n){var i=void 0;i=void 0!==n.path?new a.MotionPath(p({el:this._el},n,{supportProps:this._supportProps,property:e,index:this.index})):new s.Delta({key:e,target:this._el,supportProps:this._supportProps,object:n,customProperties:this._customProperties,index:this.index}),i.tween?this._tweenDeltas.push(i):this._plainDeltas.push(i)}else{var r=this._customProperties[e],u=r&&r.isSkipRender?this._supportProps:this._el;this._staticProps[e]=(0,o.staggerProperty)(n,this.index),u[e]=this._staticProps[e]}}this.timeline.add(this._tweenDeltas)},c._upd_deltas=function(t,e,n){for(var i=0;i<this._plainDeltas.length;i++)this._plainDeltas[i].update(t,e,n)};var l=function(t){var e=Object.create(c);return e.init(t),e};l.__mojsClass=c,t.Deltas=l})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(17)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(17)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e){Object.defineProperty(t,"__esModule",{value:!0}),t.getRegexpUnit=void 0;var n=function(t){if("string"==typeof t){var n=t.match(e.unitRegexp);return null!==n?n[0]:void 0}};t.getRegexpUnit=n})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(2),n(0),n(3),n(1)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(2),n(0),n(3),n(1)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e,n,i,s){Object.defineProperty(t,"__esModule",{value:!0}),t.MotionPath=void 0;var r=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},o=n.ClassProto,a=Object.create(o);a.update=function(t,e,n){var i=this._props,s=(i.precision,i.coordinate),r=i.property,o=this._samples.step,a=t/o|0,p=a*o,u=(a+1)*o,c=t-p,l=this._samples.get(p)[s],f=l;if(u<=1){f=l+c/o*(this._samples.get(u)[s]-l)}return this._target[r]=f,this},a._samplePath=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:this._props.precision,e=this._path.getTotalLength(),n=1/t;this._samples=new Map,this._samples.step=n,this._samples.totalLength=e;for(var i=0;i<t;i++){var s=i*n;this._setForKey(s)}this._setForKey(1)},a._setForKey=function(t){var e=this._samples.totalLength,n=t*e,i=this._path.getPointAtLength(n),s=this._path.getPointAtLength(n-1),r=i.y-s.y,o=i.x-s.x,a=isFinite(Math.atan(r/o))?Math.atan(r/o):0,p=a*(180/Math.PI);this._samples.set(t,{x:i.x,y:i.y,angle:p})},a.init=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{};o.init.call(this,t);var e=this._props,n=e.el,i=e.supportProps,s=e.property,r=e.customProperties,a=r[s];this._target=a&&a.isSkipRender?i:n,this._parsePath(),this._samplePath(),this._setupTweenie()},a._setupTweenie=function(){var t=this,n=r({},this._o),s=(0,i.separateTweenieOptions)(n);void 0!==s&&(this.tween=new e.Tweenie(r({},s,{onUpdate:function(e,n,i){t.update(e,n,i),void 0!==s.onUpdate&&s.onUpdate(e,n,i)}})))},a._declareDefaults=function(){arguments.length>0&&void 0!==arguments[0]&&arguments[0];this._defaults={el:null,supportProps:null,customProperties:{},path:"M0,0 L100,100",precision:140,coordinate:"x",property:"x"}},a._extendDefaults=function(){n.ClassProto._extendDefaults.call(this);for(var t in this._props)this._props[t]=(0,s.staggerProperty)(this._props[t],this.index);var e=this._props.property;"y"!==e&&"angle"!==e||this.setIfNotSet("coordinate",e)},a._parsePath=function(){var t=this._props.path;this._path=document.createElementNS("http://www.w3.org/2000/svg","path"),this._path.setAttributeNS(null,"d",t)};var p=function(t){var e=Object.create(a);return e.init(t),e};p.__mojsClass=a,t.MotionPath=p})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(7)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(7)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e){Object.defineProperty(t,"__esModule",{value:!0}),t.parseColor=void 0;var n=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},i=function(t,i){var s=(0,e.makeColorObject)(i.start),r=(0,e.makeColorObject)(i.end);return n({},i,{type:"color",name:t,start:s,end:r,delta:{r:r.r-s.r,g:r.g-s.g,b:r.b-s.b,a:r.a-s.a}})};t.parseColor=i})})},function(t,e,n){var i,s,r,i,s,r;!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t){Object.defineProperty(t,"__esModule",{value:!0});var e=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},n=function(t,n){var i=e({type:"number",name:t},n);return i.start=parseFloat(i.start),i.end=parseFloat(i.end),i.delta=i.end-i.start,i};t.parseNumber=n})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(11)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(11)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e){Object.defineProperty(t,"__esModule",{value:!0}),t.parseUnit=void 0;var n=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},i=function(t,i){var s=n({type:"unit",name:t},i),r=(0,e.getRegexpUnit)(s.start),o=(0,e.getRegexpUnit)(s.end);return s.unit=o||r||"px",s.start=parseFloat(s.start),s.end=parseFloat(s.end),s.delta=s.end-s.start,s};t.parseUnit=i})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(6),n(5),n(3)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(6),n(5),n(3)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e,n,i){Object.defineProperty(t,"__esModule",{value:!0}),t.splitDelta=void 0;var s=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},r=function(t){t=s({},t);var n=void 0!==t.curve?(0,e.parseEasing)(t.curve):void 0;delete t.curve;var r=(0,i.separateTweenieOptions)(t),o=Object.keys(t)[0];return{start:o,end:t[o],curve:n,tweenieOptions:r}};t.splitDelta=r})})},function(t,e,n){var i,s,r,i,s,r;!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t){Object.defineProperty(t,"__esModule",{value:!0});var e=/px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin|deg|fr/gim;t.unitRegexp=e})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(19),n(20)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(19),n(20)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e,n){Object.defineProperty(t,"__esModule",{value:!0}),t.easing=void 0;var i={linear:{none:function(t){return t}},sin:{in:function(t){return 1-Math.cos(t*Math.PI/2)},out:function(t){return Math.sin(t*Math.PI/2)},inout:function(t){return.5*(1-Math.cos(Math.PI*t))}},pow:n.pow,path:e.path};t.easing=i})})},function(t,e,n){var i,s,r,i,s,r;!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t){Object.defineProperty(t,"__esModule",{value:!0});var e=function(t){var e=document.createElementNS("http://www.w3.org/2000/svg","path");return e.setAttributeNS(null,"d",t),e},n=function(t,e){for(var n=1/e,i=t.getTotalLength(),s=[],r=0;r<e+1;r++){var o=t.getPointAtLength(r*n*i);s[r]={x:o.x/100,y:o.y/100}}return s},i=function(t,e,n){for(var i=0,s=e.length-1,r=1/n;Math.abs(s-i)>1;){var o=s-i,a=i+Math.floor(o/2),p=e[a];if(t===p.x)return p.y;t<p.x?s=a:i=a}var u=e[i];if(t>u.x){var c=e[i+1];if(void 0!==c){var l=u.x-t;return u.y-(c.y-u.y)*(l/r)}}return u.y},s=function(t,e){for(var n=new Map,s=1/e,r=0;r<e+1;r++){var o=r*s;n.set(o,1-i(o,t,e))}return n},r=function(t){var i=arguments.length>1&&void 0!==arguments[1]?arguments[1]:200,r=n(e(t),i),o=s(r,i),a=1/i;return function(t){var e=t/a|0,n=e*a,i=(e+1)*a,s=o.get(n);if(i<=1){s+=(t-n)/a*(o.get(i)-s)}return s}};t.path=r})})},function(t,e,n){var i,s,r,i,s,r;!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t){Object.defineProperty(t,"__esModule",{value:!0});var e=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:2,e=function(t){return function(e){return Math.pow(e,t)}}(t),n=function(t){return function(e){return 1-Math.abs(Math.pow(e-1,t))}}(t);return{in:e,out:n,inout:function(t){return t<.5?e(2*t)/2:n(2*t-1)/2+.5}}};t.pow=e})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(11)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(11)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e){Object.defineProperty(t,"__esModule",{value:!0}),t.parseStagger=void 0;var n=function(t,n){if("string"!=typeof t)return t;if(!t.match(/^stagger\(/))return t;var i=t.split(/stagger\(|\)$/)[1].toLowerCase(),s=i.split(/([^\(,\s]+)(?=\s*,|\s*$)/gim),r=s[1],o=s[3];s.length<=3&&(r=0,o=s[1]);var a=parseFloat(r),p=(0,e.getRegexpUnit)(r),u=parseFloat(o),c=(0,e.getRegexpUnit)(o),l=p?p:c,f=a+n*u;return l?""+f+l:f};t.parseStagger=n})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(2),n(0),n(8)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(2),n(0),n(8)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e,n,i){Object.defineProperty(t,"__esModule",{value:!0}),t.Timeline=void 0;var s=e.Tweenie.__mojsClass,r=Object.create(s);r._declareDefaults=function(){s._declareDefaults.call(this),this._defaults.easing="linear.none"},r.add=function(t){var e=this,n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0;if(n=Math.abs(n),t instanceof Array)t.forEach(function(t){e.add(t,n)});else{var i=t.timeline||t.tween;i&&(t=i),t.set("shiftTime",n),this._items.push(t);var s=t._props,r=s.delay,o=s.duration,a=s.shiftTime,p=r+o+a;this._props.duration=Math.max(this._props.duration,p)}return this},r.append=function(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0;return this.add(t,this._props.duration+Math.abs(e)),this},r.stop=function(t){s.stop.call(this,t);for(var e=this._items.length-1;e>=0;e--)this._items[e].stop(t);return this},r.reset=function(){return s.reset.call(this),this._callOnItems("reset"),this},r.setStartTime=function(t){return s.setStartTime.call(this,t),this._callOnItems("setStartTime",this._start),this},r._callOnItems=function(t){for(var e=arguments.length,n=Array(e>1?e-1:0),i=1;i<e;i++)n[i-1]=arguments[i];for(var s=0;s<this._items.length;s++){var r;(r=this._items[s])[t].apply(r,n)}},r._createUpdate=function(t,e){return function(n,i,s,r){for(var o=0;o<e._items.length;o++)e._items[o].update(r);t(n,i,s,r)}},r._vars=function(){s._vars.call(this),this._items=[],this._props.duration=0},r._extendDefaults=function(){s._extendDefaults.call(this),this._onUpdate=this._props.onUpdate,this._props.onUpdate=this._createUpdate(this._onUpdate,this)};var o=function(t){var e=Object.create(r);return e.init(t),e};o.__mojsClass=r,t.Timeline=o})})},function(t,e,n){var i,s,r,i,s,r;!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t){Object.defineProperty(t,"__esModule",{value:!0});var e=[],n=[],i=!1,s=function(){n=e.slice(0);for(var t=0;t<n.length;t++)n[t].pause()},r=function(){for(var t=0;t<n.length;t++)n[t].play()},o=function(){document.hidden?s():r()},a=function(){e.length=0,i=!1},p=function(t){var n="number"==typeof t?t:e.indexOf(t);n!==-1&&(t=e[n],e.splice(n,1))},u=function(t){for(var n=e.length;n--;){var i=e[n];i.update(t)===!0&&(p(i),i.onTweenerFinish())}},c=function(){if(0===e.length)return a();u(performance.now()),requestAnimationFrame(c)},l=function(){i||(i=!0,requestAnimationFrame(c))},f=function(t){e.push(t),l()},h=function(){document.removeEventListener("visibilitychange",o,!1)};document.addEventListener("visibilitychange",o,!1);var d={add:f,remove:p,caffeinate:h};t.tweener=d})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(20)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(20)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e){Object.defineProperty(t,"__esModule",{value:!0}),t.addBasicEasing=void 0;var n=function(t){t.easing.quad=(0,e.pow)(2),t.easing.cubic=(0,e.pow)(3),t.easing.quart=(0,e.pow)(4),t.easing.quint=(0,e.pow)(5),t.easing.expo={in:function(t){return 0===t?0:Math.pow(1024,t-1)},out:function(t){return 1===t?1:1-Math.pow(2,-10*t)},inout:function(t){return 0===t||1===t?t:(t*=2)<1?.5*Math.pow(1024,t-1):.5*(2-Math.pow(2,-10*(t-1)))}},t.easing.circ={in:function(t){return 1-Math.sqrt(1-t*t)},out:function(t){return Math.sqrt(1- --t*t)},inout:function(t){return(t*=2)<1?-.5*(Math.sqrt(1-t*t)-1):.5*(Math.sqrt(1-(t-=2)*t)+1)}},t.easing.elastic={in:function(t){var e=.4,n=e/4;return 0===t||1===t?t:-(1*Math.pow(2,10*(t-=1))*Math.sin((t-n)*(2*Math.PI)/e))},out:function(t){var e=.4,n=e/4;return 0===t||1===t?t:1*Math.pow(2,-10*t)*Math.sin((t-n)*(2*Math.PI)/e)+1},inout:function(t){return 0===t||1===t?t:(t*=2,t<1?-.5*Math.pow(2,10*(t-1))*Math.sin(5*(t-1.1)*Math.PI):.5*Math.pow(2,-10*(t-1))*Math.sin(5*(t-1.1)*Math.PI)+1)}},t.easing.back={in:function(t){var e=1.70158;return t*t*((e+1)*t-e)},out:function(t){var e=1.70158;return--t*t*((e+1)*t+e)+1},inout:function(t){var e=2.5949095;return(t*=2)<1?t*t*((e+1)*t-e)*.5:.5*((t-=2)*t*((e+1)*t+e)+2)}},t.easing.bounce={in:function(t){return 1-easing.bounce.out(1-t)},out:function(t){return t<1/2.75?7.5625*t*t:t<2/2.75?7.5625*(t-=1.5/2.75)*t+.75:t<2.5/2.75?7.5625*(t-=2.25/2.75)*t+.9375:7.5625*(t-=2.625/2.75)*t+.984375},inout:function(t){return t<.5?.5*easing.bounce.in(2*t):.5*easing.bounce.out(2*t-1)+.5}}};t.addBasicEasing=n})})},function(t,e,n){var i,s,r,i,s,r;!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(n,o){s=[e],i=o,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t){Object.defineProperty(t,"__esModule",{value:!0});var e=document.createElement("div");document.body.append(e),t.div=e})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(4),n(10),n(0)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(4),n(10),n(0)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e,n,i){Object.defineProperty(t,"__esModule",{value:!0}),t.Html=void 0;var s=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},r=e.Tweenable.__mojsClass,o=Object.create(r);o._declareDefaults=function(){this._defaults={is3d:!1,el:null,customProperties:{},x:0,y:0,z:0,skewX:0,skewY:0,angle:0,angleX:0,angleY:0,angleZ:0,scale:1,scaleX:1,scaleY:1,scaleZ:1}},o.init=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{};r.init.call(this,t),this._setupDeltas()},o._setupDeltas=function(){var t=this._getCustomProperties();console.log(this._props),this._deltas=new n.Deltas(s({},this._props,{customProperties:t})),this.timeline=this._deltas.timeline},o._render=function(t,e){var n=e[0];t.transform="translate("+n.x+", "+n.y+") rotate("+n.angle+"deg) skew("+n.skewX+"deg, "+n.skewY+"deg) scale("+n.scale+")",e[1](t,n)},o._render3d=function(t,e){var n=e[0],i=void 0!==n.angleZ?n.angleZ:n.angle,s=void 0!==n.scaleX?n.scaleX:n.scale,r=void 0!==n.scaleY?n.scaleY:n.scale,o=void 0!==n.scaleZ?n.scaleZ:n.scale;t.transform="translate3d("+n.x+", "+n.y+", "+n.z+") rotateX("+n.angleX+"deg) rotateY("+n.angleY+"deg) rotateZ("+i+"deg) skew("+n.skewX+"deg, "+n.skewY+"deg) scale3d("+s+", "+r+", "+o+")",e[1](t,n)},o._getCustomProperties=function(){for(var t=["x","y","z"],e=["angle","angleX","angleY","angleZ","skewX","skewY","scale","scaleX","scaleY","scaleZ"],n=this._props.customProperties,i=n.render,r=s({},n),o=0;o<t.length;o++){r[t[o]]={type:"unit",isSkipRender:!0}}for(var a=0;a<e.length;a++){r[e[a]]={type:"number",isSkipRender:!0}}return r.render=this._isRender()?this._is3dProperties()?this._render3d:this._render:i,r.supportRender=this._isRender()?i:void 0,r},o._isRender=function(){var t={el:1,customProperties:1,is3d:1};for(var e in this._defaults)if(!t[e]&&void 0!==this._o[e])return!0;return!1},o._is3dProperties=function(){var t=null!=this._o.angleX||null!=this._o.angleY||null!=this._o.angleZ;return this._is3d||null!=this._o.z||null!=this._o.scaleZ||t},o._extendDefaults=function(){i.ClassProto._extendDefaults.call(this),this._is3d=this._props.is3d,delete this._props.is3d,this.el=this._props.el,"string"==typeof this.el&&(this.el=document.querySelector(this.el)),this._props.el=this.el.style};var a=function(t){var e=Object.create(o);return e.init(t),e};a.__mojsClass=o,t.Html=a})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[e,n(4),n(1)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(e){"use strict";!function(o,a){s=[e,n(4),n(1)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e,n){Object.defineProperty(t,"__esModule",{value:!0}),t.stagger=void 0;var i=e.Tweenable.__mojsClass,s=Object.create(i);s.init=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},e=arguments[1];i.init.call(this,t),this._createTimeline(t.timeline),this._createModules(e)},s._createModules=function(t){this._modules=[];for(var e=this._o,n=e.items,i=e.el,s=void 0===i?{}:i,r=n||s.length||1,o=0;o<r;o++){var a=new t(this._getStaggerOptions(this._o,o));this._modules.push(a),this.timeline.add(a)}},s._getStaggerOptions=function(t,e){var i={index:e};for(var s in t)i[s]=(0,n.staggerProperty)(t[s],e);return i},s._createTimeline=function(t){this.timeline=new Timeline(t),delete this._o.timeline};var r=function(t){return function(e){var n=Object.create(s);return n.init(e,t),n}};t.stagger=r})})},function(t,e,n){var i,s,r,i,s,r;!function(o,a){s=[t,e,n(0),n(2),n(5),n(22),n(23),n(18),n(6),n(9),n(16),n(14),n(15),n(13),n(3),n(4),n(1),n(21),n(7),n(24),n(10),n(12),n(27),n(26)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e){"use strict";!function(o,a){s=[t,e,n(0),n(2),n(5),n(22),n(23),n(18),n(6),n(9),n(16),n(14),n(15),n(13),n(3),n(4),n(1),n(21),n(7),n(24),n(10),n(12),n(27),n(26)],i=a,void 0!==(r="function"==typeof i?i.apply(e,s):i)&&(t.exports=r)}(0,function(t,e,n,i,s,r,o,a,p,u,c,l,f,h,d,_,v,y,g,m,b,P,x,w){Object.defineProperty(e,"__esModule",{value:!0});var O={revision:"2.8.0",Tweenie:i.Tweenie,Timeline:r.Timeline,easing:a.easing,__helpers__:{parseEasing:p.parseEasing,ClassProto:n.ClassProto,tweenieDefaults:s.tweenieDefaults,tweener:o.tweener,Delta:u.Delta,splitDelta:c.splitDelta,parseNumber:l.parseNumber,parseUnit:f.parseUnit,parseColor:h.parseColor,separateTweenieOptions:d.separateTweenieOptions,Tweenable:_.Tweenable,staggerProperty:v.staggerProperty,parseStagger:y.parseStagger,makeColorObject:g.makeColorObject}};(0,m.addBasicEasing)(O),O.Deltas=b.Deltas,O.MotionPath=P.MotionPath,O.stagger=x.stagger,O.Html=w.Html,e.default=O,t.exports=e.default})})},function(t,e,n){t.exports=n(28)}])});
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["mojs"] = factory();
+	else
+		root["mojs"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "build/";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 28);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  "use strict";
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    /**
+     * ClassProto - base class for module.
+     * It is needed to:
+     *   - declare `_defaults`
+     *   - extend `_defaults` by `options` and save result to `_props`
+     *   - declare `_vars` after extention
+     *   - call `_render` eventually
+     */
+    var ClassProto = {};
+
+    /**
+     * `get` - Method to get a property from `_props`.
+     *
+     * @public
+     * @param {String} Key.
+     * @returns {Any} Value from the `_props` by `key`.
+     */
+    ClassProto.get = function (key) {
+      return this._props[key];
+    };
+
+    /**
+     * `set` - Method to get a property from `_props`.
+     *
+     * @public
+     * @param {String} Key.
+     * @param {Any} Value.
+     */
+    ClassProto.set = function (key, value) {
+      this._props[key] = value;
+    };
+
+    /**
+     * `setIfNotSet` - function to set a property if it isn't
+     *                 present in the initialization options.
+     *
+     * @public
+     * @param {String} Key.
+     * @param {Any} Value.
+     * @returns {Object} This instance.
+     */
+    ClassProto.setIfNotSet = function (key, value) {
+      if (this._o[key] === undefined) {
+        this.set(key, value);
+      }
+
+      return this;
+    };
+
+    /**
+     * _init - lifecycle initialization function.
+     *
+     * @private
+     */
+    ClassProto.init = function () {
+      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      // save options
+      this._o = _extends({}, o);
+      // parse index and delete it from options
+      this.index = this._o.index || 0;
+      delete this._o.index;
+      // invoke lifecycle functions
+      this._declareDefaults();
+      this._extendDefaults();
+      this._vars();
+    };
+
+    /**
+     * _declareDefaults - function to declare `_defaults` object.
+     *
+     * @private
+     */
+    ClassProto._declareDefaults = function () {
+      this._defaults = {};
+    };
+
+    /**
+     * _extendDefaults - Method to copy `_o` options to `_props` object
+     *                  with fallback to `_defaults`.
+     * @private
+     */
+    ClassProto._extendDefaults = function () {
+      this._props = _extends({}, this._defaults, this._o);
+    };
+
+    /**
+     * _vars - function do declare `variables` after `_defaults` were extended
+     *         by `options` and saved to `_props`
+     *
+     * @return {type}  description
+     */
+    ClassProto._vars = function () {};
+
+    exports.ClassProto = ClassProto;
+  });
+});
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./parse-stagger'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.parseStagger);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.parseStagger);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _parseStagger) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.staggerProperty = undefined;
+
+
+    var staggerProperty = function (prop, index) {
+      var value = prop;
+      // if property is an array map the index to some array item
+      if (prop instanceof Array) {
+        value = prop[index % prop.length];
+      }
+      // if prop is a function, call the it with index and return the result
+      if (typeof prop === 'function' && prop.__mojs__isStaggerFunction) {
+        value = prop(index);
+      }
+
+      // otherwise return the single property
+      return (0, _parseStagger.parseStagger)(value, index);
+    };
+
+    exports.staggerProperty = staggerProperty;
+  });
+});
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(4), __webpack_require__(17), __webpack_require__(6), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../class-proto'), require('./tween-defaults'), require('./tweener'), require('../easing/parse-easing'), require('../helpers/stagger-property'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.classProto, global.tweenDefaults, global.tweener, global.parseEasing, global.staggerProperty);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(4), __webpack_require__(17), __webpack_require__(6), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.classProto, global.tweenDefaults, global.tweener, global.parseEasing, global.staggerProperty);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _classProto, _tweenDefaults, _tweener, _parseEasing, _staggerProperty) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.Tween = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    /* -------------------- */
+    /* The `Tween` class  */
+    /* -------------------- */
+
+    var Tween = Object.create(_classProto.ClassProto);
+    /**
+     * _declareDefaults - function to declare `_defaults` object.
+     *
+     * @private
+     * @override ClassProto
+     */
+    Tween._declareDefaults = function () {
+      this._defaults = _extends({}, _tweenDefaults.tweenDefaults);
+    };
+
+    /* ---------------------- */
+    /* The `Public` functions */
+    /* ---------------------- */
+
+    /**
+     * play - function to `play` the tween.
+     *
+     * @public
+     * @returns {Object} This tween.
+     */
+    Tween.play = function () {
+      if (this._state === 'play') {
+        return this;
+      }
+
+      this._setState('play');
+      this._setupPlay();
+
+      this._playTime = performance.now();
+      this._speed = this._props.speed;
+
+      return this;
+    };
+
+    /**
+     * pause - function to `pause` the tween.
+     *
+     * @public
+     * @returns {Object} This tween.
+     */
+    Tween.pause = function () {
+      if (this._state === 'pause' || this._state === 'stop') {
+        return this;
+      }
+
+      _tweener.tweener.remove(this);
+      this._setState('pause');
+      // reset speed variable to `1` because speed should not be applied
+      // when setProgress is used
+      this._speed = 1;
+
+      return this;
+    };
+
+    /*
+     * stop - function to stop the tween.
+     *
+     * @public
+     * @param {Number} Progress to stop with in [0...1]
+     * @returns {Object} This tween.
+     */
+    Tween.stop = function (progress) {
+      if (this._state === 'stop') {
+        return this;
+      }
+
+      var stopProc = progress !== void 0 ? progress
+      /* if no progress passsed - set 1 if tween
+         is playingBackward, otherwise set to 0 */
+      : this._props.isReverse === true ? 1 : 0;
+
+      this.setProgress(stopProc);
+      this.reset();
+
+      return this;
+    };
+
+    /**
+     * play - function to `replay`(`retart`) the tween.
+     *
+     * @public
+     * @param {Number} Repeat count.
+     * @returns {Object} This tween.
+     */
+    Tween.replay = function (repeat) {
+      this.reset();
+      this.play(repeat);
+
+      return this;
+    };
+
+    /**
+     * setSpeed - function to set speed.
+     *
+     * @public
+     * @param {Number} Speed in [0..∞]
+     * @return {Object} This tween.
+     */
+    Tween.setSpeed = function (speed) {
+      this._props.speed = speed;
+
+      if (this._state === 'play') {
+        this.setStartTime();
+        this._speed = speed;
+        this._playTime = performance.now();
+      }
+
+      return this;
+    };
+
+    /**
+     * reverse - function to `reverse` the tween.
+     *
+     * @public
+     * @returns {Object} This tween.
+     */
+    Tween.reverse = function () {
+      this._props.isReverse = !this._props.isReverse;
+      // reverse callbacks in the `_cbs`
+      this._reverseCallbacks();
+
+      if (this._elapsed > 0) {
+        var delay = this._props.delay;
+
+        this._elapsed = this._end - this._spot - (this._elapsed - delay);
+      }
+
+      this.setStartTime();
+
+      return this;
+    };
+
+    /**
+     * setProgress - function to set tween progress.
+     *
+     * @public
+     * @param {Number} Progress to set.
+     * @return {Object} This tween.
+     */
+    Tween.setProgress = function () {
+      var progress = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+      this._start === void 0 && this.setStartTime();
+
+      var time = progress === 1 ? this._end : this._spot + progress * (this._end - this._spot);
+
+      // set initial time
+      if (this._prevTime === void 0) {
+        this._prevTime = this._start;
+      }
+      // save speed before updating form `setProgress`
+      var speed = this._speed;
+      this._speed = 1;
+      // update with current time
+      this.update(time);
+      // restore speed after updating form `setProgress`
+      this._speed = speed;
+
+      return this;
+    };
+
+    /**
+     * reset - function to reset the `Tween`.
+     */
+    Tween.reset = function () {
+      _tweener.tweener.remove(this);
+      this._isActive = false;
+      this._elapsed = 0;
+      this._repeatCount = 0;
+      this._setState('stop');
+      delete this._prevTime;
+
+      return this;
+    };
+
+    /* ----------------------- */
+    /* The `Private` functions */
+    /* ----------------------- */
+
+    /**
+     * _setupPlay - function to setup before `play`.
+     *
+     * @public
+     * @returns {Object} This tween.
+     */
+    Tween._setupPlay = function () {
+      this.setStartTime();
+      _tweener.tweener.add(this);
+    };
+
+    /**
+     * _vars - function do declare `variables` after `_defaults` were extended
+     *         by `options` and saved to `_props`
+     *
+     * @return {type}  description
+     */
+    Tween._vars = function () {
+      var _props = this._props,
+          isReverse = _props.isReverse,
+          onStart = _props.onStart,
+          onComplete = _props.onComplete,
+          onChimeIn = _props.onChimeIn,
+          onChimeOut = _props.onChimeOut,
+          delay = _props.delay,
+          duration = _props.duration;
+
+
+      this._isActive = false;
+      // time progress
+      this._elapsed = 0;
+      // initial state
+      this._state = 'stop';
+      // set "id" speed
+      this._speed = 1;
+      this._time = delay + duration;
+      // how many times we have been repeating
+      this._repeatCount = 0;
+      // this._prevTime = -Infinity;
+      this._prevTime;
+      // callbacks array - used to flip the callbacks order on `isReverse`
+      this._cbs = [onStart, onComplete, 0, 1];
+      // chime callbacks
+      this._chCbs = [onChimeIn, onChimeOut];
+      // if `isReverse` - flip the callbacks
+      if (isReverse === true) {
+        this._reverseCallbacks();
+      }
+    };
+
+    /**
+     * setStartTime - function to set `startTime`
+     *
+     * @param {Number, Undefined} Start time to set.
+     */
+    Tween.setStartTime = function () {
+      var startTime = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : performance.now();
+      var _props2 = this._props,
+          delay = _props2.delay,
+          duration = _props2.duration,
+          repeat = _props2.repeat,
+          shiftTime = _props2.shiftTime;
+
+
+      // if `elapsed` is greated that end bound -> reset it to `0`
+      if (this._elapsed >= this._end - this._spot) {
+        this._elapsed = 0;
+      }
+      // `_spot` - is the animation initialization spot
+      // `_elapsed` is how much time elapsed in the `active` period,
+      // needed for `play`/`pause` functionality
+      this._spot = startTime - this._elapsed + shiftTime;
+      // play time is needed to recalculate time regarding `speed`
+      this._playTime = this._spot;
+      // `_start` - is the active animation start time bound
+      this._start = this._spot + delay;
+      // `_end` - is the active animation end time bound
+      this._end = this._start + duration;
+    };
+
+    /**
+     * update - function to update `Tween` with current time.
+     *
+     * @param {Number} The current update time.
+     */
+    Tween.update = function (time) {
+      var _props3 = this._props,
+          onUpdate = _props3.onUpdate,
+          isReverse = _props3.isReverse,
+          easing = _props3.easing,
+          backwardEasing = _props3.backwardEasing;
+
+
+      // recalculate `time` regarding `speed`
+      time = this._playTime + this._speed * (time - this._playTime);
+
+      // save elapsed time
+      this._elapsed = time - this._spot;
+
+      // if pregress is not right - call the `onRefresh` function #before
+      if (time < this._start && this._progress !== this._cbs[2]) {
+        this._props.onRefresh(false, this.index, time);
+        this._progress = this._cbs[2];
+      }
+      // if pregress is not right - call the `onRefresh` function #after
+      if (time > this._end && this._progress !== this._cbs[3]) {
+        this._props.onRefresh(true, this.index, time);
+        this._progress = this._cbs[3];
+      }
+
+      // if forward progress
+      var isForward = time > this._prevTime;
+      var ease = isForward !== isReverse ? easing : backwardEasing;
+
+      if (time >= this._start && time <= this._end && this._prevTime !== void 0) {
+        var isActive = void 0;
+        var p = (time - this._start) / this._props.duration;
+        this._progress = isReverse === false ? p : 1 - p;
+        onUpdate(ease(this._progress), this._progress, isForward, time);
+
+        if (time > this._start && this._isActive === false && isForward === true) {
+          // `onStart`
+          this._cbs[0](isForward, isReverse, this.index);
+          // `onChimeIn`
+          this._chCbs[0](isForward, isReverse, this.index, time);
+        }
+
+        if (time === this._start) {
+          // `onStart`
+          this._cbs[0](isForward, isReverse, this.index);
+          // `onChimeIn`
+          this._chCbs[0](isForward, isReverse, this.index, time);
+          // set `isActive` to `true` for forward direction
+          // but set it to `false` for backward
+          isActive = isForward;
+        }
+
+        if (time < this._end && this._isActive === false && isForward === false) {
+          // `onComplete`
+          this._cbs[1](false, isReverse, this.index);
+          // `onChimeOut`
+          this._chCbs[1](isForward, isReverse, this.index, time);
+        }
+
+        if (time === this._end) {
+          // `onComplete`
+          this._cbs[1](isForward, isReverse, this.index);
+          // `onChimeOut`
+          this._chCbs[1](isForward, isReverse, this.index, time);
+          // set `isActive` to `false` for forward direction
+          // but set it to `true` for backward
+          isActive = !isForward;
+        }
+
+        this._isActive = isActive === undefined ? true : isActive;
+
+        this._prevTime = time;
+
+        return !this._isActive;
+      }
+
+      if (time > this._end && this._isActive === true) {
+        this._progress = this._cbs[3];
+        // one
+        onUpdate(ease(this._progress), this._progress, isForward, time);
+        // `onComplete`
+        this._cbs[1](isForward, isReverse, this.index);
+        // `onChimeOut`
+        this._chCbs[1](isForward, isReverse, this.index, time);
+        this._isActive = false;
+        this._prevTime = time;
+        return true;
+      }
+
+      if (time < this._start && this._isActive === true) {
+        this._progress = this._cbs[2];
+        // zero
+        onUpdate(ease(this._progress), this._progress, isForward, time);
+        // `onStart`
+        this._cbs[0](isForward, isReverse, this.index);
+        // `onChimeIn`
+        this._chCbs[0](isForward, isReverse, this.index, time);
+
+        this._isActive = false;
+        this._prevTime = time;
+
+        return true;
+      }
+
+      this._prevTime = time;
+    };
+
+    /**
+     * Function to reverse callbacks.
+     */
+    Tween._reverseCallbacks = function () {
+      this._cbs = [this._cbs[1], this._cbs[0], this._cbs[3], this._cbs[2]];
+    };
+
+    /*
+     * Method set playback `_state` string and call appropriate callbacks.
+     *
+     * @private
+     * @param {String} State name [play, pause, 'stop', 'reverse']
+     */
+    Tween._setState = function (state) {
+      // save previous state
+      this._prevState = this._state;
+      this._state = state;
+      // callbacks
+      var wasPause = this._prevState === 'pause',
+          wasStop = this._prevState === 'stop',
+          wasPlay = this._prevState === 'play',
+          wasReverse = this._prevState === 'reverse',
+          wasPlaying = wasPlay || wasReverse,
+          wasStill = wasStop || wasPause;
+
+      if ((state === 'play' || state === 'reverse') && wasStill) {
+        this._props.onPlaybackStart(state, this._prevState);
+      }
+      if (state === 'pause' && wasPlaying) {
+        this._props.onPlaybackPause();
+      }
+      if (state === 'stop' && (wasPlaying || wasPause)) {
+        this._props.onPlaybackStop();
+      }
+    };
+
+    /**
+     * onTweenerFinish - function that is called when the tweeener finished
+     *                   playback for this tween and removemd it from the queue
+     *
+     */
+    Tween.onTweenerFinish = function () {
+      var _props4 = this._props,
+          isReverse = _props4.isReverse,
+          repeat = _props4.repeat,
+          isReverseOnRepeat = _props4.isReverseOnRepeat,
+          onPlaybackComplete = _props4.onPlaybackComplete;
+
+      var count = this._repeatCount;
+
+      onPlaybackComplete(!isReverse, count, repeat - count);
+
+      this.reset();
+
+      if (repeat - count > 0) {
+        if ((0, _staggerProperty.staggerProperty)(isReverseOnRepeat, count)) {
+          this.reverse();
+        }
+
+        this._repeatCount = count + 1;
+        this.play();
+      }
+    };
+
+    /**
+     * _extendDefaults - Method to copy `_o` options to `_props` object
+     *                  with fallback to `_defaults`.
+     * @private
+     * @overrides @ ClassProto
+     */
+    Tween._extendDefaults = function () {
+      // super call
+      _classProto.ClassProto._extendDefaults.call(this);
+      // parse stagger
+      for (var key in this._props) {
+        this._props[key] = (0, _staggerProperty.staggerProperty)(this._props[key], this.index);
+      }
+      // parse `easing`
+      this._props.easing = (0, _parseEasing.parseEasing)(this._props.easing);
+      // parse `backwardEasing`, fallback to `easing` if
+      // `backwardEasing` is `null`/`undefined`
+      var _props5 = this._props,
+          easing = _props5.easing,
+          backwardEasing = _props5.backwardEasing;
+
+      this._props.backwardEasing = backwardEasing != null ? (0, _parseEasing.parseEasing)(backwardEasing) : easing;
+    };
+
+    /**
+     * Imitate `class` with wrapper
+     *
+     * @param {Object} Options object.
+     * @returns {Object} Tween instance.
+     */
+    var wrap = function (o) {
+      var instance = Object.create(Tween);
+      instance.init(o);
+
+      return instance;
+    };
+
+    wrap.__mojsClass = Tween;
+
+    exports.Tween = wrap;
+  });
+});
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../tween/tween-defaults'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.tweenDefaults);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.tweenDefaults);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _tweenDefaults) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.separateTweenOptions = undefined;
+
+
+    /**
+     * Function to split the delta object to `tween` options and actual `delta`.
+     *
+     * @param {Object} Object to split.
+     * @returns {Object} Split `delta`.
+     */
+    var separateTweenOptions = function (object) {
+      var tweenOptions = void 0;
+      for (var option in _tweenDefaults.tweenDefaults) {
+        if (object[option] !== void 0) {
+          tweenOptions = tweenOptions || {};
+          tweenOptions[option] = object[option];
+          delete object[option];
+        }
+      }
+
+      return tweenOptions;
+    };
+
+    exports.separateTweenOptions = separateTweenOptions;
+  });
+});
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    var tweenDefaults = {
+      // delay of the tween [-∞..∞]
+      delay: 0,
+      // duration of the tween [0..∞]
+      duration: 350,
+      // speed of playback [0..∞], speed that is less then 1
+      // will slowdown playback, for instance .5 will make tween
+      // run 2x slower. Speed of 2 will speedup the tween to 2x.
+      speed: 1,
+      // easing for the tween, could be any easing type
+      easing: 'Sin.Out',
+      // Easing for backward direction of the tweenthe tween,
+      // if `null` - fallbacks to `easing` property.
+      // forward direction in `yoyo` period is treated as backward for the easing.
+      backwardEasing: null,
+      // if should reverse the tween
+      isReverse: false,
+      // how many times repeat the tween (excluding the first run)
+      repeat: 0,
+      // if should `reverse` before repeating
+      isReverseOnRepeat: false,
+      // `onUpdate` callback is called on every animation frame
+      onUpdate: function (ep, p, isForward) {},
+      /*
+        onStart callback runs on very start of the tween just after onProgress
+        one. Runs on very end of the tween if tween is reversed.
+        @param {Boolean}  Direction of the tween.
+                          `true` for forward direction.
+                          `false` for backward direction(tween runs in reverse).
+      */
+      onStart: function () {},
+      onComplete: function () {},
+      // `onChimeIn` is invoked when the `Tween` becomes active
+      // kind of like `onStart` but regardless `isReverse` option
+      onChimeIn: function () {},
+      // `onChimeOut` is invoked when the `Tween` becomes active
+      // kind of like `onComplete` but regardless `isReverse` option
+      onChimeOut: function () {},
+      // onRefresh - callback is called when progress runs over the `_end` time
+      // and then suddenly goes before the `_start` time. Indecates that
+      // progress (1) should be refreshed to (0), or vice versa.
+      // @param {Boolean} isForward
+      //                    - `true` if skipped in forward direction
+      //                    - `false` if skipped in backward direction
+      onRefresh: function () {},
+      // playback callbacks, these fire only when
+      // `play`, `replay`, `playBackward`, `replayBackward` called
+      onPlaybackStart: function () {},
+      onPlaybackPause: function () {},
+      onPlaybackStop: function () {},
+      onPlaybackComplete: function () {},
+      // tween index
+      index: 0,
+      // shift time - mostly needed for timeline
+      shiftTime: 0
+    };
+
+    exports.tweenDefaults = tweenDefaults;
+  });
+});
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../class-proto'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.classProto);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.classProto);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _classProto) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.Tweenable = undefined;
+
+
+    /* --------------------- */
+    /* The `Tweenable` class */
+    /* --------------------- */
+
+    var Super = _classProto.ClassProto;
+    var Tweenable = Object.create(Super);
+
+    /**
+     * `init` - lifecycle initialization function.
+     *
+     * @private
+     * @extends @ ClassProto
+     */
+    Tweenable.init = function (o) {
+      var _this = this;
+
+      Super.init.call(this, o);
+      // proxy all tween public methods to `timeline` with fallback to `tween`
+      var methods = ['play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset', 'setStartTime'];
+
+      var _loop = function (i) {
+        var method = methods[i];
+        _this[method] = function () {
+          var _ref;
+
+          for (var _len = arguments.length, rest = Array(_len), _key = 0; _key < _len; _key++) {
+            rest[_key] = arguments[_key];
+          }
+
+          rest; // otherwise rest arguments got lost
+          (_ref = _this.timeline || _this.tween)[method].apply(_ref, rest);
+        };
+      };
+
+      for (var i = 0; i < methods.length; i++) {
+        _loop(i);
+      }
+    };
+
+    /**
+     * Imitate `class` with wrapper
+     *
+     * @param {Object} Options object.
+     * @returns {Object} Tween instance.
+     */
+    var wrap = function (o) {
+      var instance = Object.create(Tweenable);
+      instance.init(o);
+
+      return instance;
+    };
+
+    wrap.__mojsClass = Tweenable;
+
+    exports.Tweenable = wrap;
+  });
+});
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(16), __webpack_require__(14), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../constants'), require('./easing'), require('./path'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.constants, global.easing, global.path);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(16), __webpack_require__(14), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.constants, global.easing, global.path);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _constants, _easing, _path) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.parseEasing = undefined;
+
+
+    /**
+     * parseEasing - function to parse all easing values to a function.
+     *
+     * @param  {String, Function, Array} Easing representation.
+     * @return {Function} Parsed Easing.
+     */
+    var parseEasing = function () {
+      var ease = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _constants.defaultEasingString;
+
+      var type = typeof ease;
+
+      switch (type) {
+        case 'function':
+          {
+            return ease;
+          }
+        case 'string':
+          {
+            // path easing
+            if (ease[0].toLowerCase() === 'm') {
+              return (0, _path.path)(ease);
+            }
+
+            ease = ease.toLowerCase().split('.');
+            var easeParent = _easing.easing[ease[0]];
+
+            if (!easeParent) {
+              console.error(_constants.consoleName + ' Easing with name "' + ease[0] + '" wasn\'t found, fallback to "' + _constants.defaultEasingString + '" instead.', _easing.easing);
+
+              return _easing.easing[_constants.defaultEasing[0]][_constants.defaultEasing[1]];
+            }
+            return easeParent[ease[1]];
+          }
+        // // comming soon:
+        // //   - if array passed - parse as `bezier` function
+        // // ---
+        // case 'object' {
+        //   if (easing instanceof Array) {
+        //     return this.bezier.apply(this, easing);
+        //   } else {
+        //     console.error(
+        //       `:mojs: Failed to parse easing value of `,
+        //       easing,
+        //       ` fallback to "linear.none" instead`
+        //     );
+        //     return easing[defaultEasing[0]][defaultEasing[1]];
+        //   }
+        // }
+      }
+    };
+
+    exports.parseEasing = parseEasing;
+  });
+});
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./div'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.div);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.div);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _div) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.makeColorObject = undefined;
+
+
+    /**
+     * `normalizeHex` - Function to normalize part of a HEX color to FF format,
+     *                  if one character passed, return doubled version of it.
+     *
+     * @param {Steing} Color part to normalize.
+     * @param {Steing} Normalized part of a color.
+     */
+    var normalizeHex = function (string) {
+      return string.length === 2 ? string : string + string;
+    };
+
+    /**
+     * `parseHEXColor` - function to parse #HEX colors.
+     */
+    var parseHEXColor = function (color) {
+      var result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(color);
+      var colorObj = {};
+      if (result) {
+        return {
+          r: parseInt(normalizeHex(result[1]), 16),
+          g: parseInt(normalizeHex(result[2]), 16),
+          b: parseInt(normalizeHex(result[3]), 16),
+          a: 1
+        };
+      }
+    };
+
+    /**
+     * Function to parse a color string to color object.
+     *
+     * @param {String} String to parse.
+     * @returns {Object} Color object.
+     */
+    var makeColorObject = function (color) {
+      var originColor = color;
+      // #HEX
+      if (color[0] === '#') {
+        return parseHEXColor(color);
+      } else {
+        var isRgb = color[0] === 'r' && color[1] === 'g' && color[2] === 'b';
+        // if color is not `rgb`, it is a shortcut (`cyan`, `hotpink` etc)
+        // so we need to set the color on DOM element and get the calculated color
+        if (!isRgb) {
+          _div.div.style.color = 'black';
+          _div.div.style.color = color;
+          color = window.getComputedStyle(_div.div).color;
+        }
+
+        // parse `rgb` color
+        var regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),';
+        var regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$';
+        var result = new RegExp(regexString1 + regexString2, 'gi').exec(color);
+        var a = parseFloat(result[4] || 1);
+
+        if (result) {
+          var r = parseInt(result[1], 10);
+          var g = parseInt(result[2], 10);
+          var b = parseInt(result[3], 10);
+          // if origin color was not black but black
+          // returned from the DOM - that's an error
+          return originColor !== 'black' && r === 0 && g === 0 && b === 0 && a === 1 ? { isError: true } : { r: r, g: g, b: b, a: a };
+        }
+      }
+
+      return {
+        isError: true
+      };
+    };
+
+    exports.makeColorObject = makeColorObject;
+  });
+});
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2), __webpack_require__(23), __webpack_require__(5), __webpack_require__(18), __webpack_require__(3), __webpack_require__(1), __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../tween/tween'), require('../tween/timeline'), require('../tween/tweenable'), require('./delta'), require('./separate-tween-options'), require('../helpers/stagger-property'), require('./motion-path'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.tween, global.timeline, global.tweenable, global.delta, global.separateTweenOptions, global.staggerProperty, global.motionPath);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2), __webpack_require__(23), __webpack_require__(5), __webpack_require__(18), __webpack_require__(3), __webpack_require__(1), __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.tween, global.timeline, global.tweenable, global.delta, global.separateTweenOptions, global.staggerProperty, global.motionPath);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _tween, _timeline, _tweenable, _delta, _separateTweenOptions, _staggerProperty, _motionPath) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.Deltas = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    /* ------------------- */
+    /* The `Deltas` class  */
+    /* ------------------- */
+
+    var Super = _tweenable.Tweenable.__mojsClass;
+    var Deltas = Object.create(Super);
+
+    /**
+     * `init` - function init the class.
+     *
+     * @extends @Tweenable
+     * @public
+     */
+    Deltas.init = function () {
+      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      // super call
+      Super.init.call(this, o);
+      // clone the options
+      var options = _extends({}, o);
+      // get `timeline` options and remove them immediately
+      var timelineOptions = options.timeline;
+      delete options.timeline;
+
+      // get `customProperties` options and remove them immediately
+      this._customProperties = options.customProperties || {};
+      this._render = this._customProperties.render || function () {};
+      this._pipeObj = this._customProperties.pipeObj || {};
+      delete options.customProperties;
+
+      // save the el object and remove it immediately
+      this._el = options.el || {};
+      delete options.el;
+      // create support object for complex properties
+      this._supportProps = {};
+      // set up the main `tween`
+      this._setupTween(options);
+      // set up the `timeline`
+      this._setupTimeline(timelineOptions);
+      // parse deltas from options that left so far
+      this._parseProperties(options);
+    };
+
+    /**
+     * `_setupTween` - function to set up main tween.
+     *
+     * @param {Object} Options.
+     */
+    Deltas._setupTween = function (options) {
+      var _this = this;
+
+      // separate main tween options
+      var tweenOptions = (0, _separateTweenOptions.separateTweenOptions)(options);
+      // create tween
+      this.tween = new _tween.Tween(_extends({}, tweenOptions, {
+        // update plain deltas on update
+        // and call the previous `onUpdate` if present
+        onUpdate: function (ep, p, isForward) {
+          // update plain deltas
+          _this._upd_deltas(ep, p, isForward);
+          // envoke onUpdate if present
+          tweenOptions.onUpdate && tweenOptions.onUpdate(ep, p, isForward);
+        }
+      }));
+    };
+
+    /**
+     * `_setupTimeline` - function to set up main timeline.
+     *
+     * @param {Object} Timeline options.
+     */
+    Deltas._setupTimeline = function () {
+      var _this2 = this;
+
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      var support = {
+        props: this._supportProps,
+        pipeObj: this._pipeObj
+      };
+
+      this.timeline = new _timeline.Timeline(_extends({}, options, {
+        onUpdate: function (ep, p, isForward) {
+          // call render function
+          _this2._render(_this2._el, support, ep, p, isForward);
+          // envoke onUpdate if present
+          options.onUpdate && options.onUpdate(ep, p, isForward);
+        }
+      }));
+      this.timeline.add(this.tween);
+    };
+
+    /**
+     * `_parseProperties` - function to parse deltas and static properties.
+     *
+     * @param {Object} Options.
+     */
+    Deltas._parseProperties = function (options) {
+      // deltas that have tween
+      this._tweenDeltas = [];
+      // deltas that don't have tween
+      this._plainDeltas = [];
+      // static properties
+      this._staticProps = {};
+      // loop thru options and create deltas with objects
+      for (var key in options) {
+        var value = options[key];
+        // if value is tatic save it to static props
+        if (typeof value !== 'object') {
+          // find out property `el`, it can be `supportProps` if the `isSkipRender`
+          // is set for the property in the `customProperties`
+          var custom = this._customProperties[key];
+          var target = custom && custom.isSkipRender ? this._supportProps : this._el;
+          // parse if `stagger(20, 40)` defined
+          var property = (0, _staggerProperty.staggerProperty)(value, this.index);
+          this._staticProps[key] = property;
+          target[key] = property;
+          continue;
+        }
+        // check the delta type
+        var delta = void 0;
+        if (value.path !== undefined) {
+          delta = new _motionPath.MotionPath(_extends({
+            el: this._el
+          }, value, {
+            supportProps: this._supportProps,
+            property: key,
+            index: this.index
+          }));
+        } else {
+          // if value is not motion path, create delta object
+          delta = new _delta.Delta({
+            key: key,
+            target: this._el,
+            supportProps: this._supportProps,
+            object: value,
+            customProperties: this._customProperties,
+            index: this.index
+          });
+        }
+
+        // check if delta has own tween and add to `_tweenDeltas`
+        if (delta.tween) {
+          this._tweenDeltas.push(delta);
+        }
+        // else add to plain deltas
+        else {
+            this._plainDeltas.push(delta);
+          }
+      }
+      // add tween deltas to the timeline
+      this.timeline.add(this._tweenDeltas);
+    };
+
+    /**
+     * `_upd_deltas` - function to update the plain deltas.
+     *
+     * @private
+     * @param {Number} Eased progress.
+     * @param {Number} Progress.
+     * @param {Boolean} If forward update direction.
+     * @returns {Object} This delta.
+     */
+    Deltas._upd_deltas = function (ep, p, isForward) {
+      // update plain deltas
+      for (var i = 0; i < this._plainDeltas.length; i++) {
+        this._plainDeltas[i].update(ep, p, isForward);
+      }
+    };
+
+    /**
+     * Imitate `class` with wrapper.
+     *
+     * @param {Object} Options object.
+     * @returns {Object} `Html` instance.
+     */
+    var wrap = function (o) {
+      var instance = Object.create(Deltas);
+      instance.init(o);
+
+      return instance;
+    };
+
+    wrap.__mojsClass = Deltas;
+
+    exports.Deltas = wrap;
+  });
+});
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2), __webpack_require__(0), __webpack_require__(3), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../tween/tween'), require('../class-proto'), require('./separate-tween-options'), require('../helpers/stagger-property'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.tween, global.classProto, global.separateTweenOptions, global.staggerProperty);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2), __webpack_require__(0), __webpack_require__(3), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.tween, global.classProto, global.separateTweenOptions, global.staggerProperty);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _tween, _classProto, _separateTweenOptions, _staggerProperty) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.MotionPath = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    /* ----------------------- */
+    /* The `MotionPath` class  */
+    /* ----------------------- */
+
+    // TODO:
+    //  - add unit?
+    //  - add bounds?
+    //  - add pipe?
+
+    var Super = _classProto.ClassProto;
+    var MotionPath = Object.create(Super);
+
+    /* ---------------------- */
+    /* The `Public` functions */
+    /* ---------------------- */
+
+    /**
+     * `update` - function to update the MotionPath.
+     *
+     * @public
+     * @param {Number} Eased progress.
+     * @param {Number} Progress.
+     * @param {Boolean} If is forward direction.
+     * @param {Object} This motion path.
+     */
+    MotionPath.update = function (ep, p, isForward) {
+      var _props = this._props,
+          precision = _props.precision,
+          coordinate = _props.coordinate,
+          property = _props.property,
+          supportProps = _props.supportProps;
+      var step = this._samples.step;
+
+
+      var index = ep / step | 0; // convert to integer
+      var key = index * step; // get the key
+      var nextKey = (index + 1) * step; // get the next key
+
+      var diff = ep - key; // get error for the eased progress
+      var value = this._samples.get(key)[coordinate]; // get the value
+
+      var norm = value;
+      // if next key is present, calculate the normalized value
+      // regarding the eased progress error
+      if (nextKey <= 1) {
+        var nextValue = this._samples.get(nextKey)[coordinate];
+        norm = value + (nextValue - value) * (diff / step);
+      }
+
+      this._target[property] = norm;
+
+      return this;
+    };
+
+    /* ----------------------- */
+    /* The `Private` functions */
+    /* ----------------------- */
+
+    /**
+     * `_samplePath` - function to sample path coordinates.
+     *
+     * @private
+     * @param {Number} Number of floating point digits.
+     */
+    MotionPath._samplePath = function () {
+      var n = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._props.precision;
+
+      var totalLength = this._path.getTotalLength();
+      var step = 1 / n;
+      // create the samples map and save main properties
+      this._samples = new Map();
+      this._samples.step = step;
+      this._samples.totalLength = totalLength;
+      // samples the path, `key` is in range of [0..1]
+      for (var i = 0; i < n; i++) {
+        var key = i * step;
+        this._setForKey(key);
+      }
+      // the last sample is for `1`
+      this._setForKey(1);
+    };
+
+    /**
+     * `_setForKey` - helper function for `_samplePath`,
+     *                sets a key/value regarding `totalLength` on the map.
+     *
+     * @param  {Number} key Map key [0...1].
+     */
+    MotionPath._setForKey = function (key) {
+      var totalLength = this._samples.totalLength;
+
+      // x/y computation
+      var length = key * totalLength;
+      var point = this._path.getPointAtLength(length);
+      var prevPoint = this._path.getPointAtLength(length - 1);
+      // cangle computation
+      var dY = point.y - prevPoint.y;
+      var dX = point.x - prevPoint.x;
+      var atan = !isFinite(Math.atan(dY / dX)) ? 0 : Math.atan(dY / dX);
+      var angle = atan * (180 / Math.PI);
+      // set the point to the map
+      this._samples.set(key, { x: point.x, y: point.y, angle: angle });
+    };
+
+    /**
+     * `init` - function init the class.
+     *
+     * @extends @ClassProto
+     * @public
+     */
+    MotionPath.init = function () {
+      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      // super call
+      Super.init.call(this, o);
+      // get target, if the `isSkipRender` is set on `property`
+      // in `customProperties`, use `supportProps` otherwise use `el`
+      var _props2 = this._props,
+          el = _props2.el,
+          supportProps = _props2.supportProps,
+          property = _props2.property,
+          customProperties = _props2.customProperties;
+
+      var custom = customProperties[property];
+      this._target = custom && custom.isSkipRender ? supportProps : el;
+      // parse path
+      this._parsePath();
+      // precompute path
+      this._samplePath();
+      // set up tween
+      this._setupTween();
+    };
+
+    /**
+     * `_setupTween` - function set up tween if needed.
+     *
+     * @extends @ClassProto
+     * @public
+     */
+    MotionPath._setupTween = function () {
+      var _this = this;
+
+      // options
+      var options = _extends({}, this._o);
+      // separate tween  options
+      var tweenOptions = (0, _separateTweenOptions.separateTweenOptions)(options);
+      if (tweenOptions !== undefined) {
+        this.tween = new _tween.Tween(_extends({}, tweenOptions, {
+          // send `onUpdate` function to call the `this.update` function
+          // and envoke previous `onUpdate`
+          onUpdate: function (ep, p, isForward) {
+            _this.update(ep, p, isForward);
+            // envoke old `onUpdate` if is present
+            if (tweenOptions.onUpdate !== void 0) {
+              tweenOptions.onUpdate(ep, p, isForward);
+            }
+          }
+        }));
+      }
+    };
+
+    /**
+     * `_decalreDefaults` - function to declare defaults.
+     *
+     * @extends @ClassProto
+     * @private
+     */
+    MotionPath._declareDefaults = function () {
+      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      this._defaults = {
+        el: null,
+        supportProps: null,
+        customProperties: {},
+        path: 'M0,0 L100,100',
+        precision: 140,
+        coordinate: 'x',
+        property: 'x'
+      };
+    };
+
+    /**
+     * _extendDefaults - Method to copy `_o` options to `_props` object
+     *                  with fallback to `_defaults`.
+     * @private
+     * @overrides @ ClassProto
+     */
+    MotionPath._extendDefaults = function () {
+      // super call
+      _classProto.ClassProto._extendDefaults.call(this);
+      // parse stagger
+      for (var key in this._props) {
+        this._props[key] = (0, _staggerProperty.staggerProperty)(this._props[key], this.index);
+      }
+
+      var property = this._props.property;
+
+      if (property === 'y' || property === 'angle') {
+        this.setIfNotSet('coordinate', property);
+      }
+    };
+
+    /**
+     * `_parsePath` - function to parse SVG motion path.
+     */
+    MotionPath._parsePath = function () {
+      var path = this._props.path;
+
+      this._path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      this._path.setAttributeNS(null, 'd', path);
+    };
+
+    /**
+     * Imitate `class` with wrapper
+     *
+     * @param {Object} Options object.
+     * @returns {Object} Tween instance.
+     */
+    var wrap = function (o) {
+      var instance = Object.create(MotionPath);
+      instance.init(o);
+
+      return instance;
+    };
+
+    wrap.__mojsClass = MotionPath;
+
+    exports.MotionPath = wrap;
+  });
+});
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../delta/get-regexp-unit'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.getRegexpUnit);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.getRegexpUnit);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _getRegexpUnit) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.parseStagger = undefined;
+
+
+    /**
+     * `parseStagger` - function to parse `stagger()` strings.
+     *
+     * @param {_} Property value.
+     * @param {Number} Stagger index.
+     * @returns {String, Any} Parsed stagger value or unattended value.
+     */
+    var parseStagger = function (value, index) {
+      var type = typeof value;
+      // if not string return the value itself as it can not be a stagger string
+      if (type !== 'string') {
+        return value;
+      }
+      // if string test it on `stagger` sequence, if not present
+      // return the value as it is not a stagger string
+      if (!value.match(/^stagger\(/)) {
+        return value;
+      }
+
+      // split the value `stagger([body])`
+      var body = value.split(/stagger\(|\)$/)[1].toLowerCase();
+      // split the body
+      var stagger = body.split(/([^\(,\s]+)(?=\s*,|\s*$)/gim);
+      // assume two values in the `stagger(20, 20)`
+      var base = stagger[1];
+      var step = stagger[3];
+      // if only one value provided in the `stagger(20)`
+      if (stagger.length <= 3) {
+        base = 0;
+        step = stagger[1];
+      }
+      // parse base
+      var baseValue = parseFloat(base);
+      var baseUnit = (0, _getRegexpUnit.getRegexpUnit)(base);
+      // parse step
+      var stepValue = parseFloat(step);
+      var stepUnit = (0, _getRegexpUnit.getRegexpUnit)(step);
+      // get result unit and result
+      var unit = baseUnit ? baseUnit : stepUnit;
+      var result = baseValue + index * stepValue;
+      // if unit is present - return the result with unit, otherwise return number
+      return unit ? '' + result + unit : result;
+    };
+
+    exports.parseStagger = parseStagger;
+  });
+});
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./unit-regexp'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.unitRegexp);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.unitRegexp);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _unitRegexp) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.getRegexpUnit = undefined;
+
+
+    var getRegexpUnit = function (value) {
+      if (typeof value !== 'string') {
+        return undefined;
+      }
+      var valueMatch = value.match(_unitRegexp.unitRegexp);
+
+      return valueMatch !== null ? valueMatch[0] : undefined;
+    };
+
+    exports.getRegexpUnit = getRegexpUnit;
+  });
+});
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  "use strict";
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    /**
+     * The regexp intended to parse all `units` supported.
+     */
+    var unitRegexp = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin|deg|fr/gim;
+
+    exports.unitRegexp = unitRegexp;
+  });
+});
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    var parsePath = function (path) {
+      var domPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      domPath.setAttributeNS(null, 'd', path);
+      return domPath;
+    };
+
+    var sample = function (path, n) {
+      var step = 1 / n;
+      var totalLength = path.getTotalLength();
+      // create the samples map and save main properties
+      var samples = [];
+      // samples the path, `key` is in range of [0..1]
+      for (var i = 0; i < n + 1; i++) {
+        var point = path.getPointAtLength(i * step * totalLength);
+        samples[i] = {
+          x: point.x / 100,
+          y: point.y / 100
+        };
+      };
+
+      return samples;
+    };
+
+    var findY = function (key, samples, n) {
+      var start = 0;
+      var end = samples.length - 1;
+      var step = 1 / n;
+      // find `start`/`end` bounds with binary search
+      while (Math.abs(end - start) > 1) {
+        var _n = end - start;
+        var middle = start + Math.floor(_n / 2);
+        var _value = samples[middle];
+
+        if (key === _value.x) {
+          return _value.y;
+        }
+        // shift a bound regarding the `value.x` value
+        key < _value.x ? end = middle : start = middle;
+      }
+      // when the loop stops - we've found `start` and `end` bounds
+      var value = samples[start];
+      // if key is greate than `start` - normalize it
+      if (key > value.x) {
+        var nextValue = samples[start + 1];
+        if (nextValue !== void 0) {
+          var diff = value.x - key;
+          return value.y - (nextValue.y - value.y) * (diff / step);
+        }
+      }
+
+      return value.y;
+    };
+
+    var translateSamples = function (samples, n) {
+      var map = new Map();
+      var step = 1 / n;
+      // samples the path, `key` is in range of [0..1]
+      for (var i = 0; i < n + 1; i++) {
+        var key = i * step;
+        map.set(key, 1 - findY(key, samples, n));
+      }
+
+      return map;
+    };
+
+    var path = function (path) {
+      var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 200;
+
+      var preSamples = sample(parsePath(path), n);
+      var samples = translateSamples(preSamples, n);
+      var step = 1 / n;
+
+      return function (p) {
+        var index = p / step | 0; // convert to integer
+        var key = index * step; // get the key
+        var nextKey = (index + 1) * step; // get the next key
+        var y = samples.get(key); // get the y
+        // if next key is present, calculate the normalized y
+        // regarding the progress error
+        if (nextKey <= 1) {
+          var nextY = samples.get(nextKey);
+          y = y + (nextY - y) * ((p - key) / step);
+        }
+
+        return y;
+      };
+    };
+
+    exports.path = path;
+  });
+});
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(13), __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./path'), require('./pow'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.path, global.pow);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(13), __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.path, global.pow);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _path, _pow) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.easing = undefined;
+
+
+    /**
+     * `easing` - object that holds all easing avaliable in `mojs`.
+     */
+    var easing = {
+      /**
+       * `Linear` easing, also `null` or `id` easing - simply returns whatever
+       * passed to the function.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      linear: { none: function (k) {
+          return k;
+        } },
+
+      /**
+       * `Sin` easing. Has `in`/`out`/`inout` options.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      sin: {
+        in: function (k) {
+          return 1 - Math.cos(k * Math.PI / 2);
+        },
+        out: function (k) {
+          return Math.sin(k * Math.PI / 2);
+        },
+        inout: function (k) {
+          return 0.5 * (1 - Math.cos(Math.PI * k));
+        }
+      },
+
+      pow: _pow.pow,
+      path: _path.path
+    };
+    /**
+     * TODO:
+     *  [] add `setParent` public method.
+     */
+
+    exports.easing = easing;
+  });
+});
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  "use strict";
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    var pow = function () {
+      var p = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 2;
+
+      var easeIn = function (p) {
+        return function (t) {
+          return Math.pow(t, p);
+        };
+      }(p);
+      var easeOut = function (p) {
+        return function (t) {
+          return 1 - Math.abs(Math.pow(t - 1, p));
+        };
+      }(p);
+
+      return {
+        in: easeIn,
+        out: easeOut,
+        inout: function (t) {
+          return t < .5 ? easeIn(t * 2) / 2 : easeOut(t * 2 - 1) / 2 + .5;
+        }
+      };
+    };
+
+    exports.pow = pow;
+  });
+});
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+
+    /**
+     * Constants.
+     */
+    var defaultEasing = exports.defaultEasing = ['sin', 'out'];
+    var defaultEasingString = exports.defaultEasingString = defaultEasing.join('.');
+    var name = exports.name = 'mojs';
+    var consoleName = exports.consoleName = ':' + name + ':';
+    var bundleLink = exports.bundleLink = 'https://aka.ms/mojs-bundle';
+  });
+});
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    /**
+     * Tweener - singleton object that is responsible of:
+     *  - starting `requestAnimationFrame` loop
+     *  - stopping `requestAnimationFrame` loop
+     *  - holding `tween`/`timeline` objects and passing current time to them.
+     */
+
+    var tweens = [];
+    var savedTweens = [];
+    var isRunning = false;
+
+    /**
+     * `savePlayingTweens` - function to store all playing tweenes
+     *                       when user leaves a page.
+     */
+    var savePlayingTweens = function () {
+      savedTweens = tweens.slice(0);
+      for (var i = 0; i < savedTweens.length; i++) {
+        savedTweens[i].pause();
+      }
+    };
+
+    /**
+     * `restorePlayingTweens` - function to restore all playing tweens.
+     */
+    var restorePlayingTweens = function () {
+      for (var i = 0; i < savedTweens.length; i++) {
+        savedTweens[i].play();
+      }
+    };
+
+    /**
+     * `onVisibilityChange` - visibilityChange handler.
+     */
+    var onVisibilityChange = function () {
+      if (document['hidden']) {
+        savePlayingTweens();
+      } else {
+        restorePlayingTweens();
+      }
+    };
+
+    /**
+     * `stop` - function to stop the animation loop.
+     */
+    var stop = function () {
+      tweens.length = 0;
+      isRunning = false;
+    };
+
+    // needed?
+    // /**
+    //  * `removeAll` - function stop updating all the child tweens/timelines.
+    //  *
+    //  * @return {type}  description
+    //  */
+    // const removeAll = () => { tweens.length = 0; };
+
+    /**
+     * `remove` - function to remove specific tween/timeline form updating.
+     */
+    var remove = function (tween) {
+      var index = typeof tween === 'number' ? tween : tweens.indexOf(tween);
+
+      if (index !== -1) {
+        tween = tweens[index];
+        // needed?
+        // tween._isRunning = false;
+        tweens.splice(index, 1);
+      }
+    };
+
+    /**
+     *  `update` - fucntion  to update every tween/timeline on animation frame.
+     */
+    var update = function (time) {
+      var i = tweens.length;
+      while (i--) {
+        var tween = tweens[i];
+        if (tween.update(time) === true) {
+          remove(tween);
+          tween.onTweenerFinish();
+        }
+      }
+    };
+
+    /*
+     Main animation loop. Should have only one concurrent loop.
+     @private
+     @returns this
+    */
+    var loop = function () {
+      if (tweens.length === 0) {
+        return stop();
+      }
+      update(performance.now());
+      requestAnimationFrame(loop);
+    };
+
+    /**
+     * `start` - function to start the animation loop.
+     */
+    var start = function () {
+      if (isRunning) {
+        return;
+      };
+      isRunning = true;
+      requestAnimationFrame(loop);
+    };
+
+    /**
+     * `add` - function to add a Tween/Timeline to loop pool.
+     */
+    var add = function (tween) {
+      tweens.push(tween);
+      start();
+    };
+
+    /**
+     * `caffeinate` - function to keep tweener awake on page blur.
+     */
+    var caffeinate = function () {
+      document.removeEventListener('visibilitychange', onVisibilityChange, false);
+    };
+
+    // listen to visibility change
+    document.addEventListener('visibilitychange', onVisibilityChange, false);
+
+    var tweener = { add: add, remove: remove, caffeinate: caffeinate };
+
+    // const tweener = new Tweener;
+    exports.tweener = tweener;
+  });
+});
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(2), __webpack_require__(22), __webpack_require__(21), __webpack_require__(20), __webpack_require__(19), __webpack_require__(12), __webpack_require__(1), __webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../class-proto'), require('../tween/tween'), require('./split-delta'), require('./parse-number'), require('./parse-unit'), require('./parse-color'), require('./unit-regexp'), require('../helpers/stagger-property'), require('../helpers/make-color-object'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.classProto, global.tween, global.splitDelta, global.parseNumber, global.parseUnit, global.parseColor, global.unitRegexp, global.staggerProperty, global.makeColorObject);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(2), __webpack_require__(22), __webpack_require__(21), __webpack_require__(20), __webpack_require__(19), __webpack_require__(12), __webpack_require__(1), __webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.classProto, global.tween, global.splitDelta, global.parseNumber, global.parseUnit, global.parseColor, global.unitRegexp, global.staggerProperty, global.makeColorObject);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _classProto, _tween, _splitDelta, _parseNumber, _parseUnit, _parseColor, _unitRegexp, _staggerProperty, _makeColorObject) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.Delta = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    /*
+      TODO:
+        - rename `target` to `el`
+    */
+
+    // map that holds all available parsers
+    var parsersMap = {
+      number: _parseNumber.parseNumber,
+      unit: _parseUnit.parseUnit,
+      color: _parseColor.parseColor
+    };
+
+    /* ------------------ */
+    /* The `Delta` class  */
+    /* ------------------ */
+
+    var Delta = Object.create(_classProto.ClassProto);
+
+    /**
+     * `init` - function init the class.
+     *
+     * @extends @ClassProto
+     * @public
+     */
+    Delta.init = function () {
+      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      // super call
+      _classProto.ClassProto.init.call(this, o);
+      // save target
+      var _props = this._props,
+          target = _props.target,
+          supportProps = _props.supportProps,
+          _props$customProperti = _props.customProperties,
+          customProperties = _props$customProperti === undefined ? {} : _props$customProperti,
+          key = _props.key;
+
+      // if the `isSkipRender` property is set, set the property on
+      // `supportProps` otherwise set is as ususal on the `target` object
+      this._target = customProperties[key] && customProperties[key].isSkipRender ? supportProps : target;
+      // parse delta
+      this._parseDelta();
+      // set up the update function acording to the delta type
+      this.update = this['_upd_' + this._delta.type];
+      // set up the tween
+      this._setupTween();
+    };
+
+    /**
+     * `_upd_number` - function to update `number` delta.
+     *
+     * @private
+     * @param {Number} Eased progress.
+     * @param {Number} Progress.
+     * @param {Boolean} If forward update direction.
+     * @returns {Object} This delta.
+     */
+    Delta._upd_number = function (ep, p, isForward) {
+      var _delta = this._delta,
+          curve = _delta.curve,
+          delta = _delta.delta,
+          start = _delta.start,
+          end = _delta.end;
+      var key = this._props.key;
+
+
+      this._target[key] = curve === void 0 ? start + ep * delta : curve(p) * start + p * delta;
+
+      return this;
+    };
+
+    /**
+     * `_upd_unit` - function to update `unit` delta.
+     *
+     * @private
+     * @param {Number} Eased progress.
+     * @param {Number} Progress.
+     * @param {Boolean} If forward update direction.
+     * @returns {Object} This delta.
+     */
+    Delta._upd_unit = function (ep, p, isForward) {
+      var _delta2 = this._delta,
+          curve = _delta2.curve,
+          delta = _delta2.delta,
+          start = _delta2.start,
+          end = _delta2.end,
+          unit = _delta2.unit;
+      var key = this._props.key;
+
+
+      var value = curve === void 0 ? start + ep * delta : curve(p) * start + p * delta;
+
+      this._target[key] = '' + value + unit;
+
+      return this;
+    };
+
+    /**
+     * `_upd_color` - function to update `color` delta.
+     *
+     * @private
+     * @param {Number} Eased progress.
+     * @param {Number} Progress.
+     * @param {Boolean} If forward update direction.
+     * @returns {Object} This delta.
+     */
+    Delta._upd_color = function (ep, p, isForward) {
+      var _delta3 = this._delta,
+          curve = _delta3.curve,
+          delta = _delta3.delta,
+          start = _delta3.start,
+          end = _delta3.end;
+      var key = this._props.key;
+
+
+      if (curve === void 0) {
+        var r = start.r + ep * delta.r;
+        var g = start.g + ep * delta.g;
+        var b = start.b + ep * delta.b;
+        var a = start.a + ep * delta.a;
+        this._target[key] = 'rgba(' + (r | 0) + ', ' + (g | 0) + ', ' + (b | 0) + ', ' + a + ')';
+      } else {
+        var curveP = curve(p);
+        var _r = curveP * start.r + p * delta.r;
+        var _g = curveP * start.g + p * delta.g;
+        var _b = curveP * start.b + p * delta.b;
+        var _a = curveP * start.a + p * delta.a;
+        this._target[key] = 'rgba(' + (_r | 0) + ', ' + (_g | 0) + ', ' + (_b | 0) + ', ' + _a + ')';
+      }
+
+      return this;
+    };
+
+    /**
+     * `_setupTween` - function to set up tween if needed.
+     */
+    Delta._setupTween = function () {
+      var _this = this;
+
+      var tweenOptions = this._delta.tweenOptions;
+
+      // set up tween if `tweenOptions` is set
+      if (tweenOptions === void 0) {
+        return;
+      }
+
+      // create tween with tween options
+      this.tween = new _tween.Tween(_extends({
+        index: this.index
+      }, tweenOptions, {
+        // send `onUpdate` function to call the `this.update` function
+        // and envoke previous `onUpdate`
+        onUpdate: function (ep, p, isForward) {
+          _this.update(ep, p, isForward);
+          // envoke old `onUpdate` if is present
+          if (tweenOptions.onUpdate !== void 0) {
+            tweenOptions.onUpdate(ep, p, isForward);
+          }
+        }
+      }));
+    };
+
+    /**
+     * `_declareDefaults` - function to declare defaults.
+     *
+     * @extends @ClassProto
+     * @private
+     */
+    Delta._declareDefaults = function () {
+      this._defaults = {
+        key: null,
+        object: null,
+        customProperties: {},
+        target: null,
+        supportProps: null
+      };
+    };
+
+    /**
+     * `_parseDelta` - function to parse delta.
+     *
+     * @private
+     */
+    Delta._parseDelta = function () {
+      var _props2 = this._props,
+          key = _props2.key,
+          customProperties = _props2.customProperties;
+
+
+      customProperties[key] != null ? this._parseByCustom() : this._parseByGuess();
+    };
+
+    /**
+     * `_parseByGuess` - function to parse delta by guess.
+     *
+     * @private
+     */
+    Delta._parseByGuess = function () {
+      var _props3 = this._props,
+          key = _props3.key,
+          object = _props3.object;
+
+      var split = this._getSplit(object);
+      // // try to parse `start`/`end` as colors first, if ok - this is a color delta
+      var startColor = (0, _makeColorObject.makeColorObject)(split.start);
+      var endColor = (0, _makeColorObject.makeColorObject)(split.end);
+      if (!startColor.isError && !endColor.isError) {
+        return this._delta = (0, _parseColor.parseColor)(key, split);
+      }
+      // conver the delta properties to string and check if unit is present
+      var isUnit = ('' + split.start).match(_unitRegexp.unitRegexp) || ('' + split.end).toString().match(_unitRegexp.unitRegexp);
+      // parse regarding unit presence
+      var parseType = isUnit ? 'unit' : 'number';
+      this._delta = parsersMap[parseType](key, split);
+    };
+
+    /**
+     * `_parseByCustom` - function to parse delta with help of customProperties.
+     *
+     * @private
+     */
+    Delta._parseByCustom = function () {
+      var _props4 = this._props,
+          key = _props4.key,
+          object = _props4.object,
+          customProperties = _props4.customProperties;
+
+
+      var customProperty = customProperties[key];
+      var type = customProperty.type;
+
+
+      this._delta = parsersMap[type](key, this._getSplit(object));
+    };
+
+    /**
+     * `_getSplit` - function to get options split
+     *               and parse `stagger` in `start`/`end` properties.
+     *
+     * @param {Object} Object to split.
+     * @return {Object} Split.
+     */
+    Delta._getSplit = function (object) {
+      var split = (0, _splitDelta.splitDelta)(object);
+      // parse the `stagger` in `start`/`end` delta properties
+      split.start = (0, _staggerProperty.staggerProperty)(split.start, this.index);
+      split.end = (0, _staggerProperty.staggerProperty)(split.end, this.index);
+
+      return split;
+    };
+
+    /**
+     * Imitate `class` with wrapper
+     *
+     * @param {Object} Options object.
+     * @returns {Object} Tween instance.
+     */
+    var wrap = function (o) {
+      var instance = Object.create(Delta);
+      instance.init(o);
+
+      return instance;
+    };
+
+    wrap.__mojsClass = Delta;
+
+    exports.Delta = wrap;
+  });
+});
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../helpers/make-color-object'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.makeColorObject);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.makeColorObject);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _makeColorObject) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.parseColor = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    /**
+     * Function parse color delta.
+     *
+     * @param {String} Name of the property.
+     * @param {Object} Object to parse.
+     * @returns {Object} Parsed `delta`.
+     */
+    var parseColor = function (name, object) {
+      var start = (0, _makeColorObject.makeColorObject)(object.start);
+      var end = (0, _makeColorObject.makeColorObject)(object.end);
+      var delta = {
+        r: end.r - start.r,
+        g: end.g - start.g,
+        b: end.b - start.b,
+        a: end.a - start.a
+      };
+
+      return _extends({}, object, {
+        type: 'color',
+        name: name, start: start,
+        end: end, delta: delta
+      });
+    };
+
+    exports.parseColor = parseColor;
+  });
+});
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./get-regexp-unit'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.getRegexpUnit);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.getRegexpUnit);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _getRegexpUnit) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.parseUnit = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    /**
+     * Function parse number delta.
+     *
+     * @param {String} Name of the property.
+     * @param {Object} Object to parse.
+     * @returns {Object} Parsed `delta`.
+     */
+    var parseUnit = function (name, object) {
+      var result = _extends({
+        type: 'unit',
+        name: name
+      }, object);
+
+      // get start and end units
+      var startUnit = (0, _getRegexpUnit.getRegexpUnit)(result.start);
+      var endUnit = (0, _getRegexpUnit.getRegexpUnit)(result.end);
+      // get the unit for both with priority to startUnit
+      result.unit = endUnit || startUnit || 'px';
+      // parse the values in case we have strings there
+      result.start = parseFloat(result.start);
+      result.end = parseFloat(result.end);
+      // calculate delta
+      result.delta = result.end - result.start;
+
+      return result;
+    };
+
+    exports.parseUnit = parseUnit;
+  });
+});
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    /**
+     * Function parse number delta.
+     *
+     * @param {String} Name of the property.
+     * @param {Object} Object to parse.
+     * @returns {Object} Parsed `delta`.
+     */
+    var parseNumber = function (name, object) {
+      var result = _extends({
+        type: 'number',
+        name: name
+      }, object);
+      // parse the values in case we have strings there
+      result.start = parseFloat(result.start);
+      result.end = parseFloat(result.end);
+      // calculate delta
+      result.delta = result.end - result.start;
+
+      return result;
+    };
+
+    exports.parseNumber = parseNumber;
+  });
+});
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(6), __webpack_require__(4), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../easing/parse-easing'), require('../tween/tween-defaults'), require('../delta/separate-tween-options'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.parseEasing, global.tweenDefaults, global.separateTweenOptions);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(6), __webpack_require__(4), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.parseEasing, global.tweenDefaults, global.separateTweenOptions);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _parseEasing, _tweenDefaults, _separateTweenOptions) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.splitDelta = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    /**
+     * Function to split the delta object to `tween` options and actual `delta`.
+     *
+     * @param {Object} Object to split.
+     * @returns {Object} Split `delta`.
+     */
+    var splitDelta = function (object) {
+      object = _extends({}, object);
+      // save curve because we need it directly on the
+      // parsed `delta` object vs `tween`
+      var curve = object.curve !== void 0 ? (0, _parseEasing.parseEasing)(object.curve) : void 0;
+      delete object.curve;
+      // extract tween options
+      var tweenOptions = (0, _separateTweenOptions.separateTweenOptions)(object);
+      // at this point only the `start` -> `end` should left get the values
+      var start = Object.keys(object)[0];
+      var end = object[start];
+
+      return { start: start, end: end, curve: curve, tweenOptions: tweenOptions };
+    };
+
+    exports.splitDelta = splitDelta;
+  });
+});
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2), __webpack_require__(0), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./tween'), require('../class-proto'), require('../constants'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.tween, global.classProto, global.constants);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2), __webpack_require__(0), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.tween, global.classProto, global.constants);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _tween, _classProto, _constants) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.Timeline = undefined;
+
+
+    // TODO:
+    //  - add `onRefresh` that will call all the child items.
+
+    /* --------------------- */
+    /* The `Timeline` class  */
+    /* --------------------- */
+
+    var Super = _tween.Tween.__mojsClass;
+    var Timeline = Object.create(Super);
+
+    /**
+     * _declareDefaults - function do override some defaults.
+     *
+     * @overrides @ Tween
+     * @private
+     */
+    Timeline._declareDefaults = function () {
+      // super call
+      Super._declareDefaults.call(this);
+      // reset `duration` to `0` because user cannot set duration of a Timeline -
+      // it is calculated automatically regarding child timelines durations
+      // this._defaults.duration = 0;
+      // reset the `easing` since timeline should not have easing by default
+      this._defaults.easing = 'linear.none';
+    };
+
+    /* ---------------------- */
+    /* The `Public` functions */
+    /* ---------------------- */
+
+    /**
+     * add - function to add `Tween` to the timeline.
+     *
+     * @public
+     * @param   {Object, Array} A tween or array of tweens to add.
+     * @param   {Number} Time shift >= 0.
+     * @returns {Object} Self.
+     */
+    Timeline.add = function (tween) {
+      var _this = this;
+
+      var shift = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+      // make sure the shift is positive
+      shift = Math.abs(shift);
+      // if tween is really an array of tweens,
+      // loop thru them and add one by one
+      if (tween instanceof Array) {
+        tween.forEach(function (tween) {
+          _this.add(tween, shift);
+        });
+        // if a single tween, add it to `_items`
+      } else {
+
+        // if it has child `timeline` or `tween` property - add it instead
+        var runner = tween.timeline || tween.tween;
+        if (runner) {
+          tween = runner;
+        }
+
+        // set the `shiftTime` on tween
+        tween.set('shiftTime', shift);
+        // add to child timelines
+        this._items.push(tween);
+        // check if we need to increase timeline's bound
+        var _tween$_props = tween._props,
+            delay = _tween$_props.delay,
+            duration = _tween$_props.duration,
+            shiftTime = _tween$_props.shiftTime;
+
+        var time = delay + duration + shiftTime;
+        this._props.duration = Math.max(this._props.duration, time);
+      }
+
+      return this;
+    };
+
+    /**
+     * append - function to append `Tween` to the timeline.
+     *
+     * @public
+     * @param   {Object, Array} A tween or array of tweens to append.
+     * @param   {Number} Time shift >= 0.
+     * @returns {Object} Self.
+     */
+    Timeline.append = function (tween) {
+      var shift = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+      // add the tweens shifting them to the current `duration`
+      this.add(tween, this._props.duration + Math.abs(shift));
+
+      return this;
+    };
+
+    /**
+     * stop - function to stop the Timeline.
+     *
+     * @public
+     * @param   {Number} Progress [0..1] to set when stopped.
+     * @returns {Object} Self.
+     */
+    Timeline.stop = function (progress) {
+      Super.stop.call(this, progress);
+
+      for (var i = this._items.length - 1; i >= 0; i--) {
+        this._items[i].stop(progress);
+      }
+
+      return this;
+    };
+
+    /**
+     * reset - function to reset tween's state and properties.
+     *
+     * @public
+     * @overrides @ Tween
+     * @returns this.
+     */
+    Timeline.reset = function () {
+      Super.reset.call(this);
+      this._callOnItems('reset');
+
+      return this;
+    };
+
+    /* ----------------------- */
+    /* The `Private` functions */
+    /* ----------------------- */
+
+    /**
+     * setStartTime - function to set the start tme for the the Timeline.
+     *
+     * @extends @ Tween
+     * @public
+     *
+     * @param  {Number} Start time.
+     */
+    Timeline.setStartTime = function (time) {
+      Super.setStartTime.call(this, time);
+      this._callOnItems('setStartTime', this._start);
+
+      return this;
+    };
+
+    /**
+     * Timeline - function to call a function on all child items.
+     *
+     * @param  {String} `name` Function name.
+     * @param  {Arrag} args All other arguments.
+     */
+    Timeline._callOnItems = function (name) {
+      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
+      for (var i = 0; i < this._items.length; i++) {
+        var _items$i;
+
+        (_items$i = this._items[i])[name].apply(_items$i, args);
+      }
+    };
+
+    /**
+     * _createUpdate - function constructor to update the Timeline and child items.
+     *
+     * @private
+     * @param {Function} `onUpdate` callback from passed options.
+     * @param {Object} Instance.
+     */
+    Timeline._createUpdate = function (onUpdate, context) {
+      /**
+       * _createUpdate - function constructor to update the Timeline and child items.
+       *
+       * @private
+       * @param {Number} Eased progress [0...1].
+       * @param {Number} Progress [0...1].
+       * @param {Boolean} If forward or backward direction.
+       * @param {Number} Update time.
+       */
+      return function (ep, p, isForward, time) {
+        // 1. the order is important
+        for (var i = 0; i < context._items.length; i++) {
+          context._items[i].update(time);
+        }
+        // 2. the order is important
+        onUpdate(ep, p, isForward, time);
+      };
+    };
+
+    /**
+     * _vars - declare vars.
+     *
+     * @extends @ Tween
+     * @private
+     */
+    Timeline._vars = function () {
+      Super._vars.call(this);
+      // child `timelines`
+      this._items = [];
+      // reset the duraton because timeline cannot have it
+      this._props.duration = 0;
+    };
+
+    /**
+     * _extendDefaults - Method to copy `_o` options to `_props` object
+     *                  with fallback to `_defaults`.
+     * @overrides @ Tween
+     * @private
+     */
+    Timeline._extendDefaults = function () {
+      // super call
+      Super._extendDefaults.call(this);
+      // save the `onUpdate` callback
+      this._onUpdate = this._props.onUpdate;
+      // redefine the `onUpdate` callback to `_createUpdate` function
+      this._props.onUpdate = this._createUpdate(this._onUpdate, this);
+    };
+
+    /**
+     * Imitate `class` with wrapper
+     *
+     * @param {Object} Options object.
+     * @returns {Object} Tween instance.
+     */
+    var wrap = function (o) {
+      var instance = Object.create(Timeline);
+      instance.init(o);
+
+      return instance;
+    };
+
+    wrap.__mojsClass = Timeline;
+
+    exports.Timeline = wrap;
+  });
+});
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(5), __webpack_require__(8), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./tween/tweenable'), require('./delta/deltas'), require('./class-proto'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.tweenable, global.deltas, global.classProto);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(5), __webpack_require__(8), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.tweenable, global.deltas, global.classProto);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _tweenable, _deltas, _classProto) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.Html = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    /* ----------------- */
+    /* The `Html` class  */
+    /* ----------------- */
+
+    var Super = _tweenable.Tweenable.__mojsClass;
+    var Html = Object.create(Super);
+
+    /**
+     * `_declareDefaults` - Method to declare `_defaults`.
+     *
+     * @private
+     * @overrides @ ClassProto
+     */
+    Html._declareDefaults = function () {
+      this._defaults = {
+        is3d: false,
+        el: null,
+        customProperties: {},
+
+        x: 0,
+        y: 0,
+        z: 0,
+
+        skewX: 0,
+        skewY: 0,
+
+        angle: 0,
+        angleX: 0,
+        angleY: 0,
+        angleZ: 0,
+
+        scale: 1,
+        scaleX: 1,
+        scaleY: 1,
+        scaleZ: 1
+      };
+    };
+
+    /**
+     * `init` - function init the class.
+     *
+     * @public
+     * @extends @Tweenable
+     */
+    Html.init = function () {
+      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      // super call
+      Super.init.call(this, o);
+      // setup deltas
+      this._setupDeltas();
+    };
+
+    /**
+     * `_setupDeltas` - function to set up `Deltas`.
+     *
+     * @private
+     */
+    Html._setupDeltas = function () {
+      var customProperties = this._getCustomProperties();
+
+      this._deltas = new _deltas.Deltas(_extends({}, this._props, {
+        customProperties: customProperties
+      }));
+      // save the `timeline` to make the `tweenable` work
+      this.timeline = this._deltas.timeline;
+    };
+
+    /**
+    * `_render` - function to render the component.
+    *
+    * @private
+    * @param {Object} Target object to render to.
+    * @param {Array} Support objects.
+    *          @param {Object} support[0] Support object that will have
+    *                                     all properties that are `isSkipRender`.
+    *          @param {Object} support[1] Support render (original `render`
+    *                                     from `customProperties` in this context).
+    */
+    Html._render = function (target, support) {
+      var props = support.props,
+          pipeObj = support.pipeObj;
+
+
+      target.transform = 'translate(' + props.x + ', ' + props.y + ') rotate(' + props.angle + 'deg) skew(' + props.skewX + 'deg, ' + props.skewY + 'deg) scale(' + props.scale + ')';
+
+      // call the `supportRender`
+      pipeObj(target, support);
+    };
+
+    /**
+     * `_render3d` - function to render the component with 3d styles.
+     *
+     * @private
+     * @param {Object} Target object to render to.
+     * @param {Array} Support objects.
+     *          @param {Object} support[0] Support object that will have
+     *                                     all properties that are `isSkipRender`.
+     *          @param {Object} support[1] Support render (original `render`
+     *                                     from `customProperties` in this context).
+     */
+    Html._render3d = function (target, support) {
+      var props = support.props,
+          pipeObj = support.pipeObj;
+
+
+      var rotateZ = props.angleZ !== undefined ? props.angleZ : props.angle;
+      var scaleX = props.scaleX !== undefined ? props.scaleX : props.scale;
+      var scaleY = props.scaleY !== undefined ? props.scaleY : props.scale;
+      var scaleZ = props.scaleZ !== undefined ? props.scaleZ : props.scale;
+
+      target.transform = 'translate3d(' + props.x + ', ' + props.y + ', ' + props.z + ') rotateX(' + props.angleX + 'deg) rotateY(' + props.angleY + 'deg) rotateZ(' + rotateZ + 'deg) skew(' + props.skewX + 'deg, ' + props.skewY + 'deg) scale3d(' + scaleX + ', ' + scaleY + ', ' + scaleZ + ')';
+      // call the `supportRender`
+      pipeObj(target, support);
+    };
+
+    /**
+     * `_getCustomProperties` - function to create customProperties.
+     *
+     * @private
+     * @return {Object} Custom properties.
+     */
+    Html._getCustomProperties = function () {
+      var unitProps = ['x', 'y', 'z'];
+      var numberProps = ['angle', 'angleX', 'angleY', 'angleZ', 'skewX', 'skewY', 'scale', 'scaleX', 'scaleY', 'scaleZ'];
+      var customProperties = this._props.customProperties;
+
+      var originalRender = customProperties.render;
+
+      var customProps = _extends({}, customProperties);
+
+      for (var i = 0; i < unitProps.length; i++) {
+        var prop = unitProps[i];
+        customProps[prop] = { type: 'unit', isSkipRender: true };
+      }
+
+      for (var _i = 0; _i < numberProps.length; _i++) {
+        var _prop = numberProps[_i];
+        customProps[_prop] = { type: 'number', isSkipRender: true };
+      }
+
+      // if at least one of the `_default` properties set, pass the `render`
+      // function regarding the fact if the 3d property used
+      // otherwise pass thru the original `render` function
+      customProps.render = this._isRender() ? this._is3dProperties() ? this._render3d : this._render : originalRender;
+
+      customProps.pipeObj = this._isRender() ? originalRender || function () {} : function () {};
+
+      return customProps;
+    };
+
+    /**
+     * `_isRender` - function to check if render function
+     *               should be used (one of the defaults defined).
+     *
+     * @return {Boolean} If render should be used
+     */
+    Html._isRender = function () {
+      var ignoreProperties = {
+        el: 1,
+        customProperties: 1,
+        is3d: 1
+      };
+
+      for (var prop in this._defaults) {
+        if (ignoreProperties[prop]) {
+          continue;
+        }
+
+        if (this._o[prop] !== void 0) {
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    /**
+     * `_is3dProperties` - function to detect if the `3d` properties should be used.
+     *
+     * @return {Boolean} If 3d.
+     */
+    Html._is3dProperties = function () {
+      var isRotate3d = this._o.angleX != null || this._o.angleY != null || this._o.angleZ != null;
+      return this._is3d || this._o.z != null || this._o.scaleZ != null || isRotate3d;
+    };
+
+    /**
+     * `_extendDefaults` - Method to copy `_o` options to `_props` object
+     *                  with fallback to `_defaults`.
+     *
+     * @private
+     * @overrides @ ClassProto
+     */
+    Html._extendDefaults = function () {
+      // super call
+      _classProto.ClassProto._extendDefaults.call(this);
+      // delete `is3d` from options since we will pass them to `Deltas`
+      this._is3d = this._props.is3d;
+      delete this._props.is3d;
+      // if el was passed as `selector`(`string`), find the element in the DOM
+      this.el = this._props.el;
+      if (typeof this.el === 'string') {
+        this.el = document.querySelector(this.el);
+      }
+      // set the `el` on options to element style
+      // since this what we will pass to deltas
+      this._props.el = this.el.style;
+    };
+
+    /**
+     * Imitate `class` with wrapper.
+     *
+     * @param {Object} Options object.
+     * @returns {Object} `Html` instance.
+     */
+    var wrap = function (o) {
+      var instance = Object.create(Html);
+      instance.init(o);
+
+      return instance;
+    };
+
+    wrap.__mojsClass = Html;
+
+    exports.Html = wrap;
+  });
+});
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    /**
+     * div - and element that is added to DOM for enviroment test purposes.
+     */
+    var div = document.createElement('div');
+    document.body.append(div);
+
+    exports.div = div;
+  });
+});
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(5), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./tween/tweenable'), require('./helpers/stagger-property'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.tweenable, global.staggerProperty);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(5), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.tweenable, global.staggerProperty);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _tweenable, _staggerProperty) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.stagger = undefined;
+
+
+    /* -------------------- */
+    /* The `Stagger` class  */
+    /* -------------------- */
+
+    var Super = _tweenable.Tweenable.__mojsClass;
+    var Stagger = Object.create(Super);
+
+    /**
+     * `init` - function init the class.
+     *
+     * @extends @Tweenable
+     * @public
+     */
+    Stagger.init = function () {
+      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var Module = arguments[1];
+
+      // super call
+      Super.init.call(this, o);
+      // create main timeline
+      this._createTimeline(o.timeline);
+      // create modules
+      this._createModules(Module);
+    };
+
+    /**
+     * `_createModules` - function to create modules.
+     *
+     * @private
+     * @param {Object} Child module class.
+     */
+    Stagger._createModules = function (Module) {
+      this._modules = [];
+      var _o = this._o,
+          items = _o.items,
+          _o$el = _o.el,
+          el = _o$el === undefined ? {} : _o$el;
+
+      var modulesCount = items || el.length || 1;
+
+      for (var i = 0; i < modulesCount; i++) {
+        var module = new Module(this._getStaggerOptions(this._o, i));
+        this._modules.push(module);
+        this.timeline.add(module);
+      }
+    };
+
+    /**
+     * `_getStaggerOptions` - get stagger options for a single module.
+     *
+     * @private
+     * @param {Object} Stagger options.
+     * @param {Number} Index of a module.
+     */
+    Stagger._getStaggerOptions = function (options, i) {
+      // pass index to child properties
+      var o = { index: i };
+
+      for (var key in options) {
+        o[key] = (0, _staggerProperty.staggerProperty)(options[key], i);
+      }
+
+      return o;
+    };
+
+    /**
+     * `_createTimeline` - function to create a timeline.
+     *
+     * @private
+     * @param {Object} Timeline options.
+     */
+    Stagger._createTimeline = function (options) {
+      this.timeline = new Timeline(options);
+      delete this._o.timeline;
+    };
+
+    /**
+     * function to wrap a Module with the stagger wrapper.
+     */
+    var stagger = function (Module) {
+      return function (options) {
+        var instance = Object.create(Stagger);
+        instance.init(options, Module);
+        return instance;
+      };
+    };
+
+    exports.stagger = stagger;
+  });
+});
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./pow'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.pow);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.pow);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _pow) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.addBasicEasing = undefined;
+
+
+    /**
+     * `addBasicEasing` - function to add `basic easing functions`.
+     *
+     * @param {Object} `mojs` object.
+     */
+    var addBasicEasing = function (mojs) {
+      /**
+       * `Quad` easing. Has `in`/`out`/`inout` options.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      mojs.easing.quad = (0, _pow.pow)(2);
+
+      /**
+       * `Cubic` easing. Has `in`/`out`/`inout` options.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      mojs.easing.cubic = (0, _pow.pow)(3);
+
+      /**
+       * `Quart` easing. Has `in`/`out`/`inout` options.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      mojs.easing.quart = (0, _pow.pow)(4);
+
+      /**
+       * `Quint` easing. Has `in`/`out`/`inout` options.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      mojs.easing.quint = (0, _pow.pow)(5);
+
+      /**
+       * `Expo` easing. Has `in`/`out`/`inout` options.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      mojs.easing.expo = {
+        in: function (k) {
+          return k === 0 ? 0 : Math.pow(1024, k - 1);
+        },
+        out: function (k) {
+          return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
+        },
+        inout: function (k) {
+          if (k === 0 || k === 1) {
+            return k;
+          }
+
+          if ((k *= 2) < 1) {
+            return 0.5 * Math.pow(1024, k - 1);
+          }
+
+          return 0.5 * (-Math.pow(2, -10 * (k - 1)) + 2);
+        }
+      };
+
+      /**
+       * `Circ` easing. Has `in`/`out`/`inout` options.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      mojs.easing.circ = {
+        in: function (k) {
+          return 1 - Math.sqrt(1 - k * k);
+        },
+        out: function (k) {
+          return Math.sqrt(1 - --k * k);
+        },
+        inout: function (k) {
+          if ((k *= 2) < 1) {
+            return -0.5 * (Math.sqrt(1 - k * k) - 1);
+          }
+          return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
+        }
+      };
+
+      /**
+       * `Elastic` easing. Has `in`/`out`/`inout` options.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      mojs.easing.elastic = {
+        in: function (k) {
+          var p = 0.4;
+          var a = 1;
+          var s = p / 4;
+
+          if (k === 0 || k === 1) {
+            return k;
+          }
+          return -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+        },
+        out: function (k) {
+          var p = 0.4;
+          var a = 1;
+          var s = p / 4;
+
+          if (k === 0 || k === 1) {
+            return k;
+          }
+          return a * Math.pow(2, -10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1;
+        },
+        inout: function (k) {
+          if (k === 0 || k === 1) {
+            return k;
+          }
+
+          k *= 2;
+
+          if (k < 1) {
+            return -0.5 * Math.pow(2, 10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI);
+          }
+
+          return 0.5 * Math.pow(2, -10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI) + 1;
+        }
+      };
+
+      /**
+       * `Back` easing. Has `in`/`out`/`inout` options.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      mojs.easing.back = {
+        in: function (k) {
+          var s = 1.70158;
+          return k * k * ((s + 1) * k - s);
+        },
+        out: function (k) {
+          var s = 1.70158;
+          return --k * k * ((s + 1) * k + s) + 1;
+        },
+        inout: function (k) {
+          var s = 1.70158 * 1.525;
+
+          if ((k *= 2) < 1) {
+            return 0.5 * (k * k * ((s + 1) * k - s));
+          }
+
+          return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
+        }
+      };
+
+      /**
+       * `Bounce` easing. Has `in`/`out`/`inout` options.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      mojs.easing.bounce = {
+        in: function (k) {
+          return 1 - easing.bounce.out(1 - k);
+        },
+        out: function (k) {
+          if (k < 1 / 2.75) {
+            return 7.5625 * k * k;
+          } else if (k < 2 / 2.75) {
+            return 7.5625 * (k -= 1.5 / 2.75) * k + 0.75;
+          } else if (k < 2.5 / 2.75) {
+            return 7.5625 * (k -= 2.25 / 2.75) * k + 0.9375;
+          } else {
+            return 7.5625 * (k -= 2.625 / 2.75) * k + 0.984375;
+          }
+        },
+        inout: function (k) {
+          return k < 0.5 ? easing.bounce.in(k * 2) * 0.5 : easing.bounce.out(k * 2 - 1) * 0.5 + 0.5;
+        }
+      };
+    };
+
+    exports.addBasicEasing = addBasicEasing;
+  });
+});
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(29);
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(2), __webpack_require__(4), __webpack_require__(23), __webpack_require__(17), __webpack_require__(14), __webpack_require__(6), __webpack_require__(18), __webpack_require__(22), __webpack_require__(21), __webpack_require__(20), __webpack_require__(19), __webpack_require__(3), __webpack_require__(5), __webpack_require__(1), __webpack_require__(10), __webpack_require__(7), __webpack_require__(27), __webpack_require__(8), __webpack_require__(9), __webpack_require__(26), __webpack_require__(24)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(module, exports, require('./class-proto'), require('./tween/tween'), require('./tween/tween-defaults'), require('./tween/timeline'), require('./tween/tweener'), require('./easing/easing'), require('./easing/parse-easing'), require('./delta/delta'), require('./delta/split-delta'), require('./delta/parse-number'), require('./delta/parse-unit'), require('./delta/parse-color'), require('./delta/separate-tween-options'), require('./tween/tweenable'), require('./helpers/stagger-property'), require('./helpers/parse-stagger'), require('./helpers/make-color-object'), require('./easing/basic-easing'), require('./delta/deltas'), require('./delta/motion-path'), require('./stagger'), require('./html'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod, mod.exports, global.classProto, global.tween, global.tweenDefaults, global.timeline, global.tweener, global.easing, global.parseEasing, global.delta, global.splitDelta, global.parseNumber, global.parseUnit, global.parseColor, global.separateTweenOptions, global.tweenable, global.staggerProperty, global.parseStagger, global.makeColorObject, global.basicEasing, global.deltas, global.motionPath, global.stagger, global.html);
+    global.mojs = mod.exports;
+  }
+})(this, function (module, exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(2), __webpack_require__(4), __webpack_require__(23), __webpack_require__(17), __webpack_require__(14), __webpack_require__(6), __webpack_require__(18), __webpack_require__(22), __webpack_require__(21), __webpack_require__(20), __webpack_require__(19), __webpack_require__(3), __webpack_require__(5), __webpack_require__(1), __webpack_require__(10), __webpack_require__(7), __webpack_require__(27), __webpack_require__(8), __webpack_require__(9), __webpack_require__(26), __webpack_require__(24)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(module, exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod, mod.exports, global.classProto, global.tween, global.tweenDefaults, global.timeline, global.tweener, global.easing, global.parseEasing, global.delta, global.splitDelta, global.parseNumber, global.parseUnit, global.parseColor, global.separateTweenOptions, global.tweenable, global.staggerProperty, global.parseStagger, global.makeColorObject, global.basicEasing, global.deltas, global.motionPath, global.stagger, global.html);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (module, exports, _classProto, _tween, _tweenDefaults, _timeline, _tweener, _easing, _parseEasing, _delta, _splitDelta, _parseNumber, _parseUnit, _parseColor, _separateTweenOptions, _tweenable, _staggerProperty, _parseStagger, _makeColorObject, _basicEasing, _deltas, _motionPath, _stagger, _html) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+
+
+    /*
+      Browsers' support:
+        - rAF
+        - performance.now
+        - Map
+    */
+
+    /*
+      TODO:
+        - add surface
+        - add shape
+        - add burst
+        - add mojs.staggerFunction()
+        - add spring easing
+        - add bezier easing
+        - add path generators
+        - add array deltas
+    */
+
+    // temporary - not needed for base file
+
+    // easing
+
+    // tween related
+    var mojs = {
+      revision: '2.9.1',
+      Tween: _tween.Tween,
+      Timeline: _timeline.Timeline,
+      easing: _easing.easing,
+      __helpers__: {
+        parseEasing: _parseEasing.parseEasing,
+        ClassProto: _classProto.ClassProto,
+        tweenDefaults: _tweenDefaults.tweenDefaults,
+        tweener: _tweener.tweener,
+        // temporary
+        Delta: _delta.Delta,
+        splitDelta: _splitDelta.splitDelta,
+        parseNumber: _parseNumber.parseNumber,
+        parseUnit: _parseUnit.parseUnit,
+        parseColor: _parseColor.parseColor,
+        separateTweenOptions: _separateTweenOptions.separateTweenOptions,
+        Tweenable: _tweenable.Tweenable,
+        staggerProperty: _staggerProperty.staggerProperty,
+        parseStagger: _parseStagger.parseStagger,
+        makeColorObject: _makeColorObject.makeColorObject
+      }
+    };
+
+    /* Extensions */
+    // `basic easing functions`
+
+    (0, _basicEasing.addBasicEasing)(mojs);
+    // Deltas
+
+    mojs.Deltas = _deltas.Deltas;
+    // MotionPath
+
+    mojs.MotionPath = _motionPath.MotionPath;
+    // stagger
+
+    mojs.stagger = _stagger.stagger;
+    // html
+
+    mojs.Html = _html.Html;
+
+    exports.default = mojs;
+    module.exports = exports['default'];
+  });
+});
+
+/***/ })
+/******/ ]);
+});
 //# sourceMappingURL=mo.js.map

@@ -61,8 +61,6 @@ Html.init = function(o = {}) {
 Html._setupDeltas = function() {
   const customProperties = this._getCustomProperties();
 
-  console.log(this._props);
-
   this._deltas = new Deltas({
     ...this._props,
     customProperties
@@ -84,12 +82,12 @@ Html._setupDeltas = function() {
 */
 Html._render = function(target, support) {
   // get the supportProps
-  const props = support[0];
+  const { props, pipeObj } = support;
 
   target.transform = `translate(${props.x}, ${props.y}) rotate(${props.angle}deg) skew(${props.skewX}deg, ${props.skewY}deg) scale(${props.scale})`;
 
   // call the `supportRender`
-  support[1](target, props);
+  pipeObj(target, support);
 };
 
 /**
@@ -105,7 +103,7 @@ Html._render = function(target, support) {
  */
 Html._render3d = function(target, support) {
   // get the supportProps
-  const props = support[0];
+  const { props, pipeObj } = support;
 
   const rotateZ = (props.angleZ !== undefined) ? props.angleZ : props.angle;
   const scaleX = (props.scaleX !== undefined) ? props.scaleX : props.scale;
@@ -114,7 +112,7 @@ Html._render3d = function(target, support) {
 
   target.transform = `translate3d(${props.x}, ${props.y}, ${props.z}) rotateX(${props.angleX}deg) rotateY(${props.angleY}deg) rotateZ(${rotateZ}deg) skew(${props.skewX}deg, ${props.skewY}deg) scale3d(${scaleX}, ${scaleY}, ${scaleZ})`;
   // call the `supportRender`
-  support[1](target, props);
+  pipeObj(target, support);
 };
 
 /**
@@ -150,7 +148,7 @@ Html._getCustomProperties = function() {
     ? (this._is3dProperties()) ? this._render3d : this._render
     : originalRender;
 
-  customProps.supportRender = (this._isRender()) ? originalRender : void 0;
+  customProps.pipeObj = (this._isRender()) ? originalRender || (() => {}) : (() => {});
 
   return customProps;
 };

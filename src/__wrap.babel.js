@@ -2,7 +2,7 @@
  * Imitate `class` with wrapper
  *
  * @param {Object} Options object.
- * @returns {Object} Tweenie instance.
+ * @returns {Object} Tween instance.
  */
 const wrap = (module) => {
   const w = (o) => {

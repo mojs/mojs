@@ -1,8 +1,8 @@
-import { Tweenie } from '../tween/tweenie';
+import { Tween } from '../tween/tween';
 import { Timeline } from '../tween/timeline';
 import { Tweenable } from '../tween/tweenable';
 import { Delta } from './delta';
-import { separateTweenieOptions } from './separate-tweenie-options';
+import { separateTweenOptions } from './separate-tween-options';
 import { staggerProperty } from '../helpers/stagger-property';
 // TODO: should point to paMotionPath stub
 import { MotionPath } from './motion-path';
@@ -32,8 +32,7 @@ Deltas.init = function(o = {}) {
   // get `customProperties` options and remove them immediately
   this._customProperties = options.customProperties || {};
   this._render = this._customProperties.render || (() => {});
-  // create support render
-  this._supportRender = this._customProperties.supportRender || (() => {});
+  this._pipeObj = this._customProperties.pipeObj || {};
   delete options.customProperties;
 
   // save the el object and remove it immediately
@@ -41,8 +40,8 @@ Deltas.init = function(o = {}) {
   delete options.el;
   // create support object for complex properties
   this._supportProps = {};
-  // set up the main `tweenie`
-  this._setupTweenie(options);
+  // set up the main `tween`
+  this._setupTween(options);
   // set up the `timeline`
   this._setupTimeline(timelineOptions);
   // parse deltas from options that left so far
@@ -50,24 +49,23 @@ Deltas.init = function(o = {}) {
 };
 
 /**
- * `_setupTweenie` - function to set up main tweenie.
+ * `_setupTween` - function to set up main tween.
  *
  * @param {Object} Options.
  */
-Deltas._setupTweenie = function(options) {
-  // separate main tweenie options
-  const tweenieOptions = separateTweenieOptions(options);
+Deltas._setupTween = function(options) {
+  // separate main tween options
+  const tweenOptions = separateTweenOptions(options);
   // create tween
-  this.tween = new Tweenie({
-    ...tweenieOptions,
+  this.tween = new Tween({
+    ...tweenOptions,
     // update plain deltas on update
     // and call the previous `onUpdate` if present
     onUpdate: (ep, p, isForward) => {
       // update plain deltas
       this._upd_deltas(ep, p, isForward);
-
       // envoke onUpdate if present
-      tweenieOptions.onUpdate && tweenieOptions.onUpdate(ep, p, isForward);
+      tweenOptions.onUpdate && tweenOptions.onUpdate(ep, p, isForward);
     }
   });
 };
@@ -78,7 +76,10 @@ Deltas._setupTweenie = function(options) {
  * @param {Object} Timeline options.
  */
 Deltas._setupTimeline = function(options = {}) {
-  const support = [ this._supportProps, this._supportRender ];
+  const support = {
+    props: this._supportProps,
+    pipeObj: this._pipeObj
+  };
 
   this.timeline = new Timeline({
     ...options,
@@ -117,8 +118,9 @@ Deltas._parseProperties = function(options) {
         ? this._supportProps
         : this._el;
       // parse if `stagger(20, 40)` defined
-      this._staticProps[key] = staggerProperty(value, this.index);
-      target[key] = this._staticProps[key];
+      const property = staggerProperty(value, this.index);
+      this._staticProps[key] = property;
+      target[key] = property;
       continue;
     }
     // check the delta type

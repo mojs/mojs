@@ -4,7 +4,7 @@ var Timeline = mojs.Timeline;
 var helpers = mojs.__helpers__;
 var Tweenable = helpers.Tweenable;
 
-describe('`deltas` ->', function () {
+describe('`stagger` ->', function () {
   it('should wrap a class', function () {
     expect(typeof stagger(Deltas)).toBe('function');
   });
@@ -18,7 +18,7 @@ describe('`deltas` ->', function () {
     });
 
     expect(Timeline.__mojsClass.isPrototypeOf(deltasStagger.timeline)).toBe(true);
-    expect(deltasStagger.timeline._o).toBe(timelineOptions);
+    expect(deltasStagger.timeline._o).toEqual(timelineOptions);
     expect(deltasStagger._o.timeline).not.toBeDefined();
   });
 

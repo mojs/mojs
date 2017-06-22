@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8">
     <title>mo · js</title>
-    <link rel="stylesheet" type="text/css" href="css/main.css">
   </head>
   <body>
 
@@ -27,9 +26,9 @@
 
     <div class="el" id="js-el"></div>
 
-    <script src="vendor/lodash.min.js"></script>
-    <script src="vendor/platform.js"></script>
-    <script src="vendor/benchmark.js"></script>
+    <!-- <script src="vendor/lodash.min.js"></script> -->
+    <!-- <script src="vendor/platform.js"></script> -->
+    <!-- <script src="vendor/benchmark.js"></script> -->
 
     <!-- <script src="node_modules/mojs-player/build/mojs-player.js"></script> -->
     <!-- <script src="http://cdn.jsdelivr.net/mojs/latest/mo.min.js"></script> -->
@@ -37,253 +36,36 @@
     <!-- <script src="https://cdn.jsdelivr.net/mojs/0.288.1/mo.min.js"></script> -->
     <script src="build/mo.js"></script>
 
-    <button id="js-play">play</button>
-    <button id="js-pause">pause</button>
-    <button id="js--1x">.1x</button>
-    <button id="js--5x">.5x</button>
-    <button id="js-1x">1x</button>
-    <button id="js-2x">2x</button>
-    <button id="js-5x">5x</button>
-    <button id="js-10x">10x</button>
-    <button id="js-stop">stop</button>
-    <button id="js-reverse">reverse</button>
-    <button id="js-replay">replay</button>
-
-    <br />
-    <br />
-    <br />
-
-    <input type="range" min="0" max="1000" value="0" id="js-slider" style="width: 500px" />
+    <script src="vendor/mojs-player.js"></script>
 
     <script>
-
-      document.addEventListener('DOMContentLoaded', function() {
-        setTimeout( () => {
-          var el = document.querySelector('#js-el');
-
-          const html = new mojs.Html({
-            el: '#js-el',
-            x: { 0: 200 },
-            k: { 0: 20 },
-            duration: 2000,
-            customProperties: {
-              k: {
-                type: 'number',
-                isSkipRender: true
-              },
-              render() {
-                // console.log(arguments[0], arguments[1].k);
-              }
-            }
-          }).play();
-
-          // var deltas = new mojs.Deltas({
-          //   el: {},
-          //   duration: 4000,
-          //   x: { 0: 200 },
-          //   angle: { 0: 180, easing: 'cubic.out' },
-          //   // z: { 200: 0 },
-          //   // opacity: { 1: 0, duration: 6000 },
-          //   // backgroundColor: { 'cyan': 'orange', duration: 6000 },
-          //   customProperties: {
-          //     render: function (props, supportProps) {
-          //
-          //       console.log(supportProps);
-          //
-          //       el.style.transform = `translateX(${supportProps.x}px) rotate(${supportProps.angle}deg)`;
-          //       // el.style.opacity = props.opacity;
-          //     },
-          //     angle: {
-          //       type: 'number',
-          //       isSkipRender: true
-          //     },
-          //     x: {
-          //       type: 'number',
-          //       isSkipRender: true
-          //     }
-          //   }
-          // });
-          //
-          // deltas.play();
-        }, 2000 );
+      const html = new mojs.Html({
+        el: '#js-el',
+        // k: { 0: 20 },
+        // x: { '0%': '500%' },
+        angle: { '0deg': '360deg' },
+        duration: 2000,
+        // customProperties: {
+        //   k: {
+        //     type: 'number',
+        //     isSkipRender: true
+        //   },
+        //   render(style, support) {
+        //     console.log(style.transform);
+        //   }
+        // }
       });
 
-      // var playBtn = document.querySelector('#js-play');
-      // var pauseBtn = document.querySelector('#js-pause');
-      // var reverseBtn = document.querySelector('#js-reverse');
-      // var stopBtn = document.querySelector('#js-stop');
-      // var replayBtn = document.querySelector('#js-replay');
-      // // speeds
-      // var one10 = document.querySelector('#js--1x');
-      // var five10 = document.querySelector('#js--5x');
-      // var x1 = document.querySelector('#js-1x');
-      // var x2 = document.querySelector('#js-2x');
-      // var x5 = document.querySelector('#js-5x');
-      // var x10 = document.querySelector('#js-10x');
-      // var slider = document.querySelector('#js-slider');
-      //
-      // const timeline = new mojs.Tweenie({
-      //   // delay: 500,
-      //   duration: 2000,
-      //   repeat: 2,
-      //   easing: 'linear.none',
-      //   isYoyo: function (count) {
-      //     console.log(`count: ${count}`);
-      //     return count % 2;
-      //   },
-      //   onPlaybackStart() {
-      //     console.log(`onPlaybackStart`);
-      //   },
-      //   onUpdate(ep, p, isForward, isReverse, index) {
-      //     // console.log(`{${index === void 0 ? '' : index}}, [tween update]`, ep);
-      //     // el.style.transform = `translate(${200*ep}px, 0)`;
-      //   },
-      //   onChimeIn(isForward, isReverse, index) {
-      //     // console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
-      //   },
-      //   onChimeOut(isForward, isReverse, index) {
-      //     // console.log(`{${index === void 0 ? '' : index}}, [tween chime out]`);
-      //   },
-      //   onStart(isForward, isReverse, index) {
-      //     // console.log(`{${index === void 0 ? '' : index}}, [tween start]`);
-      //   },
-      //   onComplete(isForward, isReverse, index) {
-      //     // console.log(`{${index === void 0 ? '' : index}}, [tween complete]`);
-      //   },
-      //   onChimeIn(isForward, isReverse, index) {
-      //     // console.log(`{${index === void 0 ? '' : index}}, [tween chime in]`);
-      //   }
-      // });
-      //
-      // playBtn.addEventListener('click', function() {
-      //   console.log('::: play click');
-      //   console.time('start');
-      //   timeline.play();
-      // });
-      //
-      // pauseBtn.addEventListener('click', function() {
-      //   console.log('::: pause click');
-      //   timeline.pause();
-      // });
-      //
-      // reverseBtn.addEventListener('click', function() {
-      //   console.log('::: revert click');
-      //
-      //   timeline.reverse();
-      // });
-      //
-      // stopBtn.addEventListener('click', function() {
-      //   console.log('::: stop click');
-      //
-      //   timeline.stop();
-      // });
-      //
-      // replayBtn.addEventListener('click', function() {
-      //   console.log('::: replay click');
-      //
-      //   timeline.replay();
-      // });
-      //
-      // one10.addEventListener('click', function() {
-      //   console.log('::: speed: .1x');
-      //   timeline.setSpeed(.1);
-      // });
-      //
-      // five10.addEventListener('click', function() {
-      //   console.log('::: speed: .5x');
-      //   timeline.setSpeed(.5);
-      // });
-      //
-      // x1.addEventListener('click', function() {
-      //   console.log('::: speed: 1x');
-      //   timeline.setSpeed(1);
-      // });
-      //
-      // x2.addEventListener('click', function() {
-      //   console.log('::: speed: 2x');
-      //   timeline.setSpeed(2);
-      // });
-      //
-      // x5.addEventListener('click', function() {
-      //   console.log('::: speed: 5x');
-      //   timeline.setSpeed(5);
-      // });
-      //
-      // x10.addEventListener('click', function() {
-      //   console.log('::: speed: 10x');
-      //   timeline.setSpeed(10);
-      // });
-      //
-      // slider.addEventListener('input', function() {
-      //   // console.log(':: slider value: ', this.value);
-      //   timeline.setProgress(this.value/1000);
-      // });
-
-      // var el = {};
-      // // var path = 'M0,0 L1200,400';
-      // // wave
-      // // var path = 'M4.26325641e-14,51.02352 C4.26325641e-14,51.02352 20.1484375,0 89.9999905,0 C111.213168,0 123.847546,7.64064 134.999987,12.75588 C159.937591,24.1938 179.999983,51.02352 179.999983,51.02352 C179.999983,51.02352 200.062376,77.85324 224.99998,89.29116 C236.152421,94.4064 248.786799,102.04704 269.999977,102.04704 C291.213154,102.04704 303.847532,94.4064 314.999973,89.29116 C339.937577,77.85324 359.99997,51.02352 359.99997,51.02352 C359.99997,51.02352 380.062362,24.193836 404.999966,12.75588 C416.152407,7.64064 428.786785,0 449.999963,0 C471.21314,0 483.847518,7.64064 494.999959,12.75588 C519.937563,24.1938 539.999956,51.02352 539.999956,51.02352 C539.999956,51.02352 560.062348,77.85324 584.999952,89.29116 C596.152393,94.4064 608.786771,102.04704 629.999949,102.04704 C651.213126,102.04704 663.847504,94.4064 674.999945,89.29116 C699.937549,77.85324 719.999954,51.02352 719.999954,51.02352 C719.999954,51.02352 740.062359,24.1938 764.999963,12.75588 C776.152404,7.64064 788.786783,0 809.99996,0 C831.213137,0 843.847516,7.64064 854.999957,12.75588 C879.937561,24.1938 899.999953,51.02352 899.999953,51.02352 C899.999953,51.02352 920.062282,77.85324 945,89.29116 C956.152378,94.4064 968.786718,102.04704 989.999908,102.04704 C1011.2131,102.04704 1023.84744,94.4064 1034.99994,89.29116 C1059.93753,77.85324 1079.99998,51.02352 1079.99998,51.02352 C1079.99998,51.02352 1100.06229,24.1938 1124.99988,12.75588 C1136.15239,7.64064 1148.78686,0 1169.99992,0 C1191.21311,0 1203.84758,7.64064 1214.99995,12.75588 C1239.93755,24.1938 1259.99999,51.02352 1259.99999,51.02352 C1259.99999,51.02352 1280.0623,77.85324 1305.00002,89.29116 C1316.1524,94.4064 1328.78674,102.04704 1349.99993,102.04704 C1371.21312,102.04704 1383.84746,94.4064 1394.99997,89.29116 C1419.93756,77.85324 1440,51.02352 1440,51.02352';
-      // // loop
-      // var path = 'M0,208.853153 C0,208.853153 514.306345,113.17046 550.332461,338.253735 C586.358576,563.337009 77.4077083,845.512996 171.50164,428.228405 C265.595571,10.9438136 1000,1 1000,1';
-      // const domEl = document.querySelector('#js-el');
-      // var deltas = new mojs.Deltas({
-      //   el: el,
-      //   x: { precision: 140, coordinate: 'x', path: path },
-      //   y: { precision: 140, coordinate: 'y', path: path },
-      //   angle: { precision: 600, coordinate: 'angle', path: path },
-      //   duration: 5000,
-      //   delay: 1000,
-      //   // isReverse: true,
-      //   easing: 'linear.none',
-      //   customProperties: {
-      //     render(props) {
-      //       domEl.style.transform = `translate3d(${props.x}px, ${props.y}px, 0) rotate(${props.angle}deg)`;
-      //     }
-      //   }
-      //   // onUpdate(ep, p, isForward) {
-      //   //   console.log(`ep: ${ep}`, el);
-      //   // }
-      // })
-      // .play();
-
-      // window.onload = () => {
-      //   const items = [];
-      //   setTimeout(() => {
-      //     for (let i = 0; i < 1; i++) {
-      //       // var el = document.querySelector('#js-el');
-      //       const tweenie = mojs.__helpers__.Deltas({
-      //         el: {},
-      //         z: {200: 300},
-      //         y: {0: 50},
-      //         z1: {200: 300, duration: 3000},
-      //         y2: {0: 50},
-      //         z3: {200: 300, duration: 3000},
-      //         y4: {0: 50},
-      //         z5: {200: 300, duration: 3000},
-      //         y6: {0: 50},
-      //         duration: 5000,
-      //         delay: 200,
-      //         easing: 'linear.none',
-      //         onUpdate(ep, p, isForward, isReverse, index) {},
-      //         onChimeIn(isForward, isReverse, index) {},
-      //         onChimeOut(isForward, isReverse, index) {},
-      //         onStart(isForward, isReverse, index) {},
-      //         onComplete(isForward, isReverse, index) {}
-      //       });
-      //       items.push(tweenie);
-      //     }
-      //
-      //     for (let i = 0; i < items.length; i++) {
-      //       items[i].play();
-      //     }
-      //   }, 1000);
-      // };
-      //
+      new MojsPlayer({ add: html });
     </script>
 
-    <script src="vendor/lodash.min.js"></script>
-    <script src="vendor/platform.js"></script>
-    <script src="vendor/benchmark.js"></script>
+    <br />
+    <br />
+    <br />
+
+    <!-- <script src="vendor/lodash.min.js"></script> -->
+    <!-- <script src="vendor/platform.js"></script> -->
+    <!-- <script src="vendor/benchmark.js"></script> -->
 
     <!-- <script>
       var suite = new Benchmark.Suite;

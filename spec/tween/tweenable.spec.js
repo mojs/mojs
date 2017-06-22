@@ -1,26 +1,26 @@
 // var Timeline = mojs.Timeline;
-// var Tweenie = mojs.Tweenie;
+// var Tween = mojs.Tween;
 //
 // var helpers = mojs.__helpers__;
 // var Tweenable = helpers.Tweenable;
 // var ClassProto = helpers.ClassProto;
 //
-// var Super = Tweenie.__mojsClass;
+// var Super = Tween.__mojsClass;
 //
 // describe('timeline ->', function () {
 //   describe('extension ->', function() {
-//     it('should extend `Tweenie`', function () {
+//     it('should extend `Tween`', function () {
 //       var tweenable = Tweenable();
 //       expect(ClassProto.isPrototypeOf(tweenable)).toBe(true);
 //     });
 //   });
 //
-//   describe('tweenie public methods proxy #timeline ->', function() {
+//   describe('tween public methods proxy #timeline ->', function() {
 //     var tweenable = Tweenable();
-//     tweenable.tween = new Tweenie;
+//     tweenable.tween = new Tween;
 //     tweenable.timeline = new Timeline;
 //
-//     it('should proxy public methods of `Tweenie`', function () {
+//     it('should proxy public methods of `Tween`', function () {
 //       var methods = ['play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset', 'setStartTime'];
 //
 //       for (var i = 0; i < methods.length; i++) {
@@ -33,11 +33,11 @@
 //     });
 //   });
 //
-//   describe('tweenie public methods proxy if no timeline #tween ->', function() {
+//   describe('tween public methods proxy if no timeline #tween ->', function() {
 //     var tweenable = Tweenable();
-//     tweenable.tween = new Tweenie;
+//     tweenable.tween = new Tween;
 //
-//     it('should proxy public methods of `Tweenie`', function () {
+//     it('should proxy public methods of `Tween`', function () {
 //       var methods = ['play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset', 'setStartTime'];
 //
 //       for (var i = 0; i < methods.length; i++) {

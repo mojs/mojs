@@ -1,17 +1,17 @@
 // var Timeline = mojs.Timeline;
-// var Tweenie = mojs.Tweenie;
+// var Tween = mojs.Tween;
 //
 // var helpers = mojs.__helpers__;
 // var tweener = helpers.tweener;
 // var ClassProto = helpers.ClassProto;
 //
-// var Super = Tweenie.__mojsClass;
+// var Super = Tween.__mojsClass;
 //
 // describe('timeline ->', function () {
 //   describe('extension ->', function() {
-//     it('should extend `Tweenie`', function () {
+//     it('should extend `Tween`', function () {
 //       var timeline = Timeline();
-//       expect(Tweenie.__mojsClass.isPrototypeOf(timeline)).toBe(true);
+//       expect(Tween.__mojsClass.isPrototypeOf(timeline)).toBe(true);
 //     });
 //   });
 //
@@ -182,7 +182,7 @@
 //   });
 //
 //   describe('`_update` function ->', function() {
-//     it('should be passed to Tweenie `onUpdate`', function () {
+//     it('should be passed to Tween `onUpdate`', function () {
 //       var options = {
 //         onUpdate: function() {}
 //       }
@@ -237,34 +237,34 @@
 //   });
 //
 //   describe('`add` function ->', function() {
-//     it('should add `tweenie` to the `_items`', function () {
+//     it('should add `tween` to the `_items`', function () {
 //       var timeline = Timeline();
-//       var tweenie1 = new Tweenie();
-//       var tweenie2 = new Tweenie();
-//       var tweenie3 = new Tweenie();
+//       var tween1 = new Tween();
+//       var tween2 = new Tween();
+//       var tween3 = new Tween();
 //
-//       timeline.add(tweenie1);
-//       timeline.add(tweenie2);
-//       timeline.add(tweenie3);
+//       timeline.add(tween1);
+//       timeline.add(tween2);
+//       timeline.add(tween3);
 //
 //       expect(timeline._items.length).toBe(3);
-//       expect(timeline._items[0]).toBe(tweenie1);
-//       expect(timeline._items[1]).toBe(tweenie2);
-//       expect(timeline._items[2]).toBe(tweenie3);
+//       expect(timeline._items[0]).toBe(tween1);
+//       expect(timeline._items[1]).toBe(tween2);
+//       expect(timeline._items[2]).toBe(tween3);
 //     });
 //
 //     it('should increase `duration`', function () {
 //       var timeline = Timeline();
 //
-//       var tweenie1 = new Tweenie({ duration: 200 });
-//       var tweenie2 = new Tweenie({ duration: 500 });
-//       var tweenie3 = new Tweenie({ duration: 600 });
+//       var tween1 = new Tween({ duration: 200 });
+//       var tween2 = new Tween({ duration: 500 });
+//       var tween3 = new Tween({ duration: 600 });
 //
-//       timeline.add(tweenie1);
-//       timeline.add(tweenie2);
-//       timeline.add(tweenie3);
+//       timeline.add(tween1);
+//       timeline.add(tween2);
+//       timeline.add(tween3);
 //
-//       expect(timeline._props.duration).toBe(tweenie3._props.duration);
+//       expect(timeline._props.duration).toBe(tween3._props.duration);
 //     });
 //
 //     it('should increase `duration` #2', function () {
@@ -273,13 +273,13 @@
 //       var duration = 2000;
 //       timeline._props.duration = duration;
 //
-//       var tweenie1 = new Tweenie({ duration: 250 });
-//       var tweenie2 = new Tweenie({ duration: 300 });
-//       var tweenie3 = new Tweenie({ duration: 700 });
+//       var tween1 = new Tween({ duration: 250 });
+//       var tween2 = new Tween({ duration: 300 });
+//       var tween3 = new Tween({ duration: 700 });
 //
-//       timeline.add(tweenie1);
-//       timeline.add(tweenie2);
-//       timeline.add(tweenie3);
+//       timeline.add(tween1);
+//       timeline.add(tween2);
+//       timeline.add(tween3);
 //
 //       expect(timeline._props.duration).toBe(duration);
 //     });
@@ -287,114 +287,114 @@
 //     it('should increase `duration` according to `delay`', function () {
 //       var timeline = Timeline();
 //
-//       var tweenie1 = new Tweenie({ duration: 200 });
-//       var tweenie2 = new Tweenie({ duration: 500, delay: 700 });
-//       var tweenie3 = new Tweenie({ duration: 600 });
+//       var tween1 = new Tween({ duration: 200 });
+//       var tween2 = new Tween({ duration: 500, delay: 700 });
+//       var tween3 = new Tween({ duration: 600 });
 //
-//       timeline.add(tweenie1);
-//       timeline.add(tweenie2);
-//       timeline.add(tweenie3);
+//       timeline.add(tween1);
+//       timeline.add(tween2);
+//       timeline.add(tween3);
 //
-//       expect(timeline._props.duration).toBe(tweenie2._props.duration + tweenie2._props.delay);
+//       expect(timeline._props.duration).toBe(tween2._props.duration + tween2._props.delay);
 //     });
 //
 //     it('should increase `duration` according to `shift`', function () {
 //       var timeline = Timeline();
 //
-//       var tweenie1 = new Tweenie({ duration: 200 });
-//       var tweenie2 = new Tweenie({ duration: 500, delay: 50 });
-//       var tweenie3 = new Tweenie({ duration: 700 });
+//       var tween1 = new Tween({ duration: 200 });
+//       var tween2 = new Tween({ duration: 500, delay: 50 });
+//       var tween3 = new Tween({ duration: 700 });
 //
 //       var shift = 200;
-//       timeline.add(tweenie1);
-//       timeline.add(tweenie2, shift);
-//       timeline.add(tweenie3);
+//       timeline.add(tween1);
+//       timeline.add(tween2, shift);
+//       timeline.add(tween3);
 //
-//       expect(timeline._props.duration).toBe(tweenie2._props.duration + tweenie2._props.delay + shift);
+//       expect(timeline._props.duration).toBe(tween2._props.duration + tween2._props.delay + shift);
 //     });
 //
 //     it('should treat negative `shift` as positive', function () {
 //       var timeline = Timeline();
 //
-//       var tweenie1 = new Tweenie({ duration: 200 });
-//       var tweenie2 = new Tweenie({ duration: 500, delay: 50 });
-//       var tweenie3 = new Tweenie({ duration: 700 });
+//       var tween1 = new Tween({ duration: 200 });
+//       var tween2 = new Tween({ duration: 500, delay: 50 });
+//       var tween3 = new Tween({ duration: 700 });
 //
 //       var shift = -200;
-//       timeline.add(tweenie1);
-//       timeline.add(tweenie2, shift);
-//       timeline.add(tweenie3);
+//       timeline.add(tween1);
+//       timeline.add(tween2, shift);
+//       timeline.add(tween3);
 //
-//       expect(timeline._props.duration).toBe(tweenie2._props.duration + tweenie2._props.delay + Math.abs(shift));
+//       expect(timeline._props.duration).toBe(tween2._props.duration + tween2._props.delay + Math.abs(shift));
 //     });
 //
-//     it('should set `shiftTime` on a `tweenie`', function () {
+//     it('should set `shiftTime` on a `tween`', function () {
 //       var timeline = Timeline();
 //
-//       var tweenie1 = new Tweenie({ duration: 200 });
-//       var tweenie2 = new Tweenie({ duration: 500, delay: 50 });
-//       var tweenie3 = new Tweenie({ duration: 700 });
+//       var tween1 = new Tween({ duration: 200 });
+//       var tween2 = new Tween({ duration: 500, delay: 50 });
+//       var tween3 = new Tween({ duration: 700 });
 //
 //       var shift = 200;
 //
-//       tweenie2._props.shiftTime = 0
-//       timeline.add(tweenie2, shift);
+//       tween2._props.shiftTime = 0
+//       timeline.add(tween2, shift);
 //
-//       expect(tweenie2._props.shiftTime).toBe(shift);
+//       expect(tween2._props.shiftTime).toBe(shift);
 //     });
 //
 //     it('should always set positive `shiftTime`', function () {
 //       var timeline = Timeline();
 //
-//       var tweenie1 = new Tweenie({ duration: 200 });
-//       var tweenie2 = new Tweenie({ duration: 500, delay: 50 });
-//       var tweenie3 = new Tweenie({ duration: 700 });
+//       var tween1 = new Tween({ duration: 200 });
+//       var tween2 = new Tween({ duration: 500, delay: 50 });
+//       var tween3 = new Tween({ duration: 700 });
 //
 //       var shift = -200;
 //
-//       tweenie2._props.shiftTime = 0
-//       timeline.add(tweenie2, shift);
+//       tween2._props.shiftTime = 0
+//       timeline.add(tween2, shift);
 //
-//       expect(tweenie2._props.shiftTime).toBe(Math.abs(shift));
+//       expect(tween2._props.shiftTime).toBe(Math.abs(shift));
 //     });
 //
 //     it('should work with arrays', function () {
 //       var timeline = Timeline();
-//       var tweenie1 = new Tweenie();
-//       var tweenie2 = new Tweenie();
-//       var tweenie3 = new Tweenie();
+//       var tween1 = new Tween();
+//       var tween2 = new Tween();
+//       var tween3 = new Tween();
 //
-//       timeline.add([tweenie1, tweenie2]);
-//       timeline.add(tweenie3);
+//       timeline.add([tween1, tween2]);
+//       timeline.add(tween3);
 //
 //       expect(timeline._items.length).toBe(3);
-//       expect(timeline._items[0]).toBe(tweenie1);
-//       expect(timeline._items[1]).toBe(tweenie2);
-//       expect(timeline._items[2]).toBe(tweenie3);
+//       expect(timeline._items[0]).toBe(tween1);
+//       expect(timeline._items[1]).toBe(tween2);
+//       expect(timeline._items[2]).toBe(tween3);
 //     });
 //
 //     it('should return `this`', function () {
 //       var timeline = Timeline();
 //
-//       expect(timeline.add(new Tweenie())).toBe(timeline);
+//       expect(timeline.add(new Tween())).toBe(timeline);
 //     });
 //
-//     it('should add non-`tweenie` modules to the `_items` #timeline', function () {
+//     it('should add non-`tween` modules to the `_items` #timeline', function () {
 //       var timeline = Timeline();
 //
 //       var module1 = {
 //         timeline: new Timeline,
-//         tween: new Tweenie
+//         tween: new Tween
 //       };
 //
 //       var module2 = {
 //         timeline: new Timeline,
-//         tween: new Tweenie
+//         tween: new Tween
 //       };
 //
 //       var module3 = {
 //         timeline: new Timeline,
-//         tween: new Tweenie
+//         tween: new Tween
 //       };
 //
 //       timeline.add([module1, module2, module3]);
@@ -405,19 +405,19 @@
 //       expect(timeline._items[2]).toBe(module3.timeline);
 //     });
 //
-//     it('should add non-`tweenie` modules to the `_items` #tween', function () {
+//     it('should add non-`tween` modules to the `_items` #tween', function () {
 //       var timeline = Timeline();
 //
 //       var module1 = {
-//         tween: new Tweenie
+//         tween: new Tween
 //       };
 //
 //       var module2 = {
-//         tween: new Tweenie
+//         tween: new Tween
 //       };
 //
 //       var module3 = {
-//         tween: new Tweenie
+//         tween: new Tween
 //       };
 //
 //       timeline.add([module1, module2, module3]);
@@ -436,13 +436,13 @@
 //       var duration = 2000*Math.random();
 //       timeline._props.duration = duration;
 //
-//       var tweenie1 = new Tweenie();
+//       var tween1 = new Tween();
 //
 //       spyOn(timeline, 'add');
 //
-//       timeline.append(tweenie1);
+//       timeline.append(tween1);
 //
-//       expect(timeline.add).toHaveBeenCalledWith(tweenie1, duration);
+//       expect(timeline.add).toHaveBeenCalledWith(tween1, duration);
 //     });
 //
 //     it('should call the `add` function with current as `shift` #array', function () {
@@ -451,16 +451,16 @@
 //       var duration = 2000*Math.random();
 //       timeline._props.duration = duration;
 //
-//       var tweenie1 = new Tweenie();
-//       var tweenie2 = new Tweenie();
-//       var tweenie3 = new Tweenie();
+//       var tween1 = new Tween();
+//       var tween2 = new Tween();
+//       var tween3 = new Tween();
 //
 //       spyOn(timeline, 'add');
 //
-//       var tweenies = [tweenie1, tweenie2, tweenie3];
-//       timeline.append(tweenies);
+//       var tweens = [tween1, tween2, tween3];
+//       timeline.append(tweens);
 //
-//       expect(timeline.add).toHaveBeenCalledWith(tweenies, duration);
+//       expect(timeline.add).toHaveBeenCalledWith(tweens, duration);
 //     });
 //
 //     it('should add the `shift`', function () {
@@ -471,16 +471,16 @@
 //
 //       var shift = 200*Math.random();
 //
-//       var tweenie1 = new Tweenie();
-//       var tweenie2 = new Tweenie();
-//       var tweenie3 = new Tweenie();
+//       var tween1 = new Tween();
+//       var tween2 = new Tween();
+//       var tween3 = new Tween();
 //
 //       spyOn(timeline, 'add');
 //
-//       var tweenies = [tweenie1, tweenie2, tweenie3];
-//       timeline.append(tweenies, shift);
+//       var tweens = [tween1, tween2, tween3];
+//       timeline.append(tweens, shift);
 //
-//       expect(timeline.add).toHaveBeenCalledWith(tweenies, duration + shift);
+//       expect(timeline.add).toHaveBeenCalledWith(tweens, duration + shift);
 //     });
 //
 //     it('should always add the `shift` as positive', function () {
@@ -491,22 +491,22 @@
 //
 //       var shift = -200*Math.random();
 //
-//       var tweenie1 = new Tweenie();
-//       var tweenie2 = new Tweenie();
-//       var tweenie3 = new Tweenie();
+//       var tween1 = new Tween();
+//       var tween2 = new Tween();
+//       var tween3 = new Tween();
 //
 //       spyOn(timeline, 'add');
 //
-//       var tweenies = [tweenie1, tweenie2, tweenie3];
-//       timeline.append(tweenies, shift);
+//       var tweens = [tween1, tween2, tween3];
+//       timeline.append(tweens, shift);
 //
-//       expect(timeline.add).toHaveBeenCalledWith(tweenies, duration + Math.abs(shift));
+//       expect(timeline.add).toHaveBeenCalledWith(tweens, duration + Math.abs(shift));
 //     });
 //
 //     it('should return `this`', function () {
 //       var timeline = Timeline();
 //
-//       expect(timeline.append(new Tweenie())).toBe(timeline);
+//       expect(timeline.append(new Tween())).toBe(timeline);
 //     });
 //   });
 // });

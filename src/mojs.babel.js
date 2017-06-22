@@ -1,7 +1,7 @@
 import { ClassProto } from './class-proto';
 // tween related
-import { Tweenie } from './tween/tweenie';
-import { tweenieDefaults } from './tween/tweenie-defaults';
+import { Tween } from './tween/tween';
+import { tweenDefaults } from './tween/tween-defaults';
 import { Timeline } from './tween/timeline';
 import { tweener } from './tween/tweener';
 // easing
@@ -13,36 +13,40 @@ import { splitDelta } from './delta/split-delta';
 import { parseNumber } from './delta/parse-number';
 import { parseUnit } from './delta/parse-unit';
 import { parseColor } from './delta/parse-color';
-import { separateTweenieOptions } from './delta/separate-tweenie-options';
+import { separateTweenOptions } from './delta/separate-tween-options';
 import { Tweenable } from './tween/tweenable';
 import { staggerProperty } from './helpers/stagger-property';
 import { parseStagger } from './helpers/parse-stagger';
 import { makeColorObject } from './helpers/make-color-object';
 
 /*
+  Browsers' support:
+    - rAF
+    - performance.now
+    - Map
+*/
+
+/*
   TODO:
-    - add html
-    - add mojs.staggerFunction()
-    - add spring easing
-    - add bezier easing
     - add surface
     - add shape
     - add burst
+    - add mojs.staggerFunction()
+    - add spring easing
+    - add bezier easing
     - add path generators
     - add array deltas
-    -=-=-=-=-=-=-=-=-=-=-=-=-
-    - rename tweenie to tween
 */
 
 const mojs = {
-  revision: '2.8.0',
-  Tweenie,
+  revision: '2.9.1',
+  Tween,
   Timeline,
   easing,
   __helpers__: {
     parseEasing,
     ClassProto,
-    tweenieDefaults,
+    tweenDefaults,
     tweener,
     // temporary
     Delta,
@@ -50,7 +54,7 @@ const mojs = {
     parseNumber,
     parseUnit,
     parseColor,
-    separateTweenieOptions,
+    separateTweenOptions,
     Tweenable,
     staggerProperty,
     parseStagger,

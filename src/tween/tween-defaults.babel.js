@@ -1,4 +1,4 @@
-const tweenieDefaults = {
+const tweenDefaults = {
   // delay of the tween [-∞..∞]
   delay:                  0,
   // duration of the tween [0..∞]
@@ -15,7 +15,7 @@ const tweenieDefaults = {
   backwardEasing:         null,
   // if should reverse the tween
   isReverse:              false,
-  // how many times repeat the tweenie (excluding the first run)
+  // how many times repeat the tween (excluding the first run)
   repeat:                 0,
   // if should `reverse` before repeating
   isReverseOnRepeat:      false,
@@ -30,10 +30,10 @@ const tweenieDefaults = {
   */
   onStart:                function() {},
   onComplete:             function() {},
-  // `onChimeIn` is invoked when the `Tweenie` becomes active
+  // `onChimeIn` is invoked when the `Tween` becomes active
   // kind of like `onStart` but regardless `isReverse` option
   onChimeIn:              function() {},
-  // `onChimeOut` is invoked when the `Tweenie` becomes active
+  // `onChimeOut` is invoked when the `Tween` becomes active
   // kind of like `onComplete` but regardless `isReverse` option
   onChimeOut:             function() {},
   // onRefresh - callback is called when progress runs over the `_end` time
@@ -49,10 +49,10 @@ const tweenieDefaults = {
   onPlaybackPause:        function() {},
   onPlaybackStop:         function() {},
   onPlaybackComplete:     function() {},
-  // tweenie index
+  // tween index
   index:                  0,
   // shift time - mostly needed for timeline
   shiftTime:              0
 };
 
-export { tweenieDefaults };
+export { tweenDefaults };

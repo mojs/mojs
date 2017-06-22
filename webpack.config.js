@@ -25,11 +25,12 @@ module.exports = {
     libraryTarget:    'umd'
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      minimize: true,
-      compress: true,
-      sourceMap: true
-    }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   minimize: true,
+    //   compress: true,
+    //   sourceMap: true
+    // }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': "production"
     }),

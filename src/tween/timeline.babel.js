@@ -1,4 +1,4 @@
-import { Tweenie } from './tweenie';
+import { Tween } from './tween';
 import { ClassProto } from '../class-proto';
 import { consoleName } from '../constants';
 
@@ -9,13 +9,13 @@ import { consoleName } from '../constants';
 /* The `Timeline` class  */
 /* --------------------- */
 
-const Super = Tweenie.__mojsClass;
+const Super = Tween.__mojsClass;
 const Timeline = Object.create(Super);
 
 /**
  * _declareDefaults - function do override some defaults.
  *
- * @overrides @ Tweenie
+ * @overrides @ Tween
  * @private
  */
 Timeline._declareDefaults = function() {
@@ -33,33 +33,33 @@ Timeline._declareDefaults = function() {
 /* ---------------------- */
 
 /**
- * add - function to add `Tweenie` to the timeline.
+ * add - function to add `Tween` to the timeline.
  *
  * @public
- * @param   {Object, Array} A tweenie or array of tweenies to add.
+ * @param   {Object, Array} A tween or array of tweens to add.
  * @param   {Number} Time shift >= 0.
  * @returns {Object} Self.
  */
-Timeline.add = function(tweenie, shift = 0) {
+Timeline.add = function(tween, shift = 0) {
   // make sure the shift is positive
   shift = Math.abs(shift);
-  // if tweenie is really an array of tweenies,
+  // if tween is really an array of tweens,
   // loop thru them and add one by one
-  if (tweenie instanceof Array) {
-    tweenie.forEach((tweenie) => { this.add(tweenie, shift); });
-  // if a single tweenie, add it to `_items`
+  if (tween instanceof Array) {
+    tween.forEach((tween) => { this.add(tween, shift); });
+  // if a single tween, add it to `_items`
   } else {
 
     // if it has child `timeline` or `tween` property - add it instead
-    const runner = tweenie.timeline || tweenie.tween;
-    if (runner) { tweenie = runner; }
+    const runner = tween.timeline || tween.tween;
+    if (runner) { tween = runner; }
 
-    // set the `shiftTime` on tweenie
-    tweenie.set('shiftTime', shift);
+    // set the `shiftTime` on tween
+    tween.set('shiftTime', shift);
     // add to child timelines
-    this._items.push(tweenie);
+    this._items.push(tween);
     // check if we need to increase timeline's bound
-    const { delay, duration, shiftTime } = tweenie._props;
+    const { delay, duration, shiftTime } = tween._props;
     const time = delay + duration + shiftTime;
     this._props.duration = Math.max(this._props.duration, time);
   }
@@ -68,16 +68,16 @@ Timeline.add = function(tweenie, shift = 0) {
 };
 
 /**
- * append - function to append `Tweenie` to the timeline.
+ * append - function to append `Tween` to the timeline.
  *
  * @public
- * @param   {Object, Array} A tweenie or array of tweenies to append.
+ * @param   {Object, Array} A tween or array of tweens to append.
  * @param   {Number} Time shift >= 0.
  * @returns {Object} Self.
  */
-Timeline.append = function(tweenie, shift = 0) {
-  // add the tweenies shifting them to the current `duration`
-  this.add(tweenie, this._props.duration + Math.abs(shift));
+Timeline.append = function(tween, shift = 0) {
+  // add the tweens shifting them to the current `duration`
+  this.add(tween, this._props.duration + Math.abs(shift));
 
   return this;
 };
@@ -120,7 +120,7 @@ Timeline.reset = function() {
 /**
  * setStartTime - function to set the start tme for the the Timeline.
  *
- * @extends @ Tweenie
+ * @extends @ Tween
  * @public
  *
  * @param  {Number} Start time.
@@ -174,7 +174,7 @@ Timeline._createUpdate = function (onUpdate, context) {
 /**
  * _vars - declare vars.
  *
- * @extends @ Tweenie
+ * @extends @ Tween
  * @private
  */
 Timeline._vars = function () {
@@ -188,7 +188,7 @@ Timeline._vars = function () {
 /**
  * _extendDefaults - Method to copy `_o` options to `_props` object
  *                  with fallback to `_defaults`.
- * @overrides @ Tweenie
+ * @overrides @ Tween
  * @private
  */
 Timeline._extendDefaults = function() {
@@ -204,7 +204,7 @@ Timeline._extendDefaults = function() {
  * Imitate `class` with wrapper
  *
  * @param {Object} Options object.
- * @returns {Object} Tweenie instance.
+ * @returns {Object} Tween instance.
  */
 const wrap = (o) => {
   const instance = Object.create(Timeline);

@@ -105,7 +105,7 @@ describe('`html` ->', function () {
       var customProperties = html._deltas._o.customProperties;
 
       delete customProperties.render
-      delete customProperties.supportRender
+      delete customProperties.pipeObj
 
       expect(customProperties).toEqual({
         x: {
@@ -182,23 +182,24 @@ describe('`html` ->', function () {
           }
       });
 
-      var customProperties = html._deltas._o.customProperties;
+      var pipeObj = html._deltas._o.customProperties.pipeObj;
 
-      expect(customProperties.supportRender).toBe(render);
+      expect(pipeObj).toBe(render);
     });
 
-    it('should nor pass `supportRender`', function () {
-      var supportRender = function() {};
+    it('should pass `supportRender` #2', function () {
+      var render = function() {};
       var html = new Html({
           el: el,
           customProperties: {
-            supportRender: supportRender
+            render: render
           }
       });
 
-      var customProperties = html._deltas._o.customProperties;
+      var pipeObj = html._deltas._o.customProperties.pipeObj;
 
-      expect(customProperties.supportRender).not.toBeDefined();
+      expect(pipeObj).not.toBe(render);
+      expect(typeof pipeObj).toBe('function');
     });
 
     it('should pass `render` #is3d', function () {
@@ -270,20 +271,24 @@ describe('`html` ->', function () {
 
       var html = new Html({ el: el });
 
-      html._render(props, [{
-        x: '20px',
-        y: '30%',
-        angle: 40,
-        skewX: 10,
-        skewY: 20,
-        scale: 1
-      }, function() {}]);
+      var support = {
+        props: {
+          x: '20px',
+          y: '30%',
+          angle: 40,
+          skewX: 10,
+          skewY: 20,
+          scale: 1
+        },
+        pipeObj: function() {}
+      };
+
+      html._render(props, support);
 
       expect(props.transform).toBe('translate(20px, 30%) rotate(40deg) skew(10deg, 20deg) scale(1)');
     });
 
     it('should call original `render`', function () {
-
       var arg1 = null;
       var arg2 = null;
 
@@ -295,7 +300,7 @@ describe('`html` ->', function () {
       };
 
       var props = {};
-      var support = [{}, obj.originalRender];
+      var support = { props: {}, pipeObj: obj.originalRender };
 
       var html = new Html({
         el: el
@@ -305,7 +310,7 @@ describe('`html` ->', function () {
       html._render(props, support);
 
       expect(arg1).toBe(props);
-      expect(arg2).toBe(support[0]);
+      expect(arg2).toBe(support);
     });
   });
 
@@ -314,26 +319,29 @@ describe('`html` ->', function () {
       var props = {};
 
       var html = new Html({ el: el });
+      var support = {
+        props: {
+          x: '20px',
+          y: '30%',
+          z: '20fr',
+          angleX: 40,
+          angleY: 20,
+          angleZ: 10,
+          skewX: 10,
+          skewY: 20,
+          scaleX: 1,
+          scaleY: 2,
+          scaleZ: 1.5
+        },
+        pipeObj: function() {}
+      };
 
-      html._render3d(props, [{
-        x: '20px',
-        y: '30%',
-        z: '20fr',
-        angleX: 40,
-        angleY: 20,
-        angleZ: 10,
-        skewX: 10,
-        skewY: 20,
-        scaleX: 1,
-        scaleY: 2,
-        scaleZ: 1.5
-      }, function() {}]);
+      html._render3d(props, support);
 
       expect(props.transform).toBe('translate3d(20px, 30%, 20fr) rotateX(40deg) rotateY(20deg) rotateZ(10deg) skew(10deg, 20deg) scale3d(1, 2, 1.5)');
     });
 
     it('should call original `render`', function () {
-
       var arg1 = null;
       var arg2 = null;
 
@@ -345,7 +353,7 @@ describe('`html` ->', function () {
       };
 
       var props = {};
-      var support = [{}, obj.originalRender];
+      var support = { props: {}, pipeObj: obj.originalRender };
 
       var html = new Html({
         el: el
@@ -355,7 +363,7 @@ describe('`html` ->', function () {
       html._render3d(props, support);
 
       expect(arg1).toBe(props);
-      expect(arg2).toBe(support[0]);
+      expect(arg2).toBe(support);
     });
 
     it('should fallback to props', function () {
@@ -363,19 +371,24 @@ describe('`html` ->', function () {
 
       var html = new Html({ el: el });
 
-      html._render3d(props, [{
-        x: '20px',
-        y: '30%',
-        z: '20fr',
-        angleX: 0,
-        angleY: 0,
-        angle: 40,
-        skewX: 10,
-        skewY: 20,
-        scaleX: 1,
-        scaleY: 2,
-        scaleZ: 1.5
-      }, function() {}]);
+      var support = {
+        props: {
+          x: '20px',
+          y: '30%',
+          z: '20fr',
+          angleX: 0,
+          angleY: 0,
+          angle: 40,
+          skewX: 10,
+          skewY: 20,
+          scaleX: 1,
+          scaleY: 2,
+          scaleZ: 1.5
+        },
+        pipeObj: function() {}
+      };
+
+      html._render3d(props, support);
 
       expect(props.transform).toBe('translate3d(20px, 30%, 20fr) rotateX(0deg) rotateY(0deg) rotateZ(40deg) skew(10deg, 20deg) scale3d(1, 2, 1.5)');
     });

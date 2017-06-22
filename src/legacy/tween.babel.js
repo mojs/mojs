@@ -1,6 +1,6 @@
 import { ClassProto } from '../class-proto';
 import { tweenDefaults } from './tween-defaults';
-import { Tweenie } from './tweenie';
+import { Tween } from './tween';
 import tweener from './tweener';
 import { staggerProperty } from '../helpers/stagger-property';
 
@@ -71,7 +71,7 @@ const Tween = {
 
     if (this._elapsed > 0) {
       const { isReverse, delay } = this._props;
-      this._checkActiveTweenie();
+      this._checkActiveTween();
       this.update = (isReverse === true) ? this._updateRev : this._updateFwd;
       this._elapsed = (this._end - this._spot) - (this._elapsed - delay);
     } else { this._setupUpdateFunction(); }
@@ -131,14 +131,14 @@ const Tween = {
   //
   //   this._importantSpots
   //
-  //   for (let i = this._active; i < this._tweenies.length; i++) {
-  //     const tweenie = this._tweenies[i];
+  //   for (let i = this._active; i < this._tweens.length; i++) {
+  //     const tween = this._tweens[i];
   //
-  //     if (time > tweenie._end) {
-  //       if (tweenie !== this._act) {
-  //         this.update(tweenie._start);
+  //     if (time > tween._end) {
+  //       if (tween !== this._act) {
+  //         this.update(tween._start);
   //       }
-  //       this.update(tweenie._end);
+  //       this.update(tween._end);
   //     } else {
   //       this.update(time);
   //       break;
@@ -154,11 +154,11 @@ const Tween = {
   //  */
   // _setProgressBwd(time) {
   //   for (let i = this._active; i >= 0; i--) {
-  //     const tweenie = this._tweenies[i];
+  //     const tween = this._tweens[i];
   //
-  //     if (time < tweenie._start) {
-  //       if (tweenie !== this._act) { this.update(tweenie._end); }
-  //       this.update(tweenie._start);
+  //     if (time < tween._start) {
+  //       if (tween !== this._act) { this.update(tween._end); }
+  //       this.update(tween._start);
   //     } else {
   //       this.update(time);
   //       break;
@@ -167,19 +167,19 @@ const Tween = {
   // },
 
   /**
-   * _checkActiveTweenie - function to check if active tweenie was set right on
+   * _checkActiveTween - function to check if active tween was set right on
    *                       `reverse` function.
    * @private
    */
-  _checkActiveTweenie() {
+  _checkActiveTween() {
     const { isReverse } = this._props;
 
     if ((isReverse === true) && (this._spot + this._elapsed < this._act._start)) {
       this._active--;
-      this._act = this._tweenies[this._active];
+      this._act = this._tweens[this._active];
     } else if ((isReverse === false) && (this._spot + this._elapsed > this._act._end)) {
       this._active++;
-      this._act = this._tweenies[this._active];
+      this._act = this._tweens[this._active];
     }
   },
 
@@ -203,7 +203,7 @@ const Tween = {
    * @return {type}  description
    */
   _vars() {
-    this._tweenies = [];
+    this._tweens = [];
     this._state = 'stop';
     // time progress
     this._elapsed = 0;
@@ -218,8 +218,8 @@ const Tween = {
       this._cb.reverse();
     }
 
-    // create period tweenies
-    this._createTweenies();
+    // create period tweens
+    this._createTweens();
     // setup initial update function
     this._setupUpdateFunction();
   },
@@ -234,25 +234,25 @@ const Tween = {
     const { repeat, isReverse } = this._props;
     // setup `update` function to `updateFwd` by default
     // and to `updateRev` if reversed, add `U` suffix if
-    // update should go `undefined` tweenie
+    // update should go `undefined` tween
     const suffix = (repeat > 0) ? 'U' : '';
     const ending = (isReverse === true) ? 'Rev' : 'Fwd';
     const name = `_update${suffix}${ending}`;
 
-    // if ne repeat - there is just one tweenie,
+    // if ne repeat - there is just one tween,
     // so we need to set up it as active for further updates
     if (repeat === 0) {
-      this._active = (isReverse === false) ? 0 : this._tweenies.length-1;
-      this._act = this._tweenies[this._active];
+      this._active = (isReverse === false) ? 0 : this._tweens.length-1;
+      this._act = this._tweens[this._active];
     }
 
     this.update = this[name];
   },
 
   /**
-   * Function to create tweenies.
+   * Function to create tweens.
    */
-  _createTweenies() {
+  _createTweens() {
     const {
       repeat,
       delay,
@@ -265,8 +265,8 @@ const Tween = {
 
     let end = 0;
     for (let index = 0; index <= repeat; index++) {
-      this._tweenies.push(
-        Tweenie({
+      this._tweens.push(
+        Tween({
           index,
           delay,
           isReverse: staggerProperty(isPeriodReverse, index),
@@ -285,8 +285,8 @@ const Tween = {
       );
     }
 
-    this._first = this._tweenies[0];
-    this._last = this._tweenies[this._tweenies.length-1];
+    this._first = this._tweens[0];
+    this._last = this._tweens[this._tweens.length-1];
   },
 
   /**
@@ -309,14 +309,14 @@ const Tween = {
     this._playTime = this._spot;
     // `_start` - is the active animation start time bound
     this._start = this._spot + delay;
-    // set start time on all tweenies
-    this._tweenies[0].setStartTime(this._start - delay);
+    // set start time on all tweens
+    this._tweens[0].setStartTime(this._start - delay);
 
-    for (let i = 1; i < this._tweenies.length; i++) {
-      this._tweenies[i].setStartTime(this._tweenies[i-1]._end);
+    for (let i = 1; i < this._tweens.length; i++) {
+      this._tweens[i].setStartTime(this._tweens[i-1]._end);
     }
     // `_end` - is the active animation end time bound
-    this._end = this._tweenies[this._tweenies.length-1]._end;
+    this._end = this._tweens[this._tweens.length-1]._end;
   },
 
   /**
@@ -353,7 +353,7 @@ const Tween = {
 
   /**
    * _updateFwd - function to update `Tween` with forward current time
-   *              for `undefined` tweenies.
+   *              for `undefined` tweens.
    *
    * @private
    * @param {Number} Current update time.
@@ -378,7 +378,7 @@ const Tween = {
       return;
     }
     if (this._last._isActive === true) {
-      this._active = this._tweenies.length-1;
+      this._active = this._tweens.length-1;
       this._act = this._last;
       this.update = this._updateFwd;
     }
@@ -386,7 +386,7 @@ const Tween = {
 
   /**
    * _updateRev - function to update `Tween` with reversed current time
-   *              for `undefined` tweenies.
+   *              for `undefined` tweens.
    * @param {Number} Current update time.
    */
   _updateURev(time) {
@@ -410,14 +410,14 @@ const Tween = {
       return;
     }
     if (this._last._isActive === true) {
-      this._active = this._tweenies.length-1;
+      this._active = this._tweens.length-1;
       this._act = this._last;
       this.update = this._updateRev;
     }
   },
 
   /**
-   * _chimeOut - Tweenies `onChimeOut` callback handler.
+   * _chimeOut - Tweens `onChimeOut` callback handler.
    *
    * @private
    * @param {Boolean} Is forward direction.
@@ -426,7 +426,7 @@ const Tween = {
    * @param {Number} Update time.
    */
   _chimeOut(isForward, isPeriodReverse, i, time) {
-    if (i === this._tweenies.length-1) {
+    if (i === this._tweens.length-1) {
       this._props.onComplete(isForward, isPeriodReverse, i);
       this._ac = isForward;
       // chimeOut/chimeIn
@@ -441,16 +441,16 @@ const Tween = {
     this._active++;
     // if the next tween is present, update it with
     // the current time and set it as active(`_act`)
-    const tweenie = this._tweenies[this._active];
-    if (tweenie !== void 0) {
-      tweenie._prevTime = this._tweenies[this._active-1]._prevTime;
-      this._act = tweenie;
-      tweenie.update(time);
+    const tween = this._tweens[this._active];
+    if (tween !== void 0) {
+      tween._prevTime = this._tweens[this._active-1]._prevTime;
+      this._act = tween;
+      tween.update(time);
     } else { this._active--; }
   },
 
   /**
-   * _chimeIn - Tweenies `onChimeIn` callback handler.
+   * _chimeIn - Tweens `onChimeIn` callback handler.
    *
    * @private
    * @param {Boolean} Is forward direction.
@@ -475,16 +475,16 @@ const Tween = {
     this._active--;
     // if the previous tween is present, update it with
     // the current time and set it as active(`_act`)
-    const tweenie = this._tweenies[this._active];
-    if (tweenie !== void 0) {
-      tweenie._prevTime = this._tweenies[this._active+1]._prevTime;
-      this._act = tweenie;
-      tweenie.update(time);
+    const tween = this._tweens[this._active];
+    if (tween !== void 0) {
+      tween._prevTime = this._tweens[this._active+1]._prevTime;
+      this._act = tween;
+      tween.update(time);
     } else { this._active++; }
   },
 
   /**
-   * `_onComplete` - Tweenies `onComplete` callback handler.
+   * `_onComplete` - Tweens `onComplete` callback handler.
    * @param {Boolean} isForward direction.
    * @param {Boolean} isYoyo period.
    * @param {Number} Update period.
@@ -503,7 +503,7 @@ const Tween = {
   },
 
   /**
-   * `_onStart` - Tweenies `onStart` callback handler
+   * `_onStart` - Tweens `onStart` callback handler
    * @param {Boolean} isForward direction.
    * @param {Boolean} isYoyo period.
    * @param {Number} Update period.
@@ -571,9 +571,9 @@ const Tween = {
    * reset - function to reset the tween.
    */
   reset() {
-    // reset all tweenies
-    for (let i = 0; i < this._tweenies.length; i++) {
-      this._tweenies[i].reset();
+    // reset all tweens
+    for (let i = 0; i < this._tweens.length; i++) {
+      this._tweens[i].reset();
     }
 
     this._ac = false;
@@ -590,7 +590,7 @@ Tween.__proto__ = ClassProto;
  * Imitate `class` with wrapper
  *
  * @param {Object} Options object.
- * @returns {Object} Tweenie instance.
+ * @returns {Object} Tween instance.
  */
 const wrap = (o) => {
   const instance = Object.create(Tween);

@@ -1,5 +1,5 @@
 import { ClassProto } from '../class-proto';
-import { Tweenie } from '../tween/tweenie';
+import { Tween } from '../tween/tween';
 import { splitDelta } from './split-delta';
 import { parseNumber } from './parse-number';
 import { parseUnit } from './parse-unit';
@@ -45,8 +45,8 @@ Delta.init = function(o = {}) {
   this._parseDelta();
   // set up the update function acording to the delta type
   this.update = this[`_upd_${this._delta.type}`];
-  // set up the tweenie
-  this._setupTweenie();
+  // set up the tween
+  this._setupTween();
 };
 
 /**
@@ -123,24 +123,24 @@ Delta._upd_color = function(ep, p, isForward) {
 };
 
 /**
- * `_setupTweenie` - function to set up tweenie if needed.
+ * `_setupTween` - function to set up tween if needed.
  */
-Delta._setupTweenie = function () {
-  const { tweenieOptions } = this._delta;
-  // set up tweenie if `tweenOptions` is set
-  if (tweenieOptions === void 0) { return; }
+Delta._setupTween = function () {
+  const { tweenOptions } = this._delta;
+  // set up tween if `tweenOptions` is set
+  if (tweenOptions === void 0) { return; }
 
-  // create tweenie with tweenie options
-  this.tween = new Tweenie({
+  // create tween with tween options
+  this.tween = new Tween({
     index: this.index,
-    ...tweenieOptions,
+    ...tweenOptions,
     // send `onUpdate` function to call the `this.update` function
     // and envoke previous `onUpdate`
     onUpdate: (ep, p, isForward) => {
       this.update(ep, p, isForward);
       // envoke old `onUpdate` if is present
-      if (tweenieOptions.onUpdate !== void 0) {
-        tweenieOptions.onUpdate(ep, p, isForward);
+      if (tweenOptions.onUpdate !== void 0) {
+        tweenOptions.onUpdate(ep, p, isForward);
       }
     }
   });
@@ -231,7 +231,7 @@ Delta._getSplit = function(object) {
  * Imitate `class` with wrapper
  *
  * @param {Object} Options object.
- * @returns {Object} Tweenie instance.
+ * @returns {Object} Tween instance.
  */
 const wrap = (o) => {
   const instance = Object.create(Delta);

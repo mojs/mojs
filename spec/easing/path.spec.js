@@ -1,6 +1,4 @@
-//
-//
-// describe('tweenie ->', function () {
+// describe('tween ->', function () {
 //   it('create easing cureve easing #1`', function () {
 //     var path = mojs.easing.path('M0,100 L100,0');
 //

@@ -34,8 +34,8 @@ describe('`deltas` ->', function () {
     });
   });
 
-  describe('main tweenie ->', function() {
-    it('should create the main tweenie', function () {
+  describe('main tween ->', function() {
+    it('should create the main tween', function () {
       var options = {
         x: { '200': 300, delay: 200 },
         y: { '200': 300 },
@@ -75,7 +75,7 @@ describe('`deltas` ->', function () {
   });
 
   describe('`_parseProperties` / deltas parsing ->', function() {
-    it('should hold deltas with tweenies', function () {
+    it('should hold deltas with tweens', function () {
       var options = {
         el: {},
         x: { '200': 300, delay: 200 },
@@ -224,7 +224,7 @@ describe('`deltas` ->', function () {
       expect(deltas._plainDeltas[1].index).toBe(index);
     });
 
-    it('should parse stagger options on delta`s tweenies', function () {
+    it('should parse stagger options on delta`s tweens', function () {
       var index = 2;
 
       var options = {
@@ -287,8 +287,10 @@ describe('`deltas` ->', function () {
     });
 
     it('should call the render function', function () {
+      var pipeObj = {};
       var customProperties = {
-        render: function() {}
+        render: function() {},
+        pipeObj: pipeObj
       };
       var options = {
         el: {},
@@ -307,7 +309,12 @@ describe('`deltas` ->', function () {
       var isForward = true;
       deltas.timeline._props.onUpdate(progress, progress, isForward);
 
-      expect(deltas._render).toHaveBeenCalledWith(deltas._el, [ deltas._supportProps, deltas._supportRender ], progress, progress, isForward);
+      expect(deltas._render.calls.mostRecent().args[0]).toBe(deltas._el);
+      expect(deltas._render.calls.mostRecent().args[1].props).toBe(deltas._supportProps);
+      expect(deltas._render.calls.mostRecent().args[1].pipeObj).toBe(deltas._pipeObj);
+      expect(deltas._render.calls.mostRecent().args[2]).toBe(progress);
+      expect(deltas._render.calls.mostRecent().args[3]).toBe(progress);
+      expect(deltas._render.calls.mostRecent().args[4]).toBe(isForward);
     });
 
     it('should be call onUpdate on timeline', function () {

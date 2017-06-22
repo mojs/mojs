@@ -1,22 +1,22 @@
 import { ClassProto } from '../class-proto';
-import { tweenieDefaults } from './tweenie-defaults';
+import { tweenDefaults } from './tween-defaults';
 import { tweener } from './tweener';
 import { parseEasing } from '../easing/parse-easing';
 import { staggerProperty } from '../helpers/stagger-property';
 
 /* -------------------- */
-/* The `Tweenie` class  */
+/* The `Tween` class  */
 /* -------------------- */
 
-const Tweenie = Object.create(ClassProto);
+const Tween = Object.create(ClassProto);
 /**
  * _declareDefaults - function to declare `_defaults` object.
  *
  * @private
  * @override ClassProto
  */
-Tweenie._declareDefaults = function() {
-  this._defaults = tweenieDefaults;
+Tween._declareDefaults = function() {
+  this._defaults = { ...tweenDefaults };
 };
 
 /* ---------------------- */
@@ -29,13 +29,13 @@ Tweenie._declareDefaults = function() {
  * @public
  * @returns {Object} This tween.
  */
-Tweenie.play = function() {
+Tween.play = function() {
   if (this._state === 'play') {
     return this;
   }
 
   this._setState('play');
-  this._setupPlay('play');
+  this._setupPlay();
 
   this._playTime = performance.now();
   this._speed = this._props.speed;
@@ -49,7 +49,7 @@ Tweenie.play = function() {
  * @public
  * @returns {Object} This tween.
  */
-Tweenie.pause = function() {
+Tween.pause = function() {
   if (this._state === 'pause' || this._state === 'stop') { return this; }
 
   tweener.remove(this);
@@ -66,9 +66,9 @@ Tweenie.pause = function() {
  *
  * @public
  * @param {Number} Progress to stop with in [0...1]
- * @returns {Object} This tweenie.
+ * @returns {Object} This tween.
  */
-Tweenie.stop = function(progress) {
+Tween.stop = function(progress) {
   if (this._state === 'stop') { return this; }
 
   var stopProc = (progress !== void 0) ? progress
@@ -76,7 +76,6 @@ Tweenie.stop = function(progress) {
        is playingBackward, otherwise set to 0 */
     : (this._props.isReverse === true) ? 1 : 0
 
-  tweener.remove(this);
   this.setProgress(stopProc);
   this.reset();
 
@@ -90,7 +89,7 @@ Tweenie.stop = function(progress) {
  * @param {Number} Repeat count.
  * @returns {Object} This tween.
  */
-Tweenie.replay = function(repeat) {
+Tween.replay = function(repeat) {
   this.reset();
   this.play(repeat);
 
@@ -104,7 +103,7 @@ Tweenie.replay = function(repeat) {
  * @param {Number} Speed in [0..∞]
  * @return {Object} This tween.
  */
-Tweenie.setSpeed = function(speed) {
+Tween.setSpeed = function(speed) {
   this._props.speed = speed;
 
   if (this._state === 'play') {
@@ -122,7 +121,7 @@ Tweenie.setSpeed = function(speed) {
  * @public
  * @returns {Object} This tween.
  */
-Tweenie.reverse = function() {
+Tween.reverse = function() {
   this._props.isReverse = !this._props.isReverse;
   // reverse callbacks in the `_cbs`
   this._reverseCallbacks();
@@ -144,7 +143,7 @@ Tweenie.reverse = function() {
  * @param {Number} Progress to set.
  * @return {Object} This tween.
  */
-Tweenie.setProgress = function(progress = 0) {
+Tween.setProgress = function(progress = 0) {
   (this._start === void 0) && this.setStartTime();
 
   const time = (progress === 1)
@@ -154,21 +153,29 @@ Tweenie.setProgress = function(progress = 0) {
   if (this._prevTime === void 0) {
     this._prevTime = this._start;
   }
-
+  // save speed before updating form `setProgress`
+  const speed = this._speed;
+  this._speed = 1;
+  // update with current time
   this.update(time);
+  // restore speed after updating form `setProgress`
+  this._speed = speed;
 
   return this;
 };
 
 /**
- * reset - function to reset the `Tweenie`.
+ * reset - function to reset the `Tween`.
  */
-Tweenie.reset = function() {
+Tween.reset = function() {
+  tweener.remove(this);
   this._isActive = false;
   this._elapsed = 0;
   this._repeatCount = 0;
   this._setState('stop');
   delete this._prevTime;
+
+  return this;
 };
 
 /* ----------------------- */
@@ -179,10 +186,9 @@ Tweenie.reset = function() {
  * _setupPlay - function to setup before `play`.
  *
  * @public
- * @param {Sting} Direction ['play', 'reverse']
  * @returns {Object} This tween.
  */
-Tweenie._setupPlay = function(type) {
+Tween._setupPlay = function() {
   this.setStartTime();
   tweener.add(this);
 };
@@ -193,7 +199,7 @@ Tweenie._setupPlay = function(type) {
  *
  * @return {type}  description
  */
-Tweenie._vars = function() {
+Tween._vars = function() {
   const {
     isReverse,
     onStart,
@@ -231,7 +237,7 @@ Tweenie._vars = function() {
  *
  * @param {Number, Undefined} Start time to set.
  */
-Tweenie.setStartTime = function(startTime = performance.now()) {
+Tween.setStartTime = function(startTime = performance.now()) {
   const { delay, duration, repeat, shiftTime } = this._props;
 
   // if `elapsed` is greated that end bound -> reset it to `0`
@@ -251,12 +257,12 @@ Tweenie.setStartTime = function(startTime = performance.now()) {
 };
 
 /**
- * update - function to update `Tweenie` with current time.
+ * update - function to update `Tween` with current time.
  *
  * @param {Number} The current update time.
  */
-Tweenie.update = function(time) {
-  const { onUpdate, isReverse, index, easing, backwardEasing } = this._props;
+Tween.update = function(time) {
+  const { onUpdate, isReverse, easing, backwardEasing } = this._props;
 
   // recalculate `time` regarding `speed`
   time = this._playTime + this._speed*(time - this._playTime);
@@ -266,12 +272,12 @@ Tweenie.update = function(time) {
 
   // if pregress is not right - call the `onRefresh` function #before
   if (time < this._start && this._progress !== this._cbs[2]) {
-    this._props.onRefresh(false, index, time);
+    this._props.onRefresh(false, this.index, time);
     this._progress = this._cbs[2];
   }
   // if pregress is not right - call the `onRefresh` function #after
   if (time > this._end && this._progress !== this._cbs[3]) {
-    this._props.onRefresh(true, index, time);
+    this._props.onRefresh(true, this.index, time);
     this._progress = this._cbs[3];
   }
 
@@ -287,16 +293,16 @@ Tweenie.update = function(time) {
 
     if (time > this._start && this._isActive === false && isForward === true) {
       // `onStart`
-      this._cbs[0](isForward, isReverse, index);
+      this._cbs[0](isForward, isReverse, this.index);
       // `onChimeIn`
-      this._chCbs[0](isForward, isReverse, index, time);
+      this._chCbs[0](isForward, isReverse, this.index, time);
     }
 
     if (time === this._start) {
       // `onStart`
-      this._cbs[0](isForward, isReverse, index);
+      this._cbs[0](isForward, isReverse, this.index);
       // `onChimeIn`
-      this._chCbs[0](isForward, isReverse, index, time);
+      this._chCbs[0](isForward, isReverse, this.index, time);
       // set `isActive` to `true` for forward direction
       // but set it to `false` for backward
       isActive = isForward;
@@ -304,16 +310,16 @@ Tweenie.update = function(time) {
 
     if (time < this._end && this._isActive === false && isForward === false) {
       // `onComplete`
-      this._cbs[1](false, isReverse, index);
+      this._cbs[1](false, isReverse, this.index);
       // `onChimeOut`
-      this._chCbs[1](isForward, isReverse, index, time);
+      this._chCbs[1](isForward, isReverse, this.index, time);
     }
 
     if (time === this._end) {
       // `onComplete`
-      this._cbs[1](isForward, isReverse, index);
+      this._cbs[1](isForward, isReverse, this.index);
       // `onChimeOut`
-      this._chCbs[1](isForward, isReverse, index, time);
+      this._chCbs[1](isForward, isReverse, this.index, time);
       // set `isActive` to `false` for forward direction
       // but set it to `true` for backward
       isActive = !isForward;
@@ -331,9 +337,9 @@ Tweenie.update = function(time) {
     // one
     onUpdate(ease(this._progress), this._progress, isForward, time);
     // `onComplete`
-    this._cbs[1](isForward, isReverse, index);
+    this._cbs[1](isForward, isReverse, this.index);
     // `onChimeOut`
-    this._chCbs[1](isForward, isReverse, index, time);
+    this._chCbs[1](isForward, isReverse, this.index, time);
     this._isActive = false;
     this._prevTime = time;
     return true;
@@ -344,9 +350,9 @@ Tweenie.update = function(time) {
     // zero
     onUpdate(ease(this._progress), this._progress, isForward, time);
     // `onStart`
-    this._cbs[0](isForward, isReverse, index);
+    this._cbs[0](isForward, isReverse, this.index);
     // `onChimeIn`
-    this._chCbs[0](isForward, isReverse, index, time);
+    this._chCbs[0](isForward, isReverse, this.index, time);
 
     this._isActive = false;
     this._prevTime = time;
@@ -360,7 +366,7 @@ Tweenie.update = function(time) {
 /**
  * Function to reverse callbacks.
  */
-Tweenie._reverseCallbacks = function() {
+Tween._reverseCallbacks = function() {
   this._cbs = [ this._cbs[1], this._cbs[0], this._cbs[3], this._cbs[2] ];
 };
 
@@ -370,7 +376,7 @@ Tweenie._reverseCallbacks = function() {
  * @private
  * @param {String} State name [play, pause, 'stop', 'reverse']
  */
-Tweenie._setState = function(state) {
+Tween._setState = function(state) {
   // save previous state
   this._prevState = this._state;
   this._state = state;
@@ -398,7 +404,7 @@ Tweenie._setState = function(state) {
  *                   playback for this tween and removemd it from the queue
  *
  */
-Tweenie.onTweenerFinish = function() {
+Tween.onTweenerFinish = function() {
   const { isReverse, repeat, isReverseOnRepeat, onPlaybackComplete } = this._props;
   const count = this._repeatCount;
 
@@ -422,7 +428,7 @@ Tweenie.onTweenerFinish = function() {
  * @private
  * @overrides @ ClassProto
  */
-Tweenie._extendDefaults = function() {
+Tween._extendDefaults = function() {
   // super call
   ClassProto._extendDefaults.call(this);
   // parse stagger
@@ -442,15 +448,15 @@ Tweenie._extendDefaults = function() {
  * Imitate `class` with wrapper
  *
  * @param {Object} Options object.
- * @returns {Object} Tweenie instance.
+ * @returns {Object} Tween instance.
  */
 const wrap = (o) => {
-  const instance = Object.create(Tweenie);
+  const instance = Object.create(Tween);
   instance.init(o);
 
   return instance;
 };
 
-wrap.__mojsClass = Tweenie;
+wrap.__mojsClass = Tween;
 
-export { wrap as Tweenie };
+export { wrap as Tween };

@@ -1,6 +1,6 @@
-import { Tweenie } from '../tween/tweenie';
+import { Tween } from '../tween/tween';
 import { ClassProto } from '../class-proto';
-import { separateTweenieOptions } from './separate-tweenie-options';
+import { separateTweenOptions } from './separate-tween-options';
 import { staggerProperty } from '../helpers/stagger-property';
 
 /* ----------------------- */
@@ -29,7 +29,7 @@ const MotionPath = Object.create(Super);
  * @param {Object} This motion path.
  */
 MotionPath.update = function(ep, p, isForward) {
-  const { precision, coordinate, property } = this._props;
+  const { precision, coordinate, property, supportProps } = this._props;
   const { step } = this._samples;
 
   const index = (ep/step) | 0; // convert to integer
@@ -118,22 +118,22 @@ MotionPath.init = function(o={}) {
   // precompute path
   this._samplePath();
   // set up tween
-  this._setupTweenie();
+  this._setupTween();
 };
 
 /**
- * `_setupTweenie` - function set up tweenie if needed.
+ * `_setupTween` - function set up tween if needed.
  *
  * @extends @ClassProto
  * @public
  */
-MotionPath._setupTweenie = function() {
+MotionPath._setupTween = function() {
   // options
   const options = { ...this._o };
   // separate tween  options
-  const tweenOptions = separateTweenieOptions(options);
+  const tweenOptions = separateTweenOptions(options);
   if (tweenOptions !== undefined) {
-    this.tween = new Tweenie({
+    this.tween = new Tween({
       ...tweenOptions,
       // send `onUpdate` function to call the `this.update` function
       // and envoke previous `onUpdate`
@@ -199,7 +199,7 @@ MotionPath._parsePath = function() {
  * Imitate `class` with wrapper
  *
  * @param {Object} Options object.
- * @returns {Object} Tweenie instance.
+ * @returns {Object} Tween instance.
  */
 const wrap = (o) => {
   const instance = Object.create(MotionPath);

@@ -15,7 +15,7 @@ const Tweenable = Object.create(Super);
  */
 Tweenable.init = function(o) {
   Super.init.call(this, o);
-  // proxy all tweenie public methods to `timeline` with fallback to `tween`
+  // proxy all tween public methods to `timeline` with fallback to `tween`
   const methods = [ 'play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset', 'setStartTime' ];
   for (let i = 0; i < methods.length; i++) {
     const method = methods[i];
@@ -30,7 +30,7 @@ Tweenable.init = function(o) {
  * Imitate `class` with wrapper
  *
  * @param {Object} Options object.
- * @returns {Object} Tweenie instance.
+ * @returns {Object} Tween instance.
  */
 const wrap = (o) => {
   const instance = Object.create(Tweenable);

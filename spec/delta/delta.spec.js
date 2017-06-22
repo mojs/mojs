@@ -437,13 +437,13 @@ describe('`delta` ->', function () {
 
       var delta = Delta({ key: key, object: options, target: target });
 
-      spyOn(delta._delta.tweenieOptions, 'onUpdate');
+      spyOn(delta._delta.tweenOptions, 'onUpdate');
 
       var progress = Math.random();
       var isForward = true;
 
       delta.tween._props.onUpdate(progress, progress, isForward);
-      expect(delta._delta.tweenieOptions.onUpdate).toHaveBeenCalledWith(progress, progress, isForward);
+      expect(delta._delta.tweenOptions.onUpdate).toHaveBeenCalledWith(progress, progress, isForward);
     });
 
     it('should not create tween if no tween property is used', function () {
