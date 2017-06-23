@@ -4,6 +4,7 @@ import { Tweenable } from '../tween/tweenable';
 import { Delta } from './delta';
 import { separateTweenOptions } from './separate-tween-options';
 import { staggerProperty } from '../helpers/stagger-property';
+import { parseStaticProperty } from '../helpers/parse-static-property';
 // TODO: should point to paMotionPath stub
 import { MotionPath } from './motion-path';
 
@@ -55,7 +56,7 @@ Deltas.init = function(o = {}) {
  */
 Deltas._setupTween = function(options) {
   // separate main tween options
-  const tweenOptions = separateTweenOptions(options);
+  const tweenOptions = separateTweenOptions(options) || {};
   // create tween
   this.tween = new Tween({
     ...tweenOptions,
@@ -117,8 +118,8 @@ Deltas._parseProperties = function(options) {
       const target = (custom && custom.isSkipRender)
         ? this._supportProps
         : this._el;
-      // parse if `stagger(20, 40)` defined
-      const property = staggerProperty(value, this.index);
+
+      const property = parseStaticProperty(key, value, this._customProperties, this.index);
       this._staticProps[key] = property;
       target[key] = property;
       continue;

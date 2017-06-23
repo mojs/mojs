@@ -78,5 +78,8 @@ mojs.stagger = stagger;
 // html
 import { Html } from './html';
 mojs.Html = Html;
+// surface
+import { Surface } from './surface';
+mojs.Surface = Surface;
 
 export default mojs;

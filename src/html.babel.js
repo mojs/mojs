@@ -1,6 +1,7 @@
 import { Tweenable } from './tween/tweenable';
 import { Deltas } from './delta/deltas';
 import { ClassProto } from './class-proto';
+import { parseElement } from './helpers/parse-element';
 
 /* ----------------- */
 /* The `Html` class  */
@@ -34,9 +35,9 @@ Html._declareDefaults = function() {
     angleZ: 0,
 
     scale: 1,
-    scaleX: 1,
-    scaleY: 1,
-    scaleZ: 1
+    scaleX: void 0,
+    scaleY: void 0,
+    scaleZ: void 0
   };
 };
 
@@ -84,7 +85,10 @@ Html._render = function(target, support) {
   // get the supportProps
   const { props, pipeObj } = support;
 
-  target.transform = `translate(${props.x}, ${props.y}) rotate(${props.angle}deg) skew(${props.skewX}deg, ${props.skewY}deg) scale(${props.scale})`;
+  const scaleX = (props.scaleX !== undefined) ? props.scaleX : props.scale;
+  const scaleY = (props.scaleY !== undefined) ? props.scaleY : props.scale;
+
+  target.transform = `translate(${props.x}, ${props.y}) rotate(${props.angle}deg) skew(${props.skewX}deg, ${props.skewY}deg) scale(${scaleX}, ${scaleY})`;
 
   // call the `supportRender`
   pipeObj(target, support);
@@ -203,10 +207,7 @@ Html._extendDefaults = function() {
   this._is3d = this._props.is3d;
   delete this._props.is3d;
   // if el was passed as `selector`(`string`), find the element in the DOM
-  this.el = this._props.el;
-  if (typeof this.el === 'string') {
-    this.el = document.querySelector(this.el);
-  }
+  this.el = parseElement(this._props.el);
   // set the `el` on options to element style
   // since this what we will pass to deltas
   this._props.el = this.el.style;

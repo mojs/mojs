@@ -87,7 +87,7 @@ ClassProto._extendDefaults = function() {
  * _vars - function do declare `variables` after `_defaults` were extended
  *         by `options` and saved to `_props`
  *
- * @return {type}  description
+ * @private
  */
 ClassProto._vars = function() {};
 

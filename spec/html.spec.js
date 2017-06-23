@@ -34,9 +34,9 @@ describe('`html` ->', function () {
       expect(html._defaults.angleZ).toBe(0);
 
       expect(html._defaults.scale).toBe(1);
-      expect(html._defaults.scaleX).toBe(1);
-      expect(html._defaults.scaleY).toBe(1);
-      expect(html._defaults.scaleZ).toBe(1);
+      expect(html._defaults.scaleX).toBe(void 0);
+      expect(html._defaults.scaleY).toBe(void 0);
+      expect(html._defaults.scaleZ).toBe(void 0);
     });
   });
 
@@ -285,7 +285,30 @@ describe('`html` ->', function () {
 
       html._render(props, support);
 
-      expect(props.transform).toBe('translate(20px, 30%) rotate(40deg) skew(10deg, 20deg) scale(1)');
+      expect(props.transform).toBe('translate(20px, 30%) rotate(40deg) skew(10deg, 20deg) scale(1, 1)');
+    });
+
+    it('should set transform on `props` #scaleX #scaleY', function () {
+      var props = {};
+
+      var html = new Html({ el: el });
+
+      var support = {
+        props: {
+          x: '20px',
+          y: '30%',
+          angle: 40,
+          skewX: 10,
+          skewY: 20,
+          scaleX: 2,
+          scaleY: 5
+        },
+        pipeObj: function() {}
+      };
+
+      html._render(props, support);
+
+      expect(props.transform).toBe('translate(20px, 30%) rotate(40deg) skew(10deg, 20deg) scale(2, 5)');
     });
 
     it('should call original `render`', function () {

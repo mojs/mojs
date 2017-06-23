@@ -109,6 +109,75 @@ describe('`deltas` ->', function () {
       expect(el.z).toBe(options.z);
     });
 
+    it('should set static properties on target #el #number', function () {
+      var el = {};
+      var options = {
+        el: el,
+        f: 5,
+        customProperties: {
+          f: {
+            type: 'number'
+          }
+        }
+      };
+
+      var deltas = Deltas(options);
+
+      expect(deltas._staticProps.f).toBe(options.f);
+    });
+
+    it('should set static properties on target #el #unit', function () {
+      var el = {};
+      var options = {
+        el: el,
+        f: 5,
+        isIt: 1,
+        customProperties: {
+          f: {
+            type: 'unit'
+          }
+        }
+      };
+
+      var deltas = Deltas(options);
+
+      expect(deltas._staticProps.f).toBe(options.f + 'px');
+    });
+
+    // it('should set static properties on target #el #unit #percent', function () {
+    //   var el = {};
+    //   var options = {
+    //     el: el,
+    //     f: '5%',
+    //     customProperties: {
+    //       f: {
+    //         type: 'unit'
+    //       }
+    //     }
+    //   };
+    //
+    //   var deltas = Deltas(options);
+    //
+    //   expect(deltas._staticProps).toBe(options.f);
+    // });
+    //
+    // it('should set static properties on target #el #color', function () {
+    //   var el = {};
+    //   var options = {
+    //     el: el,
+    //     f: 'cyan',
+    //     customProperties: {
+    //       f: {
+    //         type: 'color'
+    //       }
+    //     }
+    //   };
+    //
+    //   var deltas = Deltas(options);
+    //
+    //   expect(deltas._staticProps).toBe('rgba(0,0,0, 0)');
+    // });
+
     it('should set static properties on target #supportProps', function () {
       var el = {};
       var customProperties = {
