@@ -88,6 +88,6 @@ import { Surface } from './surface';
 mojs.Surface = Surface;
 // shape
 import { Shape } from './shape/shape';
-mojs.Shape = Shape;
+mojs.Shape2 = Shape;
 
 export default mojs;

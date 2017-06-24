@@ -50,7 +50,9 @@ Surface._createElement = function() {
 };
 
 /**
- * `_createElement` - function to create `html` module.
+ * `_createHtml` - function to create `html` module.
+ *
+ * @private
  */
 Surface._createHtml = function() {
   // create object that will be passed to the `html` module

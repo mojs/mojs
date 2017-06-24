@@ -24,12 +24,12 @@ describe('`SvgShape` ->', function () {
 
       var svgCanvas = el.firstChild;
       expect(svgCanvas.tagName.toLowerCase()).toBe('svg');
-      expect(svgCanvas.getAttribute('viewBox')).toBe('0 0 100 100');
       expect(svgCanvas.style.width).toBe('100%');
       expect(svgCanvas.style.height).toBe('100%');
       expect(svgCanvas + '').toBe('[object SVGSVGElement]');
       expect(svgCanvas.firstChild.tagName.toLowerCase()).toBe('g');
       expect(svgCanvas.firstChild + '').toBe('[object SVGGElement]');
+      expect(svgCanvas.firstChild.getAttribute('vector-effect')).toBe('non-scaling-stroke');
     });
   });
 });

@@ -27,11 +27,11 @@ SvgShape.init = function(o) {
  */
 SvgShape._createSVGCanvas = function() {
   this.canvas = document.createElementNS(NS, 'svg');
-  this.canvas.setAttribute('viewBox', '0 0 100 100');
   this.canvas.style.width = '100%';
   this.canvas.style.height = '100%';
-
+  // create root `<g>` element
   this.root = document.createElementNS(NS, 'g');
+  this.root.setAttribute('vector-effect', 'non-scaling-stroke');
   this.canvas.appendChild(this.root);
 
   this._o.el.appendChild(this.canvas);

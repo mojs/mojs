@@ -1,5 +1,5 @@
 var Surface = mojs.Surface;
-var Shape = mojs.Shape;
+var Shape = mojs.Shape2;
 
 var el = document.createElement('div');
 

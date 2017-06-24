@@ -38,31 +38,38 @@
 
     <script src="vendor/mojs-player.js"></script>
 
-    <!-- <script>
-      const SurfaceStagger = mojs.stagger(mojs.Surface);
+    <script>
 
-      const surface = new SurfaceStagger({
-        items: 5,
-        // x: { 0: 700 },
+      const shape = new mojs.Shape2({
         position: 'absolute',
-        background: ['cyan', 'deeppink', 'yellow', 'purple', '#222'],
-        y: 'stagger(25px)',
+        // background: '#222',
         is3d: true,
         left: '50%',
         top: '50%',
         marginLeft: '-50px',
         marginTop: '-100px',
-        // borderRadius: { 0: '50px' },
         borderRadius: '25px',
-        delay: 'stagger(50)',
-        angleX: { 0: 360 },
-        angleY: { 0: 360 },
-        angleZ: { 0: 360 },
-        duration: 2000
+        // angleX: { 0: 360 },
+        // angleY: { 0: 360 },
+        // angleZ: { 0: 360 },
+        fill: { 'cyan': 'yellow' },
+        // sizeX: { 0: 75 },
+        duration: 2000,
+        customProperties: {
+          fill: {
+            type: 'color',
+            isSkipRender: true
+          },
+          sizeX: {
+            type: 'number',
+            isSkipRender: true
+          }
+        }
       });
 
-      new MojsPlayer({ add: surface });
-    </script> -->
+      new MojsPlayer({ add: shape });
+
+    </script>
 
     <br />
     <br />
