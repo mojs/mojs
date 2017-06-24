@@ -13,13 +13,17 @@ import { Delta } from '../delta/delta';
  */
 export const parseStaticProperty = (key, property, customProperties, index = 0) => {
   const target = {};
+  const object = {};
+  const supportProps = {};
+  object[property] = property;
+
   const delta = new Delta({
     key,
     target,
     customProperties,
     index,
-    object: { [property]: property },
-    supportProps: {}
+    object,
+    supportProps
   });
   // update the delta with `0` progress
   delta.update(0,0);
