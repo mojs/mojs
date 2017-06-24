@@ -18,6 +18,8 @@ import { Tweenable } from './tween/tweenable';
 import { staggerProperty } from './helpers/stagger-property';
 import { parseStagger } from './helpers/parse-stagger';
 import { makeColorObject } from './helpers/make-color-object';
+import { SvgShape } from './shape/svg/svg-shape';
+import { Circle } from './shape/svg/circle';
 
 /*
   Browsers' support:
@@ -28,7 +30,6 @@ import { makeColorObject } from './helpers/make-color-object';
 
 /*
   TODO:
-    - add surface
     - add shape
     - add burst
     - add mojs.staggerFunction()
@@ -39,13 +40,14 @@ import { makeColorObject } from './helpers/make-color-object';
 */
 
 const mojs = {
-  revision: '2.9.1',
+  revision: '2.10.0',
   Tween,
   Timeline,
   easing,
   __helpers__: {
     parseEasing,
     ClassProto,
+    SvgShape,
     tweenDefaults,
     tweener,
     // temporary
@@ -58,7 +60,10 @@ const mojs = {
     Tweenable,
     staggerProperty,
     parseStagger,
-    makeColorObject
+    makeColorObject,
+    svg: {
+      Circle
+    }
   }
 };
 
@@ -81,5 +86,8 @@ mojs.Html = Html;
 // surface
 import { Surface } from './surface';
 mojs.Surface = Surface;
+// shape
+import { Shape } from './shape/shape';
+mojs.Shape = Shape;
 
 export default mojs;

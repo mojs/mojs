@@ -32,7 +32,7 @@ Html._declareDefaults = function() {
     angle: 0,
     angleX: 0,
     angleY: 0,
-    angleZ: 0,
+    angleZ: void 0,
 
     scale: 1,
     scaleX: void 0,

@@ -1,3 +1,4 @@
+import { Timeline } from './tween/timeline';
 import { Tweenable } from './tween/tweenable';
 import { staggerProperty } from './helpers/stagger-property';
 
@@ -67,6 +68,7 @@ Stagger._getStaggerOptions = function(options, i) {
  */
 Stagger._createTimeline = function(options) {
   this.timeline = new Timeline(options);
+
   delete this._o.timeline;
 };
 

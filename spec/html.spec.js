@@ -31,7 +31,7 @@ describe('`html` ->', function () {
       expect(html._defaults.angle).toBe(0);
       expect(html._defaults.angleX).toBe(0);
       expect(html._defaults.angleY).toBe(0);
-      expect(html._defaults.angleZ).toBe(0);
+      expect(html._defaults.angleZ).toBe(void 0);
 
       expect(html._defaults.scale).toBe(1);
       expect(html._defaults.scaleX).toBe(void 0);

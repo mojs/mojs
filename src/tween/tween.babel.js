@@ -4,9 +4,9 @@ import { tweener } from './tweener';
 import { parseEasing } from '../easing/parse-easing';
 import { staggerProperty } from '../helpers/stagger-property';
 
-/* -------------------- */
+/* ------------------ */
 /* The `Tween` class  */
-/* -------------------- */
+/* ------------------ */
 
 const Tween = Object.create(ClassProto);
 /**

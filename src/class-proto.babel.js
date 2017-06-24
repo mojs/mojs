@@ -48,7 +48,7 @@ ClassProto.setIfNotSet = function(key, value) {
 };
 
 /**
- * _init - lifecycle initialization function.
+ * `init` - lifecycle initialization function.
  *
  * @private
  */
