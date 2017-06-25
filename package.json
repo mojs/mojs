@@ -10,6 +10,7 @@
     "build": "webpack --production --optimize-minimize",
     "test-dev": "karma start",
     "analyze": "webpack --json > stats.json",
+    "lint": "eslint ./src",
     "stats:js": "echo \"Size of mo.js is $(gzip -c build/mo.js | wc -c) bytes gzipped\""
   },
   "main": "build/mo.js",
@@ -58,6 +59,8 @@
     "babel-runtime": "^6.23.0",
     "compression-webpack-plugin": "^0.4.0",
     "coveralls": "^2.12.0",
+    "eslint": "^4.1.0",
+    "eslint-config-airbnb": "^15.0.1",
     "jasmine-core": "^2.5.2",
     "karma": "^1.5.0",
     "karma-chrome-launcher": "^2.0.0",
