@@ -89,7 +89,7 @@
     /**
      * Style
      */
-    "indent": [2, 4, { "SwitchCase": 1 }],
+    "indent": ["error", 2, { "SwitchCase": 1 }],
     "quotes": [
       2, "single", "avoid-escape"
     ],
