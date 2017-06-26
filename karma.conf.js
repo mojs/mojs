@@ -33,9 +33,17 @@ module.exports = function(config) {
 
     coverageReporter: {
       reporters:[
-        {type: 'html', dir:' coverage/'},
-        {type: 'text-summary'},
-        {type: 'lcov', subdir: 'lcov-report'}
+        {
+          type: 'html',
+          dir:' coverage/'
+        },
+        {
+          type: 'text-summary'
+        },
+        {
+          type: 'lcov',
+          subdir: 'lcov-report'
+        }
       ],
     },
     // test results reporter to use
@@ -49,7 +57,9 @@ module.exports = function(config) {
     // possible values:
     //  - config.[LOG_DISABLE|LOG_ERROR|LOG_WARN|LOG_INFO|LOG_DEBUG]
     logLevel: config.LOG_INFO,
-    sauceLabs: { testName: 'mo · js v2 tests' },
+    sauceLabs: {
+      testName: 'mo·js@2 tests'
+    },
     captureTimeout: 50000,
     customLaunchers,
     // start these browsers
