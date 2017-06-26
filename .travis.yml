@@ -12,5 +12,5 @@ after_script:
   - cat ./coverage/lcov-report/lcov.info | ./node_modules/coveralls/bin/coveralls.js
   - cat ./coverage/lcov-report/lcov.info | ./node_modules/.bin/codacy-coverage
 
-notifications:
-  slack: $SLACK_WEB_HOOK
+ notifications:
+    slack: mojs:pdoYLMGz4fOmYH7mzpXAGVjn
