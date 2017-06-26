@@ -11,7 +11,8 @@
     "test-dev": "karma start",
     "analyze": "webpack --json > stats.json",
     "lint": "eslint ./src",
-    "stats:js": "echo \"Size of mo.js is $(gzip -c build/mo.js | wc -c) bytes gzipped\""
+    "stats:js": "echo \"Size of mo.js is $(gzip -c build/mo.js | wc -c) bytes gzipped\"",
+    "precommit": "npm run lint && npm test"
   },
   "main": "build/mo.js",
   "keywords": [
@@ -66,6 +67,7 @@
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.1.0",
+    "husky": "^0.14.1",
     "jasmine-core": "^2.5.2",
     "karma": "^1.5.0",
     "karma-chrome-launcher": "^2.0.0",
