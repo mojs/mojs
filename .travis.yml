@@ -10,6 +10,7 @@ env:
   global:
     - SAUCE_USERNAME="$SAUCE_DEV_NAME"
     - SAUCE_ACCESS_KEY="$SAUCE_DEV_KEY"
+    - CODACY_PROJECT_TOKEN="$CODACY_TOKEN"
 
 notifications:
   slack: $SLACK_WEB_HOOK
