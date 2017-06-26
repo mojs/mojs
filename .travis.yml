@@ -8,6 +8,9 @@ env:
     - SAUCE_ACCESS_KEY="$SAUCE_DEV_KEY"
     - CODACY_PROJECT_TOKEN="$CODACY_TOKEN"
 
+script:
+  - npm run lint
+
 after_script:
   - cat ./coverage/lcov-report/lcov.info | ./node_modules/coveralls/bin/coveralls.js
   - cat ./coverage/lcov-report/lcov.info | ./node_modules/.bin/codacy-coverage
