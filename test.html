@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>mo · js</title>
+  </head>
+  <body>
+
+    <style>
+      body, html {
+        height: 100%;
+      }
+      /*div {
+        outline: 1px solid red;
+      }*/
+      .el {
+        position: absolute;
+        top: 50%;
+        width: 100px;
+        height: 100px;
+        margin-top: -50px;
+        border-radius: 10%;
+        background: cyan;
+      }
+    </style>
+
+    <div class="el" id="js-el"></div>
+
+    <!-- <script src="vendor/lodash.min.js"></script> -->
+    <!-- <script src="vendor/platform.js"></script> -->
+    <!-- <script src="vendor/benchmark.js"></script> -->
+
+    <!-- <script src="node_modules/mojs-player/build/mojs-player.js"></script> -->
+    <!-- <script src="http://cdn.jsdelivr.net/mojs/latest/mo.min.js"></script> -->
+    <!-- <script src="vendor/mo-js/build/mo.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/mojs/0.288.1/mo.min.js"></script> -->
+    <script src="build/mo.js"></script>
+
+    <script src="vendor/mojs-player.js"></script>
+
+    <script>
+
+      const shape = new mojs.Shape2({
+        position: 'absolute',
+        // background: '#222',
+        is3d: true,
+        left: '50%',
+        top: '50%',
+        marginLeft: '-50px',
+        marginTop: '-100px',
+        borderRadius: '25px',
+        // angleX: { 0: 360 },
+        // angleY: { 0: 360 },
+        // angleZ: { 0: 360 },
+        fill: { 'cyan': 'yellow' },
+        // sizeX: { 0: 75 },
+        duration: 2000,
+        customProperties: {
+          fill: {
+            type: 'color',
+            isSkipRender: true
+          },
+          sizeX: {
+            type: 'number',
+            isSkipRender: true
+          }
+        }
+      });
+
+      new MojsPlayer({ add: shape });
+
+    </script>
+
+    <br />
+    <br />
+    <br />
+
+    <!-- <script src="vendor/lodash.min.js"></script> -->
+    <!-- <script src="vendor/platform.js"></script> -->
+    <!-- <script src="vendor/benchmark.js"></script> -->
+
+    <!-- <script>
+      var suite = new Benchmark.Suite;
+      // add tests
+      suite.add('path sampling', function() {
+        mojs.easing.path('M0, 100, L100, 0');
+      })
+      .add('easing', function() {
+        ;
+      })
+      // add listeners
+      .on('cycle', function(event) {
+        console.log(String(event.target));
+      })
+      .on('complete', function() {
+        console.log('Fastest is ' + this.filter('fastest').map('name'));
+      })
+      // run async
+      .run({ 'async': true });
+    </script> -->
+
+  </body>
+</html>

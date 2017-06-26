@@ -229,6 +229,15 @@ class Helpers
   getPrefix:->
     styles = window.getComputedStyle(document.documentElement, "")
     v = Array::slice.call(styles).join("").match(/-(moz|webkit|ms)-/)
+    if v == null
+      # we are in some other browser (eg. JS DOM), assume it is unprefixed
+      return {
+        dom: '',
+        lowercase: '',
+        css: '',
+        js: '',
+      }
+
     pre = (v or (styles.OLink is "" and [
       ""
       "o"
@@ -238,6 +247,7 @@ class Helpers
     lowercase: pre
     css: "-" + pre + "-"
     js: pre[0].toUpperCase() + pre.substr(1)
+
   strToArr:(string)->
     arr = []
     # plain number

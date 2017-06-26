@@ -1,116 +1,16 @@
-# Shape
+# Tween
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/bbd4fe6c1ac8519c76bc18828844e2c3)
-- [Tween API](./tweens/tween.md)
-- [back](./readme.md)
+- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0011)
+- [Timeline](./timeline.md)
+- [back](/api/readme.md)
 
 Full API reference:
 
 ```javascript
-const shape = new mojs.Shape({
+const tween = new mojs.Tween({
   
-  /* SHAPE PROPERTIES */
+  /* PROPERTIES */
 
-  // Parent of the module. {String, Object} [selector, HTMLElement]
-  parent:           document.body,
-
-  // Class name. {String}
-  className:        '',
-
-  // Shape name. {String} [ 'circle' | 'rect' | 'polygon' | 'line' | 'cross' | 'equal' | 'curve' | 'zigzag' | '*custom defined name*' ]
-  shape:            'circle',
-
-  // ∆ :: Stroke color. {String} [color name, rgb, rgba, hex]
-  stroke:           'transparent',
-
-  // ∆ :: Stroke Opacity. {Number} [ 0..1 ]
-  strokeOpacity:    1,
-
-  // Stroke Line Cap. {String} ['butt' | 'round' | 'square']
-  strokeLinecap:    '',
-
-  // ∆ :: Stroke Width. {Number} [ number ]
-  strokeWidth:      2,
-
-  // ∆ , Units :: Stroke Dash Array. {String, Number}
-  strokeDasharray:  0,
-
-  // ∆ , Units :: Stroke Dash Offset. {String, Number}
-  strokeDashoffset: 0,
-
-  // ∆ :: Fill Color. {String} [color name, rgb, rgba, hex]
-  fill:             'deeppink',
-
-  // ∆ :: Fill Opacity. {Number} [ 0..1 ]
-  fillOpacity:      1,
-
-  // ∆ , Units :: Left position of the module. {Number, String}
-  left:             '50%',
-
-  // ∆ , Units :: Top position of the module. {Number, String}
-  top:              '50%',
-
-  // ∆ , Units :: X shift. {Number, String}
-  x:                0,
-
-  // ∆ , Units :: Y shift. {Number, String}
-  y:                0,
-
-  // ∆ :: Angle. {Number, String}
-  angle:            0,
-
-  // ∆ :: Scale of the module. {Number}
-  scale:            1,
-
-  // ∆ :: Explicit scaleX value (fallbacks to `scale`). {Number}
-  scaleX:           null,
-
-  // ∆ :: Explicit scaleX value (fallbacks to `scale`). {Number}
-  scaleY:           null,
-
-  // ∆ , Unit :: Origin for `x`, `y`, `scale`, `rotate` properties. {String}
-  origin:           '50% 50%',
-
-  // ∆ :: Opacity. {Number} [ 0..1 ]
-  opacity:          1,
-
-  // ∆ :: X border radius. {Number, String}
-  rx:               0,
-
-  // ∆ :: Y border radius. {Number, String}
-  ry:               0,
-
-  // ∆ :: Points count ( for polygon, zigzag, equal ). {Number, String}
-  points:           3,
-
-  // ∆ :: Radius of the shape. {Number, String}
-  radius:           50,
-
-  // ∆ :: Radius X of the shape (fallbacks to `radius`). {Number, String}
-  radiusX:          null,
-
-  // ∆ :: Radius Y of the shape (fallbacks to `radius`). {Number, String}
-  radiusY:          null,
-
-  // If should hide module with `transforms` instead of `display`. {Boolean}
-  isSoftHide:       true,
-
-  // If should trigger composite layer for the module. {Boolean}
-  isForce3d:        false,
-
-  // If should be shown before animation starts. {Boolean}
-  isShowStart:      false,
-
-  // If should stay shown after animation ends. {Boolean}
-  isShowEnd:        true,
-
-  // If refresh state on subsequent plays. {Boolean}
-  isRefreshState:   true,
-
-  // Context callbacks will be called with. {Object}
-  callbacksContext: this,
-  
-  /* TWEEN PROPERTIES */
   // Duration {Number}
   duration:       350,
   // Delay {Number}
@@ -126,7 +26,15 @@ const shape = new mojs.Shape({
   // Easing function for backward direction of the tween animation (fallbacks to `easing`) {String, Function}[ easing name, path coordinates, bezier string, easing function ]
   backwardEasing: null,
 
-  /* TWEEN CALLBACKS */
+  /* CALLBACKS (in order of firing) */
+
+  /*
+    Fires on every when progress needs an update. For instance when tween was finished an remains in `1` progress state, and you will play it again - it will stay in the `1` state until first sufficient update after delay. So the `onRefresh` callback serves you to `refresh` the `1` state with `0` update.
+    
+    @param isBefore {Boolean} If `true` - the refresh is before start time.
+  */
+  onRefresh (p, isForward, isYoyo) {},
+
   /*
     Fires on every update of the tween in any period (including delay periods). You probably want to use `onUpdate` method instead.
     @param p {Number} Normal (not eased) progress.
@@ -174,23 +82,9 @@ const shape = new mojs.Shape({
   onPlaybackStop () {},
   /* Fires when the tween end's animation (regardless progress) */
   onPlaybackComplete () {},
-
 })
-  /*
-    Creates next state transition chain.
-    @param options {Object} Next shape state.
-  */
-  .then({ /* next state options */ })
-  /*
-    Tunes start state with new options.
-    @param options {Object} New start properties.
-  */
-  .tune({ /* new start properties */ })
+  /* PUBLIC METHODS */
 
-  /*
-    Regenerates all randoms in initial properties.
-  */
-  .generate()
   /*
     Starts playback.
     @param shift {Number} Start progress shift in milliseconds.
@@ -201,6 +95,12 @@ const shape = new mojs.Shape({
     @param shift {Number} Start progress shift in milliseconds.
   */
   .playBackward( shift = 0 )
+  
+  /*
+    Stops playback.
+    @param progress {Number} Progress to set after stop [0..1]. *Default* is `0`.
+  */
+  .stop( progress = 0 )
   /*
     Pauses playback.
   */
@@ -229,12 +129,13 @@ const shape = new mojs.Shape({
     Sets speed of the tween.
     @param speed {Number} Progress to set [ 0..∞ ].
   */
-  setSpeed ( speed )
-  /* Stops and resets the tween. */
-  reset ( speed )
+  .setSpeed( speed )
 
+  /* Stops and resets the tween state. */
+  .reset()
+  
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/bbd4fe6c1ac8519c76bc18828844e2c3)
-- [Tween API](./tweens/tween.md)
-- [back](./readme.md)
+- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0011)
+- [Timeline](./timeline.md)
+- [back](/api/readme.md)
