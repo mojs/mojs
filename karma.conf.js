@@ -32,16 +32,17 @@ module.exports = function(config) {
     preprocessors: {},
 
     coverageReporter: {
-      reporters:[
+      reporters: [
         {
           type: 'html',
-          dir:' coverage/'
+          dir: 'coverage/'
         },
         {
           type: 'text-summary'
         },
         {
           type: 'lcov',
+          dir:  'coverage/',
           subdir: 'lcov-report'
         }
       ],
@@ -52,7 +53,7 @@ module.exports = function(config) {
     // web server port
     port: 9876,
     // enable / disable colors in the output (reporters and logs)
-    colors: true,
+    colors: false,
     // level of logging
     // possible values:
     //  - config.[LOG_DISABLE|LOG_ERROR|LOG_WARN|LOG_INFO|LOG_DEBUG]
