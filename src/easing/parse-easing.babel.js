@@ -36,8 +36,8 @@ const parseEasing = (ease = defaultEasingString) => {
       }
       return easeParent[ease[1]];
     }
-    // default:
-    //   console.error(`${consoleName} Only strings and function supported atm.`, ease); // eslint-disable-line no-console
+    default:
+      console.error(`${consoleName} Only strings and function supported atm.`, ease); // eslint-disable-line no-console
 
     // // comming soon:
     // //   - if array passed - parse as `bezier` function

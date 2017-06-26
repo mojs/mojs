@@ -147,7 +147,7 @@ const addBasicEasing = (mojs) => {
    * @returns {Number} Eased progress in range of `[0...1]`
    */
   mojs.easing.bounce = {
-    in(k) { return 1 - easing.bounce.out(1 - k); },
+    in(k) { return 1 - mojs.easing.bounce.out(1 - k); },
     out(k) {
       if (k < (1 / 2.75)) {
         return 7.5625 * k * k;
@@ -161,8 +161,8 @@ const addBasicEasing = (mojs) => {
     },
     inout(k) {
       return (k < 0.5)
-        ? easing.bounce.in(k * 2) * 0.5
-        : (easing.bounce.out((k * 2) - 1) * 0.5) + 0.5;
+        ? mojs.easing.bounce.in(k * 2) * 0.5
+        : (mojs.easing.bounce.out((k * 2) - 1) * 0.5) + 0.5;
     },
   };
 };
