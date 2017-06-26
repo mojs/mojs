@@ -1,10 +1,10 @@
 language: node_js
 node_js:
-  - "0.10"
+  - "6.11.0"
 
 after_script:
-  - if [[ `node --version` == *v0.10* ]]; then cat ./coverage/lcov-report/lcov.info | ./node_modules/coveralls/bin/coveralls.js; fi
-  - if [[ `node --version` == *v0.10* ]]; then cat ./coverage/lcov-report/lcov.info | ./node_modules/.bin/codacy-coverage; fi
+  - cat ./coverage/lcov-report/lcov.info | ./node_modules/coveralls/bin/coveralls.js; fi
+  - cat ./coverage/lcov-report/lcov.info | ./node_modules/.bin/codacy-coverage; fi
 
 env:
   global:
