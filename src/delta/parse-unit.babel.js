@@ -1,4 +1,4 @@
-import { getRegexpUnit } from './get-regexp-unit';
+import { getRegexpUnit } from './get-regexp-unit.babel.js';
 
 /**
  * Function parse number delta.
@@ -9,9 +9,9 @@ import { getRegexpUnit } from './get-regexp-unit';
  */
 const parseUnit = (name, object) => {
   const result = {
+    ...object,
     type: 'unit',
     name,
-    ...object
   };
 
   // get start and end units

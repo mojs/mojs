@@ -15,7 +15,7 @@ const ClassProto = {};
  * @param {String} Key.
  * @returns {Any} Value from the `_props` by `key`.
  */
-ClassProto.get = function(key) {
+ClassProto.get = function (key) {
   return this._props[key];
 };
 
@@ -26,7 +26,7 @@ ClassProto.get = function(key) {
  * @param {String} Key.
  * @param {Any} Value.
  */
-ClassProto.set = function(key, value) {
+ClassProto.set = function (key, value) {
   this._props[key] = value;
 };
 
@@ -39,9 +39,9 @@ ClassProto.set = function(key, value) {
  * @param {Any} Value.
  * @returns {Object} This instance.
  */
-ClassProto.setIfNotSet = function(key, value) {
+ClassProto.setIfNotSet = function (key, value) {
   if (this._o[key] === undefined) {
-      this.set(key, value);
+    this.set(key, value);
   }
 
   return this;
@@ -52,7 +52,7 @@ ClassProto.setIfNotSet = function(key, value) {
  *
  * @private
  */
-ClassProto.init = function(o = {}) {
+ClassProto.init = function (o = {}) {
   // save options
   this._o = { ...o };
   // parse index and delete it from options
@@ -69,17 +69,17 @@ ClassProto.init = function(o = {}) {
  *
  * @private
  */
-ClassProto._declareDefaults = function() { this._defaults = {}; };
+ClassProto._declareDefaults = function () { this._defaults = {}; };
 
 /**
  * _extendDefaults - Method to copy `_o` options to `_props` object
  *                  with fallback to `_defaults`.
  * @private
  */
-ClassProto._extendDefaults = function() {
+ClassProto._extendDefaults = function () {
   this._props = {
     ...this._defaults,
-    ...this._o
+    ...this._o,
   };
 };
 
@@ -89,6 +89,6 @@ ClassProto._extendDefaults = function() {
  *
  * @private
  */
-ClassProto._vars = function() {};
+ClassProto._vars = function () {};
 
 export { ClassProto };

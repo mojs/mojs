@@ -1,7 +1,7 @@
-import { Tween } from '../tween/tween';
-import { ClassProto } from '../class-proto';
-import { separateTweenOptions } from './separate-tween-options';
-import { staggerProperty } from '../helpers/stagger-property';
+import { Tween } from '../tween/tween.babel.js';
+import { ClassProto } from '../class-proto.babel.js';
+import { separateTweenOptions } from './separate-tween-options.babel.js';
+import { staggerProperty } from '../helpers/stagger-property.babel.js';
 
 /* ----------------------- */
 /* The `MotionPath` class  */
@@ -28,13 +28,13 @@ const MotionPath = Object.create(Super);
  * @param {Boolean} If is forward direction.
  * @param {Object} This motion path.
  */
-MotionPath.update = function(ep, p, isForward) {
-  const { precision, coordinate, property, supportProps } = this._props;
+MotionPath.update = function (ep) {
+  const { coordinate, property } = this._props;
   const { step } = this._samples;
 
-  const index = (ep/step) | 0; // convert to integer
-  const key = index*step; // get the key
-  const nextKey = (index + 1)*step; // get the next key
+  const index = (ep / step) | 0; // convert to integer
+  const key = index * step; // get the key
+  const nextKey = (index + 1) * step; // get the next key
 
   const diff = ep - key; // get error for the eased progress
   const value = this._samples.get(key)[coordinate]; // get the value
@@ -42,9 +42,9 @@ MotionPath.update = function(ep, p, isForward) {
   let norm = value;
   // if next key is present, calculate the normalized value
   // regarding the eased progress error
-  if (nextKey <= 1)  {
+  if (nextKey <= 1) {
     const nextValue = this._samples.get(nextKey)[coordinate];
-    norm = value + ((nextValue - value) * (diff/step));
+    norm = value + ((nextValue - value) * (diff / step));
   }
 
   this._target[property] = norm;
@@ -62,16 +62,16 @@ MotionPath.update = function(ep, p, isForward) {
  * @private
  * @param {Number} Number of floating point digits.
  */
-MotionPath._samplePath = function(n = this._props.precision) {
-  const  totalLength = this._path.getTotalLength();
-  const step = 1/n;
+MotionPath._samplePath = function (n = this._props.precision) {
+  const totalLength = this._path.getTotalLength();
+  const step = 1 / n;
   // create the samples map and save main properties
   this._samples = new Map();
   this._samples.step = step;
   this._samples.totalLength = totalLength;
   // samples the path, `key` is in range of [0..1]
-  for (var i = 0; i < n; i++) {
-    const key = i*step;
+  for (let i = 0; i < n; i++) {
+    const key = i * step;
     this._setForKey(key);
   }
   // the last sample is for `1`
@@ -84,17 +84,17 @@ MotionPath._samplePath = function(n = this._props.precision) {
  *
  * @param  {Number} key Map key [0...1].
  */
-MotionPath._setForKey = function(key) {
+MotionPath._setForKey = function (key) {
   const { totalLength } = this._samples;
   // x/y computation
-  const length = key*totalLength;
+  const length = key * totalLength;
   const point = this._path.getPointAtLength(length);
   const prevPoint = this._path.getPointAtLength(length - 1);
   // cangle computation
   const dY = point.y - prevPoint.y;
   const dX = point.x - prevPoint.x;
-  const atan = (!isFinite(Math.atan(dY/dX))) ? 0 : Math.atan(dY/dX);
-  const angle = atan*(180/Math.PI);
+  const atan = (!isFinite(Math.atan(dY / dX))) ? 0 : Math.atan(dY / dX);
+  const angle = atan * (180 / Math.PI);
   // set the point to the map
   this._samples.set(key, { x: point.x, y: point.y, angle });
 };
@@ -105,7 +105,7 @@ MotionPath._setForKey = function(key) {
  * @extends @ClassProto
  * @public
  */
-MotionPath.init = function(o={}) {
+MotionPath.init = function (o = {}) {
   // super call
   Super.init.call(this, o);
   // get target, if the `isSkipRender` is set on `property`
@@ -127,7 +127,7 @@ MotionPath.init = function(o={}) {
  * @extends @ClassProto
  * @public
  */
-MotionPath._setupTween = function() {
+MotionPath._setupTween = function () {
   // options
   const options = { ...this._o };
   // separate tween  options
@@ -140,10 +140,10 @@ MotionPath._setupTween = function() {
       onUpdate: (ep, p, isForward) => {
         this.update(ep, p, isForward);
         // envoke old `onUpdate` if is present
-        if (tweenOptions.onUpdate !== void 0) {
+        if (tweenOptions.onUpdate !== undefined) {
           tweenOptions.onUpdate(ep, p, isForward);
         }
-      }
+      },
     });
   }
 };
@@ -154,7 +154,7 @@ MotionPath._setupTween = function() {
  * @extends @ClassProto
  * @private
  */
-MotionPath._declareDefaults = function(o={}) {
+MotionPath._declareDefaults = function () {
   this._defaults = {
     el: null,
     supportProps: null,
@@ -162,7 +162,7 @@ MotionPath._declareDefaults = function(o={}) {
     path: 'M0,0 L100,100',
     precision: 140,
     coordinate: 'x',
-    property: 'x'
+    property: 'x',
   };
 };
 
@@ -172,11 +172,13 @@ MotionPath._declareDefaults = function(o={}) {
  * @private
  * @overrides @ ClassProto
  */
-MotionPath._extendDefaults = function() {
+MotionPath._extendDefaults = function () {
   // super call
   ClassProto._extendDefaults.call(this);
   // parse stagger
-  for (let key in this._props) {
+  const propsKeys = Object.keys(this._props);
+  for (let i = 0; i < propsKeys.length; i++) {
+    const key = propsKeys[i];
     this._props[key] = staggerProperty(this._props[key], this.index);
   }
 
@@ -189,7 +191,7 @@ MotionPath._extendDefaults = function() {
 /**
  * `_parsePath` - function to parse SVG motion path.
  */
-MotionPath._parsePath = function() {
+MotionPath._parsePath = function () {
   const { path } = this._props;
   this._path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   this._path.setAttributeNS(null, 'd', path);

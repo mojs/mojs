@@ -1,12 +1,11 @@
-import { Tween } from '../tween/tween';
-import { Timeline } from '../tween/timeline';
-import { Tweenable } from '../tween/tweenable';
-import { Delta } from './delta';
-import { separateTweenOptions } from './separate-tween-options';
-import { staggerProperty } from '../helpers/stagger-property';
-import { parseStaticProperty } from '../helpers/parse-static-property';
-// TODO: should point to paMotionPath stub
-import { MotionPath } from './motion-path';
+import { Tween } from '../tween/tween.babel.js';
+import { Timeline } from '../tween/timeline.babel.js';
+import { Tweenable } from '../tween/tweenable.babel.js';
+import { Delta } from './delta.babel.js';
+import { separateTweenOptions } from './separate-tween-options.babel.js';
+import { parseStaticProperty } from '../helpers/parse-static-property.babel.js';
+// TODO: should point to MotionPath stub
+import { MotionPath } from './motion-path.babel.js';
 
 /* ------------------- */
 /* The `Deltas` class  */
@@ -21,7 +20,7 @@ const Deltas = Object.create(Super);
  * @extends @Tweenable
  * @public
  */
-Deltas.init = function(o = {}) {
+Deltas.init = function (o = {}) {
   // super call
   Super.init.call(this, o);
   // clone the options
@@ -54,7 +53,7 @@ Deltas.init = function(o = {}) {
  *
  * @param {Object} Options.
  */
-Deltas._setupTween = function(options) {
+Deltas._setupTween = function (options) {
   // separate main tween options
   const tweenOptions = separateTweenOptions(options) || {};
   // create tween
@@ -66,8 +65,10 @@ Deltas._setupTween = function(options) {
       // update plain deltas
       this._upd_deltas(ep, p, isForward);
       // envoke onUpdate if present
-      tweenOptions.onUpdate && tweenOptions.onUpdate(ep, p, isForward);
-    }
+      if (tweenOptions.onUpdate !== undefined) {
+        tweenOptions.onUpdate(ep, p, isForward);
+      }
+    },
   });
 };
 
@@ -76,10 +77,10 @@ Deltas._setupTween = function(options) {
  *
  * @param {Object} Timeline options.
  */
-Deltas._setupTimeline = function(options = {}) {
+Deltas._setupTimeline = function (options = {}) {
   const support = {
     props: this._supportProps,
-    pipeObj: this._pipeObj
+    pipeObj: this._pipeObj,
   };
 
   this.timeline = new Timeline({
@@ -88,11 +89,12 @@ Deltas._setupTimeline = function(options = {}) {
       // call render function
       this._render(this._el, support, ep, p, isForward);
       // envoke onUpdate if present
-      options.onUpdate && options.onUpdate(ep, p, isForward);
-    }
+      if (options.onUpdate !== undefined) {
+        options.onUpdate(ep, p, isForward);
+      }
+    },
   });
   this.timeline.add(this.tween);
-
 };
 
 /**
@@ -100,15 +102,17 @@ Deltas._setupTimeline = function(options = {}) {
  *
  * @param {Object} Options.
  */
-Deltas._parseProperties = function(options) {
+Deltas._parseProperties = function (options) {
   // deltas that have tween
   this._tweenDeltas = [];
   // deltas that don't have tween
   this._plainDeltas = [];
   // static properties
   this._staticProps = {};
+  const optionsKeys = Object.keys(options);
   // loop thru options and create deltas with objects
-  for (let key in options) {
+  for (let i = 0; i < optionsKeys.length; i++) {
+    const key = optionsKeys[i];
     const value = options[key];
     // if value is tatic save it to static props
     if (typeof value !== 'object') {
@@ -132,7 +136,7 @@ Deltas._parseProperties = function(options) {
         ...value,
         supportProps: this._supportProps,
         property: key,
-        index: this.index
+        index: this.index,
       });
     } else {
       // if value is not motion path, create delta object
@@ -142,14 +146,17 @@ Deltas._parseProperties = function(options) {
         supportProps: this._supportProps,
         object: value,
         customProperties: this._customProperties,
-        index: this.index
+        index: this.index,
       });
     }
 
     // check if delta has own tween and add to `_tweenDeltas`
-    if (delta.tween) { this._tweenDeltas.push(delta); }
+    if (delta.tween) {
+      this._tweenDeltas.push(delta);
     // else add to plain deltas
-    else { this._plainDeltas.push(delta); }
+    } else {
+      this._plainDeltas.push(delta);
+    }
   }
   // add tween deltas to the timeline
   this.timeline.add(this._tweenDeltas);
@@ -164,9 +171,9 @@ Deltas._parseProperties = function(options) {
  * @param {Boolean} If forward update direction.
  * @returns {Object} This delta.
  */
-Deltas._upd_deltas = function(ep, p, isForward) {
+Deltas._upd_deltas = function (ep, p, isForward) {
   // update plain deltas
-  for (let i = 0; i < this._plainDeltas.length; i++ ) {
+  for (let i = 0; i < this._plainDeltas.length; i++) {
     this._plainDeltas[i].update(ep, p, isForward);
   }
 };

@@ -1,7 +1,7 @@
-import { Tweenable } from './tween/tweenable';
-import { Deltas } from './delta/deltas';
-import { ClassProto } from './class-proto';
-import { parseElement } from './helpers/parse-element';
+import { Tweenable } from './tween/tweenable.babel.js';
+import { Deltas } from './delta/deltas.babel.js';
+import { ClassProto } from './class-proto.babel.js';
+import { parseElement } from './helpers/parse-element.babel.js';
 
 /* ----------------- */
 /* The `Html` class  */
@@ -16,7 +16,7 @@ const Html = Object.create(Super);
  * @private
  * @overrides @ ClassProto
  */
-Html._declareDefaults = function() {
+Html._declareDefaults = function () {
   this._defaults = {
     is3d: false,
     el: null,
@@ -32,12 +32,12 @@ Html._declareDefaults = function() {
     angle: 0,
     angleX: 0,
     angleY: 0,
-    angleZ: void 0,
+    angleZ: undefined,
 
     scale: 1,
-    scaleX: void 0,
-    scaleY: void 0,
-    scaleZ: void 0
+    scaleX: undefined,
+    scaleY: undefined,
+    scaleZ: undefined,
   };
 };
 
@@ -47,7 +47,7 @@ Html._declareDefaults = function() {
  * @public
  * @extends @Tweenable
  */
-Html.init = function(o = {}) {
+Html.init = function (o = {}) {
   // super call
   Super.init.call(this, o);
   // setup deltas
@@ -59,12 +59,12 @@ Html.init = function(o = {}) {
  *
  * @private
  */
-Html._setupDeltas = function() {
+Html._setupDeltas = function () {
   const customProperties = this._getCustomProperties();
 
   this._deltas = new Deltas({
     ...this._props,
-    customProperties
+    customProperties,
   });
   // save the `timeline` to make the `tweenable` work
   this.timeline = this._deltas.timeline;
@@ -81,7 +81,7 @@ Html._setupDeltas = function() {
 *          @param {Object} support[1] Support render (original `render`
 *                                     from `customProperties` in this context).
 */
-Html._render = function(target, support) {
+Html._render = function (target, support) {
   // get the supportProps
   const { props, pipeObj } = support;
 
@@ -89,7 +89,6 @@ Html._render = function(target, support) {
   const scaleY = (props.scaleY !== undefined) ? props.scaleY : props.scale;
 
   target.transform = `translate(${props.x}, ${props.y}) rotate(${props.angle}deg) skew(${props.skewX}deg, ${props.skewY}deg) scale(${scaleX}, ${scaleY})`;
-
   // call the `supportRender`
   pipeObj(target, support);
 };
@@ -105,7 +104,7 @@ Html._render = function(target, support) {
  *          @param {Object} support[1] Support render (original `render`
  *                                     from `customProperties` in this context).
  */
-Html._render3d = function(target, support) {
+Html._render3d = function (target, support) {
   // get the supportProps
   const { props, pipeObj } = support;
 
@@ -125,34 +124,43 @@ Html._render3d = function(target, support) {
  * @private
  * @return {Object} Custom properties.
  */
-Html._getCustomProperties = function() {
+Html._getCustomProperties = function () {
   const unitProps = ['x', 'y', 'z'];
   const numberProps = ['angle', 'angleX', 'angleY', 'angleZ', 'skewX', 'skewY', 'scale', 'scaleX', 'scaleY', 'scaleZ'];
   const { customProperties } = this._props;
   const originalRender = customProperties.render;
 
   const customProps = {
-    ...customProperties
+    ...customProperties,
   };
 
-  for (let i = 0; i< unitProps.length; i++) {
+  for (let i = 0; i < unitProps.length; i++) {
     const prop = unitProps[i];
-    customProps[prop] = { type: 'unit', isSkipRender: true };
+    customProps[prop] = {
+      type: 'unit',
+      isSkipRender: true,
+    };
   }
 
-  for (let i = 0; i< numberProps.length; i++) {
+  for (let i = 0; i < numberProps.length; i++) {
     const prop = numberProps[i];
-    customProps[prop] = { type: 'number', isSkipRender: true };
+    customProps[prop] = {
+      type: 'number',
+      isSkipRender: true,
+    };
   }
 
+  const newRenderFunction = (this._is3dProperties())
+          ? this._render3d : this._render;
   // if at least one of the `_default` properties set, pass the `render`
   // function regarding the fact if the 3d property used
   // otherwise pass thru the original `render` function
   customProps.render = (this._isRender())
-    ? (this._is3dProperties()) ? this._render3d : this._render
+    ? newRenderFunction
     : originalRender;
 
-  customProps.pipeObj = (this._isRender()) ? originalRender || (() => {}) : (() => {});
+  customProps.pipeObj = (this._isRender())
+    ? originalRender || (() => {}) : (() => {});
 
   return customProps;
 };
@@ -163,20 +171,22 @@ Html._getCustomProperties = function() {
  *
  * @return {Boolean} If render should be used
  */
-Html._isRender = function() {
+Html._isRender = function () {
   const ignoreProperties = {
     el: 1,
     customProperties: 1,
-    is3d: 1
+    is3d: 1,
   };
 
-  for (let prop in this._defaults) {
+  const keys = Object.keys(this._defaults);
+  for (let i = 0; i < keys.length; i++) {
+    const prop = keys[i];
     if (ignoreProperties[prop]) {
       continue;
     }
 
-    if (this._o[prop] !== void 0) {
-      return true
+    if (this._o[prop] !== undefined) {
+      return true;
     }
   }
 
@@ -188,10 +198,18 @@ Html._isRender = function() {
  *
  * @return {Boolean} If 3d.
  */
-Html._is3dProperties = function() {
-  const isRotate3d = (this._o.angleX != null) || (this._o.angleY != null) || (this._o.angleZ != null);
-  return this._is3d || (this._o.z != null) || (this._o.scaleZ != null) || isRotate3d;
-}
+Html._is3dProperties = function () {
+  const isAngleX = this._o.angleX != null;
+  const isAngleY = this._o.angleY != null;
+  const isAngleZ = this._o.angleZ != null;
+
+  const isRotate3d = isAngleX || isAngleY || isAngleZ;
+
+  const isZ = this._o.z != null;
+  const isScaleZ = this._o.scaleZ != null;
+
+  return this._is3d || isZ || isScaleZ || isRotate3d;
+};
 
 /**
  * `_extendDefaults` - Method to copy `_o` options to `_props` object
@@ -200,7 +218,7 @@ Html._is3dProperties = function() {
  * @private
  * @overrides @ ClassProto
  */
-Html._extendDefaults = function() {
+Html._extendDefaults = function () {
   // super call
   ClassProto._extendDefaults.call(this);
   // delete `is3d` from options since we will pass them to `Deltas`

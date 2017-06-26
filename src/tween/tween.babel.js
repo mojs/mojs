@@ -1,8 +1,8 @@
-import { ClassProto } from '../class-proto';
-import { tweenDefaults } from './tween-defaults';
-import { tweener } from './tweener';
-import { parseEasing } from '../easing/parse-easing';
-import { staggerProperty } from '../helpers/stagger-property';
+import { ClassProto } from '../class-proto.babel.js';
+import { tweenDefaults } from './tween-defaults.babel.js';
+import { tweener } from './tweener.babel.js';
+import { parseEasing } from '../easing/parse-easing.babel.js';
+import { staggerProperty } from '../helpers/stagger-property.babel.js';
 
 /* ------------------ */
 /* The `Tween` class  */
@@ -15,7 +15,7 @@ const Tween = Object.create(ClassProto);
  * @private
  * @override ClassProto
  */
-Tween._declareDefaults = function() {
+Tween._declareDefaults = function () {
   this._defaults = { ...tweenDefaults };
 };
 
@@ -29,7 +29,7 @@ Tween._declareDefaults = function() {
  * @public
  * @returns {Object} This tween.
  */
-Tween.play = function() {
+Tween.play = function () {
   if (this._state === 'play') {
     return this;
   }
@@ -49,7 +49,7 @@ Tween.play = function() {
  * @public
  * @returns {Object} This tween.
  */
-Tween.pause = function() {
+Tween.pause = function () {
   if (this._state === 'pause' || this._state === 'stop') { return this; }
 
   tweener.remove(this);
@@ -68,13 +68,15 @@ Tween.pause = function() {
  * @param {Number} Progress to stop with in [0...1]
  * @returns {Object} This tween.
  */
-Tween.stop = function(progress) {
+Tween.stop = function (progress) {
   if (this._state === 'stop') { return this; }
+  const newProgress = (this._props.isReverse === true) ? 1 : 0;
 
-  var stopProc = (progress !== void 0) ? progress
-    /* if no progress passsed - set 1 if tween
+  const stopProc = (progress !== undefined)
+    ? progress
+    /* if no progress passed - set 1 if tween
        is playingBackward, otherwise set to 0 */
-    : (this._props.isReverse === true) ? 1 : 0
+    : newProgress;
 
   this.setProgress(stopProc);
   this.reset();
@@ -89,7 +91,7 @@ Tween.stop = function(progress) {
  * @param {Number} Repeat count.
  * @returns {Object} This tween.
  */
-Tween.replay = function(repeat) {
+Tween.replay = function (repeat) {
   this.reset();
   this.play(repeat);
 
@@ -103,7 +105,7 @@ Tween.replay = function(repeat) {
  * @param {Number} Speed in [0..∞]
  * @return {Object} This tween.
  */
-Tween.setSpeed = function(speed) {
+Tween.setSpeed = function (speed) {
   this._props.speed = speed;
 
   if (this._state === 'play') {
@@ -121,7 +123,7 @@ Tween.setSpeed = function(speed) {
  * @public
  * @returns {Object} This tween.
  */
-Tween.reverse = function() {
+Tween.reverse = function () {
   this._props.isReverse = !this._props.isReverse;
   // reverse callbacks in the `_cbs`
   this._reverseCallbacks();
@@ -143,14 +145,16 @@ Tween.reverse = function() {
  * @param {Number} Progress to set.
  * @return {Object} This tween.
  */
-Tween.setProgress = function(progress = 0) {
-  (this._start === void 0) && this.setStartTime();
+Tween.setProgress = function (progress = 0) {
+  if (this._start === undefined) {
+    this.setStartTime();
+  }
 
   const time = (progress === 1)
-    ? this._end : this._spot + progress*(this._end - this._spot);
+    ? this._end : this._spot + (progress * (this._end - this._spot));
 
   // set initial time
-  if (this._prevTime === void 0) {
+  if (this._prevTime === undefined) {
     this._prevTime = this._start;
   }
   // save speed before updating form `setProgress`
@@ -167,7 +171,7 @@ Tween.setProgress = function(progress = 0) {
 /**
  * reset - function to reset the `Tween`.
  */
-Tween.reset = function() {
+Tween.reset = function () {
   tweener.remove(this);
   this._isActive = false;
   this._elapsed = 0;
@@ -188,7 +192,7 @@ Tween.reset = function() {
  * @public
  * @returns {Object} This tween.
  */
-Tween._setupPlay = function() {
+Tween._setupPlay = function () {
   this.setStartTime();
   tweener.add(this);
 };
@@ -199,7 +203,7 @@ Tween._setupPlay = function() {
  *
  * @return {type}  description
  */
-Tween._vars = function() {
+Tween._vars = function () {
   const {
     isReverse,
     onStart,
@@ -207,9 +211,9 @@ Tween._vars = function() {
     onChimeIn,
     onChimeOut,
     delay,
-    duration
+    duration,
   } = this._props;
-
+  // if tween is in active period
   this._isActive = false;
   // time progress
   this._elapsed = 0;
@@ -220,12 +224,10 @@ Tween._vars = function() {
   this._time = delay + duration;
   // how many times we have been repeating
   this._repeatCount = 0;
-  // this._prevTime = -Infinity;
-  this._prevTime;
   // callbacks array - used to flip the callbacks order on `isReverse`
-  this._cbs = [ onStart, onComplete, 0, 1 ];
+  this._cbs = [onStart, onComplete, 0, 1];
   // chime callbacks
-  this._chCbs = [ onChimeIn, onChimeOut ];
+  this._chCbs = [onChimeIn, onChimeOut];
   // if `isReverse` - flip the callbacks
   if (isReverse === true) {
     this._reverseCallbacks();
@@ -237,8 +239,8 @@ Tween._vars = function() {
  *
  * @param {Number, Undefined} Start time to set.
  */
-Tween.setStartTime = function(startTime = performance.now()) {
-  const { delay, duration, repeat, shiftTime } = this._props;
+Tween.setStartTime = function (startTime = performance.now()) {
+  const { delay, duration, shiftTime } = this._props;
 
   // if `elapsed` is greated that end bound -> reset it to `0`
   if (this._elapsed >= (this._end - this._spot)) {
@@ -247,7 +249,7 @@ Tween.setStartTime = function(startTime = performance.now()) {
   // `_spot` - is the animation initialization spot
   // `_elapsed` is how much time elapsed in the `active` period,
   // needed for `play`/`pause` functionality
-  this._spot = startTime - this._elapsed + shiftTime;
+  this._spot = (startTime - this._elapsed) + shiftTime;
   // play time is needed to recalculate time regarding `speed`
   this._playTime = this._spot;
   // `_start` - is the active animation start time bound
@@ -261,65 +263,65 @@ Tween.setStartTime = function(startTime = performance.now()) {
  *
  * @param {Number} The current update time.
  */
-Tween.update = function(time) {
+Tween.update = function (time) {
   const { onUpdate, isReverse, easing, backwardEasing } = this._props;
 
-  // recalculate `time` regarding `speed`
-  time = this._playTime + this._speed*(time - this._playTime);
+  // `t` - `time` regarding `speed`
+  const t = this._playTime + (this._speed * (time - this._playTime));
 
   // save elapsed time
-  this._elapsed = time - this._spot;
+  this._elapsed = t - this._spot;
 
   // if pregress is not right - call the `onRefresh` function #before
-  if (time < this._start && this._progress !== this._cbs[2]) {
-    this._props.onRefresh(false, this.index, time);
+  if (t < this._start && this._progress !== this._cbs[2]) {
+    this._props.onRefresh(false, this.index, t);
     this._progress = this._cbs[2];
   }
   // if pregress is not right - call the `onRefresh` function #after
-  if (time > this._end && this._progress !== this._cbs[3]) {
-    this._props.onRefresh(true, this.index, time);
+  if (t > this._end && this._progress !== this._cbs[3]) {
+    this._props.onRefresh(true, this.index, t);
     this._progress = this._cbs[3];
   }
 
   // if forward progress
-  const isForward = time > this._prevTime;
+  const isForward = t > this._prevTime;
   const ease = (isForward !== isReverse) ? easing : backwardEasing;
 
-  if (time >= this._start && time <= this._end && this._prevTime !== void 0) {
+  if (t >= this._start && t <= this._end && this._prevTime !== undefined) {
     let isActive;
-    const p = (time - this._start) / this._props.duration;
+    const p = (t - this._start) / this._props.duration;
     this._progress = isReverse === false ? p : 1 - p;
-    onUpdate(ease(this._progress), this._progress, isForward, time);
+    onUpdate(ease(this._progress), this._progress, isForward, t);
 
-    if (time > this._start && this._isActive === false && isForward === true) {
+    if (t > this._start && this._isActive === false && isForward === true) {
       // `onStart`
       this._cbs[0](isForward, isReverse, this.index);
       // `onChimeIn`
-      this._chCbs[0](isForward, isReverse, this.index, time);
+      this._chCbs[0](isForward, isReverse, this.index, t);
     }
 
-    if (time === this._start) {
+    if (t === this._start) {
       // `onStart`
       this._cbs[0](isForward, isReverse, this.index);
       // `onChimeIn`
-      this._chCbs[0](isForward, isReverse, this.index, time);
+      this._chCbs[0](isForward, isReverse, this.index, t);
       // set `isActive` to `true` for forward direction
       // but set it to `false` for backward
       isActive = isForward;
     }
 
-    if (time < this._end && this._isActive === false && isForward === false) {
+    if (t < this._end && this._isActive === false && isForward === false) {
       // `onComplete`
       this._cbs[1](false, isReverse, this.index);
       // `onChimeOut`
-      this._chCbs[1](isForward, isReverse, this.index, time);
+      this._chCbs[1](isForward, isReverse, this.index, t);
     }
 
-    if (time === this._end) {
+    if (t === this._end) {
       // `onComplete`
       this._cbs[1](isForward, isReverse, this.index);
       // `onChimeOut`
-      this._chCbs[1](isForward, isReverse, this.index, time);
+      this._chCbs[1](isForward, isReverse, this.index, t);
       // set `isActive` to `false` for forward direction
       // but set it to `true` for backward
       isActive = !isForward;
@@ -327,47 +329,47 @@ Tween.update = function(time) {
 
     this._isActive = (isActive === undefined) ? true : isActive;
 
-    this._prevTime = time;
+    this._prevTime = t;
 
     return !this._isActive;
   }
 
-  if (time > this._end && this._isActive === true) {
+  if (t > this._end && this._isActive === true) {
     this._progress = this._cbs[3];
     // one
-    onUpdate(ease(this._progress), this._progress, isForward, time);
+    onUpdate(ease(this._progress), this._progress, isForward, t);
     // `onComplete`
     this._cbs[1](isForward, isReverse, this.index);
     // `onChimeOut`
-    this._chCbs[1](isForward, isReverse, this.index, time);
+    this._chCbs[1](isForward, isReverse, this.index, t);
     this._isActive = false;
-    this._prevTime = time;
+    this._prevTime = t;
     return true;
   }
 
-  if (time < this._start && this._isActive === true) {
+  if (t < this._start && this._isActive === true) {
     this._progress = this._cbs[2];
     // zero
-    onUpdate(ease(this._progress), this._progress, isForward, time);
+    onUpdate(ease(this._progress), this._progress, isForward, t);
     // `onStart`
     this._cbs[0](isForward, isReverse, this.index);
     // `onChimeIn`
-    this._chCbs[0](isForward, isReverse, this.index, time);
+    this._chCbs[0](isForward, isReverse, this.index, t);
 
     this._isActive = false;
-    this._prevTime = time;
+    this._prevTime = t;
 
     return true;
   }
 
-  this._prevTime = time;
+  this._prevTime = t;
 };
 
 /**
  * Function to reverse callbacks.
  */
-Tween._reverseCallbacks = function() {
-  this._cbs = [ this._cbs[1], this._cbs[0], this._cbs[3], this._cbs[2] ];
+Tween._reverseCallbacks = function () {
+  this._cbs = [this._cbs[1], this._cbs[0], this._cbs[3], this._cbs[2]];
 };
 
 /*
@@ -376,25 +378,25 @@ Tween._reverseCallbacks = function() {
  * @private
  * @param {String} State name [play, pause, 'stop', 'reverse']
  */
-Tween._setState = function(state) {
+Tween._setState = function (state) {
   // save previous state
   this._prevState = this._state;
   this._state = state;
   // callbacks
-  var wasPause = this._prevState === 'pause',
-      wasStop = this._prevState === 'stop',
-      wasPlay = this._prevState === 'play',
-      wasReverse = this._prevState === 'reverse',
-      wasPlaying = wasPlay || wasReverse,
-      wasStill = wasStop || wasPause;
+  const wasPause = this._prevState === 'pause';
+  const wasStop = this._prevState === 'stop';
+  const wasPlay = this._prevState === 'play';
+  const wasReverse = this._prevState === 'reverse';
+  const wasPlaying = wasPlay || wasReverse;
+  const wasStill = wasStop || wasPause;
 
   if ((state === 'play' || state === 'reverse') && wasStill) {
     this._props.onPlaybackStart(state, this._prevState);
   }
-  if ( state === 'pause' && wasPlaying ) {
+  if (state === 'pause' && wasPlaying) {
     this._props.onPlaybackPause();
   }
-  if ( state === 'stop' && (wasPlaying || wasPause)) {
+  if (state === 'stop' && (wasPlaying || wasPause)) {
     this._props.onPlaybackStop();
   }
 };
@@ -404,7 +406,7 @@ Tween._setState = function(state) {
  *                   playback for this tween and removemd it from the queue
  *
  */
-Tween.onTweenerFinish = function() {
+Tween.onTweenerFinish = function () {
   const { isReverse, repeat, isReverseOnRepeat, onPlaybackComplete } = this._props;
   const count = this._repeatCount;
 
@@ -428,11 +430,13 @@ Tween.onTweenerFinish = function() {
  * @private
  * @overrides @ ClassProto
  */
-Tween._extendDefaults = function() {
+Tween._extendDefaults = function () {
   // super call
   ClassProto._extendDefaults.call(this);
   // parse stagger
-  for (let key in this._props) {
+  const propsKeys = Object.keys(this._props);
+  for (let i = 0; i < propsKeys.length; i++) {
+    const key = propsKeys[i];
     this._props[key] = staggerProperty(this._props[key], this.index);
   }
   // parse `easing`

@@ -1,4 +1,4 @@
-import { ClassProto } from '../class-proto';
+import { ClassProto } from '../class-proto.babel.js';
 
 /* --------------------- */
 /* The `Tweenable` class */
@@ -13,16 +13,17 @@ const Tweenable = Object.create(Super);
  * @private
  * @extends @ ClassProto
  */
-Tweenable.init = function(o) {
+Tweenable.init = function (o) {
   Super.init.call(this, o);
   // proxy all tween public methods to `timeline` with fallback to `tween`
-  const methods = [ 'play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset', 'setStartTime' ];
+  const methods = ['play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset', 'setStartTime'];
   for (let i = 0; i < methods.length; i++) {
     const method = methods[i];
     this[method] = (...rest) => {
+      // eslint-disable-next-line no-unused-expressions
       rest; // otherwise rest arguments got lost
       (this.timeline || this.tween)[method](...rest);
-    }
+    };
   }
 };
 

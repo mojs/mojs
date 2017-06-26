@@ -1,4 +1,4 @@
-import { parseStagger } from './parse-stagger';
+import { parseStagger } from './parse-stagger.babel.js';
 
 const staggerProperty = (prop, index) => {
   let value = prop;

@@ -1,4 +1,4 @@
-import { Delta } from '../delta/delta';
+import { Delta } from '../delta/delta.babel.js';
 
 // TODO: cover
 
@@ -23,10 +23,10 @@ export const parseStaticProperty = (key, property, customProperties, index = 0) 
     customProperties,
     index,
     object,
-    supportProps
+    supportProps,
   });
   // update the delta with `0` progress
-  delta.update(0,0);
+  delta.update(0, 0);
   // get the result on target
   const result = target[key];
   // check if `result` is `NaN` return original propert

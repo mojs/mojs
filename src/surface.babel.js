@@ -1,6 +1,5 @@
-import { Html } from './html';
-import { Tweenable } from './tween/tweenable';
-import { parseElement } from './helpers/parse-element';
+import { Html } from './html.babel.js';
+import { Tweenable } from './tween/tweenable.babel.js';
 
 /* -------------------- */
 /* The `Surface` class  */
@@ -15,13 +14,13 @@ const Surface = Object.create(Super);
  * @private
  * @overrides @ ClassProto
  */
-Surface._declareDefaults = function() {
+Surface._declareDefaults = function () {
   this._defaults = {
     parent: document.body,
     // `width` of the surface, fallbacks to `size`
     width: 100,
     // `height` of the surface, fallbacks to `size`
-    height: 100
+    height: 100,
   };
 };
 
@@ -31,7 +30,7 @@ Surface._declareDefaults = function() {
  *
  * @private
  */
-Surface._vars = function() {
+Surface._vars = function () {
   // super call
   Super._vars.call(this);
   // create `Html` element
@@ -43,7 +42,7 @@ Surface._vars = function() {
 /**
  * `_createElement` - function to create root html element.
  */
-Surface._createElement = function() {
+Surface._createElement = function () {
   this.el = document.createElement('div');
 
   this._props.parent.appendChild(this.el);
@@ -54,10 +53,10 @@ Surface._createElement = function() {
  *
  * @private
  */
-Surface._createHtml = function() {
+Surface._createHtml = function () {
   // create object that will be passed to the `html` module
   const htmlOptions = {
-    ...this._props
+    ...this._props,
   };
   // delete parent from the object
   delete htmlOptions.parent;
@@ -68,12 +67,12 @@ Surface._createHtml = function() {
     customProperties: {
       ...this._o.customProperties,
       width: { type: 'unit' },
-      height: { type: 'unit' }
-    }
+      height: { type: 'unit' },
+    },
   });
   // set `timeline` to `html's` timeline so `tweenable` will work
   this.timeline = this._html.timeline;
-}
+};
 
 /**
  * Imitate `class` with wrapper.

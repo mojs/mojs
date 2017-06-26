@@ -1,6 +1,4 @@
-import { Tween } from './tween';
-import { ClassProto } from '../class-proto';
-import { consoleName } from '../constants';
+import { Tween } from './tween.babel.js';
 
 // TODO:
 //  - add `onRefresh` that will call all the child items.
@@ -18,7 +16,7 @@ const Timeline = Object.create(Super);
  * @overrides @ Tween
  * @private
  */
-Timeline._declareDefaults = function() {
+Timeline._declareDefaults = function () {
   // super call
   Super._declareDefaults.call(this);
   // reset `duration` to `0` because user cannot set duration of a Timeline -
@@ -40,20 +38,18 @@ Timeline._declareDefaults = function() {
  * @param   {Number} Time shift >= 0.
  * @returns {Object} Self.
  */
-Timeline.add = function(tween, shift = 0) {
+Timeline.add = function (tween, shift = 0) {
   // make sure the shift is positive
   shift = Math.abs(shift);
   // if tween is really an array of tweens,
   // loop thru them and add one by one
   if (tween instanceof Array) {
-    tween.forEach((tween) => { this.add(tween, shift); });
+    tween.forEach((tw) => { this.add(tw, shift); });
   // if a single tween, add it to `_items`
   } else {
-
     // if it has child `timeline` or `tween` property - add it instead
     const runner = tween.timeline || tween.tween;
     if (runner) { tween = runner; }
-
     // set the `shiftTime` on tween
     tween.set('shiftTime', shift);
     // add to child timelines
@@ -75,7 +71,7 @@ Timeline.add = function(tween, shift = 0) {
  * @param   {Number} Time shift >= 0.
  * @returns {Object} Self.
  */
-Timeline.append = function(tween, shift = 0) {
+Timeline.append = function (tween, shift = 0) {
   // add the tweens shifting them to the current `duration`
   this.add(tween, this._props.duration + Math.abs(shift));
 
@@ -89,10 +85,10 @@ Timeline.append = function(tween, shift = 0) {
  * @param   {Number} Progress [0..1] to set when stopped.
  * @returns {Object} Self.
  */
-Timeline.stop = function(progress) {
+Timeline.stop = function (progress) {
   Super.stop.call(this, progress);
 
-  for (var i = this._items.length-1; i >= 0; i--) {
+  for (let i = this._items.length - 1; i >= 0; i--) {
     this._items[i].stop(progress);
   }
 
@@ -106,7 +102,7 @@ Timeline.stop = function(progress) {
  * @overrides @ Tween
  * @returns this.
  */
-Timeline.reset = function() {
+Timeline.reset = function () {
   Super.reset.call(this);
   this._callOnItems('reset');
 
@@ -125,7 +121,7 @@ Timeline.reset = function() {
  *
  * @param  {Number} Start time.
  */
-Timeline.setStartTime = function(time) {
+Timeline.setStartTime = function (time) {
   Super.setStartTime.call(this, time);
   this._callOnItems('setStartTime', this._start);
 
@@ -138,8 +134,8 @@ Timeline.setStartTime = function(time) {
  * @param  {String} `name` Function name.
  * @param  {Arrag} args All other arguments.
  */
-Timeline._callOnItems = function(name, ...args) {
-  for (var i = 0; i < this._items.length; i++) {
+Timeline._callOnItems = function (name, ...args) {
+  for (let i = 0; i < this._items.length; i++) {
     this._items[i][name](...args);
   }
 };
@@ -161,9 +157,9 @@ Timeline._createUpdate = function (onUpdate, context) {
    * @param {Boolean} If forward or backward direction.
    * @param {Number} Update time.
    */
-  return function(ep, p, isForward, time) {
+  return function (ep, p, isForward, time) {
     // 1. the order is important
-    for (var i = 0; i < context._items.length; i++) {
+    for (let i = 0; i < context._items.length; i++) {
       context._items[i].update(time);
     }
     // 2. the order is important
@@ -191,7 +187,7 @@ Timeline._vars = function () {
  * @overrides @ Tween
  * @private
  */
-Timeline._extendDefaults = function() {
+Timeline._extendDefaults = function () {
   // super call
   Super._extendDefaults.call(this);
   // save the `onUpdate` callback

@@ -15,7 +15,7 @@ let isRunning = false;
  */
 const savePlayingTweens = () => {
   savedTweens = tweens.slice(0);
-  for (let i = 0; i < savedTweens.length; i++ ) {
+  for (let i = 0; i < savedTweens.length; i++) {
     savedTweens[i].pause();
   }
 };
@@ -24,7 +24,7 @@ const savePlayingTweens = () => {
  * `restorePlayingTweens` - function to restore all playing tweens.
  */
 const restorePlayingTweens = () => {
-  for (let i=0; i < savedTweens.length; i++ ) {
+  for (let i = 0; i < savedTweens.length; i++) {
     savedTweens[i].play();
   }
 };
@@ -33,8 +33,11 @@ const restorePlayingTweens = () => {
  * `onVisibilityChange` - visibilityChange handler.
  */
 const onVisibilityChange = () => {
-  if (document['hidden']) { savePlayingTweens() }
-  else { restorePlayingTweens(); }
+  if (document.hidden) {
+    savePlayingTweens();
+  } else {
+    restorePlayingTweens();
+  }
 };
 
 /**
@@ -57,13 +60,10 @@ const stop = () => {
  * `remove` - function to remove specific tween/timeline form updating.
  */
 const remove = (tween) => {
-  var index = (typeof tween === 'number')
+  const index = (typeof tween === 'number')
                 ? tween : tweens.indexOf(tween);
 
   if (index !== -1) {
-    tween = tweens[index];
-    // needed?
-    // tween._isRunning = false;
     tweens.splice(index, 1);
   }
 };
@@ -72,9 +72,9 @@ const remove = (tween) => {
  *  `update` - fucntion  to update every tween/timeline on animation frame.
  */
 const update = (time) => {
-  var i = tweens.length;
-  while(i--) {
-    var tween = tweens[i];
+  let i = tweens.length;
+  while (i--) {
+    const tween = tweens[i];
     if (tween.update(time) === true) {
       remove(tween);
       tween.onTweenerFinish();
@@ -88,7 +88,9 @@ const update = (time) => {
  @returns this
 */
 const loop = () => {
-  if (tweens.length === 0) { return stop(); }
+  if (tweens.length === 0) {
+    return stop();
+  }
   update(performance.now());
   requestAnimationFrame(loop);
 };
@@ -97,7 +99,7 @@ const loop = () => {
  * `start` - function to start the animation loop.
  */
 const start = () => {
-  if (isRunning) { return; };
+  if (isRunning) { return; }
   isRunning = true;
   requestAnimationFrame(loop);
 };
@@ -106,8 +108,8 @@ const start = () => {
  * `add` - function to add a Tween/Timeline to loop pool.
  */
 const add = (tween) => {
- tweens.push(tween);
- start();
+  tweens.push(tween);
+  start();
 };
 
 /**
@@ -122,5 +124,4 @@ document.addEventListener('visibilitychange', onVisibilityChange, false);
 
 const tweener = { add, remove, caffeinate };
 
-// const tweener = new Tweener;
-export { tweener as tweener };
+export { tweener };

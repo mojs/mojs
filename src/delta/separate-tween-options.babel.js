@@ -1,4 +1,4 @@
-import { tweenDefaults } from '../tween/tween-defaults';
+import { tweenDefaults } from '../tween/tween-defaults.babel.js';
 
 /**
  * Function to split the delta object to `tween` options and actual `delta`.
@@ -8,8 +8,11 @@ import { tweenDefaults } from '../tween/tween-defaults';
  */
 const separateTweenOptions = (object) => {
   let tweenOptions;
-  for (let option in tweenDefaults) {
-    if (object[option] !== void 0) {
+  const defaultKeys = Object.keys(tweenDefaults);
+  for (let i = 0; i < defaultKeys.length; i++) {
+    const option = defaultKeys[i];
+
+    if (object[option] !== undefined) {
       tweenOptions = tweenOptions || {};
       tweenOptions[option] = object[option];
       delete object[option];
@@ -19,4 +22,4 @@ const separateTweenOptions = (object) => {
   return tweenOptions;
 };
 
-export { separateTweenOptions as separateTweenOptions };
+export { separateTweenOptions };

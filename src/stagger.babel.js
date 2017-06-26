@@ -1,6 +1,6 @@
-import { Timeline } from './tween/timeline';
-import { Tweenable } from './tween/tweenable';
-import { staggerProperty } from './helpers/stagger-property';
+import { Timeline } from './tween/timeline.babel.js';
+import { Tweenable } from './tween/tweenable.babel.js';
+import { staggerProperty } from './helpers/stagger-property.babel.js';
 
 /* -------------------- */
 /* The `Stagger` class  */
@@ -15,7 +15,7 @@ const Stagger = Object.create(Super);
  * @extends @Tweenable
  * @public
  */
-Stagger.init = function(o = {}, Module) {
+Stagger.init = function (o = {}, Module) {
   // super call
   Super.init.call(this, o);
   // create main timeline
@@ -30,7 +30,7 @@ Stagger.init = function(o = {}, Module) {
  * @private
  * @param {Object} Child module class.
  */
-Stagger._createModules = function(Module) {
+Stagger._createModules = function (Module) {
   this._modules = [];
   const { items, el = {} } = this._o;
   const modulesCount = items || el.length || 1;
@@ -49,11 +49,13 @@ Stagger._createModules = function(Module) {
  * @param {Object} Stagger options.
  * @param {Number} Index of a module.
  */
-Stagger._getStaggerOptions = function(options, i) {
+Stagger._getStaggerOptions = function (options, i) {
   // pass index to child properties
   const o = { index: i };
 
-  for (let key in options) {
+  const keys = Object.keys(options);
+  for (let j = 0; j < keys.length; j++) {
+    const key = keys[j];
     o[key] = staggerProperty(options[key], i);
   }
 
@@ -66,7 +68,7 @@ Stagger._getStaggerOptions = function(options, i) {
  * @private
  * @param {Object} Timeline options.
  */
-Stagger._createTimeline = function(options) {
+Stagger._createTimeline = function (options) {
   this.timeline = new Timeline(options);
 
   delete this._o.timeline;
@@ -75,12 +77,13 @@ Stagger._createTimeline = function(options) {
 /**
  * function to wrap a Module with the stagger wrapper.
  */
-const stagger = (Module) => {
+const stagger = (Module) => { // eslint-disable-line arrow-body-style
   return (options) => {
     const instance = Object.create(Stagger);
     instance.init(options, Module);
+
     return instance;
   };
-}
+};
 
 export { stagger };

@@ -13,6 +13,6 @@ const wrap = (module) => {
   };
   w.__mojsClass = module;
   return w;
-}
+};
 
 export { wrap };

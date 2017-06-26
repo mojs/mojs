@@ -1,4 +1,4 @@
-import { getRegexpUnit } from '../delta/get-regexp-unit';
+import { getRegexpUnit } from '../delta/get-regexp-unit.babel.js';
 
 /**
  * `parseStagger` - function to parse `stagger()` strings.
@@ -18,7 +18,7 @@ const parseStagger = (value, index) => {
   // split the value `stagger([body])`
   const body = value.split(/stagger\(|\)$/)[1].toLowerCase();
   // split the body
-  const stagger = body.split(/([^\(,\s]+)(?=\s*,|\s*$)/gim);
+  const stagger = body.split(/([^(,\s]+)(?=\s*,|\s*$)/gim);
   // assume two values in the `stagger(20, 20)`
   let base = stagger[1];
   let step = stagger[3];
@@ -34,8 +34,8 @@ const parseStagger = (value, index) => {
   const stepValue = parseFloat(step);
   const stepUnit = getRegexpUnit(step);
   // get result unit and result
-  const unit = (baseUnit) ? baseUnit : stepUnit;
-  const result = baseValue + index*stepValue;
+  const unit = (baseUnit !== undefined) ? baseUnit : stepUnit;
+  const result = baseValue + (index * stepValue);
   // if unit is present - return the result with unit, otherwise return number
   return (unit) ? `${result}${unit}` : result;
 };

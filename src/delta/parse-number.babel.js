@@ -9,7 +9,7 @@ const parseNumber = (name, object) => {
   const result = {
     type: 'number',
     name,
-    ...object
+    ...object,
   };
   // parse the values in case we have strings there
   result.start = parseFloat(result.start);
@@ -20,4 +20,4 @@ const parseNumber = (name, object) => {
   return result;
 };
 
-export { parseNumber as parseNumber };
+export { parseNumber };

@@ -1,11 +1,11 @@
 import {
   defaultEasing,
   defaultEasingString,
-  consoleName
-} from '../constants';
+  consoleName,
+} from '../constants.babel.js';
 
-import { easing } from './easing';
-import { path } from './path';
+import { easing } from './easing.babel.js';
+import { path } from './path.babel.js';
 
 /**
  * parseEasing - function to parse all easing values to a function.
@@ -17,23 +17,28 @@ const parseEasing = (ease = defaultEasingString) => {
   const type = typeof ease;
 
   switch (type) {
-    case 'function': { return ease; }
+    case 'function': {
+      return ease;
+    }
     case 'string': {
       // path easing
       if (ease[0].toLowerCase() === 'm') {
-          return path(ease);
+        return path(ease);
       }
 
       ease = ease.toLowerCase().split('.');
       const easeParent = easing[ease[0]];
 
       if (!easeParent) {
-        console.error(`${consoleName} Easing with name "${ease[0]}" wasn't found, fallback to "${defaultEasingString}" instead.`, easing);
+        console.error(`${consoleName} Easing with name "${ease[0]}" wasn't found, fallback to "${defaultEasingString}" instead.`, easing); // eslint-disable-line no-console
 
         return easing[defaultEasing[0]][defaultEasing[1]];
       }
       return easeParent[ease[1]];
     }
+    // default:
+    //   console.error(`${consoleName} Only strings and function supported atm.`, ease); // eslint-disable-line no-console
+
     // // comming soon:
     // //   - if array passed - parse as `bezier` function
     // // ---
@@ -52,4 +57,4 @@ const parseEasing = (ease = defaultEasingString) => {
   }
 };
 
-export { parseEasing as parseEasing };
+export { parseEasing };

@@ -1,10 +1,11 @@
-import { path } from './path';
+import { path } from './path.babel.js';
+
 /**
  * TODO:
  *  [] add `setParent` public method.
  */
 
-import { pow } from './pow';
+import { pow } from './pow.babel.js';
 
 /**
  * `easing` - object that holds all easing avaliable in `mojs`.
@@ -24,13 +25,13 @@ const easing = {
    * @returns {Number} Eased progress in range of `[0...1]`
    */
   sin: {
-     in: (k) => { return 1 - Math.cos(k * Math.PI / 2); },
-     out: (k) => { return Math.sin(k * Math.PI / 2); },
-     inout: (k) => { return 0.5 * (1 - Math.cos(Math.PI * k)); }
+    in: (k) => { return 1 - Math.cos((k * Math.PI) / 2); },
+    out: (k) => { return Math.sin((k * Math.PI) / 2); },
+    inout: (k) => { return 0.5 * (1 - Math.cos(Math.PI * k)); },
   },
 
   pow,
-  path
+  path,
 };
 
-export { easing as easing };
+export { easing };

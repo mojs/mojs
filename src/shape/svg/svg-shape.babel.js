@@ -1,4 +1,4 @@
-import { ClassProto } from '../../class-proto';
+import { ClassProto } from '../../class-proto.babel.js';
 
 /* --------------------- */
 /* The `SvgShape` class  */
@@ -15,17 +15,17 @@ const NS = 'http://www.w3.org/2000/svg';
  * @extends @ClassProto
  * @private
  */
-SvgShape.init = function(o) {
+SvgShape.init = function (o) {
   // super call
   Super.init.call(this, o);
   // create SVG canvas
   this._createSVGCanvas();
-}
+};
 
 /**
  * `_createSVGCanvas` - function to create a canvas.
  */
-SvgShape._createSVGCanvas = function() {
+SvgShape._createSVGCanvas = function () {
   this.canvas = document.createElementNS(NS, 'svg');
   this.canvas.style.width = '100%';
   this.canvas.style.height = '100%';
@@ -35,7 +35,7 @@ SvgShape._createSVGCanvas = function() {
   this.canvas.appendChild(this.root);
 
   this._o.el.appendChild(this.canvas);
-}
+};
 
 /**
  * Imitate `class` with wrapper
