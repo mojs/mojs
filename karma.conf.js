@@ -11,7 +11,7 @@ module.exports = function(config) {
     browsers = Object.keys(customLaunchers);
   } else {
     reporters = ['progress', 'coverage', 'clear-screen'];
-    // browsers = ['PhantomJS'];
+    browsers = ['Chrome'];
   }
 
   config.set({
