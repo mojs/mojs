@@ -21,7 +21,7 @@ const Surface = Object.create(Super);
  */
 Surface.init = function (o = {}) {
   // create an Html element
-  this.el = document.createElement('div');
+  this._createElement();
   // add element and custom properties definition to the options
   o.el = this.el;
   o.customProperties = {
@@ -34,6 +34,13 @@ Surface.init = function (o = {}) {
   Super.init.call(this, o);
   // add element to DOM - we have `_props` available now
   this._props.parent.appendChild(this.el);
+};
+
+/**
+ * `_createElement` - function to create `Html` element.
+ */
+Surface._createElement = function () {
+  this.el = document.createElement('div');
 };
 
 /**

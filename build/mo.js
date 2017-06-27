@@ -2012,7 +2012,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
       // create an Html element
-      this.el = document.createElement('div');
+      this._createElement();
       // add element and custom properties definition to the options
       o.el = this.el;
       o.customProperties = _extends({}, o.customProperties, {
@@ -2024,6 +2024,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       Super.init.call(this, o);
       // add element to DOM - we have `_props` available now
       this._props.parent.appendChild(this.el);
+    };
+
+    /**
+     * `_createElement` - function to create `Html` element.
+     */
+    Surface._createElement = function () {
+      this.el = document.createElement('div');
     };
 
     /**
@@ -4230,10 +4237,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     /*
       TODO:
-        - [defaults]: add `size`, `sizeX` and `sizeY` defaults and `types` for them
-        - [customProperties]: new `render` should call the original one
         - [customProperties]: should add `isSkipRender: true` to all `non-surface` properties
         - [customProperties]: should create `styleKeys`, `shapeKeys` and `shapeEl` and pass it thru
+        - [customProperties]: new `render` should call the original one
         - [customProperties]: should not override the original properties type definitions
     */
 
@@ -4241,7 +4247,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * `_declareDefaults` - Method to declare `_defaults`.
      *
      * @private
-     * @overrides @ Surface
+     * @overrides @Surface
      */
     Shape._declareDefaults = function () {
       Super._declareDefaults.call(this);
@@ -4256,30 +4262,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       };
       // declare shape defaults
       this._defaults = _extends({}, this._surfaceDefaults, this._shapeDefaults);
-    };
 
-    /**
-     * `_createElement` - function to create shape element.
-     */
-    Shape._createElement = function () {
-      // super call
-      Super._createElement.call(this);
       // create shape module
-      this._initializeShapeModule();
-    };
+      this.shape = new _circleBabel.Circle({
+        el: this.el
+      });
 
-    /**
-     * `_createHtml` - function to create `html` module.
-     *
-     * @extends @Surface
-     * @private
-     */
-    Shape._createHtml = function () {
       // create customProperties
       var newCustomProps = this._createCustomProperties(this._o);
       this._o.customProperties = newCustomProps;
-      // super call
-      Super._createHtml.call(this);
     };
 
     /**
@@ -4320,15 +4311,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       // const originalRender = this._o.customProperties.render;
       // this._o.customProperties.render = this.shape.render;
       return newCustomProps;
-    };
-
-    /**
-     * `_initializeShapeModule` - function to initialize shape.
-     */
-    Shape._initializeShapeModule = function () {
-      this.shape = new _circleBabel.Circle({
-        el: this.el
-      });
     };
 
     /**
