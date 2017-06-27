@@ -25,9 +25,7 @@ const Shape = Object.create(Super);
 Shape._declareDefaults = function () {
   Super._declareDefaults.call(this);
   // save surface property
-  this._surfaceDefaults = {
-    ...this._defaults,
-  };
+  this._surfaceDefaults = { ...this._defaults };
   // defaults of this module
   this._shapeDefaults = {
     // add `Shape` defaults
@@ -40,19 +38,18 @@ Shape._declareDefaults = function () {
     // keep the `Surface` defaults
     ...this._surfaceDefaults,
     // add this module defaults
-    ...this._shapeDefaults
+    ...this._shapeDefaults,
   };
 
   // create shape module
   this.shape = new Circle({
-    el: this.el
+    el: this.el,
   });
 
   // create customProperties
   const newCustomProps = this._createCustomProperties(this._o);
   this._o.customProperties = newCustomProps;
 };
-
 
 /**
  * `_createCustomProperties` - function to create new customProperties.
@@ -63,19 +60,16 @@ Shape._declareDefaults = function () {
 Shape._createCustomProperties = function (o) {
   const { customProperties = {} } = o;
   this._originalCustomProps = customProperties;
-  const optionsKeys = Object.keys(o);
 
   const newCustomProps = {};
 
-  newCustomProps.pipeObj = {
-    shapeEl: this.shape.shapeEl
-  };
+  newCustomProps.pipeObj = { shapeEl: this.shape.shapeEl };
 
   const defaultsKeys = Object.keys(this._shapeDefaults);
   for (let i = 0; i < defaultsKeys.length; i++) {
     const key = defaultsKeys[i];
     newCustomProps[key] = {
-      isSkipRender: true
+      isSkipRender: true,
     };
   }
 

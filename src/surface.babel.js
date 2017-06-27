@@ -1,5 +1,4 @@
 import { Html } from './html.babel.js';
-import { Tweenable } from './tween/tweenable.babel.js';
 
 /* -------------------- */
 /* The `Surface` class  */
@@ -25,9 +24,9 @@ Surface.init = function (o = {}) {
   // add element and custom properties definition to the options
   o.el = this.el;
   o.customProperties = {
-      ...o.customProperties,
-      width: { type: 'unit' },
-      height: { type: 'unit' },
+    ...o.customProperties,
+    width: { type: 'unit' },
+    height: { type: 'unit' },
   };
 
   // super call on HTML
@@ -53,9 +52,7 @@ Surface._declareDefaults = function () {
   // super call
   Super._declareDefaults.call(this);
   // save html related defaults
-  this._htmlDefaults = {
-    ...this._defaults
-  };
+  this._htmlDefaults = { ...this._defaults };
   // declare surface defaults
   this._defaults = {
     ...this._htmlDefaults,
@@ -64,7 +61,7 @@ Surface._declareDefaults = function () {
     // `width` of the surface, fallbacks to `size`
     width: 100,
     // `height` of the surface, fallbacks to `size`
-    height: 100
+    height: 100,
   };
 };
 
