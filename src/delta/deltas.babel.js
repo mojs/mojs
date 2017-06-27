@@ -38,6 +38,7 @@ Deltas.init = function (o = {}) {
   // save the el object and remove it immediately
   this._el = options.el || {};
   delete options.el;
+  delete options.parent; // TODO: cover!
   // create support object for complex properties
   this._supportProps = {};
   // set up the main `tween`

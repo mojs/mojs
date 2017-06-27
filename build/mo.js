@@ -193,7 +193,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       // parse index and delete it from options
       this.index = this._o.index || 0;
       delete this._o.index;
-      // invoke lifecycle functions
       this._declareDefaults();
       this._extendDefaults();
       this._vars();
@@ -1448,8 +1447,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           key = _props2.key,
           customProperties = _props2.customProperties;
 
+      var record = customProperties[key];
 
-      return customProperties[key] != null ? this._parseByCustom() : this._parseByGuess();
+      return record != null && record.type != null ? this._parseByCustom() : this._parseByGuess();
     };
 
     /**
@@ -1463,7 +1463,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           object = _props3.object;
 
       var split = this._getSplit(object);
-      // // try to parse `start`/`end` as colors first, if ok - this is a color delta
+      // try to parse `start`/`end` as colors first, if ok - this is a color delta
       var startColor = (0, _makeColorObjectBabel.makeColorObject)(split.start);
       var endColor = (0, _makeColorObjectBabel.makeColorObject)(split.end);
       if (!startColor.isError && !endColor.isError) {
@@ -1994,8 +1994,37 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     /* The `Surface` class  */
     /* -------------------- */
 
-    var Super = _tweenableBabel.Tweenable.__mojsClass;
+    // It wextends `Html` module, create an HTMLElement and adds it to the DOM,
+    // after that it passes the newely create element to `el` option of the
+    // Html module and declares `width`/`height` defaults.
+    // Thus it cretes a `Surface` that is controlled by `Html` module.
+
+    var Super = _htmlBabel.Html.__mojsClass;
     var Surface = Object.create(Super);
+
+    /**
+     * `init` - function init the class.
+     *
+     * @public
+     * @extends @Html
+     */
+    Surface.init = function () {
+      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      // create an Html element
+      this.el = document.createElement('div');
+      // add element and custom properties definition to the options
+      o.el = this.el;
+      o.customProperties = _extends({}, o.customProperties, {
+        width: { type: 'unit' },
+        height: { type: 'unit' }
+      });
+
+      // super call on HTML
+      Super.init.call(this, o);
+      // add element to DOM - we have `_props` available now
+      this._props.parent.appendChild(this.el);
+    };
 
     /**
      * `_declareDefaults` - Method to declare `_defaults`.
@@ -2004,60 +2033,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @overrides @ ClassProto
      */
     Surface._declareDefaults = function () {
-      this._defaults = {
+      // super call
+      Super._declareDefaults.call(this);
+      // save html related defaults
+      this._htmlDefaults = _extends({}, this._defaults);
+      // declare surface defaults
+      this._defaults = _extends({}, this._htmlDefaults, {
+        // add surface properties
         parent: document.body,
         // `width` of the surface, fallbacks to `size`
         width: 100,
         // `height` of the surface, fallbacks to `size`
         height: 100
-      };
-    };
-
-    /**
-     * _vars - function do declare `variables` after `_defaults` were extended
-     *         by `options` and saved to `_props`
-     *
-     * @private
-     */
-    Surface._vars = function () {
-      // super call
-      Super._vars.call(this);
-      // create `Html` element
-      this._createElement();
-      // create `Html` module
-      this._createHtml();
-    };
-
-    /**
-     * `_createElement` - function to create root html element.
-     */
-    Surface._createElement = function () {
-      this.el = document.createElement('div');
-
-      this._props.parent.appendChild(this.el);
-    };
-
-    /**
-     * `_createHtml` - function to create `html` module.
-     *
-     * @private
-     */
-    Surface._createHtml = function () {
-      // create object that will be passed to the `html` module
-      var htmlOptions = _extends({}, this._props);
-      // delete parent from the object
-      delete htmlOptions.parent;
-      // create `html`
-      this._html = new _htmlBabel.Html(_extends({
-        el: this.el
-      }, htmlOptions, {
-        customProperties: _extends({}, this._o.customProperties, {
-          width: { type: 'unit' },
-          height: { type: 'unit' }
-        })
-      }));
-      // set `timeline` to `html's` timeline so `tweenable` will work
-      this.timeline = this._html.timeline;
+      });
     };
 
     /**
@@ -2475,6 +2463,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       // save the el object and remove it immediately
       this._el = options.el || {};
       delete options.el;
+      delete options.parent; // TODO: cover!
       // create support object for complex properties
       this._supportProps = {};
       // set up the main `tween`
@@ -4005,19 +3994,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var NS = 'http://www.w3.org/2000/svg';
 
     /**
-     * `init` - lifecycle initialization function.
-     *
-     * @extends @ClassProto
-     * @private
-     */
-    Circle.init = function (o) {
-      // super call
-      Super.init.call(this, o);
-      // create SVG canvas
-      this._initializeShape();
-    };
-
-    /**
      * `_initializeShape` - function to element for render.
      */
     Circle._initializeShape = function () {
@@ -4144,6 +4120,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       Super.init.call(this, o);
       // create SVG canvas
       this._createSVGCanvas();
+
+      // lifecycle method for shapes that will extend this class
+      if (this._initializeShape) {
+        // create SVG canvas
+        this._initializeShape();
+      }
     };
 
     /**
@@ -4225,6 +4207,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     });
     exports.Shape = undefined;
 
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
 
     /* ------------------ */
     /* The `Shape` class  */
@@ -4242,11 +4237,35 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         - [customProperties]: should not override the original properties type definitions
     */
 
+    /**
+     * `_declareDefaults` - Method to declare `_defaults`.
+     *
+     * @private
+     * @overrides @ Surface
+     */
+    Shape._declareDefaults = function () {
+      Super._declareDefaults.call(this);
+      // save surface property
+      this._surfaceDefaults = _extends({}, this._defaults);
+      // defaults of this module
+      this._shapeDefaults = {
+        // add `Shape` defaults
+        size: 100,
+        sizeX: undefined,
+        sizeY: undefined
+      };
+      // declare shape defaults
+      this._defaults = _extends({}, this._surfaceDefaults, this._shapeDefaults);
+    };
+
+    /**
+     * `_createElement` - function to create shape element.
+     */
     Shape._createElement = function () {
       // super call
       Super._createElement.call(this);
-      // create shape
-      this._initializeShape();
+      // create shape module
+      this._initializeShapeModule();
     };
 
     /**
@@ -4256,18 +4275,57 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @private
      */
     Shape._createHtml = function () {
-      this._o.customProperties = this._o.customProperties || {};
-      // const originalRender = this._o.customProperties.render;
-
-      this._o.customProperties.render = this.shape.render;
+      // create customProperties
+      var newCustomProps = this._createCustomProperties(this._o);
+      this._o.customProperties = newCustomProps;
       // super call
       Super._createHtml.call(this);
     };
 
     /**
-     * `_initializeShape` - function to initialize shape.
+     * `_createCustomProperties` - function to create new customProperties.
+     *
+     * @param {Object} o Options.
+     * @return {Object} New custom properties.
      */
-    Shape._initializeShape = function () {
+    Shape._createCustomProperties = function (o) {
+      var _o$customProperties = o.customProperties,
+          customProperties = _o$customProperties === undefined ? {} : _o$customProperties;
+
+      this._originalCustomProps = customProperties;
+      var optionsKeys = Object.keys(o);
+
+      var newCustomProps = {};
+
+      newCustomProps.pipeObj = {
+        shapeEl: this.shape.shapeEl
+      };
+
+      var defaultsKeys = Object.keys(this._shapeDefaults);
+      for (var i = 0; i < defaultsKeys.length; i++) {
+        var key = defaultsKeys[i];
+        newCustomProps[key] = {
+          isSkipRender: true
+        };
+      }
+
+      var optionKeys = Object.keys(o);
+      for (var _i = 0; _i < optionKeys.length; _i++) {
+        var _key = optionKeys[_i];
+        if (_key !== 'el' && this._surfaceDefaults[_key] === undefined) {
+          newCustomProps[_key] = { isSkipRender: true };
+        }
+      }
+
+      // const originalRender = this._o.customProperties.render;
+      // this._o.customProperties.render = this.shape.render;
+      return newCustomProps;
+    };
+
+    /**
+     * `_initializeShapeModule` - function to initialize shape.
+     */
+    Shape._initializeShapeModule = function () {
       this.shape = new _circleBabel.Circle({
         el: this.el
       });
@@ -4465,6 +4523,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     var parseStaticProperty = exports.parseStaticProperty = function (key, property, customProperties) {
       var index = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+
+      // if property is not defined, just return it
+      if (property == null) {
+        return property;
+      }
 
       var target = {};
       var object = {};

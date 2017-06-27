@@ -10,19 +10,6 @@ const Circle = Object.create(Super);
 const NS = 'http://www.w3.org/2000/svg';
 
 /**
- * `init` - lifecycle initialization function.
- *
- * @extends @ClassProto
- * @private
- */
-Circle.init = function (o) {
-  // super call
-  Super.init.call(this, o);
-  // create SVG canvas
-  this._initializeShape();
-};
-
-/**
  * `_initializeShape` - function to element for render.
  */
 Circle._initializeShape = function () {

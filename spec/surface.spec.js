@@ -1,14 +1,13 @@
 var Surface = mojs.Surface;
 var Html = mojs.Html;
 var helpers = mojs.__helpers__;
-var Tweenable = helpers.Tweenable;
 
 describe('`surface` ->', function () {
   describe('extension ->', function() {
-    it('should extend `Tweenable`', function () {
+    it('should extend `Html`', function () {
       var surface = new Surface();
 
-      expect(Tweenable.__mojsClass.isPrototypeOf(surface)).toBe(true);
+      expect(Html.__mojsClass.isPrototypeOf(surface)).toBe(true);
     });
   });
 
@@ -17,7 +16,6 @@ describe('`surface` ->', function () {
       var surface = new Surface();
 
       expect(surface.el + '').toBe('[object HTMLDivElement]');
-      expect(surface.el.parentNode).toBe(document.body);
     });
 
     it('should append el to parent', function () {
@@ -37,31 +35,59 @@ describe('`surface` ->', function () {
       expect(surface._defaults).toEqual({
         parent: document.body,
         width: 100,
-        height: 100
+        height: 100,
+        is3d: false,
+        el: null,
+        customProperties: {},
+
+        x: 0,
+        y: 0,
+        z: 0,
+
+        skewX: 0,
+        skewY: 0,
+
+        angle: 0,
+        angleX: 0,
+        angleY: 0,
+        angleZ: undefined,
+
+        scale: 1,
+        scaleX: undefined,
+        scaleY: undefined,
+        scaleZ: undefined,
+      });
+    });
+
+    it('should save `Html` defaults', function () {
+      var surface = new Surface();
+
+      expect(surface._htmlDefaults).toEqual({
+        is3d: false,
+        el: null,
+        customProperties: {},
+
+        x: 0,
+        y: 0,
+        z: 0,
+
+        skewX: 0,
+        skewY: 0,
+
+        angle: 0,
+        angleX: 0,
+        angleY: 0,
+        angleZ: undefined,
+
+        scale: 1,
+        scaleX: undefined,
+        scaleY: undefined,
+        scaleZ: undefined,
       });
     });
   });
 
-  describe('`html` ->', function() {
-    it('should create `html`', function () {
-      var surface = new Surface();
-
-      expect(Html.__mojsClass.isPrototypeOf(surface._html)).toBe(true);
-      expect(surface._html._o.el).toBe(surface.el);
-      expect(surface.timeline).toBe(surface._html.timeline);
-    });
-
-    it('should pass `_o` to `_html`', function () {
-      var spam = 2;
-      var eggs = 1;
-      var surface = new Surface({
-        spam: spam,
-        eggs: eggs
-      });
-
-      expect(surface._html._o.spam).toBe(spam);
-      expect(surface._html._o.eggs).toBe(eggs);
-    });
+  describe('`customProperties` ->', function() {
 
     it('should pass `customProperties` with `width` and `hight` types', function () {
       var spam = 2;
@@ -71,8 +97,8 @@ describe('`surface` ->', function () {
         eggs: eggs
       });
 
-      expect(surface._html._o.customProperties.height.type).toBe('unit');
-      expect(surface._html._o.customProperties.width.type).toBe('unit');
+      expect(surface._o.customProperties.height.type).toBe('unit');
+      expect(surface._o.customProperties.width.type).toBe('unit');
     });
 
     it('should pipe passed `customProperties`', function () {
@@ -92,8 +118,8 @@ describe('`surface` ->', function () {
         }
       });
 
-      expect(surface._html._o.customProperties.spam.type).toBe('color');
-      expect(surface._html._o.customProperties.render).toBe(render);
+      expect(surface._o.customProperties.spam.type).toBe('color');
+      expect(surface._o.customProperties.render).toBe(render);
     });
   });
 

@@ -12,6 +12,11 @@ import { Delta } from '../delta/delta.babel.js';
  * @param {Number} index Index.
  */
 export const parseStaticProperty = (key, property, customProperties, index = 0) => {
+  // if property is not defined, just return it
+  if (property == null) {
+    return property;
+  }
+
   const target = {};
   const object = {};
   const supportProps = {};

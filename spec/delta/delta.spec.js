@@ -116,6 +116,26 @@ describe('`delta` ->', function () {
       expect(delta._delta).toEqual(parseColor(key, splitDelta(options)));
     });
 
+    it('should parse delta according to custom properties #without type', function () {
+      const customProperties = {
+        x: {
+          isSkipRender: true
+        }
+      }
+      var key = 'x';
+      var options = {
+        '20': 30, duration: 2000
+      };
+
+      var delta = Delta({
+        key: key,
+        object: options,
+        customProperties: customProperties
+      });
+
+      expect(delta._delta).toEqual(parseNumber(key, splitDelta(options)));
+    });
+
     it('should parse delta #number', function () {
       var key = 'x';
       var options = {
@@ -165,7 +185,7 @@ describe('`delta` ->', function () {
         key: key,
         object: options,
         customProperties: customProperties,
-        index: index
+        index: index,
       });
 
       expect(delta._delta.start).toBe(20 + index*20);
@@ -184,7 +204,6 @@ describe('`delta` ->', function () {
         key: key,
         object: options,
         index: index,
-        isIt: 1
       });
       expect(delta._delta.start).toBe(45 + -15*index);
       expect(delta._delta.end).toBe(200 + 300*index);

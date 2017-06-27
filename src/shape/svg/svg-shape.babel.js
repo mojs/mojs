@@ -20,6 +20,12 @@ SvgShape.init = function (o) {
   Super.init.call(this, o);
   // create SVG canvas
   this._createSVGCanvas();
+
+  // lifecycle method for shapes that will extend this class
+  if (this._initializeShape) {
+    // create SVG canvas
+    this._initializeShape();
+  }
 };
 
 /**

@@ -169,8 +169,9 @@ Delta._declareDefaults = function () {
  */
 Delta._parseDelta = function () {
   const { key, customProperties } = this._props;
+  const record = customProperties[key];
 
-  return (customProperties[key] != null)
+  return (record != null && record.type != null)
       ? this._parseByCustom()
       : this._parseByGuess();
 };
@@ -183,7 +184,7 @@ Delta._parseDelta = function () {
 Delta._parseByGuess = function () {
   const { key, object } = this._props;
   const split = this._getSplit(object);
-  // // try to parse `start`/`end` as colors first, if ok - this is a color delta
+  // try to parse `start`/`end` as colors first, if ok - this is a color delta
   const startColor = makeColorObject(split.start);
   const endColor = makeColorObject(split.end);
   if (!startColor.isError && !endColor.isError) {

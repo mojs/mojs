@@ -5,8 +5,36 @@ import { Tweenable } from './tween/tweenable.babel.js';
 /* The `Surface` class  */
 /* -------------------- */
 
-const Super = Tweenable.__mojsClass;
+// It wextends `Html` module, create an HTMLElement and adds it to the DOM,
+// after that it passes the newely create element to `el` option of the
+// Html module and declares `width`/`height` defaults.
+// Thus it cretes a `Surface` that is controlled by `Html` module.
+
+const Super = Html.__mojsClass;
 const Surface = Object.create(Super);
+
+/**
+ * `init` - function init the class.
+ *
+ * @public
+ * @extends @Html
+ */
+Surface.init = function (o = {}) {
+  // create an Html element
+  this.el = document.createElement('div');
+  // add element and custom properties definition to the options
+  o.el = this.el;
+  o.customProperties = {
+      ...o.customProperties,
+      width: { type: 'unit' },
+      height: { type: 'unit' },
+  };
+
+  // super call on HTML
+  Super.init.call(this, o);
+  // add element to DOM - we have `_props` available now
+  this._props.parent.appendChild(this.el);
+};
 
 /**
  * `_declareDefaults` - Method to declare `_defaults`.
@@ -15,63 +43,22 @@ const Surface = Object.create(Super);
  * @overrides @ ClassProto
  */
 Surface._declareDefaults = function () {
+  // super call
+  Super._declareDefaults.call(this);
+  // save html related defaults
+  this._htmlDefaults = {
+    ...this._defaults
+  };
+  // declare surface defaults
   this._defaults = {
+    ...this._htmlDefaults,
+    // add surface properties
     parent: document.body,
     // `width` of the surface, fallbacks to `size`
     width: 100,
     // `height` of the surface, fallbacks to `size`
-    height: 100,
+    height: 100
   };
-};
-
-/**
- * _vars - function do declare `variables` after `_defaults` were extended
- *         by `options` and saved to `_props`
- *
- * @private
- */
-Surface._vars = function () {
-  // super call
-  Super._vars.call(this);
-  // create `Html` element
-  this._createElement();
-  // create `Html` module
-  this._createHtml();
-};
-
-/**
- * `_createElement` - function to create root html element.
- */
-Surface._createElement = function () {
-  this.el = document.createElement('div');
-
-  this._props.parent.appendChild(this.el);
-};
-
-/**
- * `_createHtml` - function to create `html` module.
- *
- * @private
- */
-Surface._createHtml = function () {
-  // create object that will be passed to the `html` module
-  const htmlOptions = {
-    ...this._props,
-  };
-  // delete parent from the object
-  delete htmlOptions.parent;
-  // create `html`
-  this._html = new Html({
-    el: this.el,
-    ...htmlOptions,
-    customProperties: {
-      ...this._o.customProperties,
-      width: { type: 'unit' },
-      height: { type: 'unit' },
-    },
-  });
-  // set `timeline` to `html's` timeline so `tweenable` will work
-  this.timeline = this._html.timeline;
 };
 
 /**
