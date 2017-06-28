@@ -1,4 +1,9 @@
 {
+  "env": {
+    "test": {
+      "plugins": [ "istanbul" ]
+    }
+  },
   "moduleId": "mojs",
   "passPerPreset": true,
   "presets": [ "babili" ],

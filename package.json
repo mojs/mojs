@@ -76,6 +76,7 @@
     "karma-jasmine": "^1.1.0",
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-sauce-launcher": "^1.1.0",
+    "karma-sourcemap-loader": "^0.3.7",
     "mojs-player": "^0.43.16",
     "phantomjs-polyfill": "0.0.2",
     "webpack": "^3.0.0"

@@ -10,7 +10,7 @@ module.exports = function(config) {
     reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
     browsers = Object.keys(customLaunchers);
   } else {
-    reporters = ['progress', 'coverage', 'clear-screen'];
+    reporters = ['progress', 'coverage', 'remap-coverage', 'clear-screen'];
     browsers = ['Chrome'];
   }
 
@@ -29,7 +29,9 @@ module.exports = function(config) {
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {},
+    preprocessors: {
+      'build/mo.js': ['coverage']
+    },
 
     coverageReporter: {
       reporters: [
