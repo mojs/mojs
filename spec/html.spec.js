@@ -172,7 +172,7 @@ describe('`html` ->', function () {
       expect(customProperties.render).toBe(html._render);
     });
 
-    it('should pass `supportRender`', function () {
+    it('should pass original `render` in `pipeObj`', function () {
       var render = function() {};
       var html = new Html({
           el: el,
@@ -182,9 +182,28 @@ describe('`html` ->', function () {
           }
       });
 
-      var pipeObj = html._deltas._o.customProperties.pipeObj;
+      var htmlRender = html._deltas._o.customProperties.pipeObj.htmlRender;
 
-      expect(pipeObj).toBe(render);
+      expect(htmlRender).toBe(render);
+    });
+
+    it('should pipe original `pipeObj`', function () {
+      var pipeObj = {
+        a: Math.random(),
+        c: Math.random(),
+      }
+      var html = new Html({
+          el: el,
+          x: 20,
+          customProperties: {
+            pipeObj: pipeObj
+          }
+      });
+
+      var resultPipeObj = html._deltas._o.customProperties.pipeObj;
+
+      expect(resultPipeObj.a).toBe(pipeObj.a);
+      expect(resultPipeObj.c).toBe(pipeObj.c);
     });
 
     it('should pass `supportRender` #2', function () {
@@ -196,10 +215,10 @@ describe('`html` ->', function () {
           }
       });
 
-      var pipeObj = html._deltas._o.customProperties.pipeObj;
+      var htmlRender = html._deltas._o.customProperties.pipeObj.htmlRender;
 
-      expect(pipeObj).not.toBe(render);
-      expect(typeof pipeObj).toBe('function');
+      expect(htmlRender).not.toBe(render);
+      expect(typeof htmlRender).toBe('function');
     });
 
     it('should pass `render` #is3d', function () {
@@ -280,7 +299,9 @@ describe('`html` ->', function () {
           skewY: 20,
           scale: 1
         },
-        pipeObj: function() {}
+        pipeObj: {
+          htmlRender: function() {}
+        }
       };
 
       html._render(props, support);
@@ -303,7 +324,9 @@ describe('`html` ->', function () {
           scaleX: 2,
           scaleY: 5
         },
-        pipeObj: function() {}
+        pipeObj: {
+          htmlRender: function() {}
+        }
       };
 
       html._render(props, support);
@@ -323,7 +346,12 @@ describe('`html` ->', function () {
       };
 
       var props = {};
-      var support = { props: {}, pipeObj: obj.originalRender };
+      var support = {
+        props: {},
+        pipeObj: {
+          htmlRender: obj.originalRender,
+        }
+      };
 
       var html = new Html({
         el: el
@@ -356,7 +384,9 @@ describe('`html` ->', function () {
           scaleY: 2,
           scaleZ: 1.5
         },
-        pipeObj: function() {}
+        pipeObj: {
+          htmlRender: function() {}
+        }
       };
 
       html._render3d(props, support);
@@ -376,7 +406,12 @@ describe('`html` ->', function () {
       };
 
       var props = {};
-      var support = { props: {}, pipeObj: obj.originalRender };
+      var support = {
+        props: {},
+        pipeObj: {
+          htmlRender: obj.originalRender
+        }
+      };
 
       var html = new Html({
         el: el
@@ -408,7 +443,9 @@ describe('`html` ->', function () {
           scaleY: 2,
           scaleZ: 1.5
         },
-        pipeObj: function() {}
+        pipeObj: {
+          htmlRender: function() {}
+        }
       };
 
       html._render3d(props, support);

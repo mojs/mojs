@@ -40,63 +40,26 @@
 
     <script>
 
-    const surface = new mojs.Surface({
-      position: 'absolute',
-      is3d: true,
-      left: '50%',
-      top: '50%',
-      marginLeft: '-50px',
-      marginTop: '-100px',
-      borderRadius: '25px',
-      angleX: { 0: 360 },
-      angleY: { 0: 360 },
-      angleZ: { 0: 360 },
-      x: { '-200': 200 },
-      // fill: { 'cyan': 'yellow' },
-      // sizeX: { 0: 75 },
-      duration: 2000,
-      // customProperties: {
-      //   fill: {
-      //     type: 'color',
-      //     isSkipRender: true
-      //   },
-      //   sizeX: {
-      //     type: 'number',
-      //     isSkipRender: true
-      //   }
-      // }
-    });
+      const shape2 = new mojs.Shape2({
+        stroke: 'black',
+        strokeWidth: 2,
+        strokeDasharray: { 100: 4 },
+        // shape options
+        // fill: { cyan: 'deeppink' },
+        size: 70,
+        // surface options
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        marginLeft: '-50px',
+        marginTop: '-50px',
+        angleX: { 0: 360 },
+        angleY: { 0: 360 },
+        angleZ: { 0: 360 },
+        surfaceOptions: [ 'position', 'left', 'top', 'marginLeft', 'marginTop' ]
+      });
 
-    surface.el.style.background = 'deeppink';
-
-      // const shape = new mojs.Shape2({
-      //   position: 'absolute',
-      //   // background: '#222',
-      //   is3d: true,
-      //   left: '50%',
-      //   top: '50%',
-      //   marginLeft: '-50px',
-      //   marginTop: '-100px',
-      //   borderRadius: '25px',
-      //   // angleX: { 0: 360 },
-      //   // angleY: { 0: 360 },
-      //   // angleZ: { 0: 360 },
-      //   fill: { 'cyan': 'yellow' },
-      //   // sizeX: { 0: 75 },
-      //   duration: 2000,
-      //   customProperties: {
-      //     fill: {
-      //       type: 'color',
-      //       isSkipRender: true
-      //     },
-      //     sizeX: {
-      //       type: 'number',
-      //       isSkipRender: true
-      //     }
-      //   }
-      // });
-
-      new MojsPlayer({ add: surface });
+      new MojsPlayer({ add: shape2 });
 
     </script>
 

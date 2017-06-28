@@ -24,9 +24,10 @@ Circle._initializeShape = function () {
  * `_initializeShape` - function to element for render.
  */
 Circle.render = function (mainEl, support) {
-  // `shapeKeys` are keys for properties that form `shape` - `sizeX`, `sizeY` etc
   // `styleKeys` are keys for visual representation props - `fill`, `stroke` etc
-  const { props, shapeEl, styleKeys } = support;
+  const { props, pipeObj } = support;
+  const { shapeEl, styleKeys } = pipeObj;
+
   // draw visual stying
   for (let i = 0; i < styleKeys.length; i++) {
     const key = styleKeys[i];

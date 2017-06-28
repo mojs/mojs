@@ -5,16 +5,29 @@ import { Circle } from './svg/circle.babel.js';
 /* The `Shape` class  */
 /* ------------------ */
 
+/*
+  TODO:
+    - add `fill` to defaults
+*/
+
 const Super = Surface.__mojsClass;
 const Shape = Object.create(Super);
 
-/*
-  TODO:
-    - [customProperties]: should add `isSkipRender: true` to all `non-surface` properties
-    - [customProperties]: should create `styleKeys`, `shapeKeys` and `shapeEl` and pass it thru
-    - [customProperties]: new `render` should call the original one
-    - [customProperties]: should not override the original properties type definitions
-*/
+/**
+ * `arrayToObj` - function to tranform string[] to `{ [string]: true }` object
+ *
+ * @param {Array} array Array of strings.
+ * @returns {Object} Object of { [key]: true }.
+ */
+const arrayToObj = (array) => {
+  const obj = {};
+  for (let i = 0; i < array.length; i++) {
+    const key = array[i];
+    obj[key] = true;
+  }
+
+  return obj;
+};
 
 /**
  * `_declareDefaults` - Method to declare `_defaults`.
@@ -59,32 +72,59 @@ Shape._declareDefaults = function () {
  */
 Shape._createCustomProperties = function (o) {
   const { customProperties = {} } = o;
-  this._originalCustomProps = customProperties;
+  const originalCustomProps = { ...customProperties };
+  // save original `render`
+  const originalRender = originalCustomProps.render;
+  delete originalCustomProps.render;
+  // save `surfaceOptions` and delete it from `options`
+  const { surfaceOptions = [] } = this._o;
+  const surfaceOptionsObject = arrayToObj(surfaceOptions);
+  delete this._o.surfaceOptions;
 
-  const newCustomProps = {};
-
-  newCustomProps.pipeObj = { shapeEl: this.shape.shapeEl };
-
+  let newCustomProps = {};
+  // add `isSkipRender: true` to all `shapeDefaults` properties
   const defaultsKeys = Object.keys(this._shapeDefaults);
   for (let i = 0; i < defaultsKeys.length; i++) {
-    const key = defaultsKeys[i];
-    newCustomProps[key] = {
-      isSkipRender: true,
-    };
+    newCustomProps[defaultsKeys[i]] = { isSkipRender: true };
   }
-
+  // for all `options` check if the property is present on the `surface` defaults,
+  // if not present, add `isKipRender` to it
+  const styleKeys = [];
   const optionKeys = Object.keys(o);
   for (let i = 0; i < optionKeys.length; i++) {
     const key = optionKeys[i];
-    if (key !== 'el' && this._surfaceDefaults[key] === undefined) {
-      newCustomProps[key] = { isSkipRender: true };
+    if (key !== 'el') {
+      if (!this._surfaceDefaults.hasOwnProperty(key) && !surfaceOptionsObject[key]) {
+        newCustomProps[key] = { isSkipRender: true };
+        // original `key` record in original `customProperties`
+        const originalRecord = originalCustomProps[key] || {};
+        // filter out the shape properties and properties
+        // that have the `isSkipRender` defined
+        const isOnShapeDefaults = this._shapeDefaults.hasOwnProperty(key);
+        if (!isOnShapeDefaults && !originalRecord.isSkipRender) {
+          styleKeys.push(key);
+        }
+      }
     }
   }
-
-  // const originalRender = this._o.customProperties.render;
-  // this._o.customProperties.render = this.shape.render;
-  return newCustomProps;
+  // return new `customProperties`
+  return {
+    ...newCustomProps,
+    ...originalCustomProps,
+    pipeObj: {
+      styleKeys,
+      shapeEl: this.shape.shapeEl,
+    },
+    render: (mainEl, support, ep, p, isForward) => {
+      this.shape.render(mainEl, support, ep, p, isForward);
+      // call the original `render` function if defined
+      if (originalRender !== undefined) {
+        originalRender(mainEl, support, ep, p, isForward);
+      }
+    },
+  };
 };
+
 
 /**
  * Imitate `class` with wrapper.

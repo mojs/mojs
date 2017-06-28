@@ -48,9 +48,11 @@ describe('`Circle #svg` ->', function () {
       var styleKeys = [ 'a', 'b', 'c' ];
 
       var support = {
-        shapeEl: shapeEl,
         props: props,
-        styleKeys: styleKeys
+        pipeObj: {
+          shapeEl: shapeEl,
+          styleKeys: styleKeys,
+        }
       };
 
       shape.render({}, support);
@@ -84,10 +86,11 @@ describe('`Circle #svg` ->', function () {
       var shapeKeys = [ 'd', 'c' ];
 
       var support = {
-        shapeEl: shapeEl,
         props: props,
-        styleKeys: [],
-        shapeKeys: shapeKeys
+        pipeObj: {
+          shapeEl: shapeEl,
+          styleKeys: [],
+        }
       };
 
       spyOn(shapeEl, 'setAttribute');
@@ -117,10 +120,11 @@ describe('`Circle #svg` ->', function () {
       var shapeKeys = [ 'd', 'c' ];
 
       var support = {
-        shapeEl: shapeEl,
         props: props,
-        styleKeys: [],
-        shapeKeys: shapeKeys
+        pipeObj: {
+          shapeEl: shapeEl,
+          styleKeys: [],
+        }
       };
 
       spyOn(shapeEl, 'setAttribute');
@@ -150,10 +154,11 @@ describe('`Circle #svg` ->', function () {
       var shapeKeys = [ 'd', 'c' ];
 
       var support = {
-        shapeEl: shapeEl,
         props: props,
-        styleKeys: [],
-        shapeKeys: shapeKeys
+        pipeObj: {
+          shapeEl: shapeEl,
+          styleKeys: [],
+        }
       };
 
       spyOn(shapeEl, 'setAttribute');
@@ -183,10 +188,11 @@ describe('`Circle #svg` ->', function () {
       var shapeKeys = [ 'd', 'c' ];
 
       var support = {
-        shapeEl: shapeEl,
         props: props,
-        styleKeys: [],
-        shapeKeys: shapeKeys
+        pipeObj: {
+          shapeEl: shapeEl,
+          styleKeys: [],
+        }
       };
 
       spyOn(shapeEl, 'setAttribute');
@@ -217,10 +223,11 @@ describe('`Circle #svg` ->', function () {
       var shapeKeys = [ 'd', 'c' ];
 
       var support = {
-        shapeEl: shapeEl,
         props: props,
-        styleKeys: [],
-        shapeKeys: shapeKeys
+        pipeObj: {
+          shapeEl: shapeEl,
+          styleKeys: [],
+        }
       };
 
       spyOn(shapeEl, 'setAttribute');
@@ -251,10 +258,11 @@ describe('`Circle #svg` ->', function () {
       var shapeKeys = [ 'd', 'c' ];
 
       var support = {
-        shapeEl: shapeEl,
         props: props,
-        styleKeys: [],
-        shapeKeys: shapeKeys
+        pipeObj: {
+          shapeEl: shapeEl,
+          styleKeys: [],
+        }
       };
 
       spyOn(shapeEl, 'setAttribute');
@@ -267,6 +275,5 @@ describe('`Circle #svg` ->', function () {
       shape.render({}, support);
       expect(shapeEl.setAttribute.calls.count()).toBe(2);
     });
-
   });
 });
