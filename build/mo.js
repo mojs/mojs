@@ -2555,7 +2555,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       for (var i = 0; i < optionsKeys.length; i++) {
         var key = optionsKeys[i];
         var value = options[key];
-
         // if value is tatic save it to static props
         if (typeof value !== 'object') {
           // find out property `el`, it can be `supportProps` if the `isSkipRender`

@@ -164,7 +164,7 @@ Html._getCustomProperties = function () {
   customProps.pipeObj = {
     ...customProperties.pipeObj,
     htmlRender: (this._isRender()) ? originalRender || (() => {}) : (() => {}),
-  }
+  };
 
   return customProps;
 };

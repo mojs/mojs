@@ -81,7 +81,7 @@ Shape._createCustomProperties = function (o) {
   const surfaceOptionsObject = arrayToObj(surfaceOptions);
   delete this._o.surfaceOptions;
 
-  let newCustomProps = {};
+  const newCustomProps = {};
   // add `isSkipRender: true` to all `shapeDefaults` properties
   const defaultsKeys = Object.keys(this._shapeDefaults);
   for (let i = 0; i < defaultsKeys.length; i++) {
