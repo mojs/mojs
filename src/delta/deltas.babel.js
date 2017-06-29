@@ -115,6 +115,7 @@ Deltas._parseProperties = function (options) {
   for (let i = 0; i < optionsKeys.length; i++) {
     const key = optionsKeys[i];
     const value = options[key];
+    
     // if value is tatic save it to static props
     if (typeof value !== 'object') {
       // find out property `el`, it can be `supportProps` if the `isSkipRender`
@@ -129,6 +130,7 @@ Deltas._parseProperties = function (options) {
       target[key] = property;
       continue;
     }
+
     // check the delta type
     let delta;
     if (value.path !== undefined) {
@@ -136,6 +138,8 @@ Deltas._parseProperties = function (options) {
         el: this._el,
         ...value,
         supportProps: this._supportProps,
+        customProperties: this._customProperties,
+        unit: value.unit,
         property: key,
         index: this.index,
       });

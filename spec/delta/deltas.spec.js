@@ -272,6 +272,39 @@ describe('`deltas` ->', function () {
       expect(deltas.timeline._items[2]).toBe(deltas._tweenDeltas[1].tween);
     });
 
+    it('should pass customProperties to motion path', function () {
+      var customProperties = {}
+      var options = {
+        el: {},
+        x: { '200': 300, delay: 200, path: 'M0,0 L100,100' },
+        y: { '200': 300 },
+        f: 5,
+        z: { '200': 300, delay: 200, path: 'M0,0 L200,200' },
+        customProperties: customProperties
+      };
+
+      var deltas = Deltas(options);
+
+      expect(MotionPath.__mojsClass.isPrototypeOf(deltas._tweenDeltas[0])).toBe(true);
+      expect(deltas._tweenDeltas[0]._o.customProperties).toBe(customProperties);
+      expect(MotionPath.__mojsClass.isPrototypeOf(deltas._tweenDeltas[1])).toBe(true);
+      expect(deltas._tweenDeltas[1]._o.customProperties).toBe(customProperties);
+    });
+
+    it('should pass `unit` to motion path', function () {
+      var customProperties = {}
+      var options = {
+        el: {},
+        x: { '200': 300, delay: 200, path: 'M0,0 L100,100', unit: '%' },
+        customProperties: customProperties
+      };
+
+      var deltas = Deltas(options);
+
+      expect(MotionPath.__mojsClass.isPrototypeOf(deltas._tweenDeltas[0])).toBe(true);
+      expect(deltas._tweenDeltas[0]._o.unit).toBe('%');
+    });
+
     it('should pass `index` to deltas', function () {
       var index = parseInt(Math.random()*10, 10);
 

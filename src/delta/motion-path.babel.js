@@ -8,9 +8,7 @@ import { staggerProperty } from '../helpers/stagger-property.babel.js';
 /* ----------------------- */
 
 // TODO:
-//  - add unit?
 //  - add bounds?
-//  - add pipe?
 
 const Super = ClassProto;
 const MotionPath = Object.create(Super);
@@ -47,7 +45,11 @@ MotionPath.update = function (ep) {
     norm = value + ((nextValue - value) * (diff / step));
   }
 
-  this._target[property] = norm;
+  if (this._unit === undefined) {
+    this._target[property] = norm;
+  } else {
+    this._target[property] = `${norm}${this._unit}`;
+  }
 
   return this;
 };
@@ -113,6 +115,11 @@ MotionPath.init = function (o = {}) {
   const { el, supportProps, property, customProperties } = this._props;
   const custom = customProperties[property];
   this._target = (custom && custom.isSkipRender) ? supportProps : el;
+  // if `unit` is defined or `type` is set on `customProperties`,
+  // set the render `_unit` that will be added on render
+  if (o.unit !== undefined || (custom && custom.type === 'unit')) {
+    this._unit = o.unit || 'px';
+  }
   // parse path
   this._parsePath();
   // precompute path

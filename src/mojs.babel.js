@@ -40,7 +40,7 @@ import { Circle } from './shape/svg/circle.babel.js';
 */
 
 const mojs = {
-  revision: '2.10.0',
+  revision: '2.10.1',
   Tween,
   Timeline,
   easing,

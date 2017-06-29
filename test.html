@@ -39,27 +39,32 @@
     <script src="vendor/mojs-player.js"></script>
 
     <script>
+      const StaggerShape = mojs.stagger(mojs.Shape2);
 
-      const shape2 = new mojs.Shape2({
-        stroke: 'black',
-        strokeWidth: 2,
-        strokeDasharray: { 100: 4 },
-        // shape options
-        // fill: { cyan: 'deeppink' },
-        size: 70,
-        // surface options
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        marginLeft: '-50px',
-        marginTop: '-50px',
-        angleX: { 0: 360 },
-        angleY: { 0: 360 },
-        angleZ: { 0: 360 },
-        surfaceOptions: [ 'position', 'left', 'top', 'marginLeft', 'marginTop' ]
-      });
+      setTimeout( () => {
+        const shape2 = new StaggerShape({
+          items: 10,
+          // fill: { cyan: 'deeppink' },
+          size: 70,
+          // surface options
+          x: [ { 0: 75 + (Math.random()*100) }, { 0: 75 + (Math.random()*100) }, { 0: -75 + (Math.random()*100) }, { 0: 75 + (Math.random()*100) }, { 0: -75 + (Math.random()*100) } ],
+          // x: [ { path: `M0,0 L${75+(100*Math.random())}, 0` }, { path: `M0,0 L-${75+(100*Math.random())}, 0` }, { path: `M0,0 L0, ${75+(100*Math.random())}` }, { path: `M0,0 L${75+(100*Math.random())}, ${75+(100*Math.random())}` }, { path: `M0,0 L-${75+(100*Math.random())}, -${75+(100*Math.random())}` } ],
+          // y: [ { path: `M0,0 L${75+(100*Math.random())}, 0` }, { path: `M0,0 L-${75+(100*Math.random())}, 0` }, { path: `M0,0 L0, ${75+(100*Math.random())}` }, { path: `M0,0 L${75+(100*Math.random())}, ${75+(100*Math.random())}` }, { path: `M0,0 L-${75+(100*Math.random())}, -${75+(100*Math.random())}` } ],
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          marginLeft: '-50px',
+          marginTop: '-50px',
+          scale: { 1 : 0 },
+          // angle: { 0: 360 },
+          surfaceOptions: [[ 'position', 'left', 'top', 'marginLeft', 'marginTop' ]],
+          duration: 1000,
+        });
 
-      new MojsPlayer({ add: shape2 });
+        shape2.play();
+      }, 2000 );
+
+      // new MojsPlayer({ add: shape2 });
 
     </script>
 

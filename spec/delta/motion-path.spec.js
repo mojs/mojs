@@ -46,6 +46,82 @@ describe('`motion-path` ->', function () {
       });
       expect(motionPath._target).toBe(supportProps);
     });
+
+    it('should decide `unit` #unit', function () {
+      var key = 'x';
+      var el = {};
+      var customProperties = {};
+      var supportProps = {};
+      customProperties[key] = {
+        type: 'unit',
+        isSkipRender: true
+      };
+      var motionPath = MotionPath({
+        path: path,
+        el: el,
+        property: key,
+        customProperties: customProperties,
+        supportProps: supportProps
+      });
+
+      expect(motionPath._unit).toBe('px');
+    });
+
+    it('should decide `unit` #unit #percent', function () {
+      var key = 'x';
+      var el = {};
+      var customProperties = {};
+      var supportProps = {};
+      customProperties[key] = {
+        type: 'unit',
+        isSkipRender: true
+      };
+      var motionPath = MotionPath({
+        path: path,
+        unit: '%',
+        el: el,
+        property: key,
+        customProperties: customProperties,
+        supportProps: supportProps
+      });
+
+      expect(motionPath._unit).toBe('%');
+    });
+
+    it('should decide `unit` #number', function () {
+      var key = 'x';
+      var el = {};
+      var customProperties = {};
+      var supportProps = {};
+      customProperties[key] = {
+        type: 'number',
+        isSkipRender: true
+      };
+      var motionPath = MotionPath({
+        path: path,
+        el: el,
+        property: key,
+        customProperties: customProperties,
+        supportProps: supportProps
+      });
+
+      expect(motionPath._unit).not.toBeDefined();
+    });
+
+    it('should decide `unit` #number #2', function () {
+      var key = 'x';
+      var el = {};
+      var supportProps = {};
+      var motionPath = MotionPath({
+        path: path,
+        el: el,
+        property: key,
+        customProperties: {},
+        supportProps: supportProps
+      });
+
+      expect(motionPath._unit).not.toBeDefined();
+    });
   });
 
   describe('`path` option parsing ->', function() {
@@ -169,7 +245,7 @@ describe('`motion-path` ->', function () {
       var supportProps = {};
       var customProperties = {};
       customProperties[property] = {
-        type: 'unit',
+        type: 'number',
         isSkipRender: true
       };
       var motionPath = MotionPath({
@@ -218,6 +294,86 @@ describe('`motion-path` ->', function () {
       expect(el[property]).toBeCloseTo(200, 3);
     });
 
+    it('should set the progress on the target according to `unit` #px', function () {
+      var el = {};
+      var coordinate = 'x';
+      var property = 'x';
+      var motionPath = MotionPath({
+        path: path,
+        el: el,
+        coordinate: coordinate,
+        property: property,
+        customProperties: {
+          x: {
+            type: 'unit'
+          }
+        }
+      });
+
+      motionPath.update(.5, .5, true);
+
+      expect(parseInt(el[coordinate], 10)).toBeCloseTo(100, 3);
+      expect((/px$/).test(el[coordinate])).toBe(true);
+    });
+
+    it('should set the progress on the target according to `unit` #percent', function () {
+      var el = {};
+      var coordinate = 'x';
+      var property = 'x';
+      var motionPath = MotionPath({
+        path: path,
+        el: el,
+        coordinate: coordinate,
+        property: property,
+        unit: '%',
+        customProperties: {
+          x: {
+            type: 'unit'
+          }
+        }
+      });
+
+      motionPath.update(.5, .5, true);
+
+      expect(parseInt(el[coordinate], 10)).toBeCloseTo(100, 3);
+      expect((/\%$/).test(el[coordinate])).toBe(true);
+    });
+
+    it('should set the progress on the target according to `unit` #percent #2', function () {
+      var el = {};
+      var coordinate = 'x';
+      var property = 'x';
+      var motionPath = MotionPath({
+        path: path,
+        el: el,
+        coordinate: coordinate,
+        property: property,
+        unit: '%'
+      });
+
+      motionPath.update(.5, .5, true);
+
+      expect(parseInt(el[coordinate], 10)).toBeCloseTo(100, 3);
+      expect((/\%$/).test(el[coordinate])).toBe(true);
+    });
+
+    it('should set the progress on the target according to `unit` #percent #2', function () {
+      var el = {};
+      var coordinate = 'x';
+      var property = 'x';
+      var motionPath = MotionPath({
+        path: path,
+        el: el,
+        coordinate: coordinate,
+        property: property,
+      });
+
+      motionPath.update(.5, .5, true);
+
+      expect(el[coordinate]).toBeCloseTo(100, 3);
+      expect(typeof el[coordinate]).toBe('number');
+    });
+
     it('should return `this`', function () {
       var el = {};
       var motionPath = MotionPath({ path: path, el: el });
@@ -225,6 +381,7 @@ describe('`motion-path` ->', function () {
       var result = motionPath.update(.5, .5, true);
       expect(result).toBe(motionPath);
     });
+
   });
 
   describe('tween creation ->', function() {

@@ -2555,6 +2555,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       for (var i = 0; i < optionsKeys.length; i++) {
         var key = optionsKeys[i];
         var value = options[key];
+
         // if value is tatic save it to static props
         if (typeof value !== 'object') {
           // find out property `el`, it can be `supportProps` if the `isSkipRender`
@@ -2567,6 +2568,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           target[key] = property;
           continue;
         }
+
         // check the delta type
         var delta = void 0;
         if (value.path !== undefined) {
@@ -2574,6 +2576,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             el: this._el
           }, value, {
             supportProps: this._supportProps,
+            customProperties: this._customProperties,
+            unit: value.unit,
             property: key,
             index: this.index
           }));
@@ -2700,9 +2704,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     /* ----------------------- */
 
     // TODO:
-    //  - add unit?
     //  - add bounds?
-    //  - add pipe?
 
     var Super = _classProtoBabel.ClassProto;
     var MotionPath = Object.create(Super);
@@ -2742,7 +2744,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         norm = value + (nextValue - value) * (diff / step);
       }
 
-      this._target[property] = norm;
+      if (this._unit === undefined) {
+        this._target[property] = norm;
+      } else {
+        this._target[property] = '' + norm + this._unit;
+      }
 
       return this;
     };
@@ -2818,6 +2824,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       var custom = customProperties[property];
       this._target = custom && custom.isSkipRender ? supportProps : el;
+      // if `unit` is defined or `type` is set on `customProperties`,
+      // set the render `_unit` that will be added on render
+      if (o.unit !== undefined || custom && custom.type === 'unit') {
+        this._unit = o.unit || 'px';
+      }
       // parse path
       this._parsePath();
       // precompute path
@@ -5076,7 +5087,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     // tween related
     var mojs = {
-      revision: '2.10.0',
+      revision: '2.10.1',
       Tween: _tweenBabel.Tween,
       Timeline: _timelineBabel.Timeline,
       easing: _easingBabel.easing,
