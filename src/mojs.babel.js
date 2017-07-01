@@ -91,5 +91,8 @@ mojs.Surface = Surface;
 // shape
 import { Shape } from './shape/shape.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.Shape2 = Shape;
+// rig
+import { Rig } from './rig/rig.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+mojs.Rig = Rig;
 
 export default mojs;

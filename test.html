@@ -9,6 +9,8 @@
     <style>
       body, html {
         height: 100%;
+        margin: 0;
+        padding: 0;
       }
       /*div {
         outline: 1px solid red;
@@ -22,9 +24,48 @@
         border-radius: 10%;
         background: cyan;
       }
+
+      .circle {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        margin-top: -10px;
+        margin-left: -10px;
+        border-radius: 50%;
+        background: deeppink;
+      }
+
+      .circle--small {
+        width: 10px;
+        height: 10px;
+        margin-top: -5px;
+        margin-left: -5px;
+      }
+
+      .circle--smaller {
+        width: 5px;
+        height: 5px;
+        margin-top: -2.5px;
+        margin-left: -2.5px;
+        background: purple;
+      }
     </style>
 
-    <div class="el" id="js-el"></div>
+    <div class="circle" id="js-circle1"></div>
+    <div class="circle" id="js-circle2" style="cursor: move"></div>
+    <div class="circle circle--small" id="js-circle3"></div>
+    <div class="circle circle--small" id="js-circle4"></div>
+
+    <div class="circle circle--smaller" id="js-circle5"></div>
+    <div class="circle circle--smaller" id="js-circle6"></div>
+
+    <svg style="width: 1280px; height: 700px; border: 1px solid;">
+      <path d="M0, 0 L900, 500" stroke="#333" stroke-width="4" id="js-path" fill="none" stroke-linejoin="round" />
+    </svg>
+
+    <!-- <div class="el" id="js-el"></div> -->
 
     <!-- <script src="vendor/lodash.min.js"></script> -->
     <!-- <script src="vendor/platform.js"></script> -->
@@ -35,36 +76,84 @@
     <!-- <script src="vendor/mo-js/build/mo.min.js"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/mojs/0.288.1/mo.min.js"></script> -->
     <script src="build/mo.js"></script>
-
     <script src="vendor/mojs-player.js"></script>
 
+    <script src="http://hammerjs.github.io/dist/hammer.min.js"></script>
+
     <script>
-      const StaggerShape = mojs.stagger(mojs.Shape2);
+      const pathEl = document.querySelector('#js-path');
+      const circle1 = document.querySelector('#js-circle1');
+      const circle2 = document.querySelector('#js-circle2');
+      const circle3 = document.querySelector('#js-circle3');
+      const circle4 = document.querySelector('#js-circle4');
 
-      setTimeout( () => {
-        const shape2 = new StaggerShape({
-          items: 10,
-          // fill: { cyan: 'deeppink' },
-          size: 70,
-          // surface options
-          x: [ { 0: 75 + (Math.random()*100) }, { 0: 75 + (Math.random()*100) }, { 0: -75 + (Math.random()*100) }, { 0: 75 + (Math.random()*100) }, { 0: -75 + (Math.random()*100) } ],
-          // x: [ { path: `M0,0 L${75+(100*Math.random())}, 0` }, { path: `M0,0 L-${75+(100*Math.random())}, 0` }, { path: `M0,0 L0, ${75+(100*Math.random())}` }, { path: `M0,0 L${75+(100*Math.random())}, ${75+(100*Math.random())}` }, { path: `M0,0 L-${75+(100*Math.random())}, -${75+(100*Math.random())}` } ],
-          // y: [ { path: `M0,0 L${75+(100*Math.random())}, 0` }, { path: `M0,0 L-${75+(100*Math.random())}, 0` }, { path: `M0,0 L0, ${75+(100*Math.random())}` }, { path: `M0,0 L${75+(100*Math.random())}, ${75+(100*Math.random())}` }, { path: `M0,0 L-${75+(100*Math.random())}, -${75+(100*Math.random())}` } ],
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          marginLeft: '-50px',
-          marginTop: '-50px',
-          scale: { 1 : 0 },
-          // angle: { 0: 360 },
-          surfaceOptions: [[ 'position', 'left', 'top', 'marginLeft', 'marginTop' ]],
-          duration: 1000,
-        });
+      const circle5 = document.querySelector('#js-circle5');
+      const circle6 = document.querySelector('#js-circle6');
 
-        shape2.play();
-      }, 2000 );
+      const ovalPath = 'M220.679688,417.869141 C220.679688,417.869141 422.530731,210.122856 435.650391,203.792969 C444.671356,203.792969 517.777379,423.546583 517.777379,423.546583 L220.679688,417.869141 Z';
+      const rig = new mojs.Rig({
+        x1: 200,
+        y1: 200,
+        x2: 250,
+        y2: 250,
+        // curvature: .15,
+        // center: .4,
+        // x2: { path: ovalPath },
+        // y2: { path: ovalPath },
+        onRender(props, knee, handle1, handle2) {
+          circle1.style.transform = `translate(${props.x1}px, ${props.y1}px)`;
+          circle2.style.transform = `translate(${props.x2}px, ${props.y2}px)`;
+          // circle4.style.transform = `translate(${knee.x}px, ${knee.y}px)`;
 
-      // new MojsPlayer({ add: shape2 });
+          // circle5.style.transform = `translate(${handle1.x}px, ${handle1.y}px)`;
+          // circle6.style.transform = `translate(${handle2.x}px, ${handle2.y}px)`;
+
+          pathEl.setAttribute('d', `
+            M${props.x1}, ${props.y1}
+            C${props.x1},${props.y1} ${handle1.x}, ${handle1.y} ${knee.x},${knee.y}
+            C${handle2.x}, ${handle2.y} ${props.x2},${props.y2} ${props.x2},${props.y2}
+            `);
+        }
+      });
+
+      rig.render();
+
+      const coords = {};
+
+      const mc = new Hammer.Manager(circle2);
+      mc.add(new Hammer.Pan());
+      mc.on('pan', function(e) {
+        rig._props.x2 = coords.x + e.deltaX;
+        rig._props.y2 = coords.y + e.deltaY;
+        rig.render();
+      });
+
+      mc.on('panend', function(e) {
+        coords.x = rig._props.x2;
+        coords.y = rig._props.y2;
+      });
+      mc.on('panstart', function(e) {
+        coords.x = rig._props.x2;
+        coords.y = rig._props.y2;
+        console.log(`-=-=-=-=-=-=-`, coords);
+      });
+
+      // // const ovalPath = 'M220.679688,417.869141 C220.679688,417.869141 422.530731,210.122856 435.650391,203.792969 C444.671356,203.792969 517.777379,423.546583 517.777379,423.546583 L220.679688,417.869141 Z';
+      // // const deltas = new mojs.Deltas({
+      // //   el: {},
+      // //   x: { path: ovalPath },
+      // //   y: { path: ovalPath },
+      // //   customProperties: {
+      // //     render(el) {
+      // //       rigs.rig2.set('x', el.x);
+      // //       rigs.rig2.set('y', el.y);
+      // //     }
+      // //   }
+      // // });
+      // //
+      // // new MojsPlayer({ add: deltas });
+
+      // // new MojsPlayer({ add: deltas });
 
     </script>
 
