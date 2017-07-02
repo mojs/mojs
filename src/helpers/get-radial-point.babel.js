@@ -13,7 +13,7 @@
  * @param {Object} target Object to set the result on.
  */
 export const getRadialPoint = (centerX, centerY, radius, angle, target) => {
-  const radAngle = (angle-90)*0.017453292519943295; // Math.PI/180
-  target.x = centerX + (Math.cos(radAngle)*radius);
-  target.y = centerY + (Math.sin(radAngle)*radius);
+  const radAngle = (angle - 90) * 0.017453292519943295; // Math.PI / 180
+  target.x = centerX + (Math.cos(radAngle) * radius);
+  target.y = centerY + (Math.sin(radAngle) * radius);
 };

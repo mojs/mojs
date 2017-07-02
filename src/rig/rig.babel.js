@@ -5,6 +5,11 @@ import { getRadialPoint } from '../helpers/get-radial-point.babel.js';
 /* The `Rig` class  */
 /* ---------------- */
 
+/*
+  TODO:
+    - direction -> size
+*/
+
 const Super = Tweenable.__mojsClass;
 const Rig = Object.create(Super);
 
@@ -14,7 +19,7 @@ const Rig = Object.create(Super);
  * @private
  * @overrides @ ClassProto
  */
-Rig._declareDefaults = function() {
+Rig._declareDefaults = function () {
   this._defaults = {
     center: .5,
     size: 200,
@@ -38,7 +43,7 @@ Rig._declareDefaults = function() {
  *
  * @public
  */
-Rig.render = function() {
+Rig.render = function () {
   const {
     x1,
     x2,
@@ -48,30 +53,31 @@ Rig.render = function() {
     direction,
     curvature,
     size,
-    onRender
+    onRender,
   } = this._props;
 
   const dX = x1 - x2;
   const dY = y1 - y2;
-  const length = Math.sqrt(dX*dX + dY*dY);
-  const maxPartLength = size*center;
+  const length = Math.sqrt((dX * dX) + (dY * dY));
+  const maxPartLength = size * center;
 
   // get base angle between 2 points
-  let angle = (Math.atan(dY/dX)*(180/Math.PI)) + 90;
+  let angle = (Math.atan(dY / dX) * (180 / Math.PI)) + 90;
   angle = (dX < 0) ? angle : 180 + angle;
 
   // get center point
   getRadialPoint(x1, y1, length * center, angle, this._center);
 
-  const actualPartLength = center*length;
+  const actualPartLength = center * length;
   const isStretch = actualPartLength > maxPartLength;
 
-  const depth = (isStretch) ? 0 :  Math.sqrt((maxPartLength ** 2) - (actualPartLength ** 2));
+  const depth = (isStretch) ? 0 : Math.sqrt((maxPartLength ** 2) - (actualPartLength ** 2));
   const directionCoeficient = (direction > 0) ? 1 : -1;
-  getRadialPoint(this._center.x, this._center.y, depth, angle - (directionCoeficient*90), this._knee);
+  const kneeAngle = angle - (directionCoeficient * 90);
+  getRadialPoint(this._center.x, this._center.y, depth, kneeAngle, this._knee);
 
   const t = (actualPartLength + depth) / 2;
-  const k = (t - depth/10)*curvature;
+  const k = (t - (depth / 10)) * curvature;
   getRadialPoint(this._knee.x, this._knee.y, k, angle + 180, this._handle1);
   getRadialPoint(this._knee.x, this._knee.y, k, angle, this._handle2);
 

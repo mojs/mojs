@@ -20,7 +20,7 @@ import { parseStagger } from './helpers/parse-stagger.babel.js';
 import { makeColorObject } from './helpers/make-color-object.babel.js';
 import { SvgShape } from './shape/svg/svg-shape.babel.js';
 import { Circle } from './shape/svg/circle.babel.js';
-import { getRadialPoint } from './helpers/get-radial-point';
+import { getRadialPoint } from './helpers/get-radial-point.babel.js';
 
 /*
   Browsers' support:
