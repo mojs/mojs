@@ -96,13 +96,14 @@
         y1: 200,
         x2: 250,
         y2: 250,
-        // curvature: .15,
-        // center: .4,
-        // x2: { path: ovalPath },
-        // y2: { path: ovalPath },
-        onRender(props, knee, handle1, handle2) {
+        direction: { '-1': 1 },
+        duration: 2000,
+        onRender(props, knee, handle1, handle2, center) {
           circle1.style.transform = `translate(${props.x1}px, ${props.y1}px)`;
           circle2.style.transform = `translate(${props.x2}px, ${props.y2}px)`;
+
+          // circle3.style.transform = `translate(${center.x}px, ${center.y}px)`;
+
           // circle4.style.transform = `translate(${knee.x}px, ${knee.y}px)`;
 
           // circle5.style.transform = `translate(${handle1.x}px, ${handle1.y}px)`;
@@ -115,8 +116,6 @@
             `);
         }
       });
-
-      rig.render();
 
       const coords = {};
 
@@ -153,7 +152,7 @@
       // //
       // // new MojsPlayer({ add: deltas });
 
-      // // new MojsPlayer({ add: deltas });
+      new MojsPlayer({ add: rig });
 
     </script>
 

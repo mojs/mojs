@@ -1,3 +1,4 @@
+import { Deltas } from '../delta/deltas.babel.js';
 import { Tweenable } from '../tween/tweenable.babel.js';
 import { getRadialPoint } from '../helpers/get-radial-point.babel.js';
 
@@ -21,7 +22,6 @@ const Rig = Object.create(Super);
  */
 Rig._declareDefaults = function () {
   this._defaults = {
-    center: .5,
     size: 200,
     curvature: 0,
     direction: 1,
@@ -32,11 +32,49 @@ Rig._declareDefaults = function () {
     onRender: () => {},
   };
 
-  this._center = {}; // TODO: cover
-  this._knee = {}; // TODO: cover
-  this._handle1 = {}; // TODO: cover
-  this._handle2 = {}; // TODO: cover
+  this._center = {};
+  this._knee = {};
+  this._handle1 = {};
+  this._handle2 = {};
 };
+
+Rig._vars = function () {
+  Super._vars.call(this);
+
+  this._createDeltas();
+};
+
+Rig._createDeltas = function () {
+  const customProperties = this._o.customProperties || {};
+  const originalRender = customProperties.render;
+  // it is forbidden to override the rig defaults
+  for (let key in this._defaults) {
+    if (customProperties[key] !== void 0) {
+      delete customProperties[key];
+    }
+  }
+
+  const propsToPass = { ...this._props };
+  delete propsToPass.onRender;
+  // create deltas to add animations to the properties
+  this._deltas = new Deltas({
+    el: this._props,
+    ...propsToPass,
+    customProperties: {
+      ...customProperties,
+      render: (props, support, ep, p, isForward) => {
+        this.render(props, support, ep, p, isForward);
+        // call the original `render` is set
+        if (typeof originalRender === 'function') {
+          originalRender(props, support, ep, p, isForward);
+        }
+      }
+    }
+  });
+  // make the tweenable interface work
+  this.timeline = this._deltas.timeline;
+};
+
 
 /**
  * `render` - function to render the Rig.
@@ -44,36 +82,40 @@ Rig._declareDefaults = function () {
  * @public
  */
 Rig.render = function () {
-  const {
+  let {
     x1,
     x2,
     y1,
     y2,
-    center,
     direction,
     curvature,
     size,
     onRender,
   } = this._props;
 
+  size = Math.abs(direction * size);
+
+  console.log(size, direction);
+
   const dX = x1 - x2;
   const dY = y1 - y2;
   const length = Math.sqrt((dX * dX) + (dY * dY));
-  const maxPartLength = size * center;
+  const maxPartLength = size / 2;
+  const actualPartLength = length / 2;
 
   // get base angle between 2 points
   let angle = (Math.atan(dY / dX) * (180 / Math.PI)) + 90;
   angle = (dX < 0) ? angle : 180 + angle;
 
   // get center point
-  getRadialPoint(x1, y1, length * center, angle, this._center);
+  getRadialPoint(x1, y1, actualPartLength, angle, this._center);
 
-  const actualPartLength = center * length;
   const isStretch = actualPartLength > maxPartLength;
-
   const depth = (isStretch) ? 0 : Math.sqrt((maxPartLength ** 2) - (actualPartLength ** 2));
-  const directionCoeficient = (direction > 0) ? 1 : -1;
+
+  const directionCoeficient = (direction >= 0) ? 1 : -1;
   const kneeAngle = angle - (directionCoeficient * 90);
+
   getRadialPoint(this._center.x, this._center.y, depth, kneeAngle, this._knee);
 
   const t = (actualPartLength + depth) / 2;
@@ -81,7 +123,7 @@ Rig.render = function () {
   getRadialPoint(this._knee.x, this._knee.y, k, angle + 180, this._handle1);
   getRadialPoint(this._knee.x, this._knee.y, k, angle, this._handle2);
 
-  onRender(this._props, this._knee, this._handle1, this._handle2);
+  onRender(this._props, this._knee, this._handle1, this._handle2, this._center);
 };
 
 /**
