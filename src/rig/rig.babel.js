@@ -51,7 +51,7 @@ Rig._createDeltas = function () {
   const keys = Object.keys(this._defaults);
   // it is forbidden to override the rig defaults
   for (let i = 0; i < keys.length; i++) {
-    const key = keys(i);
+    const key = keys[i];
     if (customProperties[key] !== undefined) {
       delete customProperties[key];
     }
