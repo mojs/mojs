@@ -98,7 +98,7 @@ Rig.render = function () {
     onRender,
   } = this._props;
 
-  const sin = Math.sin(Math.abs(direction)*(Math.PI/2));
+  const sin = Math.sin(Math.abs(direction) * (Math.PI / 2));
   size = sin * Math.abs(size);
 
   const dX = x1 - x2;
@@ -123,11 +123,17 @@ Rig.render = function () {
   getRadialPoint(this._center.x, this._center.y, depth, kneeAngle, this._knee);
 
   const t = (actualPartLength + depth) / 2;
+
+  let gripAngle = angle - (Math.acos((actualPartLength / sin) / (maxPartLength)) * (180 / Math.PI));
+
+  gripAngle = (gripAngle - (10 * (t / actualPartLength))) || angle;
+
+
   const k = (t - (depth / 10)) * curvature;
   getRadialPoint(this._knee.x, this._knee.y, k, angle + 180, this._knee.handle1);
   getRadialPoint(this._knee.x, this._knee.y, k, angle, this._knee.handle2);
 
-  onRender(this._props, this._knee, actualPartLength/maxPartLength, this._center);
+  onRender(this._props, this._knee, actualPartLength / maxPartLength, gripAngle, this._center);
 };
 
 /**
