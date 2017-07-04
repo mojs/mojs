@@ -4340,9 +4340,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       };
 
       this._center = {};
-      this._knee = {};
-      this._handle1 = {};
-      this._handle2 = {};
+      this._knee = {
+        handle1: {},
+        handle2: {}
+      };
     };
 
     Rig._vars = function () {
@@ -4403,20 +4404,21 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           onRender = _props.onRender;
 
 
-      size = Math.abs(direction * size);
+      var sin = Math.sin(Math.abs(direction) * (Math.PI / 2));
+      size = sin * Math.abs(size);
 
       var dX = x1 - x2;
       var dY = y1 - y2;
-      var length = Math.sqrt(dX * dX + dY * dY);
+      var length = sin * Math.sqrt(dX * dX + dY * dY);
+
       var maxPartLength = size / 2;
       var actualPartLength = length / 2;
 
       // get base angle between 2 points
       var angle = Math.atan(dY / dX) * (180 / Math.PI) + 90;
       angle = dX < 0 ? angle : 180 + angle;
-
       // get center point
-      (0, _getRadialPointBabel.getRadialPoint)(x1, y1, actualPartLength, angle, this._center);
+      (0, _getRadialPointBabel.getRadialPoint)(x1, y1, actualPartLength / sin, angle, this._center);
 
       var isStretch = actualPartLength > maxPartLength;
       var depth = isStretch ? 0 : Math.sqrt(Math.pow(maxPartLength, 2) - Math.pow(actualPartLength, 2));
@@ -4428,10 +4430,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       var t = (actualPartLength + depth) / 2;
       var k = (t - depth / 10) * curvature;
-      (0, _getRadialPointBabel.getRadialPoint)(this._knee.x, this._knee.y, k, angle + 180, this._handle1);
-      (0, _getRadialPointBabel.getRadialPoint)(this._knee.x, this._knee.y, k, angle, this._handle2);
+      (0, _getRadialPointBabel.getRadialPoint)(this._knee.x, this._knee.y, k, angle + 180, this._knee.handle1);
+      (0, _getRadialPointBabel.getRadialPoint)(this._knee.x, this._knee.y, k, angle, this._knee.handle2);
 
-      onRender(this._props, this._knee, this._handle1, this._handle2, this._center);
+      onRender(this._props, this._knee, actualPartLength / maxPartLength, this._center);
     };
 
     /**

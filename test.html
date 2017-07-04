@@ -94,11 +94,15 @@
       const rig = new mojs.Rig({
         x1: 200,
         y1: 200,
-        x2: 250,
-        y2: 250,
-        direction: { '-1': 1 },
+        x2: { 100: 300 },
+        y2: 200,
+        direction: -1,
+        curvature: 1,
+        // direction: { '-1': 1 },
         duration: 2000,
-        onRender(props, knee, handle1, handle2, center) {
+        onRender(props, knee, stretchRatio) {
+          const { handle1, handle2 } = knee;
+
           circle1.style.transform = `translate(${props.x1}px, ${props.y1}px)`;
           circle2.style.transform = `translate(${props.x2}px, ${props.y2}px)`;
 

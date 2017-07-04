@@ -33,9 +33,10 @@ Rig._declareDefaults = function () {
   };
 
   this._center = {};
-  this._knee = {};
-  this._handle1 = {};
-  this._handle2 = {};
+  this._knee = {
+    handle1: {},
+    handle2: {},
+  };
 };
 
 Rig._vars = function () {
@@ -97,20 +98,21 @@ Rig.render = function () {
     onRender,
   } = this._props;
 
-  size = Math.abs(direction * size);
+  const sin = Math.sin(Math.abs(direction)*(Math.PI/2));
+  size = sin * Math.abs(size);
 
   const dX = x1 - x2;
   const dY = y1 - y2;
-  const length = Math.sqrt((dX * dX) + (dY * dY));
+  const length = sin * Math.sqrt((dX * dX) + (dY * dY));
+
   const maxPartLength = size / 2;
   const actualPartLength = length / 2;
 
   // get base angle between 2 points
   let angle = (Math.atan(dY / dX) * (180 / Math.PI)) + 90;
   angle = (dX < 0) ? angle : 180 + angle;
-
   // get center point
-  getRadialPoint(x1, y1, actualPartLength, angle, this._center);
+  getRadialPoint(x1, y1, actualPartLength / sin, angle, this._center);
 
   const isStretch = actualPartLength > maxPartLength;
   const depth = (isStretch) ? 0 : Math.sqrt((maxPartLength ** 2) - (actualPartLength ** 2));
@@ -122,10 +124,10 @@ Rig.render = function () {
 
   const t = (actualPartLength + depth) / 2;
   const k = (t - (depth / 10)) * curvature;
-  getRadialPoint(this._knee.x, this._knee.y, k, angle + 180, this._handle1);
-  getRadialPoint(this._knee.x, this._knee.y, k, angle, this._handle2);
+  getRadialPoint(this._knee.x, this._knee.y, k, angle + 180, this._knee.handle1);
+  getRadialPoint(this._knee.x, this._knee.y, k, angle, this._knee.handle2);
 
-  onRender(this._props, this._knee, this._handle1, this._handle2, this._center);
+  onRender(this._props, this._knee, actualPartLength/maxPartLength, this._center);
 };
 
 /**
