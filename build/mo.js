@@ -4356,9 +4356,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       var customProperties = this._o.customProperties || {};
       var originalRender = customProperties.render;
+
+      var keys = Object.keys(this._defaults);
       // it is forbidden to override the rig defaults
-      for (var key in this._defaults) {
-        if (customProperties[key] !== void 0) {
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys(i);
+        if (customProperties[key] !== undefined) {
           delete customProperties[key];
         }
       }
@@ -4389,6 +4392,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @public
      */
     Rig.render = function () {
+      var size = this._props.size;
       var _props = this._props,
           x1 = _props.x1,
           x2 = _props.x2,
@@ -4396,13 +4400,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           y2 = _props.y2,
           direction = _props.direction,
           curvature = _props.curvature,
-          size = _props.size,
           onRender = _props.onRender;
 
 
       size = Math.abs(direction * size);
-
-      console.log(size, direction);
 
       var dX = x1 - x2;
       var dY = y1 - y2;

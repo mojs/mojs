@@ -47,9 +47,12 @@ Rig._vars = function () {
 Rig._createDeltas = function () {
   const customProperties = this._o.customProperties || {};
   const originalRender = customProperties.render;
+
+  const keys = Object.keys(this._defaults);
   // it is forbidden to override the rig defaults
-  for (let key in this._defaults) {
-    if (customProperties[key] !== void 0) {
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys(i);
+    if (customProperties[key] !== undefined) {
       delete customProperties[key];
     }
   }
@@ -68,8 +71,8 @@ Rig._createDeltas = function () {
         if (typeof originalRender === 'function') {
           originalRender(props, support, ep, p, isForward);
         }
-      }
-    }
+      },
+    },
   });
   // make the tweenable interface work
   this.timeline = this._deltas.timeline;
@@ -82,20 +85,19 @@ Rig._createDeltas = function () {
  * @public
  */
 Rig.render = function () {
-  let {
+  let { size } = this._props;
+
+  const {
     x1,
     x2,
     y1,
     y2,
     direction,
     curvature,
-    size,
     onRender,
   } = this._props;
 
   size = Math.abs(direction * size);
-
-  console.log(size, direction);
 
   const dX = x1 - x2;
   const dY = y1 - y2;
