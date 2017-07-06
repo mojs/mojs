@@ -4321,6 +4321,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var Super = _tweenableBabel.Tweenable.__mojsClass;
     var Rig = Object.create(Super);
 
+    var DEGREE_RAD = 180 / Math.PI;
+
     /**
      * `_declareDefaults` - Method to declare `_defaults`.
      *
@@ -4339,16 +4341,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         onRender: function () {}
       };
 
-      this._center = {};
-      this._knee = {
+      this._support = {
         handle1: {},
-        handle2: {}
+        handle2: {},
+        center: {},
+        knee: {},
+        angle1: 0,
+        angle2: 0
       };
     };
 
     Rig._vars = function () {
       Super._vars.call(this);
-
+      // create `Deltas` module to control all the deltas
       this._createDeltas();
     };
 
@@ -4394,6 +4399,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     Rig.render = function () {
       var size = this._props.size;
+
+      var support = this._support;
+
       var _props = this._props,
           x1 = _props.x1,
           x2 = _props.x2,
@@ -4404,21 +4412,25 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           onRender = _props.onRender;
 
 
-      var sin = Math.sin(Math.abs(direction) * (Math.PI / 2));
-      size = sin * Math.abs(size);
+      var direction3dShift = Math.sin(Math.abs(direction) * (Math.PI / 2));
+      size = direction3dShift * Math.abs(size);
 
-      var dX = x1 - x2;
-      var dY = y1 - y2;
-      var length = sin * Math.sqrt(dX * dX + dY * dY);
+      // deltas should be at least 1, otherwise a lot of ambiguities can happen
+      var dX = x1 - x2 || 1;
+      var dY = y1 - y2 || 1;
+      var length = direction3dShift * Math.sqrt(dX * dX + dY * dY);
+      var pureLength = Math.sqrt(dX * dX + dY * dY);
 
       var maxPartLength = size / 2;
       var actualPartLength = length / 2;
+      var pureActualLength = Math.sqrt(dX * dX + dY * dY) / 2;
 
       // get base angle between 2 points
-      var angle = Math.atan(dY / dX) * (180 / Math.PI) + 90;
+      var angle = Math.atan(dY / dX) * DEGREE_RAD + 90;
       angle = dX < 0 ? angle : 180 + angle;
+      var normActualLegnth = actualPartLength / direction3dShift;
       // get center point
-      (0, _getRadialPointBabel.getRadialPoint)(x1, y1, actualPartLength / sin, angle, this._center);
+      (0, _getRadialPointBabel.getRadialPoint)(x1, y1, normActualLegnth, angle, support.center);
 
       var isStretch = actualPartLength > maxPartLength;
       var depth = isStretch ? 0 : Math.sqrt(Math.pow(maxPartLength, 2) - Math.pow(actualPartLength, 2));
@@ -4426,19 +4438,40 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var directionCoeficient = direction >= 0 ? 1 : -1;
       var kneeAngle = angle - directionCoeficient * 90;
 
-      (0, _getRadialPointBabel.getRadialPoint)(this._center.x, this._center.y, depth, kneeAngle, this._knee);
+      (0, _getRadialPointBabel.getRadialPoint)(support.center.x, support.center.y, depth, kneeAngle, support.knee);
 
-      var t = (actualPartLength + depth) / 2;
+      // angle calculation
+      var nAngle = angle - 180;
 
-      var gripAngle = angle - Math.acos(actualPartLength / sin / maxPartLength) * (180 / Math.PI);
+      var ratio = normActualLegnth / maxPartLength;
 
-      gripAngle = gripAngle - 10 * (t / actualPartLength) || angle;
+      var a = depth;
+      var b = pureLength / 2;
+      var baseAngle = Math.atan(depth / normActualLegnth) * DEGREE_RAD;
 
-      var k = (t - depth / 10) * curvature;
-      (0, _getRadialPointBabel.getRadialPoint)(this._knee.x, this._knee.y, k, angle + 180, this._knee.handle1);
-      (0, _getRadialPointBabel.getRadialPoint)(this._knee.x, this._knee.y, k, angle, this._knee.handle2);
+      var gripAngle1 = nAngle + baseAngle;
+      var gripAngle2 = angle - baseAngle;
 
-      onRender(this._props, this._knee, actualPartLength / maxPartLength, gripAngle, this._center);
+      var r = 25 * curvature;
+      gripAngle1 = isStretch === false ? gripAngle1 + r : nAngle;
+      gripAngle2 = isStretch === false ? gripAngle2 - r : angle;
+
+      if (direction > 0) {
+        var temp = gripAngle1;
+        gripAngle1 = gripAngle2 - 180;
+        gripAngle2 = temp - 180;
+      }
+
+      // handle calculations
+      var k = 0.3 * size * curvature;
+      (0, _getRadialPointBabel.getRadialPoint)(support.knee.x, support.knee.y, k, nAngle, support.handle1);
+      (0, _getRadialPointBabel.getRadialPoint)(support.knee.x, support.knee.y, k, angle, support.handle2);
+
+      support.stretchRatio = actualPartLength / maxPartLength;
+      support.angle1 = gripAngle1;
+      support.angle2 = gripAngle2;
+
+      onRender(this._props, support);
     };
 
     /**

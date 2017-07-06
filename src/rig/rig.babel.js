@@ -14,6 +14,8 @@ import { getRadialPoint } from '../helpers/get-radial-point.babel.js';
 const Super = Tweenable.__mojsClass;
 const Rig = Object.create(Super);
 
+const DEGREE_RAD = 180 / Math.PI;
+
 /**
  * `_declareDefaults` - Method to declare `_defaults`.
  *
@@ -32,16 +34,19 @@ Rig._declareDefaults = function () {
     onRender: () => {},
   };
 
-  this._center = {};
-  this._knee = {
+  this._support = {
     handle1: {},
     handle2: {},
+    center: {},
+    knee: {},
+    angle1: 0,
+    angle2: 0,
   };
 };
 
 Rig._vars = function () {
   Super._vars.call(this);
-
+  // create `Deltas` module to control all the deltas
   this._createDeltas();
 };
 
@@ -79,7 +84,6 @@ Rig._createDeltas = function () {
   this.timeline = this._deltas.timeline;
 };
 
-
 /**
  * `render` - function to render the Rig.
  *
@@ -87,6 +91,7 @@ Rig._createDeltas = function () {
  */
 Rig.render = function () {
   let { size } = this._props;
+  const support = this._support;
 
   const {
     x1,
@@ -98,21 +103,25 @@ Rig.render = function () {
     onRender,
   } = this._props;
 
-  const sin = Math.sin(Math.abs(direction) * (Math.PI / 2));
-  size = sin * Math.abs(size);
+  const direction3dShift = Math.sin(Math.abs(direction) * (Math.PI / 2));
+  size = direction3dShift * Math.abs(size);
 
-  const dX = x1 - x2;
-  const dY = y1 - y2;
-  const length = sin * Math.sqrt((dX * dX) + (dY * dY));
+  // deltas should be at least 1, otherwise a lot of ambiguities can happen
+  const dX = (x1 - x2) || 1;
+  const dY = (y1 - y2) || 1;
+  const length = direction3dShift * Math.sqrt((dX * dX) + (dY * dY));
+  const pureLength = Math.sqrt((dX * dX) + (dY * dY));
 
   const maxPartLength = size / 2;
   const actualPartLength = length / 2;
+  const pureActualLength = Math.sqrt((dX * dX) + (dY * dY)) / 2;
 
   // get base angle between 2 points
-  let angle = (Math.atan(dY / dX) * (180 / Math.PI)) + 90;
+  let angle = (Math.atan(dY / dX) * DEGREE_RAD) + 90;
   angle = (dX < 0) ? angle : 180 + angle;
+  const normActualLegnth = actualPartLength / direction3dShift;
   // get center point
-  getRadialPoint(x1, y1, actualPartLength / sin, angle, this._center);
+  getRadialPoint(x1, y1, normActualLegnth, angle, support.center);
 
   const isStretch = actualPartLength > maxPartLength;
   const depth = (isStretch) ? 0 : Math.sqrt((maxPartLength ** 2) - (actualPartLength ** 2));
@@ -120,20 +129,40 @@ Rig.render = function () {
   const directionCoeficient = (direction >= 0) ? 1 : -1;
   const kneeAngle = angle - (directionCoeficient * 90);
 
-  getRadialPoint(this._center.x, this._center.y, depth, kneeAngle, this._knee);
+  getRadialPoint(support.center.x, support.center.y, depth, kneeAngle, support.knee);
 
-  const t = (actualPartLength + depth) / 2;
+  // angle calculation
+  const nAngle = angle - 180;
 
-  let gripAngle = angle - (Math.acos((actualPartLength / sin) / (maxPartLength)) * (180 / Math.PI));
+  let ratio = normActualLegnth / maxPartLength;
 
-  gripAngle = (gripAngle - (10 * (t / actualPartLength))) || angle;
+  const a = depth;
+  const b = pureLength / 2;
+  const baseAngle = Math.atan(depth / normActualLegnth) * DEGREE_RAD;
 
+  let gripAngle1 = nAngle + baseAngle;
+  let gripAngle2 = angle - baseAngle;
 
-  const k = (t - (depth / 10)) * curvature;
-  getRadialPoint(this._knee.x, this._knee.y, k, angle + 180, this._knee.handle1);
-  getRadialPoint(this._knee.x, this._knee.y, k, angle, this._knee.handle2);
+  const r = 25*curvature;
+  gripAngle1 = (isStretch === false) ? gripAngle1 + r : nAngle;
+  gripAngle2 = (isStretch === false) ? gripAngle2 - r : angle;
 
-  onRender(this._props, this._knee, actualPartLength / maxPartLength, gripAngle, this._center);
+  if (direction > 0) {
+    const temp = gripAngle1;
+    gripAngle1 = gripAngle2 - 180;
+    gripAngle2 = temp - 180;
+  }
+
+  // handle calculations
+  const k = (0.3 * size) * curvature;
+  getRadialPoint(support.knee.x, support.knee.y, k, nAngle, support.handle1);
+  getRadialPoint(support.knee.x, support.knee.y, k, angle, support.handle2);
+
+  support.stretchRatio = actualPartLength / maxPartLength;
+  support.angle1 = gripAngle1;
+  support.angle2 = gripAngle2;
+
+  onRender(this._props, support);
 };
 
 /**
