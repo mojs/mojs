@@ -110,11 +110,9 @@ Rig.render = function () {
   const dX = (x1 - x2) || 1;
   const dY = (y1 - y2) || 1;
   const length = direction3dShift * Math.sqrt((dX * dX) + (dY * dY));
-  const pureLength = Math.sqrt((dX * dX) + (dY * dY));
 
   const maxPartLength = size / 2;
   const actualPartLength = length / 2;
-  const pureActualLength = Math.sqrt((dX * dX) + (dY * dY)) / 2;
 
   // get base angle between 2 points
   let angle = (Math.atan(dY / dX) * DEGREE_RAD) + 90;
@@ -134,16 +132,12 @@ Rig.render = function () {
   // angle calculation
   const nAngle = angle - 180;
 
-  let ratio = normActualLegnth / maxPartLength;
-
-  const a = depth;
-  const b = pureLength / 2;
   const baseAngle = Math.atan(depth / normActualLegnth) * DEGREE_RAD;
 
   let gripAngle1 = nAngle + baseAngle;
   let gripAngle2 = angle - baseAngle;
 
-  const r = 25*curvature;
+  const r = 25 * curvature;
   gripAngle1 = (isStretch === false) ? gripAngle1 + r : nAngle;
   gripAngle2 = (isStretch === false) ? gripAngle2 - r : angle;
 
@@ -154,7 +148,7 @@ Rig.render = function () {
   }
 
   // handle calculations
-  const k = (0.3 * size) * curvature;
+  const k = (0.25 * size) * curvature;
   getRadialPoint(support.knee.x, support.knee.y, k, nAngle, support.handle1);
   getRadialPoint(support.knee.x, support.knee.y, k, angle, support.handle2);
 

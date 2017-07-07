@@ -4419,11 +4419,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var dX = x1 - x2 || 1;
       var dY = y1 - y2 || 1;
       var length = direction3dShift * Math.sqrt(dX * dX + dY * dY);
-      var pureLength = Math.sqrt(dX * dX + dY * dY);
 
       var maxPartLength = size / 2;
       var actualPartLength = length / 2;
-      var pureActualLength = Math.sqrt(dX * dX + dY * dY) / 2;
 
       // get base angle between 2 points
       var angle = Math.atan(dY / dX) * DEGREE_RAD + 90;
@@ -4443,10 +4441,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       // angle calculation
       var nAngle = angle - 180;
 
-      var ratio = normActualLegnth / maxPartLength;
-
-      var a = depth;
-      var b = pureLength / 2;
       var baseAngle = Math.atan(depth / normActualLegnth) * DEGREE_RAD;
 
       var gripAngle1 = nAngle + baseAngle;
@@ -4463,7 +4457,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       // handle calculations
-      var k = 0.3 * size * curvature;
+      var k = 0.25 * size * curvature;
       (0, _getRadialPointBabel.getRadialPoint)(support.knee.x, support.knee.y, k, nAngle, support.handle1);
       (0, _getRadialPointBabel.getRadialPoint)(support.knee.x, support.knee.y, k, angle, support.handle2);
 
@@ -5389,7 +5383,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     */
 
     var mojs = {
-      revision: '2.10.1',
+      revision: '2.11.0',
       Tween: _tweenBabel.Tween,
       Timeline: _timelineBabel.Timeline,
       easing: _easingBabel.easing,
