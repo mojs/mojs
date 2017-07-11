@@ -2318,6 +2318,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     // TODO:
     //  - add bounds?
+    //  - add clone
+    //  - add global cache
 
     var Super = _classProtoBabel.ClassProto;
     var MotionPath = Object.create(Super);
@@ -4103,7 +4105,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       // draw visual stying
       for (var i = 0; i < styleKeys.length; i++) {
         var key = styleKeys[i];
-        shapeEl.style[key] = props[key];
+        var cacheName = '_' + key;
+        var value = props[key];
+        if (support[cacheName] !== value) {
+          shapeEl.style[key] = value;
+        }
+        support[cacheName] = value;
       }
 
       // draw shape
@@ -4113,12 +4120,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var ry = 'calc(' + sizeY + '/2)';
 
       if (rx !== support._rx) {
-        shapeEl.setAttribute('rx', rx);
+        shapeEl.style.rx = rx;
         support._rx = rx;
       }
 
       if (ry !== support._ry) {
-        shapeEl.setAttribute('ry', ry);
+        // shapeEl.setAttribute('ry', ry);
+        shapeEl.style.ry = ry;
         support._ry = ry;
       }
     };
@@ -4208,7 +4216,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       Super.init.call(this, o);
       // create SVG canvas
       this._createSVGCanvas();
-
       // lifecycle method for shapes that will extend this class
       if (this._initializeShape) {
         // create SVG canvas
@@ -4618,10 +4625,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         customProperties: customProperties,
         index: index,
         object: object,
-        supportProps: supportProps
+        supportProps: target
       });
       // update the delta with `0` progress
       delta.update(0, 0);
+
       // get the result on target
       var result = target[key];
       // check if `result` is `NaN` return original propert
@@ -4746,13 +4754,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     /* The `Shape` class  */
     /* ------------------ */
 
-    /*
-      TODO:
-        - add `fill` to defaults
-    */
-
     var Super = _surfaceBabel.Surface.__mojsClass;
     var Shape = Object.create(Super);
+
+    // TODO:
+    //  - add `tune` method
+    //  - add more `SVG`/canvas shapes and map them`
 
     /**
      * `arrayToObj` - function to tranform string[] to `{ [string]: true }` object
@@ -4779,7 +4786,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     Shape._declareDefaults = function () {
       Super._declareDefaults.call(this);
       // save surface property
-      this._surfaceDefaults = _extends({}, this._defaults);
+      this._surfaceDefaults = _extends({}, this._defaults, {
+        width: 100,
+        height: 100
+      });
       // defaults of this module
       this._shapeDefaults = {
         // add `Shape` defaults
@@ -4827,7 +4837,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       // add `isSkipRender: true` to all `shapeDefaults` properties
       var defaultsKeys = Object.keys(this._shapeDefaults);
       for (var i = 0; i < defaultsKeys.length; i++) {
-        newCustomProps[defaultsKeys[i]] = { isSkipRender: true };
+        newCustomProps[defaultsKeys[i]] = {
+          type: 'unit',
+          isSkipRender: true
+        };
       }
       // for all `options` check if the property is present on the `surface` defaults,
       // if not present, add `isKipRender` to it
@@ -5374,11 +5387,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     /*
       TODO:
         - add shape
-        - add burst
-        - add mojs.staggerFunction()
+        - add burst / radial repeater
+        - add mojs.staggerFunction() and staggerMap
         - add spring easing
         - add bezier easing
         - add path generators
+        - add rig renderers
         - add array deltas
     */
 

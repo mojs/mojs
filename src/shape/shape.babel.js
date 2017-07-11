@@ -5,13 +5,12 @@ import { Circle } from './svg/circle.babel.js';
 /* The `Shape` class  */
 /* ------------------ */
 
-/*
-  TODO:
-    - add `fill` to defaults
-*/
-
 const Super = Surface.__mojsClass;
 const Shape = Object.create(Super);
+
+// TODO:
+//  - add `tune` method
+//  - add more `SVG`/canvas shapes and map them`
 
 /**
  * `arrayToObj` - function to tranform string[] to `{ [string]: true }` object
@@ -38,7 +37,11 @@ const arrayToObj = (array) => {
 Shape._declareDefaults = function () {
   Super._declareDefaults.call(this);
   // save surface property
-  this._surfaceDefaults = { ...this._defaults };
+  this._surfaceDefaults = {
+    ...this._defaults,
+    width: 100,
+    height: 100,
+  };
   // defaults of this module
   this._shapeDefaults = {
     // add `Shape` defaults
@@ -85,7 +88,10 @@ Shape._createCustomProperties = function (o) {
   // add `isSkipRender: true` to all `shapeDefaults` properties
   const defaultsKeys = Object.keys(this._shapeDefaults);
   for (let i = 0; i < defaultsKeys.length; i++) {
-    newCustomProps[defaultsKeys[i]] = { isSkipRender: true };
+    newCustomProps[defaultsKeys[i]] = {
+      type: 'unit',
+      isSkipRender: true
+    };
   }
   // for all `options` check if the property is present on the `surface` defaults,
   // if not present, add `isKipRender` to it

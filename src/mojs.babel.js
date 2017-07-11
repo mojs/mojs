@@ -32,11 +32,12 @@ import { getRadialPoint } from './helpers/get-radial-point.babel.js';
 /*
   TODO:
     - add shape
-    - add burst
-    - add mojs.staggerFunction()
+    - add burst / radial repeater
+    - add mojs.staggerFunction() and staggerMap
     - add spring easing
     - add bezier easing
     - add path generators
+    - add rig renderers
     - add array deltas
 */
 

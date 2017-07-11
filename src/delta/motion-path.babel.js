@@ -9,6 +9,8 @@ import { staggerProperty } from '../helpers/stagger-property.babel.js';
 
 // TODO:
 //  - add bounds?
+//  - add clone
+//  - add global cache
 
 const Super = ClassProto;
 const MotionPath = Object.create(Super);

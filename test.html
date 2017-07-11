@@ -74,14 +74,14 @@
     </style>
 
     <div class="circle" id="js-circle1"></div>
-    <div class="circle" id="js-circle2" style="cursor: move"></div>
+    <!-- <div class="circle" id="js-circle2" style="cursor: move"></div>
     <div class="circle circle--small" id="js-circle3"></div>
     <div class="circle circle--small" id="js-circle4"></div>
 
     <div class="circle circle--smaller" id="js-circle5"></div>
-    <div class="circle circle--smaller" id="js-circle6"></div>
+    <div class="circle circle--smaller" id="js-circle6"></div> -->
 
-    <div class="hand" id="js-hand1">
+    <!-- <div class="hand" id="js-hand1">
       <svg viewBox="0 0 382 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
             <g id="hold" transform="translate(0.000000, -1.000000)" fill-rule="nonzero">
@@ -107,7 +107,7 @@
 
     <svg style="width: 1280px; height: 700px; border: 1px solid;">
       <path d="M0, 0 L900, 500" stroke="#333" stroke-width="8" id="js-path" fill="none" stroke-linejoin="round" stroke-linecap="round" />
-    </svg>
+    </svg> -->
 
     <!-- <div class="el" id="js-el"></div> -->
 
@@ -125,7 +125,38 @@
     <script src="http://hammerjs.github.io/dist/hammer.min.js"></script>
 
     <script>
-      
+
+      // var shapeStagger = mojs.stagger(mojs.Shape);
+
+      var circle = document.querySelector('#js-circle1');
+
+      var shape = new mojs.Shape2({
+        // items: 500,
+        x: { 0: 500 },
+        y: { 0: 500 },
+        // customProperties: {
+        //   render: function(props) {
+        //     // circle.style.transform = `translate(${props.x}px, ${props.y}px)`;
+        //   }
+        // },
+        // x: [ { path: 'M0,0 L100,100' }, { path: 'M0,0 L-100,100' }, { path: 'M0,0 L-100,-100' }, { path: 'M0,0 L100,-100' } ],
+        // y: [ { path: 'M0,0 L100,100' }, { path: 'M0,0 L-100,100' }, { path: 'M0,0 L-100,-100' }, { path: 'M0,0 L100,-100' } ],
+        // position: 'absolute',
+        // top: '50%',
+        // left: '50%',
+        // fill: 'cyan',
+        // fill: { 'cyan' : 'deeppink' },
+        // strokeWidth: { 20: 0 },
+        // stroke: { 'purple' : 'hotpink' },
+        // marginLeft: '-100px',
+        // marginTop: '-100px',
+        // angle: { '-180': 180 },
+        // scale: { 1: 0 },
+        duration: 20000,
+        // surfaceOptions: [[ 'position', 'top', 'left', 'marginLeft', 'marginTop' ]]
+      });
+
+      new MojsPlayer({ add: shape });
     </script>
 
     <br />

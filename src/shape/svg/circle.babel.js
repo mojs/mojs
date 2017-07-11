@@ -31,7 +31,12 @@ Circle.render = function (mainEl, support) {
   // draw visual stying
   for (let i = 0; i < styleKeys.length; i++) {
     const key = styleKeys[i];
-    shapeEl.style[key] = props[key];
+    const cacheName = `_${key}`;
+    const value = props[key];
+    if (support[cacheName] !== value) {
+      shapeEl.style[key] = value;
+    }
+    support[cacheName] = value;
   }
 
   // draw shape
@@ -41,12 +46,13 @@ Circle.render = function (mainEl, support) {
   const ry = `calc(${sizeY}/2)`;
 
   if (rx !== support._rx) {
-    shapeEl.setAttribute('rx', rx);
+    shapeEl.style.rx = rx;
     support._rx = rx;
   }
 
   if (ry !== support._ry) {
-    shapeEl.setAttribute('ry', ry);
+    // shapeEl.setAttribute('ry', ry);
+    shapeEl.style.ry = ry;
     support._ry = ry;
   }
 };

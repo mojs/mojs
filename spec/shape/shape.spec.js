@@ -26,7 +26,7 @@ describe('`Shape` ->', function () {
       expect(shape._defaults.height).toBe(100);
     });
 
-    it('should save `Surface` defaults', function () {
+    it('should save `Surface` defaults #2', function () {
       var shape = new Shape();
 
       expect(shape._surfaceDefaults.parent).toBe(document.body);
@@ -57,14 +57,17 @@ describe('`Shape` ->', function () {
       var shape = new Shape();
 
       expect(shape._o.customProperties.size).toEqual({
+        type: 'unit',
         isSkipRender: true
       });
 
       expect(shape._o.customProperties.sizeX).toEqual({
+        type: 'unit',
         isSkipRender: true
       });
 
       expect(shape._o.customProperties.sizeY).toEqual({
+        type: 'unit',
         isSkipRender: true
       });
     });

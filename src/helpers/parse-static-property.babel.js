@@ -28,10 +28,11 @@ export const parseStaticProperty = (key, property, customProperties, index = 0) 
     customProperties,
     index,
     object,
-    supportProps,
+    supportProps: target,
   });
   // update the delta with `0` progress
   delta.update(0, 0);
+
   // get the result on target
   const result = target[key];
   // check if `result` is `NaN` return original propert
