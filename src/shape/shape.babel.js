@@ -90,7 +90,7 @@ Shape._createCustomProperties = function (o) {
   for (let i = 0; i < defaultsKeys.length; i++) {
     newCustomProps[defaultsKeys[i]] = {
       type: 'unit',
-      isSkipRender: true
+      isSkipRender: true,
     };
   }
   // for all `options` check if the property is present on the `surface` defaults,

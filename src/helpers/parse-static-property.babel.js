@@ -19,7 +19,6 @@ export const parseStaticProperty = (key, property, customProperties, index = 0) 
 
   const target = {};
   const object = {};
-  const supportProps = {};
   object[property] = property;
 
   const delta = new Delta({
