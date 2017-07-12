@@ -42,7 +42,7 @@ import { getRadialPoint } from './helpers/get-radial-point.babel.js';
 */
 
 const mojs = {
-  revision: '2.11.0',
+  revision: '2.11.2',
   Tween,
   Timeline,
   easing,

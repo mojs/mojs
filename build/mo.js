@@ -5397,7 +5397,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     */
 
     var mojs = {
-      revision: '2.11.0',
+      revision: '2.11.2',
       Tween: _tweenBabel.Tween,
       Timeline: _timelineBabel.Timeline,
       easing: _easingBabel.easing,
