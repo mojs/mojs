@@ -5469,112 +5469,114 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../easing/parse-easing.babel.js'), require('./get-radial-point.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.parseEasingBabel, global.getRadialPointBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
     if (true) {
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
     } else if (typeof exports !== "undefined") {
-        factory(exports, require('../easing/parse-easing'), require('./get-radial-point'));
+      factory(exports);
     } else {
-        var mod = {
-            exports: {}
-        };
-        factory(mod.exports, global.parseEasing, global.getRadialPoint);
-        global.mojs = mod.exports;
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.parseEasingBabel, global.getRadialPointBabel);
+      global.mojs = mod.exports;
     }
-})(this, function (exports) {
+  })(undefined, function (exports, _parseEasingBabel, _getRadialPointBabel) {
     'use strict';
 
-    (function (global, factory) {
-        if (true) {
-            !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-        } else if (typeof exports !== "undefined") {
-            factory(exports);
-        } else {
-            var mod = {
-                exports: {}
-            };
-            factory(mod.exports, global.parseEasing, global.getRadialPoint);
-            global.mojs = mod.exports;
-        }
-    })(undefined, function (exports, _parseEasing, _getRadialPoint) {
-        'use strict';
-
-        Object.defineProperty(exports, "__esModule", {
-            value: true
-        });
-        exports.generatePath = undefined;
-
-        var _extends = Object.assign || function (target) {
-            for (var i = 1; i < arguments.length; i++) {
-                var source = arguments[i];
-
-                for (var key in source) {
-                    if (Object.prototype.hasOwnProperty.call(source, key)) {
-                        target[key] = source[key];
-                    }
-                }
-            }
-
-            return target;
-        };
-
-        var defaults = {
-            xDumpEasing: 'cubic.in',
-            yDumpEasing: 'linear.none',
-            count: 4,
-            length: 200,
-            depth: 1,
-            x: 250,
-            y: 250,
-            angle: 90,
-            initialShift: 0,
-            isGrow: 1
-        };
-
-        var generatePath = exports.generatePath = function () {
-            var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-            var o = _extends({}, defaults, options);
-            // parse easing properties
-            o.xDumpEasing = (0, _parseEasing.parseEasing)(o.xDumpEasing);
-            o.yDumpEasing = (0, _parseEasing.parseEasing)(o.yDumpEasing);
-            // calculate depth
-            var depth = o.depth * o.length;
-            // util points
-            var point = {};
-            var point1 = {};
-            var point2 = {};
-            var point3 = {};
-            // get the start point
-            (0, _getRadialPoint.getRadialPoint)(o.x, o.y, o.initialShift, o.angle, point);
-            // loop util variables
-            var step = 1 / o.count;
-            var flip = false;
-            var proc = step / 2;
-            var d = 'M ' + point.x + ', ' + point.y;
-            while (proc <= 1) {
-                var yProc = o.isGrow ? proc : 1 - proc;
-                var yCoef = (flip = !flip) ? -1 : 1;
-                // get the next center point
-                (0, _getRadialPoint.getRadialPoint)(point.x, point.y, o.xDumpEasing(proc) * o.length, o.angle, point1);
-                // get the curve control point, flip the direction on every segment
-                (0, _getRadialPoint.getRadialPoint)(point1.x, point1.y, o.yDumpEasing(yProc) * depth, o.angle + yCoef * 90, point2);
-                // get the next center point 
-                (0, _getRadialPoint.getRadialPoint)(point.x, point.y, o.xDumpEasing(proc + step / 2) * o.length, o.angle, point3);
-                // add the curve - curve point + the next center segment
-                d += ' Q ' + point2.x + ', ' + point2.y + ' ' + point3.x + ', ' + point3.y + ' ';
-                // add curve to the path
-                proc += step;
-            }
-
-            return d;
-        };
+    Object.defineProperty(exports, "__esModule", {
+      value: true
     });
+    exports.generatePath = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    var defaults = {
+      xDumpEasing: 'cubic.in',
+      yDumpEasing: 'linear.none',
+      count: 4,
+      length: 200,
+      depth: .5,
+      x: 250,
+      y: 250,
+      angle: 90,
+      initialShift: 0,
+      isGrow: 1
+    };
+
+    var generatePath = exports.generatePath = function () {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      var o = _extends({}, defaults, options);
+      // parse easing properties
+      o.xDumpEasing = (0, _parseEasingBabel.parseEasing)(o.xDumpEasing);
+      o.yDumpEasing = (0, _parseEasingBabel.parseEasing)(o.yDumpEasing);
+      // calculate depth
+      var depth = o.depth * o.length;
+      // util points
+      var point = {};
+      var point1 = {};
+      var point2 = {};
+      var point3 = {};
+      // get the start point
+      (0, _getRadialPointBabel.getRadialPoint)(o.x, o.y, o.initialShift, o.angle, point);
+      // loop util variables
+      var step = 1 / o.count;
+      var flip = false;
+      var proc = step / 2;
+      var d = 'M ' + point.x + ', ' + point.y;
+      while (proc <= 1) {
+        var yProc = o.isGrow ? proc : 1 - proc;
+        flip = !flip;
+        var yCoef = flip ? -1 : 1;
+        // get the next center point
+        (0, _getRadialPointBabel.getRadialPoint)(point.x, point.y, o.xDumpEasing(proc) * o.length, o.angle, point1);
+        // get the curve control point, flip the direction on every segment
+        var curvePointAngle = o.angle + yCoef * 90;
+        (0, _getRadialPointBabel.getRadialPoint)(point1.x, point1.y, o.yDumpEasing(yProc) * depth, curvePointAngle, point2);
+        // get the next center point
+        (0, _getRadialPointBabel.getRadialPoint)(point.x, point.y, o.xDumpEasing(proc + step / 2) * o.length, o.angle, point3);
+        // add the curve - curve point + the next center segment
+        d += ' Q ' + point2.x + ', ' + point2.y + ' ' + point3.x + ', ' + point3.y + ' ';
+        // add curve to the path
+        proc += step;
+      }
+
+      return d;
+    };
+  });
 });
 
 /***/ })

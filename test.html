@@ -130,6 +130,16 @@
 
     <script src="http://hammerjs.github.io/dist/hammer.min.js"></script>
 
+    <script>
+      var path1 = document.querySelector('#js-path1');
+      var path2 = document.querySelector('#js-path2');
+
+      var pathGen = document.querySelector('#js-path-gen');
+      var d = mojs.generatePath();
+      pathGen.setAttribute('d', d);
+      
+    </script>
+
     <!-- <script src="vendor/lodash.min.js"></script> -->
     <!-- <script src="vendor/platform.js"></script> -->
     <!-- <script src="vendor/benchmark.js"></script> -->
