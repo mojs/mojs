@@ -190,9 +190,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       // save options
       this._o = _extends({}, o);
+
       // parse index and delete it from options
       this.index = this._o.index || 0;
       delete this._o.index;
+      // parse total items and delete it from options
+      this._totalItemsInStagger = this._o.totalItemsInStagger || 0;
+      delete this._o.totalItemsInStagger;
+
       this._declareDefaults();
       this._extendDefaults();
       this._vars();
@@ -379,7 +384,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     exports.staggerProperty = undefined;
 
 
-    var staggerProperty = function (prop, index) {
+    var staggerProperty = function (prop, index, totalItems) {
       var value = prop;
       // if property is an array map the index to some array item
       if (prop instanceof Array) {
@@ -387,10 +392,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
       // if prop is a function, call the it with index and return the result
       if (typeof prop === 'function' && prop.__mojs__isStaggerFunction) {
-        value = prop(index);
+        value = prop(index, totalItems);
       }
 
-      // otherwise return the single property
+      // [string] otherwise return the single property
       return (0, _parseStaggerBabel.parseStagger)(value, index);
     };
 
@@ -5000,6 +5005,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     });
     exports.stagger = undefined;
 
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
 
     /* -------------------- */
     /* The `Stagger` class  */
@@ -5042,7 +5060,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var modulesCount = items || el.length || 1;
 
       for (var i = 0; i < modulesCount; i++) {
-        var module = new Module(this._getStaggerOptions(this._o, i));
+        var module = new Module(_extends({}, this._getStaggerOptions(this._o, i), {
+          totalItemsInStagger: modulesCount
+        }));
         this._modules.push(module);
         this.timeline.add(module);
       }
@@ -5055,14 +5075,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @param {Object} Stagger options.
      * @param {Number} Index of a module.
      */
-    Stagger._getStaggerOptions = function (options, i) {
+    Stagger._getStaggerOptions = function (options, i, modulesCount) {
       // pass index to child properties
       var o = { index: i };
 
       var keys = Object.keys(options);
       for (var j = 0; j < keys.length; j++) {
         var key = keys[j];
-        o[key] = (0, _staggerPropertyBabel.staggerProperty)(options[key], i);
+        o[key] = (0, _staggerPropertyBabel.staggerProperty)(options[key], i, modulesCount);
       }
 
       return o;
@@ -5527,7 +5547,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       xDumpEasing: 'cubic.in',
       yDumpEasing: 'linear.none',
       count: 4,
-      length: 200,
+      length: 100,
       depth: .5,
       x: 250,
       y: 250,

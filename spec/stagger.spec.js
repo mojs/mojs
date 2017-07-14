@@ -88,11 +88,13 @@ describe('`stagger` ->', function () {
     expect(deltasStagger._modules[4]._o.z).toEqual({ 'stagger(20rem)': 'stagger(10rem, 20rem)' });
   });
 
-  it('should pass index to the Modules', function () {
+  it('should pass `index` and `totalItemsInStagger` to the Modules', function () {
     var DeltasStagger = stagger(Deltas);
 
+    var items = 5;
+
     var options = {
-      items: 5,
+      items: items,
       el: [{}, {}, {}],
       delay: 'stagger(200, 100)',
       z: { 'stagger(20rem)': 'stagger(10rem, 20rem)' }
@@ -105,6 +107,12 @@ describe('`stagger` ->', function () {
     expect(deltasStagger._modules[2].index).toBe(2);
     expect(deltasStagger._modules[3].index).toBe(3);
     expect(deltasStagger._modules[4].index).toBe(4);
+
+    expect(deltasStagger._modules[0]._totalItemsInStagger).toBe(items);
+    expect(deltasStagger._modules[1]._totalItemsInStagger).toBe(items);
+    expect(deltasStagger._modules[2]._totalItemsInStagger).toBe(items);
+    expect(deltasStagger._modules[3]._totalItemsInStagger).toBe(items);
+    expect(deltasStagger._modules[4]._totalItemsInStagger).toBe(items);
   });
 
 });

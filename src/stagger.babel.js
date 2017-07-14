@@ -36,7 +36,10 @@ Stagger._createModules = function (Module) {
   const modulesCount = items || el.length || 1;
 
   for (let i = 0; i < modulesCount; i++) {
-    const module = new Module(this._getStaggerOptions(this._o, i));
+    const module = new Module({
+      ...this._getStaggerOptions(this._o, i),
+      totalItemsInStagger: modulesCount,
+    });
     this._modules.push(module);
     this.timeline.add(module);
   }
@@ -49,14 +52,14 @@ Stagger._createModules = function (Module) {
  * @param {Object} Stagger options.
  * @param {Number} Index of a module.
  */
-Stagger._getStaggerOptions = function (options, i) {
+Stagger._getStaggerOptions = function (options, i, modulesCount) {
   // pass index to child properties
   const o = { index: i };
 
   const keys = Object.keys(options);
   for (let j = 0; j < keys.length; j++) {
     const key = keys[j];
-    o[key] = staggerProperty(options[key], i);
+    o[key] = staggerProperty(options[key], i, modulesCount);
   }
 
   return o;

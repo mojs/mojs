@@ -28,6 +28,21 @@ describe('`staggerProperty` ->', function () {
     }
   });
 
+  it('should parse `function` values #totalItemsInStagger', function () {
+    var coef = Math.random();
+
+    var fun = function(index, total) {
+      return (index * coef) / total;
+    };
+
+    fun.__mojs__isStaggerFunction = true;
+
+    for (var i = 0; i < 22; i++) {
+      expect(staggerProperty(fun, i, 5)).toBeDefined();
+      expect(staggerProperty(fun, i, 5)).toBe((i * coef) / 5);
+    }
+  });
+
   it('should parse plain `function` values', function () {
     var coef = Math.random();
 

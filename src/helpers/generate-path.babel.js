@@ -6,7 +6,7 @@ const defaults = {
   xDumpEasing: 'cubic.in',
   yDumpEasing: 'linear.none',
   count: 4,
-  length: 200,
+  length: 100,
   depth: .5,
   x: 250,
   y: 250,
