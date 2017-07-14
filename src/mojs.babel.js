@@ -95,5 +95,8 @@ mojs.Shape2 = Shape;
 // rig
 import { Rig } from './rig/rig.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.Rig = Rig;
+// path generator
+import { generatePath } from './helpers/generate-path.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+mojs.generatePath = generatePath;
 
 export default mojs;

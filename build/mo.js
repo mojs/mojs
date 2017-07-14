@@ -4616,7 +4616,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       var target = {};
       var object = {};
-      var supportProps = {};
       object[property] = property;
 
       var delta = new _deltaBabel.Delta({
@@ -5338,17 +5337,17 @@ module.exports = __webpack_require__(37);
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(6), __webpack_require__(10), __webpack_require__(19), __webpack_require__(17), __webpack_require__(7), __webpack_require__(8), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(20), __webpack_require__(4), __webpack_require__(1), __webpack_require__(2), __webpack_require__(13), __webpack_require__(9), __webpack_require__(27), __webpack_require__(26), __webpack_require__(11), __webpack_require__(35), __webpack_require__(5), __webpack_require__(12), __webpack_require__(34), __webpack_require__(25), __webpack_require__(24), __webpack_require__(32), __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(6), __webpack_require__(10), __webpack_require__(19), __webpack_require__(17), __webpack_require__(7), __webpack_require__(8), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(20), __webpack_require__(4), __webpack_require__(1), __webpack_require__(2), __webpack_require__(13), __webpack_require__(9), __webpack_require__(27), __webpack_require__(26), __webpack_require__(11), __webpack_require__(35), __webpack_require__(5), __webpack_require__(12), __webpack_require__(34), __webpack_require__(25), __webpack_require__(24), __webpack_require__(32), __webpack_require__(28), __webpack_require__(38)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./class-proto.babel.js'), require('./tween/tween.babel.js'), require('./tween/tween-defaults.babel.js'), require('./tween/timeline.babel.js'), require('./tween/tweener.babel.js'), require('./easing/easing.babel.js'), require('./easing/parse-easing.babel.js'), require('./delta/delta.babel.js'), require('./delta/split-delta.babel.js'), require('./delta/parse-number.babel.js'), require('./delta/parse-unit.babel.js'), require('./delta/parse-color.babel.js'), require('./delta/separate-tween-options.babel.js'), require('./tween/tweenable.babel.js'), require('./helpers/stagger-property.babel.js'), require('./helpers/parse-stagger.babel.js'), require('./helpers/make-color-object.babel.js'), require('./shape/svg/svg-shape.babel.js'), require('./shape/svg/circle.babel.js'), require('./helpers/get-radial-point.babel.js'), require('./easing/basic-easing.babel.js'), require('./delta/deltas.babel.js'), require('./delta/motion-path.babel.js'), require('./stagger.babel.js'), require('./html.babel.js'), require('./surface.babel.js'), require('./shape/shape.babel.js'), require('./rig/rig.babel.js'));
+    factory(module, exports, require('./class-proto.babel.js'), require('./tween/tween.babel.js'), require('./tween/tween-defaults.babel.js'), require('./tween/timeline.babel.js'), require('./tween/tweener.babel.js'), require('./easing/easing.babel.js'), require('./easing/parse-easing.babel.js'), require('./delta/delta.babel.js'), require('./delta/split-delta.babel.js'), require('./delta/parse-number.babel.js'), require('./delta/parse-unit.babel.js'), require('./delta/parse-color.babel.js'), require('./delta/separate-tween-options.babel.js'), require('./tween/tweenable.babel.js'), require('./helpers/stagger-property.babel.js'), require('./helpers/parse-stagger.babel.js'), require('./helpers/make-color-object.babel.js'), require('./shape/svg/svg-shape.babel.js'), require('./shape/svg/circle.babel.js'), require('./helpers/get-radial-point.babel.js'), require('./easing/basic-easing.babel.js'), require('./delta/deltas.babel.js'), require('./delta/motion-path.babel.js'), require('./stagger.babel.js'), require('./html.babel.js'), require('./surface.babel.js'), require('./shape/shape.babel.js'), require('./rig/rig.babel.js'), require('./helpers/generate-path.babel.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.classProtoBabel, global.tweenBabel, global.tweenDefaultsBabel, global.timelineBabel, global.tweenerBabel, global.easingBabel, global.parseEasingBabel, global.deltaBabel, global.splitDeltaBabel, global.parseNumberBabel, global.parseUnitBabel, global.parseColorBabel, global.separateTweenOptionsBabel, global.tweenableBabel, global.staggerPropertyBabel, global.parseStaggerBabel, global.makeColorObjectBabel, global.svgShapeBabel, global.circleBabel, global.getRadialPointBabel, global.basicEasingBabel, global.deltasBabel, global.motionPathBabel, global.staggerBabel, global.htmlBabel, global.surfaceBabel, global.shapeBabel, global.rigBabel);
+    factory(mod, mod.exports, global.classProtoBabel, global.tweenBabel, global.tweenDefaultsBabel, global.timelineBabel, global.tweenerBabel, global.easingBabel, global.parseEasingBabel, global.deltaBabel, global.splitDeltaBabel, global.parseNumberBabel, global.parseUnitBabel, global.parseColorBabel, global.separateTweenOptionsBabel, global.tweenableBabel, global.staggerPropertyBabel, global.parseStaggerBabel, global.makeColorObjectBabel, global.svgShapeBabel, global.circleBabel, global.getRadialPointBabel, global.basicEasingBabel, global.deltasBabel, global.motionPathBabel, global.staggerBabel, global.htmlBabel, global.surfaceBabel, global.shapeBabel, global.rigBabel, global.generatePathBabel);
     global.mojs = mod.exports;
   }
 })(this, function (module, exports) {
@@ -5356,7 +5355,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(6), __webpack_require__(10), __webpack_require__(19), __webpack_require__(17), __webpack_require__(7), __webpack_require__(8), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(20), __webpack_require__(4), __webpack_require__(1), __webpack_require__(2), __webpack_require__(13), __webpack_require__(9), __webpack_require__(27), __webpack_require__(26), __webpack_require__(11), __webpack_require__(35), __webpack_require__(5), __webpack_require__(12), __webpack_require__(34), __webpack_require__(25), __webpack_require__(24), __webpack_require__(32), __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(6), __webpack_require__(10), __webpack_require__(19), __webpack_require__(17), __webpack_require__(7), __webpack_require__(8), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(20), __webpack_require__(4), __webpack_require__(1), __webpack_require__(2), __webpack_require__(13), __webpack_require__(9), __webpack_require__(27), __webpack_require__(26), __webpack_require__(11), __webpack_require__(35), __webpack_require__(5), __webpack_require__(12), __webpack_require__(34), __webpack_require__(25), __webpack_require__(24), __webpack_require__(32), __webpack_require__(28), __webpack_require__(38)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -5366,10 +5365,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var mod = {
         exports: {}
       };
-      factory(mod, mod.exports, global.classProtoBabel, global.tweenBabel, global.tweenDefaultsBabel, global.timelineBabel, global.tweenerBabel, global.easingBabel, global.parseEasingBabel, global.deltaBabel, global.splitDeltaBabel, global.parseNumberBabel, global.parseUnitBabel, global.parseColorBabel, global.separateTweenOptionsBabel, global.tweenableBabel, global.staggerPropertyBabel, global.parseStaggerBabel, global.makeColorObjectBabel, global.svgShapeBabel, global.circleBabel, global.getRadialPointBabel, global.basicEasingBabel, global.deltasBabel, global.motionPathBabel, global.staggerBabel, global.htmlBabel, global.surfaceBabel, global.shapeBabel, global.rigBabel);
+      factory(mod, mod.exports, global.classProtoBabel, global.tweenBabel, global.tweenDefaultsBabel, global.timelineBabel, global.tweenerBabel, global.easingBabel, global.parseEasingBabel, global.deltaBabel, global.splitDeltaBabel, global.parseNumberBabel, global.parseUnitBabel, global.parseColorBabel, global.separateTweenOptionsBabel, global.tweenableBabel, global.staggerPropertyBabel, global.parseStaggerBabel, global.makeColorObjectBabel, global.svgShapeBabel, global.circleBabel, global.getRadialPointBabel, global.basicEasingBabel, global.deltasBabel, global.motionPathBabel, global.staggerBabel, global.htmlBabel, global.surfaceBabel, global.shapeBabel, global.rigBabel, global.generatePathBabel);
       global.mojs = mod.exports;
     }
-  })(undefined, function (module, exports, _classProtoBabel, _tweenBabel, _tweenDefaultsBabel, _timelineBabel, _tweenerBabel, _easingBabel, _parseEasingBabel, _deltaBabel, _splitDeltaBabel, _parseNumberBabel, _parseUnitBabel, _parseColorBabel, _separateTweenOptionsBabel, _tweenableBabel, _staggerPropertyBabel, _parseStaggerBabel, _makeColorObjectBabel, _svgShapeBabel, _circleBabel, _getRadialPointBabel, _basicEasingBabel, _deltasBabel, _motionPathBabel, _staggerBabel, _htmlBabel, _surfaceBabel, _shapeBabel, _rigBabel) {
+  })(undefined, function (module, exports, _classProtoBabel, _tweenBabel, _tweenDefaultsBabel, _timelineBabel, _tweenerBabel, _easingBabel, _parseEasingBabel, _deltaBabel, _splitDeltaBabel, _parseNumberBabel, _parseUnitBabel, _parseColorBabel, _separateTweenOptionsBabel, _tweenableBabel, _staggerPropertyBabel, _parseStaggerBabel, _makeColorObjectBabel, _svgShapeBabel, _circleBabel, _getRadialPointBabel, _basicEasingBabel, _deltasBabel, _motionPathBabel, _staggerBabel, _htmlBabel, _surfaceBabel, _shapeBabel, _rigBabel, _generatePathBabel) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
@@ -5456,10 +5455,126 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     // rig
     // eslint-disable-line import/newline-after-import, import/first
     mojs.Rig = _rigBabel.Rig;
+    // path generator
+    // eslint-disable-line import/newline-after-import, import/first
+    mojs.generatePath = _generatePathBabel.generatePath;
 
     exports.default = mojs;
     module.exports = exports['default'];
   });
+});
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+        factory(exports, require('../easing/parse-easing'), require('./get-radial-point'));
+    } else {
+        var mod = {
+            exports: {}
+        };
+        factory(mod.exports, global.parseEasing, global.getRadialPoint);
+        global.mojs = mod.exports;
+    }
+})(this, function (exports) {
+    'use strict';
+
+    (function (global, factory) {
+        if (true) {
+            !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+        } else if (typeof exports !== "undefined") {
+            factory(exports);
+        } else {
+            var mod = {
+                exports: {}
+            };
+            factory(mod.exports, global.parseEasing, global.getRadialPoint);
+            global.mojs = mod.exports;
+        }
+    })(undefined, function (exports, _parseEasing, _getRadialPoint) {
+        'use strict';
+
+        Object.defineProperty(exports, "__esModule", {
+            value: true
+        });
+        exports.generatePath = undefined;
+
+        var _extends = Object.assign || function (target) {
+            for (var i = 1; i < arguments.length; i++) {
+                var source = arguments[i];
+
+                for (var key in source) {
+                    if (Object.prototype.hasOwnProperty.call(source, key)) {
+                        target[key] = source[key];
+                    }
+                }
+            }
+
+            return target;
+        };
+
+        var defaults = {
+            xDumpEasing: 'cubic.in',
+            yDumpEasing: 'linear.none',
+            count: 4,
+            length: 200,
+            depth: 1,
+            x: 250,
+            y: 250,
+            angle: 90,
+            initialShift: 0,
+            isGrow: 1
+        };
+
+        var generatePath = exports.generatePath = function () {
+            var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+            var o = _extends({}, defaults, options);
+            // parse easing properties
+            o.xDumpEasing = (0, _parseEasing.parseEasing)(o.xDumpEasing);
+            o.yDumpEasing = (0, _parseEasing.parseEasing)(o.yDumpEasing);
+            // calculate depth
+            var depth = o.depth * o.length;
+            // util points
+            var point = {};
+            var point1 = {};
+            var point2 = {};
+            var point3 = {};
+            // get the start point
+            (0, _getRadialPoint.getRadialPoint)(o.x, o.y, o.initialShift, o.angle, point);
+            // loop util variables
+            var step = 1 / o.count;
+            var flip = false;
+            var proc = step / 2;
+            var d = 'M ' + point.x + ', ' + point.y;
+            while (proc <= 1) {
+                var yProc = o.isGrow ? proc : 1 - proc;
+                var yCoef = (flip = !flip) ? -1 : 1;
+                // get the next center point
+                (0, _getRadialPoint.getRadialPoint)(point.x, point.y, o.xDumpEasing(proc) * o.length, o.angle, point1);
+                // get the curve control point, flip the direction on every segment
+                (0, _getRadialPoint.getRadialPoint)(point1.x, point1.y, o.yDumpEasing(yProc) * depth, o.angle + yCoef * 90, point2);
+                // get the next center point 
+                (0, _getRadialPoint.getRadialPoint)(point.x, point.y, o.xDumpEasing(proc + step / 2) * o.length, o.angle, point3);
+                // add the curve - curve point + the next center segment
+                d += ' Q ' + point2.x + ', ' + point2.y + ' ' + point3.x + ', ' + point3.y + ' ';
+                // add curve to the path
+                proc += step;
+            }
+
+            return d;
+        };
+    });
 });
 
 /***/ })
