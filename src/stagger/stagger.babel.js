@@ -1,6 +1,9 @@
-import { Timeline } from './tween/timeline.babel.js';
-import { Tweenable } from './tween/tweenable.babel.js';
-import { staggerProperty } from './helpers/stagger-property.babel.js';
+import { Timeline } from '../tween/timeline.babel.js';
+import { Tweenable } from '../tween/tweenable.babel.js';
+import { staggerProperty } from '../helpers/stagger-property.babel.js';
+import { staggerFunction } from './stagger-function.babel.js';
+import { staggerRand } from './stagger-rand.babel.js';
+import { staggerRandFloat } from './stagger-rand-float.babel.js';
 
 /* -------------------- */
 /* The `Stagger` class  */
@@ -37,7 +40,7 @@ Stagger._createModules = function (Module) {
 
   for (let i = 0; i < modulesCount; i++) {
     const module = new Module({
-      ...this._getStaggerOptions(this._o, i),
+      ...this._getStaggerOptions(this._o, i, modulesCount),
       totalItemsInStagger: modulesCount,
     });
     this._modules.push(module);
@@ -88,5 +91,9 @@ const stagger = (Module) => { // eslint-disable-line arrow-body-style
     return instance;
   };
 };
+
+stagger.function = staggerFunction;
+stagger.rand = staggerRand;
+stagger.randFloat = staggerRandFloat;
 
 export { stagger };

@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "build/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 36);
+/******/ 	return __webpack_require__(__webpack_require__.s = 38);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -344,7 +344,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -362,7 +362,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -409,7 +409,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(6), __webpack_require__(19), __webpack_require__(7), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(8), __webpack_require__(20), __webpack_require__(4), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -427,7 +427,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(6), __webpack_require__(19), __webpack_require__(7), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(8), __webpack_require__(20), __webpack_require__(4), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -953,7 +953,111 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(30), __webpack_require__(14), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../constants.babel.js'), require('./easing.babel.js'), require('./path.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.constantsBabel, global.easingBabel, global.pathBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(30), __webpack_require__(14), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.constantsBabel, global.easingBabel, global.pathBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _constantsBabel, _easingBabel, _pathBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.parseEasing = undefined;
+
+
+    /**
+     * parseEasing - function to parse all easing values to a function.
+     *
+     * @param  {String, Function, Array} Easing representation.
+     * @return {Function} Parsed Easing.
+     */
+    var parseEasing = function () {
+      var ease = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _constantsBabel.defaultEasingString;
+
+      var type = typeof ease;
+
+      switch (type) {
+        case 'function':
+          {
+            return ease;
+          }
+        case 'string':
+          {
+            // path easing
+            if (ease[0].toLowerCase() === 'm') {
+              return (0, _pathBabel.path)(ease);
+            }
+
+            ease = ease.toLowerCase().split('.');
+            var easeParent = _easingBabel.easing[ease[0]];
+
+            if (!easeParent) {
+              console.error(_constantsBabel.consoleName + ' Easing with name "' + ease[0] + '" wasn\'t found, fallback to "' + _constantsBabel.defaultEasingString + '" instead.', _easingBabel.easing); // eslint-disable-line no-console
+
+              return _easingBabel.easing[_constantsBabel.defaultEasing[0]][_constantsBabel.defaultEasing[1]];
+            }
+            return easeParent[ease[1]];
+          }
+        default:
+          console.error(_constantsBabel.consoleName + ' Only strings and function supported atm.', ease); // eslint-disable-line no-console
+
+        // // comming soon:
+        // //   - if array passed - parse as `bezier` function
+        // // ---
+        // case 'object' {
+        //   if (easing instanceof Array) {
+        //     return this.bezier.apply(this, easing);
+        //   } else {
+        //     console.error(
+        //       `:mojs: Failed to parse easing value of `,
+        //       easing,
+        //       ` fallback to "linear.none" instead`
+        //     );
+        //     return easing[defaultEasing[0]][defaultEasing[1]];
+        //   }
+        // }
+      }
+    };
+
+    exports.parseEasing = parseEasing;
+  });
+});
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -971,7 +1075,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1020,12 +1124,77 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(10), __webpack_require__(1), __webpack_require__(8), __webpack_require__(4), __webpack_require__(30), __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  "use strict";
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    /**
+     * `getRadialPoint` - function to get a point on imaginary circle
+     *                    with provided parameters.
+     *
+     * `Note:` This function is explicetely recieves a target object to set
+     *         the result on, this was made because producing a lot of
+     *          new return objects on every animation frame will cause GC issues.
+     *
+     * @param {Number} centerX Circle's center `x` coordinate.
+     * @param {Number} centerY Circle's center `y` coordinate.
+     * @param {Number} radius Circle's radius.
+     * @param {Number} angle Angle of a line from center to a point.
+     * @param {Object} target Object to set the result on.
+     */
+    var getRadialPoint = exports.getRadialPoint = function (centerX, centerY, radius, angle, target) {
+      var radAngle = (angle - 90) * 0.017453292519943295; // Math.PI / 180
+      target.x = centerX + Math.cos(radAngle) * radius;
+      target.y = centerY + Math.sin(radAngle) * radius;
+    };
+  });
+});
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(11), __webpack_require__(1), __webpack_require__(9), __webpack_require__(5), __webpack_require__(32), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1043,7 +1212,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(10), __webpack_require__(1), __webpack_require__(8), __webpack_require__(4), __webpack_require__(30), __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(11), __webpack_require__(1), __webpack_require__(9), __webpack_require__(5), __webpack_require__(32), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1277,7 +1446,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -1362,116 +1531,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(29), __webpack_require__(17), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('../constants.babel.js'), require('./easing.babel.js'), require('./path.babel.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.constantsBabel, global.easingBabel, global.pathBabel);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(29), __webpack_require__(17), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports, global.constantsBabel, global.easingBabel, global.pathBabel);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports, _constantsBabel, _easingBabel, _pathBabel) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    exports.parseEasing = undefined;
-
-
-    /**
-     * parseEasing - function to parse all easing values to a function.
-     *
-     * @param  {String, Function, Array} Easing representation.
-     * @return {Function} Parsed Easing.
-     */
-    var parseEasing = function () {
-      var ease = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _constantsBabel.defaultEasingString;
-
-      var type = typeof ease;
-
-      switch (type) {
-        case 'function':
-          {
-            return ease;
-          }
-        case 'string':
-          {
-            // path easing
-            if (ease[0].toLowerCase() === 'm') {
-              return (0, _pathBabel.path)(ease);
-            }
-
-            ease = ease.toLowerCase().split('.');
-            var easeParent = _easingBabel.easing[ease[0]];
-
-            if (!easeParent) {
-              console.error(_constantsBabel.consoleName + ' Easing with name "' + ease[0] + '" wasn\'t found, fallback to "' + _constantsBabel.defaultEasingString + '" instead.', _easingBabel.easing); // eslint-disable-line no-console
-
-              return _easingBabel.easing[_constantsBabel.defaultEasing[0]][_constantsBabel.defaultEasing[1]];
-            }
-            return easeParent[ease[1]];
-          }
-        default:
-          console.error(_constantsBabel.consoleName + ' Only strings and function supported atm.', ease); // eslint-disable-line no-console
-
-        // // comming soon:
-        // //   - if array passed - parse as `bezier` function
-        // // ---
-        // case 'object' {
-        //   if (easing instanceof Array) {
-        //     return this.bezier.apply(this, easing);
-        //   } else {
-        //     console.error(
-        //       `:mojs: Failed to parse easing value of `,
-        //       easing,
-        //       ` fallback to "linear.none" instead`
-        //     );
-        //     return easing[defaultEasing[0]][defaultEasing[1]];
-        //   }
-        // }
-      }
-    };
-
-    exports.parseEasing = parseEasing;
-  });
-});
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(20), __webpack_require__(15), __webpack_require__(2), __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(24), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(19), __webpack_require__(2), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1489,7 +1554,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(20), __webpack_require__(15), __webpack_require__(2), __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(24), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(19), __webpack_require__(2), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1794,12 +1859,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(31)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1817,7 +1882,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(31)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1913,7 +1978,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -2194,7 +2259,365 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 11 */
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(4), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../easing/parse-easing.babel.js'), require('./get-radial-point.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.parseEasingBabel, global.getRadialPointBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(4), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.parseEasingBabel, global.getRadialPointBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _parseEasingBabel, _getRadialPointBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.generatePath = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    var defaults = {
+      xEasing: 'cubic.in',
+      yEasing: 'linear.none',
+      count: 4,
+      length: 100,
+      depth: .5,
+      x: 0,
+      y: 0,
+      angle: 90,
+      initialOffset: 0,
+      initialDirection: true,
+      isGrow: 1,
+      index: 0,
+      total: 1
+    };
+
+    var getValue = function (value, index, total) {
+      return typeof value === 'function' ? value(index, total) : value;
+    };
+
+    var generatePath = exports.generatePath = function () {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      var o = _extends({}, defaults, options);
+
+      for (var key in o) {
+        o[key] = getValue(o[key], o.index, o.total);
+      }
+
+      // parse easing properties
+      o.xEasing = (0, _parseEasingBabel.parseEasing)(o.xEasing);
+      o.yEasing = (0, _parseEasingBabel.parseEasing)(o.yEasing);
+      // calculate depth
+      var depth = o.depth * o.length;
+      // util points
+      var point = {};
+      var point1 = {};
+      var point2 = {};
+      var point3 = {};
+      // get the start point
+      (0, _getRadialPointBabel.getRadialPoint)(o.x, o.y, o.initialOffset, o.angle, point);
+      // loop util variables
+      var step = 1 / o.count;
+
+      var flip = o.initialDirection;
+
+      var proc = step / 2;
+      var d = 'M ' + point.x + ', ' + point.y;
+      while (proc <= 1) {
+        var yProc = o.isGrow ? proc : 1 - proc;
+        flip = !flip;
+        var yCoef = flip ? -1 : 1;
+        // get the next center point
+        (0, _getRadialPointBabel.getRadialPoint)(point.x, point.y, o.xEasing(proc) * o.length, o.angle, point1);
+        // get the curve control point, flip the direction on every segment
+        var curvePointAngle = o.angle + yCoef * 90;
+        (0, _getRadialPointBabel.getRadialPoint)(point1.x, point1.y, o.yEasing(yProc) * depth, curvePointAngle, point2);
+        // get the next center point
+        (0, _getRadialPointBabel.getRadialPoint)(point.x, point.y, o.xEasing(proc + step / 2) * o.length, o.angle, point3);
+        // add the curve - curve point + the next center segment
+        d += ' Q ' + point2.x + ', ' + point2.y + ' ' + point3.x + ', ' + point3.y + ' ';
+        // add curve to the path
+        proc += step;
+      }
+
+      return d;
+    };
+  });
+});
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    var parsePath = function (path) {
+      var domPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      domPath.setAttributeNS(null, 'd', path);
+      return domPath;
+    };
+
+    var sample = function (path, n) {
+      var step = 1 / n;
+      var totalLength = path.getTotalLength();
+      // create the samples map and save main properties
+      var samples = [];
+      // samples the path, `key` is in range of [0..1]
+      for (var i = 0; i < n + 1; i++) {
+        var point = path.getPointAtLength(i * step * totalLength);
+        samples[i] = {
+          x: point.x / 100,
+          y: point.y / 100
+        };
+      }
+
+      return samples;
+    };
+
+    var findY = function (key, samples, n) {
+      var start = 0;
+      var end = samples.length - 1;
+      var step = 1 / n;
+      // find `start`/`end` bounds with binary search
+      while (Math.abs(end - start) > 1) {
+        var delta = end - start;
+        var middle = start + Math.floor(delta / 2);
+        var _value = samples[middle];
+
+        if (key === _value.x) {
+          return _value.y;
+        }
+        // shift a bound regarding the `value.x` value
+        if (key < _value.x) {
+          end = middle;
+        } else {
+          start = middle;
+        }
+      }
+      // when the loop stops - we've found `start` and `end` bounds
+      var value = samples[start];
+      // if key is greate than `start` - normalize it
+      if (key > value.x) {
+        var nextValue = samples[start + 1];
+        if (nextValue !== undefined) {
+          var diff = value.x - key;
+          return value.y - (nextValue.y - value.y) * (diff / step);
+        }
+      }
+
+      return value.y;
+    };
+
+    var translateSamples = function (samples, n) {
+      var map = new Map();
+      var step = 1 / n;
+      // samples the path, `key` is in range of [0..1]
+      for (var i = 0; i < n + 1; i++) {
+        var key = i * step;
+        map.set(key, 1 - findY(key, samples, n));
+      }
+
+      return map;
+    };
+
+    var path = function (pathCoordinates) {
+      var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 200;
+
+      var preSamples = sample(parsePath(pathCoordinates), n);
+      var samples = translateSamples(preSamples, n);
+      var step = 1 / n;
+
+      return function (p) {
+        var index = p / step | 0; // convert to integer
+        var key = index * step; // get the key
+        var nextKey = (index + 1) * step; // get the next key
+        var y = samples.get(key); // get the y
+        // if next key is present, calculate the normalized y
+        // regarding the progress error
+        if (nextKey <= 1) {
+          var nextY = samples.get(nextKey);
+          y += (nextY - y) * ((p - key) / step);
+        }
+
+        return y;
+      };
+    };
+
+    exports.path = path;
+  });
+});
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(13), __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./path.babel.js'), require('./pow.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.pathBabel, global.powBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(13), __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.pathBabel, global.powBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _pathBabel, _powBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.easing = undefined;
+
+
+    /**
+     * `easing` - object that holds all easing avaliable in `mojs`.
+     */
+    var easing = {
+      /**
+       * `Linear` easing, also `null` or `id` easing - simply returns whatever
+       * passed to the function.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      linear: { none: function (k) {
+          return k;
+        } },
+
+      /**
+       * `Sin` easing. Has `in`/`out`/`inout` options.
+       * @param {Number} Progress in range of `[0...1]`
+       * @returns {Number} Eased progress in range of `[0...1]`
+       */
+      sin: {
+        in: function (k) {
+          return 1 - Math.cos(k * Math.PI / 2);
+        },
+        out: function (k) {
+          return Math.sin(k * Math.PI / 2);
+        },
+        inout: function (k) {
+          return 0.5 * (1 - Math.cos(Math.PI * k));
+        }
+      },
+
+      pow: _powBabel.pow,
+      path: _pathBabel.path
+    };
+
+    /**
+     * TODO:
+     *  [] add `setParent` public method.
+     */
+
+    exports.easing = easing;
+  });
+});
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -2236,35 +2659,40 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     Object.defineProperty(exports, "__esModule", {
       value: true
     });
-    /**
-     * `getRadialPoint` - function to get a point on imaginary circle
-     *                    with provided parameters.
-     *
-     * `Note:` This function is explicetely recieves a target object to set
-     *         the result on, this was made because producing a lot of
-     *          new return objects on every animation frame will cause GC issues.
-     *
-     * @param {Number} centerX Circle's center `x` coordinate.
-     * @param {Number} centerY Circle's center `y` coordinate.
-     * @param {Number} radius Circle's radius.
-     * @param {Number} angle Angle of a line from center to a point.
-     * @param {Object} target Object to set the result on.
-     */
-    var getRadialPoint = exports.getRadialPoint = function (centerX, centerY, radius, angle, target) {
-      var radAngle = (angle - 90) * 0.017453292519943295; // Math.PI / 180
-      target.x = centerX + Math.cos(radAngle) * radius;
-      target.y = centerY + Math.sin(radAngle) * radius;
+    var pow = function () {
+      var p = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 2;
+
+      var easeIn = function (k) {
+        return function (t) {
+          return Math.pow(t, k);
+        };
+      }(p);
+      var easeOut = function (k) {
+        return function (t) {
+          return 1 - Math.abs(Math.pow(t - 1, k));
+        };
+      }(p);
+
+      return {
+        in: easeIn,
+        out: easeOut,
+        inout: function (t) {
+          return t < .5 ? easeIn(t * 2) / 2 : easeOut(t * 2 - 1) / 2 + .5;
+        }
+      };
     };
+
+    exports.pow = pow;
   });
 });
 
 /***/ }),
-/* 12 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(0), __webpack_require__(4), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(0), __webpack_require__(5), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2282,7 +2710,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(0), __webpack_require__(4), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(0), __webpack_require__(5), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2556,12 +2984,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 13 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2579,7 +3007,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2650,12 +3078,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 14 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(19)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2673,7 +3101,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(19)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2709,7 +3137,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 15 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -2761,306 +3189,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports);
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    var parsePath = function (path) {
-      var domPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      domPath.setAttributeNS(null, 'd', path);
-      return domPath;
-    };
-
-    var sample = function (path, n) {
-      var step = 1 / n;
-      var totalLength = path.getTotalLength();
-      // create the samples map and save main properties
-      var samples = [];
-      // samples the path, `key` is in range of [0..1]
-      for (var i = 0; i < n + 1; i++) {
-        var point = path.getPointAtLength(i * step * totalLength);
-        samples[i] = {
-          x: point.x / 100,
-          y: point.y / 100
-        };
-      }
-
-      return samples;
-    };
-
-    var findY = function (key, samples, n) {
-      var start = 0;
-      var end = samples.length - 1;
-      var step = 1 / n;
-      // find `start`/`end` bounds with binary search
-      while (Math.abs(end - start) > 1) {
-        var delta = end - start;
-        var middle = start + Math.floor(delta / 2);
-        var _value = samples[middle];
-
-        if (key === _value.x) {
-          return _value.y;
-        }
-        // shift a bound regarding the `value.x` value
-        if (key < _value.x) {
-          end = middle;
-        } else {
-          start = middle;
-        }
-      }
-      // when the loop stops - we've found `start` and `end` bounds
-      var value = samples[start];
-      // if key is greate than `start` - normalize it
-      if (key > value.x) {
-        var nextValue = samples[start + 1];
-        if (nextValue !== undefined) {
-          var diff = value.x - key;
-          return value.y - (nextValue.y - value.y) * (diff / step);
-        }
-      }
-
-      return value.y;
-    };
-
-    var translateSamples = function (samples, n) {
-      var map = new Map();
-      var step = 1 / n;
-      // samples the path, `key` is in range of [0..1]
-      for (var i = 0; i < n + 1; i++) {
-        var key = i * step;
-        map.set(key, 1 - findY(key, samples, n));
-      }
-
-      return map;
-    };
-
-    var path = function (pathCoordinates) {
-      var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 200;
-
-      var preSamples = sample(parsePath(pathCoordinates), n);
-      var samples = translateSamples(preSamples, n);
-      var step = 1 / n;
-
-      return function (p) {
-        var index = p / step | 0; // convert to integer
-        var key = index * step; // get the key
-        var nextKey = (index + 1) * step; // get the next key
-        var y = samples.get(key); // get the y
-        // if next key is present, calculate the normalized y
-        // regarding the progress error
-        if (nextKey <= 1) {
-          var nextY = samples.get(nextKey);
-          y += (nextY - y) * ((p - key) / step);
-        }
-
-        return y;
-      };
-    };
-
-    exports.path = path;
-  });
-});
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(16), __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('./path.babel.js'), require('./pow.babel.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.pathBabel, global.powBabel);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(16), __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports, global.pathBabel, global.powBabel);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports, _pathBabel, _powBabel) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    exports.easing = undefined;
-
-
-    /**
-     * `easing` - object that holds all easing avaliable in `mojs`.
-     */
-    var easing = {
-      /**
-       * `Linear` easing, also `null` or `id` easing - simply returns whatever
-       * passed to the function.
-       * @param {Number} Progress in range of `[0...1]`
-       * @returns {Number} Eased progress in range of `[0...1]`
-       */
-      linear: { none: function (k) {
-          return k;
-        } },
-
-      /**
-       * `Sin` easing. Has `in`/`out`/`inout` options.
-       * @param {Number} Progress in range of `[0...1]`
-       * @returns {Number} Eased progress in range of `[0...1]`
-       */
-      sin: {
-        in: function (k) {
-          return 1 - Math.cos(k * Math.PI / 2);
-        },
-        out: function (k) {
-          return Math.sin(k * Math.PI / 2);
-        },
-        inout: function (k) {
-          return 0.5 * (1 - Math.cos(Math.PI * k));
-        }
-      },
-
-      pow: _powBabel.pow,
-      path: _pathBabel.path
-    };
-
-    /**
-     * TODO:
-     *  [] add `setParent` public method.
-     */
-
-    exports.easing = easing;
-  });
-});
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports);
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  "use strict";
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports) {
-    "use strict";
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    var pow = function () {
-      var p = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 2;
-
-      var easeIn = function (k) {
-        return function (t) {
-          return Math.pow(t, k);
-        };
-      }(p);
-      var easeOut = function (k) {
-        return function (t) {
-          return 1 - Math.abs(Math.pow(t - 1, k));
-        };
-      }(p);
-
-      return {
-        in: easeIn,
-        out: easeOut,
-        inout: function (t) {
-          return t < .5 ? easeIn(t * 2) / 2 : easeOut(t * 2 - 1) / 2 + .5;
-        }
-      };
-    };
-
-    exports.pow = pow;
-  });
-});
-
-/***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -3234,12 +3363,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3257,7 +3386,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3324,12 +3453,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3347,7 +3476,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3414,7 +3543,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -3497,12 +3626,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(4), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3520,7 +3649,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(4), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3581,12 +3710,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(26)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3604,7 +3733,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(26)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3724,12 +3853,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(5), __webpack_require__(0), __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(7), __webpack_require__(0), __webpack_require__(35)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3747,7 +3876,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(5), __webpack_require__(0), __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(7), __webpack_require__(0), __webpack_require__(35)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4032,12 +4161,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4055,7 +4184,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4156,7 +4285,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -4263,12 +4392,157 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(5), __webpack_require__(1), __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./generate-path'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.generatePath);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.generatePath);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _generatePath) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.burstGenerator = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    var BURST_DEFAUTLS = {
+      degree: 360
+    };
+
+    var burstGenerator = exports.burstGenerator = function () {
+      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      // extend by burst defaults
+      var burstOptions = _extends({}, BURST_DEFAUTLS, o);
+
+      var staggerFunction = function (index, total) {
+        var staggerAngle = index * (burstOptions.degree / total);
+
+        var path = (0, _generatePath.generatePath)(_extends({}, o, {
+          angle: o.angle != null ? o.angle : staggerAngle,
+          // pass stagger `index` and `total` values
+          index: index,
+          total: total
+        }));
+
+        return { path: path };
+      };
+
+      // TODO: refactor to staggerFunction
+      staggerFunction.__mojs__isStaggerFunction = true;
+
+      return staggerFunction;
+    };
+  });
+});
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+
+    /**
+     * Constants.
+     */
+    var defaultEasing = exports.defaultEasing = ['sin', 'out'];
+    var defaultEasingString = exports.defaultEasingString = defaultEasing.join('.');
+    var name = exports.name = 'mojs';
+    var consoleName = exports.consoleName = ':' + name + ':';
+    var bundleLink = exports.bundleLink = 'https://aka.ms/mojs-bundle';
+  });
+});
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(1), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4286,7 +4560,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(5), __webpack_require__(1), __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(1), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4500,67 +4774,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 29 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports);
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-
-    /**
-     * Constants.
-     */
-    var defaultEasing = exports.defaultEasing = ['sin', 'out'];
-    var defaultEasingString = exports.defaultEasingString = defaultEasing.join('.');
-    var name = exports.name = 'mojs';
-    var consoleName = exports.consoleName = ':' + name + ':';
-    var bundleLink = exports.bundleLink = 'https://aka.ms/mojs-bundle';
-  });
-});
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4578,7 +4797,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4643,7 +4862,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -4696,12 +4915,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(24), __webpack_require__(26)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25), __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4719,7 +4938,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(24), __webpack_require__(26)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25), __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4901,7 +5120,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -4961,169 +5180,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 34 */
+/* 36 */,
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(10), __webpack_require__(1), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('./tween/timeline.babel.js'), require('./tween/tweenable.babel.js'), require('./helpers/stagger-property.babel.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.timelineBabel, global.tweenableBabel, global.staggerPropertyBabel);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(10), __webpack_require__(1), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports, global.timelineBabel, global.tweenableBabel, global.staggerPropertyBabel);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports, _timelineBabel, _tweenableBabel, _staggerPropertyBabel) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    exports.stagger = undefined;
-
-    var _extends = Object.assign || function (target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
-
-        for (var key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
-        }
-      }
-
-      return target;
-    };
-
-    /* -------------------- */
-    /* The `Stagger` class  */
-    /* -------------------- */
-
-    var Super = _tweenableBabel.Tweenable.__mojsClass;
-    var Stagger = Object.create(Super);
-
-    /**
-     * `init` - function init the class.
-     *
-     * @extends @Tweenable
-     * @public
-     */
-    Stagger.init = function () {
-      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      var Module = arguments[1];
-
-      // super call
-      Super.init.call(this, o);
-      // create main timeline
-      this._createTimeline(o.timeline);
-      // create modules
-      this._createModules(Module);
-    };
-
-    /**
-     * `_createModules` - function to create modules.
-     *
-     * @private
-     * @param {Object} Child module class.
-     */
-    Stagger._createModules = function (Module) {
-      this._modules = [];
-      var _o = this._o,
-          items = _o.items,
-          _o$el = _o.el,
-          el = _o$el === undefined ? {} : _o$el;
-
-      var modulesCount = items || el.length || 1;
-
-      for (var i = 0; i < modulesCount; i++) {
-        var module = new Module(_extends({}, this._getStaggerOptions(this._o, i), {
-          totalItemsInStagger: modulesCount
-        }));
-        this._modules.push(module);
-        this.timeline.add(module);
-      }
-    };
-
-    /**
-     * `_getStaggerOptions` - get stagger options for a single module.
-     *
-     * @private
-     * @param {Object} Stagger options.
-     * @param {Number} Index of a module.
-     */
-    Stagger._getStaggerOptions = function (options, i, modulesCount) {
-      // pass index to child properties
-      var o = { index: i };
-
-      var keys = Object.keys(options);
-      for (var j = 0; j < keys.length; j++) {
-        var key = keys[j];
-        o[key] = (0, _staggerPropertyBabel.staggerProperty)(options[key], i, modulesCount);
-      }
-
-      return o;
-    };
-
-    /**
-     * `_createTimeline` - function to create a timeline.
-     *
-     * @private
-     * @param {Object} Timeline options.
-     */
-    Stagger._createTimeline = function (options) {
-      this.timeline = new _timelineBabel.Timeline(options);
-
-      delete this._o.timeline;
-    };
-
-    /**
-     * function to wrap a Module with the stagger wrapper.
-     */
-    var stagger = function (Module) {
-      // eslint-disable-line arrow-body-style
-      return function (options) {
-        var instance = Object.create(Stagger);
-        instance.init(options, Module);
-
-        return instance;
-      };
-    };
-
-    exports.stagger = stagger;
-  });
-});
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -5141,7 +5204,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -5345,29 +5408,29 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(37);
+module.exports = __webpack_require__(39);
 
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(6), __webpack_require__(10), __webpack_require__(19), __webpack_require__(17), __webpack_require__(7), __webpack_require__(8), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(20), __webpack_require__(4), __webpack_require__(1), __webpack_require__(2), __webpack_require__(13), __webpack_require__(9), __webpack_require__(27), __webpack_require__(26), __webpack_require__(11), __webpack_require__(35), __webpack_require__(5), __webpack_require__(12), __webpack_require__(34), __webpack_require__(25), __webpack_require__(24), __webpack_require__(32), __webpack_require__(28), __webpack_require__(38)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(8), __webpack_require__(11), __webpack_require__(20), __webpack_require__(14), __webpack_require__(4), __webpack_require__(9), __webpack_require__(24), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(5), __webpack_require__(1), __webpack_require__(2), __webpack_require__(17), __webpack_require__(10), __webpack_require__(28), __webpack_require__(27), __webpack_require__(6), __webpack_require__(37), __webpack_require__(7), __webpack_require__(16), __webpack_require__(43), __webpack_require__(26), __webpack_require__(25), __webpack_require__(34), __webpack_require__(31), __webpack_require__(12), __webpack_require__(29), __webpack_require__(40), __webpack_require__(42)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./class-proto.babel.js'), require('./tween/tween.babel.js'), require('./tween/tween-defaults.babel.js'), require('./tween/timeline.babel.js'), require('./tween/tweener.babel.js'), require('./easing/easing.babel.js'), require('./easing/parse-easing.babel.js'), require('./delta/delta.babel.js'), require('./delta/split-delta.babel.js'), require('./delta/parse-number.babel.js'), require('./delta/parse-unit.babel.js'), require('./delta/parse-color.babel.js'), require('./delta/separate-tween-options.babel.js'), require('./tween/tweenable.babel.js'), require('./helpers/stagger-property.babel.js'), require('./helpers/parse-stagger.babel.js'), require('./helpers/make-color-object.babel.js'), require('./shape/svg/svg-shape.babel.js'), require('./shape/svg/circle.babel.js'), require('./helpers/get-radial-point.babel.js'), require('./easing/basic-easing.babel.js'), require('./delta/deltas.babel.js'), require('./delta/motion-path.babel.js'), require('./stagger.babel.js'), require('./html.babel.js'), require('./surface.babel.js'), require('./shape/shape.babel.js'), require('./rig/rig.babel.js'), require('./helpers/generate-path.babel.js'));
+    factory(module, exports, require('./class-proto.babel.js'), require('./tween/tween.babel.js'), require('./tween/tween-defaults.babel.js'), require('./tween/timeline.babel.js'), require('./tween/tweener.babel.js'), require('./easing/easing.babel.js'), require('./easing/parse-easing.babel.js'), require('./delta/delta.babel.js'), require('./delta/split-delta.babel.js'), require('./delta/parse-number.babel.js'), require('./delta/parse-unit.babel.js'), require('./delta/parse-color.babel.js'), require('./delta/separate-tween-options.babel.js'), require('./tween/tweenable.babel.js'), require('./helpers/stagger-property.babel.js'), require('./helpers/parse-stagger.babel.js'), require('./helpers/make-color-object.babel.js'), require('./shape/svg/svg-shape.babel.js'), require('./shape/svg/circle.babel.js'), require('./helpers/get-radial-point.babel.js'), require('./easing/basic-easing.babel.js'), require('./delta/deltas.babel.js'), require('./delta/motion-path.babel.js'), require('./stagger/stagger.babel.js'), require('./html.babel.js'), require('./surface.babel.js'), require('./shape/shape.babel.js'), require('./rig/rig.babel.js'), require('./helpers/generate-path.babel.js'), require('./helpers/burst-generator.babel.js'), require('./helpers/rand.babel.js'), require('./helpers/rand-float.babel.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.classProtoBabel, global.tweenBabel, global.tweenDefaultsBabel, global.timelineBabel, global.tweenerBabel, global.easingBabel, global.parseEasingBabel, global.deltaBabel, global.splitDeltaBabel, global.parseNumberBabel, global.parseUnitBabel, global.parseColorBabel, global.separateTweenOptionsBabel, global.tweenableBabel, global.staggerPropertyBabel, global.parseStaggerBabel, global.makeColorObjectBabel, global.svgShapeBabel, global.circleBabel, global.getRadialPointBabel, global.basicEasingBabel, global.deltasBabel, global.motionPathBabel, global.staggerBabel, global.htmlBabel, global.surfaceBabel, global.shapeBabel, global.rigBabel, global.generatePathBabel);
+    factory(mod, mod.exports, global.classProtoBabel, global.tweenBabel, global.tweenDefaultsBabel, global.timelineBabel, global.tweenerBabel, global.easingBabel, global.parseEasingBabel, global.deltaBabel, global.splitDeltaBabel, global.parseNumberBabel, global.parseUnitBabel, global.parseColorBabel, global.separateTweenOptionsBabel, global.tweenableBabel, global.staggerPropertyBabel, global.parseStaggerBabel, global.makeColorObjectBabel, global.svgShapeBabel, global.circleBabel, global.getRadialPointBabel, global.basicEasingBabel, global.deltasBabel, global.motionPathBabel, global.staggerBabel, global.htmlBabel, global.surfaceBabel, global.shapeBabel, global.rigBabel, global.generatePathBabel, global.burstGeneratorBabel, global.randBabel, global.randFloatBabel);
     global.mojs = mod.exports;
   }
 })(this, function (module, exports) {
@@ -5375,7 +5438,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(6), __webpack_require__(10), __webpack_require__(19), __webpack_require__(17), __webpack_require__(7), __webpack_require__(8), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(20), __webpack_require__(4), __webpack_require__(1), __webpack_require__(2), __webpack_require__(13), __webpack_require__(9), __webpack_require__(27), __webpack_require__(26), __webpack_require__(11), __webpack_require__(35), __webpack_require__(5), __webpack_require__(12), __webpack_require__(34), __webpack_require__(25), __webpack_require__(24), __webpack_require__(32), __webpack_require__(28), __webpack_require__(38)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(8), __webpack_require__(11), __webpack_require__(20), __webpack_require__(14), __webpack_require__(4), __webpack_require__(9), __webpack_require__(24), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(5), __webpack_require__(1), __webpack_require__(2), __webpack_require__(17), __webpack_require__(10), __webpack_require__(28), __webpack_require__(27), __webpack_require__(6), __webpack_require__(37), __webpack_require__(7), __webpack_require__(16), __webpack_require__(43), __webpack_require__(26), __webpack_require__(25), __webpack_require__(34), __webpack_require__(31), __webpack_require__(12), __webpack_require__(29), __webpack_require__(40), __webpack_require__(42)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -5385,10 +5448,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var mod = {
         exports: {}
       };
-      factory(mod, mod.exports, global.classProtoBabel, global.tweenBabel, global.tweenDefaultsBabel, global.timelineBabel, global.tweenerBabel, global.easingBabel, global.parseEasingBabel, global.deltaBabel, global.splitDeltaBabel, global.parseNumberBabel, global.parseUnitBabel, global.parseColorBabel, global.separateTweenOptionsBabel, global.tweenableBabel, global.staggerPropertyBabel, global.parseStaggerBabel, global.makeColorObjectBabel, global.svgShapeBabel, global.circleBabel, global.getRadialPointBabel, global.basicEasingBabel, global.deltasBabel, global.motionPathBabel, global.staggerBabel, global.htmlBabel, global.surfaceBabel, global.shapeBabel, global.rigBabel, global.generatePathBabel);
+      factory(mod, mod.exports, global.classProtoBabel, global.tweenBabel, global.tweenDefaultsBabel, global.timelineBabel, global.tweenerBabel, global.easingBabel, global.parseEasingBabel, global.deltaBabel, global.splitDeltaBabel, global.parseNumberBabel, global.parseUnitBabel, global.parseColorBabel, global.separateTweenOptionsBabel, global.tweenableBabel, global.staggerPropertyBabel, global.parseStaggerBabel, global.makeColorObjectBabel, global.svgShapeBabel, global.circleBabel, global.getRadialPointBabel, global.basicEasingBabel, global.deltasBabel, global.motionPathBabel, global.staggerBabel, global.htmlBabel, global.surfaceBabel, global.shapeBabel, global.rigBabel, global.generatePathBabel, global.burstGeneratorBabel, global.randBabel, global.randFloatBabel);
       global.mojs = mod.exports;
     }
-  })(undefined, function (module, exports, _classProtoBabel, _tweenBabel, _tweenDefaultsBabel, _timelineBabel, _tweenerBabel, _easingBabel, _parseEasingBabel, _deltaBabel, _splitDeltaBabel, _parseNumberBabel, _parseUnitBabel, _parseColorBabel, _separateTweenOptionsBabel, _tweenableBabel, _staggerPropertyBabel, _parseStaggerBabel, _makeColorObjectBabel, _svgShapeBabel, _circleBabel, _getRadialPointBabel, _basicEasingBabel, _deltasBabel, _motionPathBabel, _staggerBabel, _htmlBabel, _surfaceBabel, _shapeBabel, _rigBabel, _generatePathBabel) {
+  })(undefined, function (module, exports, _classProtoBabel, _tweenBabel, _tweenDefaultsBabel, _timelineBabel, _tweenerBabel, _easingBabel, _parseEasingBabel, _deltaBabel, _splitDeltaBabel, _parseNumberBabel, _parseUnitBabel, _parseColorBabel, _separateTweenOptionsBabel, _tweenableBabel, _staggerPropertyBabel, _parseStaggerBabel, _makeColorObjectBabel, _svgShapeBabel, _circleBabel, _getRadialPointBabel, _basicEasingBabel, _deltasBabel, _motionPathBabel, _staggerBabel, _htmlBabel, _surfaceBabel, _shapeBabel, _rigBabel, _generatePathBabel, _burstGeneratorBabel, _randBabel, _randFloatBabel) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
@@ -5478,6 +5541,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     // path generator
     // eslint-disable-line import/newline-after-import, import/first
     mojs.generatePath = _generatePathBabel.generatePath;
+    // burst generator
+    // eslint-disable-line import/newline-after-import, import/first
+    mojs.burstGenerator = _burstGeneratorBabel.burstGenerator;
+    // random integer generator
+    // eslint-disable-line import/newline-after-import, import/first
+    mojs.rand = _randBabel.rand;
+    // random integer generator
+    // eslint-disable-line import/newline-after-import, import/first
+    mojs.randFloat = _randFloatBabel.randFloat;
 
     exports.default = mojs;
     module.exports = exports['default'];
@@ -5485,22 +5557,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(42)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(exports, require('../easing/parse-easing.babel.js'), require('./get-radial-point.babel.js'));
+    factory(exports, require('./rand-float'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global.parseEasingBabel, global.getRadialPointBabel);
+    factory(mod.exports, global.randFloat);
     global.mojs = mod.exports;
   }
 })(this, function (exports) {
@@ -5508,7 +5580,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(42)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -5518,16 +5590,139 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var mod = {
         exports: {}
       };
-      factory(mod.exports, global.parseEasingBabel, global.getRadialPointBabel);
+      factory(mod.exports, global.randFloat);
       global.mojs = mod.exports;
     }
-  })(undefined, function (exports, _parseEasingBabel, _getRadialPointBabel) {
+  })(undefined, function (exports, _randFloat) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
       value: true
     });
-    exports.generatePath = undefined;
+    exports.rand = undefined;
+
+
+    /**
+     * `rand` - function to generate random `integer` number in range.
+     * 
+     * @param {Number} min Min bound.
+     * @param {Number} max Max bound.
+     * @return {Number} Random `integer` number in range.
+     */
+    var rand = exports.rand = function () {
+      var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+
+      return Math.round((0, _randFloat.randFloat)(min, max));
+    };
+  });
+});
+
+/***/ }),
+/* 41 */,
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  "use strict";
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+
+    /**
+     * `rand` - function to generate random `float` number in range.
+     * 
+     * @param {Number} min Min bound.
+     * @param {Number} max Max bound.
+     * @return {Number} Random `float` number in range.
+     */
+    var randFloat = exports.randFloat = function () {
+      var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+
+      return min + Math.random() * (max - min);
+    };
+  });
+});
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(11), __webpack_require__(1), __webpack_require__(2), __webpack_require__(44), __webpack_require__(45), __webpack_require__(46)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../tween/timeline.babel.js'), require('../tween/tweenable.babel.js'), require('../helpers/stagger-property.babel.js'), require('./stagger-function.babel.js'), require('./stagger-rand.babel.js'), require('./stagger-rand-float.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.timelineBabel, global.tweenableBabel, global.staggerPropertyBabel, global.staggerFunctionBabel, global.staggerRandBabel, global.staggerRandFloatBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(11), __webpack_require__(1), __webpack_require__(2), __webpack_require__(44), __webpack_require__(45), __webpack_require__(46)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.timelineBabel, global.tweenableBabel, global.staggerPropertyBabel, global.staggerFunctionBabel, global.staggerRandBabel, global.staggerRandFloatBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _timelineBabel, _tweenableBabel, _staggerPropertyBabel, _staggerFunctionBabel, _staggerRandBabel, _staggerRandFloatBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.stagger = undefined;
 
     var _extends = Object.assign || function (target) {
       for (var i = 1; i < arguments.length; i++) {
@@ -5543,58 +5738,294 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return target;
     };
 
-    var defaults = {
-      xDumpEasing: 'cubic.in',
-      yDumpEasing: 'linear.none',
-      count: 4,
-      length: 100,
-      depth: .5,
-      x: 250,
-      y: 250,
-      angle: 90,
-      initialShift: 0,
-      isGrow: 1
+    /* -------------------- */
+    /* The `Stagger` class  */
+    /* -------------------- */
+
+    var Super = _tweenableBabel.Tweenable.__mojsClass;
+    var Stagger = Object.create(Super);
+
+    /**
+     * `init` - function init the class.
+     *
+     * @extends @Tweenable
+     * @public
+     */
+    Stagger.init = function () {
+      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var Module = arguments[1];
+
+      // super call
+      Super.init.call(this, o);
+      // create main timeline
+      this._createTimeline(o.timeline);
+      // create modules
+      this._createModules(Module);
     };
 
-    var generatePath = exports.generatePath = function () {
-      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    /**
+     * `_createModules` - function to create modules.
+     *
+     * @private
+     * @param {Object} Child module class.
+     */
+    Stagger._createModules = function (Module) {
+      this._modules = [];
+      var _o = this._o,
+          items = _o.items,
+          _o$el = _o.el,
+          el = _o$el === undefined ? {} : _o$el;
 
-      var o = _extends({}, defaults, options);
-      // parse easing properties
-      o.xDumpEasing = (0, _parseEasingBabel.parseEasing)(o.xDumpEasing);
-      o.yDumpEasing = (0, _parseEasingBabel.parseEasing)(o.yDumpEasing);
-      // calculate depth
-      var depth = o.depth * o.length;
-      // util points
-      var point = {};
-      var point1 = {};
-      var point2 = {};
-      var point3 = {};
-      // get the start point
-      (0, _getRadialPointBabel.getRadialPoint)(o.x, o.y, o.initialShift, o.angle, point);
-      // loop util variables
-      var step = 1 / o.count;
-      var flip = false;
-      var proc = step / 2;
-      var d = 'M ' + point.x + ', ' + point.y;
-      while (proc <= 1) {
-        var yProc = o.isGrow ? proc : 1 - proc;
-        flip = !flip;
-        var yCoef = flip ? -1 : 1;
-        // get the next center point
-        (0, _getRadialPointBabel.getRadialPoint)(point.x, point.y, o.xDumpEasing(proc) * o.length, o.angle, point1);
-        // get the curve control point, flip the direction on every segment
-        var curvePointAngle = o.angle + yCoef * 90;
-        (0, _getRadialPointBabel.getRadialPoint)(point1.x, point1.y, o.yDumpEasing(yProc) * depth, curvePointAngle, point2);
-        // get the next center point
-        (0, _getRadialPointBabel.getRadialPoint)(point.x, point.y, o.xDumpEasing(proc + step / 2) * o.length, o.angle, point3);
-        // add the curve - curve point + the next center segment
-        d += ' Q ' + point2.x + ', ' + point2.y + ' ' + point3.x + ', ' + point3.y + ' ';
-        // add curve to the path
-        proc += step;
+      var modulesCount = items || el.length || 1;
+
+      for (var i = 0; i < modulesCount; i++) {
+        var module = new Module(_extends({}, this._getStaggerOptions(this._o, i, modulesCount), {
+          totalItemsInStagger: modulesCount
+        }));
+        this._modules.push(module);
+        this.timeline.add(module);
+      }
+    };
+
+    /**
+     * `_getStaggerOptions` - get stagger options for a single module.
+     *
+     * @private
+     * @param {Object} Stagger options.
+     * @param {Number} Index of a module.
+     */
+    Stagger._getStaggerOptions = function (options, i, modulesCount) {
+      // pass index to child properties
+      var o = { index: i };
+
+      var keys = Object.keys(options);
+      for (var j = 0; j < keys.length; j++) {
+        var key = keys[j];
+        o[key] = (0, _staggerPropertyBabel.staggerProperty)(options[key], i, modulesCount);
       }
 
-      return d;
+      return o;
+    };
+
+    /**
+     * `_createTimeline` - function to create a timeline.
+     *
+     * @private
+     * @param {Object} Timeline options.
+     */
+    Stagger._createTimeline = function (options) {
+      this.timeline = new _timelineBabel.Timeline(options);
+
+      delete this._o.timeline;
+    };
+
+    /**
+     * function to wrap a Module with the stagger wrapper.
+     */
+    var stagger = function (Module) {
+      // eslint-disable-line arrow-body-style
+      return function (options) {
+        var instance = Object.create(Stagger);
+        instance.init(options, Module);
+
+        return instance;
+      };
+    };
+
+    stagger.function = _staggerFunctionBabel.staggerFunction;
+    stagger.rand = _staggerRandBabel.staggerRand;
+    stagger.randFloat = _staggerRandFloatBabel.staggerRandFloat;
+
+    exports.stagger = stagger;
+  });
+});
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  "use strict";
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+
+    /**
+     * `staggerFunction` - function to mark another function as `stagger` one.
+     * 
+     * @param {Function} fun Function to mark as `stagger` function.
+     * @returns {Function} Newly created function that is marked as stagger
+     *                     and will call the original one.
+     */
+    var staggerFunction = exports.staggerFunction = function (fun) {
+      var newFunction = function () {
+        return fun.apply(this, arguments);
+      };
+      newFunction.__mojs__isStaggerFunction = true;
+
+      return newFunction;
+    };
+  });
+});
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(40), __webpack_require__(44)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../helpers/rand.babel.js'), require('./stagger-function.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.randBabel, global.staggerFunctionBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(40), __webpack_require__(44)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.randBabel, global.staggerFunctionBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _randBabel, _staggerFunctionBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.staggerRand = undefined;
+
+
+    /**
+     * `staggerRand` - function to create delayed `stagger` function
+     *                 that generates random integers in range.
+     * 
+     * @param {Number} min Min bound.
+     * @param {Number} max Max bound.
+     * @returns {Function} Newly created function that is marked as stagger
+     *                     and will call the `rand` one.
+     */
+    var staggerRand = exports.staggerRand = function (min, max) {
+      // mark the function as `stagger` one
+      return (0, _staggerFunctionBabel.staggerFunction)(function (i, total) {
+        return (0, _randBabel.rand)(min, max);
+      });
+    };
+  });
+});
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(42), __webpack_require__(44)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../helpers/rand-float.babel.js'), require('./stagger-function.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.randFloatBabel, global.staggerFunctionBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(42), __webpack_require__(44)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.randFloatBabel, global.staggerFunctionBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _randFloatBabel, _staggerFunctionBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.staggerRandFloat = undefined;
+
+
+    /**
+     * `staggerRand` - function to create delayed `stagger` function
+     *                 that generates random floats in range.
+     * 
+     * @param {Number} min Min bound.
+     * @param {Number} max Max bound.
+     * @returns {Function} Newly created function that is marked as stagger
+     *                     and will call the `rand` one.
+     */
+    var staggerRandFloat = exports.staggerRandFloat = function (min, max) {
+      // mark the function as `stagger` one
+      return (0, _staggerFunctionBabel.staggerFunction)(function (i, total) {
+        return (0, _randFloatBabel.randFloat)(min, max);
+      });
     };
   });
 });

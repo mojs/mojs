@@ -81,7 +81,7 @@ mojs.Deltas = Deltas;
 import { MotionPath } from './delta/motion-path.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.MotionPath = MotionPath;
 // stagger
-import { stagger } from './stagger.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+import { stagger } from './stagger/stagger.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.stagger = stagger;
 // html
 import { Html } from './html.babel.js'; // eslint-disable-line import/newline-after-import, import/first
@@ -98,5 +98,14 @@ mojs.Rig = Rig;
 // path generator
 import { generatePath } from './helpers/generate-path.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.generatePath = generatePath;
+// burst generator
+import { burstGenerator } from './helpers/burst-generator.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+mojs.burstGenerator = burstGenerator;
+// random integer generator
+import { rand } from './helpers/rand.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+mojs.rand = rand;
+// random integer generator
+import { randFloat } from './helpers/rand-float.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+mojs.randFloat = randFloat;
 
 export default mojs;
