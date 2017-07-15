@@ -1,8 +1,7 @@
-import { randFloat } from './rand-float';
+import { randFloat } from './rand-float.babel.js';
 
 /**
  * `rand` - function to generate random `integer` number in range.
- * 
  * @param {Number} min Min bound.
  * @param {Number} max Max bound.
  * @return {Number} Random `integer` number in range.

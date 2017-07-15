@@ -14,8 +14,9 @@ const defaults = {
   initialOffset: 0,
   initialDirection: true,
   isGrow: 1,
+  // stagger properties:
   index: 0,
-  total: 1
+  total: 1,
 };
 
 const getValue = (value, index, total) => {
@@ -28,7 +29,9 @@ export const generatePath = (options = {}) => {
     ...options,
   };
 
-  for (let key in o) {
+  const keys = Object.keys(o);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
     o[key] = getValue(o[key], o.index, o.total);
   }
 

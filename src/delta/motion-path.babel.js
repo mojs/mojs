@@ -188,7 +188,10 @@ MotionPath._extendDefaults = function () {
   const propsKeys = Object.keys(this._props);
   for (let i = 0; i < propsKeys.length; i++) {
     const key = propsKeys[i];
-    this._props[key] = staggerProperty(this._props[key], this.index);
+    const prop = staggerProperty(this._props[key], this.index, this._totalItemsInStagger);
+    // check if path generator was passed to `path` property
+    const isPathGenerator = (prop && typeof prop === 'object' && prop.path);
+    this._props[key] = (isPathGenerator) ? prop.path : prop;
   }
 
   const { property } = this._props;

@@ -1,7 +1,7 @@
-import { generatePath } from './generate-path';
+import { generatePath } from './generate-path.babel.js';
 
 const BURST_DEFAUTLS = {
-  degree: 360
+  degree: 360,
 };
 
 export const burstGenerator = (o = {}) => {
@@ -29,4 +29,4 @@ export const burstGenerator = (o = {}) => {
   staggerFunction.__mojs__isStaggerFunction = true;
 
   return staggerFunction;
-}
+};

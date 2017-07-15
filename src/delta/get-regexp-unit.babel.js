@@ -1,4 +1,4 @@
-import { unitRegexp } from './unit-regexp.babel.js';
+import { unitRegexp } from '../helpers/unit-regexp.babel.js';
 
 const getRegexpUnit = (value) => {
   if (typeof value !== 'string') { return undefined; }

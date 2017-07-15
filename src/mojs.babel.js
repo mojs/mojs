@@ -21,6 +21,7 @@ import { makeColorObject } from './helpers/make-color-object.babel.js';
 import { SvgShape } from './shape/svg/svg-shape.babel.js';
 import { Circle } from './shape/svg/circle.babel.js';
 import { getRadialPoint } from './helpers/get-radial-point.babel.js';
+import { parseUnitValue } from './helpers/parse-unit-value.babel.js';
 
 /*
   Browsers' support:
@@ -64,6 +65,7 @@ const mojs = {
     parseStagger,
     makeColorObject,
     getRadialPoint,
+    parseUnitValue,
     svg: {
       Circle,
     },
@@ -101,6 +103,7 @@ mojs.generatePath = generatePath;
 // burst generator
 import { burstGenerator } from './helpers/burst-generator.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.burstGenerator = burstGenerator;
+
 // random integer generator
 import { rand } from './helpers/rand.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.rand = rand;

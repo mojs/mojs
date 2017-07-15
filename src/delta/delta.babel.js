@@ -4,7 +4,7 @@ import { splitDelta } from './split-delta.babel.js';
 import { parseNumber } from './parse-number.babel.js';
 import { parseUnit } from './parse-unit.babel.js';
 import { parseColor } from './parse-color.babel.js';
-import { unitRegexp } from './unit-regexp.babel.js';
+import { unitRegexp } from '../helpers/unit-regexp.babel.js';
 import { staggerProperty } from '../helpers/stagger-property.babel.js';
 import { makeColorObject } from '../helpers/make-color-object.babel.js';
 

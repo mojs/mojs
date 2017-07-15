@@ -4,6 +4,7 @@ import { staggerProperty } from '../helpers/stagger-property.babel.js';
 import { staggerFunction } from './stagger-function.babel.js';
 import { staggerRand } from './stagger-rand.babel.js';
 import { staggerRandFloat } from './stagger-rand-float.babel.js';
+import { staggerStep } from './stagger-step.babel.js';
 
 /* -------------------- */
 /* The `Stagger` class  */
@@ -95,5 +96,6 @@ const stagger = (Module) => { // eslint-disable-line arrow-body-style
 stagger.function = staggerFunction;
 stagger.rand = staggerRand;
 stagger.randFloat = staggerRandFloat;
+stagger.step = staggerStep;
 
 export { stagger };

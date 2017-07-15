@@ -495,6 +495,32 @@ describe('`motion-path` ->', function () {
 
       expect(motionPath._props.property).toBe(props[index % props.length]);
     });
+
+    it('should pass `_totalItemsInStagger`', function () {
+      var props = {
+        fun: mojs.stagger.function(function() {})
+      };
+      var index = 3;
+
+      spyOn(props, 'fun');
+      var motionPath = MotionPath({ property: props.fun, index: index });
+
+      expect(props.fun).toHaveBeenCalledWith(index, 1);
+    });
+
+    it('should parse burstGenerator', function () {
+      var coords = [ 'x', 'y', 'angle' ];
+      var index = 3;
+      var path = 'M0,0 L200,25';
+      var fun = function () {
+          return { path: path };
+      };
+      fun.__mojs__isStaggerFunction = true;
+
+      var motionPath = MotionPath({ path: fun });
+
+      expect(motionPath._props.path).toBe(path);
+    });
   });
 
   describe('`coordinate` option ->', function() {

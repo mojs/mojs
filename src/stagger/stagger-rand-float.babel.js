@@ -4,7 +4,6 @@ import { staggerFunction } from './stagger-function.babel.js';
 /**
  * `staggerRand` - function to create delayed `stagger` function
  *                 that generates random floats in range.
- * 
  * @param {Number} min Min bound.
  * @param {Number} max Max bound.
  * @returns {Function} Newly created function that is marked as stagger
@@ -12,7 +11,7 @@ import { staggerFunction } from './stagger-function.babel.js';
  */
 export const staggerRandFloat = (min, max) => {
   // mark the function as `stagger` one
-  return staggerFunction(function (i, total) {
+  return staggerFunction(() => {
     return randFloat(min, max);
   });
 };
