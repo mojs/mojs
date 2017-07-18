@@ -5,14 +5,14 @@ import { getRadialPoint } from './get-radial-point.babel.js';
 const defaults = {
   xEasing: 'cubic.in',
   yEasing: 'linear.none',
-  count: 4,
+  count: 2,
   length: 100,
-  depth: .5,
+  depth: .25,
   x: 0,
   y: 0,
   angle: 90,
-  initialOffset: 0,
-  initialDirection: true,
+  startOffset: 0,
+  direction: true,
   isGrow: 1,
   // stagger properties:
   index: 0,
@@ -46,11 +46,11 @@ export const generatePath = (options = {}) => {
   const point2 = {};
   const point3 = {};
   // get the start point
-  getRadialPoint(o.x, o.y, o.initialOffset, o.angle, point);
+  getRadialPoint(o.x, o.y, o.startOffset, o.angle, point);
   // loop util variables
   const step = 1 / o.count;
 
-  let flip = o.initialDirection;
+  let flip = o.direction;
 
   let proc = step / 2;
   let d = `M ${point.x}, ${point.y}`;

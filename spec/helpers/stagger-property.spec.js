@@ -6,10 +6,11 @@ var eps = 0.0000001;
 describe('`staggerProperty` ->', function () {
   it('should parse `array` values', function () {
     var array = [11, 20, 13, 45, 25];
+    var map = mojs.stagger.map(array[0], array[1], array[2], array[3], array[4]);
 
-    for (var i = 0; i < 3*array.length; i++) {
-      expect(staggerProperty(array, i)).toBeDefined();
-      expect(staggerProperty(array, i)).toBe(array[i % array.length]);
+    for (var i = 0; i < 3 * array.length; i++) {
+      expect(staggerProperty(map, i)).toBeDefined();
+      expect(staggerProperty(map, i)).toBe(array[i % array.length]);
     }
   });
 
@@ -64,17 +65,16 @@ describe('`staggerProperty` ->', function () {
   });
 
   it('should parse `stagger` values', function () {
-    expect(staggerProperty('stagger(10, 50)', 0)).toBe(10);
-    expect(staggerProperty('stagger(10, 50)', 1)).toBe(60);
-    expect(staggerProperty('stagger(10, 50)', 2)).toBe(110);
+    expect(staggerProperty(mojs.stagger.step(10, 50), 0)).toBe(10);
+    expect(staggerProperty(mojs.stagger.step(10, 50), 1)).toBe(60);
+    expect(staggerProperty(mojs.stagger.step(10, 50), 2)).toBe(110);
   });
 
   it('should parse `stagger` values #in map', function () {
-    var value = [ 'stagger(10, 50)', 'stagger(0, 25)']
+    var value = mojs.stagger.map(mojs.stagger.step(10, 25), mojs.stagger.step(0, 25));
     expect(staggerProperty(value, 0)).toBe(10);
     expect(staggerProperty(value, 1)).toBe(25);
-    expect(staggerProperty(value, 2)).toBe(110);
+    expect(staggerProperty(value, 2)).toBe(60);
     expect(staggerProperty(value, 3)).toBe(75);
   });
-
 });

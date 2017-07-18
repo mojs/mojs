@@ -46,4 +46,17 @@ describe('splitDelta ->', function () {
       expect(result.tweenOptions[option]).toBe(tweenDefaults[option]);
     }
   });
+
+  it('should work with `from` and `to` syntax', function () {
+    const delta = { from: '11%', to: '20px', curve: 'sin.in', delay: 2000, onUpdate: function() {} };
+    const result = splitDelta(delta);
+
+    expect(result.start).toBe('11%');
+    expect(result.end).toBe('20px');
+    expect(result.curve).toBe(parseEasing(delta.curve));
+    expect(result.tweenOptions).toEqual({
+      delay: delta.delay,
+      onUpdate: delta.onUpdate
+    });
+  });
 });

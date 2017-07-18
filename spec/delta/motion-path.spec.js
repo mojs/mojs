@@ -381,7 +381,6 @@ describe('`motion-path` ->', function () {
       var result = motionPath.update(.5, .5, true);
       expect(result).toBe(motionPath);
     });
-
   });
 
   describe('tween creation ->', function() {
@@ -453,7 +452,7 @@ describe('`motion-path` ->', function () {
 
   describe('stagger parsing ->', function() {
     it('should parse `stagger` properties in props #path', function () {
-      var paths = [ 'M1, 1', 'M2, 2', 'M3, 3' ];
+      var paths = mojs.stagger.map('M1, 1', 'M2, 2', 'M3, 3');
       var index = 5;
 
       var motionPath = MotionPath({ path: paths, index: index });
@@ -462,7 +461,7 @@ describe('`motion-path` ->', function () {
     });
 
     it('should parse `stagger` properties in props #el', function () {
-      var els = [ {}, {}, {} ];
+      var els = mojs.stagger.map( {}, {}, {} );
       var index = 3;
 
       var motionPath = MotionPath({ el: els, index: index });
@@ -473,13 +472,13 @@ describe('`motion-path` ->', function () {
     it('should parse `stagger` properties in props #precision', function () {
       var index = 2;
 
-      var motionPath = MotionPath({ precision: 'stagger(10, 20)', index: index });
+      var motionPath = MotionPath({ precision: mojs.stagger.step(10, 20), index: index });
 
       expect(motionPath._props.precision).toBe(10 + index*20);
     });
 
     it('should parse `stagger` properties in props #coordinate', function () {
-      var coords = [ 'x', 'y', 'angle' ];
+      var coords = mojs.stagger.map( 'x', 'y', 'angle' );
       var index = 3;
 
       var motionPath = MotionPath({ coordinate: coords, index: index });
@@ -488,7 +487,7 @@ describe('`motion-path` ->', function () {
     });
 
     it('should parse `stagger` properties in props #coordinate', function () {
-      var props = [ 'k', 'z', 'tale' ];
+      var props = mojs.stagger.map( 'k', 'z', 'tale' );
       var index = 12;
 
       var motionPath = MotionPath({ property: props, index: index });

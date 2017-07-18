@@ -16,9 +16,19 @@ const splitDelta = (object) => {
   delete obj.curve;
   // extract tween options
   const tweenOptions = separateTweenOptions(obj);
-  // at this point only the `start` -> `end` should left get the values
-  const start = Object.keys(obj)[0];
-  const end = obj[start];
+
+  let start;
+  let end;
+  // if `{ from: x, to: x }` syntax used
+  if (obj.from != undefined && obj.to != undefined) { // eslint-disable-line eqeqeq
+    start = obj.from;
+    end = obj.to;
+  // else `{ from: to }` syntax used
+  } else {
+    // at this point only the `start` -> `end` should left get the values
+    start = Object.keys(obj)[0];
+    end = obj[start];
+  }
 
   return { start, end, curve, tweenOptions };
 };

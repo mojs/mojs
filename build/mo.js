@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "build/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 38);
+/******/ 	return __webpack_require__(__webpack_require__.s = 46);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -239,6 +239,72 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    var isStaggerMap = exports.isStaggerMap = function (prop) {
+      return prop instanceof Array && prop.__mojs__isStaggerMap;
+    };
+
+    var isStaggerFunction = exports.isStaggerFunction = function (prop) {
+      return typeof prop === 'function' && prop.__mojs__isStaggerFunction;
+    };
+
+    var staggerProperty = exports.staggerProperty = function (prop, index, totalItems) {
+      // if property is an array map the index to some array item
+      if (isStaggerMap(prop)) {
+        prop = prop[index % prop.length];
+      }
+      // if prop is a function, call the it with index and return the result
+      if (isStaggerFunction(prop)) {
+        prop = prop(index, totalItems);
+      }
+      // if nested, parse it
+      return isStaggerMap(prop) || isStaggerFunction(prop) ? staggerProperty(prop, index, totalItems) : prop;
+    };
+  });
+});
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
     !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
@@ -339,77 +405,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('./parse-stagger.babel.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.parseStaggerBabel);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports, global.parseStaggerBabel);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports, _parseStaggerBabel) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    exports.staggerProperty = undefined;
-
-
-    var staggerProperty = function (prop, index, totalItems) {
-      var value = prop;
-      // if property is an array map the index to some array item
-      if (prop instanceof Array) {
-        value = prop[index % prop.length];
-      }
-      // if prop is a function, call the it with index and return the result
-      if (typeof prop === 'function' && prop.__mojs__isStaggerFunction) {
-        value = prop(index, totalItems);
-      }
-
-      // [string] otherwise return the single property
-      return (0, _parseStaggerBabel.parseStagger)(value, index);
-    };
-
-    exports.staggerProperty = staggerProperty;
-  });
-});
-
-/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(8), __webpack_require__(20), __webpack_require__(4), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(11), __webpack_require__(23), __webpack_require__(4), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -427,7 +428,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(8), __webpack_require__(20), __webpack_require__(4), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(11), __webpack_require__(23), __webpack_require__(4), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -893,7 +894,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.reset();
 
       if (repeat - count > 0) {
-        if ((0, _staggerPropertyBabel.staggerProperty)(isReverseOnRepeat, count)) {
+        var value = isReverseOnRepeat;
+        // if `value` is `array`, parse it
+        value = isReverseOnRepeat instanceof Array ? value[count % value.length] : value;
+        // if `value` is `function`, parse it
+        if (typeof value === 'function') {
+          value = value(count);
+        }
+        if (value) {
           this.reverse();
         }
 
@@ -953,7 +961,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(30), __webpack_require__(14), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(34), __webpack_require__(18), __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -971,7 +979,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(30), __webpack_require__(14), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(34), __webpack_require__(18), __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1057,7 +1065,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1075,7 +1083,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1167,6 +1175,124 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: true
     });
     /**
+     * `staggerFunction` - function to mark another function as `stagger` one.
+     * @param {Function} fun Function to mark as `stagger` function.
+     * @returns {Function} Newly created function that is marked as stagger
+     *                     and will call the original one.
+     */
+    var staggerFunction = exports.staggerFunction = function (fun) {
+      var newFunction = function () {
+        return fun.apply(undefined, arguments);
+      };
+      newFunction.__mojs__isStaggerFunction = true;
+      // return the new function
+      return newFunction;
+    };
+  });
+});
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  "use strict";
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    /**
+     * `rand` - function to generate random `float` number in range.
+     * @param {Number} min Min bound.
+     * @param {Number} max Max bound.
+     * @return {Number} Random `float` number in range.
+     */
+    var randFloat = exports.randFloat = function () {
+      var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+
+      return min + Math.random() * (max - min);
+    };
+  });
+});
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  "use strict";
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    /**
      * `getRadialPoint` - function to get a point on imaginary circle
      *                    with provided parameters.
      *
@@ -1189,12 +1315,64 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(11), __webpack_require__(1), __webpack_require__(9), __webpack_require__(5), __webpack_require__(32), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  "use strict";
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    /**
+     * The regexp intended to parse all `units` supported.
+     */
+    var unitRegexp = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin|deg|fr/gim;
+
+    exports.unitRegexp = unitRegexp;
+  });
+});
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(14), __webpack_require__(2), __webpack_require__(12), __webpack_require__(5), __webpack_require__(36), __webpack_require__(22)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1212,7 +1390,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(11), __webpack_require__(1), __webpack_require__(9), __webpack_require__(5), __webpack_require__(32), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(14), __webpack_require__(2), __webpack_require__(12), __webpack_require__(5), __webpack_require__(36), __webpack_require__(22)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1368,7 +1546,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           var custom = this._customProperties[key];
           var target = custom && custom.isSkipRender ? this._supportProps : this._el;
 
-          var property = (0, _parseStaticPropertyBabel.parseStaticProperty)(key, value, this._customProperties, this.index);
+          var property = (0, _parseStaticPropertyBabel.parseStaticProperty)(key, value, this._customProperties, this.index, this._totalItemsInStagger);
           this._staticProps[key] = property;
           target[key] = property;
           continue;
@@ -1446,7 +1624,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 8 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -1531,12 +1709,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(24), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(48), __webpack_require__(2), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(27), __webpack_require__(26), __webpack_require__(25), __webpack_require__(24), __webpack_require__(9), __webpack_require__(1), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1554,7 +1732,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(24), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(48), __webpack_require__(2), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(27), __webpack_require__(26), __webpack_require__(25), __webpack_require__(24), __webpack_require__(9), __webpack_require__(1), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1833,8 +2011,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     Delta._getSplit = function (object) {
       var split = (0, _splitDeltaBabel.splitDelta)(object);
       // parse the `stagger` in `start`/`end` delta properties
-      split.start = (0, _staggerPropertyBabel.staggerProperty)(split.start, this.index);
-      split.end = (0, _staggerPropertyBabel.staggerProperty)(split.end, this.index);
+      split.start = (0, _staggerPropertyBabel.staggerProperty)(split.start, this.index, this._totalItemsInStagger);
+      split.end = (0, _staggerPropertyBabel.staggerProperty)(split.end, this.index, this._totalItemsInStagger);
 
       return split;
     };
@@ -1859,12 +2037,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(37)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1882,7 +2060,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(37)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1978,7 +2156,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 11 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -2259,12 +2437,73 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 12 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(4), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./rand-float.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.randFloatBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.randFloatBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _randFloatBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.rand = undefined;
+
+
+    /**
+     * `rand` - function to generate random `integer` number in range.
+     * @param {Number} min Min bound.
+     * @param {Number} max Max bound.
+     * @return {Number} Random `integer` number in range.
+     */
+    var rand = exports.rand = function () {
+      var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+
+      return Math.round((0, _randFloatBabel.randFloat)(min, max));
+    };
+  });
+});
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(4), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2282,7 +2521,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(4), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(4), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2320,14 +2559,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var defaults = {
       xEasing: 'cubic.in',
       yEasing: 'linear.none',
-      count: 4,
+      count: 2,
       length: 100,
-      depth: .5,
+      depth: .25,
       x: 0,
       y: 0,
       angle: 90,
-      initialOffset: 0,
-      initialDirection: true,
+      startOffset: 0,
+      direction: true,
       isGrow: 1,
       // stagger properties:
       index: 0,
@@ -2360,11 +2599,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var point2 = {};
       var point3 = {};
       // get the start point
-      (0, _getRadialPointBabel.getRadialPoint)(o.x, o.y, o.initialOffset, o.angle, point);
+      (0, _getRadialPointBabel.getRadialPoint)(o.x, o.y, o.startOffset, o.angle, point);
       // loop util variables
       var step = 1 / o.count;
 
-      var flip = o.initialDirection;
+      var flip = o.direction;
 
       var proc = step / 2;
       var d = 'M ' + point.x + ', ' + point.y;
@@ -2391,7 +2630,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 13 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -2530,12 +2769,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 14 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(13), __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(17), __webpack_require__(19)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2553,7 +2792,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(13), __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(17), __webpack_require__(19)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2620,7 +2859,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 15 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -2690,12 +2929,165 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 16 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(0), __webpack_require__(5), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../delta/get-regexp-unit.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.getRegexpUnitBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.getRegexpUnitBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _getRegexpUnitBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.parseStagger = undefined;
+
+
+    /**
+     * `parseStagger` - function to parse `stagger()` strings.
+     *
+     * @param {_} Property value.
+     * @param {Number} Stagger index.
+     * @returns {String, Any} Parsed stagger value or unattended value.
+     */
+    var parseStagger = function (value, index) {
+      var type = typeof value;
+      // if not string return the value itself as it can not be a stagger string
+      if (type !== 'string') {
+        return value;
+      }
+      // if string test it on `stagger` sequence, if not present
+      // return the value as it is not a stagger string
+      if (!value.match(/^stagger\(/)) {
+        return value;
+      }
+
+      // split the value `stagger([body])`
+      var body = value.split(/stagger\(|\)$/)[1].toLowerCase();
+      // split the body
+      var stagger = body.split(/([^(,\s]+)(?=\s*,|\s*$)/gim);
+      // assume two values in the `stagger(20, 20)`
+      var base = stagger[1];
+      var step = stagger[3];
+      // if only one value provided in the `stagger(20)`
+      if (stagger.length <= 3) {
+        base = 0;
+        step = stagger[1];
+      }
+      // parse base
+      var baseValue = parseFloat(base);
+      var baseUnit = (0, _getRegexpUnitBabel.getRegexpUnit)(base);
+      // parse step
+      var stepValue = parseFloat(step);
+      var stepUnit = (0, _getRegexpUnitBabel.getRegexpUnit)(step);
+      // get result unit and result
+      var unit = baseUnit !== undefined ? baseUnit : stepUnit;
+      var result = baseValue + index * stepValue;
+      // if unit is present - return the result with unit, otherwise return number
+      return unit ? '' + result + unit : result;
+    };
+
+    exports.parseStagger = parseStagger;
+  });
+});
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../helpers/unit-regexp.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.unitRegexpBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.unitRegexpBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _unitRegexpBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.getRegexpUnit = undefined;
+
+
+    var getRegexpUnit = function (value) {
+      if (typeof value !== 'string') {
+        return undefined;
+      }
+      var valueMatch = value.match(_unitRegexpBabel.unitRegexp);
+
+      return valueMatch !== null ? valueMatch[0] : undefined;
+    };
+
+    exports.getRegexpUnit = getRegexpUnit;
+  });
+});
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(0), __webpack_require__(5), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2713,7 +3105,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(0), __webpack_require__(5), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(0), __webpack_require__(5), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -2990,161 +3382,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('../delta/get-regexp-unit.babel.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.getRegexpUnitBabel);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports, global.getRegexpUnitBabel);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports, _getRegexpUnitBabel) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    exports.parseStagger = undefined;
-
-
-    /**
-     * `parseStagger` - function to parse `stagger()` strings.
-     *
-     * @param {_} Property value.
-     * @param {Number} Stagger index.
-     * @returns {String, Any} Parsed stagger value or unattended value.
-     */
-    var parseStagger = function (value, index) {
-      var type = typeof value;
-      // if not string return the value itself as it can not be a stagger string
-      if (type !== 'string') {
-        return value;
-      }
-      // if string test it on `stagger` sequence, if not present
-      // return the value as it is not a stagger string
-      if (!value.match(/^stagger\(/)) {
-        return value;
-      }
-
-      // split the value `stagger([body])`
-      var body = value.split(/stagger\(|\)$/)[1].toLowerCase();
-      // split the body
-      var stagger = body.split(/([^(,\s]+)(?=\s*,|\s*$)/gim);
-      // assume two values in the `stagger(20, 20)`
-      var base = stagger[1];
-      var step = stagger[3];
-      // if only one value provided in the `stagger(20)`
-      if (stagger.length <= 3) {
-        base = 0;
-        step = stagger[1];
-      }
-      // parse base
-      var baseValue = parseFloat(base);
-      var baseUnit = (0, _getRegexpUnitBabel.getRegexpUnit)(base);
-      // parse step
-      var stepValue = parseFloat(step);
-      var stepUnit = (0, _getRegexpUnitBabel.getRegexpUnit)(step);
-      // get result unit and result
-      var unit = baseUnit !== undefined ? baseUnit : stepUnit;
-      var result = baseValue + index * stepValue;
-      // if unit is present - return the result with unit, otherwise return number
-      return unit ? '' + result + unit : result;
-    };
-
-    exports.parseStagger = parseStagger;
-  });
-});
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(48)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('../helpers/unit-regexp.babel.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.unitRegexpBabel);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(48)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports, global.unitRegexpBabel);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports, _unitRegexpBabel) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    exports.getRegexpUnit = undefined;
-
-
-    var getRegexpUnit = function (value) {
-      if (typeof value !== 'string') {
-        return undefined;
-      }
-      var valueMatch = value.match(_unitRegexpBabel.unitRegexp);
-
-      return valueMatch !== null ? valueMatch[0] : undefined;
-    };
-
-    exports.getRegexpUnit = getRegexpUnit;
-  });
-});
-
-/***/ }),
-/* 19 */,
-/* 20 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -3318,12 +3556,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3341,7 +3579,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3408,12 +3646,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3431,7 +3669,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3498,7 +3736,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -3581,7 +3819,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -3653,9 +3891,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       delete obj.curve;
       // extract tween options
       var tweenOptions = (0, _separateTweenOptionsBabel.separateTweenOptions)(obj);
-      // at this point only the `start` -> `end` should left get the values
-      var start = Object.keys(obj)[0];
-      var end = obj[start];
+
+      var start = void 0;
+      var end = void 0;
+      // if `{ from: x, to: x }` syntax used
+      if (obj.from != undefined && obj.to != undefined) {
+        // eslint-disable-line eqeqeq
+        start = obj.from;
+        end = obj.to;
+        // else `{ from: to }` syntax used
+      } else {
+        // at this point only the `start` -> `end` should left get the values
+        start = Object.keys(obj)[0];
+        end = obj[start];
+      }
 
       return { start: start, end: end, curve: curve, tweenOptions: tweenOptions };
     };
@@ -3665,12 +3914,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(26)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(29)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3688,7 +3937,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(26)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(29)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3808,12 +4057,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(7), __webpack_require__(0), __webpack_require__(35)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2), __webpack_require__(10), __webpack_require__(0), __webpack_require__(39)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3831,7 +4080,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(7), __webpack_require__(0), __webpack_require__(35)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2), __webpack_require__(10), __webpack_require__(0), __webpack_require__(39)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4116,12 +4365,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(31)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4139,7 +4388,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(31)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4240,7 +4489,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 28 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -4347,22 +4596,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 29 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(exports, require('./generate-path.babel.js'));
+    factory(exports, require('./unit-regexp.babel.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global.generatePathBabel);
+    factory(mod.exports, global.unitRegexpBabel);
     global.mojs = mod.exports;
   }
 })(this, function (exports) {
@@ -4370,7 +4619,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4380,10 +4629,80 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var mod = {
         exports: {}
       };
-      factory(mod.exports, global.generatePathBabel);
+      factory(mod.exports, global.unitRegexpBabel);
       global.mojs = mod.exports;
     }
-  })(undefined, function (exports, _generatePathBabel) {
+  })(undefined, function (exports, _unitRegexpBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.parseUnitValue = undefined;
+
+
+    /**
+     * `parseUnitValue` - function to parse a string with unit e.g. `10%`.
+     * @param {String, Number, Any} value Value to parse.
+     * @param {String} defaultUnit Default unit to fallback to.
+     * @returns {Object} Parsed unit object.
+     */
+    var parseUnitValue = exports.parseUnitValue = function (value, defaultUnit) {
+      var result = {
+        unit: defaultUnit,
+        value: value
+      };
+
+      if (typeof value === 'string') {
+        var match = value.match(_unitRegexpBabel.unitRegexp);
+
+        result.unit = match === null || match === undefined ? defaultUnit : match[0];
+        result.value = parseFloat(value);
+      }
+
+      return result;
+    };
+  });
+});
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(16), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./generate-path.babel.js'), require('./stagger-property.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.generatePathBabel, global.staggerPropertyBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(16), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.generatePathBabel, global.staggerPropertyBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _generatePathBabel, _staggerPropertyBabel) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
@@ -4406,7 +4725,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     };
 
     var BURST_DEFAUTLS = {
-      degree: 360
+      degree: 360,
+      degreeOffset: 0
     };
 
     var burstGenerator = exports.burstGenerator = function () {
@@ -4416,8 +4736,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var burstOptions = _extends({}, BURST_DEFAUTLS, o);
 
       var staggerFunction = function (index, total) {
-        var staggerAngle = index * (burstOptions.degree / total);
+        var degree = burstOptions.degree,
+            degreeOffset = burstOptions.degreeOffset;
+        // if stagger properties - parse them
 
+        degree = (0, _staggerPropertyBabel.staggerProperty)(degree, index, total);
+        degreeOffset = (0, _staggerPropertyBabel.staggerProperty)(degreeOffset, index, total);
+        // calculate the particle angle regarding burst generator
+        var staggerAngle = degreeOffset + index * (degree / total);
+        // generate the particle path
         var path = (0, _generatePathBabel.generatePath)(_extends({}, o, {
           angle: o.angle != null ? o.angle : staggerAngle,
           // pass stagger `index` and `total` values
@@ -4437,7 +4764,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 30 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -4492,12 +4819,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 31 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(1), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(10), __webpack_require__(2), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4515,7 +4842,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(1), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(10), __webpack_require__(2), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4729,12 +5056,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 32 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4752,7 +5079,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4774,7 +5101,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     exports.parseStaticProperty = undefined;
 
 
-    // TODO: cover
+    // TODO: cover by unit tests
 
     /**
      * `parseStaticProperty` - function to parse static property
@@ -4787,6 +5114,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     var parseStaticProperty = exports.parseStaticProperty = function (key, property, customProperties) {
       var index = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+      var total = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
 
       // if property is not defined, just return it
       if (property == null) {
@@ -4794,14 +5122,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       var target = {};
-      var object = {};
-      object[property] = property;
-
+      var object = {
+        from: property,
+        to: property
+      };
+      // greate a delta with `{ from: property, to: property }` transition
       var delta = new _deltaBabel.Delta({
         key: key,
         target: target,
         customProperties: customProperties,
         index: index,
+        totalItemsInStagger: total,
         object: object,
         supportProps: target
       });
@@ -4817,7 +5148,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 33 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -4870,12 +5201,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 34 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25), __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28), __webpack_require__(30)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -4893,7 +5224,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25), __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28), __webpack_require__(30)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -5075,7 +5406,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 35 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -5135,13 +5466,445 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 36 */,
-/* 37 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(14), __webpack_require__(2), __webpack_require__(1), __webpack_require__(6), __webpack_require__(44), __webpack_require__(43), __webpack_require__(42), __webpack_require__(41)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../tween/timeline.babel.js'), require('../tween/tweenable.babel.js'), require('../helpers/stagger-property.babel.js'), require('./stagger-function.babel.js'), require('./stagger-rand.babel.js'), require('./stagger-rand-float.babel.js'), require('./stagger-step.babel.js'), require('./stagger-map.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.timelineBabel, global.tweenableBabel, global.staggerPropertyBabel, global.staggerFunctionBabel, global.staggerRandBabel, global.staggerRandFloatBabel, global.staggerStepBabel, global.staggerMapBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(14), __webpack_require__(2), __webpack_require__(1), __webpack_require__(6), __webpack_require__(44), __webpack_require__(43), __webpack_require__(42), __webpack_require__(41)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.timelineBabel, global.tweenableBabel, global.staggerPropertyBabel, global.staggerFunctionBabel, global.staggerRandBabel, global.staggerRandFloatBabel, global.staggerStepBabel, global.staggerMapBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _timelineBabel, _tweenableBabel, _staggerPropertyBabel, _staggerFunctionBabel, _staggerRandBabel, _staggerRandFloatBabel, _staggerStepBabel, _staggerMapBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.stagger = undefined;
+
+    var _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    /* -------------------- */
+    /* The `Stagger` class  */
+    /* -------------------- */
+
+    var Super = _tweenableBabel.Tweenable.__mojsClass;
+    var Stagger = Object.create(Super);
+
+    /**
+     * `init` - function init the class.
+     *
+     * @extends @Tweenable
+     * @public
+     */
+    Stagger.init = function () {
+      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var Module = arguments[1];
+
+      // super call
+      Super.init.call(this, o);
+      // create main timeline
+      this._createTimeline(o.timeline);
+      // create modules
+      this._createModules(Module);
+    };
+
+    /**
+     * `_createModules` - function to create modules.
+     *
+     * @private
+     * @param {Object} Child module class.
+     */
+    Stagger._createModules = function (Module) {
+      this._modules = [];
+      var _o = this._o,
+          items = _o.items,
+          _o$el = _o.el,
+          el = _o$el === undefined ? {} : _o$el;
+
+      var modulesCount = items || el.length || 1;
+
+      for (var i = 0; i < modulesCount; i++) {
+        var module = new Module(_extends({}, this._getStaggerOptions(this._o, i, modulesCount), {
+          totalItemsInStagger: modulesCount
+        }));
+        this._modules.push(module);
+        this.timeline.add(module);
+      }
+    };
+
+    /**
+     * `_getStaggerOptions` - get stagger options for a single module.
+     *
+     * @private
+     * @param {Object} Stagger options.
+     * @param {Number} Index of a module.
+     */
+    Stagger._getStaggerOptions = function (options, i, modulesCount) {
+      // pass index to child properties
+      var o = { index: i };
+
+      var keys = Object.keys(options);
+      for (var j = 0; j < keys.length; j++) {
+        var key = keys[j];
+        o[key] = (0, _staggerPropertyBabel.staggerProperty)(options[key], i, modulesCount);
+      }
+
+      return o;
+    };
+
+    /**
+     * `_createTimeline` - function to create a timeline.
+     *
+     * @private
+     * @param {Object} Timeline options.
+     */
+    Stagger._createTimeline = function (options) {
+      this.timeline = new _timelineBabel.Timeline(options);
+
+      delete this._o.timeline;
+    };
+
+    /**
+     * function to wrap a Module with the stagger wrapper.
+     */
+    var stagger = function (Module) {
+      // eslint-disable-line arrow-body-style
+      return function (options) {
+        var instance = Object.create(Stagger);
+        instance.init(options, Module);
+
+        return instance;
+      };
+    };
+
+    stagger.function = _staggerFunctionBabel.staggerFunction;
+    stagger.rand = _staggerRandBabel.staggerRand;
+    stagger.randFloat = _staggerRandFloatBabel.staggerRandFloat;
+    stagger.step = _staggerStepBabel.staggerStep;
+    stagger.map = _staggerMapBabel.staggerMap;
+
+    exports.stagger = stagger;
+  });
+});
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  "use strict";
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    /**
+     * `staggerMap` - function to mark another function as `stagger` one.
+     * @param {_} args Function parameters to make items of the stagger map.
+     * @returns {Array} Newly created array that is marked as stagger one.
+     */
+    var staggerMap = exports.staggerMap = function () {
+      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      // clone the map
+      var newMap = [].concat(args);
+      // mark as stagger one
+      newMap.__mojs__isStaggerMap = true;
+      // return the new map
+      return newMap;
+    };
+  });
+});
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(6), __webpack_require__(32), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./stagger-function.babel.js'), require('../helpers/parse-unit-value.babel.js'), require('../helpers/stagger-property.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.staggerFunctionBabel, global.parseUnitValueBabel, global.staggerPropertyBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(6), __webpack_require__(32), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.staggerFunctionBabel, global.parseUnitValueBabel, global.staggerPropertyBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _staggerFunctionBabel, _parseUnitValueBabel, _staggerPropertyBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.staggerStep = undefined;
+
+
+    /**
+     * `staggerStep` - function to value for stagger item.
+     * @param {Number, String} base Base value.
+     * @param {Number, String} step Step value.
+     * @returns {Number, String} Stepped value.
+     */
+    var staggerStep = exports.staggerStep = function (base, step) {
+      var isBaseDefined = !(step === undefined);
+      // if only one value passed, treat it as `base` of `0`
+      if (!isBaseDefined) {
+        step = base;
+        base = 0;
+      }
+      // mark the function as `stagger` one
+      return (0, _staggerFunctionBabel.staggerFunction)(function (i, total) {
+        // parse units
+        var baseUnitValue = (0, _parseUnitValueBabel.parseUnitValue)((0, _staggerPropertyBabel.staggerProperty)(base, i, total));
+        var stepUnitValue = (0, _parseUnitValueBabel.parseUnitValue)((0, _staggerPropertyBabel.staggerProperty)(step, i, total));
+        // decide what is the result unit, the `base` one is top priority
+        var resultUnit = isBaseDefined === true ? baseUnitValue.unit : stepUnitValue.unit;
+        // calculate value for the current item
+        var resultNumber = baseUnitValue.value + i * stepUnitValue.value;
+        // if unit defined, use it with result number
+        return resultUnit ? '' + resultNumber + resultUnit : resultNumber;
+      });
+    };
+  });
+});
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(6), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../helpers/rand-float.babel.js'), require('./stagger-function.babel.js'), require('../helpers/stagger-property.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.randFloatBabel, global.staggerFunctionBabel, global.staggerPropertyBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(6), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.randFloatBabel, global.staggerFunctionBabel, global.staggerPropertyBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _randFloatBabel, _staggerFunctionBabel, _staggerPropertyBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.staggerRandFloat = undefined;
+
+
+    /**
+     * `staggerRand` - function to create delayed `stagger` function
+     *                 that generates random floats in range.
+     * @param {Number} min Min bound.
+     * @param {Number} max Max bound.
+     * @returns {Function} Newly created function that is marked as stagger
+     *                     and will call the `rand` one.
+     */
+    var staggerRandFloat = exports.staggerRandFloat = function (min, max) {
+      // mark the function as `stagger` one
+      return (0, _staggerFunctionBabel.staggerFunction)(function (i, total) {
+        var minValue = (0, _staggerPropertyBabel.staggerProperty)(min, i, total);
+        var maxValue = (0, _staggerPropertyBabel.staggerProperty)(max, i, total);
+        // generate random float regarding `stagger` parsing
+        return (0, _randFloatBabel.randFloat)(minValue, maxValue);
+      });
+    };
+  });
+});
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15), __webpack_require__(6), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('../helpers/rand.babel.js'), require('./stagger-function.babel.js'), require('../helpers/stagger-property.babel.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.randBabel, global.staggerFunctionBabel, global.staggerPropertyBabel);
+    global.mojs = mod.exports;
+  }
+})(this, function (exports) {
+  'use strict';
+
+  (function (global, factory) {
+    if (true) {
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15), __webpack_require__(6), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports !== "undefined") {
+      factory(exports);
+    } else {
+      var mod = {
+        exports: {}
+      };
+      factory(mod.exports, global.randBabel, global.staggerFunctionBabel, global.staggerPropertyBabel);
+      global.mojs = mod.exports;
+    }
+  })(undefined, function (exports, _randBabel, _staggerFunctionBabel, _staggerPropertyBabel) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.staggerRand = undefined;
+
+
+    /**
+     * `staggerRand` - function to create delayed `stagger` function
+     *                 that generates random integers in range.
+     * @param {Number} min Min bound.
+     * @param {Number} max Max bound.
+     * @returns {Function} Newly created function that is marked as stagger
+     *                     and will call the `rand` one.
+     */
+    var staggerRand = exports.staggerRand = function (min, max) {
+      // mark the function as `stagger` one
+      return (0, _staggerFunctionBabel.staggerFunction)(function (i, total) {
+        var minValue = (0, _staggerPropertyBabel.staggerProperty)(min, i, total);
+        var maxValue = (0, _staggerPropertyBabel.staggerProperty)(max, i, total);
+        // min/max regarding `staggerProperty` parsing
+        return (0, _randBabel.rand)(minValue, maxValue);
+      });
+    };
+  });
+});
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(19)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -5159,7 +5922,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(19)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -5363,19 +6126,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 38 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(39);
+module.exports = __webpack_require__(47);
 
 
 /***/ }),
-/* 39 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(8), __webpack_require__(11), __webpack_require__(20), __webpack_require__(14), __webpack_require__(4), __webpack_require__(9), __webpack_require__(24), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(5), __webpack_require__(1), __webpack_require__(2), __webpack_require__(17), __webpack_require__(10), __webpack_require__(28), __webpack_require__(27), __webpack_require__(6), __webpack_require__(49), __webpack_require__(37), __webpack_require__(7), __webpack_require__(16), __webpack_require__(43), __webpack_require__(26), __webpack_require__(25), __webpack_require__(34), __webpack_require__(31), __webpack_require__(12), __webpack_require__(29), __webpack_require__(40), __webpack_require__(42)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(11), __webpack_require__(14), __webpack_require__(23), __webpack_require__(18), __webpack_require__(4), __webpack_require__(12), __webpack_require__(27), __webpack_require__(26), __webpack_require__(25), __webpack_require__(24), __webpack_require__(5), __webpack_require__(2), __webpack_require__(1), __webpack_require__(20), __webpack_require__(13), __webpack_require__(31), __webpack_require__(30), __webpack_require__(8), __webpack_require__(32), __webpack_require__(45), __webpack_require__(10), __webpack_require__(22), __webpack_require__(40), __webpack_require__(29), __webpack_require__(28), __webpack_require__(38), __webpack_require__(35), __webpack_require__(16), __webpack_require__(33), __webpack_require__(15), __webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -5393,7 +6156,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(8), __webpack_require__(11), __webpack_require__(20), __webpack_require__(14), __webpack_require__(4), __webpack_require__(9), __webpack_require__(24), __webpack_require__(23), __webpack_require__(22), __webpack_require__(21), __webpack_require__(5), __webpack_require__(1), __webpack_require__(2), __webpack_require__(17), __webpack_require__(10), __webpack_require__(28), __webpack_require__(27), __webpack_require__(6), __webpack_require__(49), __webpack_require__(37), __webpack_require__(7), __webpack_require__(16), __webpack_require__(43), __webpack_require__(26), __webpack_require__(25), __webpack_require__(34), __webpack_require__(31), __webpack_require__(12), __webpack_require__(29), __webpack_require__(40), __webpack_require__(42)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(3), __webpack_require__(11), __webpack_require__(14), __webpack_require__(23), __webpack_require__(18), __webpack_require__(4), __webpack_require__(12), __webpack_require__(27), __webpack_require__(26), __webpack_require__(25), __webpack_require__(24), __webpack_require__(5), __webpack_require__(2), __webpack_require__(1), __webpack_require__(20), __webpack_require__(13), __webpack_require__(31), __webpack_require__(30), __webpack_require__(8), __webpack_require__(32), __webpack_require__(45), __webpack_require__(10), __webpack_require__(22), __webpack_require__(40), __webpack_require__(29), __webpack_require__(28), __webpack_require__(38), __webpack_require__(35), __webpack_require__(16), __webpack_require__(33), __webpack_require__(15), __webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -5424,13 +6187,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     /*
       TODO:
         - add shape
-        - add burst / radial repeater
-        - add mojs.staggerFunction() and staggerMap
+        - rand should work with units
+        - add `clone` from MotionPath and chache it
+        - add rig renderers
         - add spring easing
         - add bezier easing
-        - add path generators
-        - add rig renderers
         - add array deltas
+        - add springs
+        - add path/curve generators
     */
 
     // temporary - not needed for base file
@@ -5439,7 +6203,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     // tween related
     var mojs = {
-      revision: '2.11.2',
+      revision: '2.14.0',
       Tween: _tweenBabel.Tween,
       Timeline: _timelineBabel.Timeline,
       easing: _easingBabel.easing,
@@ -5493,9 +6257,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     // rig
     // eslint-disable-line import/newline-after-import, import/first
     mojs.Rig = _rigBabel.Rig;
+
     // path generator
     // eslint-disable-line import/newline-after-import, import/first
     mojs.generatePath = _generatePathBabel.generatePath;
+
     // burst generator
     // eslint-disable-line import/newline-after-import, import/first
     mojs.burstGenerator = _burstGeneratorBabel.burstGenerator;
@@ -5509,671 +6275,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     exports.default = mojs;
     module.exports = exports['default'];
-  });
-});
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(42)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('./rand-float.babel.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.randFloatBabel);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(42)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports, global.randFloatBabel);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports, _randFloatBabel) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    exports.rand = undefined;
-
-
-    /**
-     * `rand` - function to generate random `integer` number in range.
-     * @param {Number} min Min bound.
-     * @param {Number} max Max bound.
-     * @return {Number} Random `integer` number in range.
-     */
-    var rand = exports.rand = function () {
-      var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-      var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
-
-      return Math.round((0, _randFloatBabel.randFloat)(min, max));
-    };
-  });
-});
-
-/***/ }),
-/* 41 */,
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports);
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  "use strict";
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports) {
-    "use strict";
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    /**
-     * `rand` - function to generate random `float` number in range.
-     * @param {Number} min Min bound.
-     * @param {Number} max Max bound.
-     * @return {Number} Random `float` number in range.
-     */
-    var randFloat = exports.randFloat = function () {
-      var min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-      var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
-
-      return min + Math.random() * (max - min);
-    };
-  });
-});
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(11), __webpack_require__(1), __webpack_require__(2), __webpack_require__(44), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('../tween/timeline.babel.js'), require('../tween/tweenable.babel.js'), require('../helpers/stagger-property.babel.js'), require('./stagger-function.babel.js'), require('./stagger-rand.babel.js'), require('./stagger-rand-float.babel.js'), require('./stagger-step.babel.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.timelineBabel, global.tweenableBabel, global.staggerPropertyBabel, global.staggerFunctionBabel, global.staggerRandBabel, global.staggerRandFloatBabel, global.staggerStepBabel);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(11), __webpack_require__(1), __webpack_require__(2), __webpack_require__(44), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports, global.timelineBabel, global.tweenableBabel, global.staggerPropertyBabel, global.staggerFunctionBabel, global.staggerRandBabel, global.staggerRandFloatBabel, global.staggerStepBabel);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports, _timelineBabel, _tweenableBabel, _staggerPropertyBabel, _staggerFunctionBabel, _staggerRandBabel, _staggerRandFloatBabel, _staggerStepBabel) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    exports.stagger = undefined;
-
-    var _extends = Object.assign || function (target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
-
-        for (var key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
-        }
-      }
-
-      return target;
-    };
-
-    /* -------------------- */
-    /* The `Stagger` class  */
-    /* -------------------- */
-
-    var Super = _tweenableBabel.Tweenable.__mojsClass;
-    var Stagger = Object.create(Super);
-
-    /**
-     * `init` - function init the class.
-     *
-     * @extends @Tweenable
-     * @public
-     */
-    Stagger.init = function () {
-      var o = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      var Module = arguments[1];
-
-      // super call
-      Super.init.call(this, o);
-      // create main timeline
-      this._createTimeline(o.timeline);
-      // create modules
-      this._createModules(Module);
-    };
-
-    /**
-     * `_createModules` - function to create modules.
-     *
-     * @private
-     * @param {Object} Child module class.
-     */
-    Stagger._createModules = function (Module) {
-      this._modules = [];
-      var _o = this._o,
-          items = _o.items,
-          _o$el = _o.el,
-          el = _o$el === undefined ? {} : _o$el;
-
-      var modulesCount = items || el.length || 1;
-
-      for (var i = 0; i < modulesCount; i++) {
-        var module = new Module(_extends({}, this._getStaggerOptions(this._o, i, modulesCount), {
-          totalItemsInStagger: modulesCount
-        }));
-        this._modules.push(module);
-        this.timeline.add(module);
-      }
-    };
-
-    /**
-     * `_getStaggerOptions` - get stagger options for a single module.
-     *
-     * @private
-     * @param {Object} Stagger options.
-     * @param {Number} Index of a module.
-     */
-    Stagger._getStaggerOptions = function (options, i, modulesCount) {
-      // pass index to child properties
-      var o = { index: i };
-
-      var keys = Object.keys(options);
-      for (var j = 0; j < keys.length; j++) {
-        var key = keys[j];
-        o[key] = (0, _staggerPropertyBabel.staggerProperty)(options[key], i, modulesCount);
-      }
-
-      return o;
-    };
-
-    /**
-     * `_createTimeline` - function to create a timeline.
-     *
-     * @private
-     * @param {Object} Timeline options.
-     */
-    Stagger._createTimeline = function (options) {
-      this.timeline = new _timelineBabel.Timeline(options);
-
-      delete this._o.timeline;
-    };
-
-    /**
-     * function to wrap a Module with the stagger wrapper.
-     */
-    var stagger = function (Module) {
-      // eslint-disable-line arrow-body-style
-      return function (options) {
-        var instance = Object.create(Stagger);
-        instance.init(options, Module);
-
-        return instance;
-      };
-    };
-
-    stagger.function = _staggerFunctionBabel.staggerFunction;
-    stagger.rand = _staggerRandBabel.staggerRand;
-    stagger.randFloat = _staggerRandFloatBabel.staggerRandFloat;
-    stagger.step = _staggerStepBabel.staggerStep;
-
-    exports.stagger = stagger;
-  });
-});
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports);
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  "use strict";
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports) {
-    "use strict";
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    /**
-     * `staggerFunction` - function to mark another function as `stagger` one.
-     * @param {Function} fun Function to mark as `stagger` function.
-     * @returns {Function} Newly created function that is marked as stagger
-     *                     and will call the original one.
-     */
-    var staggerFunction = exports.staggerFunction = function (fun) {
-      var newFunction = function () {
-        return fun.apply(undefined, arguments);
-      };
-      newFunction.__mojs__isStaggerFunction = true;
-      // return the new function
-      return newFunction;
-    };
-  });
-});
-
-/***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(40), __webpack_require__(44)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('../helpers/rand.babel.js'), require('./stagger-function.babel.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.randBabel, global.staggerFunctionBabel);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(40), __webpack_require__(44)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports, global.randBabel, global.staggerFunctionBabel);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports, _randBabel, _staggerFunctionBabel) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    exports.staggerRand = undefined;
-
-
-    /**
-     * `staggerRand` - function to create delayed `stagger` function
-     *                 that generates random integers in range.
-     * @param {Number} min Min bound.
-     * @param {Number} max Max bound.
-     * @returns {Function} Newly created function that is marked as stagger
-     *                     and will call the `rand` one.
-     */
-    var staggerRand = exports.staggerRand = function (min, max) {
-      // mark the function as `stagger` one
-      return (0, _staggerFunctionBabel.staggerFunction)(function () {
-        return (0, _randBabel.rand)(min, max);
-      });
-    };
-  });
-});
-
-/***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(42), __webpack_require__(44)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('../helpers/rand-float.babel.js'), require('./stagger-function.babel.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.randFloatBabel, global.staggerFunctionBabel);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(42), __webpack_require__(44)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports, global.randFloatBabel, global.staggerFunctionBabel);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports, _randFloatBabel, _staggerFunctionBabel) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    exports.staggerRandFloat = undefined;
-
-
-    /**
-     * `staggerRand` - function to create delayed `stagger` function
-     *                 that generates random floats in range.
-     * @param {Number} min Min bound.
-     * @param {Number} max Max bound.
-     * @returns {Function} Newly created function that is marked as stagger
-     *                     and will call the `rand` one.
-     */
-    var staggerRandFloat = exports.staggerRandFloat = function (min, max) {
-      // mark the function as `stagger` one
-      return (0, _staggerFunctionBabel.staggerFunction)(function () {
-        return (0, _randFloatBabel.randFloat)(min, max);
-      });
-    };
-  });
-});
-
-/***/ }),
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(44), __webpack_require__(49)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('./stagger-function.babel.js'), require('../helpers/parse-unit-value.babel.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.staggerFunctionBabel, global.parseUnitValueBabel);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(44), __webpack_require__(49)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports, global.staggerFunctionBabel, global.parseUnitValueBabel);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports, _staggerFunctionBabel, _parseUnitValueBabel) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    exports.staggerStep = undefined;
-
-
-    /**
-     * `staggerStep` - function to value for stagger item.
-     * @param {Number, String} base Base value.
-     * @param {Number, String} step Step value.
-     * @returns {Number, String} Stepped value.
-     */
-    var staggerStep = exports.staggerStep = function (base, step) {
-      var isBaseDefined = !(step === undefined);
-      // if only one value passed, treat it as `base` of `0`
-      if (!isBaseDefined) {
-        step = base;
-        base = 0;
-      }
-      // parse units
-      var baseUnitValue = (0, _parseUnitValueBabel.parseUnitValue)(base);
-      var stepUnitValue = (0, _parseUnitValueBabel.parseUnitValue)(step);
-      // decide what is the result unit, the `base` one is top priority
-      var resultUnit = isBaseDefined === true ? baseUnitValue.unit : stepUnitValue.unit;
-      // mark the function as `stagger` one
-      return (0, _staggerFunctionBabel.staggerFunction)(function (i) {
-        // calculate value for the current item
-        var resultNumber = baseUnitValue.value + i * stepUnitValue.value;
-        // if unit defined, use it with result number
-        return resultUnit ? '' + resultNumber + resultUnit : resultNumber;
-      });
-    };
-  });
-});
-
-/***/ }),
-/* 48 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports);
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  "use strict";
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports) {
-    "use strict";
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    /**
-     * The regexp intended to parse all `units` supported.
-     */
-    var unitRegexp = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin|deg|fr/gim;
-
-    exports.unitRegexp = unitRegexp;
-  });
-});
-
-/***/ }),
-/* 49 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(48)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('./unit-regexp.babel.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.unitRegexpBabel);
-    global.mojs = mod.exports;
-  }
-})(this, function (exports) {
-  'use strict';
-
-  (function (global, factory) {
-    if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(48)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports !== "undefined") {
-      factory(exports);
-    } else {
-      var mod = {
-        exports: {}
-      };
-      factory(mod.exports, global.unitRegexpBabel);
-      global.mojs = mod.exports;
-    }
-  })(undefined, function (exports, _unitRegexpBabel) {
-    'use strict';
-
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    exports.parseUnitValue = undefined;
-
-
-    /**
-     * `parseUnitValue` - function to parse a string with unit e.g. `10%`.
-     * @param {String, Number, Any} value Value to parse.
-     * @param {String} defaultUnit Default unit to fallback to.
-     * @returns {Object} Parsed unit object.
-     */
-    var parseUnitValue = exports.parseUnitValue = function (value, defaultUnit) {
-      var result = {
-        unit: defaultUnit,
-        value: value
-      };
-
-      if (typeof value === 'string') {
-        var match = value.match(_unitRegexpBabel.unitRegexp);
-
-        result.unit = match === null || match === undefined ? defaultUnit : match[0];
-        result.value = parseFloat(value);
-      }
-
-      return result;
-    };
   });
 });
 

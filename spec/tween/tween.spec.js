@@ -2089,14 +2089,12 @@ describe('tween ->', function () {
     });
 
     it('should flip the direction if `isReverseOnRepeat` #function', function() {
-      var fun = function(count) {
+      var fun = function (count) {
         return count % 2;
       };
 
-      fun.__mojs__isStaggerFunction = true;
-
       var tween = new Tween({
-        isReverseOnRepeat: [fun],
+        isReverseOnRepeat: fun,
         repeat: 4
       });
 
@@ -2121,7 +2119,7 @@ describe('tween ->', function () {
 
     it('should flip the direction if `isReverseOnRepeat` #map', function() {
       var tween = new Tween({
-        isReverseOnRepeat: [[true, false]],
+        isReverseOnRepeat: [true, false],
         repeat: 3
       });
 
@@ -2549,9 +2547,9 @@ describe('tween ->', function () {
 
       var tween = Tween({
         index: 3,
-        delay: 'stagger(20, 10)',
-        duration: 'stagger(0, 2000)',
-        isReverse: [false, true],
+        delay: mojs.stagger.step(20, 10),
+        duration: mojs.stagger.step(0, 2000),
+        isReverse: mojs.stagger.map(false, true),
         onUpdate: onUpdate
       });
 

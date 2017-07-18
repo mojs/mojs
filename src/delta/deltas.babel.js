@@ -124,7 +124,13 @@ Deltas._parseProperties = function (options) {
         ? this._supportProps
         : this._el;
 
-      const property = parseStaticProperty(key, value, this._customProperties, this.index);
+      const property = parseStaticProperty(
+        key,
+        value,
+        this._customProperties,
+        this.index,
+        this._totalItemsInStagger,
+      );
       this._staticProps[key] = property;
       target[key] = property;
       continue;

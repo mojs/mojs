@@ -1,5 +1,6 @@
 import { randFloat } from '../helpers/rand-float.babel.js';
 import { staggerFunction } from './stagger-function.babel.js';
+import { staggerProperty } from '../helpers/stagger-property.babel.js';
 
 /**
  * `staggerRand` - function to create delayed `stagger` function
@@ -11,7 +12,11 @@ import { staggerFunction } from './stagger-function.babel.js';
  */
 export const staggerRandFloat = (min, max) => {
   // mark the function as `stagger` one
-  return staggerFunction(() => {
-    return randFloat(min, max);
+  return staggerFunction((i, total) => {
+    const minValue = staggerProperty(min, i, total);
+    const maxValue = staggerProperty(max, i, total);
+    // generate random float regarding `stagger` parsing
+    return randFloat(minValue, maxValue);
   });
 };
+

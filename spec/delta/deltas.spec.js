@@ -205,7 +205,7 @@ describe('`deltas` ->', function () {
 
       var options = {
         el: el,
-        f: 'stagger(10, 20)',
+        f: mojs.stagger.step(10, 20),
         z: 'a',
         index: index
       };
@@ -332,7 +332,7 @@ describe('`deltas` ->', function () {
       var options = {
         el: {},
         x: { 20: 40 },
-        z: { 10: 30, duration: 'stagger(500, 1500)' },
+        z: { 10: 30, duration: mojs.stagger.step(500, 1500) },
         t: { path: 'M100,200, L300,250' },
         f: 5,
         y: { '200': 300, delay: 200, path: 'M0,0 L200,200' },

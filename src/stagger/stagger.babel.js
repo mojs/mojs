@@ -5,6 +5,7 @@ import { staggerFunction } from './stagger-function.babel.js';
 import { staggerRand } from './stagger-rand.babel.js';
 import { staggerRandFloat } from './stagger-rand-float.babel.js';
 import { staggerStep } from './stagger-step.babel.js';
+import { staggerMap } from './stagger-map.babel.js';
 
 /* -------------------- */
 /* The `Stagger` class  */
@@ -97,5 +98,6 @@ stagger.function = staggerFunction;
 stagger.rand = staggerRand;
 stagger.randFloat = staggerRandFloat;
 stagger.step = staggerStep;
+stagger.map = staggerMap;
 
 export { stagger };

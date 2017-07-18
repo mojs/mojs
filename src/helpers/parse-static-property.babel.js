@@ -1,6 +1,6 @@
 import { Delta } from '../delta/delta.babel.js';
 
-// TODO: cover
+// TODO: cover by unit tests
 
 /**
  * `parseStaticProperty` - function to parse static property
@@ -11,21 +11,24 @@ import { Delta } from '../delta/delta.babel.js';
  * @param {Object} customProperties Custom properties object.
  * @param {Number} index Index.
  */
-export const parseStaticProperty = (key, property, customProperties, index = 0) => {
+export const parseStaticProperty = (key, property, customProperties, index = 0, total = 1) => {
   // if property is not defined, just return it
   if (property == null) {
     return property;
   }
 
   const target = {};
-  const object = {};
-  object[property] = property;
-
+  const object = {
+    from: property,
+    to: property,
+  };
+  // greate a delta with `{ from: property, to: property }` transition
   const delta = new Delta({
     key,
     target,
     customProperties,
     index,
+    totalItemsInStagger: total,
     object,
     supportProps: target,
   });

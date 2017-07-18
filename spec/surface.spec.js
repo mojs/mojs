@@ -122,5 +122,4 @@ describe('`surface` ->', function () {
       expect(surface._o.customProperties.render).toBe(render);
     });
   });
-
 });

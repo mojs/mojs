@@ -1,5 +1,6 @@
 import { staggerFunction } from './stagger-function.babel.js';
 import { parseUnitValue } from '../helpers/parse-unit-value.babel.js';
+import { staggerProperty } from '../helpers/stagger-property.babel.js';
 
 /**
  * `staggerStep` - function to value for stagger item.
@@ -14,15 +15,15 @@ export const staggerStep = (base, step) => {
     step = base;
     base = 0;
   }
-  // parse units
-  const baseUnitValue = parseUnitValue(base);
-  const stepUnitValue = parseUnitValue(step);
-  // decide what is the result unit, the `base` one is top priority
-  const resultUnit = (isBaseDefined === true)
-        ? baseUnitValue.unit
-        : stepUnitValue.unit;
   // mark the function as `stagger` one
-  return staggerFunction((i) => {
+  return staggerFunction((i, total) => {
+    // parse units
+    const baseUnitValue = parseUnitValue(staggerProperty(base, i, total));
+    const stepUnitValue = parseUnitValue(staggerProperty(step, i, total));
+    // decide what is the result unit, the `base` one is top priority
+    const resultUnit = (isBaseDefined === true)
+          ? baseUnitValue.unit
+          : stepUnitValue.unit;
     // calculate value for the current item
     const resultNumber = baseUnitValue.value + (i * stepUnitValue.value);
     // if unit defined, use it with result number

@@ -168,6 +168,18 @@ describe('`delta` ->', function () {
       expect(delta._delta).toEqual(parseColor(key, splitDelta(options)));
     });
 
+    it('should parse delta #from #to', function () {
+      var key = 'x';
+      var options = {
+        from: 20,
+        to: 30,
+        duration: 2000
+      };
+
+      var delta = Delta({ key: key, object: options });
+      expect(delta._delta).toEqual(parseNumber(key, splitDelta(options)));
+    });
+
     it('should parse stagger #custom', function () {
       const customProperties = {
         x: {
@@ -178,7 +190,8 @@ describe('`delta` ->', function () {
       var key = 'x';
       var index = 3;
       var options = {
-        'stagger(20, 20)': 'stagger(25, 200)', duration: 2000
+        2: mojs.stagger.step(25, 200),
+        duration: 2000
       };
 
       var delta = Delta({
@@ -188,7 +201,7 @@ describe('`delta` ->', function () {
         index: index,
       });
 
-      expect(delta._delta.start).toBe(20 + index*20);
+      expect(delta._delta.start).toBe(2);
       expect(delta._delta.end).toBe(25 + index*200);
     });
 
@@ -196,7 +209,7 @@ describe('`delta` ->', function () {
       var key = 'x';
       var index = 2;
       var options = {
-        'stagger(45, -15)': 'stagger(200, 300)',
+        3: mojs.stagger.step(200, 300),
         duration: 2000
       };
 
@@ -205,7 +218,7 @@ describe('`delta` ->', function () {
         object: options,
         index: index,
       });
-      expect(delta._delta.start).toBe(45 + -15*index);
+      expect(delta._delta.start).toBe(3);
       expect(delta._delta.end).toBe(200 + 300*index);
     });
 
@@ -213,7 +226,7 @@ describe('`delta` ->', function () {
       var key = 'x';
       var index = 2;
       var options = {
-        'stagger(45, -15)': 'stagger(200rem, 300rem)',
+        4: mojs.stagger.step('200rem', '300rem'),
         duration: 2000
       };
 
@@ -222,7 +235,7 @@ describe('`delta` ->', function () {
         object: options,
         index: index
       });
-      expect(delta._delta.start).toBe(45 + -15*index);
+      expect(delta._delta.start).toBe(4);
       expect(delta._delta.end).toBe(200 + 300*index);
       expect(delta._delta.unit).toBe('rem');
     });

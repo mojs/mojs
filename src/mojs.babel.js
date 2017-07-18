@@ -33,17 +33,18 @@ import { parseUnitValue } from './helpers/parse-unit-value.babel.js';
 /*
   TODO:
     - add shape
-    - add burst / radial repeater
-    - add mojs.staggerFunction() and staggerMap
+    - rand should work with units
+    - add `clone` from MotionPath and chache it
+    - add rig renderers
     - add spring easing
     - add bezier easing
-    - add path generators
-    - add rig renderers
     - add array deltas
+    - add springs
+    - add path/curve generators
 */
 
 const mojs = {
-  revision: '2.11.2',
+  revision: '2.14.0',
   Tween,
   Timeline,
   easing,
@@ -97,9 +98,11 @@ mojs.Shape2 = Shape;
 // rig
 import { Rig } from './rig/rig.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.Rig = Rig;
+
 // path generator
 import { generatePath } from './helpers/generate-path.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.generatePath = generatePath;
+
 // burst generator
 import { burstGenerator } from './helpers/burst-generator.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.burstGenerator = burstGenerator;

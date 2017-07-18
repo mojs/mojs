@@ -62,9 +62,12 @@ describe('`stagger` ->', function () {
 
     var options = {
       items: 5,
-      el: [{}, {}, {}],
-      delay: 'stagger(200, 100)',
-      z: { 'stagger(20rem)': 'stagger(10rem, 20rem)' }
+      el: mojs.stagger.map({}, {}, {}),
+      delay: mojs.stagger.step(200, 100),
+      z: {
+        from: mojs.stagger.step('20rem'),
+        to: mojs.stagger.step('10rem', '20rem')
+      }
     }
 
     var deltasStagger = new DeltasStagger(options);
@@ -81,11 +84,20 @@ describe('`stagger` ->', function () {
     expect(deltasStagger._modules[3]._o.delay).toBe(200 + 3*100);
     expect(deltasStagger._modules[4]._o.delay).toBe(200 + 4*100);
 
-    expect(deltasStagger._modules[0]._o.z).toEqual({ 'stagger(20rem)': 'stagger(10rem, 20rem)' });
-    expect(deltasStagger._modules[1]._o.z).toEqual({ 'stagger(20rem)': 'stagger(10rem, 20rem)' });
-    expect(deltasStagger._modules[2]._o.z).toEqual({ 'stagger(20rem)': 'stagger(10rem, 20rem)' });
-    expect(deltasStagger._modules[3]._o.z).toEqual({ 'stagger(20rem)': 'stagger(10rem, 20rem)' });
-    expect(deltasStagger._modules[4]._o.z).toEqual({ 'stagger(20rem)': 'stagger(10rem, 20rem)' });
+    expect(typeof deltasStagger._modules[0]._o.z.from).toBe('function');
+    expect(typeof deltasStagger._modules[0]._o.z.to).toBe('function');
+
+    expect(typeof deltasStagger._modules[1]._o.z.from).toBe('function');
+    expect(typeof deltasStagger._modules[1]._o.z.to).toBe('function');
+
+    expect(typeof deltasStagger._modules[2]._o.z.from).toBe('function');
+    expect(typeof deltasStagger._modules[2]._o.z.to).toBe('function');
+
+    expect(typeof deltasStagger._modules[3]._o.z.from).toBe('function');
+    expect(typeof deltasStagger._modules[3]._o.z.to).toBe('function');
+
+    expect(typeof deltasStagger._modules[4]._o.z.from).toBe('function');
+    expect(typeof deltasStagger._modules[4]._o.z.to).toBe('function');
   });
 
   it('should pass `index` and `totalItemsInStagger` to the Modules', function () {
@@ -114,5 +126,4 @@ describe('`stagger` ->', function () {
     expect(deltasStagger._modules[3]._totalItemsInStagger).toBe(items);
     expect(deltasStagger._modules[4]._totalItemsInStagger).toBe(items);
   });
-
 });

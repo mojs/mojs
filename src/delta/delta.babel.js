@@ -223,8 +223,8 @@ Delta._parseByCustom = function () {
 Delta._getSplit = function (object) {
   const split = splitDelta(object);
   // parse the `stagger` in `start`/`end` delta properties
-  split.start = staggerProperty(split.start, this.index);
-  split.end = staggerProperty(split.end, this.index);
+  split.start = staggerProperty(split.start, this.index, this._totalItemsInStagger);
+  split.end = staggerProperty(split.end, this.index, this._totalItemsInStagger);
 
   return split;
 };

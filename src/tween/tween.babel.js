@@ -415,7 +415,12 @@ Tween.onTweenerFinish = function () {
   this.reset();
 
   if (repeat - count > 0) {
-    if (staggerProperty(isReverseOnRepeat, count)) {
+    let value = isReverseOnRepeat;
+    // if `value` is `array`, parse it
+    value = (isReverseOnRepeat instanceof Array) ? value[count % value.length] : value;
+    // if `value` is `function`, parse it
+    if (typeof value === 'function') { value = value(count); }
+    if (value) {
       this.reverse();
     }
 

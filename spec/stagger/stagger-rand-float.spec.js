@@ -32,4 +32,15 @@ describe('`stagger-rand-float` ->', function () {
       expect(random).not.toBeGreaterThan(-5);
     }
   });
+
+  it('should work with stagger functions', function () {
+    var rand = mojs.stagger.randFloat(mojs.stagger.rand(-20, 20), mojs.stagger.step(40, 2));
+    
+    for (var i = 0; i < 50; i++) {
+      var random = rand(i, i + 1);
+      expect(random).toBeGreaterThan(-20);
+      expect(random).not.toBeGreaterThan(40 + (i * 2));
+    }
+  });
+
 });

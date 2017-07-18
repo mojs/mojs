@@ -1,5 +1,6 @@
 import { rand } from '../helpers/rand.babel.js';
 import { staggerFunction } from './stagger-function.babel.js';
+import { staggerProperty } from '../helpers/stagger-property.babel.js';
 
 /**
  * `staggerRand` - function to create delayed `stagger` function
@@ -11,7 +12,10 @@ import { staggerFunction } from './stagger-function.babel.js';
  */
 export const staggerRand = (min, max) => {
   // mark the function as `stagger` one
-  return staggerFunction(() => {
-    return rand(min, max);
+  return staggerFunction((i, total) => {
+    const minValue = staggerProperty(min, i, total);
+    const maxValue = staggerProperty(max, i, total);
+    // min/max regarding `staggerProperty` parsing
+    return rand(minValue, maxValue);
   });
 };

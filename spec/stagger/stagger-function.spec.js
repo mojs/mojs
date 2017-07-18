@@ -15,3 +15,4 @@ describe('`stagger.function` ->', function () {
     expect(obj.fun).toHaveBeenCalledWith(1, 'a', true);
   });
 });
+
