@@ -39,7 +39,7 @@ Line.render = function (mainEl, support) {
 
   // draw shape
   // const sizeX = (props.sizeX !== undefined) ? props.sizeX : props.size;
-  const sizeY = (props.sizeY !== undefined) ? props.sizeY : props.size;
+  // const sizeY = (props.sizeY !== undefined) ? props.sizeY : props.size;
   // const rx = `calc(${sizeX}/2)`;
   // const ry = `calc(${sizeY}/2)`;
 

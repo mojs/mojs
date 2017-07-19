@@ -2,7 +2,7 @@ import { Tween } from '../tween/tween.babel.js';
 import { ClassProto } from '../class-proto.babel.js';
 import { separateTweenOptions } from './separate-tween-options.babel.js';
 import { staggerProperty } from '../helpers/stagger-property.babel.js';
-import { motionPathCache } from './motion-path-cache';
+import { motionPathCache } from './motion-path-cache.babel.js';
 
 /* ----------------------- */
 /* The `MotionPath` class  */
@@ -70,7 +70,6 @@ MotionPath.update = function (ep) {
 MotionPath._samplePath = function (n = this._props.precision) {
   const { path, precision } = this._props;
   const cachedPath = motionPathCache.get(path, precision);
-  
   // if we have the `path` with the `precision` cached - use it
   if (cachedPath) {
     this._samples = cachedPath;

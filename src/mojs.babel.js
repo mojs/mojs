@@ -123,4 +123,3 @@ import { randFloat } from './helpers/rand-float.babel.js'; // eslint-disable-lin
 mojs.randFloat = randFloat;
 
 export default mojs;
-

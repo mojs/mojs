@@ -1,5 +1,5 @@
 import { Surface } from '../surface.babel.js';
-import { Circle } from './svg/circle.babel.js';
+// import { Circle } from './svg/circle.babel.js';
 import { Line } from './svg/line.babel.js';
 
 /* ------------------ */
