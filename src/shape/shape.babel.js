@@ -1,5 +1,6 @@
 import { Surface } from '../surface.babel.js';
 import { Circle } from './svg/circle.babel.js';
+import { Line } from './svg/line.babel.js';
 
 /* ------------------ */
 /* The `Shape` class  */
@@ -58,7 +59,7 @@ Shape._declareDefaults = function () {
   };
 
   // create shape module
-  this.shape = new Circle({
+  this.shape = new Line({
     el: this.el,
   });
 

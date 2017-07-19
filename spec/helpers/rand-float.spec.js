@@ -38,4 +38,25 @@ describe('`rand` ->', function () {
       expect(random).not.toBeGreaterThan(10);
     }
   });
+
+  it('should work with units', function () {
+    for (var i = 0; i < 50; i++) {
+      var random = mojs.randFloat('-25%', '-5%');
+      expect(random[random.length - 1]).toBe('%');
+      expect(parseInt(random, 10)).toBeGreaterThan(-26);
+      expect(parseInt(random, 10)).not.toBeGreaterThan(-5);
+      expect(parseFloat(random) % 1).not.toBe(0);
+    }
+  });
+
+  it('should work with small numbers', function () {
+    for (var i = 0; i < 50; i++) {
+      var random = mojs.randFloat(.1, .2);
+      expect(typeof random).toBe('number');
+      expect(random).toBeGreaterThan(.09);
+      expect(random).not.toBeGreaterThan(.2);
+      // expect(random % 1).not.toBe(0);
+    }
+  });
+
 });

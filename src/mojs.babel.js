@@ -18,10 +18,14 @@ import { Tweenable } from './tween/tweenable.babel.js';
 import { staggerProperty } from './helpers/stagger-property.babel.js';
 import { parseStagger } from './helpers/parse-stagger.babel.js';
 import { makeColorObject } from './helpers/make-color-object.babel.js';
+
 import { SvgShape } from './shape/svg/svg-shape.babel.js';
 import { Circle } from './shape/svg/circle.babel.js';
+import { Line } from './shape/svg/line.babel.js';
+
 import { getRadialPoint } from './helpers/get-radial-point.babel.js';
 import { parseUnitValue } from './helpers/parse-unit-value.babel.js';
+import { motionPathCache } from './delta/motion-path-cache.babel.js';
 
 /*
   Browsers' support:
@@ -32,19 +36,20 @@ import { parseUnitValue } from './helpers/parse-unit-value.babel.js';
 
 /*
   TODO:
-    - add shape
-    - rand should work with units
-    - add `clone` from MotionPath and chache it
-    - add rig renderers
+    - add shapes
+    - add custom shapes
     - add spring easing
     - add bezier easing
     - add array deltas
+
+    - add rig renderers
+
     - add springs
     - add path/curve generators
 */
 
 const mojs = {
-  revision: '2.14.0',
+  revision: '2.16.0',
   Tween,
   Timeline,
   easing,
@@ -67,8 +72,10 @@ const mojs = {
     makeColorObject,
     getRadialPoint,
     parseUnitValue,
+    motionPathCache,
     svg: {
       Circle,
+      Line,
     },
   },
 };
@@ -83,6 +90,7 @@ mojs.Deltas = Deltas;
 // MotionPath
 import { MotionPath } from './delta/motion-path.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.MotionPath = MotionPath;
+
 // stagger
 import { stagger } from './stagger/stagger.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.stagger = stagger;
@@ -115,3 +123,4 @@ import { randFloat } from './helpers/rand-float.babel.js'; // eslint-disable-lin
 mojs.randFloat = randFloat;
 
 export default mojs;
+

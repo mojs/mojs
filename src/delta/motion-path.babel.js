@@ -2,6 +2,7 @@ import { Tween } from '../tween/tween.babel.js';
 import { ClassProto } from '../class-proto.babel.js';
 import { separateTweenOptions } from './separate-tween-options.babel.js';
 import { staggerProperty } from '../helpers/stagger-property.babel.js';
+import { motionPathCache } from './motion-path-cache';
 
 /* ----------------------- */
 /* The `MotionPath` class  */
@@ -67,19 +68,28 @@ MotionPath.update = function (ep) {
  * @param {Number} Number of floating point digits.
  */
 MotionPath._samplePath = function (n = this._props.precision) {
-  const totalLength = this._path.getTotalLength();
-  const step = 1 / n;
-  // create the samples map and save main properties
-  this._samples = new Map();
-  this._samples.step = step;
-  this._samples.totalLength = totalLength;
-  // samples the path, `key` is in range of [0..1]
-  for (let i = 0; i < n; i++) {
-    const key = i * step;
-    this._setForKey(key);
+  const { path, precision } = this._props;
+  const cachedPath = motionPathCache.get(path, precision);
+  
+  // if we have the `path` with the `precision` cached - use it
+  if (cachedPath) {
+    this._samples = cachedPath;
+  // if no cache - start over
+  } else {
+    this._samples = new Map();
+    const totalLength = this._path.getTotalLength();
+    const step = 1 / n;
+    this._samples.step = step;
+    this._samples.totalLength = totalLength;
+    // samples the path, `key` is in range of [0..1]
+    for (let i = 0; i < n; i++) {
+      const key = i * step;
+      this._setForKey(key);
+    }
+    // the last sample is for `1`
+    this._setForKey(1);
+    motionPathCache.save(path, precision, this._samples);
   }
-  // the last sample is for `1`
-  this._setForKey(1);
 };
 
 /**

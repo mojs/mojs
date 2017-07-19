@@ -1,4 +1,5 @@
 import { randFloat } from './rand-float.babel.js';
+import { parseUnitValue } from '../helpers/parse-unit-value.babel.js';
 
 /**
  * `rand` - function to generate random `integer` number in range.
@@ -7,5 +8,11 @@ import { randFloat } from './rand-float.babel.js';
  * @return {Number} Random `integer` number in range.
  */
 export const rand = (min = 0, max = 10) => {
-  return Math.round(randFloat(min, max));
+  const randomFloat = randFloat(min, max);
+  const resultUnit = parseUnitValue(randomFloat);
+  const resultNumber = Math.round(parseFloat(randomFloat));
+
+  return (resultUnit.unit)
+      ? `${resultNumber}${resultUnit.unit}`
+      : resultNumber;
 };

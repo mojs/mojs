@@ -34,4 +34,38 @@ describe('`rand` ->', function () {
       expect(random % 1).toBe(0);
     }
   });
+
+  it('should work with units', function () {
+    for (var i = 0; i < 10; i++) {
+      var random = mojs.rand('10%', '20%');
+      expect(random[random.length - 1]).toBe('%');
+      expect(parseInt(random, 10)).toBeGreaterThan(9);
+      expect(parseInt(random, 10)).not.toBeGreaterThan(20);
+      expect(parseInt(random, 10) % 1).toBe(0);
+    }
+
+    for (var i = 0; i < 10; i++) {
+      var random = mojs.rand('10rem', '20rem');
+      expect(random.substr(random.length - 3)).toBe('rem');
+      expect(parseInt(random, 10)).toBeGreaterThan(9);
+      expect(parseInt(random, 10)).not.toBeGreaterThan(20);
+      expect(parseInt(random, 10) % 1).toBe(0);
+    }
+
+    for (var i = 0; i < 10; i++) {
+      var random = mojs.rand('10px', '20px');
+      expect(random.substr(random.length - 2)).toBe('px');
+      expect(parseInt(random, 10)).toBeGreaterThan(9);
+      expect(parseInt(random, 10)).not.toBeGreaterThan(20);
+      expect(parseInt(random, 10) % 1).toBe(0);
+    }
+
+    for (var i = 0; i < 10; i++) {
+      var random = mojs.rand('10', '20');
+
+      expect(random).toBeGreaterThan(9);
+      expect(random).not.toBeGreaterThan(20);
+      expect(random % 1).toBe(0);
+    }
+  });
 });

@@ -29,10 +29,23 @@ describe('`stagger-rand` ->', function () {
     var rand = mojs.stagger.rand(-5, -25);
     
     for (var i = 0; i < 50; i++) {
-      var random = rand(-5, -25);
+      var random = rand(i, 5);
       expect(random).toBeGreaterThan(-26);
       expect(random).not.toBeGreaterThan(-5);
       expect(random % 1).toBe(0);
+    }
+  });
+
+  it('should work with units', function () {
+    var rand = mojs.stagger.rand('-5%', '-25%');
+    
+    for (var i = 0; i < 50; i++) {
+      var random = rand(i, 5);
+
+      expect(random[random.length - 1]).toBe('%');
+      expect(parseInt(random, 10)).toBeGreaterThan(-26);
+      expect(parseInt(random, 10)).not.toBeGreaterThan(-5);
+      expect(parseInt(random, 10) % 1).toBe(0);
     }
   });
 
@@ -41,7 +54,7 @@ describe('`stagger-rand` ->', function () {
     
     for (var i = 0; i < 50; i++) {
       var random = rand(i, i+1);
-      expect(random).toBeGreaterThan(-10);
+      expect(random).toBeGreaterThan(-11);
       expect(random).not.toBeGreaterThan(60);
       expect(random % 1).toBe(0);
     }

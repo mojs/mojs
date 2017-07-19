@@ -1,5 +1,6 @@
 var MotionPath = mojs.MotionPath;
 var helpers = mojs.__helpers__;
+var motionPathCache = helpers.motionPathCache;
 var ClassProto = helpers.ClassProto;
 
 var path = 'M0, 0 L200, 400';
@@ -132,6 +133,52 @@ describe('`motion-path` ->', function () {
       expect(motionPath._path.style).not.toBe(null);
       expect(typeof motionPath._path.getTotalLength).toBe('function');
       expect(typeof motionPath._path.getPointAtLength).toBe('function');
+    });
+  });
+
+  describe('`caching` ->', function() {
+    it('should cache a path', function () {
+      var precision = 10;
+      var motionPath = MotionPath({ path: path, el: {}, precision: precision });
+
+      var cachedPath = motionPathCache.get(path, precision);
+      expect(cachedPath).toBeDefined();
+
+      var motionPath = MotionPath({ path: path, el: {}, precision: precision });
+      
+      var cachedPath2 = motionPathCache.get(path, precision);
+
+      expect(cachedPath2).toBe(cachedPath);
+    });
+
+    it('should cache a path based on path', function () {
+      var path1 = 'M 0, 0';
+      var path2 = 'M 0, 1';
+      var precision = 10;
+      var motionPath = MotionPath({ path: path1, el: {}, precision: precision });
+
+      var cachedPath = motionPathCache.get(path1, precision);
+      expect(cachedPath).toBeDefined();
+
+      var motionPath = MotionPath({ path: path2, el: {}, precision: precision });
+      
+      var cachedPath2 = motionPathCache.get(path2, precision);
+      expect(cachedPath2).not.toBe(cachedPath);
+    });
+
+    it('should cache a path based on precision', function () {
+      var precision = 10;
+      var motionPath = MotionPath({ path: path, el: {}, precision: precision });
+
+      var cachedPath = motionPathCache.get(path, precision);
+      expect(cachedPath).toBeDefined();
+
+      var precision2 = precision + 1;
+      var motionPath = MotionPath({ path: path, el: {}, precision: precision2 });
+      
+      var cachedPath2 = motionPathCache.get(path, precision2);
+
+      expect(cachedPath2).not.toBe(cachedPath);
     });
   });
 
