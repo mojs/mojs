@@ -1,6 +1,7 @@
 import { Surface } from '../surface.babel.js';
 // import { Circle } from './svg/circle.babel.js';
-import { Line } from './svg/line.babel.js';
+import { Custom } from './svg/custom.babel.js';
+// import { Line } from './svg/line.babel.js';
 
 /* ------------------ */
 /* The `Shape` class  */
@@ -59,9 +60,7 @@ Shape._declareDefaults = function () {
   };
 
   // create shape module
-  this.shape = new Line({
-    el: this.el,
-  });
+  this.shape = new Custom({ el: this.el });
 
   // create customProperties
   const newCustomProps = this._createCustomProperties(this._o);
@@ -120,7 +119,7 @@ Shape._createCustomProperties = function (o) {
     ...originalCustomProps,
     pipeObj: {
       styleKeys,
-      shapeEl: this.shape.shapeEl,
+      root: this.shape.root,
     },
     render: (mainEl, support, ep, p, isForward) => {
       this.shape.render(mainEl, support, ep, p, isForward);
@@ -132,7 +131,6 @@ Shape._createCustomProperties = function (o) {
   };
 };
 
-
 /**
  * Imitate `class` with wrapper.
  *
@@ -141,8 +139,9 @@ Shape._createCustomProperties = function (o) {
  */
 const wrap = (o) => {
   const instance = Object.create(Shape);
+  instance.init(o);
 
-  return instance.init(o) || instance;
+  return instance;
 };
 
 wrap.__mojsClass = Shape;

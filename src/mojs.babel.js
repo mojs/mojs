@@ -20,8 +20,8 @@ import { parseStagger } from './helpers/parse-stagger.babel.js';
 import { makeColorObject } from './helpers/make-color-object.babel.js';
 
 import { SvgShape } from './shape/svg/svg-shape.babel.js';
+import { Custom } from './shape/svg/custom.babel.js';
 import { Circle } from './shape/svg/circle.babel.js';
-import { Line } from './shape/svg/line.babel.js';
 
 import { getRadialPoint } from './helpers/get-radial-point.babel.js';
 import { parseUnitValue } from './helpers/parse-unit-value.babel.js';
@@ -37,6 +37,7 @@ import { motionPathCache } from './delta/motion-path-cache.babel.js';
 /*
   TODO:
     - add shapes
+    - `play` method context
     - add custom shapes
     - add spring easing
     - add bezier easing
@@ -75,7 +76,7 @@ const mojs = {
     motionPathCache,
     svg: {
       Circle,
-      Line,
+      Custom,
     },
   },
 };

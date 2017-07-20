@@ -21,7 +21,7 @@ Circle._initializeShape = function () {
 };
 
 /**
- * `_initializeShape` - function to element for render.
+ * `render` - function to element for render.
  */
 Circle.render = function (mainEl, support) {
   // `styleKeys` are keys for visual representation props - `fill`, `stroke` etc
