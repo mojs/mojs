@@ -13,7 +13,7 @@ const Custom = Object.create(Super);
  * @public
  * @returns {String} String that holds SVG markup of custom shape inscribed into 100x100 rectangle.
  */
-Custom.getShape = function() {
+Custom.getShape = function () {
   return '<ellipse cx="50" cy="50" rx="50" ry="50" />';
 };
 
@@ -48,12 +48,12 @@ Custom.render = function (mainEl, support) {
   const scaleX = sizeX / 100;
   const scaleY = sizeY / 100;
 
-  const maxScale = Math.max(scaleX,scaleY);
+  // const maxScale = Math.max(scaleX,scaleY);
   // calculate shift
   const shiftX = (300 / 2) - (50 * scaleX);
   const shiftY = (300 / 2) - (50 * scaleY);
 
-  const transform = `translate(${0}, ${0}) scale(${scaleX}, ${scaleY})`;
+  const transform = `translate(${shiftX}, ${shiftY}) scale(${scaleX}, ${scaleY})`;
   // make sure to set only if changed
   if (support._transform !== transform) {
     root.setAttribute('transform', transform);
@@ -77,65 +77,3 @@ const wrap = (o) => {
 wrap.__mojsClass = Custom;
 
 export { wrap as Custom };
-
-
-
-
-
-
-// class Custom extends Bit {
-//   /*
-//     Method to get shape perimeter length.
-//     @public
-//     @returns {Number} Default length string.
-//   */
-//   getLength () { return 100; }
-//   /*
-//     Method to draw the shape.
-//     Called on every frame.
-//     @private
-//     @overrides @ Bit
-//   */
-//   _draw () {
-//     var p     = this._props,
-//         state = this._state,
-//         radiusXChange = state[ 'radiusX' ] !== p.radiusX,
-//         radiusYChange = state[ 'radiusY' ] !== p.radiusY,
-//         radiusChange  = state[ 'radius' ] !== p.radius;
-
-//     // update transform only if one of radiuses changed
-//     if ( radiusXChange || radiusYChange || radiusChange ) {
-//       this.el.setAttribute( 'transform', this._getScale() );
-//       state[ 'radiusX' ] = p.radiusX;
-//       state[ 'radiusY' ] = p.radiusY;
-//       state[ 'radius' ]  = p.radius;
-//     }
-
-//     this._setAttrIfChanged( 'stroke-width', p['stroke-width'] / p.maxScale );
-
-//     super._draw();
-//   }
-
-//   /*
-//     Method to get scales for the shape.
-//     @private
-//     @mutates @props
-//   */
-//   _getScale () {
-//     var p = this._props,
-//         radiusX = ( p.radiusX ) ? p.radiusX : p.radius,
-//         radiusY = ( p.radiusY ) ? p.radiusY : p.radius;
-    
-//     p.scaleX   = (2*radiusX)/100;
-//     p.scaleY   = (2*radiusY)/100;
-//     p.maxScale = Math.max( p.scaleX, p.scaleY );
-
-//     p.shiftX = (p.width/2  - 50*p.scaleX);
-//     p.shiftY = (p.height/2 - 50*p.scaleY);
-
-//     var translate = `translate(${p.shiftX}, ${p.shiftY})`;
-//     return `${translate} scale(${ p.scaleX }, ${p.scaleY})`;
-//   }
-// }
-
-// export default Custom;

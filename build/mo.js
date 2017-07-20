@@ -6100,12 +6100,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var scaleX = sizeX / 100;
       var scaleY = sizeY / 100;
 
-      var maxScale = Math.max(scaleX, scaleY);
+      // const maxScale = Math.max(scaleX,scaleY);
       // calculate shift
       var shiftX = 300 / 2 - 50 * scaleX;
       var shiftY = 300 / 2 - 50 * scaleY;
 
-      var transform = 'translate(' + 0 + ', ' + 0 + ') scale(' + scaleX + ', ' + scaleY + ')';
+      var transform = 'translate(' + shiftX + ', ' + shiftY + ') scale(' + scaleX + ', ' + scaleY + ')';
       // make sure to set only if changed
       if (support._transform !== transform) {
         root.setAttribute('transform', transform);
