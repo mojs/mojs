@@ -20,8 +20,6 @@ import { parseStagger } from './helpers/parse-stagger.babel.js';
 import { makeColorObject } from './helpers/make-color-object.babel.js';
 
 import { SvgShape } from './shape/svg/svg-shape.babel.js';
-import { Custom } from './shape/svg/custom.babel.js';
-import { Circle } from './shape/svg/circle.babel.js';
 
 import { getRadialPoint } from './helpers/get-radial-point.babel.js';
 import { parseUnitValue } from './helpers/parse-unit-value.babel.js';
@@ -74,10 +72,6 @@ const mojs = {
     getRadialPoint,
     parseUnitValue,
     motionPathCache,
-    svg: {
-      Circle,
-      Custom,
-    },
   },
 };
 
@@ -124,3 +118,53 @@ import { randFloat } from './helpers/rand-float.babel.js'; // eslint-disable-lin
 mojs.randFloat = randFloat;
 
 export default mojs;
+
+
+// setTimeout(() => {
+//   const shape = new Shape({
+//     position: 'absolute',
+//     left: '50%',
+//     top: '50%',
+//     width: 200,
+//     height: 200,
+//     size: { 50: 200 },
+//     fill: { 'cyan' : 'purple' },
+//     duration: 2000,
+//     surfaceOptions: [ 'position', 'left', 'top' ],
+//   });
+
+//   // shape.el.style.border = '1px solid purple';
+//   shape.play();
+// }, 1000);
+
+// const StaggerShape = stagger(Shape);
+
+// const burstCoordinates = burstGenerator({
+//   degree: 0,
+//   degreeOffset: 270,
+//   depth: stagger.randFloat(.1, .2),
+//   length: stagger.rand(125, 250),
+//   count: 2, //stagger.rand(1, 3),
+//   direction: index => index % 2 === 0,
+//   yEasing: 'quad.out',
+//   xEasing: 'linear.none'
+// });
+
+// const shapeStagger = new StaggerShape({
+//   items: 8,
+//   x: burstCoordinates,
+//   y: burstCoordinates,
+//   position: 'absolute',
+//   left: '50%',
+//   top: '50%',
+//   fill: stagger.map('cyan', 'purple', 'hotpink', '#222'),
+//   size: stagger.rand(5, 15),
+//   scale: { 1: 0 },
+//   surfaceOptions: [ 'position', 'left', 'top' ],
+//   duration: stagger.rand(1000, 2200),
+//   delay: stagger.rand(0, 200),
+// });
+
+// setTimeout(() => {
+//   shapeStagger.play();
+// }, 1000);

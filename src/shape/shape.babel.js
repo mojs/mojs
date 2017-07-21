@@ -1,7 +1,5 @@
 import { Surface } from '../surface.babel.js';
-// import { Circle } from './svg/circle.babel.js';
-import { Custom } from './svg/custom.babel.js';
-// import { Line } from './svg/line.babel.js';
+import { SvgShape } from './svg/svg-shape.babel.js';
 
 /* ------------------ */
 /* The `Shape` class  */
@@ -11,8 +9,9 @@ const Super = Surface.__mojsClass;
 const Shape = Object.create(Super);
 
 // TODO:
+//  - remove tween options from the stylesKyes
+//  - remove shape from the stylesKEys
 //  - add `tune` method
-//  - add more `SVG`/canvas shapes and map them`
 
 /**
  * `arrayToObj` - function to tranform string[] to `{ [string]: true }` object
@@ -60,7 +59,10 @@ Shape._declareDefaults = function () {
   };
 
   // create shape module
-  this.shape = new Custom({ el: this.el });
+  this.shape = new SvgShape({
+    el: this.el,
+    shape: this._o.shape,
+  });
 
   // create customProperties
   const newCustomProps = this._createCustomProperties(this._o);
@@ -86,9 +88,9 @@ Shape._createCustomProperties = function (o) {
 
   const newCustomProps = {};
   // add `isSkipRender: true` to all `shapeDefaults` properties
-  const defaultsKeys = Object.keys(this._shapeDefaults);
-  for (let i = 0; i < defaultsKeys.length; i++) {
-    newCustomProps[defaultsKeys[i]] = {
+  const shapeDefaultsKeys = Object.keys(this._shapeDefaults);
+  for (let i = 0; i < shapeDefaultsKeys.length; i++) {
+    newCustomProps[shapeDefaultsKeys[i]] = {
       type: 'unit',
       isSkipRender: true,
     };

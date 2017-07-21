@@ -81,10 +81,17 @@ ClassProto._declareDefaults = function () { this._defaults = {}; };
  * @private
  */
 ClassProto._extendDefaults = function () {
-  this._props = {
-    ...this._defaults,
-    ...this._o,
-  };
+  this._props = { ...this._defaults };
+
+  const keys = Object.keys(this._o);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const value = this._o[key];
+    // only if value is defined
+    if (value !== undefined) {
+      this._props[key] = value;
+    }
+  }
 };
 
 /**
