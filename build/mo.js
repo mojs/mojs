@@ -3198,7 +3198,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var angle = atan * (180 / Math.PI);
 
       if (dX < 0) {
-        angle = angle - 180;
+        angle -= 180;
       }
       // set the point to the map
       this._samples.set(key, { x: point.x, y: point.y, angle: angle });
@@ -6177,17 +6177,17 @@ module.exports = __webpack_require__(47);
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(1), __webpack_require__(3), __webpack_require__(12), __webpack_require__(15), __webpack_require__(23), __webpack_require__(19), __webpack_require__(5), __webpack_require__(13), __webpack_require__(28), __webpack_require__(27), __webpack_require__(25), __webpack_require__(24), __webpack_require__(6), __webpack_require__(2), __webpack_require__(0), __webpack_require__(45), __webpack_require__(14), __webpack_require__(31), __webpack_require__(10), __webpack_require__(4), __webpack_require__(22), __webpack_require__(48), __webpack_require__(44), __webpack_require__(11), __webpack_require__(21), __webpack_require__(39), __webpack_require__(30), __webpack_require__(29), __webpack_require__(34), __webpack_require__(37), __webpack_require__(49), __webpack_require__(50), __webpack_require__(51), __webpack_require__(52), __webpack_require__(53), __webpack_require__(54), __webpack_require__(55), __webpack_require__(56), __webpack_require__(57), __webpack_require__(58), __webpack_require__(59), __webpack_require__(60), __webpack_require__(17), __webpack_require__(32), __webpack_require__(16), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(1), __webpack_require__(3), __webpack_require__(12), __webpack_require__(15), __webpack_require__(23), __webpack_require__(19), __webpack_require__(5), __webpack_require__(13), __webpack_require__(28), __webpack_require__(27), __webpack_require__(25), __webpack_require__(24), __webpack_require__(6), __webpack_require__(2), __webpack_require__(0), __webpack_require__(45), __webpack_require__(14), __webpack_require__(31), __webpack_require__(10), __webpack_require__(4), __webpack_require__(22), __webpack_require__(48), __webpack_require__(44), __webpack_require__(11), __webpack_require__(21), __webpack_require__(39), __webpack_require__(30), __webpack_require__(29), __webpack_require__(34), __webpack_require__(37), __webpack_require__(17), __webpack_require__(32), __webpack_require__(16), __webpack_require__(8), __webpack_require__(49), __webpack_require__(50), __webpack_require__(51), __webpack_require__(52), __webpack_require__(53), __webpack_require__(54), __webpack_require__(55), __webpack_require__(56), __webpack_require__(57), __webpack_require__(58), __webpack_require__(59), __webpack_require__(60)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./class-proto.babel.js'), require('./tween/tween.babel.js'), require('./tween/tween-defaults.babel.js'), require('./tween/timeline.babel.js'), require('./tween/tweener.babel.js'), require('./easing/easing.babel.js'), require('./easing/parse-easing.babel.js'), require('./delta/delta.babel.js'), require('./delta/split-delta.babel.js'), require('./delta/parse-number.babel.js'), require('./delta/parse-unit.babel.js'), require('./delta/parse-color.babel.js'), require('./delta/separate-tween-options.babel.js'), require('./tween/tweenable.babel.js'), require('./helpers/stagger-property.babel.js'), require('./helpers/parse-stagger.babel.js'), require('./helpers/make-color-object.babel.js'), require('./shape/svg/svg-shape.babel.js'), require('./helpers/get-radial-point.babel.js'), require('./helpers/parse-unit-value.babel.js'), require('./delta/motion-path-cache.babel.js'), require('./shape/svg/add-shape.babel.js'), require('./easing/basic-easing.babel.js'), require('./delta/deltas.babel.js'), require('./delta/motion-path.babel.js'), require('./stagger/stagger.babel.js'), require('./html.babel.js'), require('./surface.babel.js'), require('./rig/rig.babel.js'), require('./shape/shape.babel.js'), require('./shape/svg/circle.babel.js'), require('./shape/svg/heart.babel.js'), require('./shape/svg/rect.babel.js'), require('./shape/svg/star.babel.js'), require('./shape/svg/zip.babel.js'), require('./shape/svg/cross.babel.js'), require('./shape/svg/triangle.babel.js'), require('./shape/svg/equal.babel.js'), require('./shape/svg/zigzag.babel.js'), require('./shape/svg/water.babel.js'), require('./shape/svg/polygon.babel.js'), require('./shape/svg/line.babel.js'), require('./helpers/generate-path.babel.js'), require('./helpers/burst-generator.babel.js'), require('./helpers/rand.babel.js'), require('./helpers/rand-float.babel.js'));
+    factory(module, exports, require('./class-proto.babel.js'), require('./tween/tween.babel.js'), require('./tween/tween-defaults.babel.js'), require('./tween/timeline.babel.js'), require('./tween/tweener.babel.js'), require('./easing/easing.babel.js'), require('./easing/parse-easing.babel.js'), require('./delta/delta.babel.js'), require('./delta/split-delta.babel.js'), require('./delta/parse-number.babel.js'), require('./delta/parse-unit.babel.js'), require('./delta/parse-color.babel.js'), require('./delta/separate-tween-options.babel.js'), require('./tween/tweenable.babel.js'), require('./helpers/stagger-property.babel.js'), require('./helpers/parse-stagger.babel.js'), require('./helpers/make-color-object.babel.js'), require('./shape/svg/svg-shape.babel.js'), require('./helpers/get-radial-point.babel.js'), require('./helpers/parse-unit-value.babel.js'), require('./delta/motion-path-cache.babel.js'), require('./shape/svg/add-shape.babel.js'), require('./easing/basic-easing.babel.js'), require('./delta/deltas.babel.js'), require('./delta/motion-path.babel.js'), require('./stagger/stagger.babel.js'), require('./html.babel.js'), require('./surface.babel.js'), require('./rig/rig.babel.js'), require('./shape/shape.babel.js'), require('./helpers/generate-path.babel.js'), require('./helpers/burst-generator.babel.js'), require('./helpers/rand.babel.js'), require('./helpers/rand-float.babel.js'), require('./shape/svg/circle.babel.js'), require('./shape/svg/heart.babel.js'), require('./shape/svg/rect.babel.js'), require('./shape/svg/star.babel.js'), require('./shape/svg/zip.babel.js'), require('./shape/svg/cross.babel.js'), require('./shape/svg/triangle.babel.js'), require('./shape/svg/equal.babel.js'), require('./shape/svg/zigzag.babel.js'), require('./shape/svg/water.babel.js'), require('./shape/svg/polygon.babel.js'), require('./shape/svg/line.babel.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.classProtoBabel, global.tweenBabel, global.tweenDefaultsBabel, global.timelineBabel, global.tweenerBabel, global.easingBabel, global.parseEasingBabel, global.deltaBabel, global.splitDeltaBabel, global.parseNumberBabel, global.parseUnitBabel, global.parseColorBabel, global.separateTweenOptionsBabel, global.tweenableBabel, global.staggerPropertyBabel, global.parseStaggerBabel, global.makeColorObjectBabel, global.svgShapeBabel, global.getRadialPointBabel, global.parseUnitValueBabel, global.motionPathCacheBabel, global.addShapeBabel, global.basicEasingBabel, global.deltasBabel, global.motionPathBabel, global.staggerBabel, global.htmlBabel, global.surfaceBabel, global.rigBabel, global.shapeBabel, global.circleBabel, global.heartBabel, global.rectBabel, global.starBabel, global.zipBabel, global.crossBabel, global.triangleBabel, global.equalBabel, global.zigzagBabel, global.waterBabel, global.polygonBabel, global.lineBabel, global.generatePathBabel, global.burstGeneratorBabel, global.randBabel, global.randFloatBabel);
+    factory(mod, mod.exports, global.classProtoBabel, global.tweenBabel, global.tweenDefaultsBabel, global.timelineBabel, global.tweenerBabel, global.easingBabel, global.parseEasingBabel, global.deltaBabel, global.splitDeltaBabel, global.parseNumberBabel, global.parseUnitBabel, global.parseColorBabel, global.separateTweenOptionsBabel, global.tweenableBabel, global.staggerPropertyBabel, global.parseStaggerBabel, global.makeColorObjectBabel, global.svgShapeBabel, global.getRadialPointBabel, global.parseUnitValueBabel, global.motionPathCacheBabel, global.addShapeBabel, global.basicEasingBabel, global.deltasBabel, global.motionPathBabel, global.staggerBabel, global.htmlBabel, global.surfaceBabel, global.rigBabel, global.shapeBabel, global.generatePathBabel, global.burstGeneratorBabel, global.randBabel, global.randFloatBabel, global.circleBabel, global.heartBabel, global.rectBabel, global.starBabel, global.zipBabel, global.crossBabel, global.triangleBabel, global.equalBabel, global.zigzagBabel, global.waterBabel, global.polygonBabel, global.lineBabel);
     global.mojs = mod.exports;
   }
 })(this, function (module, exports) {
@@ -6195,7 +6195,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   (function (global, factory) {
     if (true) {
-      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(1), __webpack_require__(3), __webpack_require__(12), __webpack_require__(15), __webpack_require__(23), __webpack_require__(19), __webpack_require__(5), __webpack_require__(13), __webpack_require__(28), __webpack_require__(27), __webpack_require__(25), __webpack_require__(24), __webpack_require__(6), __webpack_require__(2), __webpack_require__(0), __webpack_require__(45), __webpack_require__(14), __webpack_require__(31), __webpack_require__(10), __webpack_require__(4), __webpack_require__(22), __webpack_require__(48), __webpack_require__(44), __webpack_require__(11), __webpack_require__(21), __webpack_require__(39), __webpack_require__(30), __webpack_require__(29), __webpack_require__(34), __webpack_require__(37), __webpack_require__(49), __webpack_require__(50), __webpack_require__(51), __webpack_require__(52), __webpack_require__(53), __webpack_require__(54), __webpack_require__(55), __webpack_require__(56), __webpack_require__(57), __webpack_require__(58), __webpack_require__(59), __webpack_require__(60), __webpack_require__(17), __webpack_require__(32), __webpack_require__(16), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(1), __webpack_require__(3), __webpack_require__(12), __webpack_require__(15), __webpack_require__(23), __webpack_require__(19), __webpack_require__(5), __webpack_require__(13), __webpack_require__(28), __webpack_require__(27), __webpack_require__(25), __webpack_require__(24), __webpack_require__(6), __webpack_require__(2), __webpack_require__(0), __webpack_require__(45), __webpack_require__(14), __webpack_require__(31), __webpack_require__(10), __webpack_require__(4), __webpack_require__(22), __webpack_require__(48), __webpack_require__(44), __webpack_require__(11), __webpack_require__(21), __webpack_require__(39), __webpack_require__(30), __webpack_require__(29), __webpack_require__(34), __webpack_require__(37), __webpack_require__(17), __webpack_require__(32), __webpack_require__(16), __webpack_require__(8), __webpack_require__(49), __webpack_require__(50), __webpack_require__(51), __webpack_require__(52), __webpack_require__(53), __webpack_require__(54), __webpack_require__(55), __webpack_require__(56), __webpack_require__(57), __webpack_require__(58), __webpack_require__(59), __webpack_require__(60)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -6205,15 +6205,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var mod = {
         exports: {}
       };
-      factory(mod, mod.exports, global.classProtoBabel, global.tweenBabel, global.tweenDefaultsBabel, global.timelineBabel, global.tweenerBabel, global.easingBabel, global.parseEasingBabel, global.deltaBabel, global.splitDeltaBabel, global.parseNumberBabel, global.parseUnitBabel, global.parseColorBabel, global.separateTweenOptionsBabel, global.tweenableBabel, global.staggerPropertyBabel, global.parseStaggerBabel, global.makeColorObjectBabel, global.svgShapeBabel, global.getRadialPointBabel, global.parseUnitValueBabel, global.motionPathCacheBabel, global.addShapeBabel, global.basicEasingBabel, global.deltasBabel, global.motionPathBabel, global.staggerBabel, global.htmlBabel, global.surfaceBabel, global.rigBabel, global.shapeBabel, global.circleBabel, global.heartBabel, global.rectBabel, global.starBabel, global.zipBabel, global.crossBabel, global.triangleBabel, global.equalBabel, global.zigzagBabel, global.waterBabel, global.polygonBabel, global.lineBabel, global.generatePathBabel, global.burstGeneratorBabel, global.randBabel, global.randFloatBabel);
+      factory(mod, mod.exports, global.classProtoBabel, global.tweenBabel, global.tweenDefaultsBabel, global.timelineBabel, global.tweenerBabel, global.easingBabel, global.parseEasingBabel, global.deltaBabel, global.splitDeltaBabel, global.parseNumberBabel, global.parseUnitBabel, global.parseColorBabel, global.separateTweenOptionsBabel, global.tweenableBabel, global.staggerPropertyBabel, global.parseStaggerBabel, global.makeColorObjectBabel, global.svgShapeBabel, global.getRadialPointBabel, global.parseUnitValueBabel, global.motionPathCacheBabel, global.addShapeBabel, global.basicEasingBabel, global.deltasBabel, global.motionPathBabel, global.staggerBabel, global.htmlBabel, global.surfaceBabel, global.rigBabel, global.shapeBabel, global.generatePathBabel, global.burstGeneratorBabel, global.randBabel, global.randFloatBabel, global.circleBabel, global.heartBabel, global.rectBabel, global.starBabel, global.zipBabel, global.crossBabel, global.triangleBabel, global.equalBabel, global.zigzagBabel, global.waterBabel, global.polygonBabel, global.lineBabel);
       global.mojs = mod.exports;
     }
-  })(undefined, function (module, exports, _classProtoBabel, _tweenBabel, _tweenDefaultsBabel, _timelineBabel, _tweenerBabel, _easingBabel, _parseEasingBabel, _deltaBabel, _splitDeltaBabel, _parseNumberBabel, _parseUnitBabel, _parseColorBabel, _separateTweenOptionsBabel, _tweenableBabel, _staggerPropertyBabel, _parseStaggerBabel, _makeColorObjectBabel, _svgShapeBabel, _getRadialPointBabel, _parseUnitValueBabel, _motionPathCacheBabel, _addShapeBabel, _basicEasingBabel, _deltasBabel, _motionPathBabel, _staggerBabel, _htmlBabel, _surfaceBabel, _rigBabel, _shapeBabel, _circleBabel, _heartBabel, _rectBabel, _starBabel, _zipBabel, _crossBabel, _triangleBabel, _equalBabel, _zigzagBabel, _waterBabel, _polygonBabel, _lineBabel, _generatePathBabel, _burstGeneratorBabel, _randBabel, _randFloatBabel) {
+  })(undefined, function (module, exports, _classProtoBabel, _tweenBabel, _tweenDefaultsBabel, _timelineBabel, _tweenerBabel, _easingBabel, _parseEasingBabel, _deltaBabel, _splitDeltaBabel, _parseNumberBabel, _parseUnitBabel, _parseColorBabel, _separateTweenOptionsBabel, _tweenableBabel, _staggerPropertyBabel, _parseStaggerBabel, _makeColorObjectBabel, _svgShapeBabel, _getRadialPointBabel, _parseUnitValueBabel, _motionPathCacheBabel, _addShapeBabel, _basicEasingBabel, _deltasBabel, _motionPathBabel, _staggerBabel, _htmlBabel, _surfaceBabel, _rigBabel, _shapeBabel, _generatePathBabel, _burstGeneratorBabel, _randBabel, _randFloatBabel) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
       value: true
     });
+    // eslint-disable-line import/no-duplicates
 
 
     /*
@@ -6306,24 +6307,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     // eslint-disable-line import/newline-after-import, import/first
     mojs.Shape2 = _shapeBabel.Shape;
     // addShape
-    // eslint-disable-line import/newline-after-import, import/first
+    // eslint-disable-line import/newline-after-import, import/first, import/no-duplicates
     mojs.addShape = _addShapeBabel.addShape;
     // shapes
     // eslint-disable-line import/newline-after-import, import/first
-    // eslint-disable-line import/newline-after-import, import/first
-    // eslint-disable-line import/newline-after-import, import/first
-    // eslint-disable-line import/newline-after-import, import/first
-    // eslint-disable-line import/newline-after-import, import/first
-    // eslint-disable-line import/newline-after-import, import/first
-    // eslint-disable-line import/newline-after-import, import/first
-    // eslint-disable-line import/newline-after-import, import/first
-    // eslint-disable-line import/newline-after-import, import/first
-    // eslint-disable-line import/newline-after-import, import/first
-    // eslint-disable-line import/newline-after-import, import/first
-    // eslint-disable-line import/newline-after-import, import/first
+
 
     // path generator
-    // eslint-disable-line import/newline-after-import, import/first
     mojs.generatePath = _generatePathBabel.generatePath;
 
     // burst generator
@@ -6395,7 +6385,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     /**
      * `template` - function to render SVG shape.
-     * 
      * @param {String} shape Shape to add.
      * @returns {String} Rendered shape string.
     */
@@ -6405,7 +6394,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     /**
      * `getSvgShapeNameID` - function to create SVG shape `id` regarding its name.
-     * 
      * @param {String} name Shape name.
      * @returns {String} Shape ID.
     */
@@ -6415,7 +6403,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     /**
      * `addShape` - function to add SVG shape to the DOM.
-     * 
      * @param {String} name Shape name.
      * @param {String} shape Shape.
     */
