@@ -82,6 +82,11 @@ describe('`Shape` ->', function () {
         type: 'unit',
         isSkipRender: true
       });
+
+      expect(shape._o.customProperties.shape).not.toEqual({
+        type: 'unit',
+        isSkipRender: true
+      });
     });
 
     it('should add `isSkipRender: true` every non-surface property`', function () {
@@ -240,6 +245,25 @@ describe('`Shape` ->', function () {
       });
 
       expect(shape._o.customProperties.pipeObj.styleKeys).toEqual([ 'strokeWidth', 'strokeDashoffset' ]);
+    });
+
+    it('should filter out tween properties', function () {
+      var shape = new Shape({
+        strokeWidth: 2,
+        duration: 2000
+      });
+
+      expect(shape._o.customProperties.pipeObj.styleKeys).toEqual([ 'strokeWidth' ]);
+    });
+
+    it('should filter out `shape` property', function () {
+      var shape = new Shape({
+        strokeWidth: 2,
+        shape: 'line',
+        duration: 2000
+      });
+
+      expect(shape._o.customProperties.pipeObj.styleKeys).toEqual([ 'strokeWidth' ]);
     });
   });
 

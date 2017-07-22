@@ -107,7 +107,11 @@ MotionPath._setForKey = function (key) {
   const dY = point.y - prevPoint.y;
   const dX = point.x - prevPoint.x;
   const atan = (!isFinite(Math.atan(dY / dX))) ? 0 : Math.atan(dY / dX);
-  const angle = atan * (180 / Math.PI);
+  let angle = atan * (180 / Math.PI);
+
+  if (dX < 0) {
+    angle = angle - 180;
+  }
   // set the point to the map
   this._samples.set(key, { x: point.x, y: point.y, angle });
 };

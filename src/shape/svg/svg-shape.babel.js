@@ -1,4 +1,5 @@
 import { ClassProto } from '../../class-proto.babel.js';
+import { getSvgShapeNameID } from './add-shape.babel.js';
 
 /* --------------------- */
 /* The `SvgShape` class  */
@@ -46,7 +47,7 @@ SvgShape._createSVGCanvas = function () {
   this.canvas.style.width = '100%';
   this.canvas.style.height = '100%';
   // create root `<use />` element
-  this.canvas.innerHTML = `<use xlink:href="#${this._props.shape}-mojs-shape" vector-effect="non-scaling-stroke" />`;
+  this.canvas.innerHTML = `<use xlink:href="#${getSvgShapeNameID(this._props.shape)}" vector-effect="non-scaling-stroke" />`;
   this.root = this.canvas.firstChild;
 
   this._o.el.appendChild(this.canvas);

@@ -40,7 +40,7 @@ describe('`SvgShape` ->', function () {
       expect(svgCanvas.firstChild.tagName.toLowerCase()).toBe('use');
       expect(svgCanvas.firstChild + '').toBe('[object SVGUseElement]');
       expect(svgCanvas.firstChild.getAttribute('vector-effect')).toBe('non-scaling-stroke');
-      expect(svgCanvas.firstChild.getAttribute('xlink:href')).toBe('#circle-mojs-shape');
+      expect(svgCanvas.firstChild.getAttribute('xlink:href')).toBe('#circle-mojs-svg-shape');
     });
   });
 

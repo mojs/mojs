@@ -228,7 +228,7 @@ describe('`motion-path` ->', function () {
       var number = 0;
       expect(motionPath._samples.get(number).x).toBeCloseTo(0, 3);
       expect(Math.round(motionPath._samples.get(number).y)).toBe(209);
-      expect(Math.round(motionPath._samples.get(number).angle)).toBe(-90);
+      expect(Math.round(motionPath._samples.get(number).angle)).toBe(-270);
 
       var number = .25;
       expect(Math.round(motionPath._samples.get(number).x)).toBe(543);
@@ -238,7 +238,7 @@ describe('`motion-path` ->', function () {
       var number = .5;
       expect(Math.round(motionPath._samples.get(number).x)).toBe(178);
       expect(Math.round(motionPath._samples.get(number).y)).toBe(600);
-      expect(Math.round(motionPath._samples.get(number).angle)).toBe(59);
+      expect(Math.round(motionPath._samples.get(number).angle)).toBe(-121);
 
       var number = .75;
       expect(Math.round(motionPath._samples.get(number).x)).toBe(433);

@@ -1,5 +1,6 @@
 import { Surface } from '../surface.babel.js';
 import { SvgShape } from './svg/svg-shape.babel.js';
+import { tweenDefaults } from '../tween/tween-defaults.babel.js';
 
 /* ------------------ */
 /* The `Shape` class  */
@@ -9,8 +10,6 @@ const Super = Surface.__mojsClass;
 const Shape = Object.create(Super);
 
 // TODO:
-//  - remove tween options from the stylesKyes
-//  - remove shape from the stylesKEys
 //  - add `tune` method
 
 /**
@@ -46,6 +45,7 @@ Shape._declareDefaults = function () {
   // defaults of this module
   this._shapeDefaults = {
     // add `Shape` defaults
+    shape: 'circle',
     size: 100,
     sizeX: undefined,
     sizeY: undefined,
@@ -90,10 +90,13 @@ Shape._createCustomProperties = function (o) {
   // add `isSkipRender: true` to all `shapeDefaults` properties
   const shapeDefaultsKeys = Object.keys(this._shapeDefaults);
   for (let i = 0; i < shapeDefaultsKeys.length; i++) {
-    newCustomProps[shapeDefaultsKeys[i]] = {
-      type: 'unit',
-      isSkipRender: true,
-    };
+    const key = shapeDefaultsKeys[i];
+    if (key !== 'shape') {
+      newCustomProps[key] = {
+        type: 'unit',
+        isSkipRender: true,
+      };
+    }
   }
   // for all `options` check if the property is present on the `surface` defaults,
   // if not present, add `isKipRender` to it
@@ -109,7 +112,8 @@ Shape._createCustomProperties = function (o) {
         // filter out the shape properties and properties
         // that have the `isSkipRender` defined
         const isOnShapeDefaults = this._shapeDefaults.hasOwnProperty(key);
-        if (!isOnShapeDefaults && !originalRecord.isSkipRender) {
+        const isTweenOptions = !!tweenDefaults[key];
+        if (!isOnShapeDefaults && !originalRecord.isSkipRender && !isTweenOptions) {
           styleKeys.push(key);
         }
       }

@@ -25,6 +25,9 @@ import { getRadialPoint } from './helpers/get-radial-point.babel.js';
 import { parseUnitValue } from './helpers/parse-unit-value.babel.js';
 import { motionPathCache } from './delta/motion-path-cache.babel.js';
 
+import { getSvgShapeNameID } from './shape/svg/add-shape.babel.js';
+
+
 /*
   Browsers' support:
     - rAF
@@ -34,9 +37,13 @@ import { motionPathCache } from './delta/motion-path-cache.babel.js';
 
 /*
   TODO:
-    - add shapes
+    - add shape should recieve optional `strokeRatio`
+    - add angle offset for `burstGenerator`
+    - add shapes tests
+    - stagger should remove `items` from props
+    - styleKeys should have only delta keys
+
     - `play` method context
-    - add custom shapes
     - add spring easing
     - add bezier easing
     - add array deltas
@@ -52,13 +59,13 @@ const mojs = {
   Tween,
   Timeline,
   easing,
+  // temporary
   __helpers__: {
     parseEasing,
     ClassProto,
     SvgShape,
     tweenDefaults,
     tweener,
-    // temporary
     Delta,
     splitDelta,
     parseNumber,
@@ -72,6 +79,7 @@ const mojs = {
     getRadialPoint,
     parseUnitValue,
     motionPathCache,
+    getSvgShapeNameID
   },
 };
 
@@ -95,12 +103,30 @@ mojs.Html = Html;
 // surface
 import { Surface } from './surface.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.Surface = Surface;
-// shape
-import { Shape } from './shape/shape.babel.js'; // eslint-disable-line import/newline-after-import, import/first
-mojs.Shape2 = Shape;
+
 // rig
 import { Rig } from './rig/rig.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 mojs.Rig = Rig;
+
+// shape
+import { Shape } from './shape/shape.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+mojs.Shape2 = Shape;
+// addShape
+import { addShape } from './shape/svg/add-shape.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+mojs.addShape = addShape;
+// shapes
+import { circle } from './shape/svg/circle.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+import { heart } from './shape/svg/heart.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+import { rect } from './shape/svg/rect.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+import { star } from './shape/svg/star.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+import { zip } from './shape/svg/zip.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+import { cross } from './shape/svg/cross.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+import { triangle } from './shape/svg/triangle.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+import { equal } from './shape/svg/equal.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+import { zigzag } from './shape/svg/zigzag.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+import { water } from './shape/svg/water.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+import { polygon } from './shape/svg/polygon.babel.js'; // eslint-disable-line import/newline-after-import, import/first
+import { line } from './shape/svg/line.babel.js'; // eslint-disable-line import/newline-after-import, import/first
 
 // path generator
 import { generatePath } from './helpers/generate-path.babel.js'; // eslint-disable-line import/newline-after-import, import/first
@@ -123,19 +149,36 @@ export default mojs;
 // setTimeout(() => {
 //   const shape = new Shape({
 //     position: 'absolute',
+//     strokeWidth: 12,
+//     stroke: 'cyan',
+//     shape: 'line',
 //     left: '50%',
 //     top: '50%',
-//     width: 200,
-//     height: 200,
-//     size: { 50: 200 },
+//     width: 125,
+//     height: 125,
+//     marginLeft: -100,
+//     marginTop: '-100px',
+//     size: 100,
 //     fill: { 'cyan' : 'purple' },
+//     angle: { 0: 360 },
 //     duration: 2000,
-//     surfaceOptions: [ 'position', 'left', 'top' ],
+//     surfaceOptions: [ 'position', 'left', 'top', 'marginLeft', 'marginTop' ],
+//     customProperties: {
+//       marginLeft: {
+//         type: 'unit'
+//       },
+//       marginTop: {
+//         type: 'unit'
+//       }
+//     }
 //   });
 
 //   // shape.el.style.border = '1px solid purple';
 //   shape.play();
 // }, 1000);
+
+
+
 
 // const StaggerShape = stagger(Shape);
 
@@ -163,6 +206,53 @@ export default mojs;
 //   surfaceOptions: [ 'position', 'left', 'top' ],
 //   duration: stagger.rand(1000, 2200),
 //   delay: stagger.rand(0, 200),
+// });
+
+// setTimeout(() => {
+//   shapeStagger.play();
+// }, 1000);
+
+
+
+// const StaggerShape = stagger(Shape);
+
+// const burstCoordinates = burstGenerator({
+//   degree: 360,
+//   // degreeOffset: 270,
+//   depth: 0,
+//   length: 25,
+//   startOffset: 10,
+//   count: 1,
+//   // direction: index => index % 2 === 0,
+//   // yEasing: 'quad.out',
+//   // xEasing: 'linear.none'
+// });
+
+// const shapeStagger = new StaggerShape({
+//   items: 5,
+//   x: burstCoordinates,
+//   y: burstCoordinates,
+//   width: 20,
+//   height: 20,
+//   angle: burstCoordinates,
+//   position: 'absolute',
+//   shape: 'line',
+//   strokeWidth: { 12 : 0 },
+//   stroke: 'hotpink',
+//   left: '50%',
+//   top: '50%',
+//   // scale: { 1: 0 },
+//   fill: 'none',
+//   // strokeDasharray: 100,
+//   // strokeDashoffset: { 100: -100 },
+//   // fill: stagger.map('cyan', 'purple', 'hotpink', '#222'),
+//   size: 12,
+//   // scale: { 1: 0 },
+//   surfaceOptions: [ 'position', 'left', 'top' ],
+//   duration: 700,
+//   easing: 'cubic.out',
+//   // duration: stagger.rand(1000, 2200),
+//   // delay: stagger.rand(0, 200),
 // });
 
 // setTimeout(() => {
