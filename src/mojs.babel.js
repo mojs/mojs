@@ -27,7 +27,6 @@ import { motionPathCache } from './delta/motion-path-cache.babel.js';
 
 import { getSvgShapeNameID } from './shape/svg/add-shape.babel.js'; // eslint-disable-line import/no-duplicates
 
-
 /*
   Browsers' support:
     - rAF
@@ -37,17 +36,15 @@ import { getSvgShapeNameID } from './shape/svg/add-shape.babel.js'; // eslint-di
 
 /*
   TODO:
-    - add shape should recieve optional `strokeRatio`
-    - add angle offset for `burstGenerator`
-    - add shapes tests
-    - stagger should remove `items` from props
-    - styleKeys should have only delta keys
-
-    - `play` method context
     - add spring easing
     - add bezier easing
     - add array deltas
 
+    - what to do with static props? in stagger?
+    - add angle offset for `burstGenerator` ? or inside motionPath?
+    - styleKeys should have only delta keys
+
+    - `reverse` on shape
     - add rig renderers
 
     - add springs
@@ -55,7 +52,7 @@ import { getSvgShapeNameID } from './shape/svg/add-shape.babel.js'; // eslint-di
 */
 
 const mojs = {
-  revision: '2.16.0',
+  revision: '2.16.5',
   Tween,
   Timeline,
   easing,

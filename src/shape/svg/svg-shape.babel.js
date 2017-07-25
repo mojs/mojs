@@ -22,7 +22,7 @@ const NS = 'http://www.w3.org/2000/svg';
 SvgShape._declareDefaults = function () {
   this._defaults = {
     shape: 'circle',
-    size: 100,
+    size: 100
   };
 };
 
@@ -73,6 +73,7 @@ SvgShape.render = function (mainEl, support) {
   // root transform calculation
   const sizeX = (props.sizeX !== undefined) ? props.sizeX : props.size;
   const sizeY = (props.sizeY !== undefined) ? props.sizeY : props.size;
+
   // calculate scales
   const scaleX = sizeX / 100;
   const scaleY = sizeY / 100;

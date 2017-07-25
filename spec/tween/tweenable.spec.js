@@ -48,5 +48,17 @@ describe('timeline ->', function () {
         expect(tweenable.tween[method]).toHaveBeenCalledWith(arguments[0], arguments[1], arguments[2], arguments[3]);
       }
     });
+
+    it('should return this for the proxied methods', function () {
+      var methods = ['play', 'pause', 'stop', 'replay', 'setSpeed', 'reverse', 'setProgress', 'reset', 'setStartTime'];
+
+      for (var i = 0; i < methods.length; i++) {
+        var method = methods[i];
+        spyOn(tweenable.tween, method);
+        arguments = [ Math.random(), Math.random(), Math.random(), Math.random() ];
+        result = tweenable[method](arguments[0], arguments[1], arguments[2], arguments[3]);
+        expect(result).toBe(tweenable);
+      }
+    });
   });
 });

@@ -64,7 +64,10 @@ Stagger._getStaggerOptions = function (options, i, modulesCount) {
   const keys = Object.keys(options);
   for (let j = 0; j < keys.length; j++) {
     const key = keys[j];
-    o[key] = staggerProperty(options[key], i, modulesCount);
+    // `items` - is the special `stagger` keyword, filter out it
+    if (key !== 'items') {
+      o[key] = staggerProperty(options[key], i, modulesCount);
+    }
   }
 
   return o;

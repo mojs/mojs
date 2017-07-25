@@ -23,6 +23,8 @@ Tweenable.init = function (o) {
       // eslint-disable-next-line no-unused-expressions
       rest; // otherwise rest arguments got lost
       (this.timeline || this.tween)[method](...rest);
+      
+      return this;
     };
   }
 };

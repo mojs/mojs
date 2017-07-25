@@ -126,4 +126,25 @@ describe('`stagger` ->', function () {
     expect(deltasStagger._modules[3]._totalItemsInStagger).toBe(items);
     expect(deltasStagger._modules[4]._totalItemsInStagger).toBe(items);
   });
+
+  it('should remove the `items` from options', function () {
+    var DeltasStagger = stagger(Deltas);
+
+    var items = 5;
+
+    var options = {
+      items: items,
+      el: [{}, {}, {}],
+      delay: 'stagger(200, 100)',
+      z: { 'stagger(20rem)': 'stagger(10rem, 20rem)' }
+    }
+
+    var deltasStagger = new DeltasStagger(options);
+
+    expect(deltasStagger._modules[0]._o.items).not.toBeDefined();
+    expect(deltasStagger._modules[1]._o.items).not.toBeDefined();
+    expect(deltasStagger._modules[2]._o.items).not.toBeDefined();
+    expect(deltasStagger._modules[3]._o.items).not.toBeDefined();
+    expect(deltasStagger._modules[4]._o.items).not.toBeDefined();
+  });
 });

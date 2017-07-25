@@ -93,7 +93,7 @@ Shape._createCustomProperties = function (o) {
     const key = shapeDefaultsKeys[i];
     if (key !== 'shape') {
       newCustomProps[key] = {
-        type: 'unit',
+        type: 'number',
         isSkipRender: true,
       };
     }

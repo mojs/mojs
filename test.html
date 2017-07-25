@@ -121,7 +121,7 @@
     <!-- <script src="vendor/platform.js"></script> -->
     <!-- <script src="vendor/benchmark.js"></script> -->
 
-    <!-- <script src="node_modules/mojs-player/build/mojs-player.js"></script> -->
+     <!-- <script src="node_modules/mojs-player/build/mojs-player.js"></script>  -->
     <!-- <script src="http://cdn.jsdelivr.net/mojs/latest/mo.min.js"></script> -->
     <!-- <script src="vendor/mo-js/build/mo.min.js"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/mojs/0.288.1/mo.min.js"></script> -->
@@ -131,6 +131,70 @@
     <script src="http://hammerjs.github.io/dist/hammer.min.js"></script>
 
     <script>
+
+      var Shape = mojs.Shape2;
+      var ratio = 3.14;
+
+      const shape = new Shape({
+        shape: 'circle',
+        size: 80,
+        // angleY: { 0: 200 },
+        fill: 'cyan',
+        strokeDasharray: ratio*100,
+        stroke: 'red',
+        strokeWidth: 4,
+        strokeDashoffset: { [ratio * -100]: 0 },
+        duration: 10000,
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        surfaceOptions: [ 'position', 'left', 'top' ]
+      })
+      .play()
+      .pause()
+      .reverse()
+      // .reverse()
+      .play();
+      
+      // new MojsPlayer({ add: shape });
+
+      // var Shape = mojs.Shape2;
+      // var burstGenerator = mojs.burstGenerator;
+      // var stagger = mojs.stagger;
+
+      // const StaggerShape = stagger(Shape);
+
+      // const burstCoordinates = burstGenerator({
+      //   degree: 0,
+      //   degreeOffset: 0,
+      //   angle: index => mojs.rand(-10, 10),
+      //   depth: stagger.randFloat(.1, .5),
+      //   length: stagger.rand(50, 125),
+      //   count: stagger.rand(1, 2),
+      //   direction: index => mojs.rand(0, 2) > 1,
+      //   yEasing: 'quad.out',
+      //   xEasing: 'linear.none'
+      // });
+
+      // const shapeStagger = new StaggerShape({
+      //   items: 12,
+      //   position: 'absolute',
+      //   left: '50%',
+      //   top: '50%',
+      //   x: burstCoordinates,
+      //   y: burstCoordinates,
+      //   fill: stagger.map('cyan', 'purple', 'hotpink', '#222'),
+      //   size: stagger.rand(5, 15),
+      //   scale: { 1: 0 },
+      //   duration: stagger.rand(1000, 2200),
+      //   delay: stagger.rand(0, 300),
+      //   surfaceOptions: [ 'position', 'left', 'top' ],
+      // });
+
+      // new MojsPlayer({ add: shapeStagger });
+
+
+      
 
       // var pathGen = document.querySelector('#js-path-gen');
       // var d = mojs.generatePath({

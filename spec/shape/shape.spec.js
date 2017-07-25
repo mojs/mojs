@@ -69,24 +69,21 @@ describe('`Shape` ->', function () {
       var shape = new Shape();
 
       expect(shape._o.customProperties.size).toEqual({
-        type: 'unit',
+        type: 'number',
         isSkipRender: true
       });
 
       expect(shape._o.customProperties.sizeX).toEqual({
-        type: 'unit',
+        type: 'number',
         isSkipRender: true
       });
 
       expect(shape._o.customProperties.sizeY).toEqual({
-        type: 'unit',
+        type: 'number',
         isSkipRender: true
       });
 
-      expect(shape._o.customProperties.shape).not.toEqual({
-        type: 'unit',
-        isSkipRender: true
-      });
+      expect(shape._o.customProperties.shape).not.toBeDefined();
     });
 
     it('should add `isSkipRender: true` every non-surface property`', function () {
