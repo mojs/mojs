@@ -1022,7 +1022,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           // eslint-disable-next-line no-unused-expressions
           rest; // otherwise rest arguments got lost
           (_ref = _this.timeline || _this.tween)[method].apply(_ref, rest);
-
+          // return `this` for chaining
           return _this;
         };
       };

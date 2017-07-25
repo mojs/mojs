@@ -22,7 +22,7 @@ const NS = 'http://www.w3.org/2000/svg';
 SvgShape._declareDefaults = function () {
   this._defaults = {
     shape: 'circle',
-    size: 100
+    size: 100,
   };
 };
 
