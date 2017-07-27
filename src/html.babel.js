@@ -63,9 +63,11 @@ Html._setupDeltas = function () {
   const customProperties = this._getCustomProperties();
 
   this._deltas = new Deltas({
+    index: this.index,
     ...this._props,
     customProperties,
   });
+
   // save the `timeline` to make the `tweenable` work
   this.timeline = this._deltas.timeline;
 };

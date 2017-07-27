@@ -72,6 +72,23 @@ describe('`deltas` ->', function () {
       delete deltas.timeline._o.onUpdate;
       expect(deltas.timeline._o).toEqual(options.timeline);
     });
+
+    it('should pass `index` to the `timeline` and `tween`', function () {
+      var index = 4;
+      var options = {
+        x: { '200': 300, delay: 200 },
+        y: { '200': 300 },
+        delay: 200,
+        duration: 2000,
+        onUpdate: function () {},
+        timeline: {},
+        index: index
+      };
+
+      var deltas = Deltas(options);
+      expect(deltas.timeline.index).toBe(index);
+      expect(deltas.tween.index).toBe(index);
+    });
   });
 
   describe('`_parseProperties` / deltas parsing ->', function() {
@@ -93,6 +110,24 @@ describe('`deltas` ->', function () {
       expect(deltas.timeline._items[0]).toBe(deltas.tween);
       expect(deltas.timeline._items[1]).toBe(deltas._tweenDeltas[0].tween);
       expect(deltas.timeline._items[2]).toBe(deltas._tweenDeltas[1].tween);
+    });
+
+    it('should pass `index` to `delta`', function () {
+      var index = 2;
+      var options = {
+        el: {},
+        index: index,
+        x: { '200': 300, delay: 200 },
+        y: { '200': 300 },
+        f: 5,
+        z: { '200': 300, delay: 200 }
+      };
+
+      var deltas = Deltas(options);
+
+      expect(deltas.timeline._items[0].index).toBe(index);
+      expect(deltas.timeline._items[1].index).toBe(index);
+      expect(deltas.timeline._items[2].index).toBe(index);
     });
 
     it('should set static properties on target #el', function () {
@@ -144,39 +179,43 @@ describe('`deltas` ->', function () {
       expect(deltas._staticProps.f).toBe(options.f + 'px');
     });
 
-    // it('should set static properties on target #el #unit #percent', function () {
-    //   var el = {};
-    //   var options = {
-    //     el: el,
-    //     f: '5%',
-    //     customProperties: {
-    //       f: {
-    //         type: 'unit'
-    //       }
-    //     }
-    //   };
-    //
-    //   var deltas = Deltas(options);
-    //
-    //   expect(deltas._staticProps).toBe(options.f);
-    // });
-    //
-    // it('should set static properties on target #el #color', function () {
-    //   var el = {};
-    //   var options = {
-    //     el: el,
-    //     f: 'cyan',
-    //     customProperties: {
-    //       f: {
-    //         type: 'color'
-    //       }
-    //     }
-    //   };
-    //
-    //   var deltas = Deltas(options);
-    //
-    //   expect(deltas._staticProps).toBe('rgba(0,0,0, 0)');
-    // });
+    it('should set static properties on target #el #unit #percent', function () {
+      var el = {};
+      var options = {
+        el: el,
+        f: '5%',
+        customProperties: {
+          f: {
+            type: 'unit'
+          }
+        }
+      };
+    
+      var deltas = Deltas(options);
+    
+      expect(deltas._staticProps).toEqual({
+        f: options.f
+      });
+    });
+    
+    it('should set static properties on target #el #color', function () {
+      var el = {};
+      var options = {
+        el: el,
+        f: 'cyan',
+        customProperties: {
+          f: {
+            type: 'color'
+          }
+        }
+      };
+    
+      var deltas = Deltas(options);
+    
+      expect(deltas._staticProps).toEqual({
+        f: 'rgba(0, 255, 255, 1)'
+      });
+    });
 
     it('should set static properties on target #supportProps', function () {
       var el = {};
@@ -270,6 +309,22 @@ describe('`deltas` ->', function () {
       expect(deltas.timeline._items[0]).toBe(deltas.tween);
       expect(deltas.timeline._items[1]).toBe(deltas._tweenDeltas[0].tween);
       expect(deltas.timeline._items[2]).toBe(deltas._tweenDeltas[1].tween);
+    });
+
+    it('should pass `index` to `motionpath`', function () {
+      var index = 5;
+      var options = {
+        index: index,
+        el: {},
+        x: { '200': 300, delay: 200, path: 'M0,0 L100,100' },
+        y: { '200': 300 },
+        f: 5,
+        z: { '200': 300, delay: 200, path: 'M0,0 L200,200' }
+      };
+
+      var deltas = Deltas(options);
+      expect(deltas._tweenDeltas[0].index).toBe(index);
+      expect(deltas._tweenDeltas[1].index).toBe(index);
     });
 
     it('should pass customProperties to motion path', function () {
@@ -409,7 +464,7 @@ describe('`deltas` ->', function () {
 
       var progress = Math.random();
       var isForward = true;
-      deltas.timeline._props.onUpdate(progress, progress, isForward);
+      deltas.tween._props.onUpdate(progress, progress, isForward);
 
       expect(deltas._render.calls.mostRecent().args[0]).toBe(deltas._el);
       expect(deltas._render.calls.mostRecent().args[1].props).toBe(deltas._supportProps);

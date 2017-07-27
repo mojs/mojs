@@ -17,12 +17,13 @@
       }*/
       .el {
         position: absolute;
+        left: 50%;
         top: 50%;
-        width: 100px;
-        height: 100px;
-        margin-top: -50px;
-        border-radius: 10%;
-        background: cyan;
+        width: 25px;
+        height: 25px;
+        margin-top: -12.5px;
+        margin-left: -12.5px;
+        background: #F54F0D;
       }
 
       .circle {
@@ -115,7 +116,7 @@
       <path d="M0, 0 L900, 500" stroke="#333" stroke-width="8" id="js-path" fill="none" stroke-linejoin="round" stroke-linecap="round" />
     </svg> -->
 
-    <!-- <div class="el" id="js-el"></div> -->
+     <div class="el" id="js-el"></div> 
 
     <!-- <script src="vendor/lodash.min.js"></script> -->
     <!-- <script src="vendor/platform.js"></script> -->
@@ -131,70 +132,6 @@
     <script src="http://hammerjs.github.io/dist/hammer.min.js"></script>
 
     <script>
-
-      var Shape = mojs.Shape2;
-      var ratio = 3.14;
-
-      const shape = new Shape({
-        shape: 'circle',
-        size: 80,
-        // angleY: { 0: 200 },
-        fill: 'cyan',
-        strokeDasharray: ratio*100,
-        stroke: 'red',
-        strokeWidth: 4,
-        strokeDashoffset: { [ratio * -100]: 0 },
-        duration: 10000,
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        surfaceOptions: [ 'position', 'left', 'top' ]
-      })
-      .play()
-      .pause()
-      .reverse()
-      // .reverse()
-      .play();
-      
-      // new MojsPlayer({ add: shape });
-
-      // var Shape = mojs.Shape2;
-      // var burstGenerator = mojs.burstGenerator;
-      // var stagger = mojs.stagger;
-
-      // const StaggerShape = stagger(Shape);
-
-      // const burstCoordinates = burstGenerator({
-      //   degree: 0,
-      //   degreeOffset: 0,
-      //   angle: index => mojs.rand(-10, 10),
-      //   depth: stagger.randFloat(.1, .5),
-      //   length: stagger.rand(50, 125),
-      //   count: stagger.rand(1, 2),
-      //   direction: index => mojs.rand(0, 2) > 1,
-      //   yEasing: 'quad.out',
-      //   xEasing: 'linear.none'
-      // });
-
-      // const shapeStagger = new StaggerShape({
-      //   items: 12,
-      //   position: 'absolute',
-      //   left: '50%',
-      //   top: '50%',
-      //   x: burstCoordinates,
-      //   y: burstCoordinates,
-      //   fill: stagger.map('cyan', 'purple', 'hotpink', '#222'),
-      //   size: stagger.rand(5, 15),
-      //   scale: { 1: 0 },
-      //   duration: stagger.rand(1000, 2200),
-      //   delay: stagger.rand(0, 300),
-      //   surfaceOptions: [ 'position', 'left', 'top' ],
-      // });
-
-      // new MojsPlayer({ add: shapeStagger });
-
-
-      
 
       // var pathGen = document.querySelector('#js-path-gen');
       // var d = mojs.generatePath({

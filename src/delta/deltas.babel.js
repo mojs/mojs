@@ -54,17 +54,24 @@ Deltas.init = function (o = {}) {
  *
  * @param {Object} Options.
  */
-Deltas._setupTween = function (options) {
+Deltas._setupTween = function (options = {}) {
+  const support = {
+    props: this._supportProps,
+    pipeObj: this._pipeObj,
+  };
   // separate main tween options
   const tweenOptions = separateTweenOptions(options) || {};
   // create tween
   this.tween = new Tween({
     ...tweenOptions,
+    index: this.index,
     // update plain deltas on update
     // and call the previous `onUpdate` if present
     onUpdate: (ep, p, isForward) => {
       // update plain deltas
       this._upd_deltas(ep, p, isForward);
+      // render
+      this._render(this._el, support, ep, p, isForward);
       // envoke onUpdate if present
       if (tweenOptions.onUpdate !== undefined) {
         tweenOptions.onUpdate(ep, p, isForward);
@@ -85,10 +92,9 @@ Deltas._setupTimeline = function (options = {}) {
   };
 
   this.timeline = new Timeline({
+    index: this.index,
     ...options,
     onUpdate: (ep, p, isForward) => {
-      // call render function
-      this._render(this._el, support, ep, p, isForward);
       // envoke onUpdate if present
       if (options.onUpdate !== undefined) {
         options.onUpdate(ep, p, isForward);

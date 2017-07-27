@@ -1738,18 +1738,27 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      *
      * @param {Object} Options.
      */
-    Deltas._setupTween = function (options) {
+    Deltas._setupTween = function () {
       var _this = this;
 
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      var support = {
+        props: this._supportProps,
+        pipeObj: this._pipeObj
+      };
       // separate main tween options
       var tweenOptions = (0, _separateTweenOptionsBabel.separateTweenOptions)(options) || {};
       // create tween
       this.tween = new _tweenBabel.Tween(_extends({}, tweenOptions, {
+        index: this.index,
         // update plain deltas on update
         // and call the previous `onUpdate` if present
         onUpdate: function (ep, p, isForward) {
           // update plain deltas
           _this._upd_deltas(ep, p, isForward);
+          // render
+          _this._render(_this._el, support, ep, p, isForward);
           // envoke onUpdate if present
           if (tweenOptions.onUpdate !== undefined) {
             tweenOptions.onUpdate(ep, p, isForward);
@@ -1764,8 +1773,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @param {Object} Timeline options.
      */
     Deltas._setupTimeline = function () {
-      var _this2 = this;
-
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
       var support = {
@@ -1773,10 +1780,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         pipeObj: this._pipeObj
       };
 
-      this.timeline = new _timelineBabel.Timeline(_extends({}, options, {
+      this.timeline = new _timelineBabel.Timeline(_extends({
+        index: this.index
+      }, options, {
         onUpdate: function (ep, p, isForward) {
-          // call render function
-          _this2._render(_this2._el, support, ep, p, isForward);
           // envoke onUpdate if present
           if (options.onUpdate !== undefined) {
             options.onUpdate(ep, p, isForward);
@@ -3529,9 +3536,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     Html._setupDeltas = function () {
       var customProperties = this._getCustomProperties();
 
-      this._deltas = new _deltasBabel.Deltas(_extends({}, this._props, {
+      this._deltas = new _deltasBabel.Deltas(_extends({
+        index: this.index
+      }, this._props, {
         customProperties: customProperties
       }));
+
       // save the `timeline` to make the `tweenable` work
       this.timeline = this._deltas.timeline;
     };
@@ -6152,7 +6162,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       // super call
       Super.init.call(this, o);
       // create main timeline
-      this._createTimeline(o.timeline);
+      this._createTimeline(o.staggerTimeline);
+      delete this._o.staggerTimeline;
       // create modules
       this._createModules(Module);
     };
@@ -6177,7 +6188,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           totalItemsInStagger: modulesCount
         }));
         this._modules.push(module);
-        this.timeline.add(module);
+        // get method regarding stagger strategy property and parse stagger function
+        var addMethod = (0, _staggerPropertyBabel.staggerProperty)(this._o.strategy || 'add', i, modulesCount);
+        this.timeline[addMethod](module);
       }
     };
 
@@ -6196,7 +6209,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       for (var j = 0; j < keys.length; j++) {
         var key = keys[j];
         // `items` - is the special `stagger` keyword, filter out it
-        if (key !== 'items') {
+        if (key !== 'items' && key !== 'strategy') {
           o[key] = (0, _staggerPropertyBabel.staggerProperty)(options[key], i, modulesCount);
         }
       }
@@ -6212,8 +6225,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     Stagger._createTimeline = function (options) {
       this.timeline = new _timelineBabel.Timeline(options);
-
-      delete this._o.timeline;
     };
 
     /**
@@ -6907,7 +6918,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     */
 
     var mojs = {
-      revision: '2.16.5',
+      revision: '2.18.0',
       Tween: _tweenBabel.Tween,
       Timeline: _timelineBabel.Timeline,
       easing: _easingBabel.easing,

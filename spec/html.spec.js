@@ -93,6 +93,16 @@ describe('`html` ->', function () {
       // should pass options
       expect(opts).toEqual(props);
     });
+
+    it('should pass `index` to `deltas`', function () {
+      var index = 5;
+
+      var html = new Html({
+          el: el,
+          index: index
+      });
+      expect(html._deltas.index).toBe(index);
+    });
   });
 
   describe('`customProperties` options ->', function() {

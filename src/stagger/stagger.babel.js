@@ -24,7 +24,8 @@ Stagger.init = function (o = {}, Module) {
   // super call
   Super.init.call(this, o);
   // create main timeline
-  this._createTimeline(o.timeline);
+  this._createTimeline(o.staggerTimeline);
+  delete this._o.staggerTimeline;
   // create modules
   this._createModules(Module);
 };
@@ -46,7 +47,9 @@ Stagger._createModules = function (Module) {
       totalItemsInStagger: modulesCount,
     });
     this._modules.push(module);
-    this.timeline.add(module);
+    // get method regarding stagger strategy property and parse stagger function
+    const addMethod = staggerProperty(this._o.strategy || 'add', i, modulesCount);
+    this.timeline[addMethod](module);
   }
 };
 
@@ -65,7 +68,7 @@ Stagger._getStaggerOptions = function (options, i, modulesCount) {
   for (let j = 0; j < keys.length; j++) {
     const key = keys[j];
     // `items` - is the special `stagger` keyword, filter out it
-    if (key !== 'items') {
+    if (key !== 'items' && key !== 'strategy') {
       o[key] = staggerProperty(options[key], i, modulesCount);
     }
   }
@@ -81,8 +84,6 @@ Stagger._getStaggerOptions = function (options, i, modulesCount) {
  */
 Stagger._createTimeline = function (options) {
   this.timeline = new Timeline(options);
-
-  delete this._o.timeline;
 };
 
 /**

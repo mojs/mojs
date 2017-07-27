@@ -42,6 +42,7 @@ describe('`rig` ->', function () {
       });
 
       rig.setProgress(0);
+      rig.setProgress(.1);
 
       expect(Math.round(supportArg.handle1.x)).toBe(52);
       expect(Math.round(supportArg.handle1.y)).toBe(85);
@@ -80,6 +81,7 @@ describe('`rig` ->', function () {
       });
 
       rig.setProgress(0);
+      rig.setProgress(.1);
 
       expect(Math.round(supportArg.handle1.x)).toBe(175);
       expect(Math.round(supportArg.handle1.y)).toBe(116);
@@ -118,6 +120,7 @@ describe('`rig` ->', function () {
       });
 
       rig.setProgress(0);
+      rig.setProgress(.1);
 
       expect(Math.round(supportArg.handle1.x)).toBe(-1);
       expect(Math.round(supportArg.handle1.y)).toBe(215);
@@ -156,6 +159,7 @@ describe('`rig` ->', function () {
       });
 
       rig.setProgress(0);
+      rig.setProgress(.1);
 
       expect(Math.round(supportArg.handle1.x)).toBe(6);
       expect(Math.round(supportArg.handle1.y)).toBe(78);
@@ -194,23 +198,25 @@ describe('`rig` ->', function () {
       });
 
       rig.setProgress(0);
+      rig.setProgress(.0001);
+      rig.setProgress(0);
 
-      expect(Math.round(supportArg.handle1.x)).toBe(9);
-      expect(Math.round(supportArg.handle1.y)).toBe(95);
+      expect(Math.round(supportArg.handle1.x)).toBe(5);
+      expect(Math.round(supportArg.handle1.y)).toBe(109);
 
-      expect(Math.round(supportArg.handle2.x)).toBe(4);
-      expect(Math.round(supportArg.handle2.y)).toBe(90);
+      expect(Math.round(supportArg.handle2.x)).toBe(12);
+      expect(Math.round(supportArg.handle2.y)).toBe(108);
 
-      expect(Math.round(supportArg.center.x)).toBe(-1);
+      expect(Math.round(supportArg.center.x)).toBe(8);
       expect(Math.round(supportArg.center.y)).toBe(100);
 
-      expect(Math.round(supportArg.knee.x)).toBe(6);
-      expect(Math.round(supportArg.knee.y)).toBe(93);
+      expect(Math.round(supportArg.knee.x)).toBe(8);
+      expect(Math.round(supportArg.knee.y)).toBe(109);
 
-      expect(Math.round(supportArg.angle1)).toBe(240);
-      expect(Math.round(supportArg.angle2)).toBe(210);
+      expect(Math.round(supportArg.angle1)).toBe(-25);
+      expect(Math.round(supportArg.angle2)).toBe(17);
 
-      expect(supportArg.stretchRatio.toFixed(2)).toBe('0.03');
+      expect(supportArg.stretchRatio.toFixed(2)).toBe('0.30');
 
       rig.setProgress(.5);
 

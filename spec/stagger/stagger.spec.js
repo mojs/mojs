@@ -14,12 +14,12 @@ describe('`stagger` ->', function () {
 
     var timelineOptions = {};
     var deltasStagger = new DeltasStagger({
-      timeline: timelineOptions
+      staggerTimeline: timelineOptions
     });
 
     expect(Timeline.__mojsClass.isPrototypeOf(deltasStagger.timeline)).toBe(true);
     expect(deltasStagger.timeline._o).toEqual(timelineOptions);
-    expect(deltasStagger._o.timeline).not.toBeDefined();
+    expect(deltasStagger._o.staggerTimeline).not.toBeDefined();
   });
 
   it('should create `n` modules #el', function () {
@@ -42,6 +42,59 @@ describe('`stagger` ->', function () {
 
     expect(deltasStagger._modules.length).toBe(3);
     expect(deltasStagger.timeline._items.length).toBe(3);
+  });
+
+  it('should add modules according to `strategy #add', function () {
+    var DeltasStagger = stagger(Deltas);
+    var duration = 2000;
+
+    var deltasStagger = new DeltasStagger({
+      el: [{}, {}, {}],
+      duration: duration
+    });
+
+    expect(deltasStagger.timeline._props.duration).toBe(duration);
+  });
+
+  it('should add modules according to `strategy #append', function () {
+    var DeltasStagger = stagger(Deltas);
+    var duration = 2000;
+
+    var deltasStagger = new DeltasStagger({
+      el: [{}, {}, {}],
+      strategy: 'append',
+      duration: duration
+    });
+
+    expect(deltasStagger.timeline._props.duration).toBe(3*duration);
+  });
+
+  it('should add modules according to `strategy #function #map', function () {
+    var DeltasStagger = stagger(Deltas);
+    var duration = 2000;
+
+    var deltasStagger = new DeltasStagger({
+      el: [{}, {}, {}, {}, {}],
+      strategy: stagger.map('append', 'add'),
+      duration: duration
+    });
+
+    expect(deltasStagger.timeline._props.duration).toBe(3*duration);
+  });
+
+  it('should add modules according to `strategy #function', function () {
+    var DeltasStagger = stagger(Deltas);
+    var duration = 2000;
+
+    var deltasStagger = new DeltasStagger({
+      el: [{}, {}, {}, {}, {}],
+      strategy: stagger.function(function (i) {
+        return (i % 2 === 0 || i === 1) ? 'append' : 'add';
+      }),
+      duration: duration
+    });
+
+    expect(deltasStagger.timeline._props.duration).toBe(4*duration);
   });
 
   it('should create `n` modules count', function () {
@@ -146,5 +199,27 @@ describe('`stagger` ->', function () {
     expect(deltasStagger._modules[2]._o.items).not.toBeDefined();
     expect(deltasStagger._modules[3]._o.items).not.toBeDefined();
     expect(deltasStagger._modules[4]._o.items).not.toBeDefined();
+  });
+
+  it('should remove the `strategy` from options', function () {
+    var DeltasStagger = stagger(Deltas);
+
+    var items = 5;
+
+    var options = {
+      items: items,
+      strategy: 'append',
+      el: [{}, {}, {}],
+      delay: 'stagger(200, 100)',
+      z: { 'stagger(20rem)': 'stagger(10rem, 20rem)' }
+    }
+
+    var deltasStagger = new DeltasStagger(options);
+
+    expect(deltasStagger._modules[0]._o.strategy).not.toBeDefined();
+    expect(deltasStagger._modules[1]._o.strategy).not.toBeDefined();
+    expect(deltasStagger._modules[2]._o.strategy).not.toBeDefined();
+    expect(deltasStagger._modules[3]._o.strategy).not.toBeDefined();
+    expect(deltasStagger._modules[4]._o.strategy).not.toBeDefined();
   });
 });
