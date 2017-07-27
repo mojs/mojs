@@ -86,11 +86,6 @@ Deltas._setupTween = function (options = {}) {
  * @param {Object} Timeline options.
  */
 Deltas._setupTimeline = function (options = {}) {
-  const support = {
-    props: this._supportProps,
-    pipeObj: this._pipeObj,
-  };
-
   this.timeline = new Timeline({
     index: this.index,
     ...options,

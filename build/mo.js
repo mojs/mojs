@@ -1775,11 +1775,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     Deltas._setupTimeline = function () {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-      var support = {
-        props: this._supportProps,
-        pipeObj: this._pipeObj
-      };
-
       this.timeline = new _timelineBabel.Timeline(_extends({
         index: this.index
       }, options, {
