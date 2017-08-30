@@ -56,8 +56,6 @@ const html = new mojs.Html({
   isShowStart:      true,
   // If should stay shown after animation ends. {Boolean}
   isShowEnd:        true,
-  // If refresh state on subsequent plays. {Boolean}
-  isShowStart:      true,
   // If should trigger composite layer for the module. {Boolean}
   isForce3d:        false,
   // If should hide module with `transforms` instead of `display`. {Boolean}
