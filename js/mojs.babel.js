@@ -20,7 +20,7 @@ import tweener      from './tween/tweener';
 import easing       from './easing/easing';
 
 var mojs = {
-  revision:   '0.288.1', isDebug: true, helpers: h,
+  revision:   '0.288.2', isDebug: true, helpers: h,
   Shape, ShapeSwirl, Burst, Html, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap, _pool: { Delta, Deltas }
@@ -51,23 +51,6 @@ mojs.Swirl   = mojs.ShapeSwirl;
   swirls in then chains for x/y
   parse rand(stagger(20, 10), 20) values
   percentage for radius
-
-  issue:
-    const shape = new mojs.Shape({
-      scale: { 0: 1 },
-      duration: 1000
-    })
-    .then({ scale: 0 })
-    .then({ scale: 1, onComplete () { this.pause(); } })
-    .then({ scale: 0 })
-    .then({ scale: 1 })
-    ;
-
-    document.addEventListener('click', () => {
-      shape
-        .tune({ fill: 'cyan' })
-        .play();
-    });
 */
 
 // istanbul ignore next

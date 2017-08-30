@@ -70,7 +70,6 @@ Kudos to supporters on [Patreon](https://patreon.com/user?u=3219311&utm_medium=s
 
 [full list of mojs patrons](./patrons.md)
 
-
 ## License
 
 (The MIT License)
