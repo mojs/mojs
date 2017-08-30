@@ -11,6 +11,7 @@ class Tweener {
   
   _vars () {
     this.tweens = [];
+    this._savedTweens = [];
     this._loop = this._loop.bind(this);
     this._onVisibilityChange = this._onVisibilityChange.bind(this);
   }
