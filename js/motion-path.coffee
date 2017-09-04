@@ -27,10 +27,10 @@ class MotionPath
     # @property   path
     # @type       {String, SVGPathElement, Object}
     # 
-    # @codepen CSS selector:      http://codepen.io/sol0mka/pen/emqbLN/
-    # @codepen SVG line commands: http://codepen.io/sol0mka/pen/dPxaMm/
-    # @codepen SVGPathElement:    http://codepen.io/sol0mka/pen/xbvMyj/
-    # @codepen Arc shift:         http://codepen.io/sol0mka/pen/QweYKW/
+    # @codepen CSS selector:      https://codepen.io/sol0mka/pen/emqbLN/
+    # @codepen SVG line commands: https://codepen.io/sol0mka/pen/dPxaMm/
+    # @codepen SVGPathElement:    https://codepen.io/sol0mka/pen/xbvMyj/
+    # @codepen Arc shift:         https://codepen.io/sol0mka/pen/QweYKW/
     path:             null
     # ---
 
@@ -47,7 +47,7 @@ class MotionPath
     # @property   curvature
     # @type       {Object}
     # 
-    # @codepen http://codepen.io/sol0mka/pen/vEobbM/
+    # @codepen https://codepen.io/sol0mka/pen/vEobbM/
     curvature:        x: '75%', y: '50%'
     # ---
 
@@ -61,7 +61,7 @@ class MotionPath
     # @property   delay
     # @type       {Number}
     # 
-    # @codepen http://codepen.io/sol0mka/pen/wBVNLM/
+    # @codepen https://codepen.io/sol0mka/pen/wBVNLM/
     delay:            0
     # ---
 
@@ -78,9 +78,9 @@ class MotionPath
     # @property   easing
     # @type       {String, Function, Array}
     #
-    # @codepen String:              http://codepen.io/sol0mka/pen/GgVeKR/
-    # @codepen Bezier cubic curve:  http://codepen.io/sol0mka/pen/WbVmeo/
-    # @codepen Custom function:     http://codepen.io/sol0mka/pen/XJvGrE/
+    # @codepen String:              https://codepen.io/sol0mka/pen/GgVeKR/
+    # @codepen Bezier cubic curve:  https://codepen.io/sol0mka/pen/WbVmeo/
+    # @codepen Custom function:     https://codepen.io/sol0mka/pen/XJvGrE/
     easing:           null
     # ---
 
@@ -88,7 +88,7 @@ class MotionPath
     # @property   repeat
     # @type       {Integer}
     #
-    # @codepen http://codepen.io/sol0mka/pen/emqbLN/
+    # @codepen https://codepen.io/sol0mka/pen/emqbLN/
     repeat:           0
     # ---
 
@@ -97,7 +97,7 @@ class MotionPath
     # @property   yoyo
     # @type       {Boolean}
     # 
-    # @codepen http://codepen.io/sol0mka/pen/gbVEbb/
+    # @codepen https://codepen.io/sol0mka/pen/gbVEbb/
     yoyo:             false
     # ---
 
@@ -106,7 +106,7 @@ class MotionPath
     # @property   onStart
     # @type       {Function}
     # 
-    # @codepen http://codepen.io/sol0mka/pen/VYoRRe/
+    # @codepen https://codepen.io/sol0mka/pen/VYoRRe/
     onStart:          null
     # ---
 
@@ -115,7 +115,7 @@ class MotionPath
     # @property   onComplete
     # @type       {Function}
     # 
-    # @codepen http://codepen.io/sol0mka/pen/ZYgPPm/
+    # @codepen https://codepen.io/sol0mka/pen/ZYgPPm/
     onComplete:       null
     # ---
 
@@ -126,7 +126,7 @@ class MotionPath
     # @property   onUpdate
     # @type       {Function}
     # 
-    # @codepen http://codepen.io/sol0mka/pen/YPmgMq/
+    # @codepen https://codepen.io/sol0mka/pen/YPmgMq/
     onUpdate:         null
     # ---
 
@@ -134,7 +134,7 @@ class MotionPath
     # @property   offsetX
     # @type       {Number}
     # 
-    # @codepen http://codepen.io/sol0mka/pen/gbVEbb/
+    # @codepen https://codepen.io/sol0mka/pen/gbVEbb/
     offsetX:          0
     # ---
 
@@ -142,7 +142,7 @@ class MotionPath
     # @property   offsetY
     # @type       {Number}
     # 
-    # @codepen http://codepen.io/sol0mka/pen/OPKqNN/
+    # @codepen https://codepen.io/sol0mka/pen/OPKqNN/
     offsetY:          0
     # ---
 
@@ -158,8 +158,8 @@ class MotionPath
     #     }
     #   });
     #   
-    # @codepen Number:    http://codepen.io/sol0mka/pen/JogzXw
-    # @codepen Function:  http://codepen.io/sol0mka/pen/MYNxer
+    # @codepen Number:    https://codepen.io/sol0mka/pen/JogzXw
+    # @codepen Function:  https://codepen.io/sol0mka/pen/MYNxer
     angleOffset:      null
     # ---
 
@@ -175,7 +175,7 @@ class MotionPath
     #     pathStart: .5
     #   });
     #
-    # @codepen http://codepen.io/sol0mka/pen/azeMBQ/
+    # @codepen https://codepen.io/sol0mka/pen/azeMBQ/
     pathStart:        0
     # ---
 
@@ -191,7 +191,7 @@ class MotionPath
     #     pathEnd: .5
     #   });
     #   
-    # @codepen http://codepen.io/sol0mka/pen/wBVOJo/
+    # @codepen https://codepen.io/sol0mka/pen/wBVOJo/
     pathEnd:          1
     # ---
 
@@ -219,7 +219,7 @@ class MotionPath
     #     }
     #   });
     #   
-    # @codepen Function:  http://codepen.io/sol0mka/pen/pvMYwp
+    # @codepen Function:  https://codepen.io/sol0mka/pen/pvMYwp
     transformOrigin:  null
     # ---
 
@@ -227,7 +227,7 @@ class MotionPath
     # 
     # @property   isAngle
     # @type       {Boolean}
-    # @codepen http://codepen.io/sol0mka/pen/GgVexq/
+    # @codepen https://codepen.io/sol0mka/pen/GgVexq/
     isAngle:          false
     # ---
 
@@ -235,7 +235,7 @@ class MotionPath
     # 
     # @property   isReverse
     # @type       {Boolean}
-    # @codepen http://codepen.io/sol0mka/pen/KwOERQ/
+    # @codepen https://codepen.io/sol0mka/pen/KwOERQ/
     isReverse:        false
     # ---
 
@@ -257,7 +257,7 @@ class MotionPath
     # @property   isPresetPosition
     # @type       {Boolean}
     # 
-    # @codepen http://codepen.io/sol0mka/pen/EaqMOJ/
+    # @codepen https://codepen.io/sol0mka/pen/EaqMOJ/
     isPresetPosition: true
   # ---
   # ### Class body docs
