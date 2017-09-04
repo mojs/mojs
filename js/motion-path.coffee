@@ -245,8 +245,8 @@ class MotionPath
     # @property   isRunLess
     # @type       {Boolean}
     # 
-    # @codepen *Please see at codepen for proper results*: http://
-    # codepen.io/sol0mka/pen/raXRKQ/
+    # @codepen *Please see at codepen for proper results*:
+    # https://codepen.io/sol0mka/pen/raXRKQ/
     isRunLess:        false
     # ---
 
