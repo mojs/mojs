@@ -33,7 +33,7 @@
 
   /**
    * Used as the maximum length of an array-like object.
-   * See the [ES6 spec](http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength)
+   * See the [ES6 spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength)
    * for more details.
    */
   var maxSafeInteger = Math.pow(2, 53) - 1;

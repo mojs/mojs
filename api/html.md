@@ -2,7 +2,7 @@
 
 References:
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/b8831849500f0d5cd0ab5691ebe17873?editors=0010)
+- [CodePen Example](https://codepen.io/sol0mka/pen/b8831849500f0d5cd0ab5691ebe17873?editors=0010)
 - [Tween API](./tweens/tween.md)
 - [back](./readme.md)
 
@@ -203,7 +203,7 @@ const html = new mojs.Html({
 });
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/14bcdfac6a89b918ac0292b35c0f156e?editors=0010)
+- [CodePen Example](https://codepen.io/sol0mka/pen/14bcdfac6a89b918ac0292b35c0f156e?editors=0010)
 
 ### Teach mojs with customProperties
 
@@ -228,7 +228,7 @@ const html = new mojs.Html({
 
 All custom properties are expected to be plain `numbers`, you can define `units` in the `draw` function.
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/08ed252eed451c270e49882b08cbbd41?editors=0010)
+- [CodePen Example](https://codepen.io/sol0mka/pen/08ed252eed451c270e49882b08cbbd41?editors=0010)
 
 ### Independent deltas
 
@@ -244,7 +244,7 @@ const html = new mojs.Html({
 
 This makes `mojs` animations ultimately flexible.
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/087649b78e2d8aa407fb73051d7770ec?editors=0010)
+- [CodePen Example](https://codepen.io/sol0mka/pen/087649b78e2d8aa407fb73051d7770ec?editors=0010)
 
 References:
 
