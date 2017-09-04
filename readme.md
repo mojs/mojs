@@ -46,7 +46,7 @@
 
 npm: `npm install mo-js`
 
-cdn: `<script src="//cdn.jsdelivr.net/mojs/latest/mo.min.js"></script>`  
+cdn: `<script src="https://cdn.jsdelivr.net/npm/mo-js@latest/build/mo.min.js"></script>`  
 
 bower: `bower install mojs`
 
