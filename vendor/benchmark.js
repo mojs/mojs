@@ -1,8 +1,8 @@
 /*!
  * Benchmark.js v2.1.0 <https://benchmarkjs.com/>
  * Copyright 2010-2016 Mathias Bynens <https://mths.be/>
- * Based on JSLitmus.js, copyright Robert Kieffer <http://broofa.com/>
- * Modified by John-David Dalton <http://allyoucanleet.com/>
+ * Based on JSLitmus.js, copyright Robert Kieffer <https://broofa.com/>
+ * Modified by John-David Dalton <https://allyoucanleet.com/>
  * Available under MIT license <https://mths.be/mit>
  */
 ;(function() {
@@ -68,7 +68,7 @@
 
   /**
    * T-Distribution two-tailed critical values for 95% confidence.
-   * For more info see http://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm.
+   * For more info see https://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm.
    */
   var tTable = {
     '1':  12.706, '2':  4.303, '3':  3.182, '4':  2.776, '5':  2.571, '6':  2.447,
@@ -81,7 +81,7 @@
 
   /**
    * Critical Mann-Whitney U-values for 95% confidence.
-   * For more info see http://www.saburchill.com/IBbiology/stats/003.html.
+   * For more info see https://www.saburchill.com/IBbiology/stats/003.html.
    */
   var uTable = {
     '5':  [0, 1, 2],
@@ -132,7 +132,7 @@
     // Avoid issues with some ES3 environments that attempt to use values, named
     // after built-in constructors like `Object`, for the creation of literals.
     // ES5 clears this up by stating that literals must use built-in constructors.
-    // See http://es5.github.io/#x11.1.5.
+    // See https://es5.github.io/#x11.1.5.
     context = context ? _.defaults(root.Object(), context, _.pick(root, contextProps)) : root;
 
     /** Native constructor references. */
@@ -218,9 +218,9 @@
        */
       try {
         // Safari 2.x removes commas in object literals from `Function#toString` results.
-        // See http://webk.it/11609 for more details.
+        // See https://webk.it/11609 for more details.
         // Firefox 3.6 and Opera 9.25 strip grouping parentheses from `Function#toString` results.
-        // See http://bugzil.la/559438 for more details.
+        // See https://bugzil.la/559438 for more details.
         support.decompilation = Function(
           ('return (' + (function(x) { return { 'x': '' + (1 + x) + '', 'y': 0 }; }) + ')')
           // Avoid issues with code added by Istanbul.
@@ -517,7 +517,7 @@
         return result;
       };
       // Fix JaegerMonkey bug.
-      // For more information see http://bugzil.la/639720.
+      // For more information see https://bugzil.la/639720.
       createFunction = support.browser && (createFunction('', 'return"' + uid + '"') || _.noop)() == uid ? createFunction : Function;
       return createFunction.apply(null, arguments);
     }
@@ -1423,7 +1423,7 @@
       // same population (i.e. have the same median) if...
       if (size1 + size2 > 30) {
         // ...the z-stat is greater than 1.96 or less than -1.96
-        // http://www.statisticslectures.com/topics/mannwhitneyu/
+        // https://www.statisticslectures.com/topics/mannwhitneyu/
         zStat = getZ(u);
         return abs(zStat) > 1.96 ? (u == u1 ? 1 : -1) : 0;
       }
@@ -1453,7 +1453,7 @@
           queue = [];
 
       // A non-recursive solution to check if properties have changed.
-      // For more information see http://www.jslab.dk/articles/non.recursive.preorder.traversal.part4.
+      // For more information see https://www.jslab.dk/articles/non.recursive.preorder.traversal.part4.
       var data = {
         'destination': bench,
         'source': _.assign({}, cloneDeep(bench.constructor.prototype), cloneDeep(bench.options))
@@ -1595,7 +1595,7 @@
         try {
           if (isEmpty) {
             // Firefox may remove dead code from `Function#toString` results.
-            // For more information see http://bugzil.la/536085.
+            // For more information see https://bugzil.la/536085.
             throw new Error('The test "' + name + '" is empty. This may be the result of dead code removal.');
           }
           else if (!deferred) {
@@ -1797,7 +1797,7 @@
         throw new Error('Benchmark.js was unable to find a working timer.');
       }
       // Resolve time span required to achieve a percent uncertainty of at most 1%.
-      // For more information see http://spiff.rit.edu/classes/phys273/uncert/uncert.html.
+      // For more information see https://spiff.rit.edu/classes/phys273/uncert/uncert.html.
       options.minTime || (options.minTime = max(timer.res / 2 / 0.01, 0.05));
       return clock.apply(null, arguments);
     }
@@ -2049,7 +2049,7 @@
       }
       else {
         // Fix TraceMonkey bug associated with clock fallbacks.
-        // For more information see http://bugzil.la/509069.
+        // For more information see https://bugzil.la/509069.
         if (support.browser) {
           runScript(uid + '=1;delete ' + uid);
         }
