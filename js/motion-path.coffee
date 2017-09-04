@@ -17,7 +17,7 @@ class MotionPath
     # Can be defined
     #   - by **String**:
     #     - **CSS selector** e.g. '#js-path', '.path' etc
-    #     - **SVG path** [line commands](http://goo.gl/LzvV6P)
+    #     - **SVG path** [line commands](https://goo.gl/LzvV6P)
     #       e.g 'M0,0 L100, 300'
     #   - by **SVGPathElement** e.g document.getElementById('#js-path')
     #   - by **Arc shift** e.g { x: 200, y: 100 }. If motion path was defined by
