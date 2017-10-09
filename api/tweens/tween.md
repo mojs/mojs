@@ -1,6 +1,6 @@
 # Tween
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0011)
+- [CodePen Example (Error in Codepen - mojs is undefined.)](http://codepen.io/sol0mka/pen/MepeEx?editors=0011) 
 - [Timeline](./timeline.md)
 - [back](/api/readme.md)
 
