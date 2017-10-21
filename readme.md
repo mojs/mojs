@@ -44,7 +44,7 @@
 
 ## Installation
 
-npm: `npm install mo-js`
+npm: `npm install --save mo-js`
 
 cdn: `<script src="//cdn.jsdelivr.net/mojs/latest/mo.min.js"></script>`  
 
