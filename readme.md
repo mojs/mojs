@@ -33,6 +33,7 @@
   - [Burst](http://mojs.io/tutorials/burst/)
   - [Path Easing](http://mojs.io/tutorials/easing/path-easing/)
   - [Icon Animations Powered by mo.js](http://tympanus.net/codrops/2016/02/23/icon-animations-powered-by-mo-js/)
+  - [An Introduction to mo.js, by Sarah Drasner](https://css-tricks.com/introduction-mo-js/)
 
 ## Docs
   - [Reference](https://github.com/legomushroom/mojs/blob/master/api/readme.md)
