@@ -1,4 +1,4 @@
-# mo · js [![Build Status](https://travis-ci.org/legomushroom/mojs.svg?branch=master)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.svg?branch=master)](https://coveralls.io/r/legomushroom/mojs?branch=master) [![Slack Channel](https://img.shields.io/badge/style-join-ff69b4.svg?label=slack%20channel)](https://hamsterpad.com/chat/mojs)
+# mo · js [![Build Status](https://travis-ci.org/legomushroom/mojs.svg?branch=master)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.svg?branch=master)](https://coveralls.io/r/legomushroom/mojs?branch=master) [![Slack Channel](https://img.shields.io/badge/style-join-ff69b4.svg?label=slack%20channel)](https://hamsterpad.com/chat/mojs) [![Open Source Helpers](https://www.codetriage.com/legomushroom/mojs/badges/users.svg)](https://www.codetriage.com/legomushroom/mojs)
 
 <img width="410" src="https://github.com/legomushroom/mojs/blob/master/motion-for-the-web-3.png?raw=true" alt="large mojs logo" />
 
