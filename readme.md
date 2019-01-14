@@ -2,7 +2,7 @@
 
 <img width="410" src="https://github.com/legomushroom/mojs/blob/master/motion-for-the-web-3.png?raw=true" alt="large mojs logo" />
 
-#### motion graphics toolbelt for the web [[mojs.io](http://mojs.io/)]
+#### motion graphics toolbelt for the web
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom.svg)](https://saucelabs.com/u/legomushroom)
 
