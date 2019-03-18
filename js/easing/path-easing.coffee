@@ -2,7 +2,7 @@ h = require '../h'
 
 # ## PathEasing
 # Class allows you to specify custom easing function
-# by **SVG path** [line commands](http://goo.gl/LzvV6P).
+# by **SVG path** [line commands](https://goo.gl/LzvV6P).
 # Line commands should by in range of rect 100x100.
 # @param {String, DOMNode}
 # @param {Object} options
