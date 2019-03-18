@@ -1,6 +1,6 @@
 # ShapeSwirl
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/pbebwQ?editors=0010)
+- [CodePen Example](https://codepen.io/sol0mka/pen/pbebwQ?editors=0010)
 - [Shape API](./shape.md)
 - [Tween API](./tweens/tween.md)
 - [back](./readme.md)
@@ -94,7 +94,7 @@ const shapeSwirl = new mojs.ShapeSwirl({
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/pbebwQ?editors=0010)
+- [CodePen Example](https://codepen.io/sol0mka/pen/pbebwQ?editors=0010)
 - [Shape API](./shape.md)
 - [Tween API](./tweens/tween.md)
 - [back](./readme.md)

@@ -7069,7 +7069,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	/**
-	 * Copyright (c) 2014 Gaëtan Renaudeau http://goo.gl/El3k7u
+	 * Copyright (c) 2014 Gaëtan Renaudeau https://goo.gl/El3k7u
 	 * Adopted from https://github.com/gre/bezier-easing
 	 */
 
@@ -11791,7 +11791,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
 	/*!
-	  LegoMushroom @legomushroom http://legomushroom.com
+	  LegoMushroom @legomushroom https://legomushroom.com
 	  MIT License 2014
 	 */
 

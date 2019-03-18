@@ -1,6 +1,6 @@
 # Timeline
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/LZWZON?editors=0011)
+- [CodePen Example](https://codepen.io/sol0mka/pen/LZWZON?editors=0011)
 - [Tween API](./tween.md)
 - [back](/api/readme.md)
 
@@ -39,6 +39,6 @@ const timeline = new mojs.Timeline({
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/LZWZON?editors=0011)
+- [CodePen Example](https://codepen.io/sol0mka/pen/LZWZON?editors=0011)
 - [Tween API](./tween.md)
 - [back](/api/readme.md)
