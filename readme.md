@@ -1,8 +1,6 @@
-# mo · js [![Build Status](https://travis-ci.org/legomushroom/mojs.svg?branch=master)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.svg?branch=master)](https://coveralls.io/r/legomushroom/mojs?branch=master) [![Slack Workspace](https://img.shields.io/badge/style-join-ff69b4.svg?label=slack%20workspace)](https://mojs.slack.com)
+# mo · js – [![Build Status](https://travis-ci.org/legomushroom/mojs.svg?branch=master)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.svg?branch=master)](https://coveralls.io/r/legomushroom/mojs?branch=master) [![Slack Workspace](https://img.shields.io/badge/style-join-ff69b4.svg?label=slack%20workspace)](https://mojs.slack.com)
 
 ![mo · js](logo.png "mo · js")
-
-#### motion graphics toolbelt for the web
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom.svg)](https://saucelabs.com/u/legomushroom)
 
