@@ -486,7 +486,7 @@ describe 'Bit ->', ->
   #     bit._draw()
   #     expect(bit._getLength).toHaveBeenCalled()
 
-  #   # probably not needed http://jsperf.com/gettotallength-vs-3-functions
+  #   # probably not needed https://jsperf.com/gettotallength-vs-3-functions
   #   # as getTotalLength is faster then 3 function calls for webkits
   #   # and longer for ff and ies, but anyways it is too fast to care about
   #   # it 'should not call _getLength method if radius didnt change', ->
