@@ -1,8 +1,8 @@
 /*!
- * Platform.js v1.3.1 <https://mths.be/platform>
+ * Platform.js v1.3.1 <http://mths.be/platform>
  * Copyright 2014-2016 Benjamin Tan <https://d10.github.io/>
- * Copyright 2011-2013 John-David Dalton <https://allyoucanleet.com/>
- * Available under MIT license <https://mths.be/mit>
+ * Copyright 2011-2013 John-David Dalton <http://allyoucanleet.com/>
+ * Available under MIT license <http://mths.be/mit>
  */
 ;(function() {
   'use strict';
@@ -33,7 +33,7 @@
 
   /**
    * Used as the maximum length of an array-like object.
-   * See the [ES6 spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength)
+   * See the [ES6 spec](http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength)
    * for more details.
    */
   var maxSafeInteger = Math.pow(2, 53) - 1;
@@ -77,8 +77,8 @@
    */
   function cleanupOS(os, pattern, label) {
     // platform tokens defined at
-    // https://msdn.microsoft.com/en-us/library/ms537503(VS.85).aspx
-    // https://web.archive.org/web/20081122053950/http://msdn.microsoft.com/en-us/library/ms537503(VS.85).aspx
+    // http://msdn.microsoft.com/en-us/library/ms537503(VS.85).aspx
+    // http://web.archive.org/web/20081122053950/http://msdn.microsoft.com/en-us/library/ms537503(VS.85).aspx
     var data = {
       '6.4':  '10',
       '6.3':  '8.1',
@@ -302,8 +302,8 @@
 
     /**
      * Detect Opera browser (Presto-based)
-     * https://www.howtocreate.co.uk/operaStuff/operaObject.html
-     * https://dev.opera.com/articles/view/opera-mini-web-content-authoring-guidelines/#operamini
+     * http://www.howtocreate.co.uk/operaStuff/operaObject.html
+     * http://dev.opera.com/articles/view/opera-mini-web-content-authoring-guidelines/#operamini
      */
     var opera = context.operamini || context.opera;
 
@@ -806,7 +806,7 @@
       description.unshift('platform preview');
     }
     // detect BlackBerry OS version
-    // https://docs.blackberry.com/en/developers/deliverables/18169/HTTP_headers_sent_by_BB_Browser_1234911_11.jsp
+    // http://docs.blackberry.com/en/developers/deliverables/18169/HTTP_headers_sent_by_BB_Browser_1234911_11.jsp
     else if ((/\bBlackBerry\b/.test(product) || /\bBB10\b/.test(ua)) && (data =
           (RegExp(product.replace(/ +/g, ' *') + '/([.\\d]+)', 'i').exec(ua) || 0)[1] ||
           version
@@ -816,7 +816,7 @@
       version = null;
     }
     // detect Opera identifying/masking itself as another browser
-    // https://www.opera.com/support/kb/view/843/
+    // http://www.opera.com/support/kb/view/843/
     else if (this != forOwn && (
           product != 'Wii' && (
             (useFeatures && opera) ||
@@ -879,7 +879,7 @@
         layout = ['Blink'];
       }
       // detect JavaScriptCore
-      // https://stackoverflow.com/questions/6768474/how-can-i-detect-which-javascript-engine-v8-or-jsc-is-used-at-runtime-in-androi
+      // http://stackoverflow.com/questions/6768474/how-can-i-detect-which-javascript-engine-v8-or-jsc-is-used-at-runtime-in-androi
       if (!useFeatures || (!likeChrome && !data[1])) {
         layout && (layout[1] = 'like Safari');
         data = (data = data[0], data < 400 ? 1 : data < 500 ? 2 : data < 526 ? 3 : data < 533 ? 4 : data < 534 ? '4+' : data < 535 ? 5 : data < 537 ? 6 : data < 538 ? 7 : data < 601 ? 8 : '8');
