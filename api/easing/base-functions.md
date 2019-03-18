@@ -59,9 +59,9 @@ The full list of base functions:
   'elastic.out'
   'elastic.inout'
 
-  'circ.in'
-  'circ.out'
-  'circ.inout'
+  'bounce.in'
+  'bounce.out'
+  'bounce.inout'
 
 ```
 
