@@ -1,5 +1,5 @@
 ###!
-  LegoMushroom @legomushroom http://legomushroom.com
+  LegoMushroom @legomushroom https://legomushroom.com
   MIT License 2014
 ###
 
