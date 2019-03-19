@@ -56,14 +56,17 @@ Working hard on `APIs`, `tutorials` and `website`. Follow [@legomushroom](https:
 - Safari 4+
 - IE 9+
 
-## Thanks
-Kudos to supporters on [Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare):
+## Kudos
+Meet some of the outstanding guys that support `mojs` on [Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare):
 
 - [Zak Frisch](https://github.com/zfrisch)
 - [Erhan Karadeniz](https://twitter.com/erhankaradeniz)
 - [Jorge Antunes](https://github.com/stoikerty)
-
-[full list of mojs patrons](./patrons.md)
+- [Daniel C. Henning](https://github.com/danielsdesk)
+- [Chris Dolphin](https://github.com/likethemammal)
+- [Volodymyr Kushnir](https://twitter.com/VovaKushnir)
+- [Wojtek Jodel]()
+- [Roman Kuba](https://github.com/codebryo)
 
 ## License
 
