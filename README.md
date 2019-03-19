@@ -2,8 +2,6 @@
 
 ![mo · js](logo.png "mo · js")
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom.svg)](https://saucelabs.com/u/legomushroom)
-
 ## Demos
 - [Motion Graphics for the Web](https://codepen.io/sol0mka/full/ogOYJj/)
 - [Bubble Layout](https://codepen.io/sol0mka/full/yNOage/)
