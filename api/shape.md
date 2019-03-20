@@ -8,7 +8,7 @@ Full API reference:
 
 ```javascript
 const shape = new mojs.Shape({
-  
+
   /* SHAPE PROPERTIES */
 
   // Parent of the module. {String, Object} [selector, HTMLElement]
@@ -109,7 +109,7 @@ const shape = new mojs.Shape({
 
   // Context callbacks will be called with. {Object}
   callbacksContext: this,
-  
+
   /* TWEEN PROPERTIES */
   // Duration {Number}
   duration:       350,

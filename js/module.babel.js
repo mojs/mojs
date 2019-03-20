@@ -97,7 +97,7 @@ class Module {
       // this.el.style.opacity = 0;
       h.setPrefixedStyle( this.el, 'transform', 'scale(0)' );
     } else { this.el.style.display = 'none'; }
-    
+
     this._isShown = false;
   }
   /*
@@ -365,7 +365,7 @@ class Module {
         var currentValue = ( !isCurve )
           ? value.start.value + ep*value.delta
           : value.curve(p) * ( value.start.value + p * value.delta );
-        
+
         this._props[key] = `${currentValue}${value.end.unit}`;
 
       } else if ( value.type === 'color' ) {

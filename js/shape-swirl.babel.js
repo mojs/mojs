@@ -18,7 +18,7 @@ class ShapeSwirl extends Shape {
     super._declareDefaults();
 
     /* _DEFAULTS ARE - Shape DEFAULTS + THESE: */
-    
+
     /* [boolean] :: If shape should follow sinusoidal path. */
     this._defaults.isSwirl        = true;
     /* ∆ :: [number > 0] :: Degree size of the sinusoidal path. */
@@ -43,7 +43,7 @@ class ShapeSwirl extends Shape {
 
   // ^ PUBLIC  METHOD(S) ^
   // v PRIVATE METHOD(S) v
-  
+
   /*
     Method to copy _o options to _props with
     fallback to _defaults.
@@ -62,7 +62,7 @@ class ShapeSwirl extends Shape {
   */
   _tuneNewOptions (o) {
     if ( o == null ) { return }
-      
+
     super._tuneNewOptions( o );
     if ( o.x != null || o.y != null ) {
       this._calcPosData();

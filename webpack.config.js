@@ -45,7 +45,7 @@ module.exports = {
     target: 'node',
     extensions: [
       '', '.js', '.es6', '.babel.js', '.coffee',
-      '.styl', 
+      '.styl',
     ]
   }
 };

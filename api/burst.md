@@ -12,7 +12,7 @@ Full API reference:
 
 ```javascript
 const burst = new mojs.Burst({
-  
+
   /* BURST PROPERTIES */
 
   // Parent of the module. {String, Object} [selector, HTMLElement]
@@ -94,10 +94,10 @@ const burst = new mojs.Burst({
   children: {
     /* (+) SHAPE SWIRL PROPERTIES AND CALLBACKS (excluding `x` and `y`) - see ShapeSwirl API */
   }
-  
+
   // Options for timeline that controls all child and main Shape Swirls. {Object}
   timeline: {
-   /* (+) TIMELINE PROPERTIES AND CALLBACKS - see Tween API */ 
+   /* (+) TIMELINE PROPERTIES AND CALLBACKS - see Tween API */
   }
 
 })

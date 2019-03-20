@@ -120,7 +120,3 @@ class BezierEasing
 bezierEasing = new BezierEasing
 
 module.exports = bezierEasing
-
-
-
-
