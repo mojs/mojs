@@ -44,9 +44,6 @@ npm: `npm install mo-js`
 cdn: `<script src="https://cdn.jsdelivr.net/npm/mo-js@latest/build/mo.min.js"></script>`  
 bower: `bower install mojs`
 
-## Notes
-Working hard on `APIs`, `tutorials` and `website`. Follow [@legomushroom](https://twitter.com/legomushroom) for updates. Star to show your interest.
-
 ## Target browsers
 - Chrome 4+
 - Firefox 4+
