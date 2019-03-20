@@ -7,7 +7,7 @@ class Circle extends Bit
   _declareDefaults: ->
     super
     @_defaults.shape = 'ellipse'
-    
+
   _draw:->
     rx = if @_props.radiusX? then @_props.radiusX else @_props.radius
     ry = if @_props.radiusY? then @_props.radiusY else @_props.radius

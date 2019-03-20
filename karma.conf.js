@@ -62,12 +62,12 @@ module.exports = function(config) {
   };
 
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
-      reporters = ['progress', 'coverage', 'clear-screen'];
-      browsers = ['PhantomJS'];
-      // browsers = [];
+    reporters = ['progress', 'coverage', 'clear-screen'];
+    browsers = ['PhantomJS'];
+    // browsers = [];
   } else {
-      reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
-      browsers = Object.keys(customLaunchers);
+    reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
+    browsers = Object.keys(customLaunchers);
   }
 
 

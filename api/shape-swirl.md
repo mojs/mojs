@@ -27,11 +27,11 @@ const shapeSwirl = new mojs.ShapeSwirl({
 
   // If shape should follow sinusoidal path. {Boolean}
   isSwirl:            true
-  
+
   /* (+) SHAPE PROPERTIES AND CALLBACKS - see Shape API */
 
 })
-  
+
   /*
     Creates next state transition chain.
     @param options {Object} Next shape state.

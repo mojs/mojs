@@ -45,7 +45,7 @@ const html = new mojs.Html({
   scaleY:     1,
   // ∆ :: opacity property. {String, Number, Object} [value, delta]
   opacity:    1,
-  
+
   /*
     For other CSS properties please see `Other CSS properties` section.
   */
@@ -82,7 +82,7 @@ const html = new mojs.Html({
   backwardEasing: null,
   // properties fro entire timeline
   timeline: {
-   /* (+) TIMELINE PROPERTIES AND CALLBACKS - see Tween API */ 
+   /* (+) TIMELINE PROPERTIES AND CALLBACKS - see Tween API */
   },
 
   /* TWEEN CALLBACKS */

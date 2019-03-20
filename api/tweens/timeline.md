@@ -21,7 +21,7 @@ const timeline = new mojs.Timeline({
   duration:     null
 
 })
-  
+
   /* PUBLIC METHODS */
 
   /*

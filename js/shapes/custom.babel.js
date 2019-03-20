@@ -84,7 +84,7 @@ class Custom extends Bit {
     var p = this._props,
         radiusX = ( p.radiusX ) ? p.radiusX : p.radius,
         radiusY = ( p.radiusY ) ? p.radiusY : p.radius;
-    
+
     p.scaleX   = (2*radiusX)/100;
     p.scaleY   = (2*radiusY)/100;
     p.maxScale = Math.max( p.scaleX, p.scaleY );

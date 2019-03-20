@@ -17,7 +17,7 @@ class Timeline extends Tween {
   /*
     API method to append the Tween/Timeline to the end of the
     timeline. Each argument is treated as a new append.
-    Array of tweens is treated as a parallel sequence. 
+    Array of tweens is treated as a parallel sequence.
     @public
     @param {Object, Array} Tween/Timeline to append or array of such.
     @returns {Object} Self.
@@ -87,7 +87,7 @@ class Timeline extends Tween {
 
   // ^ PUBLIC  METHOD(S) ^
   // v PRIVATE METHOD(S) v
-  
+
   /*
     Method to append Tween/Timeline array or mix of such.
     @private
@@ -160,7 +160,7 @@ class Timeline extends Tween {
 
     // COVER CURRENT SWAPPED ORDER
     this._updateChildren( p, time, isYoyo );
-    
+
     Tween.prototype._setProgress.call( this, p, time );
   }
 
@@ -268,7 +268,7 @@ class Timeline extends Tween {
       this._o.duration = 0;
     }
     super._declareDefaults();
-    // remove default 
+    // remove default
     this._defaults.duration       = 0;
     this._defaults.easing         = 'Linear.None';
     this._defaults.backwardEasing = 'Linear.None';
