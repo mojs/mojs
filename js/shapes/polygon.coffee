@@ -54,7 +54,7 @@ class Polygon extends Bit
 
       @el.setAttribute 'd', (d += 'z')
     super
-    
+
   ###
     Method to get length of the shape.
     @overrides @ Bit

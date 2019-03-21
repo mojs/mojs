@@ -118,7 +118,7 @@ class Tween extends Module {
   */
   stop ( progress ) {
     if ( this._state === 'stop' ) { return this; }
-    
+
     this._wasUknownUpdate  = undefined;
 
     var stopProc = (progress != null) ? progress
@@ -166,7 +166,7 @@ class Tween extends Module {
       case 'play':
         this.play( shift );
         break;
-      case 'reverse': 
+      case 'reverse':
         this.playBackward( shift );
         break;
     }
@@ -293,7 +293,7 @@ class Tween extends Module {
     Constructor of the class.
     @private
   */
-  constructor ( o = {} ) {    
+  constructor ( o = {} ) {
     super(o);
     ( this._props.name == null ) && this._setSelfName();
     return this;
@@ -559,7 +559,7 @@ class Tween extends Module {
         // else if ( time > p.endTime ) { }
       }
     }
-    
+
     this._prevTime = time;
     return (time >= p.endTime) || (time <= startPoint);
   }
@@ -625,7 +625,7 @@ class Tween extends Module {
       if ( time > this._prevTime ) { this._isRepeatCompleted = false; }
       this._repeatComplete( time, isYoyo );
       return this._complete( time, isYoyo );
-    }    
+    }
 
     // reset callback flags
     this._isCompleted = false;
@@ -655,7 +655,7 @@ class Tween extends Module {
           this._repeatStart( time, isYoyo );
           this._firstUpdate( time, isYoyo );
         }
-        // if backward direction and 
+        // if backward direction and
         // if ( time < this._prevTime && time !== this._props.startTime ) {
         if ( time < this._prevTime ) {
           this._complete( time, isYoyo );
@@ -679,7 +679,7 @@ class Tween extends Module {
         }
         // if on edge but not at very start
         // |=====|=====|=====| >>>
-        // ^!    ^here ^here 
+        // ^!    ^here ^here
         if ( prevT >= 0 ) { this._repeatStart( time, isYoyo ); }
       }
 
@@ -713,7 +713,7 @@ class Tween extends Module {
         // block so filter that
         if ( prevT === TCount && !this._wasUknownUpdate ) {
           this._complete( time, isYoyo );
-          this._repeatComplete( time, isYoyo );              
+          this._repeatComplete( time, isYoyo );
           this._firstUpdate( time, isYoyo );
           // reset isComplete flag call
           // cuz we returned to active area
@@ -777,7 +777,7 @@ class Tween extends Module {
         // if reverse direction and in delay gap, then progress will be 0
         // if so we don't need to call the onRepeatComplete callback
         // |---=====|---=====|---=====| <<<
-        //   ^0       ^0       ^0   
+        //   ^0       ^0       ^0
         // OR we have flipped 0 to 1 regarding yoyo option
         if ( this.progress !== 0 || yoyoZero === 1 ) {
           // since we repeatComplete for previous period
@@ -853,7 +853,7 @@ class Tween extends Module {
       var easing = ( p.backwardEasing != null )
         ? p.backwardEasing
         : p.easing;
-      
+
       this.easedProgress = easing(proc);
     }
 
@@ -1073,7 +1073,7 @@ class Tween extends Module {
     Method to override callback for controll pupropes.
     @private
     @param {String}    Callback name.
-    @parma {Function}  Method to call  
+    @parma {Function}  Method to call
   */
   _overrideCallback (callback, fun) {
     var isCallback = (callback && typeof callback === 'function'),
@@ -1126,5 +1126,3 @@ class Tween extends Module {
 }
 
 export default Tween;
-
-

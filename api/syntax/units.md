@@ -1,7 +1,7 @@
 # Available Units
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/JKWRYW?editors=0010)
-- [back](/api/readme.md)
+- [CodePen Example](https://codepen.io/sol0mka/pen/JKWRYW?editors=0010)
+- [back](/api)
 
 
 The list of available units: `px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin`.  
@@ -18,5 +18,5 @@ Usage with properties:
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/JKWRYW?editors=0010)
-- [back](/api/readme.md)
+- [CodePen Example](https://codepen.io/sol0mka/pen/JKWRYW?editors=0010)
+- [back](/api)

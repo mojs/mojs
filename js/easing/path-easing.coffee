@@ -2,7 +2,7 @@ h = require '../h'
 
 # ## PathEasing
 # Class allows you to specify custom easing function
-# by **SVG path** [line commands](http://goo.gl/LzvV6P).
+# by **SVG path** [line commands](https://goo.gl/LzvV6P).
 # Line commands should by in range of rect 100x100.
 # @param {String, DOMNode}
 # @param {Object} options
@@ -46,7 +46,7 @@ class PathEasing
 
     @sample = h.bind(@sample, @)
     @_hardSample = h.bind(@_hardSample, @)
-    
+
     # console.time 'pre sample'
     @_preSample()
     # console.timeEnd 'pre sample'
@@ -54,7 +54,7 @@ class PathEasing
   # ---
 
   # Samples the path on init
-  # 
+  #
   # @method _preSample
   # @sideEffect {Array} _samples - set of sampled points
   _preSample:->
@@ -78,7 +78,7 @@ class PathEasing
     # reset the cached prev index if new progress
     # is smaller then previous one or it is not defined
     @_boundsStartIndex ?= 0
-    
+
     len = array.length
     # get start and end indexes of the loop and save the direction
     if @_boundsPrevProgress > p then loopEnd = 0; direction = 'reverse'
@@ -88,7 +88,7 @@ class PathEasing
     # very first and the very last items in array
     if direction is 'forward' then start = array[0]; end = array[array.length-1]
     else start = array[array.length-1]; end = array[0]
-      
+
     # loop thru the array from the @_boundsStartIndex
     for i in [@_boundsStartIndex...loopEnd]
       value = array[i]; pointX = value.point.x/@_rect; pointP = p
@@ -115,7 +115,7 @@ class PathEasing
 
   # Loop thru path trying to find the most closer x
   # compared to current progress value
-  # 
+  #
   # @method sample
   # @param  {Number} easing progress in range [0,1]
   # @return {Number} easing y
@@ -128,7 +128,7 @@ class PathEasing
 
   # Check if one of bounds.start or bounds.end
   # is close enough to searched progress
-  # 
+  #
   # @method _checkIfBoundsCloseEnough
   # @param  {Number} progress
   # @param  {Object} bounds
@@ -143,7 +143,7 @@ class PathEasing
   # ---
 
   # Check if bound point close enough to progress
-  # 
+  #
   # @method _checkIfPointCloseEnough
   # @param  {Number} progress
   # @param  {Object} bound point (start or end)
@@ -189,7 +189,7 @@ class PathEasing
   # @return {Number} normalized y
   _resolveY:(point)-> 1 - (point.y/@_rect)
   # ---
-  # 
+  #
   # Method to normalize path's X start and end value
   # since it must start at 0 and end at 100
   # @param  {String} Path coordinates to normalize
@@ -246,7 +246,7 @@ class PathEasing
         space = if i is 0 then '' else ' '
         segment += "#{space}#{point[0]},#{point[1]}"
     segment
-  
+
   # Method to geather array values to pairs.
   # @param  {Array} Array to search pairs in.
   # @return {Array} Matrix of pairs.
@@ -265,7 +265,7 @@ class PathEasing
 
   # Create new instance of PathEasing with specified parameters
   # *Please see the docs for PathEasing for more details on params.*
-  # 
+  #
   # @method create
   # @param  {String, DOMNode} path
   # @return {Object} easing y

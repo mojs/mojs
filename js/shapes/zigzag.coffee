@@ -13,7 +13,7 @@ class Zigzag extends Bit
     super
     p = this._props
     return if !@_props.points
-    
+
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
 
@@ -45,12 +45,12 @@ class Zigzag extends Bit
 
     @_length = length
     @el.setAttribute 'd', points
-    
+
     # save the properties
     @_prevPoints  = p.points
     @_prevRadiusX = radiusX
     @_prevRadiusY = radiusY
-    
+
   _getLength:-> @_length
 
 module.exports = Zigzag

@@ -152,13 +152,13 @@ class Burst extends Tunable {
       // after burst position calculation - delete the old `degreeShift`
       // from the options, since anyways we have copied it from the swirl
       if ( !isDegreeShift ) { delete option.degreeShift; }
-      
+
       swirl.tune( option );
       this._refreshBurstOptions( swirl._modules, i );
     }
   }
   /*
-    Method to refresh burst x/y/angle options on further chained 
+    Method to refresh burst x/y/angle options on further chained
     swirls, because they will be overriden after `tune` call on
     very first swirl.
     @param {Array} Chained modules array
@@ -233,7 +233,7 @@ class Burst extends Tunable {
     // save timeline options and remove from _o
     // cuz the master swirl should not get them
     this._saveTimelineOptions( this._o );
-    
+
     this.masterSwirl    = new MainSwirl( this._o );
     this._masterSwirls  = [ this.masterSwirl ];
     this.el             = this.masterSwirl.el;
@@ -339,7 +339,7 @@ class Burst extends Tunable {
     @param {Number} Index of the Swirl.
     @param {Number} Index of the main swirl.
   */
-  _addBurstProperties (options, index, i) { 
+  _addBurstProperties (options, index, i) {
     // save index of the module
     var mainIndex = this._index;
     // temporary change the index to parse index based properties like stagger
@@ -360,15 +360,15 @@ class Burst extends Tunable {
 
     options.angle = this._getBitAngle( (options.angle || 0), degreeShift, index );
   }
-  /* 
+  /*
     Method to get shapes angle in burst so
     it will follow circular shape.
-     
+
      @param    {Number, Object} Base angle.
      @param    {Number}         Angle shift for the bit
      @param    {Number}         Shape's index in burst.
      @returns  {Number}         Angle in burst.
-  */ 
+  */
   _getBitAngle ( angleProperty = 0, angleShift = 0, i ) {
     var p      = this._props,
         degCnt = ( p.degree % 360 === 0 ) ? p.count : p.count-1 || 1,
@@ -383,7 +383,7 @@ class Burst extends Tunable {
           keys  = Object.keys(angleProperty),
           start = keys[0],
           end   = angleProperty[start];
-      
+
       start = h.parseStringOption(start, i);
       end   = h.parseStringOption(end, i);
       // new start = newEnd

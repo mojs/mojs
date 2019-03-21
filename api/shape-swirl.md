@@ -1,9 +1,9 @@
 # ShapeSwirl
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/pbebwQ?editors=0010)
-- [Shape API](./shape.md)
-- [Tween API](./tweens/tween.md)
-- [back](./readme.md)
+- [CodePen Example](https://codepen.io/sol0mka/pen/pbebwQ?editors=0010)
+- [Shape API](shape.md)
+- [Tween API](tweens/tween.md)
+- [back](/api)
 
 Full API reference:
 
@@ -27,11 +27,11 @@ const shapeSwirl = new mojs.ShapeSwirl({
 
   // If shape should follow sinusoidal path. {Boolean}
   isSwirl:            true
-  
+
   /* (+) SHAPE PROPERTIES AND CALLBACKS - see Shape API */
 
 })
-  
+
   /*
     Creates next state transition chain.
     @param options {Object} Next shape state.
@@ -94,7 +94,7 @@ const shapeSwirl = new mojs.ShapeSwirl({
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/pbebwQ?editors=0010)
-- [Shape API](./shape.md)
-- [Tween API](./tweens/tween.md)
-- [back](./readme.md)
+- [CodePen Example](https://codepen.io/sol0mka/pen/pbebwQ?editors=0010)
+- [Shape API](shape.md)
+- [Tween API](tweens/tween.md)
+- [back](/api)

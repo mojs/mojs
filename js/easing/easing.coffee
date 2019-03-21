@@ -136,7 +136,7 @@ class Easing
 
   # Method to parse easing
   # @method parseEasing
-  # 
+  #
   # @param {String, Function, Array}
   #   - *String*: Easing name delimited by dot e.g "cubic.in" or "elastic.out"
   #     all avaliable options you can find at
@@ -145,13 +145,13 @@ class Easing
   #   - *Function*: function that recieve current time and returns modified one
   #     e.g. *function (k) { return k*k; }*. The function can be created by
   #     calling mojs.easing.bezier(0.55,0.085,0.68,0.53) or
-  #     mojs.easing.path('M0,0 ...') function. 
+  #     mojs.easing.path('M0,0 ...') function.
   #
   # @return {Function}
   parseEasing:(easing)->
 
     if !easing? then easing = 'linear.none'
-    
+
     type = typeof easing
     if type is 'string'
       return if easing.charAt(0).toLowerCase() is 'm'
@@ -160,7 +160,7 @@ class Easing
         easing = @_splitEasing(easing)
         easingParent = @[easing[0]]
         if !easingParent
-          h.error "Easing with name \"#{easing[0]}\" was not found, 
+          h.error "Easing with name \"#{easing[0]}\" was not found,
                     fallback to \"linear.none\" instead"
           return @['linear']['none']
         easingParent[easing[1]]
@@ -170,7 +170,7 @@ class Easing
 
   # Method to parse easing name string
   # @method splitEasing
-  # 
+  #
   # @param {String} easing name. All easing names can be found
   #                 at [easing module](easing.coffee.html) page.
   # @return {Array}

@@ -41,5 +41,5 @@ class Equal extends Bit
 
   _getLength:->
     2*if @_props.radiusX? then @_props.radiusX else @_props.radius
-  
+
 module.exports = Equal

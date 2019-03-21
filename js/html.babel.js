@@ -60,7 +60,7 @@ class Html extends Thenable {
       angleX: 1, angleY: 1, angleZ: 1,
       skewX: 1, skewY: 1
     }
-    // properties that should be prefixed 
+    // properties that should be prefixed
     this._prefixPropertyMap = { transform: 1, transformOrigin: 1 }
     // save prefix
     this._prefix = h.prefix.css;
@@ -71,7 +71,7 @@ class Html extends Thenable {
     if ((o == null) || !Object.keys(o).length) { return 1; }
 
     // get the last item in `then` chain
-    var prevModule = h.getLastItem( this._modules );  
+    var prevModule = h.getLastItem( this._modules );
     // set deltas to the finish state
     prevModule.deltas.refresh( false );
     // copy finish state to the last history record
@@ -242,7 +242,7 @@ class Html extends Thenable {
     delete o.customProperties;
 
     this._copyDefaultCustomProps();
-    
+
     // if ( this._customProps ) {}
     // this._customProps = this._customProps || {};
   }
@@ -359,7 +359,7 @@ class Html extends Thenable {
       isChained:         !!this._o.prevChainModule
     });
 
-    // if chained module set timeline to deltas' timeline 
+    // if chained module set timeline to deltas' timeline
     if ( this._o.prevChainModule ) {
       this.timeline = this.deltas.timeline;
     }
@@ -422,7 +422,7 @@ class Html extends Thenable {
     // if isnt tween property
     var isBoolean = typeof endValue === 'boolean',
         curve, easing;
-        
+
     if ( !h.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean ) {
 
       const TWEEN_PROPS = {};
