@@ -3,8 +3,8 @@
 References:
 
 - [CodePen Example](https://codepen.io/sol0mka/pen/b8831849500f0d5cd0ab5691ebe17873?editors=0010)
-- [Tween API](./tweens/tween.md)
-- [back](./readme.md)
+- [Tween API](tweens/tween.md)
+- [back](/api)
 
 Contents:
 
@@ -248,5 +248,5 @@ This makes `mojs` animations ultimately flexible.
 
 References:
 
-- [Tween API](./tweens/tween.md)
-- [back](./readme.md)
+- [Tween API](tweens/tween.md)
+- [back](/api)
