@@ -3,7 +3,7 @@
 References:
 
 - [CodePen Example](https://codepen.io/sol0mka/pen/68c596ca7444cb3df7b66b84fb1fd5c6?editors=0010)
-- [back](./readme.md)
+- [back](/api)
 
 Contents:
 
@@ -171,4 +171,4 @@ setSpeed ( speed )
 reset ( speed );
 ```
 
-- [back](./readme.md)
+- [back](/api)
