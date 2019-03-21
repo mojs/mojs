@@ -1,7 +1,7 @@
 # Path Easing
 
 - [CodePen Example](https://codepen.io/sol0mka/pen/KMWgQp?editors=0010)
-- [back](/api/readme.md)
+- [back](/api)
 
 The path easing functions can be expressed with string containing `svg` path cordinates or with `easing.path` constructor that returns a function:
 
@@ -14,4 +14,4 @@ The path easing functions can be expressed with string containing `svg` path cor
 ```
 
 - [CodePen Example](https://codepen.io/sol0mka/pen/KMWgQp?editors=0010)
-- [back](/api/readme.md)
+- [back](/api)
