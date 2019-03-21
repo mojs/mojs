@@ -5,7 +5,6 @@
 - [Shape](shape.md)
 - [ShapeSwirl](shape-swirl.md)
 - [Burst](burst.md)
-- [stagger](stagger.md)
 - MotionPath *(soon)*
 - Spriter *(soon)*
 - Radial Spring *(soon)*
@@ -16,6 +15,9 @@
 ## Tweens
 - [Tween](./tweens/tween.md)
 - [Timeline](./tweens/timeline.md)
+
+## Utils
+- [Stagger](./utils/stagger.md)
 
 ## Easing
 - [Base Functions](./easing/base-functions.md)
