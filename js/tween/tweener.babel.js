@@ -8,7 +8,7 @@ class Tweener {
     this._listenVisibilityChange();
     return this;
   }
-  
+
   _vars () {
     this.tweens = [];
     this._savedTweens = [];
@@ -140,6 +140,6 @@ class Tweener {
     }
   }
 }
-  
+
 var t = new Tweener
 export default t;

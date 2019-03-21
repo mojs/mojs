@@ -28,7 +28,7 @@ class Spriter {
       */
       delay:      0,
       /*
-        Easing. Please see the 
+        Easing. Please see the
         [timeline module parseEasing function](timeline.coffee.html#parseEasing)
         for all avaliable options.
 
@@ -38,14 +38,14 @@ class Spriter {
       easing:     'linear.none',
       /*
         Repeat times count
-        
+
         @property repeat
         @type     {Number}
       */
       repeat:     0,
       /*
         Yoyo option defines if animation should be altered on repeat.
-        
+
         @property yoyo
         @type     {Boolean}
       */
@@ -53,7 +53,7 @@ class Spriter {
       /*
         isRunLess option prevents animation from running immediately after
         initialization.
-        
+
         @property isRunLess
         @type     {Boolean}
       */
@@ -61,14 +61,14 @@ class Spriter {
       /*
         isShowEnd option defines if the last frame should be shown when
         animation completed.
-        
+
         @property isShowEnd
         @type     {Boolean}
       */
       isShowEnd:  false,
       /*
         onStart callback will be called once on animation start.
-        
+
         @property onStart
         @type     {Function}
       */
@@ -76,14 +76,14 @@ class Spriter {
       /*
         onUpdate callback will be called on every frame of the animation.
         The current progress in range **[0,1]** will be passed to the callback.
-        
+
         @property onUpdate
         @type     {Function}
       */
       onUpdate:   null,
       /*
         onComplete callback will be called once on animation complete.
-        
+
         @property onComplete
         @type     {Function}
       */
@@ -104,7 +104,7 @@ class Spriter {
   }
   /*
     Method to declare some variables.
-    
+
     @method run
     @param  {Object} New options
     @todo   Implement new object merging
@@ -116,7 +116,7 @@ class Spriter {
   }
   /*
     Method to run the spriter on demand.
-    
+
     @method run
     @param  {Object} New options
     @todo   Implement new object merging
@@ -124,13 +124,13 @@ class Spriter {
   run(o) { return this.timeline.play(); }
   /*
     Method to extend _props by options(this.o)
-    
+
     @method _extendDefaults
   */
   _extendDefaults () { return h.extend(this._props, this._defaults); }
   /*
     Method to parse frames as child nodes of el.
-    
+
     @method _parseFrames
   */
   _parseFrames () {
@@ -141,7 +141,7 @@ class Spriter {
 
   /*
     Method to create tween and timeline and supply callbacks.
-    
+
     @method _createTween
   */
   _createTween () {
@@ -161,13 +161,13 @@ class Spriter {
 
   /*
     Method to start tween
-    
+
     @method _startTween
   */
   _startTween () { setTimeout(() => this.timeline.play(), 1); }
   /*
     Method to set progress of the sprite
-    
+
     @method _setProgress
     @param  {Number} Progress in range **[0,1]**
   */
@@ -189,5 +189,5 @@ class Spriter {
     if (this._props.onUpdate) { this._props.onUpdate(p); }
   }
 }
- 
+
 export default Spriter;

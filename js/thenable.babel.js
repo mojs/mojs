@@ -237,7 +237,7 @@ class Thenable extends Tweenable {
   _isLastInChain () {
     let master = this._masterModule;
     // if there is no master field - check the modules length
-    // if module length is 1 thus there is no modules chain 
+    // if module length is 1 thus there is no modules chain
     // it is the last one, otherwise it isnt
     if ( !master ) { return ( this._modules.length === 1 ); }
     // if there is master - check if it is the last item in _modules chain

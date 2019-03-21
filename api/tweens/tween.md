@@ -1,14 +1,14 @@
 # Tween
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0011)
-- [Timeline](./timeline.md)
-- [back](/api/readme.md)
+- [CodePen Example](https://codepen.io/sol0mka/pen/MepeEx?editors=0011)
+- [Timeline](timeline.md)
+- [back](/api)
 
 Full API reference:
 
 ```javascript
 const tween = new mojs.Tween({
-  
+
   /* PROPERTIES */
 
   // Duration {Number}
@@ -30,7 +30,7 @@ const tween = new mojs.Tween({
 
   /*
     Fires on every when progress needs an update. For instance when tween was finished an remains in `1` progress state, and you will play it again - it will stay in the `1` state until first sufficient update after delay. So the `onRefresh` callback serves you to `refresh` the `1` state with `0` update.
-    
+
     @param isBefore {Boolean} If `true` - the refresh is before start time.
   */
   onRefresh (p, isForward, isYoyo) {},
@@ -95,7 +95,7 @@ const tween = new mojs.Tween({
     @param shift {Number} Start progress shift in milliseconds.
   */
   .playBackward( shift = 0 )
-  
+
   /*
     Stops playback.
     @param progress {Number} Progress to set after stop [0..1]. *Default* is `0`.
@@ -133,9 +133,9 @@ const tween = new mojs.Tween({
 
   /* Stops and resets the tween state. */
   .reset()
-  
+
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/MepeEx?editors=0011)
-- [Timeline](./timeline.md)
-- [back](/api/readme.md)
+- [CodePen Example](https://codepen.io/sol0mka/pen/MepeEx?editors=0011)
+- [Timeline](timeline.md)
+- [back](/api)

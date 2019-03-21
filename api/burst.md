@@ -1,18 +1,18 @@
 # Burst
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/JKWKVR?editors=0010)
-- [ShapeSwirl API](./shape-swirl.md)
-- [Stagger Strings API](./syntax/stagger.md)
-- [Property Maps API](./syntax/property-maps.md)
-- [Tween API](./tweens/tween.md)
-- [Timeline API](./tweens/timeline.md)
-- [back](./readme.md)
+- [CodePen Example](https://codepen.io/sol0mka/pen/JKWKVR?editors=0010)
+- [ShapeSwirl API](shape-swirl.md)
+- [Stagger Strings API](syntax/stagger.md)
+- [Property Maps API](syntax/property-maps.md)
+- [Tween API](tweens/tween.md)
+- [Timeline API](tweens/timeline.md)
+- [back](/api)
 
 Full API reference:
 
 ```javascript
 const burst = new mojs.Burst({
-  
+
   /* BURST PROPERTIES */
 
   // Parent of the module. {String, Object} [selector, HTMLElement]
@@ -94,10 +94,10 @@ const burst = new mojs.Burst({
   children: {
     /* (+) SHAPE SWIRL PROPERTIES AND CALLBACKS (excluding `x` and `y`) - see ShapeSwirl API */
   }
-  
+
   // Options for timeline that controls all child and main Shape Swirls. {Object}
   timeline: {
-   /* (+) TIMELINE PROPERTIES AND CALLBACKS - see Tween API */ 
+   /* (+) TIMELINE PROPERTIES AND CALLBACKS - see Tween API */
   }
 
 })
@@ -164,10 +164,10 @@ const burst = new mojs.Burst({
 
 ```
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/JKWKVR?editors=0010)
-- [ShapeSwirl API](./shape-swirl.md)
-- [Stagger Strings API](./syntax/stagger.md)
-- [Property Maps API](./syntax/property-maps.md)
-- [Tween API](./tweens/tween.md)
-- [Timeline API](./tweens/timeline.md)
-- [back](./readme.md)
+- [CodePen Example](https://codepen.io/sol0mka/pen/JKWKVR?editors=0010)
+- [ShapeSwirl API](shape-swirl.md)
+- [Stagger Strings API](syntax/stagger.md)
+- [Property Maps API](syntax/property-maps.md)
+- [Tween API](tweens/tween.md)
+- [Timeline API](tweens/timeline.md)
+- [back](/api)

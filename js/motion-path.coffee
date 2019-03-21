@@ -12,29 +12,29 @@ class MotionPath
   # ### Defaults/APIs
   # ---
   defaults:
-    # Defines motion path or arc to animate **el's** position.  
-    # 
+    # Defines motion path or arc to animate **el's** position.
+    #
     # Can be defined
     #   - by **String**:
     #     - **CSS selector** e.g. '#js-path', '.path' etc
-    #     - **SVG path** [line commands](http://goo.gl/LzvV6P)
+    #     - **SVG path** [line commands](https://goo.gl/LzvV6P)
     #       e.g 'M0,0 L100, 300'
     #   - by **SVGPathElement** e.g document.getElementById('#js-path')
     #   - by **Arc shift** e.g { x: 200, y: 100 }. If motion path was defined by
     #     arc shift, [curvature option](#property-curvature)
     #     defines arc curvature.
-    #     
+    #
     # @property   path
     # @type       {String, SVGPathElement, Object}
-    # 
-    # @codepen CSS selector:      http://codepen.io/sol0mka/pen/emqbLN/
-    # @codepen SVG line commands: http://codepen.io/sol0mka/pen/dPxaMm/
-    # @codepen SVGPathElement:    http://codepen.io/sol0mka/pen/xbvMyj/
-    # @codepen Arc shift:         http://codepen.io/sol0mka/pen/QweYKW/
+    #
+    # @codepen CSS selector:      https://codepen.io/sol0mka/pen/emqbLN/
+    # @codepen SVG line commands: https://codepen.io/sol0mka/pen/dPxaMm/
+    # @codepen SVGPathElement:    https://codepen.io/sol0mka/pen/xbvMyj/
+    # @codepen Arc shift:         https://codepen.io/sol0mka/pen/QweYKW/
     path:             null
     # ---
 
-    # Defines curve size for path defined by arc shift.  
+    # Defines curve size for path defined by arc shift.
     # Curvature amount can be defined by number representing *px*
     # or percents(string) representing amount relative to shift length.
     # @example
@@ -43,11 +43,11 @@ class MotionPath
     #   // will fallback to defaults for omitted axes
     #   { x: 200 }   // fallbacks to { x: 200, y: '50%' }
     #   { y: '25%' } // fallbacks to { x: '75%', y: '25%' }
-    # 
+    #
     # @property   curvature
     # @type       {Object}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/vEobbM/
+    #
+    # @codepen https://codepen.io/sol0mka/pen/vEobbM/
     curvature:        x: '75%', y: '50%'
     # ---
 
@@ -60,8 +60,8 @@ class MotionPath
     # Delay before animation starts, *ms*
     # @property   delay
     # @type       {Number}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/wBVNLM/
+    #
+    # @codepen https://codepen.io/sol0mka/pen/wBVNLM/
     delay:            0
     # ---
 
@@ -78,9 +78,9 @@ class MotionPath
     # @property   easing
     # @type       {String, Function, Array}
     #
-    # @codepen String:              http://codepen.io/sol0mka/pen/GgVeKR/
-    # @codepen Bezier cubic curve:  http://codepen.io/sol0mka/pen/WbVmeo/
-    # @codepen Custom function:     http://codepen.io/sol0mka/pen/XJvGrE/
+    # @codepen String:              https://codepen.io/sol0mka/pen/GgVeKR/
+    # @codepen Bezier cubic curve:  https://codepen.io/sol0mka/pen/WbVmeo/
+    # @codepen Custom function:     https://codepen.io/sol0mka/pen/XJvGrE/
     easing:           null
     # ---
 
@@ -88,61 +88,61 @@ class MotionPath
     # @property   repeat
     # @type       {Integer}
     #
-    # @codepen http://codepen.io/sol0mka/pen/emqbLN/
+    # @codepen https://codepen.io/sol0mka/pen/emqbLN/
     repeat:           0
     # ---
 
     # Defines if animation should be alternated on repeat.
-    # 
+    #
     # @property   yoyo
     # @type       {Boolean}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/gbVEbb/
+    #
+    # @codepen https://codepen.io/sol0mka/pen/gbVEbb/
     yoyo:             false
     # ---
 
     # Callback **onStart** fires once if animation was started.
-    # 
+    #
     # @property   onStart
     # @type       {Function}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/VYoRRe/
+    #
+    # @codepen https://codepen.io/sol0mka/pen/VYoRRe/
     onStart:          null
     # ---
 
     # Callback **onComplete** fires once if animation was completed.
-    # 
+    #
     # @property   onComplete
     # @type       {Function}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/ZYgPPm/
+    #
+    # @codepen https://codepen.io/sol0mka/pen/ZYgPPm/
     onComplete:       null
     # ---
 
     # Callback **onUpdate** fires every raf frame on motion
     # path update. Recieves **progress** of type **Number**
     # in range *[0,1]* as argument.
-    # 
+    #
     # @property   onUpdate
     # @type       {Function}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/YPmgMq/
+    #
+    # @codepen https://codepen.io/sol0mka/pen/YPmgMq/
     onUpdate:         null
     # ---
 
     # Defines additional horizontal offset from center of path, *px*
     # @property   offsetX
     # @type       {Number}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/gbVEbb/
+    #
+    # @codepen https://codepen.io/sol0mka/pen/gbVEbb/
     offsetX:          0
     # ---
 
     # Defines additional vertical offset from center of path, *px*
     # @property   offsetY
     # @type       {Number}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/OPKqNN/
+    #
+    # @codepen https://codepen.io/sol0mka/pen/OPKqNN/
     offsetY:          0
     # ---
 
@@ -157,9 +157,9 @@ class MotionPath
     #       return if (currentAngle < 0) { 90 } else {-90}
     #     }
     #   });
-    #   
-    # @codepen Number:    http://codepen.io/sol0mka/pen/JogzXw
-    # @codepen Function:  http://codepen.io/sol0mka/pen/MYNxer
+    #
+    # @codepen Number:    https://codepen.io/sol0mka/pen/JogzXw
+    # @codepen Function:  https://codepen.io/sol0mka/pen/MYNxer
     angleOffset:      null
     # ---
 
@@ -175,7 +175,7 @@ class MotionPath
     #     pathStart: .5
     #   });
     #
-    # @codepen http://codepen.io/sol0mka/pen/azeMBQ/
+    # @codepen https://codepen.io/sol0mka/pen/azeMBQ/
     pathStart:        0
     # ---
 
@@ -190,13 +190,13 @@ class MotionPath
     #     //...
     #     pathEnd: .5
     #   });
-    #   
-    # @codepen http://codepen.io/sol0mka/pen/wBVOJo/
+    #
+    # @codepen https://codepen.io/sol0mka/pen/wBVOJo/
     pathEnd:          1
     # ---
 
     # Defines motion blur on element in range of *[0,1]*
-    # 
+    #
     # @property   motionBlur
     # @type       {Number}
     motionBlur:       0
@@ -206,7 +206,7 @@ class MotionPath
     # Can be defined by **string** or **function**.
     # Function recieves current angle as agrumnet and
     # should return transform-origin value as a strin.
-    # 
+    #
     # @property   transformOrigin
     # @type       {String, Function}
     # @example
@@ -218,46 +218,46 @@ class MotionPath
     #       return  6*currentAngle + '% 0';
     #     }
     #   });
-    #   
-    # @codepen Function:  http://codepen.io/sol0mka/pen/pvMYwp
+    #
+    # @codepen Function:  https://codepen.io/sol0mka/pen/pvMYwp
     transformOrigin:  null
     # ---
 
     # Defines if path curves angle should be set to el.
-    # 
+    #
     # @property   isAngle
     # @type       {Boolean}
-    # @codepen http://codepen.io/sol0mka/pen/GgVexq/
+    # @codepen https://codepen.io/sol0mka/pen/GgVexq/
     isAngle:          false
     # ---
 
     # Defines motion path direction.
-    # 
+    #
     # @property   isReverse
     # @type       {Boolean}
-    # @codepen http://codepen.io/sol0mka/pen/KwOERQ/
+    # @codepen https://codepen.io/sol0mka/pen/KwOERQ/
     isReverse:        false
     # ---
 
     # Defines if animation should not start after init.
     # Animation can be then started with calling [run]() method.
-    # 
+    #
     # @property   isRunLess
     # @type       {Boolean}
-    # 
-    # @codepen *Please see at codepen for proper results*: http://
-    # codepen.io/sol0mka/pen/raXRKQ/
+    #
+    # @codepen *Please see at codepen for proper results*:
+    # https://codepen.io/sol0mka/pen/raXRKQ/
     isRunLess:        false
     # ---
 
     # Defines if **el's** position should be preset immediately after init.
     # If set to false **el** will remain at it's position until
     # actual animation started on delay end or [run]() method call.
-    # 
+    #
     # @property   isPresetPosition
     # @type       {Boolean}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/EaqMOJ/
+    #
+    # @codepen https://codepen.io/sol0mka/pen/EaqMOJ/
     isPresetPosition: true
   # ---
   # ### Class body docs
@@ -327,13 +327,13 @@ class MotionPath
     @prevCoords = {}; @blurAmount = 20
     # clamp motionBlur in range of [0,1]
     @props.motionBlur = h.clamp @props.motionBlur, 0, 1
-    
+
     @onUpdate   = @props.onUpdate
     if !@o.el
       h.error 'Missed "el" option. It could be a selector,
                 DOMNode or another module.'
       return true
-    
+
     @el = @parseEl @props.el
     @props.motionBlur > 0 and @createFilter()
 
@@ -387,7 +387,7 @@ class MotionPath
 
   getPath:->
     path = h.parsePath(@props.path); return path if path
-    
+
     if @props.path.x or @props.path.y
       @curveToPath
         start: x: 0, y: 0
@@ -402,7 +402,7 @@ class MotionPath
       height: @container.offsetHeight or 0
     start = @path.getPointAtLength 0
     end   = @path.getPointAtLength @len
-    
+
     size = {}; @scaler = {}
     size.width  = if end.x >= start.x then end.x-start.x else start.x-end.x
     size.height = if end.y >= start.y then end.y-start.y else start.y-end.y
@@ -587,4 +587,3 @@ class MotionPath
     # x: Math.cos(radAngle), y: Math.sin(radAngle)
 
 module.exports = MotionPath
-

@@ -2,8 +2,8 @@
 
 References:
 
-- [CodePen Example](http://codepen.io/sol0mka/pen/68c596ca7444cb3df7b66b84fb1fd5c6?editors=0010)
-- [back](./readme.md)
+- [CodePen Example](https://codepen.io/sol0mka/pen/68c596ca7444cb3df7b66b84fb1fd5c6?editors=0010)
+- [back](/api)
 
 Contents:
 
@@ -27,7 +27,7 @@ const shapes = new Shapes({
 
 ```
 
-[CodePen Example](http://codepen.io/sol0mka/pen/81885a6b6125bc73b0665b5816b12012?editors=0010)
+[CodePen Example](https://codepen.io/sol0mka/pen/81885a6b6125bc73b0665b5816b12012?editors=0010)
 
 You can use `array` to specify property value for each shape:
 
@@ -44,7 +44,7 @@ const shapes = new StaggeredShape({
 
 ```
 
-[CodePen Example](http://codepen.io/sol0mka/pen/78c17f405451e644cb424db364266015?editors=0010)
+[CodePen Example](https://codepen.io/sol0mka/pen/78c17f405451e644cb424db364266015?editors=0010)
 
 You can use `stagger` string incremental properties:
 
@@ -61,7 +61,7 @@ const shapes = new StaggeredShape({
 
 ```
 
-[CodePen Example](http://codepen.io/sol0mka/pen/dd71c464c891b79b561b663f31c17804?editors=0010)
+[CodePen Example](https://codepen.io/sol0mka/pen/dd71c464c891b79b561b663f31c17804?editors=0010)
 
 The `initial value` could be omitted - it will fallback to `0`:
 
@@ -78,7 +78,7 @@ const shapes = new Shapes({
 
 ```
 
-[CodePen Example](http://codepen.io/sol0mka/pen/39a051dfdaed0d565c1acef5117effc7?editors=0010)
+[CodePen Example](https://codepen.io/sol0mka/pen/39a051dfdaed0d565c1acef5117effc7?editors=0010)
 
 `stagger` strings can be used inside `deltas` and can contain `rand` expressions:
 
@@ -97,7 +97,7 @@ const shapes = new StaggeredShape({
 
 ```
 
-[CodePen Example](http://codepen.io/sol0mka/pen/097474f0a97e492adf87fc24b68cf05c?editors=0010)
+[CodePen Example](https://codepen.io/sol0mka/pen/097474f0a97e492adf87fc24b68cf05c?editors=0010)
 
 ### Full API Reference
 
@@ -171,4 +171,4 @@ setSpeed ( speed )
 reset ( speed );
 ```
 
-- [back](./readme.md)
+- [back](/api)

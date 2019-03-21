@@ -62,12 +62,12 @@ module.exports = function(config) {
   };
 
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
-      reporters = ['progress', 'coverage', 'clear-screen'];
-      browsers = ['PhantomJS'];
-      // browsers = [];
+    reporters = ['progress', 'coverage', 'clear-screen'];
+    browsers = ['PhantomJS'];
+    // browsers = [];
   } else {
-      reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
-      browsers = Object.keys(customLaunchers);
+    reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
+    browsers = Object.keys(customLaunchers);
   }
 
 
@@ -166,6 +166,10 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
     sauceLabs: {
       testName: 'mo · js tests',
+      startConnect: false,
+      username: process.env.SAUCE_USERNAME,
+      accessKey: process.env.SAUCE_ACCESS_KEY,
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
     },
     captureTimeout: 120000,
     customLaunchers: customLaunchers,

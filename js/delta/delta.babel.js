@@ -24,7 +24,7 @@ class Delta {
       var name = deltas[i].name;
       this._previousValues.push({
         name, value: this._o.props[name]
-      })      
+      })
     }
 
     this.tween._refresh( isBefore );
@@ -53,7 +53,7 @@ class Delta {
     o.callbackOverrides = {
       onUpdate (ep, p) { it._calcCurrentProps( ep, p ); },
     }
-    
+
     // if not chained - add the onRefresh callback
     // to refresh the tween when needed
     if ( !this._o.isChained ) {

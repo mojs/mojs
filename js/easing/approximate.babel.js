@@ -44,9 +44,9 @@ const _proximate = (samples) => {
       var coef = ( nextValue > sample ) ? -1 : 1;
       var scaledDifference = coef*progressScale*dValue;
 
-      return sample + scaledDifference; 
+      return sample + scaledDifference;
     }
-    
+
     cached.getSamples = () => { return samples; }
 
     return cached;

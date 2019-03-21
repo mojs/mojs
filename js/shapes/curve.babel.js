@@ -33,7 +33,7 @@ class Curve extends Bit {
     var y  = p.height/2;
     var x1 = x - radiusX;
     var x2 = x + radiusX;
-    
+
     var d = `M${x1} ${y} Q ${x} ${ y - 2*radiusY } ${x2} ${y}`;
 
     // set the `d` attribute and save it to `_prevD`
@@ -56,5 +56,5 @@ class Curve extends Bit {
     return .5 * Math.PI * ( 3*dRadius - sqrt );
   }
 }
-  
+
 export default Curve;

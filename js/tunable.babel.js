@@ -97,7 +97,7 @@ class Tuneable extends Thenable {
     // fallback to history records, if wasn't specified
     currRecord = (currRecord == null) ? this._history[index]   : currRecord;
     nextRecord = (nextRecord == null) ? this._history[index+1] : nextRecord;
-    
+
     var oldVal  = currRecord[key],
         nextVal = (nextRecord == null) ? null : nextRecord[key];
 
@@ -151,7 +151,7 @@ class Tuneable extends Thenable {
     } else if ( isNextDelta ) {
       isValueDeltaChain = h.getDeltaStart(nextVal) === `${currVal}`;
     }
-    
+
     return isEqual || isValueDeltaChain || isDeltaChain;
   }
   /*

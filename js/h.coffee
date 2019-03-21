@@ -5,7 +5,7 @@ class Helpers
   # ---
 
   # SVG namespace
-  # 
+  #
   # @property   NS
   # @type       {String}
   NS: 'http://www.w3.org/2000/svg'
@@ -159,9 +159,9 @@ class Helpers
     (name is 'transform') and (el.style["#{@prefix.css}#{name}"] = value)
     el.style[name] = value
   # ---
-  # 
+  #
   # Sets styles on element with prefix(if needed) on el
-  # 
+  #
   # @method style
   # @param {DOMNode}          element to set the styles on
   # @param {String, Object}   style name or style: value object
@@ -248,7 +248,7 @@ class Helpers
     string.trim().split(/\s+/gim).forEach (str)=>
       arr.push @parseUnit @parseIfRand str
     arr
-  
+
   calcArrDelta:(arr1, arr2)->
     # if !arr1? or !arr2? then throw Error 'Two arrays should be passed'
     # if !@isArray(arr1)or!@isArray(arr2) then throw Error 'Two arrays expected'
@@ -288,7 +288,7 @@ class Helpers
           g: parseInt(g, 16)
           b: parseInt(b, 16)
           a: 1
-    
+
     # not HEX
     # shorthand color and rgb()
     if color[0] isnt '#'
@@ -340,7 +340,7 @@ class Helpers
       base = @parseUnit(@parseIfRand(splittedValue[1])); splittedValue[3]
     # if just a plain value
     else base = @parseUnit(0); splittedValue[1]
-    
+
     value = @parseIfRand(value)
     # parse with units
     unitValue = @parseUnit(value)
@@ -348,7 +348,7 @@ class Helpers
     # add units only if option had a unit before
     unit = if base.isStrict then base.unit
     else if unitValue.isStrict then unitValue.unit else ''
-    
+
     if unit then "#{number}#{unit}" else number
 
   # ---
@@ -358,7 +358,7 @@ class Helpers
   parseIfStagger:(value, i)->
     if !(typeof value is 'string' and value.match /stagger/g) then value
     else @parseStagger(value, i)
-    
+
 
   # if passed string has rand function then get the rand value
   parseIfRand:(str)->
@@ -582,7 +582,7 @@ class Helpers
     if h.isDOM( el ) then return el
     else if ( typeof el is 'string' )
       el = document.querySelector( el )
-    
+
     if ( el == null ) then h.error( "Can't parse HTML element: ", el );
     el
   ###

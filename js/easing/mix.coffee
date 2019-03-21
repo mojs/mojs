@@ -23,7 +23,7 @@ sort = (a, b)->
   a.to < b.to and (returnValue = -1)
   a.to > b.to and (returnValue =  1)
   returnValue
-  
+
 # ---
 
 # Method to get the nearest to item to the progress.

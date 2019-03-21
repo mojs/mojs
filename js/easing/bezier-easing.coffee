@@ -1,7 +1,7 @@
 h = require '../h'
 
 ###*
- * Copyright (c) 2014 Gaëtan Renaudeau http://goo.gl/El3k7u
+ * Copyright (c) 2014 Gaëtan Renaudeau https://goo.gl/El3k7u
  * Adopted from https://github.com/gre/bezier-easing
 ###
 #  TODO: remove 3 ### istanbul ignore next ### statements
@@ -120,7 +120,3 @@ class BezierEasing
 bezierEasing = new BezierEasing
 
 module.exports = bezierEasing
-
-
-
-

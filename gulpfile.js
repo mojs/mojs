@@ -44,51 +44,51 @@ var paths = {
 
 gulp.task('coffee:tests', function(e){
   return gulp.src(paths.src.tests)
-          .pipe(plumber())
-          .pipe(changed(paths.dist.tests, { extension: '.js'}))
-          .pipe(coffeelint())
-          .pipe(coffeelint.reporter())
-          .pipe(coffee())
-          .pipe(gulp.dest(paths.dist.tests))
-  });
+  .pipe(plumber())
+  .pipe(changed(paths.dist.tests, { extension: '.js'}))
+  .pipe(coffeelint())
+  .pipe(coffeelint.reporter())
+  .pipe(coffee())
+  .pipe(gulp.dest(paths.dist.tests))
+});
 
 gulp.task('stylus', function(){
   return gulp.src(devFolder + 'css/main.styl')
-          .pipe(plumber())
-          .pipe(stylus())
-          .pipe(autoprefixer('last 4 version'))
-          .pipe(gulp.dest(paths.dist.css))
-          .pipe(livereload())
-  });
+  .pipe(plumber())
+  .pipe(stylus())
+  .pipe(autoprefixer('last 4 version'))
+  .pipe(gulp.dest(paths.dist.css))
+  .pipe(livereload())
+});
 
 var credits = ''
 
 gulp.task('lib', function(e){
   return gulp.src(paths.src.js)
-    .pipe(plumber())
-    .pipe(coffee())
-    .pipe(gulp.dest('lib/'))
-  });
+  .pipe(plumber())
+  .pipe(coffee())
+  .pipe(gulp.dest('lib/'))
+});
 
 gulp.task('babel-lib', function(e){
   return gulp.src(paths.src.babel)
-    .pipe(plumber())
-    .pipe(babel())
-    .pipe(rename(function (path) {
-        return path.basename = path.basename.replace('.babel', '');
-      })
-    ).pipe(gulp.dest('lib/'))
-  });
+  .pipe(plumber())
+  .pipe(babel())
+  .pipe(rename(function (path) {
+    return path.basename = path.basename.replace('.babel', '');
+  })
+).pipe(gulp.dest('lib/'))
+});
 
 gulp.task('minify-mo', function() {
   return gulp.src(distMoFile)
-          .pipe(plumber())
-          .pipe(uglify())
-          .pipe(insert.transform(function(contents) {
-            return credits + contents;
-          }))
-          .pipe(rename('mo.min.js'))
-          .pipe(gulp.dest('./build'))
+  .pipe(plumber())
+  .pipe(uglify())
+  .pipe(insert.transform(function(contents) {
+    return credits + contents;
+  }))
+  .pipe(rename('mo.min.js'))
+  .pipe(gulp.dest('./build'))
 });
 
 gulp.task('update-version', function() {
@@ -97,34 +97,34 @@ gulp.task('update-version', function() {
 
 gulp.task('get-current-version', function(e){
   return gulp.src('package.json')
-          .pipe(plumber())
-          .pipe(jeditor(function (json) {
-            currentVersion = json.version;
-            credits = '/*! \n\t:: mo · js :: motion graphics toolbelt for the web\n\tOleg Solomka @LegoMushroom 2015 MIT\n\t' + currentVersion + ' \n*/\n\n'
-            return json;
-          }))
-  });
+  .pipe(plumber())
+  .pipe(jeditor(function (json) {
+    currentVersion = json.version;
+    credits = '/*! \n\t:: mo · js :: motion graphics toolbelt for the web\n\tOleg Solomka @LegoMushroom 2015 MIT\n\t' + currentVersion + ' \n*/\n\n'
+    return json;
+  }))
+});
 
 gulp.task('update-bower-version', function(e){
   return gulp.src('bower.json')
-          .pipe(plumber())
-          .pipe(jeditor(function (json) {
-            json.version = currentVersion;
-            return json;
-          }))
-          .pipe(gulp.dest(''))
-  });
+  .pipe(plumber())
+  .pipe(jeditor(function (json) {
+    json.version = currentVersion;
+    return json;
+  }))
+  .pipe(gulp.dest(''))
+});
 
 gulp.task('update-main-file-version', function(e){
   return gulp.src('js/mojs.babel.js')
-          .pipe(plumber())
-          .pipe(insert.transform(function(contents) {
-            var newString =  'revision:   \''+currentVersion+'\'';
-            return contents
-              .replace(/revision\:\s+?(\'|\")\d+\.\d+\.+\d+(\'|\")/i, newString);
-          }))
-          .pipe(gulp.dest('js/'))
-  });
+  .pipe(plumber())
+  .pipe(insert.transform(function(contents) {
+    var newString =  'revision:   \''+currentVersion+'\'';
+    return contents
+    .replace(/revision\:\s+?(\'|\")\d+\.\d+\.+\d+(\'|\")/i, newString);
+  }))
+  .pipe(gulp.dest('js/'))
+});
 
 gulp.task('default', function(){
   var server = livereload();

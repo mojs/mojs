@@ -224,7 +224,7 @@ class Deltas {
     @param {Number} Module index.
   */
   _parseDeltaByCustom (name, object, index) {
-    return this._parseNumberDelta( name, object, index ); 
+    return this._parseNumberDelta( name, object, index );
     // const customRecord = this._o.customProps[name];
     // switch ( customRecord.type.toLowerCase() ) {
     //   case 'color':  { return this._parseColorDelta( name, object ); }
@@ -372,7 +372,7 @@ class Deltas {
   */
   _parseUnitDelta (key, value, index) {
     const preParse = this._preparseDelta( value );
-    
+
     const end   = h.parseUnit(h.parseStringOption(preParse.end, index)),
           start = h.parseUnit(h.parseStringOption(preParse.start, index));
 
@@ -434,7 +434,7 @@ class Deltas {
     const start = Object.keys(value)[0],
           end   = value[start];
 
-    return { start, end, curve } 
+    return { start, end, curve }
   }
   /*
     Method to parse color into usable object.
@@ -457,7 +457,7 @@ class Deltas {
         }
       }
     }
-    
+
     // not HEX
     // shorthand color and rgb()
     if (color[0] !== '#') {
