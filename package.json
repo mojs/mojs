@@ -18,10 +18,10 @@
     "animation"
   ],
   "author": {
-    "name": "LegoMushroom",
+    "name": "Oleg Solomka",
     "email": "legomushroom@gmail.com",
-    "twitter": "@legomushroom",
-    "url": "https://twitter.com/legomushroom"
+    "url": "https://twitter.com/legomushroom",
+    "github": "@legomushroom",
   },
   "repository": {
     "type": "git",
