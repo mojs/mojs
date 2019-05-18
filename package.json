@@ -1,5 +1,5 @@
 {
-  "name": "mo-js",
+  "name": "@mojs/core",
   "description": "The motion graphics toolbelt for the web",
   "version": "0.288.2",
   "license": "MIT",
