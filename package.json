@@ -12,9 +12,10 @@
   "main": "build/mo.js",
   "keywords": [
     "motion",
+    "graphics",
+    "toolbelt",
     "effects",
-    "animation",
-    "motion graphics"
+    "animation"
   ],
   "author": {
     "name": "LegoMushroom",
