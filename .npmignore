@@ -6,6 +6,7 @@ spec/
 css/
 js/
 .travis.yml
+.editorconfig
 index.html
 index.jade
 bower.json
@@ -13,3 +14,4 @@ npm-debug.log
 gulpfile.js
 karma.conf.js
 webpack.config.js
+todo.md
