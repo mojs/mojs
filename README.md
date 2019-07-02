@@ -48,9 +48,13 @@ The library provides **built-in components** to start animating from scratch lik
 - [Timeline editor](https://github.com/mojs-contrib/mojs-timeline-editor)
 
 ## Installation
-npm: `npm install @mojs/core`  
-cdn: `<script src="https://cdn.jsdelivr.net/npm/@mojs/core@latest/build/mo.min.js"></script>`  
-bower: `bower install mojs`
+```console
+# cdn
+<script src="https://cdn.jsdelivr.net/npm/@mojs/core"></script>
+
+# npm
+npm i @mojs/core
+```
 
 ## Target browsers
 - Chrome 4+
