@@ -128,13 +128,13 @@ gulp.task('update-main-file-version', function(e){
 
 gulp.task('default', function(){
   var server = livereload();
-  gulp.run('get-current-version');
-  gulp.watch(paths.src.tests,['coffee:tests']);
-  gulp.watch(paths.src.css,  ['stylus']);
+  gulp.series('get-current-version');
+  gulp.watch(paths.src.tests, gulp.series(['coffee:tests']));
+  gulp.watch(paths.src.css, gulp.series(['stylus']));
   // gulp.watch(paths.src.js,   ['coffeeify', 'coffee-lint', 'docs', 'lib']);
   // gulp.watch(paths.src.js,   [ 'lib', 'babel-lib' ]);
   // gulp.watch(paths.src.babel,   [ 'lib', 'babel-lib' ]);
-  gulp.watch(distMoFile,   [ 'minify-mo' ]);
+  gulp.watch(distMoFile, gulp.series(['minify-mo']));
   // gulp.watch(paths.src.index,['index:jade']);
-  gulp.watch('package.json', ['update-version']);
+  gulp.watch('package.json', gulp.series(['update-version']));
 });
