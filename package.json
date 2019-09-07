@@ -79,7 +79,7 @@
     "gulp-watch": "*",
     "karma": "^0.12.24",
     "karma-babel-preprocessor": "^6.0.1",
-    "karma-browserify": "^2.0.0",
+    "karma-browserify": "^6.1.0",
     "karma-chrome-launcher": "^0.1.4",
     "karma-clear-screen-reporter": "0.0.1",
     "karma-cli": "0.0.4",
