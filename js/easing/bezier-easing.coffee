@@ -28,7 +28,7 @@ class BezierEasing
     SUBDIVISION_MAX_ITERATIONS = 10
     kSplineTableSize = 11
     kSampleStepSize = 1.0 / (kSplineTableSize - 1.0)
-    float32ArraySupported = 'Float32Array' in global
+    float32ArraySupported = !!Float32Array
 
     A = (aA1, aA2) -> 1.0 - 3.0 * aA2 + 3.0 * aA1
     B = (aA1, aA2) -> 3.0 * aA2 - 6.0 * aA1
