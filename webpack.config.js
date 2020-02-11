@@ -13,8 +13,11 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
-          presets: [ 'es2015-loose', 'babel-preset-stage-2' ],
-          plugins: [ 'transform-runtime' ]
+          presets: [ 'env' ],
+          plugins: [
+            'transform-runtime',
+            'transform-object-rest-spread',
+          ]
         }
       },
 
