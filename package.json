@@ -53,7 +53,7 @@
     "coffee-loader": "^0.7.2",
     "coffeeify": "latest",
     "coveralls": "^2.11.2",
-    "grock": "git+https://github.com/legomushroom/grock.git",
+    "grock": "^0.3.8",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
     "gulp-browserify": "^0.5.1",
