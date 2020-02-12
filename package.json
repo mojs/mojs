@@ -72,7 +72,7 @@
     "gulp-notify": "^3.2.0",
     "gulp-plumber": "*",
     "gulp-rename": "latest",
-    "gulp-shell": "^0.7.1",
+    "gulp-shell": "^0.8.0",
     "gulp-stylus": "latest",
     "gulp-uglify": "latest",
     "gulp-watch": "*",
