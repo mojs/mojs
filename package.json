@@ -86,7 +86,6 @@
     "karma-jasmine": "^3.1.1",
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-sauce-launcher": "^2.0.2",
-    "mojs-player": "^0.40.0",
     "nodemon": "^2.0.2",
     "phantomjs-polyfill": "0.0.2",
     "pygments": "^0.2.0",
