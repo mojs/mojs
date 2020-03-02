@@ -57,6 +57,7 @@
     "gulp-autoprefixer": "^7.0.1",
     "gulp-browserify": "^0.5.1",
     "gulp-changed": "^4.0.2",
+    "gulp-cli": "^2.2.0",
     "gulp-coffee": "^3.0.3",
     "gulp-coffeeify": "^0.1.8",
     "gulp-coffeelint": "^0.6.0",
