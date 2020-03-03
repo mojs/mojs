@@ -51,7 +51,6 @@
     "coffee-loader": "^0.9.0",
     "coffeeify": "latest",
     "coveralls": "^2.11.2",
-    "grock": "^0.3.8",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
     "gulp-browserify": "^0.5.1",

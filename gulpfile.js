@@ -19,7 +19,6 @@ var uglify        = require('gulp-uglify');
 var insert        = require('gulp-insert');
 var jeditor       = require("gulp-json-editor");
 var shell         = require("gulp-shell");
-var grock         = require("grock");
 // var babel         = require("gulp-babel");
 
 var devFolder   = '', distFolder  = '', currentVersion = 0;
