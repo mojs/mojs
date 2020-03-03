@@ -46,7 +46,7 @@
     "babel-runtime": "^6.26.0",
     "brfs": "^2.0.2",
     "browserify": "^16.5.0",
-    "browserify-istanbul": "^0.1.2",
+    "browserify-istanbul": "^3.0.1",
     "browserify-shim": "~3.8.0",
     "coffee-loader": "^0.9.0",
     "coffeeify": "latest",
