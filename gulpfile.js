@@ -19,7 +19,7 @@ var uglify        = require('gulp-uglify');
 var insert        = require('gulp-insert');
 var jeditor       = require("gulp-json-editor");
 var shell         = require("gulp-shell");
-// var babel         = require("gulp-babel");
+var babel         = require("gulp-babel");
 
 var devFolder   = '', distFolder  = '', currentVersion = 0;
 var distMoFile = devFolder + 'build/mo.js';
