@@ -88,7 +88,6 @@
     "nodemon": "^2.0.2",
     "phantomjs-polyfill": "0.0.2",
     "pygments": "^0.2.0",
-    "run-sequence": "^1.0.2",
     "webpack": "^1.14.0"
   }
 }

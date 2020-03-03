@@ -15,7 +15,6 @@ var csslint       = require('gulp-csslint');
 var browserify    = require('gulp-browserify');
 var rename        = require('gulp-rename');
 var uglify        = require('gulp-uglify');
-var sequence      = require('run-sequence');
 // var coffeeify     = require('gulp-coffeeify');
 var insert        = require('gulp-insert');
 var jeditor       = require("gulp-json-editor");
@@ -92,7 +91,7 @@ gulp.task('minify-mo', function() {
 });
 
 gulp.task('update-version', function() {
-  sequence('get-current-version', 'update-bower-version', 'update-main-file-version');
+  gulp.series('get-current-version', 'update-bower-version', 'update-main-file-version');
 });
 
 gulp.task('get-current-version', function(e){
