@@ -89,10 +89,6 @@ gulp.task('minify-mo', function() {
   .pipe(gulp.dest('./build'))
 });
 
-gulp.task('update-version', function() {
-  gulp.series('get-current-version', 'update-bower-version', 'update-main-file-version');
-});
-
 gulp.task('get-current-version', function(e){
   return gulp.src('package.json')
   .pipe(plumber())
@@ -110,7 +106,7 @@ gulp.task('update-bower-version', function(e){
     json.version = currentVersion;
     return json;
   }))
-  .pipe(gulp.dest(''))
+  .pipe(gulp.dest('.'))
 });
 
 gulp.task('update-main-file-version', function(e){
@@ -123,6 +119,12 @@ gulp.task('update-main-file-version', function(e){
   }))
   .pipe(gulp.dest('js/'))
 });
+
+gulp.task('update-version', gulp.series(
+  'get-current-version',
+  'update-bower-version',
+  'update-main-file-version')
+);
 
 gulp.task('default', function(){
   var server = livereload();
