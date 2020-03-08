@@ -3,3 +3,4 @@ node_modules/
 coverage/
 vendor/
 npm-debug.log
+.DS_Store
