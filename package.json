@@ -31,19 +31,17 @@
     "url": "https://github.com/mojs/mojs/issues"
   },
   "homepage": "https://github.com/mojs/mojs",
-  "dependencies": {},
+  "dependencies": {
+    "@babel/runtime": "^7.8.7"
+  },
   "devDependencies": {
     "6to5-loader": "^3.0.0",
     "6to5-runtime": "^3.6.5",
     "@babel/core": "^7.8.6",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/preset-env": "^7.8.7",
     "babel-loader": "^8.0.6",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.5.2",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.5.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "babel-preset-stage-2": "^6.11.0",
-    "babel-runtime": "^6.26.0",
     "brfs": "^2.0.2",
     "browserify": "^16.5.0",
     "browserify-istanbul": "^3.0.1",

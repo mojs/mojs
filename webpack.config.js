@@ -13,10 +13,10 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
-          presets: [ 'env' ],
+          presets: [ '@babel/preset-env' ],
           plugins: [
-            'transform-runtime',
-            'transform-object-rest-spread',
+            '@babel/plugin-transform-runtime',
+            '@babel/plugin-proposal-object-rest-spread',
           ]
         }
       },
