@@ -1,27 +1,19 @@
 var gulp          = require('gulp');
-var fs            = require('fs');
 var stylus        = require('gulp-stylus');
 var autoprefixer  = require('gulp-autoprefixer');
-var notify        = require('gulp-notify');
 var livereload    = require('gulp-livereload');
 var coffee        = require('gulp-coffee');
 var changed       = require('gulp-changed');
-// var jade          = require('gulp-jade');
 var watch         = require('gulp-jade');
 var coffeelint    = require('gulp-coffeelint');
 var plumber       = require('gulp-plumber');
-var concat        = require('gulp-concat');
-var csslint       = require('gulp-csslint');
-var browserify    = require('gulp-browserify');
 var rename        = require('gulp-rename');
 var uglify        = require('gulp-uglify');
-// var coffeeify     = require('gulp-coffeeify');
 var insert        = require('gulp-insert');
-var jeditor       = require("gulp-json-editor");
-var shell         = require("gulp-shell");
-var babel         = require("gulp-babel");
+var jeditor       = require('gulp-json-editor');
+var babel         = require('gulp-babel');
 
-var devFolder   = '', distFolder  = '', currentVersion = 0;
+var devFolder = '', distFolder  = '', currentVersion = 0, credits = '';
 var distMoFile = devFolder + 'build/mo.js';
 
 var paths = {
@@ -40,7 +32,7 @@ var paths = {
   }
 }
 
-gulp.task('coffee:tests', function(e){
+gulp.task('coffee:tests', function() {
   return gulp.src(paths.src.tests)
   .pipe(plumber())
   .pipe(changed(paths.dist.tests, { extension: '.js'}))
@@ -50,7 +42,7 @@ gulp.task('coffee:tests', function(e){
   .pipe(gulp.dest(paths.dist.tests))
 });
 
-gulp.task('stylus', function(){
+gulp.task('stylus', function() {
   return gulp.src(devFolder + 'css/main.styl')
   .pipe(plumber())
   .pipe(stylus())
@@ -59,23 +51,21 @@ gulp.task('stylus', function(){
   .pipe(livereload())
 });
 
-var credits = ''
-
-gulp.task('lib', function(e){
+gulp.task('lib', function() {
   return gulp.src(paths.src.js)
   .pipe(plumber())
   .pipe(coffee())
   .pipe(gulp.dest('lib/'))
 });
 
-gulp.task('babel-lib', function(e){
+gulp.task('babel-lib', function() {
   return gulp.src(paths.src.babel)
   .pipe(plumber())
   .pipe(babel({
     presets: ['@babel/env'],
     plugins: ['@babel/transform-runtime']
   }))
-  .pipe(rename(function (path) {
+  .pipe(rename(function(path) {
     return path.basename = path.basename.replace('.babel', '');
   })
 ).pipe(gulp.dest('lib/'))
@@ -92,27 +82,27 @@ gulp.task('minify-mo', function() {
   .pipe(gulp.dest('./build'))
 });
 
-gulp.task('get-current-version', function(e){
+gulp.task('get-current-version', function() {
   return gulp.src('package.json')
   .pipe(plumber())
-  .pipe(jeditor(function (json) {
+  .pipe(jeditor(function(json) {
     currentVersion = json.version;
     credits = '/*! \n\t:: mo · js :: motion graphics toolbelt for the web\n\tOleg Solomka @LegoMushroom 2015 MIT\n\t' + currentVersion + ' \n*/\n\n'
     return json;
   }))
 });
 
-gulp.task('update-bower-version', function(e){
+gulp.task('update-bower-version', function() {
   return gulp.src('bower.json')
   .pipe(plumber())
-  .pipe(jeditor(function (json) {
+  .pipe(jeditor(function(json) {
     json.version = currentVersion;
     return json;
   }))
   .pipe(gulp.dest('.'))
 });
 
-gulp.task('update-main-file-version', function(e){
+gulp.task('update-main-file-version', function() {
   return gulp.src('js/mojs.babel.js')
   .pipe(plumber())
   .pipe(insert.transform(function(contents) {
@@ -129,15 +119,14 @@ gulp.task('update-version', gulp.series(
   'update-main-file-version')
 );
 
-gulp.task('default', function(){
+gulp.task('default', function() {
   var server = livereload();
   gulp.series('get-current-version');
   gulp.watch(paths.src.tests, gulp.series(['coffee:tests']));
   gulp.watch(paths.src.css, gulp.series(['stylus']));
-  // gulp.watch(paths.src.js,   ['coffeeify', 'coffee-lint', 'docs', 'lib']);
-  // gulp.watch(paths.src.js,   [ 'lib', 'babel-lib' ]);
-  // gulp.watch(paths.src.babel,   [ 'lib', 'babel-lib' ]);
+  // gulp.watch(paths.src.js, gulp.series(['coffeeify', 'coffee-lint', 'docs', 'lib']));
+  // gulp.watch(paths.src.js, gulp.series(['lib', 'babel-lib']));
+  // gulp.watch(paths.src.babel, gulp.series(['lib', 'babel-lib']));
   gulp.watch(distMoFile, gulp.series(['minify-mo']));
-  // gulp.watch(paths.src.index,['index:jade']);
   gulp.watch('package.json', gulp.series(['update-version']));
 });
