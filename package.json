@@ -72,7 +72,7 @@
     "gulp-uglify": "^3.0.2",
     "gulp-watch": "^5.0.1",
     "karma": "^4.4.1",
-    "karma-babel-preprocessor": "^7.0.0",
+    "karma-babel-preprocessor": "^8.0.1",
     "karma-browserify": "^7.0.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-clear-screen-reporter": "^1.0.0",
