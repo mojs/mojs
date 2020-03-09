@@ -71,7 +71,10 @@ gulp.task('lib', function(e){
 gulp.task('babel-lib', function(e){
   return gulp.src(paths.src.babel)
   .pipe(plumber())
-  .pipe(babel())
+  .pipe(babel({
+    presets: ['@babel/env'],
+    plugins: ['@babel/transform-runtime']
+  }))
   .pipe(rename(function (path) {
     return path.basename = path.basename.replace('.babel', '');
   })
