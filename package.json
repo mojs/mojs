@@ -74,6 +74,6 @@
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-sauce-launcher": "^2.0.2",
     "phantomjs-polyfill": "0.0.2",
-    "webpack": "^1.14.0"
+    "webpack": "^4.43.0"
   }
 }
