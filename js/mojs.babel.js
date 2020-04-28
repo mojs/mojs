@@ -4,7 +4,7 @@ import Shape        from './shape';
 import ShapeSwirl   from './shape-swirl';
 import Burst        from './burst';
 import Html         from './html';
-import stagger      from './stagger';
+import Stagger      from './stagger';
 import Spriter      from './spriter';
 import MotionPath   from './motion-path';
 import Tween        from './tween/tween';
