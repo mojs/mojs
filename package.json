@@ -6,7 +6,7 @@
   "private": false,
   "scripts": {
     "build": "",
-    "start": "webpack",
+    "start": "webpack --progress",
     "test": "karma start --single-run"
   },
   "main": "build/mo.js",
