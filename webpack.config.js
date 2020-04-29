@@ -9,9 +9,10 @@ module.exports = {
   entry: './js/mojs.babel.js',
   output: {
     filename: 'mo.js',
-    path: path.join(__dirname, 'build'),
+    path: path.resolve(__dirname, 'build'),
     publicPath: 'build/',
     library: 'mojs',
+    libraryExport: 'default',
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
