@@ -131,6 +131,6 @@ class Stagger extends Tunable {
   _makeTimeline () {}
 }
 
-module.exports = function(Module) {
+export default function stagger(Module) {
   return options => new Stagger(options, Module);
-};
+}
