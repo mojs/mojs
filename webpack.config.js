@@ -14,7 +14,8 @@ module.exports = {
     library: 'mojs',
     libraryExport: 'default',
     libraryTarget: 'umd',
-    umdNamedDefine: true
+    umdNamedDefine: true,
+    globalObject: 'this'
   },
   resolve: {
     extensions: [
