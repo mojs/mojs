@@ -10,7 +10,7 @@ module.exports = {
   output: {
     filename: 'mo.js',
     path: path.resolve(__dirname, 'build'),
-    publicPath: 'build/',
+    publicPath: 'dist/',
     library: 'mojs',
     libraryExport: 'default',
     libraryTarget: 'umd',
