@@ -1,14 +1,16 @@
 {
   "name": "@mojs/core",
-  "description": "The motion graphics toolbelt for the web",
   "version": "0.288.2",
-  "license": "MIT",
-  "private": false,
+  "description": "The motion graphics toolbelt for the web",
+  "main": "build/mo.js",
   "scripts": {
     "build": "webpack --progress",
     "test": "karma start --single-run"
   },
-  "main": "build/mo.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mojs/mojs.git"
+  },
   "keywords": [
     "motion",
     "graphics",
@@ -22,17 +24,11 @@
     "url": "https://twitter.com/legomushroom",
     "github": "@legomushroom"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mojs/mojs.git"
-  },
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/mojs/mojs/issues"
   },
   "homepage": "https://github.com/mojs/mojs",
-  "dependencies": {
-    "@babel/runtime": "^7.9.2"
-  },
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.9.5",
@@ -72,5 +68,8 @@
     "phantomjs-polyfill": "0.0.2",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.9.2"
   }
 }
