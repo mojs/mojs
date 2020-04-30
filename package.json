@@ -5,8 +5,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "",
-    "start": "webpack --progress",
+    "build": "webpack --progress",
     "test": "karma start --single-run"
   },
   "main": "build/mo.js",
