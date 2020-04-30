@@ -1,11 +1,10 @@
-node_modules/
-coverage/
-spec/
-js/
-.travis.yml
+/coverage
+/spec
+/js
 .editorconfig
-npm-debug.log
+.travis.yml
 gulpfile.js
 karma.conf.js
 webpack.config.js
+npm-debug.log
 todo.md
