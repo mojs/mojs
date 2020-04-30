@@ -1,4 +1,4 @@
-# import Delta from '../../js/delta/delta.babel.js'
+# import Delta from '../../src/delta/delta.babel.js'
 
 # Module  = mojs.Module
 Tween   = mojs.Tween

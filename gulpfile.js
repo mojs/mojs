@@ -14,12 +14,12 @@ var distMoFile = devFolder + 'build/mo.js';
 
 var paths = {
   src: {
-    js:       devFolder +  'js/**/*.coffee',
-    babel:    devFolder +  'js/**/*.babel.js',
+    js:       devFolder +  'src/**/*.coffee',
+    babel:    devFolder +  'src/**/*.babel.js',
     tests:    distFolder + 'spec/**/*.coffee'
   },
   dist:{
-    js:       distFolder + 'js/',
+    js:       distFolder + 'src/',
     index:    distFolder,
     tests:    distFolder + 'spec/'
   }
@@ -77,14 +77,14 @@ gulp.task('get-current-version', function() {
 });
 
 gulp.task('update-main-file-version', function() {
-  return gulp.src('js/mojs.babel.js')
+  return gulp.src('src/mojs.babel.js')
   .pipe(plumber())
   .pipe(insert.transform(function(contents) {
     var newString =  'revision:   \''+currentVersion+'\'';
     return contents
     .replace(/revision\:\s+?(\'|\")\d+\.\d+\.+\d+(\'|\")/i, newString);
   }))
-  .pipe(gulp.dest('js/'))
+  .pipe(gulp.dest('src/'))
 });
 
 gulp.task('update-version', gulp.series(
