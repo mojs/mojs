@@ -1,7 +1,7 @@
 /api
 /coverage
 /spec
-/js
+/src
 .editorconfig
 .travis.yml
 gulpfile.js

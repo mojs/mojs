@@ -6,7 +6,7 @@ const webpack = require('webpack');
 module.exports = {
   mode: 'development',
   watch: true,
-  entry: './js/mojs.babel.js',
+  entry: './src/mojs.babel.js',
   output: {
     filename: 'mo.js',
     path: path.resolve(__dirname, 'build'),
