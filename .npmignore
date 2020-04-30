@@ -1,14 +1,9 @@
 node_modules/
 coverage/
-mockups/
-vendor/
 spec/
-css/
 js/
 .travis.yml
 .editorconfig
-index.html
-index.jade
 npm-debug.log
 gulpfile.js
 karma.conf.js
