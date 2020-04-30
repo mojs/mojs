@@ -80,7 +80,7 @@ module.exports = function(config) {
     files: [
       './node_modules/phantomjs-polyfill/bind-polyfill.js',
       // 'dist/**/*.js',
-      'build/mo.js',
+      'dist/mo.js',
       'spec/**/*.js',
       'spec/shapes/*.js'
     ],
@@ -137,7 +137,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'build/mo.js': 'coverage',
+      'dist/mo.js': 'coverage',
       // 'dist/**/*.js': ['browserify']
     },
     // browserify: {

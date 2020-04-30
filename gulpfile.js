@@ -10,7 +10,7 @@ var rename        = require('gulp-rename');
 var uglify        = require('gulp-uglify');
 
 var devFolder = '', distFolder  = '', currentVersion = 0, credits = '';
-var distMoFile = devFolder + 'build/mo.js';
+var distMoFile = devFolder + 'dist/mo.js';
 
 var paths = {
   src: {

@@ -2,7 +2,7 @@
   "name": "@mojs/core",
   "version": "0.288.2",
   "description": "The motion graphics toolbelt for the web",
-  "main": "build/mo.js",
+  "main": "dist/mo.js",
   "scripts": {
     "build": "webpack --progress",
     "test": "karma start --single-run"
