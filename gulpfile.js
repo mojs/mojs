@@ -1,17 +1,13 @@
 var gulp          = require('gulp');
-var stylus        = require('gulp-stylus');
-var autoprefixer  = require('gulp-autoprefixer');
-var livereload    = require('gulp-livereload');
-var coffee        = require('gulp-coffee');
+var babel         = require('gulp-babel');
 var changed       = require('gulp-changed');
-var watch         = require('gulp-jade');
+var coffee        = require('gulp-coffee');
 var coffeelint    = require('gulp-coffeelint');
+var insert        = require('gulp-insert');
+var jeditor       = require('gulp-json-editor');
 var plumber       = require('gulp-plumber');
 var rename        = require('gulp-rename');
 var uglify        = require('gulp-uglify');
-var insert        = require('gulp-insert');
-var jeditor       = require('gulp-json-editor');
-var babel         = require('gulp-babel');
 
 var devFolder = '', distFolder  = '', currentVersion = 0, credits = '';
 var distMoFile = devFolder + 'build/mo.js';
@@ -20,14 +16,11 @@ var paths = {
   src: {
     js:       devFolder +  'js/**/*.coffee',
     babel:    devFolder +  'js/**/*.babel.js',
-    index:    devFolder +  'index.jade',
-    css:      devFolder +  'css/**/*.styl',
     tests:    distFolder + 'spec/**/*.coffee'
   },
   dist:{
     js:       distFolder + 'js/',
     index:    distFolder,
-    css:      distFolder + 'css/',
     tests:    distFolder + 'spec/'
   }
 }
@@ -40,15 +33,6 @@ gulp.task('coffee:tests', function() {
   .pipe(coffeelint.reporter())
   .pipe(coffee())
   .pipe(gulp.dest(paths.dist.tests))
-});
-
-gulp.task('stylus', function() {
-  return gulp.src(devFolder + 'css/main.styl')
-  .pipe(plumber())
-  .pipe(stylus())
-  .pipe(autoprefixer('last 4 version'))
-  .pipe(gulp.dest(paths.dist.css))
-  .pipe(livereload())
 });
 
 gulp.task('lib', function() {
@@ -109,10 +93,8 @@ gulp.task('update-version', gulp.series(
 );
 
 gulp.task('default', function() {
-  var server = livereload();
   gulp.series('get-current-version');
   gulp.watch(paths.src.tests, gulp.series(['coffee:tests']));
-  gulp.watch(paths.src.css, gulp.series(['stylus']));
   // gulp.watch(paths.src.js, gulp.series(['coffeeify', 'coffee-lint', 'docs', 'lib']));
   // gulp.watch(paths.src.js, gulp.series(['lib', 'babel-lib']));
   // gulp.watch(paths.src.babel, gulp.series(['lib', 'babel-lib']));

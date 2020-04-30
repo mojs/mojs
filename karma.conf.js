@@ -143,7 +143,7 @@ module.exports = function(config) {
     // browserify: {
     //   debug: true,
     //   transform: [ 'brfs', istanbul({
-    //     ignore: ['**/node_modules/**', '**/spec/**', '**/vendor/**'],
+    //     ignore: ['**/node_modules/**', '**/spec/**'],
     //   })]
     // },
     coverageReporter: {

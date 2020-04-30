@@ -20,10 +20,8 @@ module.exports = {
   resolve: {
     extensions: [
       '.js',
-      '.es6',
       '.babel.js',
-      '.coffee',
-      '.styl'
+      '.coffee'
     ]
   },
   module: {
@@ -51,44 +49,6 @@ module.exports = {
         }
       },
       exclude: /node_modules/
-    }, {
-      test: /\.cjsx$/,
-      use: [
-        'coffee',
-        'cjsx'
-      ]
-    }, {
-      test: /\.jade$/,
-      use: 'jade'
-    }, {
-      test: /\.styl$/,
-      use: [{
-        loader: 'style-loader'
-      }, {
-        loader: 'css-loader'
-      }, {
-        loader: 'autoprefixer-loader',
-        options: {
-          browsers: 'last 4 version'
-        }
-      }, {
-        loader: 'stylus-loader',
-        options: {
-          paths: 'node_modules/'
-        }
-      }]
-    }, {
-      test: /\.html$/,
-      use: 'raw-loader'
-    }, {
-      test: /\.(eot|woff|ttf|svg|png|jpg|wav|mp3)$/,
-      use: {
-        loader: 'url-loader',
-        options: {
-          limit: 30000,
-          name: '[name]-[hash].[ext]'
-        }
-      }
     }]
   }
 };
