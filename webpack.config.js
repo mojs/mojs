@@ -1,51 +1,94 @@
-var path = require('path');
-var webpack = require('webpack');
+'use strict';
+
+const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
+  mode: 'development',
   watch: true,
-  context: __dirname + "/",
-  entry: [
-    __dirname + '/js/mojs.babel.js'
-  ],
+  entry: './js/mojs.babel.js',
+  output: {
+    filename: 'mo.js',
+    path: path.resolve(__dirname, 'build'),
+    publicPath: 'build/',
+    library: 'mojs',
+    libraryExport: 'default',
+    libraryTarget: 'umd',
+    umdNamedDefine: true,
+    globalObject: 'this'
+  },
+  resolve: {
+    extensions: [
+      '.js',
+      '.es6',
+      '.babel.js',
+      '.coffee',
+      '.styl'
+    ]
+  },
   module: {
-    loaders: [
-      { test: /\.(babel.js)$/,
-        exclude: /node_modules/,
+    rules: [{
+      test: /\.(babel.js)$/,
+      use: {
         loader: 'babel-loader',
-        query: {
-          presets: [ 'es2015-loose', 'babel-preset-stage-2' ],
-          plugins: [ 'transform-runtime' ]
+        options: {
+          presets: [
+            '@babel/preset-env'
+          ],
+          plugins: [
+            '@babel/plugin-transform-runtime',
+            '@babel/plugin-proposal-object-rest-spread'
+          ]
         }
       },
-
-      { test: /\.coffee$/, exclude: /node_modules/, loaders: ['coffee-loader?bare=true'] },
-      { test: /\.cjsx$/, loaders: ['coffee', 'cjsx']},
-      { test: /\.jade$/, loaders: ['jade'] },
-      { test: /\.styl$/, loader: 'style-loader!css-loader!autoprefixer-loader?browsers=last 4 version!stylus-loader?paths=node_modules/' },
-      { test: /\.html$/, loader: 'raw-loader' },
-      {
-        test: /\.(eot|woff|ttf|svg|png|jpg|wav|mp3)$/,
-        loader: 'url-loader?limit=30000&name=[name]-[hash].[ext]',
-        // paths: ['/app/css/i/']
+      exclude: /node_modules/
+    }, {
+      test: /\.coffee$/,
+      use: {
+        loader: 'coffee-loader',
+        options: {
+          bare: true
+        }
+      },
+      exclude: /node_modules/
+    }, {
+      test: /\.cjsx$/,
+      use: [
+        'coffee',
+        'cjsx'
+      ]
+    }, {
+      test: /\.jade$/,
+      use: 'jade'
+    }, {
+      test: /\.styl$/,
+      use: [{
+        loader: 'style-loader'
+      }, {
+        loader: 'css-loader'
+      }, {
+        loader: 'autoprefixer-loader',
+        options: {
+          browsers: 'last 4 version'
+        }
+      }, {
+        loader: 'stylus-loader',
+        options: {
+          paths: 'node_modules/'
+        }
+      }]
+    }, {
+      test: /\.html$/,
+      use: 'raw-loader'
+    }, {
+      test: /\.(eot|woff|ttf|svg|png|jpg|wav|mp3)$/,
+      use: {
+        loader: 'url-loader',
+        options: {
+          limit: 30000,
+          name: '[name]-[hash].[ext]'
+        }
       }
-    ]
-  },
-  output: {
-    path:             __dirname + '/build',
-    filename:         'mo.js',
-    publicPath:       'build/',
-    library:          'mojs',
-    libraryTarget:    'umd',
-    umdNamedDefine:   true
-  },
-  plugins: [],
-  resolve: {
-    root: [ path.resolve('./'), path.resolve('./css/') ],
-    moduleDirectories: ['node_modules'],
-    target: 'node',
-    extensions: [
-      '', '.js', '.es6', '.babel.js', '.coffee',
-      '.styl',
-    ]
+    }]
   }
 };
