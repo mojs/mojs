@@ -92,16 +92,6 @@ gulp.task('get-current-version', function() {
   }))
 });
 
-gulp.task('update-bower-version', function() {
-  return gulp.src('bower.json')
-  .pipe(plumber())
-  .pipe(jeditor(function(json) {
-    json.version = currentVersion;
-    return json;
-  }))
-  .pipe(gulp.dest('.'))
-});
-
 gulp.task('update-main-file-version', function() {
   return gulp.src('js/mojs.babel.js')
   .pipe(plumber())
@@ -115,7 +105,6 @@ gulp.task('update-main-file-version', function() {
 
 gulp.task('update-version', gulp.series(
   'get-current-version',
-  'update-bower-version',
   'update-main-file-version')
 );
 

@@ -9,7 +9,6 @@ js/
 .editorconfig
 index.html
 index.jade
-bower.json
 npm-debug.log
 gulpfile.js
 karma.conf.js
