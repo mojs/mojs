@@ -3,12 +3,10 @@ var babel         = require('gulp-babel');
 var changed       = require('gulp-changed');
 var coffee        = require('gulp-coffee');
 var coffeelint    = require('gulp-coffeelint');
-var insert        = require('gulp-insert');
-var jeditor       = require('gulp-json-editor');
 var plumber       = require('gulp-plumber');
 var rename        = require('gulp-rename');
 
-var devFolder = '', distFolder  = '', currentVersion = 0, credits = '';
+var devFolder = '', distFolder  = '';
 
 var paths = {
   src: {
@@ -53,37 +51,9 @@ gulp.task('babel-lib', function() {
 ).pipe(gulp.dest('lib/'))
 });
 
-gulp.task('get-current-version', function() {
-  return gulp.src('package.json')
-  .pipe(plumber())
-  .pipe(jeditor(function(json) {
-    currentVersion = json.version;
-    credits = '/*! \n\t:: mo · js :: motion graphics toolbelt for the web\n\tOleg Solomka @LegoMushroom 2015 MIT\n\t' + currentVersion + ' \n*/\n\n'
-    return json;
-  }))
-});
-
-gulp.task('update-main-file-version', function() {
-  return gulp.src('src/mojs.babel.js')
-  .pipe(plumber())
-  .pipe(insert.transform(function(contents) {
-    var newString =  'revision:   \''+currentVersion+'\'';
-    return contents
-    .replace(/revision\:\s+?(\'|\")\d+\.\d+\.+\d+(\'|\")/i, newString);
-  }))
-  .pipe(gulp.dest('src/'))
-});
-
-gulp.task('update-version', gulp.series(
-  'get-current-version',
-  'update-main-file-version')
-);
-
 gulp.task('default', function() {
-  gulp.series('get-current-version');
   gulp.watch(paths.src.tests, gulp.series(['coffee:tests']));
   // gulp.watch(paths.src.js, gulp.series(['coffeeify', 'coffee-lint', 'docs', 'lib']));
   // gulp.watch(paths.src.js, gulp.series(['lib', 'babel-lib']));
   // gulp.watch(paths.src.babel, gulp.series(['lib', 'babel-lib']));
-  gulp.watch('package.json', gulp.series(['update-version']));
 });

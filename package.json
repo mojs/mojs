@@ -49,8 +49,6 @@
     "gulp-cli": "^2.2.0",
     "gulp-coffee": "^3.0.3",
     "gulp-coffeelint": "^0.6.0",
-    "gulp-insert": "^0.5.0",
-    "gulp-json-editor": "^2.5.4",
     "gulp-karma": "0.0.5",
     "gulp-plumber": "^1.2.1",
     "gulp-rename": "^2.0.0",
