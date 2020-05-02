@@ -2,6 +2,7 @@
 
 const webpack = require('webpack');
 const merge = require('webpack-merge');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
   mode: 'production',
@@ -14,5 +15,17 @@ module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
     libraryTarget: 'umd',
     umdNamedDefine: true,
     globalObject: 'this'
-  }
+  },
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false,
+        terserOptions: {
+          output: {
+            comments: false
+          }
+        }
+      })
+    ]
+  },
 });
