@@ -9,7 +9,7 @@ module.exports = {
   entry: './src/mojs.babel.js',
   output: {
     filename: 'mo.js',
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, 'dist'),
     publicPath: 'dist/',
     library: 'mojs',
     libraryExport: 'default',
