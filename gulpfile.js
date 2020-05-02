@@ -14,9 +14,7 @@ var paths = {
     babel:    devFolder +  'src/**/*.babel.js',
     tests:    distFolder + 'spec/**/*.coffee'
   },
-  dist:{
-    js:       distFolder + 'src/',
-    index:    distFolder,
+  dist: {
     tests:    distFolder + 'spec/'
   }
 }
@@ -47,13 +45,10 @@ gulp.task('babel-lib', function() {
   }))
   .pipe(rename(function(path) {
     return path.basename = path.basename.replace('.babel', '');
-  })
-).pipe(gulp.dest('lib/'))
+  }))
+  .pipe(gulp.dest('lib/'))
 });
 
 gulp.task('default', function() {
   gulp.watch(paths.src.tests, gulp.series(['coffee:tests']));
-  // gulp.watch(paths.src.js, gulp.series(['coffeeify', 'coffee-lint', 'docs', 'lib']));
-  // gulp.watch(paths.src.js, gulp.series(['lib', 'babel-lib']));
-  // gulp.watch(paths.src.babel, gulp.series(['lib', 'babel-lib']));
 });
