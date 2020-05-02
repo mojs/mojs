@@ -54,7 +54,6 @@
     "gulp-karma": "0.0.5",
     "gulp-plumber": "^1.2.1",
     "gulp-rename": "^2.0.0",
-    "gulp-uglify": "^3.0.2",
     "gulp-watch": "^5.0.1",
     "karma": "^4.4.1",
     "karma-babel-preprocessor": "^8.0.1",

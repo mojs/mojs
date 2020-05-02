@@ -7,10 +7,8 @@ var insert        = require('gulp-insert');
 var jeditor       = require('gulp-json-editor');
 var plumber       = require('gulp-plumber');
 var rename        = require('gulp-rename');
-var uglify        = require('gulp-uglify');
 
 var devFolder = '', distFolder  = '', currentVersion = 0, credits = '';
-var distMoFile = devFolder + 'dist/mo.js';
 
 var paths = {
   src: {
@@ -55,17 +53,6 @@ gulp.task('babel-lib', function() {
 ).pipe(gulp.dest('lib/'))
 });
 
-gulp.task('minify-mo', function() {
-  return gulp.src(distMoFile)
-  .pipe(plumber())
-  .pipe(uglify())
-  .pipe(insert.transform(function(contents) {
-    return credits + contents;
-  }))
-  .pipe(rename('mo.min.js'))
-  .pipe(gulp.dest('./build'))
-});
-
 gulp.task('get-current-version', function() {
   return gulp.src('package.json')
   .pipe(plumber())
@@ -98,6 +85,5 @@ gulp.task('default', function() {
   // gulp.watch(paths.src.js, gulp.series(['coffeeify', 'coffee-lint', 'docs', 'lib']));
   // gulp.watch(paths.src.js, gulp.series(['lib', 'babel-lib']));
   // gulp.watch(paths.src.babel, gulp.series(['lib', 'babel-lib']));
-  gulp.watch(distMoFile, gulp.series(['minify-mo']));
   gulp.watch('package.json', gulp.series(['update-version']));
 });
