@@ -3,19 +3,10 @@
 const path = require('path');
 const webpack = require('webpack');
 
-module.exports = {
-  mode: 'development',
-  watch: true,
+module.exports = (argv) => ({
   entry: './src/mojs.babel.js',
   output: {
-    filename: 'mo.js',
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: 'dist/',
-    library: 'mojs',
-    libraryExport: 'default',
-    libraryTarget: 'umd',
-    umdNamedDefine: true,
-    globalObject: 'this'
+    path: path.resolve(__dirname, 'dist')
   },
   resolve: {
     extensions: [
@@ -51,4 +42,4 @@ module.exports = {
       exclude: /node_modules/
     }]
   }
-};
+});
