@@ -6,7 +6,7 @@
 .travis.yml
 gulpfile.js
 karma.conf.js
-webpack.config.js
+webpack.*
 npm-debug.log
 todo.md
 CODE_OF_CONDUCT.md
