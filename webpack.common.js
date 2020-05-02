@@ -30,8 +30,7 @@ module.exports = (argv) => ({
             '@babel/plugin-proposal-object-rest-spread'
           ]
         }
-      },
-      exclude: /node_modules/
+      }
     }, {
       test: /\.coffee$/,
       use: {
@@ -39,8 +38,7 @@ module.exports = (argv) => ({
         options: {
           bare: true
         }
-      },
-      exclude: /node_modules/
+      }
     }]
   },
   plugins: [
