@@ -4,6 +4,7 @@
   "description": "The motion graphics toolbelt for the web",
   "main": "dist/mo.js",
   "scripts": {
+    "start": "webpack-dev-server --config webpack.dev.js",
     "dev": "webpack --config webpack.dev.js --progress",
     "build": "webpack --config webpack.umd.js --progress",
     "test": "karma start --single-run"
