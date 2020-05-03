@@ -53,15 +53,4 @@ mojs.Swirl   = mojs.ShapeSwirl;
   percentage for radius
 */
 
-// istanbul ignore next
-if ( (typeof define === "function") && define.amd ) {
-  define("mojs", [], function () { return mojs; });
-}
-// istanbul ignore next
-if ( (typeof module === "object") && (typeof module.exports === "object") ) {
-  module.exports = mojs;
-}
-
 export default mojs;
-
-(typeof window !== 'undefined') && (window.mojs = mojs);
