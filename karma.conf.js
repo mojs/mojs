@@ -71,7 +71,7 @@ module.exports = function (config) {
     browsers = ['PhantomJS'];
     // browsers = ['FirefoxHeadless'];
     // browsers = ['ChromeHeadless'];
-    
+
     // browsers = [];
   } else {
     reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
@@ -88,58 +88,58 @@ module.exports = function (config) {
     files: [
       './node_modules/phantomjs-polyfill/bind-polyfill.js',
       // 'dist/**/*.js',
-      'build/mo.js',
+      'dist/mo.js',
       'spec/**/*.coffee',
       // 'spec/burst.coffee',
       // 'spec/shapes/*.js'
     ],
     // list of files to exclude
     exclude: [
-      // 'build/h.coffee',
+      // 'dist/h.coffee',
       // 'spec/h.coffee',
 
-      // 'build/delta/delta.coffee',
+      // 'dist/delta/delta.coffee',
       // 'spec/delta/delta.coffee',
-      // 'build/delta/deltas.coffee',
+      // 'dist/delta/deltas.coffee',
       // 'spec/delta/deltas.coffee',
 
-      // 'build/html.coffee',
+      // 'dist/html.coffee',
       // 'spec/html.coffee',
 
-      // 'build/shape.coffee',
+      // 'dist/shape.coffee',
       // 'spec/shape.coffee',
-      // 'build/shape-swirl.coffee',
+      // 'dist/shape-swirl.coffee',
       // 'spec/shape-swirl.coffee',
-      // 'build/burst.coffee',
+      // 'dist/burst.coffee',
       // 'spec/burst.coffee',
 
-      // 'build/module.coffee',
+      // 'dist/module.coffee',
       // 'spec/module.coffee',
-      // 'build/tween/tweenable.coffee',
+      // 'dist/tween/tweenable.coffee',
       // 'spec/tween/tweenable.coffee',
-      // 'build/tunable.coffee',
+      // 'dist/tunable.coffee',
       // 'spec/tunable.coffee',
-      // 'build/thenable.coffee',
+      // 'dist/thenable.coffee',
       // 'spec/thenable.coffee',
 
-      // 'build/spriter.coffee',
+      // 'dist/spriter.coffee',
       // 'spec/spriter.coffee',
-      // // 'build/stagger.coffee',
+      // // 'dist/stagger.coffee',
       // // 'spec/stagger.coffee',
 
-      // 'build/easing/easing.coffee',
+      // 'dist/easing/easing.coffee',
       // 'spec/easing/easing.coffee',
 
-      // 'build/tween/timeline.coffee',
+      // 'dist/tween/timeline.coffee',
       // 'spec/tween/timeline.coffee',
-      // 'build/tween/tween.coffee',
+      // 'dist/tween/tween.coffee',
       // 'spec/tween/tween.coffee',
-      // 'build/tween/tweener.coffee',
+      // 'dist/tween/tweener.coffee',
       // 'spec/tween/tweener.coffee',
 
-      // 'build/motion-path.coffee',
+      // 'dist/motion-path.coffee',
       'spec/motion-path.coffee',
-      // 'build/shapes/*.coffee',
+      // 'dist/shapes/*.coffee',
       // 'spec/shapes/*.coffee'
     ],
 
@@ -156,7 +156,7 @@ module.exports = function (config) {
         sourceMap: false
       },
       // transforming the filenames
-      transformPath: function(path) {
+      transformPath: function (path) {
         return path.replace(/\.coffee$/, '.js')
       }
     },
