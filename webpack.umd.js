@@ -11,11 +11,7 @@ module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
   mode: 'production',
   watch: false,
   output: {
-    filename: 'mo.umd.js',
-    library: 'mojs',
-    libraryExport: 'default',
-    libraryTarget: 'umd',
-    umdNamedDefine: true
+    filename: 'mo.umd.js'
   },
   optimization: {
     minimizer: [
