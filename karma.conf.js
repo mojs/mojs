@@ -1,7 +1,7 @@
-var istanbul = require('browserify-istanbul');
-// Karma configuration
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
-module.exports = function(config) {
+// Karma configuration
+module.exports = function (config) {
 
   // Browsers to run on Sauce Labs
   // Check out https://saucelabs.com/platforms for all browser/OS combos
@@ -57,13 +57,21 @@ module.exports = function(config) {
       browserName: 'internet explorer',
       platform: 'Windows 8.1',
       version: '11'
+    },
+    FirefoxHeadless: {
+      base: 'Firefox',
+      flags: ['-headless'],
     }
-
   };
 
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
     reporters = ['progress', 'coverage', 'clear-screen'];
+    // Here you can change to what browsers you have on your system. TODO: Move to .env file instead
+    // Note: Puppetter currently doesn't work on WSL v1. Should work in WSL v2
     browsers = ['PhantomJS'];
+    // browsers = ['FirefoxHeadless'];
+    // browsers = ['ChromeHeadless'];
+    
     // browsers = [];
   } else {
     reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
@@ -80,65 +88,77 @@ module.exports = function(config) {
     files: [
       './node_modules/phantomjs-polyfill/bind-polyfill.js',
       // 'dist/**/*.js',
-      'dist/mo.js',
-      'spec/**/*.js',
-      'spec/shapes/*.js'
+      'build/mo.js',
+      'spec/**/*.coffee',
+      // 'spec/burst.coffee',
+      // 'spec/shapes/*.js'
     ],
     // list of files to exclude
     exclude: [
-      // 'build/h.js',
-      // 'spec/h.js',
+      // 'build/h.coffee',
+      // 'spec/h.coffee',
 
-      // 'build/delta/delta.js',
-      // 'spec/delta/delta.js',
-      // 'build/delta/deltas.js',
-      // 'spec/delta/deltas.js',
+      // 'build/delta/delta.coffee',
+      // 'spec/delta/delta.coffee',
+      // 'build/delta/deltas.coffee',
+      // 'spec/delta/deltas.coffee',
 
-      // 'build/html.js',
-      // 'spec/html.js',
+      // 'build/html.coffee',
+      // 'spec/html.coffee',
 
-      // 'build/shape.js',
-      // 'spec/shape.js',
-      // 'build/shape-swirl.js',
-      // 'spec/shape-swirl.js',
-      // 'build/burst.js',
-      // 'spec/burst.js',
+      // 'build/shape.coffee',
+      // 'spec/shape.coffee',
+      // 'build/shape-swirl.coffee',
+      // 'spec/shape-swirl.coffee',
+      // 'build/burst.coffee',
+      // 'spec/burst.coffee',
 
-      // 'build/module.js',
-      // 'spec/module.js',
-      // 'build/tween/tweenable.js',
-      // 'spec/tween/tweenable.js',
-      // 'build/tunable.js',
-      // 'spec/tunable.js',
-      // 'build/thenable.js',
-      // 'spec/thenable.js',
+      // 'build/module.coffee',
+      // 'spec/module.coffee',
+      // 'build/tween/tweenable.coffee',
+      // 'spec/tween/tweenable.coffee',
+      // 'build/tunable.coffee',
+      // 'spec/tunable.coffee',
+      // 'build/thenable.coffee',
+      // 'spec/thenable.coffee',
 
-      // 'build/spriter.js',
-      // 'spec/spriter.js',
-      // // 'build/stagger.js',
-      // // 'spec/stagger.js',
+      // 'build/spriter.coffee',
+      // 'spec/spriter.coffee',
+      // // 'build/stagger.coffee',
+      // // 'spec/stagger.coffee',
 
-      // 'build/easing/easing.js',
-      // 'spec/easing/easing.js',
+      // 'build/easing/easing.coffee',
+      // 'spec/easing/easing.coffee',
 
-      // 'build/tween/timeline.js',
-      // 'spec/tween/timeline.js',
-      // 'build/tween/tween.js',
-      // 'spec/tween/tween.js',
-      // 'build/tween/tweener.js',
-      // 'spec/tween/tweener.js',
+      // 'build/tween/timeline.coffee',
+      // 'spec/tween/timeline.coffee',
+      // 'build/tween/tween.coffee',
+      // 'spec/tween/tween.coffee',
+      // 'build/tween/tweener.coffee',
+      // 'spec/tween/tweener.coffee',
 
-      // 'build/motion-path.js',
-      // 'spec/motion-path.js',
-      // 'build/shapes/*.js',
-      // 'spec/shapes/*.js'
+      // 'build/motion-path.coffee',
+      'spec/motion-path.coffee',
+      // 'build/shapes/*.coffee',
+      // 'spec/shapes/*.coffee'
     ],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'dist/mo.js': 'coverage',
-      // 'dist/**/*.js': ['browserify']
+      'spec/**/*.coffee': ['coffee']
+    },
+
+    coffeePreprocessor: {
+      // options passed to the coffee compiler
+      options: {
+        bare: true,
+        sourceMap: false
+      },
+      // transforming the filenames
+      transformPath: function(path) {
+        return path.replace(/\.coffee$/, '.js')
+      }
     },
     // browserify: {
     //   debug: true,
@@ -147,10 +167,10 @@ module.exports = function(config) {
     //   })]
     // },
     coverageReporter: {
-      reporters:[
-        {type: 'html', dir: 'coverage/'},
-        {type: 'text-summary'},
-        {type: 'lcov', subdir: 'lcov-report'}
+      reporters: [
+        { type: 'html', dir: 'coverage/' },
+        { type: 'text-summary' },
+        { type: 'lcov', subdir: 'lcov-report' }
       ],
     },
     // test results reporter to use
@@ -181,6 +201,10 @@ module.exports = function(config) {
     browsers: browsers,
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: false,
+
+    // Concurrency level
+    // how many browser should be started simultaneous
+    concurrency: Infinity
   });
 };
