@@ -180,11 +180,11 @@ describe 'Burst ->', ->
       result = b._getChildOption( o, 1 )
       expect(result.fill).toBe 'cyan'
 
-      it 'should not throw if there is no swirls', ->
-        b = new Burst count: 2
-        o = { }
-        result = b._getChildOption( o, 1 )
-        expect(result).toEqual {}
+    it 'should not throw if there is no swirls', ->
+      b = new Burst count: 2
+      o = { }
+      result = b._getChildOption( o, 1 )
+      expect(result).toEqual {}
 
   describe '_getPropByMod method ->', ->
     it 'should fallback to empty object', ->
