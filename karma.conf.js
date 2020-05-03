@@ -68,9 +68,9 @@ module.exports = function (config) {
     reporters = ['progress', 'coverage', 'clear-screen'];
     // Here you can change to what browsers you have on your system. TODO: Move to .env file instead
     // Note: Puppetter currently doesn't work on WSL v1. Should work in WSL v2
-    browsers = ['PhantomJS'];
+    // browsers = ['PhantomJS'];
     // browsers = ['FirefoxHeadless'];
-    // browsers = ['ChromeHeadless'];
+    browsers = ['ChromeHeadless'];
 
     // browsers = [];
   } else {
