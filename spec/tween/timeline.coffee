@@ -144,13 +144,13 @@ describe 'Timeline ->', ->
       expect(t._props.time).toBe 700
       t.add new Tween duration: 500, delay: 200, repeat: 1
       expect(t._props.time).toBe 1400
-      it 'should work with another tweens',->
-        t1 = new Timeline
-        t = new Timeline
-        t.add new Tween duration: 500, delay: 200
-        t.add new Tween duration: 500, delay: 200, repeat: 1
-        t1.add t
-        expect(t1._props.repeatTime).toBe 1400
+    it 'should work with another tweens',->
+      t1 = new Timeline
+      t = new Timeline
+      t.add new Tween duration: 500, delay: 200
+      t.add new Tween duration: 500, delay: 200, repeat: 1
+      t1.add t
+      expect(t1._props.repeatTime).toBe 1400
   describe '_setProgress method ->', ->
     it 'should call super _setProgress method', ->
       t = new Timeline
