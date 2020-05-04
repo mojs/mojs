@@ -1,5 +1,4 @@
 # ignore coffescript sudo code
-### istanbul ignore next ###
 
 Bit = require('./bit').default or require('./bit');
 h   = require '../h'

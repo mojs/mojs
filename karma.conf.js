@@ -110,12 +110,6 @@ module.exports = function (config) {
         return path.replace(/\.coffee$/, '.js')
       }
     },
-    // browserify: {
-    //   debug: true,
-    //   transform: [ 'brfs', istanbul({
-    //     ignore: ['**/node_modules/**', '**/spec/**'],
-    //   })]
-    // },
     coverageReporter: {
       reporters: [
         { type: 'html', dir: 'coverage/' },
