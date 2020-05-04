@@ -1,6 +1,5 @@
 process.env.CHROME_BIN = require('puppeteer').executablePath();
 
-// Karma configuration
 module.exports = function (config) {
 
   // Browsers to run on Sauce Labs
@@ -71,18 +70,13 @@ module.exports = function (config) {
     // browsers = ['PhantomJS'];
     // browsers = ['FirefoxHeadless'];
     browsers = ['ChromeHeadless'];
-
-    // browsers = [];
   } else {
     reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
     browsers = Object.keys(customLaunchers);
   }
 
-
   config.set({
     basePath: '',
-    // frameworks to use
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
     client: {
       jasmine: {
@@ -97,78 +91,21 @@ module.exports = function (config) {
         failFast: true
       }
     },
-    // list of files / patterns to load in the browser
     files: [
-      './node_modules/phantomjs-polyfill/bind-polyfill.js',
-      // 'dist/**/*.js',
       'dist/mo.js',
-      'spec/**/*.coffee',
-      // 'spec/burst.coffee',
-      // 'spec/shapes/*.js'
+      'spec/**/*.coffee'
     ],
-    // list of files to exclude
     exclude: [
-      // 'dist/h.coffee',
-      // 'spec/h.coffee',
-
-      // 'dist/delta/delta.coffee',
-      // 'spec/delta/delta.coffee',
-      // 'dist/delta/deltas.coffee',
-      // 'spec/delta/deltas.coffee',
-
-      // 'dist/html.coffee',
-      // 'spec/html.coffee',
-
-      // 'dist/shape.coffee',
-      // 'spec/shape.coffee',
-      // 'dist/shape-swirl.coffee',
-      // 'spec/shape-swirl.coffee',
-      // 'dist/burst.coffee',
-      // 'spec/burst.coffee',
-
-      // 'dist/module.coffee',
-      // 'spec/module.coffee',
-      // 'dist/tween/tweenable.coffee',
-      // 'spec/tween/tweenable.coffee',
-      // 'dist/tunable.coffee',
-      // 'spec/tunable.coffee',
-      // 'dist/thenable.coffee',
-      // 'spec/thenable.coffee',
-
-      // 'dist/spriter.coffee',
-      // 'spec/spriter.coffee',
-      // // 'dist/stagger.coffee',
-      // // 'spec/stagger.coffee',
-
-      // 'dist/easing/easing.coffee',
-      // 'spec/easing/easing.coffee',
-
-      // 'dist/tween/timeline.coffee',
-      // 'spec/tween/timeline.coffee',
-      // 'dist/tween/tween.coffee',
-      // 'spec/tween/tween.coffee',
-      // 'dist/tween/tweener.coffee',
-      // 'spec/tween/tweener.coffee',
-
-      // 'dist/motion-path.coffee',
-      'spec/motion-path.coffee',
-      // 'dist/shapes/*.coffee',
-      // 'spec/shapes/*.coffee'
+      'spec/motion-path.coffee'
     ],
-
-    // preprocess matching files before serving them to the browser
-    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'spec/**/*.coffee': ['coffee']
     },
-
     coffeePreprocessor: {
-      // options passed to the coffee compiler
       options: {
         bare: true,
         sourceMap: false
       },
-      // transforming the filenames
       transformPath: function (path) {
         return path.replace(/\.coffee$/, '.js')
       }
@@ -186,16 +123,9 @@ module.exports = function (config) {
         { type: 'lcov', subdir: 'lcov-report' }
       ],
     },
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
-    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: reporters,
-    // web server port
     port: 9876,
-    // enable / disable colors in the output (reporters and logs)
     colors: true,
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
     sauceLabs: {
       testName: 'mo · js tests',
@@ -206,18 +136,9 @@ module.exports = function (config) {
     },
     captureTimeout: 120000,
     customLaunchers: customLaunchers,
-    // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    // browsers: ['PhantomJS'],
     browsers: browsers,
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
     singleRun: false,
-
-    // Concurrency level
-    // how many browser should be started simultaneous
     concurrency: Infinity
   });
 };
