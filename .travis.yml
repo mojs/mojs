@@ -2,6 +2,12 @@ language: node_js
 node_js:
   - "8"
 
+before_install:
+- npm i -g npm@latest
+
+install:
+- npm ci
+
 after_script:
   - if [[ `node --version` == *v0.10* ]]; then cat ./coverage/lcov-report/lcov.info | ./node_modules/coveralls/bin/coveralls.js; fi
 
