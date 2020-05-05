@@ -5,61 +5,69 @@ module.exports = function (config) {
   // Browsers to run on Sauce Labs
   // Check out https://saucelabs.com/platforms for all browser/OS combos
   var customLaunchers = {
-    sl_chrome_35: {
+    sl_chrome_49: {
       base: 'SauceLabs',
       browserName: 'chrome',
       platform: 'Windows 7',
-      version: '35'
+      version: '49'
     },
-    sl_chrome_50: {
+    sl_chrome_latest: {
       base: 'SauceLabs',
       browserName: 'chrome',
-      platform: 'Windows 7',
-      version: '50'
+      platform: 'Windows 10',
+      version: 'latest'
     },
-    sl_safari: {
+    sl_chrome_ie11: {
+      base: 'SauceLabs',
+      browserName: 'internet explorer',
+      platform: 'Windows 7',
+      version: 'latest'
+    },
+    sl_firefox_70: {
+      base: 'SauceLabs',
+      browserName: 'firefox',
+      platform: 'Windows 7',
+      version: '70'
+    },
+    sl_firefox_latest: {
+      base: 'SauceLabs',
+      browserName: 'firefox',
+      platform: 'Windows 10',
+      version: 'latest'
+    },
+    sl_safari_8: {
       base: 'SauceLabs',
       browserName: 'safari',
-      platform: 'OS X 10.8',
-      version: '6'
+      platform: 'OS X 10.10',
+      version: '8.0'
     },
-    sl_firefox_30: {
+    sl_safari_latest: {
       base: 'SauceLabs',
-      browserName: 'firefox',
-      version: '30'
+      browserName: 'safari',
+      platform: 'OS X 10.15',
+      version: 'latest'
     },
-    sl_firefox_4: {
+    sl_ios_safari: {
       base: 'SauceLabs',
-      browserName: 'firefox',
-      version: '38'
+      browserName: 'Safari',
+      platform: 'OS X 13.2',
+      version: 'latest'
     },
-    // sl_ios_safari: {
-    //   base: 'SauceLabs',
-    //   browserName: 'iphone',
-    //   platform: 'OS X 10.9',
-    //   version: '7.1'
-    // },
-    sl_ie_9: {
+    sl_android_new: {
       base: 'SauceLabs',
-      browserName: 'internet explorer',
-      platform: 'Windows 7',
-      version: '9'
+      browserName: 'Browser',
+      platform: 'Android',
+      version: '10.0',
+      deviceName: 'Android GoogleAPI Emulator',
+      deviceOrientation: 'portrait'
     },
-    // sl_ie_10: {
-    //   base: 'SauceLabs',
-    //   browserName: 'internet explorer',
-    //   platform: 'Windows 8',
-    //   version: '10'
-    // },
-    sl_ie_11: {
+    sl_android_old: {
       base: 'SauceLabs',
-      browserName: 'internet explorer',
-      platform: 'Windows 8.1',
-      version: '11'
-    },
-    FirefoxHeadless: {
-      base: 'Firefox',
-      flags: ['-headless'],
+      browserName: 'Browser',
+      platform: 'Android',
+      version: '6.0',
+      deviceName: 'Android Emulator',
+      deviceOrientation: 'portrait'
     }
   };
 
@@ -68,7 +76,6 @@ module.exports = function (config) {
     // Here you can change to what browsers you have on your system. TODO: Move to .env file instead
     // Note: Puppetter currently doesn't work on WSL v1. Should work in WSL v2
     // browsers = ['PhantomJS'];
-    // browsers = ['FirefoxHeadless'];
     browsers = ['ChromeHeadless'];
   } else {
     reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
