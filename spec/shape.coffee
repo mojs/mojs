@@ -727,7 +727,8 @@ describe 'Shape ->', ->
       isTr = tr is 'translate(0, 0) rotate(26deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 0px) rotate(26deg) scale(1, 1)'
       isTr3 = tr is 'translate(0px, 0px) rotate(26deg) scale(1)'
-      expect(isTr or isTr2 or isTr3).toBe true
+      isTr4 = tr is 'translate(0px) rotate(26deg) scale(1)'
+      expect(isTr or isTr2 or isTr3 or isTr4).toBe true
       # expect(byte.el.style["#{h.prefix.css}transform"]).toBe resultStr
     it 'should not set transform if angle changed #2', ->
       byte = new Byte angle: 25
