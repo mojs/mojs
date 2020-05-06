@@ -39,6 +39,12 @@ module.exports = function (config) {
       base: 'SauceLabs',
       browserName: 'MicrosoftEdge',
       version: 'latest'
+    },
+    sl_safari_ios: {
+      base: 'SauceLabs',
+      browserName: 'safari',
+      platform: 'iOS',
+      version: 'latest'
     }
   };
 
