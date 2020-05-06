@@ -134,7 +134,7 @@ describe 'easing ->', ->
       fun = ->
       expect(easing.parseEasing(fun)).toBe fun
       expect(typeof easing.parseEasing(fun)).toBe 'function'
-    it 'should parse null/undefined to liner.none', ->
+    it 'should parse null/undefined to linear.none', ->
         fun = easing.parseEasing(null)
         expect(fun).toBe mojs.easing.linear.none
 

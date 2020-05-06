@@ -1118,7 +1118,7 @@ describe 'Shape ->', ->
     it 'return tranform-origin string of the el with delta', ->
       tr = new Shape
         x: 100, y: 100,
-        easing: 'liner.none',
+        easing: 'linear.none',
         origin: { '0% 0%' : '50% 200%' }
       tr.setProgress 0
       tr.setProgress .5
