@@ -95,5 +95,3 @@ describe 'approximate method ->', ->
       expect(approximate._proximate).toHaveBeenCalledWith loadSamples
       samples = approximate._proximate.calls.first().args[0]
       expect(result.getSamples()).toEqual loadSamples
-
-

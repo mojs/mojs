@@ -57,7 +57,7 @@ describe 'Curve ->', ->
 
       x  = p.width/2
       y  = p.height/2
-      
+
       x1 = x - radiusX
       x2 = x
       x3 = x + radiusX
@@ -82,7 +82,7 @@ describe 'Curve ->', ->
 
       x  = 1*p.x
       y  = 1*p.y
-      
+
       x1 = x - radiusX
       x2 = x
       x3 = x + radiusX
@@ -153,5 +153,3 @@ describe 'Curve ->', ->
       len = .5 * Math.PI * ( 3*dRadius - sqrt );
 
       expect( curve._getLength() ).toBe len
-
-  

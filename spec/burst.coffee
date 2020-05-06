@@ -97,7 +97,7 @@ describe 'Burst ->', ->
       burst = new Burst
       spyOn burst, '_addOptionalProps'
       burst._renderSwirls()
-      
+
       expect(burst._addOptionalProps.calls.count()).toBe 5
 
     it 'should set time on tween of masterSwirl', ->
@@ -196,7 +196,7 @@ describe 'Burst ->', ->
       burst = new Burst
         children:
           radius: [ { 20: 50}, 20, '500' ]
-      
+
       opt0 = burst._getPropByMod 'radius', 0, burst._o.children
       opt1 = burst._getPropByMod 'radius', 1, burst._o.children
       opt2 = burst._getPropByMod 'radius', 2, burst._o.children
@@ -370,7 +370,7 @@ describe 'Burst ->', ->
 
     it 'should work with `stagger` values', ->
       burst = new Burst count: 2
-      
+
       expect(burst._getBitAngle({'stagger(20, 10)':0}, 0, 0)[110]).toBe 90
       expect(burst._getBitAngle({'stagger(20, 10)':0}, 0, 1)[300]).toBe 270
 
@@ -378,7 +378,7 @@ describe 'Burst ->', ->
 
     it 'should work with `random` values', ->
       burst = new Burst count: 2
-      
+
       angle = burst._getBitAngle({'rand(10, 20)':0}, 0, 0)
       for key, value in angle
         baseAngle = 90
@@ -414,7 +414,7 @@ describe 'Burst ->', ->
       point0 = burst._getSidePoint('start', 0, 0)
       expect(burst._getSideRadius).toHaveBeenCalledWith 'start', 0
       expect(burst._getSideRadius.calls.count()).toBe 1
-      
+
       point1 = burst._getSidePoint('start', 0, 1)
       expect(burst._getSideRadius).toHaveBeenCalledWith 'start', 1
       expect(burst._getSideRadius.calls.count()).toBe 2
@@ -534,7 +534,7 @@ describe 'Burst ->', ->
 
       spyOn(b, '_calcPackTime').and.callThrough()
       b._recalcModulesTime()
-      
+
       expect(b._calcPackTime).toHaveBeenCalledWith b._swirls[0]
       time = b._calcPackTime(b._swirls[0])
       expect(modules[0].tween._props.duration).toBe  time
@@ -561,7 +561,7 @@ describe 'Burst ->', ->
   describe '_masterThen method ->', ->
     it 'should pass options to masterSwirl', ->
       b = new Burst count: 2
-        
+
       spyOn b.masterSwirl, 'then'
 
       o = { opacity: .5 }
@@ -571,21 +571,21 @@ describe 'Burst ->', ->
 
     it 'should save the new master swirl', ->
       b = new Burst count: 2
-        
+
       b._masterThen( { opacity: .5 } )
       expect( b._masterSwirls.length ).toBe 2
 
     it 'should return the new swirl', ->
       b = new Burst count: 2
-        
+
       result = b._masterThen( { opacity: .5 } )
       expect( result ).toBe b._masterSwirls[b._masterSwirls.length-1]
 
   describe '_childThen method ->', ->
     it 'should pass options to swirls', ->
       b = new Burst count: 2
-        
-      pack = b._swirls[0] 
+
+      pack = b._swirls[0]
       spyOn pack[0], 'then'
       spyOn pack[1], 'then'
 
@@ -606,8 +606,8 @@ describe 'Burst ->', ->
       b = new Burst count: 2
 
       spyOn b, '_addBurstProperties'
-        
-      pack = b._swirls[0] 
+
+      pack = b._swirls[0]
 
       o = { children: { radius: [ 10, 20 ] } }
       b._childThen(o, b._masterThen(o))
@@ -622,7 +622,7 @@ describe 'Burst ->', ->
 
     it 'should save new swirls to _swirls', ->
       b = new Burst count: 2
-        
+
       o = { children: { radius: [ 10, 20 ] } }
 
       b._masterThen(o)
@@ -635,7 +635,7 @@ describe 'Burst ->', ->
 
     it 'should return the new pack', ->
       b = new Burst count: 2
-        
+
       o = { children: { radius: [ 10, 20 ] } }
 
       b._masterThen(o)
@@ -687,8 +687,8 @@ describe 'Burst ->', ->
 
     it 'should call _recalcTotalDuration method', ->
       b = new Burst count: 2
-  
-      spyOn b.timeline, '_recalcTotalDuration'      
+
+      spyOn b.timeline, '_recalcTotalDuration'
       b.then({ children: { radius: [ 10, 20 ] } })
 
       expect(b.timeline._recalcTotalDuration).toHaveBeenCalled()
@@ -861,8 +861,8 @@ describe 'Burst ->', ->
 
       for key of h.tweenOptionMap
         expect(o[key]).not.toBeDefined()
-      
-      # nope      
+
+      # nope
       # expect(o['easing']).toBe 1
       # for key of b._defaults
       #   expect(o[key]).toBe 1
@@ -992,7 +992,7 @@ describe 'Burst ->', ->
       for j in [1...modules.length]
         module  = modules[j]
         spyOn(module, '_tuneNewOptions').and.callThrough()
-      
+
       b._refreshBurstOptions modules, 1
 
       for j in [1...modules.length]
@@ -1100,5 +1100,3 @@ describe 'Burst ->', ->
       spyOn mojs.Module::, '_show'
       burst._show()
       expect(mojs.Module::_show).not.toHaveBeenCalled()
-
-

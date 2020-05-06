@@ -47,7 +47,7 @@ describe 'Cross ->', ->
         radiusY: 40
 
       cross._draw()
-      
+
       d = cross.el.getAttribute('d')
       isD = d is 'M-20,0 L20,0 M0,-40 L0,40'
       isIE9D = d is 'M -20 0 L 20 0 M 0 -40 L 0 40'

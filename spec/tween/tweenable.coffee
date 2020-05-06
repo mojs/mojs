@@ -156,7 +156,7 @@ describe 'tweenable ->', ->
       tw = new Tweenable
       result = tw.resume()
       expect(result).toBe tw
-      
+
   describe 'setProgress ->', ->
     it 'should call timeline\'s setProgress method', ->
       tw = new Tweenable
@@ -206,5 +206,3 @@ describe 'tweenable ->', ->
 
       expect(tr.tween._props.callbacksContext).toBe obj
       expect(tr.timeline._props.callbacksContext).toBe obj
-
-

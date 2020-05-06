@@ -10,10 +10,10 @@ describe 'Spriter module ->', ->
     expect(sp._defaults.easing)    .toBe 'linear.none'
     expect(sp._defaults.repeat)    .toBe 0
     expect(sp._defaults.yoyo)      .toBe false
-    
+
     expect(sp._defaults.isRunLess) .toBe false
     expect(sp._defaults.isShowEnd) .toBe false
-    
+
     expect(sp._defaults.onStart)   .toBe null
     expect(sp._defaults.onUpdate)  .toBe null
     expect(sp._defaults.onComplete).toBe null
@@ -217,8 +217,3 @@ describe 'Spriter module ->', ->
       spyOn sp.timeline, 'play'
       sp.run()
       expect(sp.timeline.play).toHaveBeenCalled()
-
-
-
-
-

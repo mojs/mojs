@@ -80,9 +80,3 @@ describe 'Rect ->', ->
         radiusX: radiusX
         radiusY: radiusY
       expect(bit._getLength()).toBe 2*(2*radiusX + 2*radiusY)
-
-
-
-
-
-

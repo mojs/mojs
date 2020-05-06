@@ -27,7 +27,7 @@ describe 'Html ->', ->
       expect( p['borderWidth'] ).toBe '20px'
       expect( p['borderRadius'] ).toBe '40px'
       expect( p['y'] ).toBe '40px'
-      
+
       # defaults
       expect( p['z'] ).toBe 0
       expect( p['skewY'] ).toBe 0
@@ -36,11 +36,11 @@ describe 'Html ->', ->
       expect( p['angleX'] ).toBe 0
       expect( p['angleY'] ).toBe 0
       expect( p['angleZ'] ).toBe 0
-      
+
       expect( p['scale'] ).toBe  1
       expect( p['scaleX'] ).toBe 1
       expect( p['scaleY'] ).toBe 1
-      
+
       expect( p['isRefreshState'] ).toBe true
       expect( p['isShowStart'] ).toBe true
       expect( p['isShowEnd'] ).toBe true
@@ -335,14 +335,14 @@ describe 'Html ->', ->
       expect( html._defaults.x ).toBe 0
       expect( html._defaults.y ).toBe 0
       expect( html._defaults.z ).toBe 0
-      
+
       expect( html._defaults.skewX ).toBe 0
       expect( html._defaults.skewY ).toBe 0
-      
+
       expect( html._defaults.angleX ).toBe 0
       expect( html._defaults.angleY ).toBe 0
       expect( html._defaults.angleZ ).toBe 0
-      
+
       expect( html._defaults.scale ).toBe  1
       expect( html._defaults.scaleX ).toBe 1
       expect( html._defaults.scaleY ).toBe 1
@@ -876,7 +876,7 @@ describe 'Html ->', ->
         el: document.createElement 'div'
         borderRadius: 10
         })
-      
+
       div = document.createElement 'div'
       expect(html._checkStartValue 'borderRadius').toBe h.defaultStyles['borderRadius']
       expect(html._checkStartValue 'borderRadius', .5).toBe .5
@@ -886,7 +886,7 @@ describe 'Html ->', ->
         el: document.createElement 'div'
         borderRadius: 10
         })
-      
+
       expect(html._checkStartValue 'someUnknownProperty').toBe 0
       expect(html._checkStartValue 'someUnknownProperty', .5).toBe .5
 
@@ -938,7 +938,7 @@ describe 'Html ->', ->
         html._saveCustomProperties()
 
         expect( html._copyDefaultCustomProps ).toHaveBeenCalled()
-        
+
   describe '_makeTimeline method ->', ->
     it 'should call super', ->
 
@@ -1105,7 +1105,7 @@ describe 'Html ->', ->
         spyOn html, '_hide'
         obj.callbackOverrides.onStart false
         expect(html._hide).not.toHaveBeenCalled()
-      
+
     describe 'onComplete callback override ->', ->
       it 'should override this._o.onComplete', ->
         html = new Html el: document.createElement 'div'
@@ -1227,7 +1227,7 @@ describe 'Html ->', ->
         originY: 1000
         originX: 500
       }
-      
+
       html = new Html({
         el: document.createElement 'div'
         borderRadius: 10,
@@ -1247,7 +1247,7 @@ describe 'Html ->', ->
         originY: 1000
         originX: 500
       }
-      
+
       html = new Html({
         el: document.createElement 'div'
         borderRadius: 10,
@@ -1270,8 +1270,3 @@ describe 'Html ->', ->
       shape._showByTransform()
 
       expect( shape._drawTransform ).toHaveBeenCalled()
-
-
-
-
-

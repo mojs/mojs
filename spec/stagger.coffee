@@ -48,7 +48,7 @@ describe 'stagger ->', ->
       expect(s._getOptionByMod('bit', 0, options)).toBe 0
       expect(s._getOptionByMod('bit', 1, options)).toBe 200
       expect(s._getOptionByMod('bit', 2, options)).toBe 400
-  
+
   describe '_getOptionByIndex method ->', ->
     it 'should get option by modulo of index', ->
       options =
@@ -146,7 +146,7 @@ describe 'stagger ->', ->
 
       options = { duration: 400 }
       s.then(options);
-      
+
       expect(s._getOptionByIndex.calls.count()).toBe 5
       expect(s._getOptionByIndex).toHaveBeenCalledWith 0, options
       expect(s._getOptionByIndex).toHaveBeenCalledWith 1, options
@@ -171,7 +171,7 @@ describe 'stagger ->', ->
         delay: 'stagger(200)'
       }
       s.then(options);
-      
+
       expect(s._modules[0].then)
         .toHaveBeenCalledWith s._getOptionByIndex 0, options
       expect(s._modules[1].then)
@@ -192,7 +192,7 @@ describe 'stagger ->', ->
 
       options = undefined
       s.then(options);
-      
+
       expect(s._getOptionByIndex.calls.count()).toBe 0
       expect(s._getOptionByIndex).not.toHaveBeenCalledWith 0, options
       expect(s._getOptionByIndex).not.toHaveBeenCalledWith 1, options
@@ -227,7 +227,7 @@ describe 'stagger ->', ->
 
       options = { duration: 400 }
       s.tune(options);
-      
+
       expect(s._getOptionByIndex.calls.count()).toBe 5
       expect(s._getOptionByIndex).toHaveBeenCalledWith 0, options
       expect(s._getOptionByIndex).toHaveBeenCalledWith 1, options
@@ -252,7 +252,7 @@ describe 'stagger ->', ->
         delay: 'stagger(200)'
       }
       s.tune(options);
-      
+
       expect(s._modules[0].tune)
         .toHaveBeenCalledWith s._getOptionByIndex 0, options
       expect(s._modules[1].tune)
@@ -273,7 +273,7 @@ describe 'stagger ->', ->
 
       options = undefined
       s.tune(options);
-      
+
       expect(s._getOptionByIndex.calls.count()).toBe 0
       expect(s._getOptionByIndex).not.toHaveBeenCalledWith 0, options
       expect(s._getOptionByIndex).not.toHaveBeenCalledWith 1, options
@@ -312,7 +312,7 @@ describe 'stagger ->', ->
       spyOn s._modules[4], 'generate'
 
       s.generate()
-      
+
       expect(s._modules[0].generate).toHaveBeenCalled()
       expect(s._modules[1].generate).toHaveBeenCalled()
       expect(s._modules[2].generate).toHaveBeenCalled()
@@ -336,7 +336,7 @@ describe 'stagger ->', ->
       s = new StaggeredShape quantifier: 5
       expect(s.generate()).toBe s
 
-  
+
   describe 'quantifier option ->', ->
     it 'should be passed to the _getChildQuantity method', ->
       s = new Stagger

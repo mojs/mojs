@@ -333,7 +333,7 @@ describe 'Delta ->', ->
         props: props
 
       delta._previousValues = null
-      
+
       delta.refresh( false )
 
       p = delta._previousValues
@@ -380,6 +380,3 @@ describe 'Delta ->', ->
 
       result = delta.restore()
       expect( result ).toBe delta
-
-
-

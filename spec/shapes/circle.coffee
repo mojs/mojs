@@ -64,4 +64,3 @@ describe 'Circle ->', ->
         radiusY: radiusY
       sqrt = Math.sqrt (radiusX*radiusX + radiusY*radiusY)/2
       expect(bit._getLength()).toBe 2*Math.PI*sqrt
-
