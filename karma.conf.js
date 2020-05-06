@@ -24,6 +24,11 @@ module.exports = function (config) {
       base: 'SauceLabs',
       browserName: 'safari',
       version: 'latest'
+    },
+    sl_ie_latest: {
+      base: 'SauceLabs',
+      browserName: 'internet explorer',
+      version: 'latest'
     }
   };
 
