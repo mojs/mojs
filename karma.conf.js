@@ -18,7 +18,7 @@ module.exports = function (config) {
   };
 
   if (process.env.TRAVIS) {
-    reporters = ['coverage', 'clear-screen', 'saucelabs'];
+    reporters = ['progress', 'coverage', 'clear-screen', 'saucelabs'];
     browsers = Object.keys(customLaunchers);
   } else {
     // Here you can change to what browsers you have on your system. TODO: Move to .env file instead
