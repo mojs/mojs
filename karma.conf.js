@@ -5,69 +5,10 @@ module.exports = function (config) {
   // Browsers to run on Sauce Labs
   // Check out https://saucelabs.com/platforms for all browser/OS combos
   var customLaunchers = {
-    sl_chrome_49: {
-      base: 'SauceLabs',
-      browserName: 'chrome',
-      platform: 'Windows 7',
-      version: '49'
-    },
     sl_chrome_latest: {
       base: 'SauceLabs',
       browserName: 'chrome',
-      platform: 'Windows 10',
       version: 'latest'
-    },
-    sl_chrome_ie11: {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      platform: 'Windows 7',
-      version: 'latest'
-    },
-    sl_firefox_70: {
-      base: 'SauceLabs',
-      browserName: 'firefox',
-      platform: 'Windows 7',
-      version: '70'
-    },
-    sl_firefox_latest: {
-      base: 'SauceLabs',
-      browserName: 'firefox',
-      platform: 'Windows 10',
-      version: 'latest'
-    },
-    sl_safari_8: {
-      base: 'SauceLabs',
-      browserName: 'safari',
-      platform: 'OS X 10.10',
-      version: '8.0'
-    },
-    sl_safari_latest: {
-      base: 'SauceLabs',
-      browserName: 'safari',
-      platform: 'OS X 10.15',
-      version: 'latest'
-    },
-    sl_ios_safari: {
-      base: 'SauceLabs',
-      browserName: 'iphone',
-      platform: 'OS X 13.2',
-      version: 'latest'
-    },
-    sl_android_new: {
-      base: 'SauceLabs',
-      browserName: 'Browser',
-      platform: 'Android',
-      version: '10.0',
-      deviceName: 'Android GoogleAPI Emulator',
-      deviceOrientation: 'portrait'
-    },
-    sl_android_old: {
-      base: 'SauceLabs',
-      browserName: 'Browser',
-      platform: 'Android',
-      version: '6.0',
-      deviceName: 'Android Emulator',
-      deviceOrientation: 'portrait'
     }
   };
 
