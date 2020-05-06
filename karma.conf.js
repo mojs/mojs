@@ -133,6 +133,8 @@ module.exports = function (config) {
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
       tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+      recordScreenshots: false,
+      recordVideo: false
     },
     captureTimeout: 120000,
     customLaunchers: customLaunchers,
