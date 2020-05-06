@@ -768,7 +768,7 @@ describe 'Shape ->', ->
       spyOn byte, '_fillTransform'
       byte._draw()
       expect(byte._fillTransform).not.toHaveBeenCalled()
-    it 'should set transform if x changed #1', ->
+    it 'should set transform if x changed', ->
       byte = new Byte radius: 25, top: 10, x: { 0: 10 }
       byte._props.x = '4px'
       spyOn(byte, '_fillTransform').and.callThrough()
@@ -782,7 +782,7 @@ describe 'Shape ->', ->
       isTr4 = tr is 'translate(4px, 0px) rotate(0deg) scale(1)'
       expect(isTr or isTr2 or isTr3 or isTr4).toBe true
 
-    it 'should set transform if x changed #2', ->
+    it 'should set transform if y changed', ->
       byte = new Byte radius: 25, top: 10, y: { 0: 10 }
       byte._props.y = '4px'
       spyOn(byte, '_fillTransform').and.callThrough()
@@ -796,7 +796,7 @@ describe 'Shape ->', ->
       isTr4 = tr is 'translate(0px, 4px) rotate(0deg) scale(1)'
       expect(isTr or isTr2 or isTr3 or isTr4).toBe true
 
-    it 'should set transform if x changed #3', ->
+    it 'should set transform if scale changed', ->
       byte = new Byte radius: 25, top: 10, scale: { 0: 10 }
       byte._props.scale = 3
       spyOn(byte, '_fillTransform').and.callThrough()
