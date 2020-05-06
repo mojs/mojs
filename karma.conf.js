@@ -6,47 +6,38 @@ module.exports = function (config) {
   // Check out https://saucelabs.com/platforms for all browser/OS combos
   var customLaunchers = {
     sl_chrome_49: {
-      base: 'SauceLabs',
       browserName: 'chrome',
       version: '49'
     },
     sl_firefox_70: {
-      base: 'SauceLabs',
       browserName: 'firefox',
       version: '70'
     },
     sl_safari_8: {
-      base: 'SauceLabs',
       browserName: 'safari',
       version: '8'
     },
     sl_chrome_latest: {
-      base: 'SauceLabs',
       browserName: 'chrome',
       version: 'latest'
     },
     sl_firefox_latest: {
-      base: 'SauceLabs',
       browserName: 'firefox',
       version: 'latest'
     },
     sl_safari_latest: {
-      base: 'SauceLabs',
       browserName: 'safari',
       version: 'latest'
     },
     sl_ie_latest: {
-      base: 'SauceLabs',
       browserName: 'internet explorer',
       version: 'latest'
     },
     sl_edge_latest: {
-      base: 'SauceLabs',
       browserName: 'MicrosoftEdge',
       version: 'latest'
     },
     sl_ios_latest: {
-      base: 'SauceLabs',
       browserName: 'Safari',
       platform: 'iOS',
       version: 'latest',
@@ -54,6 +45,12 @@ module.exports = function (config) {
     }
   };
 
+  // define the base configuration for each launcher
+  Object.keys(customLaunchers).map((key) => {
+    customLaunchers[key].base = 'SauceLabs';
+  });
+
+  // use SauceLabs browsers if running with TravisCI
   if (process.env.TRAVIS) {
     reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
     browsers = Object.keys(customLaunchers);
