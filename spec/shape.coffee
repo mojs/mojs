@@ -698,9 +698,11 @@ describe 'Shape ->', ->
       expect(byte.el.style.left).toBe '50%'
       s = byte.el.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-      isTr  = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
-      isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
-      isTr3 = tr is 'translate(0px, 0px) rotate(0deg) scale(1)'
+      isTr = tr is 'translate(0) rotate(0deg) scale(1)'
+      isTr2 = tr is 'translate(0px) rotate(0deg) scale(1, 1)'
+      isTr3 = tr is 'translate(0px, 0) rotate(0deg) scale(1, 1)'
+      isTr4 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
+      isTr5 = tr is 'translate(0px, 0px) rotate(0deg) scale(1)'
       expect(isTr or isTr2 or isTr3).toBe true
     it 'should set new values', ->
       byte = new Byte radius: 25, top: 10
