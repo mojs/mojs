@@ -779,7 +779,7 @@ describe 'Shape ->', ->
       isTr = tr is 'translate(4px, 0) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(4px, 0px) rotate(0deg) scale(1, 1)'
       isTr3 = tr is 'translate(4px, 0px) rotate(0deg) scale(1)'
-      isTr4 = tr is 'translate(4px, 0px) rotate(0deg) scale(1)'
+      isTr4 = tr is 'translate(4px) rotate(0deg) scale(1)'
       expect(isTr or isTr2 or isTr3 or isTr4).toBe true
 
     it 'should set transform if y changed', ->
