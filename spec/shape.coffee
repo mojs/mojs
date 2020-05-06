@@ -703,7 +703,7 @@ describe 'Shape ->', ->
       isTr3 = tr is 'translate(0px, 0) rotate(0deg) scale(1, 1)'
       isTr4 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
       isTr5 = tr is 'translate(0px, 0px) rotate(0deg) scale(1)'
-      expect(isTr or isTr2 or isTr3).toBe true
+      expect(isTr or isTr2 or isTr3 or isTr4 or isTr5).toBe true
     it 'should set new values', ->
       byte = new Byte radius: 25, top: 10
       byte._draw()
