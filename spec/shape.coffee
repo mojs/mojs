@@ -779,7 +779,8 @@ describe 'Shape ->', ->
       isTr = tr is 'translate(4px, 0) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(4px, 0px) rotate(0deg) scale(1, 1)'
       isTr3 = tr is 'translate(4px, 0px) rotate(0deg) scale(1)'
-      expect(isTr or isTr2 or isTr3).toBe true
+      isTr4 = tr is 'translate(4px, 0px) rotate(0deg) scale(1)'
+      expect(isTr or isTr2 or isTr3 or isTr4).toBe true
 
     it 'should set transform if x changed #2', ->
       byte = new Byte radius: 25, top: 10, y: { 0: 10 }
@@ -792,7 +793,8 @@ describe 'Shape ->', ->
       isTr = tr is 'translate(0, 4px) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 4px) rotate(0deg) scale(1, 1)'
       isTr3 = tr is 'translate(0px, 4px) rotate(0deg) scale(1)'
-      expect(isTr or isTr2 or isTr3).toBe true
+      isTr4 = tr is 'translate(0px, 4px) rotate(0deg) scale(1)'
+      expect(isTr or isTr2 or isTr3 or isTr4).toBe true
 
     it 'should set transform if x changed #3', ->
       byte = new Byte radius: 25, top: 10, scale: { 0: 10 }
@@ -807,7 +809,8 @@ describe 'Shape ->', ->
       isTr = tr is 'translate(0, 0) rotate(0deg) scale(3, 3)'
       isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(3, 3)'
       isTr3 = tr is 'translate(0px, 0px) rotate(0deg) scale(3)'
-      expect(isTr or isTr2 or isTr3).toBe true
+      isTr4 = tr is 'translate(0px) rotate(0deg) scale(3)'
+      expect(isTr or isTr2 or isTr3 or isTr4).toBe true
 
     it 'should set `transform-origin` if `origin`', ->
       byte = new Byte origin: '50% 30%'
