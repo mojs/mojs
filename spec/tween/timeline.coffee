@@ -25,7 +25,7 @@ describe 'Timeline ->', ->
     it 'should make generic name if no one was specified with custom nameBase', ->
       nameBase = 'Shape'
       tweener["_#{nameBase}s"] = undefined;
-      t = new Timeline nameBase: nameBase 
+      t = new Timeline nameBase: nameBase
       expect(t._props.name).toBe "#{nameBase} 1"
       t = new Timeline nameBase: nameBase
       expect(t._props.name).toBe "#{nameBase} 2"
@@ -443,7 +443,7 @@ describe 'Timeline ->', ->
   #     t1.add t
   #     t1.remove t
   #     expect(t1.timelines.length).toBe 0
-  
+
   describe '_recalcTotalDuration method ->', ->
     it 'should recalculate duration', ->
       t = new Timeline
@@ -484,7 +484,7 @@ describe 'Timeline ->', ->
       spyOn t0, '_recalcTotalDuration'
       t._recalcTotalDuration()
       expect(t0._recalcTotalDuration).toHaveBeenCalled()
-  
+
   describe 'setProgress method ->', ->
     it 'should call _setStartTime if there is no this._props.startTime', ->
       t = new Timeline
@@ -531,7 +531,7 @@ describe 'Timeline ->', ->
       tm.setProgress 0
       tm.setProgress .25
       tm.setProgress .45
-      isReact = true      
+      isReact = true
       tm.setProgress .5
       expect(firstUpdated).toBe 'tween 1'
     it 'should update children in backward direction ->', ->
@@ -544,7 +544,7 @@ describe 'Timeline ->', ->
       tm.setProgress 1
       tm.setProgress .75
       tm.setProgress .55
-      isReact = true      
+      isReact = true
       tm.setProgress .5
       expect(firstUpdated).toBe 'tween 2'
 
@@ -655,6 +655,3 @@ describe 'Timeline ->', ->
       expect( tw1._refresh ).toHaveBeenCalledWith true
       expect( tw2._refresh ).toHaveBeenCalledWith true
       expect( tw3._refresh ).toHaveBeenCalledWith true
-
-
-

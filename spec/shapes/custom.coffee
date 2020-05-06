@@ -239,4 +239,3 @@ describe 'Custom ->', ->
       custom = new Custom parent: parent
       custom._length = 200
       expect(custom._getLength()).toBe 200
-

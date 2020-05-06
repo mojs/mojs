@@ -95,7 +95,7 @@ describe 'thenable ->', ->
       byte._defaults = {}
       byte._vars()
       mergedOpton = byte._mergeThenOptions start, end
-        
+
       expect(mergedOpton.radius[10]).toBe 20
       expect(mergedOpton.duration).toBe 500
       expect(mergedOpton.fill).toBe '#ff00ff'
@@ -187,7 +187,7 @@ describe 'thenable ->', ->
     it 'should not merge booleans', ->
       byte = new Byte
       start = isShowEnd: true
-      end   = isShowEnd: false 
+      end   = isShowEnd: false
       byte._defaults = {}
       byte._vars()
       mergedOpton = byte._mergeThenOptions start, end
@@ -426,7 +426,7 @@ describe 'thenable ->', ->
       th._vars()
       th.then radius: 5, isYoyo: true, delay: 100
       expect(th._history.length)       .toBe 2
-      
+
       expect(th._history[1].radius[20]).toBe 5
       expect(th._history[1].duration).toBe 1000
       expect(th._history[1].delay)   .toBe 100
@@ -435,9 +435,9 @@ describe 'thenable ->', ->
 
     it 'should always merge then options with the last history item', ->
       th = new Thenable radius: 20, duration: 1000, delay: 10
-      
+
       th._defaults = { stroke: 'transparent' }
-      th._props = { radius: 20, duration: 1000, delay: 10 } 
+      th._props = { radius: 20, duration: 1000, delay: 10 }
 
       th._vars()
       th.then radius: 5, yoyo: true, delay: 100
@@ -511,7 +511,7 @@ describe 'thenable ->', ->
 
         th._defaults = {}
         th._vars()
-        
+
         th.then({ stroke: 'cyan' })
         expect(th._modules[1]._o.isShowStart).toBe false
 
@@ -527,7 +527,7 @@ describe 'thenable ->', ->
 
       #   th._defaults = {}
       #   th._vars()
-        
+
       #   th.then({ stroke: 'cyan' })
 
       #   expect(th._modules[0]._props.isShowEnd).toBe false
@@ -605,7 +605,3 @@ describe 'thenable ->', ->
       shape = new Thenable()
 
       expect(shape._checkStartValue 'x', 20).toBe 20
-
-
-
-

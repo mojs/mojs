@@ -191,7 +191,7 @@ describe 'Shape ->', ->
         spyOn tr, '_show'
         obj.callbackOverrides.onStart true
         expect(tr._show).not.toHaveBeenCalled()
-      
+
       it 'should call _hide if not isForward and !_isChained', ->
         tr = new Shape
         obj = {}
@@ -213,7 +213,7 @@ describe 'Shape ->', ->
         spyOn tr, '_hide'
         obj.callbackOverrides.onStart false
         expect(tr._hide).not.toHaveBeenCalled()
-      
+
     describe 'onComplete callback override ->', ->
       it 'should override this._o.onComplete', ->
         tr = new Shape
@@ -474,7 +474,7 @@ describe 'Shape ->', ->
             expect(isTr1 or isTr2).toBe true
             dfr()
         byte.play()
-  
+
   describe '_render method ->', ->
     it 'should call _createShape method', ->
       byte = new Byte radius: 25
@@ -849,7 +849,7 @@ describe 'Shape ->', ->
       byte._drawEl()
       byte._drawEl()
       expect(byte._fillOrigin.calls.count()).toBe 2
-      
+
   describe '_isPropChanged method ->', ->
     it 'should return bool showing if prop was changed after the last set', ->
       byte = new Byte radius: 25, y: 10
@@ -922,7 +922,7 @@ describe 'Shape ->', ->
       it 'should not calc delta for tween related props', ->
         byte = new Byte
           duration:  { 2000: 1000 }
-         
+
         expect(byte._deltas.duration).not.toBeDefined()
   describe '_setProgress method ->', ->
     it 'should set Shapeion progress', ->
@@ -988,7 +988,7 @@ describe 'Shape ->', ->
       byte = new Byte strokeDasharray: 7
       expect(h.isArray(byte._props.strokeDasharray)).toBe true
       expect(byte._props.strokeDasharray.length)    .toBe 1
-  
+
   describe '_getRadiusSize method ->', ->
     it 'should return max from delatas if key is defined', ->
       byte = new Byte radiusX: 20: 30
@@ -1006,7 +1006,7 @@ describe 'Shape ->', ->
     #   byte = new Byte
     #   size = byte._getRadiusSize key: 'radiusX'
     #   expect(size).toBe 0
-  
+
   # not now
   # describe 'isForeign flag ->', ->
   #   it 'should not be set by default', ->
@@ -1086,8 +1086,8 @@ describe 'Shape ->', ->
       tr = new Shape
         callbacksContext: obj
         onUpdate:-> isRightContext = @ is obj
-      
-      tr.setProgress 0 
+
+      tr.setProgress 0
       tr.setProgress .1
 
       expect(isRightContext).toBe true
@@ -1097,12 +1097,12 @@ describe 'Shape ->', ->
       tr = new Shape
         callbacksContext: obj
         timeline: { onUpdate:-> isRightContext = @ is obj }
-      
+
       tr.setProgress 0
       tr.setProgress .1
 
       expect(isRightContext).toBe true
-  
+
   describe '_fillTransform method ->', ->
     it 'return tranform string of the el', ->
       tr = new Shape x: 100, y: 100, angle: 50, scaleX: 2, scaleY: 3
@@ -1129,7 +1129,7 @@ describe 'Shape ->', ->
       it 'should create el', ->
         byte = new Byte radius: 25
         expect(byte.el.tagName.toLowerCase()).toBe 'div'
-        style = byte.el.style 
+        style = byte.el.style
         expect(style[ 'position' ]).toBe 'absolute'
         expect(style[ 'width' ]).toBe '52px'
         expect(style[ 'height' ]).toBe '52px'
@@ -1467,6 +1467,3 @@ describe 'Shape ->', ->
       isIE = tr is 'translate(0px, 0px) rotate(0deg) scale(1)'
 
       expect(isNormal or isNormal2 or isIE9 or isIE).toBe true
-
-
-
