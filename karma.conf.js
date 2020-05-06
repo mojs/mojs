@@ -10,6 +10,11 @@ module.exports = function (config) {
       browserName: 'chrome',
       version: '49'
     },
+    sl_safari_8: {
+      base: 'SauceLabs',
+      browserName: 'safari',
+      version: '8'
+    },
     sl_chrome_latest: {
       base: 'SauceLabs',
       browserName: 'chrome',
