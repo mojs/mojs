@@ -81,6 +81,7 @@ module.exports = function (config) {
       'spec/motion-path.coffee'
     ],
     preprocessors: {
+      'dist/mo.js': ['coverage'],
       'spec/**/*.coffee': ['coffee']
     },
     coffeePreprocessor: {
