@@ -66,12 +66,12 @@ module.exports = function (config) {
     frameworks: ['jasmine'],
     client: {
       jasmine: {
-        "spec_dir": "spec",
-        "spec_files": [
-          "**/*.js"
+        'spec_dir': 'spec',
+        'spec_files': [
+          '**/*.js'
         ],
-        "helpers": [
-          "dist/mo.js"
+        'helpers': [
+          'dist/mo.js'
         ],
         random: false,
         failFast: true
