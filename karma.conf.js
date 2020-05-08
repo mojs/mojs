@@ -29,10 +29,6 @@ module.exports = function (config) {
       browserName: 'safari',
       version: 'latest'
     },
-    sl_ie_latest: {
-      browserName: 'internet explorer',
-      version: 'latest'
-    },
     sl_edge_latest: {
       browserName: 'MicrosoftEdge',
       version: 'latest'
