@@ -99,11 +99,13 @@ Get technical informations, open an issue/pull request or join the (amazing) com
 - [Simple Ripple](https://codepen.io/sol0mka/full/XKdWJg/) _(click to see)_
 
 ## Browser support
-- Chrome 4+
-- Firefox 4+
-- Opera 11.5+
-- Safari 4+
-- IE 9+
+- Chrome 49+
+- Firefox 70+
+- Opera 36+
+- Safari 8+
+- Edge 79+
+
+> Many other browsers may work, but are not extensively tested.
 
 ## Kudos
 Meet some of the outstanding guys that support `mojs` on [Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare):
