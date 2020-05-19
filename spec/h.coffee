@@ -2,8 +2,8 @@ h  = mojs.helpers
 ns = 'http://www.w3.org/2000/svg'
 
 describe 'Helpers ->', ->
-  it 'should have defaultStyles', ->
-    expect(h.defaultStyles).toEqual h.computedStyle( h.div )
+  # it 'should have defaultStyles', ->
+  #   expect(h.defaultStyles).toEqual h.computedStyle( h.div )
 
   it 'should have logBadgeCss', ->
     expect(h.logBadgeCss).toBeDefined()
