@@ -97,7 +97,7 @@ module.exports = function (config) {
       reporters: [
         { type: 'html', dir: 'coverage/' },
         { type: 'text-summary' },
-        { type: 'lcov', subdir: 'lcov-report' }
+        { type: 'lcov', subdir: '/' }
       ],
     },
     reporters: reporters,
