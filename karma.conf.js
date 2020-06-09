@@ -48,12 +48,12 @@ module.exports = function (config) {
 
   // use SauceLabs browsers if running with TravisCI
   if (process.env.TRAVIS) {
-    reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
+    reporters = ['progress', 'coverage', 'clear-screen', 'saucelabs'];
     browsers = Object.keys(customLaunchers);
   } else {
     // Here you can change to what browsers you have on your system. TODO: Move to .env file instead
     // Note: Puppetter currently doesn't work on WSL v1. Should work in WSL v2
-    reporters = ['progress', 'coverage', 'clear-screen'];
+    reporters = ['progress', 'coverage'];
     browsers = ['ChromeHeadless'];
   }
 
