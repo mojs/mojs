@@ -48,7 +48,7 @@ module.exports = function (config) {
 
   // use SauceLabs browsers if running with TravisCI
   if (process.env.TRAVIS) {
-    reporters = ['progress', 'coverage', 'clear-screen', 'saucelabs'];
+    reporters = ['coverage', 'clear-screen', 'saucelabs'];
     browsers = Object.keys(customLaunchers);
   } else {
     // Here you can change to what browsers you have on your system. TODO: Move to .env file instead
