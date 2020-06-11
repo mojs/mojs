@@ -7,38 +7,38 @@ module.exports = function (config) {
   var customLaunchers = {
     sl_chrome_49: {
       browserName: 'chrome',
-      version: '49'
+      browserVersion: '49'
     },
     sl_firefox_70: {
       browserName: 'firefox',
-      version: '70'
+      browserVersion: '70'
     },
     sl_safari_8: {
       browserName: 'safari',
-      version: '8'
+      browserVersion: '8'
     },
     sl_chrome_latest: {
       browserName: 'chrome',
-      version: 'latest'
+      browserVersion: 'latest'
     },
     sl_firefox_latest: {
       browserName: 'firefox',
-      version: 'latest'
+      browserVersion: 'latest'
     },
     sl_safari_latest: {
       browserName: 'safari',
-      version: 'latest',
+      browserVersion: 'latest',
       platformName: 'macOS 10.15'
     },
     sl_edge_latest: {
       browserName: 'MicrosoftEdge',
-      version: 'latest'
+      browserVersion: 'latest'
     },
     sl_ios_latest: {
       browserName: 'Safari',
-      platform: 'iOS',
-      version: 'latest',
-      device: 'iPhone Simulator'
+      platformName: 'iOS',
+      platformVersion: '13.2',
+      deviceName: 'iPhone Simulator'
     }
   };
 
