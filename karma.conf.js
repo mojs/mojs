@@ -17,11 +17,11 @@ module.exports = function (config) {
       browserName: 'safari',
       browserVersion: '8',
       platformName: 'OS X 10.10'
-    },*/
+    },
     sl_chrome_latest: {
       browserName: 'chrome',
       browserVersion: 'latest'
-    },
+    },*/
     sl_firefox_latest: {
       browserName: 'firefox',
       browserVersion: 'latest'
@@ -30,12 +30,12 @@ module.exports = function (config) {
       browserName: 'safari',
       browserVersion: 'latest',
       platformName: 'macOS 10.15'
-    },*/
+    },
     sl_edge_latest: {
       browserName: 'MicrosoftEdge',
       browserVersion: 'latest'
     },
-    /*sl_ios_latest: {
+    sl_ios_latest: {
       browserName: 'Safari',
       platformName: 'iOS',
       platformVersion: '13.2',
