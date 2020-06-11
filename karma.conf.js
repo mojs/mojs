@@ -5,7 +5,7 @@ module.exports = function (config) {
   // Browsers to run on Sauce Labs
   // Check out https://saucelabs.com/platforms for all browser/OS combos
   var customLaunchers = {
-    sl_chrome_49: {
+    /*sl_chrome_49: {
       browserName: 'chrome',
       browserVersion: '49'
     },
@@ -21,12 +21,12 @@ module.exports = function (config) {
     sl_chrome_latest: {
       browserName: 'chrome',
       browserVersion: 'latest'
-    },
+    },*/
     sl_firefox_latest: {
       browserName: 'firefox',
       browserVersion: 'latest'
     },
-    sl_safari_latest: {
+    /*sl_safari_latest: {
       browserName: 'safari',
       browserVersion: 'latest',
       platformName: 'macOS 10.15'
@@ -40,7 +40,7 @@ module.exports = function (config) {
       platformName: 'iOS',
       platformVersion: '13.2',
       deviceName: 'iPhone Simulator'
-    }
+    }*/
   };
 
   // define the base configuration for each launcher
