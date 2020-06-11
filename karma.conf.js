@@ -15,7 +15,8 @@ module.exports = function (config) {
     },
     sl_safari_8: {
       browserName: 'safari',
-      browserVersion: '8'
+      browserVersion: '8',
+      platformName: 'OS X 10.10'
     },
     sl_chrome_latest: {
       browserName: 'chrome',
