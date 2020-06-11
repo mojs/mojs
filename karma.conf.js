@@ -27,7 +27,8 @@ module.exports = function (config) {
     },
     sl_safari_latest: {
       browserName: 'safari',
-      version: 'latest'
+      version: 'latest',
+      platformName: 'macOS 10.15'
     },
     sl_edge_latest: {
       browserName: 'MicrosoftEdge',
