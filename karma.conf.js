@@ -119,6 +119,6 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: browsers,
     singleRun: true,
-    concurrency: Infinity
+    concurrency: 5
   });
 };
