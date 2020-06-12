@@ -5,9 +5,9 @@ module.exports = function (config) {
   // Browsers to run on Sauce Labs
   // Check out https://saucelabs.com/platforms for all browser/OS combos
   var customLaunchers = {
-    sl_chrome_49: {
+    sl_chrome_50: {
       browserName: 'chrome',
-      browserVersion: '49'
+      browserVersion: '50'
     },
     sl_firefox_70: {
       browserName: 'firefox',
