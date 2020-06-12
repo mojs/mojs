@@ -8,12 +8,12 @@ module.exports = function (config) {
     /*sl_chrome_49: {
       browserName: 'chrome',
       browserVersion: '49'
-    },
+    },*/
     sl_firefox_70: {
       browserName: 'firefox',
       browserVersion: '70'
     },
-    sl_safari_8: {
+    /*sl_safari_8: {
       browserName: 'safari',
       browserVersion: '8',
       platformName: 'OS X 10.10'
