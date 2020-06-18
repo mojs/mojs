@@ -9,11 +9,11 @@ module.exports = function (config) {
       browserName: 'chrome',
       browserVersion: '55'
     },
-    sl_firefox_70: {
+    /*sl_firefox_70: {
       browserName: 'firefox',
       browserVersion: '70'
     },
-    /*sl_safari_8: {
+    sl_safari_8: {
       browserName: 'safari',
       browserVersion: '8',
       platformName: 'OS X 10.10'
@@ -22,11 +22,11 @@ module.exports = function (config) {
       browserName: 'chrome',
       browserVersion: 'latest'
     },
-    sl_firefox_latest: {
+    /*sl_firefox_latest: {
       browserName: 'firefox',
       browserVersion: 'latest'
     },
-    /*sl_safari_latest: {
+    sl_safari_latest: {
       browserName: 'safari',
       browserVersion: 'latest',
       platformName: 'macOS 10.15'
