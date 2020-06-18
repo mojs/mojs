@@ -108,6 +108,7 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     sauceLabs: {
       testName: 'mo · js tests',
+      region: 'eu',
       startConnect: false,
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
