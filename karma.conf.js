@@ -109,7 +109,7 @@ module.exports = function (config) {
     sauceLabs: {
       testName: 'mo · js tests',
       region: 'eu',
-      startConnect: false,
+      startConnect: true,
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
       tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
