@@ -7,7 +7,7 @@
     "start": "webpack-dev-server --config webpack.dev.js",
     "dev": "webpack --config webpack.dev.js --progress",
     "build": "webpack --config webpack.umd.js --progress",
-    "pretest": "webpack --config webpack.dev.js",
+    "pretest": "webpack --config webpack.umd.js",
     "test": "karma start",
     "coveralls": "coveralls < coverage/lcov.info"
   },
