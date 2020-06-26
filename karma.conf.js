@@ -7,7 +7,8 @@ module.exports = function (config) {
   var customLaunchers = {
     sl_chrome_55: {
       browserName: 'chrome',
-      browserVersion: '55'
+      browserVersion: '55',
+      platformName: 'Windows 10'
     },
     /*sl_firefox_70: {
       browserName: 'firefox',
@@ -20,7 +21,8 @@ module.exports = function (config) {
     },*/
     sl_chrome_latest: {
       browserName: 'chrome',
-      browserVersion: 'latest'
+      browserVersion: 'latest',
+      platformName: 'Windows 10'
     },
     /*sl_firefox_latest: {
       browserName: 'firefox',
