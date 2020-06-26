@@ -69,21 +69,21 @@ module.exports = function (config) {
           '**/*.js'
         ],
         'helpers': [
-          'dist/mo.js'
+          'dist/mo.umd.js'
         ],
         random: false,
         failFast: true
       }
     },
     files: [
-      'dist/mo.js',
+      'dist/mo.umd.js',
       'spec/**/*.coffee'
     ],
     exclude: [
       'spec/motion-path.coffee'
     ],
     preprocessors: {
-      'dist/mo.js': ['coverage'],
+      'dist/mo.umd.js': ['coverage'],
       'spec/**/*.coffee': ['coffee']
     },
     coffeePreprocessor: {
