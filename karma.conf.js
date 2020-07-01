@@ -5,12 +5,12 @@ module.exports = function (config) {
   // Browsers to run on Sauce Labs
   // Check out https://saucelabs.com/platforms for all browser/OS combos
   var customLaunchers = {
-    sl_chrome_55: {
+    /*sl_chrome_55: {
       browserName: 'chrome',
       browserVersion: '55',
       platformName: 'Windows 10'
     },
-    /*sl_firefox_70: {
+    sl_firefox_70: {
       browserName: 'firefox',
       browserVersion: '70'
     },
@@ -111,7 +111,7 @@ module.exports = function (config) {
     sauceLabs: {
       testName: 'mo · js tests',
       region: 'eu',
-      startConnect: true,
+      startConnect: false,
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
       tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
