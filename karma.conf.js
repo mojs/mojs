@@ -122,7 +122,7 @@ module.exports = function (config) {
     customLaunchers: customLaunchers,
     autoWatch: true,
     browsers: browsers,
-    singleRun: false,
+    singleRun: true,
     concurrency: 5
   });
 };
