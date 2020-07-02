@@ -26,10 +26,9 @@ module.exports = function (config) {
       platformName: 'Windows 10'
     },
     sl_ios_latest: {
-      browserName: 'Safari',
-      platformName: 'iOS',
-      platformVersion: '13.2',
-      deviceName: 'iPhone Simulator'
+      browserName: 'iphone',
+      platform: 'OS X 13.2',
+      version: 'latest'
     }
   };
 
