@@ -110,7 +110,7 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     sauceLabs: {
       testName: 'mo · js tests',
-      region: 'eu',
+      region: 'us',
       startConnect: false,
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
@@ -122,7 +122,7 @@ module.exports = function (config) {
     customLaunchers: customLaunchers,
     autoWatch: true,
     browsers: browsers,
-    singleRun: true,
+    singleRun: false,
     concurrency: 5
   });
 };
