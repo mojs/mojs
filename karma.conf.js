@@ -8,12 +8,12 @@ module.exports = function (config) {
     sl_chrome_55: {
       browserName: 'chrome',
       browserVersion: '55',
-      platformName: 'Windows 10'
+      platformName: 'Windows 7'
     },
     sl_firefox_70: {
       browserName: 'firefox',
       browserVersion: '70',
-      platformName: 'Windows 10'
+      platformName: 'Windows 7'
     },
     sl_safari_8: {
       browserName: 'safari',
