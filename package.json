@@ -34,10 +34,10 @@
   },
   "homepage": "https://github.com/mojs/mojs",
   "devDependencies": {
-    "@babel/core": "^7.10.3",
-    "@babel/plugin-proposal-object-rest-spread": "^7.10.3",
-    "@babel/plugin-transform-runtime": "^7.10.3",
-    "@babel/preset-env": "^7.10.3",
+    "@babel/core": "^7.10.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
     "babel-loader": "^8.1.0",
     "coffee-loader": "^0.9.0",
     "coffeeify": "^3.0.1",
@@ -70,6 +70,6 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.10.3"
+    "@babel/runtime": "^7.10.4"
   }
 }
