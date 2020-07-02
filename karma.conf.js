@@ -5,28 +5,30 @@ module.exports = function (config) {
   // Browsers to run on Sauce Labs
   // Check out https://saucelabs.com/platforms for all browser/OS combos
   var customLaunchers = {
-    /*sl_chrome_55: {
+    sl_chrome_55: {
       browserName: 'chrome',
       browserVersion: '55',
       platformName: 'Windows 10'
     },
     sl_firefox_70: {
       browserName: 'firefox',
-      browserVersion: '70'
+      browserVersion: '70',
+      platformName: 'Windows 10'
     },
     sl_safari_8: {
       browserName: 'safari',
       browserVersion: '8',
       platformName: 'OS X 10.10'
-    },*/
+    },
     sl_chrome_latest: {
       browserName: 'chrome',
       browserVersion: 'latest',
       platformName: 'Windows 10'
     },
-    /*sl_firefox_latest: {
+    sl_firefox_latest: {
       browserName: 'firefox',
-      browserVersion: 'latest'
+      browserVersion: 'latest',
+      platformName: 'Windows 10'
     },
     sl_safari_latest: {
       browserName: 'safari',
@@ -35,14 +37,15 @@ module.exports = function (config) {
     },
     sl_edge_latest: {
       browserName: 'MicrosoftEdge',
-      browserVersion: 'latest'
+      browserVersion: 'latest',
+      platformName: 'Windows 10'
     },
     sl_ios_latest: {
       browserName: 'Safari',
       platformName: 'iOS',
       platformVersion: '13.2',
       deviceName: 'iPhone Simulator'
-    }*/
+    }
   };
 
   // define the base configuration for each launcher
