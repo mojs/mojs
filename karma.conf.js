@@ -49,9 +49,6 @@ module.exports = function (config) {
         'spec_files': [
           '**/*.js'
         ],
-        'helpers': [
-          'dist/mo.umd.js'
-        ],
         random: false,
         failFast: true
       }
