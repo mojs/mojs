@@ -4,7 +4,6 @@
 /src
 .editorconfig
 .travis.yml
-gulpfile.js
 karma.conf.js
 webpack.*
 npm-debug.log
