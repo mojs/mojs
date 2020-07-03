@@ -31,7 +31,7 @@ module.exports = function (config) {
 
   // use SauceLabs browsers if running with TravisCI
   if (process.env.TRAVIS) {
-    reporters = ['dots', 'saucelabs', 'coverage'];
+    reporters = ['saucelabs', 'summary', 'coverage'];
     browsers = Object.keys(customLaunchers);
   } else {
     // Here you can change to what browsers you have on your system. TODO: Move to .env file instead
@@ -75,6 +75,11 @@ module.exports = function (config) {
       transformPath: function (path) {
         return path.replace(/\.coffee$/, '.js')
       }
+    },
+    summaryReporter: {
+       show: 'failed',
+       specLength: 50,
+       overviewColumn: true
     },
     coverageReporter: {
       reporters: [
