@@ -7,35 +7,26 @@ module.exports = function (config) {
   var customLaunchers = {
     sl_chrome_latest: {
       browserName: 'chrome',
-      browserVersion: 'latest',
       platformName: 'Windows 10'
     },
     sl_firefox_latest: {
       browserName: 'firefox',
-      browserVersion: 'latest',
+      platformName: 'Windows 10'
+    },
+    sl_edge_latest: {
+      browserName: 'MicrosoftEdge',
       platformName: 'Windows 10'
     },
     sl_safari_latest: {
       browserName: 'safari',
-      browserVersion: 'latest',
       platformName: 'macOS 10.15'
-    },
-    sl_edge_latest: {
-      browserName: 'MicrosoftEdge',
-      browserVersion: 'latest',
-      platformName: 'Windows 10'
-    },
-    sl_ios_latest: {
-      browserName: 'Safari',
-      platform: 'iOS',
-      version: 'latest',
-      device: 'iPhone Simulator'
     }
   };
 
   // define the base configuration for each launcher
   Object.keys(customLaunchers).map((key) => {
     customLaunchers[key].base = 'SauceLabs';
+    customLaunchers[key].browserVersion = 'latest';
   });
 
   // use SauceLabs browsers if running with TravisCI
