@@ -27,9 +27,9 @@ module.exports = function (config) {
     },
     sl_ios_latest: {
       browserName: 'Safari',
-      platformName: 'iOS',
-      platformVersion: '13.2',
-      deviceName: 'iPhone Simulator'
+      platform: 'iOS',
+      version: 'latest',
+      device: 'iPhone Simulator'
     }
   };
 
