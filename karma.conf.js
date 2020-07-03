@@ -61,8 +61,10 @@ module.exports = function (config) {
       'spec/motion-path.coffee'
     ],
     preprocessors: {
-      'dist/mo.umd.js': ['coverage'],
-      'spec/**/*.coffee': ['coffee']
+      'spec/**/*.coffee': [
+        'coffee',
+        'coverage'
+      ]
     },
     coffeePreprocessor: {
       options: {
