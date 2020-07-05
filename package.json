@@ -43,6 +43,7 @@
     "coffeeify": "^3.0.1",
     "coffeescript": "^1.12.7",
     "coveralls": "^3.1.0",
+    "create-file-webpack": "^1.0.2",
     "jasmine": "^3.5.0",
     "karma": "^5.1.0",
     "karma-babel-preprocessor": "^8.0.1",
