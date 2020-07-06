@@ -20,11 +20,6 @@ module.exports = function (config) {
     sl_safari_latest: {
       browserName: 'safari',
       platformName: 'macOS 10.15'
-    },
-    sl_ios_latest: {
-      version: '13.2',
-      platform: 'iOS',
-      deviceName: 'iPhone X Simulator'
     }
   };
 
