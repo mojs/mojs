@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const CreateFileWebpack = require('create-file-webpack');
 
 const template = `'use strict';
