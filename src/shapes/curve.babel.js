@@ -1,4 +1,3 @@
-// istanbul ignore next
 import Bit from './bit';
 
 class Curve extends Bit {

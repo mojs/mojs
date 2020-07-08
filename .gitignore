@@ -4,3 +4,5 @@
 /dev/script.js
 .DS_Store
 npm-debug.log
+.vscode
+.env

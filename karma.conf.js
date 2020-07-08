@@ -1,186 +1,111 @@
-var istanbul = require('browserify-istanbul');
-// Karma configuration
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
-module.exports = function(config) {
+module.exports = function (config) {
 
   // Browsers to run on Sauce Labs
   // Check out https://saucelabs.com/platforms for all browser/OS combos
   var customLaunchers = {
-    sl_chrome_35: {
-      base: 'SauceLabs',
+    sl_chrome_latest: {
       browserName: 'chrome',
-      platform: 'Windows 7',
-      version: '35'
+      platformName: 'Windows 10'
     },
-    sl_chrome_50: {
-      base: 'SauceLabs',
-      browserName: 'chrome',
-      platform: 'Windows 7',
-      version: '50'
+    sl_firefox_latest: {
+      browserName: 'firefox',
+      platformName: 'Windows 10'
     },
-    sl_safari: {
-      base: 'SauceLabs',
+    sl_edge_latest: {
+      browserName: 'MicrosoftEdge',
+      platformName: 'Windows 10'
+    },
+    sl_safari_latest: {
       browserName: 'safari',
-      platform: 'OS X 10.8',
-      version: '6'
-    },
-    sl_firefox_30: {
-      base: 'SauceLabs',
-      browserName: 'firefox',
-      version: '30'
-    },
-    sl_firefox_4: {
-      base: 'SauceLabs',
-      browserName: 'firefox',
-      version: '38'
-    },
-    // sl_ios_safari: {
-    //   base: 'SauceLabs',
-    //   browserName: 'iphone',
-    //   platform: 'OS X 10.9',
-    //   version: '7.1'
-    // },
-    sl_ie_9: {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      platform: 'Windows 7',
-      version: '9'
-    },
-    // sl_ie_10: {
-    //   base: 'SauceLabs',
-    //   browserName: 'internet explorer',
-    //   platform: 'Windows 8',
-    //   version: '10'
-    // },
-    sl_ie_11: {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      platform: 'Windows 8.1',
-      version: '11'
+      platformName: 'macOS 10.15'
     }
-
   };
 
-  if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
-    reporters = ['progress', 'coverage', 'clear-screen'];
-    browsers = ['PhantomJS'];
-    // browsers = [];
-  } else {
-    reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
-    browsers = Object.keys(customLaunchers);
-  }
+  // define the base configuration for each launcher
+  Object.keys(customLaunchers).map((key) => {
+    customLaunchers[key].base = 'SauceLabs';
+    customLaunchers[key].browserVersion = 'latest';
+  });
 
+  // use SauceLabs browsers if running with TravisCI
+  if (process.env.TRAVIS) {
+    reporters = ['saucelabs', 'summary', 'coverage'];
+    browsers = Object.keys(customLaunchers);
+  } else {
+    // Here you can change to what browsers you have on your system. TODO: Move to .env file instead
+    // Note: Puppetter currently doesn't work on WSL v1. Should work in WSL v2
+    reporters = ['progress', 'coverage'];
+    browsers = ['ChromeHeadless'];
+  }
 
   config.set({
     basePath: '',
-    // frameworks to use
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
-    // list of files / patterns to load in the browser
-    files: [
-      './node_modules/phantomjs-polyfill/bind-polyfill.js',
-      // 'dist/**/*.js',
-      'dist/mo.js',
-      'spec/**/*.js',
-      'spec/shapes/*.js'
-    ],
-    // list of files to exclude
-    exclude: [
-      // 'build/h.js',
-      // 'spec/h.js',
-
-      // 'build/delta/delta.js',
-      // 'spec/delta/delta.js',
-      // 'build/delta/deltas.js',
-      // 'spec/delta/deltas.js',
-
-      // 'build/html.js',
-      // 'spec/html.js',
-
-      // 'build/shape.js',
-      // 'spec/shape.js',
-      // 'build/shape-swirl.js',
-      // 'spec/shape-swirl.js',
-      // 'build/burst.js',
-      // 'spec/burst.js',
-
-      // 'build/module.js',
-      // 'spec/module.js',
-      // 'build/tween/tweenable.js',
-      // 'spec/tween/tweenable.js',
-      // 'build/tunable.js',
-      // 'spec/tunable.js',
-      // 'build/thenable.js',
-      // 'spec/thenable.js',
-
-      // 'build/spriter.js',
-      // 'spec/spriter.js',
-      // // 'build/stagger.js',
-      // // 'spec/stagger.js',
-
-      // 'build/easing/easing.js',
-      // 'spec/easing/easing.js',
-
-      // 'build/tween/timeline.js',
-      // 'spec/tween/timeline.js',
-      // 'build/tween/tween.js',
-      // 'spec/tween/tween.js',
-      // 'build/tween/tweener.js',
-      // 'spec/tween/tweener.js',
-
-      // 'build/motion-path.js',
-      // 'spec/motion-path.js',
-      // 'build/shapes/*.js',
-      // 'spec/shapes/*.js'
-    ],
-
-    // preprocess matching files before serving them to the browser
-    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-      'dist/mo.js': 'coverage',
-      // 'dist/**/*.js': ['browserify']
+    client: {
+      jasmine: {
+        'spec_dir': 'spec',
+        'spec_files': [
+          '**/*.js'
+        ],
+        random: false,
+        failFast: true
+      }
     },
-    // browserify: {
-    //   debug: true,
-    //   transform: [ 'brfs', istanbul({
-    //     ignore: ['**/node_modules/**', '**/spec/**'],
-    //   })]
-    // },
+    files: [
+      'dist/mo.umd.js',
+      'spec/**/*.coffee'
+    ],
+    exclude: [
+      'spec/motion-path.coffee'
+    ],
+    preprocessors: {
+      'spec/**/*.coffee': [
+        'coffee',
+        'coverage'
+      ]
+    },
+    coffeePreprocessor: {
+      options: {
+        bare: true,
+        sourceMap: false
+      },
+      transformPath: function (path) {
+        return path.replace(/\.coffee$/, '.js')
+      }
+    },
+    summaryReporter: {
+       show: 'failed',
+       specLength: 50,
+       overviewColumn: true
+    },
     coverageReporter: {
-      reporters:[
-        {type: 'html', dir: 'coverage/'},
-        {type: 'text-summary'},
-        {type: 'lcov', subdir: 'lcov-report'}
+      reporters: [
+        { type: 'html', dir: 'coverage/' },
+        { type: 'text-summary' },
+        { type: 'lcov', subdir: '/' }
       ],
     },
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
-    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: reporters,
-    // web server port
     port: 9876,
-    // enable / disable colors in the output (reporters and logs)
     colors: true,
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
     sauceLabs: {
       testName: 'mo · js tests',
+      region: 'us',
       startConnect: false,
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
       tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+      recordScreenshots: false,
+      recordVideo: false
     },
     captureTimeout: 120000,
     customLaunchers: customLaunchers,
-    // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    // browsers: ['PhantomJS'],
     browsers: browsers,
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: true,
+    concurrency: 5
   });
 };

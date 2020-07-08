@@ -4,8 +4,6 @@ h = require '../h'
  * Copyright (c) 2014 Gaëtan Renaudeau https://goo.gl/El3k7u
  * Adopted from https://github.com/gre/bezier-easing
 ###
-#  TODO: remove 3 ### istanbul ignore next ### statements
-#        and cover the gaps
 
 class BezierEasing
   constructor:(o)-> @vars(); return @generate
@@ -46,7 +44,6 @@ class BezierEasing
       i = 0
       while i < NEWTON_ITERATIONS
         currentSlope = getSlope(aGuessT, mX1, mX2)
-        ### istanbul ignore if ###
         return aGuessT if currentSlope is 0.0
         currentX = calcBezier(aGuessT, mX1, mX2) - aX
         aGuessT -= currentX / currentSlope
@@ -59,7 +56,6 @@ class BezierEasing
         mSampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2)
         ++i
       return
-    ### istanbul ignore next ###
     binarySubdivide = (aX, aA, aB) ->
       currentX = undefined; currentT = undefined; i = 0
       loop
@@ -89,7 +85,6 @@ class BezierEasing
       if initialSlope >= NEWTON_MIN_SLOPE
         newtonRaphsonIterate aX, guessForT
       else
-        ### istanbul ignore next ###
         if initialSlope == 0.0 then guessForT
         else binarySubdivide aX, intervalStart, intervalStart + kSampleStepSize
 
