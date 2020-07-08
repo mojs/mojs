@@ -62,7 +62,7 @@ describe 'PathEasing ->', ->
       eps = .00001
       pe = new PathEasing path, eps: eps
       expect(pe._eps).toBe eps
-    
+
     describe 'precompute option ->', ->
       it 'should recieve "precompute" option', ->
         path = 'M0,0 L10,10'
@@ -311,7 +311,7 @@ describe 'PathEasing ->', ->
         65.4951 -3.34082 C 68.7341 -3.54252 69.7306 6.6026 70.3281 14.0234
         C 70.9302 21.5005 74.0962 27.0303 74.7888 18.8316 C 77.5928
         -0.603027 100 0 100 0'
-      
+
       easing = pe.create path
       attr = easing.path.getAttribute('d')
       isNormPath = (attr is normPath) or (attr is IEnormPath)
@@ -344,12 +344,3 @@ describe 'PathEasing ->', ->
       spyOn h, 'error'
       pairs = pe._getSegmentPairs(['0.12', '102', 200])
       expect(h.error).toHaveBeenCalled()
-
-
-
-    
-
-
-
-
-

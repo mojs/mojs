@@ -214,12 +214,12 @@ describe 'Bit ->', ->
       bit._props['stroke-dashoffset'] = { unit: '%', value: 100 }
       bit.castStrokeDash 'stroke-dashoffset'
       expect(bit._props['stroke-dashoffset']).toBe bit._props.length
-    
+
     it 'should not set 0 value >> ff issue fix', ->
       bit = new Bit
         ctx:    document.createElementNS ns, 'svg'
         radius: 100
-        
+
       bit._props['stroke-dasharray'] = { unit: 'px', value: 0 }
       bit.castStrokeDash 'stroke-dasharray'
       expect(bit._props['stroke-dasharray']).toBe ''
@@ -228,7 +228,7 @@ describe 'Bit ->', ->
       bit = new Bit
         ctx:    document.createElementNS ns, 'svg'
         radius: 100
-        
+
       bit._props['stroke-dasharray'] = [{ unit: 'px', value: 0 }]
       bit.castStrokeDash 'stroke-dasharray'
       expect(bit._props['stroke-dasharray']).toBe ''
@@ -338,7 +338,7 @@ describe 'Bit ->', ->
   #     expect(bit._state['stroke']).toBe 'orange'
   #     # expect(bit.el.getAttribute('rx'))    .toBe 30
   #     # expect(bit.el.getAttribute('stroke')).toBe 'orange'
-  
+
   # # old
   # # describe 'setProp method ->', ->
   # #   it 'should set properties ->', ->

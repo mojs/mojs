@@ -1,12 +1,9 @@
 ###!
-  LegoMushroom @legomushroom https://legomushroom.com
+  LegoMushroom @legomushroom https://github.com/legomushroom/resize
   MIT License 2014
 ###
 
-### istanbul ignore next ###
 do ->
-  # IIF for istanbul to ignore the whole resize event polyfill
-  # it was covered in its own repo https://github.com/legomushroom/resize
   class Main
     constructor:(@o={})->
       return if window.isAnyResizeEventInited

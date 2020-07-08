@@ -31,7 +31,3 @@ describe 'shapesMap ->', ->
       Module = {}
       mojs.addShape 'shape', Module
       expect( shapesMap.getShape( 'shape' ) ).toBe Module
-
-
-
-

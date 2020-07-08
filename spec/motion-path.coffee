@@ -121,18 +121,18 @@ describe 'MotionPath ->', ->
       expect(mp.defaults.pathStart)       .toBe 0
       expect(mp.defaults.pathEnd)         .toBe 1
       expect(mp.defaults.transformOrigin) .toBe null
-      
+
       expect(mp.defaults.motionBlur)      .toBe 0
-      
+
       expect(mp.defaults.isAngle)         .toBe false
       expect(mp.defaults.isReverse)       .toBe false
       expect(mp.defaults.isRunLess)       .toBe false
       expect(mp.defaults.isPresetPosition).toBe true
-      
+
       expect(mp.defaults.onStart)         .toBe null
       expect(mp.defaults.onComplete)      .toBe null
       expect(mp.defaults.onUpdate)        .toBe null
-      
+
       expect(mp.defaults.curvature.x)     .toBe '75%'
       expect(mp.defaults.curvature.y)     .toBe '50%'
 
@@ -274,7 +274,7 @@ describe 'MotionPath ->', ->
           el: div
           onStart:-> isRightScope = @ instanceof MotionPath
         setTimeout (-> expect(isRightScope).toBe(true); dfr()), 500
-    
+
     describe 'onComplete callback ->', ->
       it 'onComplete callback should work', (dfr)->
         isCompleted = false
@@ -297,7 +297,7 @@ describe 'MotionPath ->', ->
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
         , 500
-    
+
     describe 'onUpdate callback ->', ->
       it 'onUpdate callback should work', (dfr)->
         isOnUpdate = false
@@ -479,7 +479,7 @@ describe 'MotionPath ->', ->
         offsetX: 10
         duration: 200
         isAngle: true
-      
+
       setTimeout (->
         tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
         x = tr.split(/(translate\()|,|\)/)[2]
@@ -680,7 +680,7 @@ describe 'MotionPath ->', ->
         onComplete:->
           for isSetItem, i in isAnglesArray
             if !isSetItem then isSet = true
-      
+
       setTimeout (-> expect(isSet).toBe(false); dfr()), 500
 
     it 'angleOffset should get current progress as second parameter', (dfr)->
@@ -818,7 +818,7 @@ describe 'MotionPath ->', ->
           tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
           pos = tr.split(/(translate\()|\,|\)/)[2]
           pos = parseInt pos, 10
-    
+
       setTimeout (-> expect(pos).toBe(250); dfr()), 500
 
   describe 'path option ->', ->
@@ -1046,7 +1046,7 @@ describe 'MotionPath ->', ->
         start:     x: 200,   y: 200
         shift:     x: -100,  y: 100
         curvature: x: '50%', y: '25%'
-      
+
       d = path.getAttribute 'd'
       points = parseQadraticCurve d
 
@@ -1113,7 +1113,7 @@ describe 'MotionPath ->', ->
         el:       document.createElement 'div'
         duration: 2000
         pathEnd:  .5
-      
+
       ).then pathStart: .5, pathEnd: 1
 
       expect(mp.history.length)       .toBe   2
@@ -1152,10 +1152,10 @@ describe 'MotionPath ->', ->
         delay:    100
         onUpdate: onUpdate
       ).then pathStart: .5, pathEnd: 1, delay: 0
-      
+
       mp.timeline.setProgress .74
       mp.timeline.setProgress .75
-      
+
       expect(mp.history[1].onUpdate).not.toBeDefined()
       expect(mp.props.onUpdate)     .not.toBeDefined()
 
@@ -1193,7 +1193,7 @@ describe 'MotionPath ->', ->
         pathEnd:  .5
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1
-      
+
       expect(mp.timeline._timelines[1]._o.isChained).toBe true
 
     it 'should not add isChained option if delay', ->
@@ -1204,7 +1204,7 @@ describe 'MotionPath ->', ->
         pathEnd:  .5
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1, delay: 100
-      
+
       expect(mp.timeline._timelines[1]._o.isChained).toBe false
 
   describe 'tuneOptions ->', ->
@@ -1487,7 +1487,7 @@ describe 'MotionPath ->', ->
       spyOn mp, 'makeMotionBlur'
       mp.setProgress(.1)
       expect(mp.makeMotionBlur).toHaveBeenCalled()
-    
+
     it 'should not be called if motionBlur was not passed', ->
       mp = new MotionPath
         path:       path
@@ -1620,7 +1620,7 @@ describe 'MotionPath ->', ->
       expect(mp.angToCoords(315).x) .toBeCloseTo -degree45, 1
       expect(mp.angToCoords(-45).x) .toBeCloseTo -degree45, 1
       expect(mp.angToCoords(360).x) .toBeCloseTo  0, 1
-  
+
   describe 'setBlur method ->',->
     return if isMotionReset
     path = "M0,20 L100,150 L200,100"

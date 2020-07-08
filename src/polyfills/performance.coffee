@@ -1,4 +1,3 @@
-### istanbul ignore next ###
 # performance.now polyfill
 ((root)->
   if !root.performance? then root.performance = {}
