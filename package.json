@@ -59,7 +59,7 @@
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^4.2.2"
+    "webpack-merge": "^5.0.8"
   },
   "dependencies": {
     "@babel/runtime": "^7.10.4"
