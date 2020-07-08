@@ -65,7 +65,6 @@ The base documentation you need to get started with MoJS.
 Discover the amazing things that MoJS can do!
 - [Shape & Swirl](https://mojs.github.io/tutorials/shape-swirl/) _(Tutorial)_
 - [Burst](https://mojs.github.io/tutorials/burst/) _(Tutorial)_
-- Path Easing (coming soon) [API/easing/path-easing](/api/easing/path-easing.md) _(Tutorial)_
 - [Icon animations powered by mo.js](https://tympanus.net/codrops/2016/02/23/icon-animations-powered-by-mo-js/) _(Codrops tutorial)_
 - [An Introduction to mo.js](https://css-tricks.com/introduction-mo-js/) _(CSS tricks tutorial)_
 - [Playing with @mojs/player and @mojs/curve-editor](https://vimeo.com/185587462) _(Vimeo video)_
@@ -73,7 +72,7 @@ Discover the amazing things that MoJS can do!
 
 ## Developer
 Get technical informations, open an issue/pull request or join the (amazing) community!
-- [API documentation](/api)
+- [API documentation](https://mojs.github.io/api/)
 - [Github](https://github.com/mojs/mojs/)
 - [Slack workspace](https://mojs.slack.com) _(Not in the workspace yet? Use the [invite link](https://join.slack.com/t/mojs/shared_invite/zt-dlyxhupt-VR7eV2uwCnvu3Cx~Yc_L9Q) 🔓)_
 
