@@ -10,6 +10,7 @@ The following is a set of guidelines for contributing to mojs. These are mostly 
 1. [Code of conduct](#code-of-conduct)
 2. [Reporting bugs](#reporting-bugs)
 3. [Suggesting enhancements](#suggesting-enhancements)
+4. [Working with the project](#working-with-the-project)
 
 
 ## Code of conduct
@@ -53,3 +54,28 @@ This section guides you through submitting an enhancement suggestion for mojs, i
 Don't hesitate to use pull requests to propose code changes.
 
 Thanks for reading and happy contributing! :tada: :+1:
+
+
+## Working with the project
+
+Mojs uses Webpack and [Babel](https://babeljs.io/) for building, [Karma](https://karma-runner.github.io/) for testing and [Travis](https://travis-ci.org/github/mojs/mojs) for CI. Most of the core files are written in [CoffeeScript](https://coffeescript.org/) v1, but the plan is to convert to TypeScript in the future.
+
+### Setup
+
+Make sure you have a new version of node (12.18.2 LTS works fine at the time of writing, but never and a bit older will probably work fine too)
+
+Run `npm install` to install all dependencies and build tools.
+
+### Testing
+
+`npm run test` - Runs all tests. This will create a production ready build-file of mojs, look for Karma tests in the spec folder, and check them agains the dist/mo.umd.js file that just was build. Make sure to write new tests for all new code :)
+
+### Developing
+
+`npm run start` - Launches a webpack dev server to fix bugs, build new features and see them live in your browser.
+
+### Building
+
+`npm run build` - Creates a production ready mo.umd.js file and puts it in the dist folder.
+
+`npm run dev` - Creates a mo.js file that can be used for debugging.
