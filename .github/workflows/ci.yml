@@ -28,7 +28,7 @@ jobs:
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
           accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-          tunnelIdentifier: github-action-tunnel
+          tunnelIdentifier: $GITHUB_RUN_ID
 
       - name: Run tests with code coverage
         run: npm run test
