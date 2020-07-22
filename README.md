@@ -1,4 +1,4 @@
-# mo · js – [![npm](https://img.shields.io/npm/v/@mojs/core.svg)](https://www.npmjs.com/package/@mojs/core) [![Build Status](https://travis-ci.org/mojs/mojs.svg?branch=master)](https://travis-ci.org/mojs/mojs) [![Coverage Status](https://coveralls.io/repos/mojs/mojs/badge.svg?branch=master)](https://coveralls.io/r/mojs/mojs?branch=master) [![Slack](https://img.shields.io/badge/style-join-ff69b4.svg?label=slack)](https://join.slack.com/t/mojs/shared_invite/zt-dlyxhupt-VR7eV2uwCnvu3Cx~Yc_L9Q)
+# mo · js – [![npm](https://img.shields.io/npm/v/@mojs/core.svg)](https://www.npmjs.com/package/@mojs/core) [![ci](https://img.shields.io/github/workflow/status/mojs/mojs/CI)](https://github.com/mojs/mojs/actions?query=workflow:"CI") [![Coverage Status](https://coveralls.io/repos/mojs/mojs/badge.svg?branch=master)](https://coveralls.io/r/mojs/mojs?branch=master) [![Slack](https://img.shields.io/badge/style-join-ff69b4.svg?label=slack)](https://join.slack.com/t/mojs/shared_invite/zt-dlyxhupt-VR7eV2uwCnvu3Cx~Yc_L9Q)
 
 The motion graphics toolbelt for the web.
 
