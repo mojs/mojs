@@ -29,8 +29,8 @@ module.exports = function (config) {
     customLaunchers[key].browserVersion = 'latest';
   });
 
-  // use SauceLabs browsers if running with TravisCI
-  if (process.env.TRAVIS) {
+  // use SauceLabs browsers if running with GITHUB_ACTIONS
+  if (process.env.GITHUB_ACTIONS) {
     reporters = ['saucelabs', 'summary', 'coverage'];
     browsers = Object.keys(customLaunchers);
   } else {
@@ -97,7 +97,7 @@ module.exports = function (config) {
       startConnect: false,
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
-      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+      tunnelIdentifier: process.env.GITHUB_RUN_ID,
       recordScreenshots: false,
       recordVideo: false
     },
