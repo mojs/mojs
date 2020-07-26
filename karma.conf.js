@@ -9,6 +9,7 @@ module.exports = function (config) {
       browserName: 'chrome',
       platformName: 'Windows 10'
     },
+    /*
     sl_firefox_latest: {
       browserName: 'firefox',
       platformName: 'Windows 10'
@@ -21,6 +22,7 @@ module.exports = function (config) {
       browserName: 'safari',
       platformName: 'macOS 10.15'
     }
+    */
   };
 
   // define the base configuration for each launcher
