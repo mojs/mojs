@@ -96,7 +96,7 @@ module.exports = function (config) {
     sauceLabs: {
       testName: 'mo · js tests',
       region: 'us',
-      startConnect: true,
+      startConnect: false,
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
       tunnelIdentifier: process.env.GITHUB_RUN_ID,
