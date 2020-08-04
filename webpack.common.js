@@ -23,7 +23,13 @@ module.exports = (argv) => ({
   module: {
     rules: [{
       test: /\.(babel.js)$/,
-      use: 'babel-loader',
+      exclude: /node_modules/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          cacheDirectory: true
+        }
+      }
     }, {
       test: /\.coffee$/,
       use: {
