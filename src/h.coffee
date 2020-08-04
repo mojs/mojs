@@ -233,11 +233,11 @@ class Helpers
       ""
       "o"
     ]))[1]
-    dom = ("WebKit|Moz|MS|O").match(new RegExp("(" + pre + ")", "i"))[1]
+    dom = ("WebKit|Moz|MS|O").match(new RegExp("(" + pre + ")", "i"))?[1]
     dom: dom
     lowercase: pre
     css: "-" + pre + "-"
-    js: pre[0].toUpperCase() + pre.substr(1)
+    js: pre?[0].toUpperCase() + pre?.substr(1)
   strToArr:(string)->
     arr = []
     # plain number
