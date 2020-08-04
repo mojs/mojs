@@ -23,18 +23,7 @@ module.exports = (argv) => ({
   module: {
     rules: [{
       test: /\.(babel.js)$/,
-      use: {
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            '@babel/preset-env'
-          ],
-          plugins: [
-            '@babel/plugin-transform-runtime',
-            '@babel/plugin-proposal-object-rest-spread'
-          ]
-        }
-      }
+      use: 'babel-loader',
     }, {
       test: /\.coffee$/,
       use: {
