@@ -2,7 +2,7 @@
   "name": "@mojs/core",
   "version": "0.288.2",
   "description": "The motion graphics toolbelt for the web",
-  "main": "dist/mo.umd.js",
+  "main": "dist/mo.js",
   "unpkg": "dist/mo.umd.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",
