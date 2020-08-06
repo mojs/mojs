@@ -10,7 +10,6 @@
     "build": "webpack --config webpack.umd.js --progress",
     "pretest": "webpack --config webpack.umd.js",
     "test": "karma start",
-    "coveralls": "coveralls < coverage/lcov.info"
   },
   "repository": {
     "type": "git",
