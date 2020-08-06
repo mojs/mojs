@@ -12,7 +12,7 @@ The library provides **built-in components** to start animating from scratch lik
 ## Install
 ### Use with a bundler
 
-MoJS is published on the **NPM registry**, so you can install it through the command line interpreter using your favorite package manager. This is the best way to install the library if you are comfortable with **javascript bundlers** like `webpack` or `rollup`.
+Mojs is published on the **NPM registry** and **GPR registry**, so you can install it through the command line interpreter using your favorite package manager. This is the best way to install the library if you are comfortable with **javascript bundlers** like `webpack` or `rollup`.
 
 ```sh
 # npm
@@ -27,10 +27,12 @@ Then **import it like any other module** inside your build:
 ```js
 import mojs from '@mojs/core';
 
-new mojs.Html({ ... });
+new mojs.Html({
+  // ...
+});
 ```
 
-> Using a bundler has **many advantages** like output compression, code splitting, tree shaking, etc., so we encourage you to use this kind of tool with MoJS.
+> Using a bundler has **many advantages** like output compression, code splitting, tree shaking, etc., so we encourage you to use this kind of tool with mojs.
 
 ### Use with a CDN
 
@@ -48,21 +50,23 @@ Then instanciate using:
 
 ```html
 <script>
-  new mojs.Html({ ... });
+  new mojs.Html({
+    // ...
+  });
 </script>
 ```
 
-> By default, if no one is specified, the CDN will automatically target the **@latest** version of MoJS and load the **UMD build** from `dist/mo.umd.js`.
+> By default, if no one is specified, the CDN will automatically target the **@latest** version of mojs and load the **UMD build** from `dist/mo.umd.js`.
 
 ## User guide
-The base documentation you need to get started with MoJS.
+The base documentation you need to get started with mojs.
 - [Get started](https://mojs.github.io/tutorials/getting-started.html)
 - [@mojs/player](https://github.com/mojs/mojs-player/)
 - [@mojs/curve-editor](https://github.com/mojs/mojs-curve-editor/)
 - [@mojs/timeline-editor](https://github.com/mojs/mojs-timeline-editor/)
 
 ## Learn
-Discover the amazing things that MoJS can do!
+Discover the amazing things that mojs can do!
 - [Shape & Swirl](https://mojs.github.io/tutorials/shape-swirl/) _(Tutorial)_
 - [Burst](https://mojs.github.io/tutorials/burst/) _(Tutorial)_
 - [Icon animations powered by mo.js](https://tympanus.net/codrops/2016/02/23/icon-animations-powered-by-mo-js/) _(Codrops tutorial)_
@@ -107,7 +111,7 @@ Get technical informations, open an issue/pull request or join the (amazing) com
 > Many other browsers may work, but are not extensively tested.
 
 ## Kudos
-Meet some of the outstanding guys that support `mojs` on [Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare):
+Meet some of the outstanding guys that support mojs on [Patreon](https://patreon.com/user?u=3219311&utm_medium=social&utm_source=twitter&utm_campaign=creatorshare):
 
 - [Zak Frisch](https://github.com/zfrisch)
 - [Erhan Karadeniz](https://twitter.com/erhankaradeniz)
