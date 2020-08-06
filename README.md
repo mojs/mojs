@@ -2,7 +2,7 @@
 
 The motion graphics toolbelt for the web.
 
-[![mo · js](logo.png "mo · js")](https://mojs.github.io/)
+[![mo · js](logo.svg "mo · js")](https://mojs.github.io/)
 
 ## Intro
 **mo · js** is a javascript motion graphics library that is a **fast, retina ready, modular and open source**. In comparison to other libraries, it have a different syntax and code animation structure approach. The declarative API provides you a complete control over the animation, making it customizable with ease.
