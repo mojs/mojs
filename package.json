@@ -8,8 +8,8 @@
     "start": "webpack-dev-server --config webpack.dev.js",
     "dev": "webpack --config webpack.dev.js --progress",
     "build": "webpack --config webpack.umd.js --progress",
-    "pretest": "webpack --config webpack.umd.js",
-    "test": "karma start",
+    "pretest": "npm run build",
+    "test": "karma start"
   },
   "repository": {
     "type": "git",
