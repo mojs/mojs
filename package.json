@@ -38,9 +38,9 @@
   },
   "homepage": "https://github.com/mojs/mojs",
   "devDependencies": {
-    "@babel/core": "^7.11.0",
-    "@babel/plugin-transform-runtime": "^7.11.0",
-    "@babel/preset-env": "^7.11.0",
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-transform-runtime": "^7.11.5",
+    "@babel/preset-env": "^7.11.5",
     "babel-loader": "^8.1.0",
     "coffee-loader": "^1.0.0",
     "coffeeify": "^3.0.1",
@@ -48,7 +48,7 @@
     "coveralls": "^3.1.0",
     "create-file-webpack": "^1.0.2",
     "jasmine": "^3.6.1",
-    "karma": "^5.1.1",
+    "karma": "^5.2.1",
     "karma-babel-preprocessor": "^8.0.1",
     "karma-chrome-launcher": "^3.1.0",
     "karma-cli": "^2.0.0",
@@ -62,9 +62,9 @@
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^5.1.1"
+    "webpack-merge": "^5.1.3"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.0"
+    "@babel/runtime": "^7.11.2"
   }
 }
