@@ -24,7 +24,7 @@ jobs:
       - name: Build the package
         run: npm run build
 
-      - uses: saucelabs/sauce-connect-action@v1.1.0
+      - uses: saucelabs/sauce-connect-action@v1.1.1
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
           accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
