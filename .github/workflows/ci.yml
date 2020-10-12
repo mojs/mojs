@@ -26,11 +26,16 @@ jobs:
         run: npm run build
 
       - name: Setup browser testing
-        uses: browserstack/github-actions@master
+        uses: browserstack/github-actions/setup-env@master
         with:
           username: ${{ secrets.BROWSERSTACK_USERNAME }}
-          accessKey: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-          tunnelIdentifier: $GITHUB_RUN_ID
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+      - name: Start browser testing tunnel
+        uses: browserstack/github-actions/setup-local@master
+        with:
+          local-testing: start
+          local-identifier: $GITHUB_RUN_ID
 
       - name: Run tests with code coverage
         run: npm run test
@@ -39,3 +44,8 @@ jobs:
         uses: coverallsapp/github-action@v1.1.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Stop browser testing tunnel
+        uses: 'browserstack/github-actions/setup-local@master'
+        with:
+          local-testing: stop
