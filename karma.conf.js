@@ -2,38 +2,24 @@ process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function (config) {
 
-  // Browsers to run on Sauce Labs
-  // Check out https://saucelabs.com/platforms for all browser/OS combos
+  // browser testing configuration
   var customLaunchers = {
-    sl_chrome_latest: {
-      browserName: 'chrome',
-      platformName: 'Windows 10'
+    bs_chrome_latest: {
+      browser: 'chrome',
+      os: 'Windows',
+      os_version: '10',
     },
-    /*
-    sl_firefox_latest: {
-      browserName: 'firefox',
-      platformName: 'Windows 10'
-    },
-    sl_edge_latest: {
-      browserName: 'MicrosoftEdge',
-      platformName: 'Windows 10'
-    },
-    sl_safari_latest: {
-      browserName: 'safari',
-      platformName: 'macOS 10.15'
-    }
-    */
   };
 
   // define the base configuration for each launcher
   Object.keys(customLaunchers).map((key) => {
-    customLaunchers[key].base = 'SauceLabs';
-    customLaunchers[key].browserVersion = 'latest';
+    customLaunchers[key].base = 'BrowserStack';
+    customLaunchers[key].browser_version = 'latest';
   });
 
-  // use SauceLabs browsers if running with GITHUB_ACTIONS
+  // use appropriate reporter if running with GITHUB_ACTIONS
   if (process.env.GITHUB_ACTIONS) {
-    reporters = ['saucelabs', 'summary', 'coverage'];
+    reporters = ['BrowserStack', 'summary', 'coverage'];
     browsers = Object.keys(customLaunchers);
   } else {
     // Here you can change to what browsers you have on your system. TODO: Move to .env file instead
@@ -93,15 +79,13 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
-    sauceLabs: {
-      testName: 'mo · js tests',
-      region: 'us',
-      startConnect: false,
-      username: process.env.SAUCE_USERNAME,
-      accessKey: process.env.SAUCE_ACCESS_KEY,
+    browserStack: {
+      name: 'mo · js tests',
+      startTunnel: false,
+      username: process.env.BROWSERSTACK_USERNAME,
+      accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
       tunnelIdentifier: process.env.GITHUB_RUN_ID,
-      recordScreenshots: false,
-      recordVideo: false
+      video: false
     },
     captureTimeout: 120000,
     customLaunchers: customLaunchers,
