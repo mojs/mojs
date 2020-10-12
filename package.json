@@ -50,6 +50,7 @@
     "jasmine": "^3.5.0",
     "karma": "^5.1.0",
     "karma-babel-preprocessor": "^8.0.1",
+    "karma-browserstack-launcher": "^1.6.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-cli": "^2.0.0",
     "karma-coffee-preprocessor": "^1.0.1",
