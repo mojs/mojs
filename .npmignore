@@ -2,7 +2,6 @@
 /spec
 /src
 .editorconfig
-.travis.yml
 karma.conf.js
 webpack.*
 npm-debug.log
