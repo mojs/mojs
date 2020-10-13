@@ -22,9 +22,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build the package
-        run: npm run build
-
       - name: Setup browser testing
         uses: browserstack/github-actions/setup-env@master
         with:
