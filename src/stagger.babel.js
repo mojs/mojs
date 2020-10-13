@@ -62,11 +62,11 @@ class Stagger extends Tunable {
     @return {Any} Property.
   */
   _getOptionByMod(name, i, store) {
-  	var props = store[name];
+    var props = store[name];
 
-  	// if not dom list then clone it to array
-  	if (props + '' === '[object NodeList]' || props + '' === '[object HTMLCollection]')
-	    props = Array.prototype.slice.call(props, 0);
+    // if not dom list then clone it to array
+    if (props + '' === '[object NodeList]' || props + '' === '[object HTMLCollection]')
+      props = Array.prototype.slice.call(props, 0);
 
     // get the value in array or return the value itself
     var value = h.isArray(props) ? props[i % props.length] : props;
@@ -81,10 +81,10 @@ class Stagger extends Tunable {
     @param {Object} Options hash to look in.
   */
   _getOptionByIndex(i, store) {
-  	var options = {};
-  	Object.keys(store).forEach(key =>
-  	  options[key] = this._getOptionByMod(key, i, store));
-  	return options;
+    var options = {};
+    Object.keys(store).forEach(key =>
+      options[key] = this._getOptionByMod(key, i, store));
+    return options;
   }
 
   /*
@@ -95,19 +95,19 @@ class Stagger extends Tunable {
   */
   _getChildQuantity(name, store) {
 
-  	// if number was set
-  	if (typeof name === 'number') { return name; }
+    // if number was set
+    if (typeof name === 'number') { return name; }
 
-  	var quantifier = store[name];
-  	if (h.isArray(quantifier)) { return quantifier.length; }
-  	else if (quantifier + '' === '[object NodeList]') {
+    var quantifier = store[name];
+    if (h.isArray(quantifier)) { return quantifier.length; }
+    else if (quantifier + '' === '[object NodeList]') {
       return quantifier.length;
     } else if (quantifier + '' === '[object HTMLCollection]') {
-  	  return Array.prototype.slice.call(quantifier, 0).length;
+      return Array.prototype.slice.call(quantifier, 0).length;
     } else if (quantifier instanceof HTMLElement) {
-  	  return 1;
+      return 1;
     } else if (typeof quantifier === 'string') {
-  	  return 1;
+      return 1;
     }
   }
 
@@ -117,11 +117,11 @@ class Stagger extends Tunable {
     @param {Object} Child class.
   */
   _init(options, Module) {
-  	var count = this._getChildQuantity(options.quantifier || 'el', options);
-  	this._createTimeline(options); this._modules = [];
-  	for (var i = 0; i < count; i++) {
+    var count = this._getChildQuantity(options.quantifier || 'el', options);
+    this._createTimeline(options); this._modules = [];
+    for (var i = 0; i < count; i++) {
 
-  	  // get child module's option
+      // get child module's option
       var option = this._getOptionByIndex(i, options);
       option.isRunLess = true;
 
@@ -133,8 +133,8 @@ class Stagger extends Tunable {
 
       // add child module's timeline to the self timeline
       this.timeline.add(module);
-  	}
-  	return this;
+    }
+    return this;
   }
 
   /*
