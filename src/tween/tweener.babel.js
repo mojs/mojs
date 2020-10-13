@@ -1,6 +1,5 @@
 import '../polyfills/raf';
 import '../polyfills/performance';
-import h from '../h';
 
 class Tweener {
   constructor() {

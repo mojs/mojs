@@ -223,7 +223,6 @@ class Burst extends Tunable {
       // get option by modulus
       var options = this._getChildOption(o, i);
       const swirl = pack[i];
-      const lastSwirl = h.getLastItem(swirl._modules);
 
       // add new Master Swirl as parent of new childswirl
       options.parent = this.el;
@@ -449,8 +448,7 @@ class Burst extends Tunable {
     @returns radial point.
   */
   _getSidePoint(side, angle, i) {
-    var p = this._props,
-      sideRadius = this._getSideRadius(side, i);
+    var sideRadius = this._getSideRadius(side, i);
 
     return h.getRadialPoint({
       radius: sideRadius.radius,

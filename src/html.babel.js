@@ -490,8 +490,7 @@ class Html extends Thenable {
   _mergeThenProperty(key, startValue, endValue) {
 
     // if isnt tween property
-    var isBoolean = typeof endValue === 'boolean',
-      curve, easing;
+    var isBoolean = typeof endValue === 'boolean';
 
     if (!h.isTweenProp(key) && !this._nonMergeProps[key] && !isBoolean) {
 

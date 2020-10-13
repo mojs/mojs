@@ -20,7 +20,6 @@ class Thenable extends Tweenable {
 
     // merge then options with the current ones
     var prevRecord = this._history[this._history.length - 1],
-      prevModule = this._modules[this._modules.length - 1],
       merged = this._mergeThenOptions(prevRecord, o);
 
     this._resetMergedFlags(merged);
@@ -160,8 +159,6 @@ class Thenable extends Tweenable {
     @parma {Object} End options object.
   */
   _mergeEndLoop(o, start, end) {
-    var endKeys = Object.keys(end);
-
     for (var key in end) {
 
       // just copy parent option

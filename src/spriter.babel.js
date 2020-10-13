@@ -135,7 +135,7 @@ class Spriter {
     @param  {Object} New options
     @todo   Implement new object merging
   */
-  run(o) { return this.timeline.play(); }
+  run() { return this.timeline.play(); }
 
   /*
     Method to extend _props by options(this.o)
@@ -151,7 +151,7 @@ class Spriter {
   */
   _parseFrames() {
     this._frames = Array.prototype.slice.call(this.el.children, 0);
-    this._frames.forEach((frame, i) => frame.style.opacity = 0);
+    this._frames.forEach((frame) => frame.style.opacity = 0);
     this._frameStep = 1 / this._frames.length;
   }
 

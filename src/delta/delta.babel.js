@@ -1,4 +1,3 @@
-const h = require('../h');
 import Tween from '../tween/tween';
 
 class Delta {

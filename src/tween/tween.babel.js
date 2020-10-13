@@ -1,5 +1,3 @@
-// import h from '../h';
-import h from '../h';
 import t from './tweener';
 import easing from '../easing/easing';
 import Module from '../module';
@@ -270,8 +268,7 @@ class Tween extends Module {
     @return {Object} Self.
   */
   _subPlay(shift = 0, state) {
-    var resumeTime, startTime,
-      p = this._props,
+    var p = this._props,
 
       // check if direction of playback changes,
       // if so, the _progressTime needs to be flipped
@@ -700,8 +697,7 @@ class Tween extends Module {
     // "zero" and "one" value regarding yoyo and it's period
     var isYoyo = props.isYoyo && (T % 2 === 1),
       isYoyoPrev = props.isYoyo && (prevT % 2 === 1),
-      yoyoZero = (isYoyo) ? 1 : 0,
-      yoyoOne = 1 - yoyoZero;
+      yoyoZero = (isYoyo) ? 1 : 0;
 
     if (time === props.endTime) {
       this._wasUknownUpdate = false;
