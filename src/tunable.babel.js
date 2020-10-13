@@ -80,11 +80,10 @@ class Tuneable extends Thenable {
   */
   _transformHistoryFor(key, value) {
     for (var i = 0; i < this._history.length; i++) {
-      if (value = this._transformHistoryRecord(i, key, value)) {
+      value = this._transformHistoryRecord(i, key, value);
 
-        // break if no further history modifications needed
-        if (value == null) { break; }
-      }
+      // break if no further history modifications needed
+      if (value == null) { break; }
     }
   }
 
