@@ -9,8 +9,7 @@
     "dev": "webpack --config webpack.dev.js --progress",
     "build": "webpack --config webpack.umd.js --progress",
     "pretest": "webpack --config webpack.umd.js",
-    "test": "karma start",
-    "coveralls": "coveralls < coverage/lcov.info"
+    "test": "karma start"
   },
   "repository": {
     "type": "git",
@@ -50,12 +49,12 @@
     "jasmine": "^3.6.1",
     "karma": "^5.2.1",
     "karma-babel-preprocessor": "^8.0.1",
+    "karma-browserstack-launcher": "^1.6.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-cli": "^2.0.0",
     "karma-coffee-preprocessor": "^1.0.1",
     "karma-coverage": "^2.0.3",
     "karma-jasmine": "^4.0.1",
-    "karma-sauce-launcher": "^4.1.5",
     "karma-summary-reporter": "^1.8.0",
     "puppeteer": "^5.2.1",
     "terser-webpack-plugin": "^4.1.0",
