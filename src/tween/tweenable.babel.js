@@ -92,7 +92,7 @@ class Tweenable extends Module {
     @param {Number} Time shift.
     @returns this.
   */
-  resume(shift = 0) {
+  resume() {
     this.timeline.resume.apply(this.timeline, arguments);
     return this;
   }
@@ -113,7 +113,7 @@ class Tweenable extends Module {
     @param {Number} Speed value.
     @returns this.
   */
-  setSpeed(speed) {
+  setSpeed() {
     this.timeline.setSpeed.apply(this.timeline, arguments);
     return this;
   }

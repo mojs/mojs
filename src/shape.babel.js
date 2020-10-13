@@ -1,12 +1,7 @@
 const h = require('./h');
-const Bit = require('./shapes/bit');
 const shapesMap = require('./shapes/shapesMap');
 import Module from './module';
-import Thenable from './thenable';
 import Tunable from './tunable';
-import Tweenable from './tween/tweenable';
-import Tween from './tween/tween';
-import Timeline from './tween/timeline';
 
 // TODO
 //  - refactor
@@ -393,7 +388,7 @@ class Shape extends Tunable {
     @param {String} Radius name.
   */
   _getMaxRadius(name) {
-    var selfSize, selfSizeX;
+    var selfSize;
     selfSize = this._getRadiusSize('radius');
     return this._getRadiusSize(name, selfSize);
   }
@@ -500,8 +495,7 @@ class Shape extends Tunable {
     @private
   */
   _getMaxSizeInChain() {
-    let p = this._props,
-      maxW = 0,
+    let maxW = 0,
       maxH = 0;
 
     for (var i = 0; i < this._modules.length; i++) {

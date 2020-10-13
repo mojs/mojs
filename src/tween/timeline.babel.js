@@ -1,5 +1,4 @@
 import h from '../h';
-import t from './tweener';
 import Tween from './tween';
 
 class Timeline extends Tween {
@@ -250,8 +249,7 @@ class Timeline extends Tween {
     @param {Number, Null} Time to start with.
   */
   _startTimelines(time, isReset = true) {
-    var p = this._props,
-      isStop = this._state === 'stop';
+    var isStop = this._state === 'stop';
 
     (time == null) && (time = this._props.startTime);
 

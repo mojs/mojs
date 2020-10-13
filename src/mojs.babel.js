@@ -16,7 +16,6 @@ import Tunable from './tunable';
 import Delta from './delta/delta';
 import Deltas from './delta/deltas';
 import Module from './module';
-import tweener from './tween/tweener';
 import easing from './easing/easing';
 
 var mojs = {
@@ -36,7 +35,7 @@ var mojs = {
   Thenable,
   Tunable,
   Module,
-  tweener,
+  Tweener,
   easing,
   shapesMap,
   _pool: { Delta,

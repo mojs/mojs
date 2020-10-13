@@ -79,8 +79,7 @@ class Bit extends Module {
     @private
   */
   _setCanvasSize() {
-    const p = this._props,
-      style = this._canvas.style;
+    const style = this._canvas.style;
 
     style.display = 'block';
     style.width = '100%';
@@ -96,9 +95,6 @@ class Bit extends Module {
   */
   _draw() {
     this._props.length = this._getLength();
-
-    var state = this._state,
-      props = this._props;
 
     var len = this._drawMapLength;
     while (len--) {

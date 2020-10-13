@@ -113,7 +113,7 @@ class Deltas {
     @private
     @param {Object} Timeline options.
   */
-  _createTimeline(opts = {}) {
+  _createTimeline() {
 
     // const o = this._o;
     // opts.timeline = opts.timeline || {};

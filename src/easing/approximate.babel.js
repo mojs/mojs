@@ -1,5 +1,3 @@
-import h from '../h';
-
 /*
   Method to bootstrap approximation function.
   @private
