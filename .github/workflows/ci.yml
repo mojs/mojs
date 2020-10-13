@@ -5,8 +5,7 @@ name: CI
 on:
   push:
     branches:
-      - github-actions
-      - browser-testing-migration
+      - master
 
   pull_request:
     branches:
