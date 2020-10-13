@@ -35,7 +35,6 @@ jobs:
         uses: browserstack/github-actions/setup-local@master
         with:
           local-testing: start
-          local-identifier: $GITHUB_RUN_ID
 
       - name: Run tests with code coverage
         run: npm run test
