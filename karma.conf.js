@@ -9,6 +9,26 @@ module.exports = function (config) {
       os: 'Windows',
       os_version: '10',
     },
+    bs_firefox_latest: {
+      browser: 'firefox',
+      os: 'Windows',
+      os_version: '10',
+    },
+    bs_edge_latest: {
+      browser: 'edge',
+      os: 'Windows',
+      os_version: '10',
+    },
+    bs_safari_latest: {
+      browser: 'safari',
+      os: 'OS X',
+      os_version: 'Catalina',
+    },
+    bs_iphone_latest: {
+      device: 'iPhone 11',
+      os: 'ios',
+      os_version: '14',
+    },
   };
 
   // define the base configuration for each launcher
