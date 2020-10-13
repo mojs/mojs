@@ -32,10 +32,6 @@
     "computed-property-spacing": [
       "error"
     ],
-    "eqeqeq": [
-      "error",
-      "always"
-    ],
     "func-call-spacing": [
       "error"
     ],
