@@ -34,6 +34,7 @@ new MojsPlayer({
 
 module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
   mode: 'development',
+  devtool: 'source-map',
   output: {
     filename: 'mo.js'
   },
