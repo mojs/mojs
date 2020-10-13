@@ -74,7 +74,7 @@ class Custom extends Bit {
     this._length = this.getLength();
 
     var p = this._props;
-    p.parent.innerHTML = `<svg id="js-mojs-shape-canvas" xmlns=\"http://www.w3.org/2000/svg\" xlink=\"http://www.w3.org/1999/xlink\"><g id=\"js-mojs-shape-el\">${this.getShape()}</g></svg>`;
+    p.parent.innerHTML = `<svg id="js-mojs-shape-canvas" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink"><g id="js-mojs-shape-el">${this.getShape()}</g></svg>`;
 
     this._canvas = p.parent.querySelector('#js-mojs-shape-canvas');
     this.el = p.parent.querySelector('#js-mojs-shape-el');
