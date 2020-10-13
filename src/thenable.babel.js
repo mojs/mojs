@@ -181,7 +181,7 @@ class Thenable extends Tweenable {
         startValue = start.radius;
       }
 
-      var isSubRadius = (key === 'scaleX' || key === 'scaleY');
+      isSubRadius = (key === 'scaleX' || key === 'scaleY');
       if (isSubRadius && startValue == null) {
         startValue = start.scale;
       }

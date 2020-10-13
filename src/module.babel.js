@@ -161,7 +161,7 @@ class Module {
 
     // parse numeric/percent values for strokeDash.. properties
     if (this._arrayPropertyMap[key]) {
-      var result = [];
+      result = [];
       switch (typeof value) {
         case 'number':
           result.push(h.parseUnit(value));
