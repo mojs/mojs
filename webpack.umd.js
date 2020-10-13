@@ -1,5 +1,3 @@
-'use strict';
-
 const pack = require('./package.json');
 const { merge } = require('webpack-merge');
 const TerserPlugin = require('terser-webpack-plugin');

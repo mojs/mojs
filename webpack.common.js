@@ -1,5 +1,3 @@
-'use strict';
-
 const pack = require('./package.json');
 const path = require('path');
 const webpack = require('webpack');
