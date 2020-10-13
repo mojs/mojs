@@ -187,8 +187,7 @@ class Tuneable extends Thenable {
     @private
   */
   _resetTweens() {
-    var i = 0,
-      shift = 0,
+    var shift = 0,
       tweens = this.timeline._timelines;
 
     // if `isTimelineLess` return

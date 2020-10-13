@@ -704,7 +704,7 @@ class Tween extends Module {
 
       // if `time` is equal to `endTime`, T represents the next period,
       // so we need to decrement T and calculate "one" value regarding yoyo
-      var isYoyo = (props.isYoyo && ((T - 1) % 2 === 1));
+      isYoyo = (props.isYoyo && ((T - 1) % 2 === 1));
       this._setProgress((isYoyo ? 0 : 1), time, isYoyo);
       if (time > this._prevTime) { this._isRepeatCompleted = false; }
       this._repeatComplete(time, isYoyo);

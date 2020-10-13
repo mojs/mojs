@@ -19,17 +19,19 @@ const _proximate = (samples) => {
   }
 
   var cached = function cached(p) {
-    var newKey = RoundNumber(p, n),
+    var nextIndex,
+      nextValue,
+      newKey = RoundNumber(p, n),
       sample = samples.get(newKey);
 
     if (Math.abs(p - newKey) < samplesStep) { return sample; }
 
     if (p > newKey) {
-      var nextIndex = newKey + samplesStep;
-      var nextValue = samples.get(nextIndex);
+      nextIndex = newKey + samplesStep;
+      nextValue = samples.get(nextIndex);
     } else {
-      var nextIndex = newKey - samplesStep;
-      var nextValue = samples.get(nextIndex);
+      nextIndex = newKey - samplesStep;
+      nextValue = samples.get(nextIndex);
     }
 
     var dLength = nextIndex - newKey;

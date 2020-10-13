@@ -331,8 +331,9 @@ class Shape extends Tunable {
         isScaleX = this._isPropChanged('scaleX'),
         isScaleY = this._isPropChanged('scaleY'),
         isScale = this._isPropChanged('scale'),
-        isScale = isScale || isScaleX || isScaleY,
         isRotate = this._isPropChanged('angle');
+
+      isScale = isScale || isScaleX || isScaleY;
 
       if (isTranslate || isScale || isRotate) {
         var transform = this._fillTransform();
