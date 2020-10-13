@@ -26,7 +26,7 @@ module.exports = function (config) {
     },
     bs_iphone_latest: {
       device: 'iPhone 11',
-      os: 'ios',
+      os: 'iOS',
       os_version: '14',
     },
   };
