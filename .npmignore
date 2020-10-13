@@ -4,7 +4,5 @@
 .editorconfig
 karma.conf.js
 webpack.*
-npm-debug.log
-todo.md
 CODE_OF_CONDUCT.md
 CONTRIBUTING.md
