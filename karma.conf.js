@@ -80,10 +80,8 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     browserStack: {
-      name: 'mo · js tests',
       username: process.env.BROWSERSTACK_USERNAME,
       accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
-      tunnelIdentifier: process.env.GITHUB_RUN_ID,
       video: false
     },
     captureTimeout: 120000,
