@@ -10,6 +10,7 @@ The following is a set of guidelines for contributing to mojs. These are mostly 
 1. [Code of conduct](#code-of-conduct)
 2. [Reporting bugs](#reporting-bugs)
 3. [Suggesting enhancements](#suggesting-enhancements)
+4. [Working with the project](#working-with-the-project)
 
 
 ## Code of conduct
@@ -51,5 +52,29 @@ This section guides you through submitting an enhancement suggestion for mojs, i
 * List some other applications **where this enhancement exists**
 
 Don't hesitate to use pull requests to propose code changes.
+
+
+## Working with the project
+
+MoJS uses [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/) for building, [Karma](https://karma-runner.github.io/) for testing and [Github Actions](https://github.com/mojs/mojs/actions) for the CI workflow.
+
+> Most of the core files are written in [CoffeeScript](https://coffeescript.org/), but the plan is to convert to TypeScript in the future.
+
+### Setup
+
+Make sure you have a recent version of **NodeJS**. Actually v12.18.2 LTS works fine at the time of writing, but newer and a bit older will probably works fine too.
+
+Run `npm install` to get all dependencies and build tools to get ready!
+
+### Scripts
+
+- `npm run dev` - Start a `webpack-dev-server` and allow you to **develop new features** by seing them live in your browser. Source map is also enabled to allow easy bug fixes in development.
+- `npm run lint` - Run `eslint` to lint the code and **prevent syntax errors** when implementing new code.
+- `npm run test` - Run all tests by creating a production-ready file, looking for **Karma tests** in the spec folder, and checking them against the `dist/mo.umd.js` file. Make sure to write new tests for all new code.
+- `npm run build` - Build a **production-ready** `mo.umd.js` file with webpack and put it in the `dist` folder.
+
+### Workflow
+
+The Continuous Integration workflow uses **BrowserStack** to run Karma tests against a bunch of selected browsers for compatibility reasons. When running tests locally, **Headless Chrome** will be used as default browser.
 
 Thanks for reading and happy contributing! :tada: :+1:
