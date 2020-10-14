@@ -5,6 +5,7 @@
   "main": "dist/mo.js",
   "unpkg": "dist/mo.umd.js",
   "scripts": {
+    "lint": "eslint \"**/*.js\"",
     "dev": "webpack-dev-server --config webpack.dev.js",
     "build": "webpack --config webpack.umd.js --progress",
     "pretest": "webpack --config webpack.umd.js",
