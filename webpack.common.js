@@ -2,21 +2,21 @@ const pack = require('./package.json');
 const path = require('path');
 const webpack = require('webpack');
 
-module.exports = (argv) => ({
+module.exports = () => ({
   entry: './src/mojs.babel.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     library: 'mojs',
     libraryExport: 'default',
     libraryTarget: 'umd',
-    umdNamedDefine: true
+    umdNamedDefine: true,
   },
   resolve: {
     extensions: [
       '.js',
       '.babel.js',
-      '.coffee'
-    ]
+      '.coffee',
+    ],
   },
   module: {
     rules: [{
@@ -25,24 +25,24 @@ module.exports = (argv) => ({
       use: {
         loader: 'babel-loader',
         options: {
-          cacheDirectory: true
-        }
-      }
+          cacheDirectory: true,
+        },
+      },
     }, {
       test: /\.coffee$/,
       use: {
         loader: 'coffee-loader',
         options: {
-          bare: true
-        }
-      }
-    }]
+          bare: true,
+        },
+      },
+    }],
   },
   plugins: [
     new webpack.DefinePlugin({
       build: {
-        revision: `"${pack.version}"`
-      }
-    })
-  ]
+        revision: `"${pack.version}"`,
+      },
+    }),
+  ],
 });

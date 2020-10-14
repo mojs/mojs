@@ -36,23 +36,23 @@ module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
   mode: 'development',
   devtool: 'source-map',
   output: {
-    filename: 'mo.js'
+    filename: 'mo.js',
   },
   plugins: [
     new CreateFileWebpack({
       path: './dev/',
       fileName: 'script.js',
-      content: template
-    })
+      content: template,
+    }),
   ],
   devServer: {
     contentBase: [
       path.join(__dirname, '/dev'),
-      path.join(__dirname, '/dist')
+      path.join(__dirname, '/dist'),
     ],
     watchContentBase: true,
     compress: true,
     port: 9000,
-    open: true
-  }
+    open: true,
+  },
 });
