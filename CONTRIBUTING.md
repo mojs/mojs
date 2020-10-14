@@ -56,27 +56,25 @@ Don't hesitate to use pull requests to propose code changes.
 
 ## Working with the project
 
-Mojs uses [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/) for building, [Karma](https://karma-runner.github.io/) for testing and [Travis](https://travis-ci.org/github/mojs/mojs) for CI.
+MoJS uses [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/) for building, [Karma](https://karma-runner.github.io/) for testing and [Github Actions](https://github.com/mojs/mojs/actions) for the CI workflow.
 
-> Most of the core files are written in [CoffeeScript](https://coffeescript.org/) v1, but the plan is to convert to TypeScript in the future.
+> Most of the core files are written in [CoffeeScript](https://coffeescript.org/), but the plan is to convert to TypeScript in the future.
 
 ### Setup
 
-Make sure you have a new version of node (12.18.2 LTS works fine at the time of writing, but never and a bit older will probably work fine too)
+Make sure you have a recent version of **NodeJS**. Actually v12.18.2 LTS works fine at the time of writing, but newer and a bit older will probably works fine too.
 
-Run `npm install` to install all dependencies and build tools.
+Run `npm install` to get all dependencies and build tools to get ready!
 
-### Test
+### Scripts
 
-`npm run test` - Runs all tests. This will create a production-ready build file of mojs, look for Karma tests in the spec folder, and check them against the dist/mo.umd.js file that just was build. Make sure to write new tests for all new code :)
+- `npm run dev` - Start a `webpack-dev-server` and allow you to **develop new features** by seing them live in your browser. Source map is also enabled to allow easy bug fixes in development.
+- `npm run lint` - Run `eslint` to lint the code and **prevent syntax errors** when implementing new code.
+- `npm run test` - Run all tests by creating a production-ready file, looking for **Karma tests** in the spec folder, and checking them against the `dist/mo.umd.js` file. Make sure to write new tests for all new code.
+- `npm run build` - Build a **production-ready** `mo.umd.js` file with webpack and put it in the `dist` folder.
 
-### Develop
+### Workflow
 
-`npm run start` - Launches a webpack dev server to fix bugs, build new features and see them live in your browser.
-
-### Build
-
-`npm run build` - Creates a production ready mo.umd.js file and puts it in the dist folder.
-`npm run dev` - Creates a mo.js file that can be used for debugging.
+The Continuous Integration workflow uses **BrowserStack** to run Karma tests against a bunch of selected browsers for compatibility reasons. When running tests locally, **Headless Chrome** will be used as default browser.
 
 Thanks for reading and happy contributing! :tada: :+1:
