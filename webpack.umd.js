@@ -9,7 +9,7 @@ module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
   mode: 'production',
   watch: false,
   output: {
-    filename: 'mo.umd.js'
+    filename: 'mo.umd.js',
   },
   optimization: {
     minimizer: [
@@ -18,10 +18,10 @@ module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
         terserOptions: {
           output: {
             comments: false,
-            preamble: preamble
-          }
-        }
-      })
-    ]
+            preamble: preamble,
+          },
+        },
+      }),
+    ],
   },
 });

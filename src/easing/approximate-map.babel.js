@@ -1,5 +1,3 @@
-import h from '../h';
-
 /*
   Method to bootstrap approximation function.
   @private
@@ -7,50 +5,53 @@ import h from '../h';
   @returns {Function} Approximate function.
 */
 const _proximate = (samples) => {
-    var n             = samples.base,
-        samplesAmount = Math.pow( 10, n ),
-        samplesStep   = 1/samplesAmount;
+  var n = samples.base,
+    samplesAmount = Math.pow(10, n),
+    samplesStep = 1 / samplesAmount;
 
-    function RoundNumber (input, numberDecimals)
-    {
-      numberDecimals = +numberDecimals || 0; // +var magic!
+  function RoundNumber(input, numberDecimals)
+  {
+    numberDecimals = +numberDecimals || 0; // +var magic!
 
-      var multiplyer = Math.pow(10.0, numberDecimals);
+    var multiplyer = Math.pow(10.0, numberDecimals);
 
-      return Math.round(input * multiplyer) / multiplyer;
+    return Math.round(input * multiplyer) / multiplyer;
+  }
+
+  var cached = function cached(p) {
+    var nextIndex,
+      nextValue,
+      newKey = RoundNumber(p, n),
+      sample = samples.get(newKey);
+
+    if (Math.abs(p - newKey) < samplesStep) { return sample; }
+
+    if (p > newKey) {
+      nextIndex = newKey + samplesStep;
+      nextValue = samples.get(nextIndex);
+    } else {
+      nextIndex = newKey - samplesStep;
+      nextValue = samples.get(nextIndex);
     }
 
-    var cached = function cached (p) {
-      var newKey = RoundNumber(p, n),
-          sample = samples.get(newKey);
-
-      if ( Math.abs(p - newKey) < samplesStep ) { return sample; }
-
-      if ( p > newKey ) {
-        var nextIndex = newKey + samplesStep;
-        var nextValue = samples.get(nextIndex);
-      } else {
-        var nextIndex = newKey - samplesStep;
-        var nextValue = samples.get(nextIndex);
-      }
-
-      var dLength = nextIndex - newKey;
-      var dValue  = nextValue - sample;
-      if ( dValue < samplesStep ) {
-        return sample;
-      }
-
-      var progressScale = (p - newKey)/dLength;
-      var coef = ( nextValue > sample ) ? -1 : 1;
-      var scaledDifference = coef*progressScale*dValue;
-
-      return sample + scaledDifference;
+    var dLength = nextIndex - newKey;
+    var dValue = nextValue - sample;
+    if (dValue < samplesStep) {
+      return sample;
     }
 
-    cached.getSamples = () => { return samples; }
+    var progressScale = (p - newKey) / dLength;
+    var coef = (nextValue > sample) ? -1 : 1;
+    var scaledDifference = coef * progressScale * dValue;
 
-    return cached;
-}
+    return sample + scaledDifference;
+  };
+
+  cached.getSamples = () => { return samples; };
+
+  return cached;
+};
+
 /*
     Method to take samples of the function and call the _proximate
     method with the dunction and samples. Or if samples passed - pipe
@@ -65,12 +66,12 @@ const _sample = (fn, n = 4) => {
 
   var samples = new Map;
   if (nType === 'number') {
-    var p            = 0,
-        samplesCount = Math.pow( 10, n ),
-        step         = 1/samplesCount;
+    var p = 0,
+      samplesCount = Math.pow(10, n),
+      step = 1 / samplesCount;
 
     samples.set(0, fn(0));
-    for (var i = 0; i < samplesCount-1; i++) {
+    for (var i = 0; i < samplesCount - 1; i++) {
       p += step;
 
       var index = parseFloat(p.toFixed(n));
@@ -81,12 +82,13 @@ const _sample = (fn, n = 4) => {
     samples.base = n;
   }
   else if (nType === 'object') { samples = new Map(n.entries()); }
-  else if (nType === 'string' ) { samples = new Map((JSON.parse(n)).entries()); }
+  else if (nType === 'string') { samples = new Map((JSON.parse(n)).entries()); }
 
-  return Approximate._sample._proximate( samples );
-}
+  return Approximate._sample._proximate(samples);
+};
 
-const Approximate = { _sample, _proximate };
+const Approximate = { _sample,
+  _proximate };
 Approximate._sample._proximate = Approximate._proximate;
 
 export default Approximate._sample;

@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint code
+        run: npm run lint
+
       - name: Setup browser testing
         uses: browserstack/github-actions/setup-env@master
         with:
