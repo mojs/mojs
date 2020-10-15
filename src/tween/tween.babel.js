@@ -1221,16 +1221,14 @@ class Tween extends Module {
     @parma {Function}  Method to call
   */
   _overrideCallback(callback, fun) {
-    let self = this;
-
     var isCallback = (callback && typeof callback === 'function'),
       override = function callbackOverride() {
 
         // call overriden callback if it exists
-        isCallback && callback.apply(self, arguments);
+        isCallback && callback.apply(this, arguments); // eslint-disable-line
 
         // call the passed cleanup function
-        fun.apply(self, arguments);
+        fun.apply(this, arguments); // eslint-disable-line
       };
 
     // add overridden flag
