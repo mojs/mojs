@@ -9,7 +9,7 @@ import Spriter from './spriter';
 import MotionPath from './motion-path';
 import Tween from './tween/tween';
 import Timeline from './tween/timeline';
-import Tweener from './tween/tweener';
+import tweener from './tween/tweener';
 import Tweenable from './tween/tweenable';
 import Thenable from './thenable';
 import Tunable from './tunable';
@@ -35,7 +35,7 @@ var mojs = {
   Thenable,
   Tunable,
   Module,
-  Tweener,
+  tweener,
   easing,
   shapesMap,
   _pool: { Delta,
