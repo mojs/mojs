@@ -2,7 +2,7 @@
   "name": "@mojs/core",
   "version": "0.288.2",
   "description": "The motion graphics toolbelt for the web",
-  "main": "dist/mo.js",
+  "main": "dist/mo.umd.js",
   "unpkg": "dist/mo.umd.js",
   "scripts": {
     "lint": "eslint \"**/*.js\"",
