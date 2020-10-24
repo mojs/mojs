@@ -156,17 +156,8 @@ class Html extends Thenable {
   _drawTransform() {
     const p = this._props;
     const string = (!this._is3d)
-      ? `translate(${p.x}, ${p.y})
-          rotate(${p.angleZ}deg)
-          skew(${p.skewX}deg, ${p.skewY}deg)
-          scale(${p.scaleX}, ${p.scaleY})`
-
-      : `translate3d(${p.x}, ${p.y}, ${p.z})
-          rotateX(${p.angleX}deg)
-          rotateY(${p.angleY}deg)
-          rotateZ(${p.angleZ}deg)
-          skew(${p.skewX}deg, ${p.skewY}deg)
-          scale(${p.scaleX}, ${p.scaleY})`;
+      ? `translate(${p.x}, ${p.y}) rotate(${p.angleZ}deg) skew(${p.skewX}deg, ${p.skewY}deg) scale(${p.scaleX}, ${p.scaleY})`
+      : `translate3d(${p.x}, ${p.y}, ${p.z}) rotateX(${p.angleX}deg) rotateY(${p.angleY}deg) rotateZ(${p.angleZ}deg) skew(${p.skewX}deg, ${p.skewY}deg) scale(${p.scaleX}, ${p.scaleY})`;
 
     this._setStyle('transform', string);
   }
