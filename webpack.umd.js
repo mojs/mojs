@@ -20,6 +20,7 @@ module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
             comments: false,
             preamble: preamble,
           },
+          toplevel: true,
         },
       }),
     ],
