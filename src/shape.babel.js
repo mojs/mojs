@@ -1,5 +1,5 @@
-const h = require('./h');
-const shapesMap = require('./shapes/shapesMap');
+import h from './h';
+import shapesMap from './shapes/shapesMap';
 import Module from './module';
 import Tunable from './tunable';
 
