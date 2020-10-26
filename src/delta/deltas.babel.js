@@ -35,8 +35,8 @@
 //   }
 // });
 
-const easing = require('../easing/easing');
-const h = require('../h');
+import easing from '../easing/easing';
+import h from '../h';
 import Timeline from '../tween/timeline';
 import Tween from '../tween/tween';
 import Delta from './delta';

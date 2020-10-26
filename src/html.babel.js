@@ -1,4 +1,4 @@
-const h = require('./h');
+import h from './h';
 import Thenable from './thenable';
 import Tween from './tween/tween';
 import Deltas from './delta/deltas';
