@@ -1,4 +1,4 @@
-h = require '../h'
+h = require 'src/h'
 
 # ## PathEasing
 # Class allows you to specify custom easing function

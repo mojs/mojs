@@ -1,5 +1,5 @@
-import Module from '../module';
-import h from '../h';
+import h from 'src/h';
+import Module from 'src/module';
 
 class Bit extends Module {
 

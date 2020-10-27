@@ -1,4 +1,4 @@
-import Tween from '../tween/tween';
+import Tween from 'tween/tween';
 
 class Delta {
 

@@ -1,7 +1,7 @@
 import h from './h';
 import Thenable from './thenable';
-import Tween from './tween/tween';
-import Deltas from './delta/deltas';
+import Tween from 'tween/tween';
+import Deltas from 'delta/deltas';
 
 // get tween properties
 const obj = {};

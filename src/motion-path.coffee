@@ -3,9 +3,9 @@
 #
 # @class MotionPath
 h         = require './h'
-resize    = require './vendor/resize'
-Tween     = require('./tween/tween').default
-Timeline  = require('./tween/timeline').default
+resize    = require 'vendor/resize'
+Tween     = require('tween/tween').default
+Timeline  = require('tween/timeline').default
 
 class MotionPath
   # ---

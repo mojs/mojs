@@ -1,6 +1,5 @@
-
-import Shape from './shape';
 import h from './h';
+import Shape from './shape';
 
 /*
   *TODO:*

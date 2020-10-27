@@ -1,5 +1,5 @@
-import Tweenable from './tween/tweenable';
 import h from './h';
+import Tweenable from 'tween/tweenable';
 
 /*
   The Thenable class adds .then public method and
