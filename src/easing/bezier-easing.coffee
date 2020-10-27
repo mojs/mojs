@@ -1,4 +1,4 @@
-h = require '../h'
+h = require 'src/h'
 
 ###*
  * Copyright (c) 2014 Gaëtan Renaudeau https://goo.gl/El3k7u

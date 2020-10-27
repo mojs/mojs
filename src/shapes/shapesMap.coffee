@@ -1,4 +1,5 @@
 
+h         = require 'src/h'
 Bit       = require('./bit').default or require('./bit');
 Custom    = require('./custom').default or require('./custom');
 Circle    = require './circle'
@@ -9,7 +10,6 @@ Polygon   = require './polygon'
 Cross     = require './cross'
 Curve     = require('./curve').default or require('./curve')
 Equal     = require './equal'
-h         = require '../h'
 
 class BitsMap
   constructor: ()-> this.addShape = h.bind this.addShape, @

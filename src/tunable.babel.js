@@ -1,4 +1,3 @@
-
 import h from './h';
 import Thenable from './thenable';
 

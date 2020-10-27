@@ -1,5 +1,5 @@
 import h from './h';
-import shapesMap from './shapes/shapesMap';
+import shapesMap from 'shapes/shapesMap';
 import Module from './module';
 import Tunable from './tunable';
 

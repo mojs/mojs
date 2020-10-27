@@ -1,6 +1,6 @@
-import t from './tweener';
-import easing from '../easing/easing';
-import Module from '../module';
+import t from 'tween/tweener';
+import easing from 'easing/easing';
+import Module from 'src/module';
 
 class Tween extends Module {
 

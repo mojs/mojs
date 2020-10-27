@@ -1,6 +1,6 @@
-import Tween from './tween';
-import Timeline from './timeline';
-import Module from '../module';
+import Tween from 'tween/tween';
+import Timeline from 'tween/timeline';
+import Module from 'src/module';
 
 /*
   Class to define a module ancestor

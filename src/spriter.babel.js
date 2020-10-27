@@ -1,6 +1,6 @@
 import h from './h';
-import Tween from './tween/tween';
-import Timeline from './tween/timeline';
+import Tween from 'tween/tween';
+import Timeline from 'tween/timeline';
 
 /*
   Class for toggling opacity on bunch of elements

@@ -1,8 +1,8 @@
-bezier      = require './bezier-easing'
-PathEasing  = require './path-easing'
-mix         = require './mix'
-h           = require '../h'
-approximate = require('./approximate').default or require('./approximate');
+h           = require 'src/h'
+bezier      = require 'easing/bezier-easing'
+PathEasing  = require 'easing/path-easing'
+mix         = require 'easing/mix'
+approximate = require('easing/approximate').default or require('easing/approximate');
 
 sin = Math.sin
 PI  = Math.PI

@@ -35,11 +35,11 @@
 //   }
 // });
 
-import easing from '../easing/easing';
-import h from '../h';
-import Timeline from '../tween/timeline';
-import Tween from '../tween/tween';
-import Delta from './delta';
+import h from 'src/h';
+import easing from 'easing/easing';
+import Timeline from 'tween/timeline';
+import Tween from 'tween/tween';
+import Delta from 'delta/delta';
 
 // get tween properties
 const obj = {};

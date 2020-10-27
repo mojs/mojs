@@ -1,5 +1,5 @@
-import h from '../h';
-import Tween from './tween';
+import h from 'src/h';
+import Tween from 'tween/tween';
 
 class Timeline extends Tween {
 

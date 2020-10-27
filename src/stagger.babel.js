@@ -1,5 +1,5 @@
 import h from './h';
-import Timeline from './tween/timeline';
+import Timeline from 'tween/timeline';
 import Tunable from './tunable';
 
 class Stagger extends Tunable {
