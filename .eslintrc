@@ -49,8 +49,7 @@
     ],
     "lines-around-comment": [
       "error", {
-        "beforeBlockComment": true,
-        "beforeLineComment": true
+        "beforeBlockComment": true
       }
     ],
     "linebreak-style": [
