@@ -42,7 +42,7 @@
     "@babel/core": "^7.12.3",
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/preset-env": "^7.12.1",
-    "babel-loader": "^8.1.0",
+    "babel-loader": "^8.2.1",
     "coffee-loader": "^1.0.1",
     "coffeeify": "^3.0.1",
     "coffeescript": "^1.12.7",
@@ -64,7 +64,7 @@
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^5.2.0"
+    "webpack-merge": "^5.4.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1"
