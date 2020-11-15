@@ -18,7 +18,7 @@ import Delta from 'delta/delta';
 import Deltas from 'delta/deltas';
 import Module from './module';
 
-var mojs = {
+export default {
   revision: build.revision,
   isDebug: true,
   helpers: h,
@@ -38,37 +38,14 @@ var mojs = {
   tweener,
   easing,
   shapesMap,
-  _pool: { Delta,
-    Deltas },
+  _pool: {
+    Delta,
+    Deltas,
+  },
+  h: h,
+  delta: h.delta,
+  addShape: shapesMap.addShape,
+  CustomShape: shapesMap.custom,
+  Transit: Shape,
+  Swirl: ShapeSwirl,
 };
-
-// functions alias
-mojs.h = mojs.helpers;
-mojs.delta = mojs.h.delta;
-
-// custom shape add function and class
-mojs.addShape = mojs.shapesMap.addShape;
-mojs.CustomShape = mojs.shapesMap.custom;
-
-// module alias
-mojs.Transit = mojs.Shape;
-mojs.Swirl = mojs.ShapeSwirl;
-
-// TODO:
-/*
-  H/V in paths
-
-  rand for direction
-  burst children angle after tune
-  burst pathScale after tune
-  swirl then issue
-  'rand' angle flick with `then`
-  not able to `play()` in `onComplete` callback
-  ---
-  module names
-  swirls in then chains for x/y
-  parse rand(stagger(20, 10), 20) values
-  percentage for radius
-*/
-
-export default mojs;
