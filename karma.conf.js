@@ -31,6 +31,11 @@ module.exports = (config) => {
     },
   };
 
+  const ChromeHeadlessNoSandbox = {
+    base: 'ChromeHeadless',
+    flags: ['--no-sandbox'],
+  };
+
   // define the base configuration for each launcher
   Object.keys(customLaunchers).map((key) => {
     customLaunchers[key].base = 'BrowserStack';
@@ -48,7 +53,7 @@ module.exports = (config) => {
     // Here you can change to what browsers you have on your system. TODO: Move to .env file instead
     // Note: Puppetter currently doesn't work on WSL v1. Should work in WSL v2
     reporters = ['progress', 'coverage'];
-    browsers = ['ChromeHeadless'];
+    browsers = ChromeHeadlessNoSandbox;
   }
 
   config.set({
