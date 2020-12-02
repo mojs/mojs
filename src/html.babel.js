@@ -31,10 +31,10 @@ class Html extends Thenable {
       skewX: 0,
       skewY: 0,
 
-      // angle:      0,
-      angleX: 0,
-      angleY: 0,
-      angleZ: 0,
+      // rotate:      0,
+      rotateX: 0,
+      rotateY: 0,
+      rotateZ: 0,
 
       scale: 1,
       scaleX: 1,
@@ -52,7 +52,7 @@ class Html extends Thenable {
     this._drawExclude = { el: 1 };
 
     // properties that cause 3d layer
-    this._3dProperties = ['angleX', 'angleY', 'z'];
+    this._3dProperties = ['rotateX', 'rotateY', 'z'];
 
     // properties that have array values
     this._arrayPropertyMap = { transformOrigin: 1,
@@ -65,10 +65,10 @@ class Html extends Thenable {
       scaleX: 1,
       scaleY: 1,
 
-      // angle: 1,
-      angleX: 1,
-      angleY: 1,
-      angleZ: 1,
+      // rotate: 1,
+      rotateX: 1,
+      rotateY: 1,
+      rotateZ: 1,
       skewX: 1,
       skewY: 1,
     };
@@ -156,8 +156,8 @@ class Html extends Thenable {
   _drawTransform() {
     const p = this._props;
     const string = (!this._is3d)
-      ? `translate(${p.x}, ${p.y}) rotate(${p.angleZ}deg) skew(${p.skewX}deg, ${p.skewY}deg) scale(${p.scaleX}, ${p.scaleY})`
-      : `translate3d(${p.x}, ${p.y}, ${p.z}) rotateX(${p.angleX}deg) rotateY(${p.angleY}deg) rotateZ(${p.angleZ}deg) skew(${p.skewX}deg, ${p.skewY}deg) scale(${p.scaleX}, ${p.scaleY})`;
+      ? `translate(${p.x}, ${p.y}) rotate(${p.rotateZ}deg) skew(${p.skewX}deg, ${p.skewY}deg) scale(${p.scaleX}, ${p.scaleY})`
+      : `translate3d(${p.x}, ${p.y}, ${p.z}) rotateX(${p.rotateX}deg) rotateY(${p.rotateY}deg) rotateZ(${p.rotateZ}deg) skew(${p.skewX}deg, ${p.skewY}deg) scale(${p.scaleX}, ${p.scaleY})`;
 
     this._setStyle('transform', string);
   }

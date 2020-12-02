@@ -316,89 +316,89 @@ describe 'Burst ->', ->
       expect(isClose or isZero).toBe true
       expect(obj1.y[0]).toBeCloseTo 100, 5
 
-    it 'should add angles ->', ->
+    it 'should add rotations ->', ->
       burst = new Burst
         radius: { 0: 100 }
         count:  2
 
-      obj0 = { angle: 0 }
-      obj1 = { angle: 0 }
+      obj0 = { rotate: 0 }
+      obj1 = { rotate: 0 }
       result0 = burst._addOptionalProps obj0, 0
       result1 = burst._addOptionalProps obj1, 1
 
-      expect(obj0.angle).toBe 90
-      expect(obj1.angle).toBe 270
+      expect(obj0.rotate).toBe 90
+      expect(obj1.rotate).toBe 270
 
-  describe '_getBitAngle method ->', ->
-    it 'should get angle by i', ->
+  describe '_getBitRotation method ->', ->
+    it 'should get rotation by i', ->
       burst = new Burst radius: { 'rand(10,20)': 100 }
-      expect(burst._getBitAngle(0,  0, 0)).toBe 90
-      expect(burst._getBitAngle(0,  0, 1)).toBe 162
-      expect(burst._getBitAngle(0,  0, 2)).toBe 234
-      expect(burst._getBitAngle(90, 0, 2)).toBe 234 + 90
-      expect(burst._getBitAngle(0,  0, 3)).toBe 306
-      expect(burst._getBitAngle(90, 0, 3)).toBe 306 + 90
-      expect(burst._getBitAngle(0,  0, 4)).toBe 378
-      expect(burst._getBitAngle(50, 0, 4)).toBe 378 + 50
+      expect(burst._getBitRotation(0,  0, 0)).toBe 90
+      expect(burst._getBitRotation(0,  0, 1)).toBe 162
+      expect(burst._getBitRotation(0,  0, 2)).toBe 234
+      expect(burst._getBitRotation(90, 0, 2)).toBe 234 + 90
+      expect(burst._getBitRotation(0,  0, 3)).toBe 306
+      expect(burst._getBitRotation(90, 0, 3)).toBe 306 + 90
+      expect(burst._getBitRotation(0,  0, 4)).toBe 378
+      expect(burst._getBitRotation(50, 0, 4)).toBe 378 + 50
 
-    it 'should add with angleShift', ->
+    it 'should add with rotationShift', ->
       burst = new Burst radius: { 'rand(10,20)': 100 }
-      expect(burst._getBitAngle(0,  0, 0)).toBe 90
-      expect(burst._getBitAngle(0,  10, 1)).toBe 162 + 10
-      expect(burst._getBitAngle(0,  30, 2)).toBe 234 + 30
-      expect(burst._getBitAngle(90, 40, 2)).toBe 234 + 90 + 40
-      expect(burst._getBitAngle(0,  20, 3)).toBe 306 + 20
-      expect(burst._getBitAngle(90, 25, 3)).toBe 306 + 90 + 25
-      expect(burst._getBitAngle(0,  10, 4)).toBe 378 + 10
-      expect(burst._getBitAngle(50, 60, 4)).toBe 378 + 50 + 60
+      expect(burst._getBitRotation(0,  0, 0)).toBe 90
+      expect(burst._getBitRotation(0,  10, 1)).toBe 162 + 10
+      expect(burst._getBitRotation(0,  30, 2)).toBe 234 + 30
+      expect(burst._getBitRotation(90, 40, 2)).toBe 234 + 90 + 40
+      expect(burst._getBitRotation(0,  20, 3)).toBe 306 + 20
+      expect(burst._getBitRotation(90, 25, 3)).toBe 306 + 90 + 25
+      expect(burst._getBitRotation(0,  10, 4)).toBe 378 + 10
+      expect(burst._getBitRotation(50, 60, 4)).toBe 378 + 50 + 60
     it 'should fallback to 0', ->
       burst = new Burst radius: { 'rand(10,20)': 100 }
-      expect(burst._getBitAngle(undefined, 0, 0)).toBe 90
-      expect(burst._getBitAngle(undefined, 0, 1)).toBe 162
-      expect(burst._getBitAngle(undefined, 0, 2)).toBe 234
-    it 'should get delta angle by i', ->
+      expect(burst._getBitRotation(undefined, 0, 0)).toBe 90
+      expect(burst._getBitRotation(undefined, 0, 1)).toBe 162
+      expect(burst._getBitRotation(undefined, 0, 2)).toBe 234
+    it 'should get delta rotation by i', ->
       burst = new Burst radius: { 'rand(10,20)': 100 }
-      expect(burst._getBitAngle({180:0}, 0, 0)[270]).toBe 90
-      expect(burst._getBitAngle({50:20}, 0, 3)[356]).toBe 326
-      expect(burst._getBitAngle({50:20}, 0, 4)[428]).toBe 398
+      expect(burst._getBitRotation({180:0}, 0, 0)[270]).toBe 90
+      expect(burst._getBitRotation({50:20}, 0, 3)[356]).toBe 326
+      expect(burst._getBitRotation({50:20}, 0, 4)[428]).toBe 398
 
-    it 'should add angleShift to deltas', ->
+    it 'should add rotationShift to deltas', ->
       burst = new Burst radius: { 'rand(10,20)': 100 }
-      expect(burst._getBitAngle({180:0}, 20, 0)[270 + 20]).toBe 90 + 20
-      expect(burst._getBitAngle({50:20}, 30, 3)[356 + 30]).toBe 326 + 30
-      expect(burst._getBitAngle({50:20}, 50, 4)[428 + 50]).toBe 398 + 50
+      expect(burst._getBitRotation({180:0}, 20, 0)[270 + 20]).toBe 90 + 20
+      expect(burst._getBitRotation({50:20}, 30, 3)[356 + 30]).toBe 326 + 30
+      expect(burst._getBitRotation({50:20}, 50, 4)[428 + 50]).toBe 398 + 50
 
     it 'should work with `stagger` values', ->
       burst = new Burst count: 2
 
-      expect(burst._getBitAngle({'stagger(20, 10)':0}, 0, 0)[110]).toBe 90
-      expect(burst._getBitAngle({'stagger(20, 10)':0}, 0, 1)[300]).toBe 270
+      expect(burst._getBitRotation({'stagger(20, 10)':0}, 0, 0)[110]).toBe 90
+      expect(burst._getBitRotation({'stagger(20, 10)':0}, 0, 1)[300]).toBe 270
 
-      expect(burst._getBitAngle({0:'stagger(20, 10)'}, 0, 1)[270]).toBe 300
+      expect(burst._getBitRotation({0:'stagger(20, 10)'}, 0, 1)[270]).toBe 300
 
     it 'should work with `random` values', ->
       burst = new Burst count: 2
 
-      angle = burst._getBitAngle({'rand(10, 20)':0}, 0, 0)
-      for key, value in angle
-        baseAngle = 90
-        expect(parseInt(key)).toBeGreaterThan  baseAngle + 10
-        expect(parseInt(key)).not.toBeGreaterThan baseAngle + 20
-        expect(parseInt(value)).toBe baseAngle
+      rotation = burst._getBitRotation({'rand(10, 20)':0}, 0, 0)
+      for key, value in rotation
+        baseRotation = 90
+        expect(parseInt(key)).toBeGreaterThan  baseRotation + 10
+        expect(parseInt(key)).not.toBeGreaterThan baseRotation + 20
+        expect(parseInt(value)).toBe baseRotation
 
-      angle = burst._getBitAngle({'rand(10, 20)':0}, 0, 1)
-      for key, value in angle
-        baseAngle = 270
-        expect(parseInt(key)).toBeGreaterThan  baseAngle + 10
-        expect(parseInt(key)).not.toBeGreaterThan baseAngle + 20
-        expect(parseInt(value)).toBe baseAngle
+      rotation = burst._getBitRotation({'rand(10, 20)':0}, 0, 1)
+      for key, value in rotation
+        baseRotation = 270
+        expect(parseInt(key)).toBeGreaterThan  baseRotation + 10
+        expect(parseInt(key)).not.toBeGreaterThan baseRotation + 20
+        expect(parseInt(value)).toBe baseRotation
 
-      angle = burst._getBitAngle({0:'rand(10, 20)'}, 0, 1)
-      for key, value in angle
-        baseAngle = 270
-        expect(parseInt(key)).toBe baseAngle
-        expect(parseInt(value)).toBeGreaterThan  baseAngle + 10
-        expect(parseInt(value)).not.toBeGreaterThan baseAngle + 20
+      rotation = burst._getBitRotation({0:'rand(10, 20)'}, 0, 1)
+      for key, value in rotation
+        baseRotation = 270
+        expect(parseInt(key)).toBe baseRotation
+        expect(parseInt(value)).toBeGreaterThan  baseRotation + 10
+        expect(parseInt(value)).not.toBeGreaterThan baseRotation + 20
 
   describe '_getSidePoint method ->', ->
     it 'should return the side\'s point', ->
@@ -885,12 +885,12 @@ describe 'Burst ->', ->
 
 
   describe '_addBurstProperties method ->', ->
-    it 'should calculate bit angle', ->
+    it 'should calculate bit rotation', ->
       b = new Burst
-      angle = 20
-      obj = { angle: angle }
+      rotate = 20
+      obj = { rotate: rotate }
       b._addBurstProperties( obj, 1 )
-      expect( obj.angle ).toBe b._getBitAngle( angle, 0, 1 )
+      expect( obj.rotate ).toBe b._getBitRotation( rotate, 0, 1 )
 
     it 'should calculate bit x and y', ->
       index = 1
@@ -910,19 +910,19 @@ describe 'Burst ->', ->
     # nope
     # it 'should set degreeShift to 0', ->
     #   b = new Burst
-    #   angle = 20
-    #   obj = { degreeShift: angle }
+    #   rotate = 20
+    #   obj = { degreeShift: rotate }
     #   b._addBurstProperties( obj, 1 )
     #   expect( obj.degreeShift ).toBe 0
 
-    it 'should calculate bit x/y and angle regarding degreeShift', ->
+    it 'should calculate bit x/y and rotation regarding degreeShift', ->
       index = 1
-      angle = 20
+      rotate = 20
       degreeShifts = [ 0, 10, 20 ]
       b = new Burst children: { degreeShift: degreeShifts }
       # put degreeShift value back since we override it to `0`
       # in `_addBurstProperties` method
-      obj = { angle: angle, degreeShift: degreeShifts[index]  }
+      obj = { rotate: rotate, degreeShift: degreeShifts[index]  }
       b._addBurstProperties( obj, index )
 
       p           = b._props
@@ -933,15 +933,15 @@ describe 'Burst ->', ->
 
       expect( obj.x ).toEqual b._getDeltaFromPoints('x', pointStart, pointEnd)
       expect( obj.y ).toEqual b._getDeltaFromPoints('y', pointStart, pointEnd)
-      expect( obj.angle ).toEqual b._getBitAngle( angle + degreeShifts[ index ], 0, index )
+      expect( obj.rotate ).toEqual b._getBitRotation( rotate + degreeShifts[ index ], 0, index )
 
-    it 'should calculate bit x/y and angle regarding stagger', ->
+    it 'should calculate bit x/y and rotation regarding stagger', ->
       index = 2
-      angle = 20
+      rotate = 20
       b = new Burst children: { degreeShift: 'stagger(200)' }
       # put degreeShift value back since we override it to `0`
       # in `_addBurstProperties` method
-      obj = { angle: angle, degreeShift: 'stagger(200)'  }
+      obj = { rotate: rotate, degreeShift: 'stagger(200)'  }
       b._addBurstProperties( obj, index )
 
       p           = b._props
@@ -952,9 +952,9 @@ describe 'Burst ->', ->
 
       expect( obj.x ).toEqual b._getDeltaFromPoints('x', pointStart, pointEnd)
       expect( obj.y ).toEqual b._getDeltaFromPoints('y', pointStart, pointEnd)
-      expect( obj.angle ).toEqual b._getBitAngle( angle + 400, 0, index )
+      expect( obj.rotate ).toEqual b._getBitRotation( rotate + 400, 0, index )
 
-    it 'should fallback to 0 for angle', ->
+    it 'should fallback to 0 for rotation', ->
       index = 2
       b = new Burst children: { degreeShift: 'stagger(200)' }
       # put degreeShift value back since we override it to `0`
@@ -968,7 +968,7 @@ describe 'Burst ->', ->
       pointStart  = b._getSidePoint('start', index*step + 400 );
       pointEnd    = b._getSidePoint('end',   index*step + 400 );
 
-      expect( obj.angle ).toEqual b._getBitAngle( 0, 400, index );
+      expect( obj.rotate ).toEqual b._getBitRotation( 0, 400, index );
 
     it 'should call _getSidePoint with passed index', ->
       b = new Burst count: 2

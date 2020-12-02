@@ -86,11 +86,11 @@ class ShapeSwirl extends Shape {
   _calcPosData() {
     var x = this._getPosValue('x'),
       y = this._getPosValue('y'),
-      angle = (90 + Math.atan((y.delta / x.delta) || 0) * h.RAD_TO_DEG);
+      rotate = (90 + Math.atan((y.delta / x.delta) || 0) * h.RAD_TO_DEG);
 
     this._posData = {
       radius: Math.sqrt(x.delta * x.delta + y.delta * y.delta),
-      angle: (x.delta < 0) ? angle + 180 : angle,
+      rotate: (x.delta < 0) ? rotate + 180 : rotate,
       x,
       y,
     };
@@ -149,9 +149,9 @@ class ShapeSwirl extends Shape {
   */
   _calcSwirlXY(proc) {
     var p = this._props,
-      angle = this._posData.angle + p.degreeShift,
+      rotate = this._posData.rotate + p.degreeShift,
       point = h.getRadialPoint({
-        angle: (p.isSwirl) ? angle + this._getSwirl(proc) : angle,
+        rotate: (p.isSwirl) ? rotate + this._getSwirl(proc) : rotate,
         radius: proc * this._posData.radius * p.pathScale,
         center: {
           x: this._posData.x.start,

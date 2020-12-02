@@ -33,9 +33,9 @@ describe 'Html ->', ->
       expect( p['skewY'] ).toBe 0
 
       # expect( p['rotate'] ).toBe 0
-      expect( p['angleX'] ).toBe 0
-      expect( p['angleY'] ).toBe 0
-      expect( p['angleZ'] ).toBe 0
+      expect( p['rotateX'] ).toBe 0
+      expect( p['rotateY'] ).toBe 0
+      expect( p['rotateZ'] ).toBe 0
 
       expect( p['scale'] ).toBe  1
       expect( p['scaleX'] ).toBe 1
@@ -339,9 +339,9 @@ describe 'Html ->', ->
       expect( html._defaults.skewX ).toBe 0
       expect( html._defaults.skewY ).toBe 0
 
-      expect( html._defaults.angleX ).toBe 0
-      expect( html._defaults.angleY ).toBe 0
-      expect( html._defaults.angleZ ).toBe 0
+      expect( html._defaults.rotateX ).toBe 0
+      expect( html._defaults.rotateY ).toBe 0
+      expect( html._defaults.rotateZ ).toBe 0
 
       expect( html._defaults.scale ).toBe  1
       expect( html._defaults.scaleX ).toBe 1
@@ -365,7 +365,7 @@ describe 'Html ->', ->
       html._3dProperties = null
       html._declareDefaults()
 
-      expect( html._3dProperties ).toEqual [ 'angleX', 'angleY', 'z' ]
+      expect( html._3dProperties ).toEqual [ 'rotateX', 'rotateY', 'z' ]
 
     it 'should create _arrayPropertyMap object', ->
 
@@ -389,9 +389,9 @@ describe 'Html ->', ->
       expect( html._numberPropertyMap.scaleX ).toBe 1
       expect( html._numberPropertyMap.scaleY ).toBe 1
       # expect( html._numberPropertyMap.rotate ).toBe 1
-      expect( html._numberPropertyMap.angleX ).toBe 1
-      expect( html._numberPropertyMap.angleY ).toBe 1
-      expect( html._numberPropertyMap.angleZ ).toBe 1
+      expect( html._numberPropertyMap.rotateX ).toBe 1
+      expect( html._numberPropertyMap.rotateY ).toBe 1
+      expect( html._numberPropertyMap.rotateZ ).toBe 1
       expect( html._numberPropertyMap.skewX ).toBe 1
       expect( html._numberPropertyMap.skewY ).toBe 1
 

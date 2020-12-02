@@ -72,7 +72,7 @@ class Shape extends Tunable {
       y: 0,
 
       // ∆ :: Possible values: [ number ]
-      angle: 0,
+      rotate: 0,
 
       // ∆ :: Possible values: [ number ]
       scale: 1,
@@ -331,7 +331,7 @@ class Shape extends Tunable {
         isScaleX = this._isPropChanged('scaleX'),
         isScaleY = this._isPropChanged('scaleY'),
         isScale = this._isPropChanged('scale'),
-        isRotate = this._isPropChanged('angle');
+        isRotate = this._isPropChanged('rotate');
 
       isScale = isScale || isScaleX || isScaleY;
 
@@ -586,7 +586,7 @@ class Shape extends Tunable {
       scaleX = (p.scaleX != null) ? p.scaleX : p.scale,
       scaleY = (p.scaleY != null) ? p.scaleY : p.scale,
       scale = `${scaleX}, ${scaleY}`;
-    return `translate(${p.x}, ${p.y}) rotate(${p.angle}deg) scale(${scale})`;
+    return `translate(${p.x}, ${p.y}) rotate(${p.rotate}deg) scale(${scale})`;
   }
 
   /*

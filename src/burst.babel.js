@@ -177,7 +177,7 @@ class Burst extends Tunable {
   }
 
   /*
-    Method to refresh burst x/y/angle options on further chained
+    Method to refresh burst x/y/rotate options on further chained
     swirls, because they will be overriden after `tune` call on
     very first swirl.
     @param {Array} Chained modules array
@@ -399,61 +399,61 @@ class Burst extends Tunable {
     options.x = this._getDeltaFromPoints('x', pointStart, pointEnd);
     options.y = this._getDeltaFromPoints('y', pointStart, pointEnd);
 
-    options.angle = this._getBitAngle((options.angle || 0), degreeShift, index);
+    options.rotate = this._getBitRotation((options.rotate || 0), degreeShift, index);
   }
 
   /*
-    Method to get shapes angle in burst so
+    Method to get shapes rotation in burst so
     it will follow circular shape.
 
-     @param    {Number, Object} Base angle.
-     @param    {Number}         Angle shift for the bit
+     @param    {Number, Object} Base rotation.
+     @param    {Number}         Rotation shift for the bit
      @param    {Number}         Shape's index in burst.
-     @returns  {Number}         Angle in burst.
+     @returns  {Number}         Rotation in burst.
   */
-  _getBitAngle(angleProperty = 0, angleShift = 0, i) {
+  _getBitRotation(rotationProperty = 0, rotationShift = 0, i) {
     var p = this._props,
       degCnt = (p.degree % 360 === 0) ? p.count : p.count - 1 || 1,
       step = p.degree / degCnt,
-      angle = i * step + 90;
+      rotate = i * step + 90;
 
-    angle += angleShift;
+    rotate += rotationShift;
 
     // if not delta option
-    if (!this._isDelta(angleProperty)) { angleProperty += angle; }
+    if (!this._isDelta(rotationProperty)) { rotationProperty += rotate; }
     else {
       var delta = {},
-        keys = Object.keys(angleProperty),
+        keys = Object.keys(rotationProperty),
         start = keys[0],
-        end = angleProperty[start];
+        end = rotationProperty[start];
 
       start = h.parseStringOption(start, i);
       end = h.parseStringOption(end, i);
 
       // new start = newEnd
-      delta[parseFloat(start) + angle] = parseFloat(end) + angle;
+      delta[parseFloat(start) + rotate] = parseFloat(end) + rotate;
 
-      angleProperty = delta;
+      rotationProperty = delta;
     }
-    return angleProperty;
+    return rotationProperty;
   }
 
   /*
     Method to get radial point on `start` or `end`.
     @private
     @param {String} Name of the side - [start, end].
-    @param {Number} Angle of the radial point.
+    @param {Number} Rotatation of the radial point.
     @param {Number} Index of the main swirl.
     @returns radial point.
   */
-  _getSidePoint(side, angle, i) {
+  _getSidePoint(side, rotate, i) {
     var sideRadius = this._getSideRadius(side, i);
 
     return h.getRadialPoint({
       radius: sideRadius.radius,
       radiusX: sideRadius.radiusX,
       radiusY: sideRadius.radiusY,
-      angle: angle,
+      rotate: rotate,
 
       // center:  { x: p.center, y: p.center }
       center: { x: 0,
