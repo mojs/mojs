@@ -218,8 +218,8 @@ class Helpers
     bindArgs = Array::slice.call(arguments, 2)
     wrapper
   getRadialPoint:(o={})->
-    # return if !o.radius? or !o.angle? or !o.center?
-    radAngle = (o.angle-90)*0.017453292519943295 # Math.PI/180
+    # return if !o.radius? or !o.rotate? or !o.center?
+    radAngle = (o.rotate-90)*0.017453292519943295 # Math.PI/180
     radiusX = if o.radiusX? then o.radiusX else o.radius
     radiusY = if o.radiusY? then o.radiusY else o.radius
     point =

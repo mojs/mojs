@@ -19,7 +19,7 @@ describe 'module class ->', ->
       y:                0,
       rx:               0,
       ry:               0,
-      angle:            0,
+      rotate:           0,
       scale:            1,
       opacity:          1,
       points:           3,

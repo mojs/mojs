@@ -146,21 +146,21 @@ class MotionPath
     offsetY:          0
     # ---
 
-    # Defines angle offset for path curves
-    # @property   angleOffset
+    # Defines rotation offset for path curves
+    # @property   rotationOffset
     # @type       {Number, Function}
     # @example
     #   // function
     #   new MotionPath({
     #     //...
-    #     angleOffset: function(currentAngle) {
-    #       return if (currentAngle < 0) { 90 } else {-90}
+    #     rotationOffset: function(currentRotation) {
+    #       return if (currentRotation < 0) { 90 } else {-90}
     #     }
     #   });
     #
     # @codepen Number:    https://codepen.io/sol0mka/pen/JogzXw
     # @codepen Function:  https://codepen.io/sol0mka/pen/MYNxer
-    angleOffset:      null
+    rotationOffset:      null
     # ---
 
     # Defines lower bound for path coordinates in rangle *[0,1]*
@@ -204,7 +204,7 @@ class MotionPath
 
     # Defines transform-origin CSS property for **el**.
     # Can be defined by **string** or **function**.
-    # Function recieves current angle as agrumnet and
+    # Function recieves current rotation as agrumnet and
     # should return transform-origin value as a strin.
     #
     # @property   transformOrigin
@@ -213,9 +213,9 @@ class MotionPath
     #   // function
     #   new MotionPath({
     #     //...
-    #     isAngle: true,
-    #     transformOrigin: function (currentAngle) {
-    #       return  6*currentAngle + '% 0';
+    #     isRotation: true,
+    #     transformOrigin: function (currentRotation) {
+    #       return  6*currentRotation + '% 0';
     #     }
     #   });
     #
@@ -223,12 +223,12 @@ class MotionPath
     transformOrigin:  null
     # ---
 
-    # Defines if path curves angle should be set to el.
+    # Defines if path curves rotation should be set to el.
     #
-    # @property   isAngle
+    # @property   isRotation
     # @type       {Boolean}
     # @codepen https://codepen.io/sol0mka/pen/GgVexq/
-    isAngle:          false
+    isRotation:          false
     # ---
 
     # Defines motion path direction.
@@ -294,8 +294,8 @@ class MotionPath
 
     dX = o.shift.x; dY = o.shift.y
     radius = Math.sqrt(dX*dX + dY*dY); percent = radius/100
-    angle  = Math.atan(dY/dX)*(180/Math.PI) + 90
-    if o.shift.x < 0 then angle = angle + 180
+    rotation  = Math.atan(dY/dX)*(180/Math.PI) + 90
+    if o.shift.x < 0 then rotation = rotation + 180
 
     # get point on line between start end end
     curvatureX = h.parseUnit curvature.x
@@ -304,7 +304,7 @@ class MotionPath
     curveXPoint = h.getRadialPoint
       center: x: start.x, y: start.y
       radius: curvatureX
-      angle:  angle
+      rotate:  rotate
     # get control point with center in curveXPoint
     curvatureY = h.parseUnit curvature.y
     curvatureY = if curvatureY.unit is '%' then curvatureY.value*percent
@@ -312,7 +312,7 @@ class MotionPath
     curvePoint = h.getRadialPoint
       center: x: curveXPoint.x, y: curveXPoint.y
       radius: curvatureY
-      angle:  angle+90
+      rotate:  rotation+90
 
     path.setAttribute 'd', "M#{start.x},#{start.y}
        Q#{curvePoint.x},#{curvePoint.y}
@@ -323,7 +323,7 @@ class MotionPath
   postVars:->
     @props.pathStart = h.clamp @props.pathStart, 0, 1
     @props.pathEnd   = h.clamp @props.pathEnd, @props.pathStart, 1
-    @angle = 0; @speedX = 0; @speedY = 0; @blurX = 0; @blurY = 0
+    @rotate = 0; @speedX = 0; @speedY = 0; @blurX = 0; @blurY = 0
     @prevCoords = {}; @blurAmount = 20
     # clamp motionBlur in range of [0,1]
     @props.motionBlur = h.clamp @props.motionBlur, 0, 1
@@ -462,37 +462,37 @@ class MotionPath
     point = @path.getPointAtLength len
     # get x and y coordinates
     x = point.x + @props.offsetX; y = point.y + @props.offsetY
-    @_getCurrentAngle point, len, p
+    @_getCurrentRotation point, len, p
     @_setTransformOrigin(p)
     @_setTransform(x, y, p, isInit)
     @props.motionBlur and @makeMotionBlur(x, y)
   setElPosition:(x,y,p)->
-    rotate    = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
+    rotate    = if @rotate isnt 0 then "rotate(#{@rotate}deg)" else ''
     isComposite = @props.isCompositeLayer and h.is3d
     composite = if isComposite then 'translateZ(0)' else ''
     transform = "translate(#{x}px,#{y}px) #{rotate} #{composite}"
     h.setPrefixedStyle @el, 'transform', transform
   setModulePosition:(x, y)->
-    @el._setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
+    @el._setProp shiftX: "#{x}px", shiftY: "#{y}px", rotate: @rotate
     @el._draw()
-  _getCurrentAngle:(point, len, p)->
+  _getCurrentRotation:(point, len, p)->
     isTransformFunOrigin = typeof @props.transformOrigin is 'function'
-    if @props.isAngle or @props.angleOffset? or isTransformFunOrigin
+    if @props.isRotation or @props.rotationOffset? or isTransformFunOrigin
       prevPoint = @path.getPointAtLength len - 1
       x1 = point.y - prevPoint.y; x2 = point.x - prevPoint.x
       atan = Math.atan(x1/x2); !isFinite(atan) and (atan = 0)
-      @angle = atan*h.RAD_TO_DEG
-      if (typeof @props.angleOffset) isnt 'function'
-        @angle += @props.angleOffset or 0
-      else @angle = @props.angleOffset.call @, @angle, p
-    else @angle = 0
+      @rotate = atan*h.RAD_TO_DEG
+      if (typeof @props.rotationOffset) isnt 'function'
+        @rotate += @props.rotationOffset or 0
+      else @rotate = @props.rotationOffset.call @, @rotate, p
+    else @rotate = 0
   _setTransform:(x,y,p,isInit)->
     # get real coordinates relative to container size
     if @scaler then x *= @scaler.x; y *= @scaler.y
     # call onUpdate but not on the very first(0 progress) call
     transform = null
-    if !isInit then transform = @onUpdate?(p, { x: x, y: y, angle: @angle })
-    # set position and angle
+    if !isInit then transform = @onUpdate?(p, { x: x, y: y, rotate: @rotate })
+    # set position and rotatation
     # 1: if motion path is for module
     if @isModule then @setModulePosition(x,y)
     # 2: if motion path is for DOM node
@@ -507,11 +507,11 @@ class MotionPath
       isTransformFunOrigin = typeof @props.transformOrigin is 'function'
       # transform origin could be a function
       tOrigin = if !isTransformFunOrigin then @props.transformOrigin
-      else @props.transformOrigin(@angle, p)
+      else @props.transformOrigin(@rotate, p)
       h.setPrefixedStyle @el, 'transform-origin', tOrigin
   makeMotionBlur:(x, y)->
     # if previous coords are not defined yet -- set speed to 0
-    tailAngle = 0; signX = 1; signY = 1
+    tailRotation = 0; signX = 1; signY = 1
     if !@prevCoords.x? or !@prevCoords.y? then @speedX = 0; @speedY = 0
     # else calculate speed based on the largest axes delta
     else
@@ -519,9 +519,9 @@ class MotionPath
       if dX > 0 then signX = -1
       if signX < 0 then signY = -1
       @speedX = Math.abs(dX); @speedY = Math.abs(dY)
-      tailAngle = Math.atan(dY/dX)*(180/Math.PI) + 90
-    absoluteAngle = tailAngle - @angle
-    coords = @angToCoords absoluteAngle
+      tailRotation = Math.atan(dY/dX)*(180/Math.PI) + 90
+    absoluteRotation = tailRotation - @rotate
+    coords = @rotToCoords absoluteRotation
     # get blur based on speed where 1px per 1ms is very fast
     # and motionBlur coefficient
     @blurX = h.clamp (@speedX/16)*@props.motionBlur, 0, 1
@@ -576,14 +576,14 @@ class MotionPath
 
   tuneOptions:(o)-> @extendOptions(o); @postVars()
 
-  angToCoords:(angle)->
-    angle = angle % 360
-    radAngle = ((angle-90)*Math.PI)/180
-    x = Math.cos(radAngle); y = Math.sin(radAngle)
+  rotToCoords:(rotation)->
+    rotation = rotation % 360
+    radRotation = ((rotation-90)*Math.PI)/180
+    x = Math.cos(radRotation); y = Math.sin(radRotation)
     x = if x < 0 then Math.max(x, -0.7) else Math.min(x, .7)
     y = if y < 0 then Math.max(y, -0.7) else Math.min(y, .7)
     x: x*1.428571429
     y: y*1.428571429
-    # x: Math.cos(radAngle), y: Math.sin(radAngle)
+    # x: Math.cos(radRotation), y: Math.sin(radRotation)
 
 module.exports = MotionPath

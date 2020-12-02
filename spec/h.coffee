@@ -815,7 +815,7 @@ describe 'Helpers ->', ->
       it 'should calculate radial point', ->
         point = h.getRadialPoint
           radius: 50
-          angle:  90
+          rotate:  90
           center: x: 50, y: 50
         expect(point.x).toBe 100
         expect(point.y).toBe 50
@@ -823,7 +823,7 @@ describe 'Helpers ->', ->
         point = h.getRadialPoint
           radius: 50
           radiusX:100
-          angle:  90
+          rotate:  90
           center: x: 50, y: 50
         expect(point.x).toBe 150
         expect(point.y).toBe 50
@@ -831,7 +831,7 @@ describe 'Helpers ->', ->
         point = h.getRadialPoint
           radius: 50
           radiusY:100
-          angle:  0
+          rotate:  0
           center: x: 50, y: 50
         expect(point.x).toBe 50
         expect(point.y).toBe -50
@@ -839,19 +839,19 @@ describe 'Helpers ->', ->
       # it 'should return false if 1 of 3 options missed', ->
       #   point = h.getRadialPoint
       #     radius: 50
-      #     angle:  90
+      #     rotate:  90
       #   expect(point).toBeFalsy()
       it 'should return false only if param is 0', ->
         point = h.getRadialPoint
           radius: 0
-          angle:  90
+          rotate:  90
           center: x: 0, y: 0
         expect(point).toBeTruthy()
       # nope
       # it 'should not return exponential forms', ->
       #   point = h.getRadialPoint
       #     radius: 0.00000001
-      #     angle:  90
+      #     rotate:  90
       #     center: x: 0.00000001, y: 0.00000001
       #   expect(point.x).not.toMatch /e/
       #   expect(point.y).not.toMatch /e/
