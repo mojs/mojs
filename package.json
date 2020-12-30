@@ -4,6 +4,7 @@
   "description": "The motion graphics toolbelt for the web",
   "source": "src/mojs.babel.js",
   "main": "dist/mo.umd.js",
+  "module": "src/mojs.babel.js",
   "browser": "dist/mo.umd.js",
   "unpkg": "dist/mo.umd.js",
   "scripts": {
