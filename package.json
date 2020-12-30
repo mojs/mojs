@@ -41,9 +41,9 @@
   "homepage": "https://github.com/mojs/mojs",
   "devDependencies": {
     "@babel/core": "^7.12.9",
-    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/preset-env": "^7.12.7",
-    "babel-loader": "^8.2.1",
+    "babel-loader": "^8.2.2",
     "coffee-loader": "^1.0.1",
     "coffeeify": "^3.0.1",
     "coffeescript": "^1.12.7",
@@ -64,8 +64,8 @@
     "terser-webpack-plugin": "^4.2.3",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^5.4.0"
+    "webpack-dev-server": "^3.11.1",
+    "webpack-merge": "^5.7.3"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1"
