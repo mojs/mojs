@@ -2,54 +2,62 @@ process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = (config) => {
 
-  // browser testing configuration
-  let customLaunchers = {
-    bs_chrome_latest: {
-      browser: 'chrome',
-      os: 'Windows',
-      os_version: '10',
-    },
-    bs_firefox_latest: {
-      browser: 'firefox',
-      os: 'Windows',
-      os_version: '10',
-    },
-    bs_edge_latest: {
-      browser: 'edge',
-      os: 'Windows',
-      os_version: '10',
-    },
-    bs_safari_latest: {
-      browser: 'safari',
-      os: 'OS X',
-      os_version: 'Catalina',
-    },
-    bs_iphone_latest: {
-      device: 'iPhone 11',
-      os: 'iOS',
-      os_version: '14',
-    },
-  };
-
-  // define the base configuration for each launcher
-  Object.keys(customLaunchers).map((key) => {
-    customLaunchers[key].base = 'BrowserStack';
-    customLaunchers[key].browser_version = 'latest';
-  });
-
   // use appropriate reporter if running with GITHUB_ACTIONS
-  let reporters, browsers;
+  let customLaunchers, reporters, browsers;
 
+  // run tests against browsers on Github Actions, ChromeHeadless instead
   if (process.env.GITHUB_ACTIONS) {
-    reporters = ['BrowserStack', 'summary', 'coverage'];
-    browsers = Object.keys(customLaunchers);
-  } else {
+    customLaunchers = {
+      bs_chrome_latest: {
+        browser: 'chrome',
+        os: 'Windows',
+        os_version: '10',
+      },
+      bs_firefox_latest: {
+        browser: 'firefox',
+        os: 'Windows',
+        os_version: '10',
+      },
+      bs_edge_latest: {
+        browser: 'edge',
+        os: 'Windows',
+        os_version: '10',
+      },
+      bs_safari_latest: {
+        browser: 'safari',
+        os: 'OS X',
+        os_version: 'Catalina',
+      },
+      bs_iphone_latest: {
+        device: 'iPhone 11',
+        os: 'iOS',
+        os_version: '14',
+      },
+    };
 
-    // Here you can change to what browsers you have on your system. TODO: Move to .env file instead
-    // Note: Puppetter currently doesn't work on WSL v1. Should work in WSL v2
+    // define the base configuration for each launcher
+    Object.keys(customLaunchers).map((key) => {
+      customLaunchers[key].base = 'BrowserStack';
+      customLaunchers[key].browser_version = 'latest';
+    });
+
+    reporters = ['BrowserStack', 'summary', 'coverage'];
+  } else {
+    customLaunchers = {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: [
+          '--no-sandbox',
+          '--single-process',
+        ],
+      },
+    };
+
     reporters = ['progress', 'coverage'];
-    browsers = ['ChromeHeadless'];
   }
+
+  // build a list of browsers to run the test
+  browsers = Object.keys(customLaunchers);
 
   config.set({
     basePath: '',

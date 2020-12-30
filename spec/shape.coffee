@@ -90,7 +90,7 @@ describe 'Shape ->', ->
       expect(byte._defaults.top).toBe              '50%'
       expect(byte._defaults.x).toBe                0
       expect(byte._defaults.y).toBe                0
-      expect(byte._defaults.angle).toBe            0
+      expect(byte._defaults.rotate).toBe           0
       expect(byte._defaults.scale).toEqual         1
       expect(byte._defaults.scaleX).toBe           null
       expect(byte._defaults.scaleY).toBe           null
@@ -717,10 +717,10 @@ describe 'Shape ->', ->
       byte = new Byte radius: 25
       byte.el = null
       expect(byte._drawEl()).toBe true
-    it 'should set transform if angle changed', ->
-      byte = new Byte angle: 25
+    it 'should set transform if rotation is changed', ->
+      byte = new Byte rotate: 25
       byte._draw()
-      byte._props.angle = 26
+      byte._props.rotate = 26
       byte._draw()
       style = byte.el.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
@@ -730,8 +730,8 @@ describe 'Shape ->', ->
       isTr4 = tr is 'translate(0px) rotate(26deg) scale(1)'
       expect(isTr or isTr2 or isTr3 or isTr4).toBe true
       # expect(byte.el.style["#{h.prefix.css}transform"]).toBe resultStr
-    it 'should not set transform if angle changed #2', ->
-      byte = new Byte angle: 25
+    it 'should not set transform if rotation changed #2', ->
+      byte = new Byte rotate: 25
       byte._draw()
       spyOn byte, '_fillTransform'
       byte._draw()
@@ -1106,7 +1106,7 @@ describe 'Shape ->', ->
 
   describe '_fillTransform method ->', ->
     it 'return tranform string of the el', ->
-      tr = new Shape x: 100, y: 100, angle: 50, scaleX: 2, scaleY: 3
+      tr = new Shape x: 100, y: 100, rotate: 50, scaleX: 2, scaleY: 3
       expect(tr._fillTransform())
         .toBe 'translate(100px, 100px) rotate(50deg) scale(2, 3)'
 

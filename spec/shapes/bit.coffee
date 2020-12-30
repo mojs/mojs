@@ -140,7 +140,7 @@ describe 'Bit ->', ->
         'fill':                 '#0ff'
         'stroke-dasharray':     100
         'stroke-dashoffset':    50
-        'angle':                45
+        'rotate':               45
 
       bit._draw()
 
@@ -170,7 +170,7 @@ describe 'Bit ->', ->
         'stroke-dashoffset':  50
         'stroke-linecap':     'round'
         'stroke-opacity':     .5
-        angle:                45
+        rotate:               45
       bit._draw()
       expect(bit._state['stroke'])           .toBe '#0f0'
       expect(bit._state['stroke-width'])     .toBe 3
@@ -426,7 +426,7 @@ describe 'Bit ->', ->
   # #   it 'should calculate transform object', ->
   # #     bit = new Bit
   # #       ctx: svg
-  # #       angle: 90
+  # #       rotate: 90
   # #     expect(bit._props.transform).toBe('rotate(90, 0, 0)')
   # #     expect(bit.calcTransform).toBeDefined()
 
