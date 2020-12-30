@@ -38,7 +38,7 @@ class Polygon extends Bit
           radius:   @_props.radius
           radiusX:  @_props.radiusX
           radiusY:  @_props.radiusY
-          angle:    (i*step)
+          rotate:    (i*step)
           center:   x: p.width/2, y: p.height/2
 
       d = ''
