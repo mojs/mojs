@@ -22,7 +22,6 @@ module.exports = () => ({
       src: 'root/src/',
       delta: 'src/delta',
       easing: 'src/easing',
-      polyfills: 'src/polyfills',
       shapes: 'src/shapes',
       tween: 'src/tween',
       vendor: 'src/vendor',
