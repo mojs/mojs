@@ -1,6 +1,3 @@
-import 'polyfills/raf';
-import 'polyfills/performance';
-
 class Tweener {
   constructor() {
     this._vars();
