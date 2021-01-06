@@ -2,14 +2,13 @@
   "env": {
     "node": true,
     "browser": true,
-    "es6": true
+    "es2021": true
   },
   "extends": "eslint:recommended",
   "globals": {
     "build": false
   },
   "parserOptions": {
-    "ecmaVersion": 9,
     "sourceType": "module"
   },
   "rules": {
