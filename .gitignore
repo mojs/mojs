@@ -1,7 +1,6 @@
 /node_modules
 /coverage
 /dist
-/dev/script.js
 .DS_Store
 .vscode
 .env

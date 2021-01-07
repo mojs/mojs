@@ -8,8 +8,13 @@ const preamble = `/*!\n  ${pack.name} – ${pack.description}\n  ${pack.author.n
 module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
   mode: 'production',
   watch: false,
+  entry: './src/mojs.babel.js',
   output: {
     filename: 'mo.umd.js',
+    library: 'mojs',
+    libraryExport: 'default',
+    libraryTarget: 'umd',
+    umdNamedDefine: true,
   },
   optimization: {
     minimizer: [

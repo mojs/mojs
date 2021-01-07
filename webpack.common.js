@@ -3,13 +3,8 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = () => ({
-  entry: './src/mojs.babel.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    library: 'mojs',
-    libraryExport: 'default',
-    libraryTarget: 'umd',
-    umdNamedDefine: true,
   },
   resolve: {
     extensions: [
