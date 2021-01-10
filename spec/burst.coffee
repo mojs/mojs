@@ -1065,8 +1065,12 @@ describe 'Burst ->', ->
       child2 = new ChildSwirl degreeShift: 20,  x: { 0: 200 }
       child1.setProgress( .45 ); child1.setProgress( .5 )
       child2.setProgress( .45 ); child2.setProgress( .5 )
-      expect(child1._props.x).toBe child2._props.x
-      expect(child1._props.y).toBe child2._props.y
+      child1Xvalue = h.strToArr(child1._props.x)[0].value
+      child2Xvalue = h.strToArr(child2._props.x)[0].value
+      child1Yvalue = h.strToArr(child1._props.y)[0].value
+      child2Yvalue = h.strToArr(child2._props.y)[0].value
+      expect(child1Xvalue).toBeCloseTo(child2Xvalue, 5) 
+      expect(child1Yvalue).toBeCloseTo(child2Yvalue, 5)
 
   describe 'MainSwirl ->', ->
     ChildSwirl = Burst.ChildSwirl
