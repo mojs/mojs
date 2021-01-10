@@ -61,8 +61,8 @@
     "karma-jasmine": "^4.0.1",
     "karma-summary-reporter": "^1.9.0",
     "puppeteer": "^5.5.0",
-    "terser-webpack-plugin": "^5.1.0",
-    "webpack": "^5.12.1",
+    "terser-webpack-plugin": "^5.1.1",
+    "webpack": "^5.12.2",
     "webpack-cli": "^4.3.1",
     "webpack-dev-server": "^3.11.1",
     "webpack-merge": "^5.7.3"
