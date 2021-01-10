@@ -1465,7 +1465,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift + (duration/2)
-      expect(updateValue).toBe(.5)
+      expect(updateValue).toBeCloseTo(.5, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -3503,7 +3503,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift + (duration/2)
-      expect(updateValue).toBe(.5)
+      expect(updateValue).toBeCloseTo(.5, 5)
       expect(updateDirection).toBe(true)
       expect(updateYoyo).toBe(false)
 
