@@ -59,12 +59,12 @@
     "karma-coffee-preprocessor": "^1.0.1",
     "karma-coverage": "^2.0.3",
     "karma-jasmine": "^4.0.1",
-    "karma-summary-reporter": "^1.9.0",
+    "karma-summary-reporter": "^1.10.1",
     "puppeteer": "^5.5.0",
     "terser-webpack-plugin": "^5.1.1",
-    "webpack": "^5.12.2",
+    "webpack": "^5.14.0",
     "webpack-cli": "^4.3.1",
-    "webpack-dev-server": "^3.11.1",
+    "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
