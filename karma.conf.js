@@ -69,7 +69,6 @@ module.exports = (config) => {
           '**/*.js',
         ],
         random: false,
-        failFast: true,
       },
     },
     files: [
