@@ -43,7 +43,7 @@
     "@babel/core": "^7.12.13",
     "@babel/plugin-transform-runtime": "^7.12.15",
     "@babel/preset-env": "^7.12.13",
-    "@mojs/player": "^0.44.0",
+    "@mojs/player": "^1.0.0",
     "babel-loader": "^8.2.2",
     "coffee-loader": "^2.0.0",
     "coffeeify": "^3.0.1",
