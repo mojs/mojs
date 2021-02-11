@@ -1,4 +1,5 @@
 process.env.CHROME_BIN = require('puppeteer').executablePath();
+let bundle = require('./package.json');
 
 module.exports = (config) => {
 
@@ -119,6 +120,7 @@ module.exports = (config) => {
       username: process.env.BROWSERSTACK_USERNAME,
       accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
       video: false,
+      build: `@mojs/core ${bundle.version}`,
     },
     captureTimeout: 120000,
     customLaunchers: customLaunchers,
