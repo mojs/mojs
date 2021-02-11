@@ -119,6 +119,7 @@ module.exports = (config) => {
       username: process.env.BROWSERSTACK_USERNAME,
       accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
       video: false,
+      console: 'verbose',
     },
     captureTimeout: 120000,
     customLaunchers: customLaunchers,
