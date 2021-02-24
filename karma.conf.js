@@ -30,7 +30,7 @@ module.exports = (config) => {
         os_version: 'Catalina',
       },
       bs_iphone_latest: {
-        device: 'iPhone 11',
+        device: 'iPhone 12',
         os: 'iOS',
         os_version: '14',
       },
