@@ -1,7 +1,7 @@
 # ignore coffescript sudo code
 
 h   = require 'src/h'
-Bit = require('./bit').default or require('./bit');
+Bit = require('./bit').default
 
 class Polygon extends Bit
   ###

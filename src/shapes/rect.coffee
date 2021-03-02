@@ -1,6 +1,6 @@
 # ignore coffescript sudo code
 
-Bit = require('./bit').default or require('./bit');
+Bit = require('./bit').default
 
 class Rect extends Bit
   # shape:   'rect'
