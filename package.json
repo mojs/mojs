@@ -9,9 +9,9 @@
   "unpkg": "dist/mo.umd.js",
   "scripts": {
     "lint": "eslint \"**/*.js\"",
-    "dev": "webpack serve --config webpack.dev.js",
-    "build": "webpack --config webpack.umd.js --progress",
-    "pretest": "webpack --config webpack.umd.js",
+    "dev": "webpack serve --config webpack.dev.js --env mode=development",
+    "build": "webpack --config webpack.umd.js --progress --env mode=production",
+    "pretest": "webpack --config webpack.umd.js --env mode=test",
     "test": "karma start"
   },
   "repository": {
