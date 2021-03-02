@@ -20,7 +20,7 @@ import Module from './module';
 
 export default {
   revision: build.revision,
-  isDebug: true,
+  isDebug: build.mode !== 'production',
   helpers: h,
   Shape,
   ShapeSwirl,

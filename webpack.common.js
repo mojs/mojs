@@ -2,7 +2,7 @@ const pack = require('./package.json');
 const path = require('path');
 const webpack = require('webpack');
 
-module.exports = () => ({
+module.exports = (env) => ({
   output: {
     path: path.resolve(__dirname, 'dist'),
   },
@@ -46,6 +46,7 @@ module.exports = () => ({
     new webpack.DefinePlugin({
       build: {
         revision: `"${pack.version}"`,
+        mode: `"${env.mode}"`,
       },
     }),
   ],
