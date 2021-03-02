@@ -1,14 +1,14 @@
 
 h         = require 'src/h'
-Bit       = require('./bit').default or require('./bit');
-Custom    = require('./custom').default or require('./custom');
+Bit       = require('./bit').default
+Custom    = require('./custom').default
 Circle    = require './circle'
 Line      = require './line'
 Zigzag    = require './zigzag'
 Rect      = require './rect'
 Polygon   = require './polygon'
 Cross     = require './cross'
-Curve     = require('./curve').default or require('./curve')
+Curve     = require('./curve').default
 Equal     = require './equal'
 
 class BitsMap
