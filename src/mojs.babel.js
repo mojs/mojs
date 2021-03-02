@@ -42,7 +42,7 @@ export default {
     Delta,
     Deltas,
   },
-  h: h,
+  h,
   delta: h.delta,
   addShape: shapesMap.addShape,
   CustomShape: shapesMap.custom,
