@@ -12,7 +12,7 @@ html {
 
 body {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   overflow: hidden;
   width: 100vw;
