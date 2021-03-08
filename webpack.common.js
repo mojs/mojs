@@ -1,6 +1,7 @@
 const pack = require('./package.json');
 const path = require('path');
 const webpack = require('webpack');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = (env) => ({
   output: {
@@ -48,6 +49,10 @@ module.exports = (env) => ({
         revision: `"${pack.version}"`,
         mode: `"${env.mode}"`,
       },
+    }),
+    new ESLintPlugin({
+      cache: true,
+      fix: true,
     }),
   ],
 });
