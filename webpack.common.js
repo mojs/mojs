@@ -6,6 +6,7 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 module.exports = (env) => ({
   output: {
     path: path.resolve(__dirname, 'dist'),
+    clean: true,
   },
   resolve: {
     extensions: [
