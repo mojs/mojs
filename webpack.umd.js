@@ -1,9 +1,9 @@
-const pack = require('./package.json');
+const bundle = require('./package.json');
 const { merge } = require('webpack-merge');
 const TerserPlugin = require('terser-webpack-plugin');
 
 // build preamble
-const preamble = `/*!\n  ${pack.name} – ${pack.description}\n  ${pack.author.name} ${pack.author.github} ${new Date().getFullYear()} ${pack.license}\n  ${pack.version}\n*/`;
+const preamble = `/*!\n  ${bundle.name} – ${bundle.description}\n  ${bundle.author.name} ${bundle.author.github} ${new Date().getFullYear()} ${bundle.license}\n  ${bundle.version}\n*/`;
 
 module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
   mode: 'production',
