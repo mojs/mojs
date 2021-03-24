@@ -1,4 +1,4 @@
-const pack = require('./package.json');
+const bundle = require('./package.json');
 const path = require('path');
 const webpack = require('webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
@@ -47,7 +47,7 @@ module.exports = (env) => ({
   plugins: [
     new webpack.DefinePlugin({
       build: {
-        revision: `"${pack.version}"`,
+        revision: `"${bundle.version}"`,
         mode: `"${env.mode}"`,
       },
     }),
