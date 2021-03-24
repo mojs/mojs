@@ -2,8 +2,8 @@ h  = mojs.helpers
 ns = 'http://www.w3.org/2000/svg'
 
 describe 'Helpers ->', ->
-  it 'should have defaultStyles', ->
-    expect(h.defaultStyles).toEqual h.computedStyle( h.div )
+  # it 'should have defaultStyles', ->
+  #   expect(h.defaultStyles).toEqual h.computedStyle( h.div )
 
   it 'should have logBadgeCss', ->
     expect(h.logBadgeCss).toBeDefined()
@@ -177,7 +177,7 @@ describe 'Helpers ->', ->
       it 'should work with float numbers', ->
         expect(h.rand(.2, .9)).toBeGreaterThan      .1
         expect(h.rand(.2, .9)).not.toBeGreaterThan  .9
-    
+
 
     describe 'parseDelta method ->', ->
       describe 'numeric values ->', ->
@@ -198,7 +198,7 @@ describe 'Helpers ->', ->
           expect(delta.type)    .toBe   'number'
           expect(delta.easing)  .toBe   mojs.easing.cubic.out
           expect(mojs.easing.parseEasing).toHaveBeenCalledWith easing
-          
+
           expect(startDelta.easing).toBe easing
 
         it 'should parse curve', ->
@@ -209,11 +209,11 @@ describe 'Helpers ->', ->
           expect(delta.start)   .toBe   25
           expect(delta.delta)   .toBe   50
           expect(delta.type)    .toBe   'number'
-          
+
           expect(typeof delta.curve).toBe 'function'
           expect(delta.curve(.5)).toBeCloseTo .5, 2
           expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
-          
+
           expect(startDelta.curve).toBe curve
 
         it 'should calculate delta with string arguments', ->
@@ -369,7 +369,7 @@ describe 'Helpers ->', ->
           expect(delta.curve(.5)).toBeCloseTo .5, 2
 
           expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
-        
+
         it 'should work with strokeDash.. properties #3', ->
           delta = h.parseDelta 'strokeDashoffset',  {'25.50%': '-75.50px'}
 
@@ -425,7 +425,7 @@ describe 'Helpers ->', ->
           expect(delta.curve(.5))   .toBeCloseTo  .5, 2
 
           expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
-          
+
       describe 'array values ->', ->
         it 'should calculate array delta', ->
           delta = h.parseDelta 'strokeDasharray', { '200 100%': '300' }
@@ -574,7 +574,7 @@ describe 'Helpers ->', ->
         styleToSet = 'translateX(20px)'
         name = 'transform'; prefixedName = "#{h.prefix.css}transform"
         h.setPrefixedStyle(el, name, styleToSet)
-        
+
         expect(el.style[name] or el.style[prefixedName]).toBe styleToSet
 
       it 'should set prefixed style #2', ->
@@ -582,7 +582,7 @@ describe 'Helpers ->', ->
         styleToSet = 'translateX(20px)'
         name = ' transform'; prefixedName = "#{h.prefix.css}transform"
         h.setPrefixedStyle(el, name, styleToSet, true)
-        
+
         expect(el.style[name] or el.style[prefixedName]).toBe styleToSet
 
     describe 'parseUnit method', ->
@@ -779,7 +779,7 @@ describe 'Helpers ->', ->
         expect(arr2[2].value).toBe 0
         expect(arr2[2].unit) .toBe '%'
         expect(arr2.length)  .toBe 3
-      
+
     describe 'isArray method', ->
       it 'should check if variable is array', ->
         expect(h.isArray []).toBe true
@@ -810,12 +810,12 @@ describe 'Helpers ->', ->
       # it 'should should throw if less then 2 arrays passed', ->
       #   expect(-> h.calcArrDelta [200, 300, 100]).toThrow()
       #   expect(-> h.calcArrDelta()).toThrow()
-      
+
     describe 'getRadialPoint method ->', ->
       it 'should calculate radial point', ->
         point = h.getRadialPoint
           radius: 50
-          angle:  90
+          rotate:  90
           center: x: 50, y: 50
         expect(point.x).toBe 100
         expect(point.y).toBe 50
@@ -823,7 +823,7 @@ describe 'Helpers ->', ->
         point = h.getRadialPoint
           radius: 50
           radiusX:100
-          angle:  90
+          rotate:  90
           center: x: 50, y: 50
         expect(point.x).toBe 150
         expect(point.y).toBe 50
@@ -831,7 +831,7 @@ describe 'Helpers ->', ->
         point = h.getRadialPoint
           radius: 50
           radiusY:100
-          angle:  0
+          rotate:  0
           center: x: 50, y: 50
         expect(point.x).toBe 50
         expect(point.y).toBe -50
@@ -839,19 +839,19 @@ describe 'Helpers ->', ->
       # it 'should return false if 1 of 3 options missed', ->
       #   point = h.getRadialPoint
       #     radius: 50
-      #     angle:  90
+      #     rotate:  90
       #   expect(point).toBeFalsy()
       it 'should return false only if param is 0', ->
         point = h.getRadialPoint
           radius: 0
-          angle:  90
+          rotate:  90
           center: x: 0, y: 0
         expect(point).toBeTruthy()
       # nope
       # it 'should not return exponential forms', ->
       #   point = h.getRadialPoint
       #     radius: 0.00000001
-      #     angle:  90
+      #     rotate:  90
       #     center: x: 0.00000001, y: 0.00000001
       #   expect(point.x).not.toMatch /e/
       #   expect(point.y).not.toMatch /e/

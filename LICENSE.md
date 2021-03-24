@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2019 Oleg Solomka
+Copyright (c) 2021 Oleg Solomka, Xavier Foucrier, Jonas Sandstedt
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

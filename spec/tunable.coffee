@@ -20,7 +20,7 @@ describe 'Tunable ->', ->
         y:                0,
         rx:               0,
         ry:               0,
-        angle:            0,
+        rotate:           0,
         scale:            1,
         opacity:          1,
         points:           3,
@@ -183,7 +183,7 @@ describe 'Tunable ->', ->
 
       curr = { fill: 'red' }
       next = { fill: 'green' }
-      
+
       result = tr._transformHistoryRecord 1, 'fill', 'green', curr, next
       expect(curr).toEqual { fill: 'green' }
       expect(result).toBe null
@@ -249,7 +249,7 @@ describe 'Tunable ->', ->
         .toHaveBeenCalledWith 1, 'x', 20
       expect(tr._transformHistoryRecord)
         .not.toHaveBeenCalledWith 2, 'x', 20
-    
+
   describe '_resetTween method ->', ->
     it 'should set props to the tween', ->
       tr = new Tunable
@@ -508,5 +508,3 @@ describe 'Tunable ->', ->
 
   it 'clean the _defaults  up', ->
     Tunable::_declareDefaults = oldFun
-
-

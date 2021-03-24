@@ -1,5 +1,7 @@
-bower_components/
-node_modules/
-coverage/
-vendor/
-npm-debug.log
+/node_modules
+/coverage
+/dist
+.DS_Store
+.vscode
+.env
+.eslintcache

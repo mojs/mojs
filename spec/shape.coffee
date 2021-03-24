@@ -90,7 +90,7 @@ describe 'Shape ->', ->
       expect(byte._defaults.top).toBe              '50%'
       expect(byte._defaults.x).toBe                0
       expect(byte._defaults.y).toBe                0
-      expect(byte._defaults.angle).toBe            0
+      expect(byte._defaults.rotate).toBe           0
       expect(byte._defaults.scale).toEqual         1
       expect(byte._defaults.scaleX).toBe           null
       expect(byte._defaults.scaleY).toBe           null
@@ -191,7 +191,7 @@ describe 'Shape ->', ->
         spyOn tr, '_show'
         obj.callbackOverrides.onStart true
         expect(tr._show).not.toHaveBeenCalled()
-      
+
       it 'should call _hide if not isForward and !_isChained', ->
         tr = new Shape
         obj = {}
@@ -213,7 +213,7 @@ describe 'Shape ->', ->
         spyOn tr, '_hide'
         obj.callbackOverrides.onStart false
         expect(tr._hide).not.toHaveBeenCalled()
-      
+
     describe 'onComplete callback override ->', ->
       it 'should override this._o.onComplete', ->
         tr = new Shape
@@ -441,7 +441,8 @@ describe 'Shape ->', ->
             isTr  = tr is 'translate(200px, 0) rotate(0deg) scale(1, 1)'
             isTr2 = tr is 'translate(200px, 0px) rotate(0deg) scale(1, 1)'
             isTr3 = tr is 'translate(200px, 0px) rotate(0deg) scale(1)'
-            expect(isTr or isTr2 or isTr3).toBe true
+            isTr4 = tr is 'translate(200px) rotate(0deg) scale(1)'
+            expect(isTr or isTr2 or isTr3 or isTr4).toBe true
             dfr()
         byte.play()
       it 'should animate position regarding units #3', (dfr)->
@@ -451,10 +452,11 @@ describe 'Shape ->', ->
           onComplete:->
             s = byte.el.style
             tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-            isTr = tr is 'translate(50%, 0) rotate(0deg) scale(1, 1)'
+            isTr  = tr is 'translate(50%, 0) rotate(0deg) scale(1, 1)'
             isTr2 = tr is 'translate(50%, 0px) rotate(0deg) scale(1, 1)'
             isTr3 = tr is 'translate(50%, 0px) rotate(0deg) scale(1)'
-            expect(isTr or isTr2 or isTr3).toBe true
+            isTr4 = tr is 'translate(50%) rotate(0deg) scale(1)'
+            expect(isTr or isTr2 or isTr3 or isTr4).toBe true
             dfr()
         byte.play()
       it 'should fallback to end units if units are differnt', (dfr)->
@@ -470,7 +472,7 @@ describe 'Shape ->', ->
             expect(isTr1 or isTr2).toBe true
             dfr()
         byte.play()
-  
+
   describe '_render method ->', ->
     it 'should call _createShape method', ->
       byte = new Byte radius: 25
@@ -697,7 +699,8 @@ describe 'Shape ->', ->
       isTr  = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
       isTr3 = tr is 'translate(0px, 0px) rotate(0deg) scale(1)'
-      expect(isTr or isTr2 or isTr3).toBe true
+      isTr4 = tr is 'translate(0px) rotate(0deg) scale(1)'
+      expect(isTr or isTr2 or isTr3 or isTr4).toBe true
     it 'should set new values', ->
       byte = new Byte radius: 25, top: 10
       byte._draw()
@@ -714,20 +717,21 @@ describe 'Shape ->', ->
       byte = new Byte radius: 25
       byte.el = null
       expect(byte._drawEl()).toBe true
-    it 'should set transform if angle changed', ->
-      byte = new Byte angle: 25
+    it 'should set transform if rotation is changed', ->
+      byte = new Byte rotate: 25
       byte._draw()
-      byte._props.angle = 26
+      byte._props.rotate = 26
       byte._draw()
       style = byte.el.style
       tr = style['transform'] or style["#{mojs.h.prefix.css}transform"]
       isTr = tr is 'translate(0, 0) rotate(26deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 0px) rotate(26deg) scale(1, 1)'
       isTr3 = tr is 'translate(0px, 0px) rotate(26deg) scale(1)'
-      expect(isTr or isTr2 or isTr3).toBe true
+      isTr4 = tr is 'translate(0px) rotate(26deg) scale(1)'
+      expect(isTr or isTr2 or isTr3 or isTr4).toBe true
       # expect(byte.el.style["#{h.prefix.css}transform"]).toBe resultStr
-    it 'should not set transform if angle changed #2', ->
-      byte = new Byte angle: 25
+    it 'should not set transform if rotation changed #2', ->
+      byte = new Byte rotate: 25
       byte._draw()
       spyOn byte, '_fillTransform'
       byte._draw()
@@ -764,7 +768,7 @@ describe 'Shape ->', ->
       spyOn byte, '_fillTransform'
       byte._draw()
       expect(byte._fillTransform).not.toHaveBeenCalled()
-    it 'should set transform if x changed #1', ->
+    it 'should set transform if x changed', ->
       byte = new Byte radius: 25, top: 10, x: { 0: 10 }
       byte._props.x = '4px'
       spyOn(byte, '_fillTransform').and.callThrough()
@@ -775,9 +779,10 @@ describe 'Shape ->', ->
       isTr = tr is 'translate(4px, 0) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(4px, 0px) rotate(0deg) scale(1, 1)'
       isTr3 = tr is 'translate(4px, 0px) rotate(0deg) scale(1)'
-      expect(isTr or isTr2 or isTr3).toBe true
+      isTr4 = tr is 'translate(4px) rotate(0deg) scale(1)'
+      expect(isTr or isTr2 or isTr3 or isTr4).toBe true
 
-    it 'should set transform if x changed #2', ->
+    it 'should set transform if y changed', ->
       byte = new Byte radius: 25, top: 10, y: { 0: 10 }
       byte._props.y = '4px'
       spyOn(byte, '_fillTransform').and.callThrough()
@@ -788,9 +793,10 @@ describe 'Shape ->', ->
       isTr = tr is 'translate(0, 4px) rotate(0deg) scale(1, 1)'
       isTr2 = tr is 'translate(0px, 4px) rotate(0deg) scale(1, 1)'
       isTr3 = tr is 'translate(0px, 4px) rotate(0deg) scale(1)'
-      expect(isTr or isTr2 or isTr3).toBe true
+      isTr4 = tr is 'translate(0px, 4px) rotate(0deg) scale(1)'
+      expect(isTr or isTr2 or isTr3 or isTr4).toBe true
 
-    it 'should set transform if x changed #3', ->
+    it 'should set transform if scale changed', ->
       byte = new Byte radius: 25, top: 10, scale: { 0: 10 }
       byte._props.scale = 3
       spyOn(byte, '_fillTransform').and.callThrough()
@@ -803,7 +809,8 @@ describe 'Shape ->', ->
       isTr = tr is 'translate(0, 0) rotate(0deg) scale(3, 3)'
       isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(3, 3)'
       isTr3 = tr is 'translate(0px, 0px) rotate(0deg) scale(3)'
-      expect(isTr or isTr2 or isTr3).toBe true
+      isTr4 = tr is 'translate(0px) rotate(0deg) scale(3)'
+      expect(isTr or isTr2 or isTr3 or isTr4).toBe true
 
     it 'should set `transform-origin` if `origin`', ->
       byte = new Byte origin: '50% 30%'
@@ -843,7 +850,7 @@ describe 'Shape ->', ->
       byte._drawEl()
       byte._drawEl()
       expect(byte._fillOrigin.calls.count()).toBe 2
-      
+
   describe '_isPropChanged method ->', ->
     it 'should return bool showing if prop was changed after the last set', ->
       byte = new Byte radius: 25, y: 10
@@ -916,7 +923,7 @@ describe 'Shape ->', ->
       it 'should not calc delta for tween related props', ->
         byte = new Byte
           duration:  { 2000: 1000 }
-         
+
         expect(byte._deltas.duration).not.toBeDefined()
   describe '_setProgress method ->', ->
     it 'should set Shapeion progress', ->
@@ -982,7 +989,7 @@ describe 'Shape ->', ->
       byte = new Byte strokeDasharray: 7
       expect(h.isArray(byte._props.strokeDasharray)).toBe true
       expect(byte._props.strokeDasharray.length)    .toBe 1
-  
+
   describe '_getRadiusSize method ->', ->
     it 'should return max from delatas if key is defined', ->
       byte = new Byte radiusX: 20: 30
@@ -1000,7 +1007,7 @@ describe 'Shape ->', ->
     #   byte = new Byte
     #   size = byte._getRadiusSize key: 'radiusX'
     #   expect(size).toBe 0
-  
+
   # not now
   # describe 'isForeign flag ->', ->
   #   it 'should not be set by default', ->
@@ -1080,8 +1087,8 @@ describe 'Shape ->', ->
       tr = new Shape
         callbacksContext: obj
         onUpdate:-> isRightContext = @ is obj
-      
-      tr.setProgress 0 
+
+      tr.setProgress 0
       tr.setProgress .1
 
       expect(isRightContext).toBe true
@@ -1091,15 +1098,15 @@ describe 'Shape ->', ->
       tr = new Shape
         callbacksContext: obj
         timeline: { onUpdate:-> isRightContext = @ is obj }
-      
+
       tr.setProgress 0
       tr.setProgress .1
 
       expect(isRightContext).toBe true
-  
+
   describe '_fillTransform method ->', ->
     it 'return tranform string of the el', ->
-      tr = new Shape x: 100, y: 100, angle: 50, scaleX: 2, scaleY: 3
+      tr = new Shape x: 100, y: 100, rotate: 50, scaleX: 2, scaleY: 3
       expect(tr._fillTransform())
         .toBe 'translate(100px, 100px) rotate(50deg) scale(2, 3)'
 
@@ -1111,7 +1118,7 @@ describe 'Shape ->', ->
     it 'return tranform-origin string of the el with delta', ->
       tr = new Shape
         x: 100, y: 100,
-        easing: 'liner.none',
+        easing: 'linear.none',
         origin: { '0% 0%' : '50% 200%' }
       tr.setProgress 0
       tr.setProgress .5
@@ -1123,7 +1130,7 @@ describe 'Shape ->', ->
       it 'should create el', ->
         byte = new Byte radius: 25
         expect(byte.el.tagName.toLowerCase()).toBe 'div'
-        style = byte.el.style 
+        style = byte.el.style
         expect(style[ 'position' ]).toBe 'absolute'
         expect(style[ 'width' ]).toBe '52px'
         expect(style[ 'height' ]).toBe '52px'
@@ -1455,12 +1462,9 @@ describe 'Shape ->', ->
 
       s = shape.el.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-      isNormal = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
-      isNormal2 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
-      isIE9 = tr is 'translate(0, 0) rotate(0deg) scale(1)'
-      isIE = tr is 'translate(0px, 0px) rotate(0deg) scale(1)'
+      isTr = tr is 'translate(0, 0) rotate(0deg) scale(1, 1)'
+      isTr2 = tr is 'translate(0px, 0px) rotate(0deg) scale(1, 1)'
+      isTr3 = tr is 'translate(0px, 0px) rotate(0deg) scale(1)'
+      isTr4 = tr is 'translate(0px) rotate(0deg) scale(1)'
 
-      expect(isNormal or isNormal2 or isIE9 or isIE).toBe true
-
-
-
+      expect(isTr or isTr2 or isTr3 or isTr4).toBe true
