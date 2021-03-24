@@ -29,7 +29,7 @@ describe 'Deltas ->', ->
       deltas.timeline = null
 
       deltas._createTimeline()
-      
+
       expect(deltas.timeline instanceof mojs.Timeline).toBe true
 
     it 'should be called on initialization', ->
@@ -43,7 +43,7 @@ describe 'Deltas ->', ->
         .toHaveBeenCalledWith deltas._mainTweenOptions
 
     # nope
-    # it 'should pass callbackOverrides to the timeline - onUpdate', -> 
+    # it 'should pass callbackOverrides to the timeline - onUpdate', ->
     #   fun = ->
     #   deltas = new Deltas
     #     options:  options,
@@ -78,7 +78,7 @@ describe 'Deltas ->', ->
       expect( deltas.timeline._timelines.length ).toBe 4
 
     # it 'should pass `callbacksContext` to `timeline`', ->
-      
+
     #   callbacksContext = {}
     #   deltas = new Deltas
     #     options:  options,
@@ -570,11 +570,11 @@ describe 'Deltas ->', ->
       expect(delta.start)   .toBe   25
       expect(delta.delta)   .toBe   50
       expect(delta.type)    .toBe   'number'
-      
+
       expect(typeof delta.curve).toBe 'function'
       expect(delta.curve(.5)).toBeCloseTo .5, 2
       expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
-      
+
       expect(startDelta.curve).toBe curve
 
     it 'should calculate delta with string arguments', ->
@@ -625,7 +625,7 @@ describe 'Deltas ->', ->
       expect(typeof delta.curve).toBe 'function'
       expect(delta.curve(.5)).toBeCloseTo .5, 2
       expect(mojs.easing.parseEasing).toHaveBeenCalledWith curve
-      
+
       expect(startDelta.curve).toBe curve
 
     it 'should set parent on parsed curve', ->
@@ -940,5 +940,3 @@ describe 'Deltas ->', ->
 
     #   deltas._parseDeltaByCustom 'x', props, 0
     #   expect( deltas._parseUnitDelta ).toHaveBeenCalledWith 'x', props, 0
-
-

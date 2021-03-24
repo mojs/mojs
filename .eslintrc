@@ -1,0 +1,127 @@
+{
+  "env": {
+    "node": true,
+    "browser": true,
+    "es2021": true
+  },
+  "extends": "eslint:recommended",
+  "globals": {
+    "build": false
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "rules": {
+    "array-bracket-spacing": [
+      "error"
+    ],
+    "arrow-spacing": [
+      "error"
+    ],
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
+    "comma-spacing": [
+      "error", {
+        "before": false,
+        "after": true
+      }
+    ],
+    "computed-property-spacing": [
+      "error"
+    ],
+    "func-call-spacing": [
+      "error"
+    ],
+    "indent": [
+      "error",
+      2, {
+        "SwitchCase": 1
+      }
+    ],
+    "key-spacing": [
+      "error"
+    ],
+    "keyword-spacing": [
+      "error"
+    ],
+    "lines-around-comment": [
+      "error", {
+        "beforeBlockComment": true
+      }
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "no-invalid-this": [
+      "error"
+    ],
+    "no-multi-spaces": [
+      "error"
+    ],
+    "no-multiple-empty-lines": [
+      "error", {
+        "max": 1
+      }
+    ],
+    "no-trailing-spaces": [
+      "error"
+    ],
+    "no-whitespace-before-property": [
+      "error"
+    ],
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "object-property-newline": [
+      "error"
+    ],
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "rest-spread-spacing": [
+      "error"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "semi-spacing": [
+      "error"
+    ],
+    "space-before-blocks": [
+      "error"
+    ],
+    "space-before-function-paren": [
+      "error",
+      "never"
+    ],
+    "space-in-parens": [
+      "error"
+    ],
+    "space-infix-ops": [
+      "error"
+    ],
+    "space-unary-ops": [
+      "error"
+    ],
+    "spaced-comment": [
+      "error",
+      "always", {
+        "block": {
+          "balanced": true
+        }
+      }
+    ],
+    "strict": [
+      "error"
+    ],
+    "template-curly-spacing": [
+      "error"
+    ]
+  }
+}

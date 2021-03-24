@@ -18,18 +18,18 @@ describe 'ShapeSwirl ->', ->
     it 'should calc position radius', ->
       swirl = new ShapeSwirl x: {0:10}, y: {0:20}
       expect(swirl._posData.radius).toBe Math.sqrt (10*10 + 20*20)
-    it 'should calc position angle', ->
+    it 'should calc position rotation', ->
       swirl = new ShapeSwirl x: {0:10}, y: {0:10}
-      expect(swirl._posData.angle).toBe 135
-    it 'should calc position angle', ->
+      expect(swirl._posData.rotate).toBe 135
+    it 'should calc position rotation', ->
       swirl = new ShapeSwirl x: {0:-10}, y: {0:-10}
-      expect(swirl._posData.angle).toBe - 45
-    it 'should calc position angle', ->
+      expect(swirl._posData.rotate).toBe - 45
+    it 'should calc position rotation', ->
       swirl = new ShapeSwirl x: {0:0}, y: {0:-10}
-      expect(swirl._posData.angle).toBe 0
-    it 'should calc position angle', ->
+      expect(swirl._posData.rotate).toBe 0
+    it 'should calc position rotation', ->
       swirl = new ShapeSwirl x: {0:-10}, y: {0:0}
-      expect(swirl._posData.angle).toBe 270
+      expect(swirl._posData.rotate).toBe 270
     it 'should save startX and StartY values', ->
       swirl = new ShapeSwirl x: {0:10}, y: {10:10}
       expect(swirl._posData.x.start).toBe 0
@@ -160,14 +160,14 @@ describe 'ShapeSwirl ->', ->
       x = parseFloat(swirl._props.x).toFixed 2
       expect(x).toBe '-5.00'
       expect(parseInt(swirl._props.y, 10)).toBe 5
-      
+
     it 'should set x/y progress regarding delta degreeShift', ->
       swirl = new ShapeSwirl
         x: {0:10}, y: {0:10}, isSwirl: false,
         degreeShift: { 0: 180 }
       # swirl._setProgress .5
       swirl._setProgress .5
-      
+
       x = parseFloat(swirl._props.x).toFixed 2
       expect(x).toBe '-5.00'
       expect(parseInt(swirl._props.y, 10)).toBe 5
@@ -180,7 +180,7 @@ describe 'ShapeSwirl ->', ->
       swirl = new ShapeSwirl
         x: {0:'-10'}, y: {0:'-10'}, isSwirl: false
       swirl._setProgress 1
-      
+
       x = parseFloat(swirl._props.x).toFixed 2
       expect(x).toBe '-10.00'
       y = parseFloat(swirl._props.y).toFixed 2
@@ -254,5 +254,3 @@ describe 'ShapeSwirl ->', ->
       # console.log swirl._props.x
       expect(swirl._props.x).not.toMatch /e/
       expect(swirl._props.y).not.toMatch /e/
-
-

@@ -1,0 +1,46 @@
+:root {
+  --mojs-color: #3A0839;
+}
+
+* {
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Sailec';
+  color: #fff;
+  background: var(--mojs-color);
+  user-select: none;
+}
+
+.mojs-version {
+  position: fixed;
+  top: 40px;
+  left: 40px;
+  font-size: 25px;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  animation: mojs-version 2s 1s ease forwards;
+}
+
+@keyframes mojs-version {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 0.2;
+  }
+}

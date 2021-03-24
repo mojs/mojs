@@ -19,7 +19,7 @@ describe 'module class ->', ->
       y:                0,
       rx:               0,
       ry:               0,
-      angle:            0,
+      rotate:           0,
       scale:            1,
       opacity:          1,
       points:           3,
@@ -206,7 +206,7 @@ describe 'module class ->', ->
   #   it 'not to throw', ->
   #     byte = new Module radius:  {'25': 75}
   #     expect(-> byte._show()).not.toThrow()
-  
+
   # old
   # describe '_hide method ->', ->
   #   it 'should set display: block to el', ->
@@ -578,5 +578,3 @@ describe 'module class ->', ->
 
   it 'clean the _defaults  up', ->
     Module::_declareDefaults = oldFun
-
-

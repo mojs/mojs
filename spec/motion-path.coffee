@@ -62,14 +62,14 @@ describe 'MotionPath ->', ->
     mp = new MotionPath
       path: 'M0.55859375,593.527344L0.55859375,593.527344'
       el: el
-    it 'have angle of 0', ->
+    it 'have rotate of 0', ->
       el = document.createElement 'div'
       mp = new MotionPath
         path: 'M0.55859375,593.527344L0.55859375,593.527344'
         el: el
         isRunLess: true
         isPresetPosition: false
-      expect(mp.angle).toBe 0
+      expect(mp.rotate).toBe 0
     it 'should have isCompositeLayer default of true', ->
       mp = new MotionPath
         path: 'M0.55859375,593.527344L0.55859375,593.527344'
@@ -117,22 +117,22 @@ describe 'MotionPath ->', ->
       expect(mp.defaults.yoyo)            .toBe false
       expect(mp.defaults.offsetX)         .toBe 0
       expect(mp.defaults.offsetY)         .toBe 0
-      expect(mp.defaults.angleOffset)     .toBe null
+      expect(mp.defaults.rotationOffset)     .toBe null
       expect(mp.defaults.pathStart)       .toBe 0
       expect(mp.defaults.pathEnd)         .toBe 1
       expect(mp.defaults.transformOrigin) .toBe null
-      
+
       expect(mp.defaults.motionBlur)      .toBe 0
-      
-      expect(mp.defaults.isAngle)         .toBe false
+
+      expect(mp.defaults.isRotation)         .toBe false
       expect(mp.defaults.isReverse)       .toBe false
       expect(mp.defaults.isRunLess)       .toBe false
       expect(mp.defaults.isPresetPosition).toBe true
-      
+
       expect(mp.defaults.onStart)         .toBe null
       expect(mp.defaults.onComplete)      .toBe null
       expect(mp.defaults.onUpdate)        .toBe null
-      
+
       expect(mp.defaults.curvature.x)     .toBe '75%'
       expect(mp.defaults.curvature.y)     .toBe '50%'
 
@@ -274,7 +274,7 @@ describe 'MotionPath ->', ->
           el: div
           onStart:-> isRightScope = @ instanceof MotionPath
         setTimeout (-> expect(isRightScope).toBe(true); dfr()), 500
-    
+
     describe 'onComplete callback ->', ->
       it 'onComplete callback should work', (dfr)->
         isCompleted = false
@@ -297,7 +297,7 @@ describe 'MotionPath ->', ->
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
         , 500
-    
+
     describe 'onUpdate callback ->', ->
       it 'onUpdate callback should work', (dfr)->
         isOnUpdate = false
@@ -331,22 +331,22 @@ describe 'MotionPath ->', ->
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
         , 500
-      it 'should be called with progress, x, y and angle', ->
-        progress = null; x = null; y = null; angle = null
+      it 'should be called with progress, x, y and rotate', ->
+        progress = null; x = null; y = null; rotate = null
         mp = new MotionPath
           path:       'M0,100 L100,0'
           el:         document.createElement 'div'
           isRunLess:  true,
           easing:     'linear.none',
           onUpdate:(p, o)->
-            progress = p; x = o.x; y = o.y; angle = o.angle
+            progress = p; x = o.x; y = o.y; rotate = o.rotate
 
         mp.timeline.setProgress .45
         mp.timeline.setProgress .5
         expect(progress.toFixed(1)).toBe '0.5'
         expect(x)       .toBeCloseTo 50, 5
         expect(y)       .toBeCloseTo 50, 5
-        expect(angle)   .toBeCloseTo 0, 5
+        expect(rotate)  .toBeCloseTo 0, 5
 
   describe 'fill ->', ->
     div = null; container = null
@@ -478,8 +478,8 @@ describe 'MotionPath ->', ->
         el: div
         offsetX: 10
         duration: 200
-        isAngle: true
-      
+        isRotation: true
+
       setTimeout (->
         tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
         x = tr.split(/(translate\()|,|\)/)[2]
@@ -532,47 +532,47 @@ describe 'MotionPath ->', ->
 
       setTimeout (-> expect(isEqual).toBe(true); dfr()), 500
 
-    it 'should calculate current angle', (dfr)->
+    it 'should calculate current rotation', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
-      angle = 0; isEqual = false; isEquial2 = false; detect = {}
+      rotate = 0; isEqual = false; isEquial2 = false; detect = {}
       mp = new MotionPath
         path: coords
         el: div
         duration: 200
-        isAngle: true
+        isRotation: true
         onUpdate:->
-          detect.firstAngle ?= mp.angle
-          isEquial2 = detect.firstAngle is 0
-        onComplete:-> isEqual = mp.angle is 90
+          detect.firstRotation ?= mp.rotate
+          isEquial2 = detect.firstRotation is 0
+        onComplete:-> isEqual = mp.rotate is 90
       setTimeout (-> expect(isEqual).toBe(true); dfr()), 500
 
-    it 'should calculate current angle if transformOrigin is a fun', (dfr)->
+    it 'should calculate current rotation if transformOrigin is a fun', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
-      angle = 0; isEqual = false; isEquial2 = false; detect = {}
+      rotate = 0; isEqual = false; isEquial2 = false; detect = {}
       mp = new MotionPath
         path: coords
         el: div
         duration: 200
         transformOrigin: ->
         onUpdate:->
-          detect.firstAngle ?= mp.angle
-          isEquial2 = detect.firstAngle is 0
-        onComplete:-> isEqual = mp.angle is 90
+          detect.firstRotation ?= mp.rotate
+          isEquial2 = detect.firstRotation is 0
+        onComplete:-> isEqual = mp.rotate is 90
       setTimeout (-> expect(isEqual).toBe(true); dfr()), 500
 
-    it 'should calculate current angle with isReverse', (dfr)->
+    it 'should calculate current rotation with isReverse', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
-      angle = 0; isEqual = false; isEquial2 = false; detect = {}
+      rotate = 0; isEqual = false; isEquial2 = false; detect = {}
       mp = new MotionPath
         path: coords
         el: div
         duration: 200
-        isAngle: true
+        isRotation: true
         isReverse: true
         onUpdate:->
-          detect.firstAngle ?= mp.angle
-          isEquial2 = detect.firstAngle is 90
-        onComplete: -> isEqual = mp.angle is 0
+          detect.firstRotation ?= mp.rotate
+          isEquial2 = detect.firstRotation is 90
+        onComplete: -> isEqual = mp.rotate is 0
 
         setTimeout (-> expect(isEqual).toBe(true); dfr()), 500
 
@@ -594,44 +594,44 @@ describe 'MotionPath ->', ->
 
     it 'transform-origin could be a function', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
-      isAngle = false; isProgress = false
+      isRotation = false; isProgress = false
       mp = new MotionPath
         path: coords
         el: div
         duration: 200
-        transformOrigin:(angle, proc)->
+        transformOrigin:(rotate, proc)->
           isFunction = true
-          isAngle = angle?; isProgress = proc?
+          isRotation = rotate?; isProgress = proc?
           '50% 50%'
-      setTimeout (-> expect(isAngle and isProgress).toBe(true); dfr()), 100
+      setTimeout (-> expect(isRotation and isProgress).toBe(true); dfr()), 100
 
-  describe 'angleOffset ->', ->
+  describe 'rotationOffset ->', ->
     div = document.createElement 'div'
-    it 'angleOffset should work with positive angles', (dfr)->
+    it 'rotationOffset should work with positive rotations', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
       isEqual = false
       mp = new MotionPath
         path: coords
         el: div
         duration: 200
-        angleOffset: 90
-        isAngle: true
-        onComplete:-> isEqual = mp.angle is 180
+        rotationOffset: 90
+        isRotation: true
+        onComplete:-> isEqual = mp.rotate is 180
 
       setTimeout (-> expect(isEqual).toBe(true); dfr()), 500
 
-    it 'angleOffset should work with negative angles', (dfr)->
+    it 'rotationOffset should work with negative rotations', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
       isEqual = false
       mp = new MotionPath
         path: coords
         el: div
         duration: 200
-        angleOffset: -90
-        isAngle: true
+        rotationOffset: -90
+        isRotation: true
         # onComplete:->
       setTimeout (->
-        isEqual = mp.angle is 0
+        isEqual = mp.rotate is 0
         expect(isEqual).toBe(true); dfr()
       ), 500
 
@@ -642,68 +642,68 @@ describe 'MotionPath ->', ->
         path: coords
         el: div
         duration: 200
-        angleOffset:(angle)->
+        rotationOffset:(rotate)->
           isFunction = true
-          angle
+          rotate
 
       setTimeout (-> expect(isFunction).toBe(true); dfr()), 500
 
-    it 'should get current angle', (dfr)->
+    it 'should get current rotation', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
-      isOnAngle = null
-      angleSum1 = 0; angleSum2 = 0
+      isOnRotation = null
+      Sum1 = 0; Sum2 = 0
       mp = new MotionPath
         path: coords
         el: div
         duration: 200
-        isAngle: true
+        isRotation: true
         isRunLess: true
         isPresetPosition: false
-        angleOffset:(angle)->
-          angleSum1 += angle; angleSum2 += @angle
-          angle
-        onComplete:-> isOnAngle = angleSum1 is angleSum2
+        rotationOffset:(rotate)->
+          Sum1 += rotate; Sum2 += @rotate
+          rotate
+        onComplete:-> isOnRotation = Sum1 is Sum2
       mp.run()
-      setTimeout (-> expect(isOnAngle).toBe(true); dfr()), 500
+      setTimeout (-> expect(isOnRotation).toBe(true); dfr()), 500
 
-    it 'should set current angle', (dfr)->
+    it 'should set current rotation', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
       isSet = false
-      currAngle = 0; isAnglesArray = []
-      angleShift = 5
+      currRotation = 0; isRotationsArray = []
+      rotationShift = 5
       mp = new MotionPath
         path: coords
         el: div
         duration: 200
-        angleOffset:(angle)-> currAngle = angle; angle+angleShift
-        onUpdate:-> isAnglesArray.push currAngle+angleShift is mp.angle
+        rotationOffset:(rotate)-> currRotation = rotate; rotate+rotationShift
+        onUpdate:-> isRotationsArray.push currRotation+rotationShift is mp.rotate
         onComplete:->
-          for isSetItem, i in isAnglesArray
+          for isSetItem, i in isRotationsArray
             if !isSetItem then isSet = true
-      
+
       setTimeout (-> expect(isSet).toBe(false); dfr()), 500
 
-    it 'angleOffset should get current progress as second parameter', (dfr)->
+    it 'rotationOffset should get current progress as second parameter', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
       isProgress = false; proc = -1
       mp = new MotionPath
         path: coords
         el: div
         duration: 200
-        angleOffset:(angle, progress)-> proc = progress; angle
+        rotationOffset:(rotate, progress)-> proc = progress; rotate
         onComplete:-> isProgress = proc is 1
       setTimeout (-> expect(isProgress).toBe(true); dfr()), 500
 
     it 'should have scope of motion path', ->
       coords = 'M0,0 L10,0 L10,10'
       isRightScope = false
-      angleSum1 = 0; angleSum2 = 0
+      Sum1 = 0; Sum2 = 0
       mp = new MotionPath
         path: coords
         el: div
         duration: 200
-        isAngle: true
-        angleOffset:-> isRightScope = @ instanceof MotionPath
+        isRotation: true
+        rotationOffset:-> isRightScope = @ instanceof MotionPath
 
       setTimeout ->
         expect(isRightScope).toBe(true)
@@ -818,7 +818,7 @@ describe 'MotionPath ->', ->
           tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
           pos = tr.split(/(translate\()|\,|\)/)[2]
           pos = parseInt pos, 10
-    
+
       setTimeout (-> expect(pos).toBe(250); dfr()), 500
 
   describe 'path option ->', ->
@@ -1046,7 +1046,7 @@ describe 'MotionPath ->', ->
         start:     x: 200,   y: 200
         shift:     x: -100,  y: 100
         curvature: x: '50%', y: '25%'
-      
+
       d = path.getAttribute 'd'
       points = parseQadraticCurve d
 
@@ -1113,7 +1113,7 @@ describe 'MotionPath ->', ->
         el:       document.createElement 'div'
         duration: 2000
         pathEnd:  .5
-      
+
       ).then pathStart: .5, pathEnd: 1
 
       expect(mp.history.length)       .toBe   2
@@ -1152,10 +1152,10 @@ describe 'MotionPath ->', ->
         delay:    100
         onUpdate: onUpdate
       ).then pathStart: .5, pathEnd: 1, delay: 0
-      
+
       mp.timeline.setProgress .74
       mp.timeline.setProgress .75
-      
+
       expect(mp.history[1].onUpdate).not.toBeDefined()
       expect(mp.props.onUpdate)     .not.toBeDefined()
 
@@ -1193,7 +1193,7 @@ describe 'MotionPath ->', ->
         pathEnd:  .5
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1
-      
+
       expect(mp.timeline._timelines[1]._o.isChained).toBe true
 
     it 'should not add isChained option if delay', ->
@@ -1204,7 +1204,7 @@ describe 'MotionPath ->', ->
         pathEnd:  .5
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1, delay: 100
-      
+
       expect(mp.timeline._timelines[1]._o.isChained).toBe false
 
   describe 'tuneOptions ->', ->
@@ -1261,10 +1261,10 @@ describe 'MotionPath ->', ->
         isRunLess:  true
         isPresetPosition: false
       spyOn module, '_setProp'
-      mp.angle = 0
+      mp.rotate = 0
       mp.setModulePosition 100, 200
       expect(module._setProp).toHaveBeenCalledWith
-        shiftX: '100px', shiftY: '200px', angle: 0
+        shiftX: '100px', shiftY: '200px', rotate: 0
 
     it 'should call module.draw method', ->
       module = (new Shape isRunLess: true)
@@ -1487,7 +1487,7 @@ describe 'MotionPath ->', ->
       spyOn mp, 'makeMotionBlur'
       mp.setProgress(.1)
       expect(mp.makeMotionBlur).toHaveBeenCalled()
-    
+
     it 'should not be called if motionBlur was not passed', ->
       mp = new MotionPath
         path:       path
@@ -1588,7 +1588,7 @@ describe 'MotionPath ->', ->
   describe 'angToCoords method ->', ->
     path = "M0,20 L100,150 L200,100"
     degree45 = 1
-    it 'should translate angle to coordinates *y*', ->
+    it 'should translate rotation to coordinates *y*', ->
       mp = new MotionPath
         path:       path
         el:         document.createElement 'div'
@@ -1604,7 +1604,7 @@ describe 'MotionPath ->', ->
       expect(mp.angToCoords(315).y) .toBeCloseTo -degree45, 1
       expect(mp.angToCoords(-45).y) .toBeCloseTo -degree45, 1
       expect(mp.angToCoords(360).y) .toBeCloseTo -1
-    it 'should translate angle to coordinates *x*', ->
+    it 'should translate rotation to coordinates *x*', ->
       mp = new MotionPath
         path:       path
         el:         document.createElement 'div'
@@ -1620,7 +1620,7 @@ describe 'MotionPath ->', ->
       expect(mp.angToCoords(315).x) .toBeCloseTo -degree45, 1
       expect(mp.angToCoords(-45).x) .toBeCloseTo -degree45, 1
       expect(mp.angToCoords(360).x) .toBeCloseTo  0, 1
-  
+
   describe 'setBlur method ->',->
     return if isMotionReset
     path = "M0,20 L100,150 L200,100"

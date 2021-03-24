@@ -140,7 +140,7 @@ describe 'Bit ->', ->
         'fill':                 '#0ff'
         'stroke-dasharray':     100
         'stroke-dashoffset':    50
-        'angle':                45
+        'rotate':               45
 
       bit._draw()
 
@@ -170,7 +170,7 @@ describe 'Bit ->', ->
         'stroke-dashoffset':  50
         'stroke-linecap':     'round'
         'stroke-opacity':     .5
-        angle:                45
+        rotate:               45
       bit._draw()
       expect(bit._state['stroke'])           .toBe '#0f0'
       expect(bit._state['stroke-width'])     .toBe 3
@@ -214,12 +214,12 @@ describe 'Bit ->', ->
       bit._props['stroke-dashoffset'] = { unit: '%', value: 100 }
       bit.castStrokeDash 'stroke-dashoffset'
       expect(bit._props['stroke-dashoffset']).toBe bit._props.length
-    
+
     it 'should not set 0 value >> ff issue fix', ->
       bit = new Bit
         ctx:    document.createElementNS ns, 'svg'
         radius: 100
-        
+
       bit._props['stroke-dasharray'] = { unit: 'px', value: 0 }
       bit.castStrokeDash 'stroke-dasharray'
       expect(bit._props['stroke-dasharray']).toBe ''
@@ -228,7 +228,7 @@ describe 'Bit ->', ->
       bit = new Bit
         ctx:    document.createElementNS ns, 'svg'
         radius: 100
-        
+
       bit._props['stroke-dasharray'] = [{ unit: 'px', value: 0 }]
       bit.castStrokeDash 'stroke-dasharray'
       expect(bit._props['stroke-dasharray']).toBe ''
@@ -338,7 +338,7 @@ describe 'Bit ->', ->
   #     expect(bit._state['stroke']).toBe 'orange'
   #     # expect(bit.el.getAttribute('rx'))    .toBe 30
   #     # expect(bit.el.getAttribute('stroke')).toBe 'orange'
-  
+
   # # old
   # # describe 'setProp method ->', ->
   # #   it 'should set properties ->', ->
@@ -426,7 +426,7 @@ describe 'Bit ->', ->
   # #   it 'should calculate transform object', ->
   # #     bit = new Bit
   # #       ctx: svg
-  # #       angle: 90
+  # #       rotate: 90
   # #     expect(bit._props.transform).toBe('rotate(90, 0, 0)')
   # #     expect(bit.calcTransform).toBeDefined()
 

@@ -59,8 +59,3 @@ describe 'Line', ->
         ctx:    document.createElementNS ns, 'svg'
         radius: 100
       expect(bit._getLength()).toBe 200
-
-
-
-
-
