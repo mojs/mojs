@@ -52,7 +52,7 @@
     "eslint": "^7.22.0",
     "eslint-webpack-plugin": "^2.5.2",
     "jasmine": "^3.7.0",
-    "karma": "^6.3.0",
+    "karma": "^6.3.1",
     "karma-babel-preprocessor": "^8.0.1",
     "karma-browserstack-launcher": "^1.6.0",
     "karma-chrome-launcher": "^3.1.0",
