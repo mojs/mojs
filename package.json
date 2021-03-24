@@ -40,19 +40,19 @@
   },
   "homepage": "https://github.com/mojs/mojs",
   "devDependencies": {
-    "@babel/core": "^7.13.8",
-    "@babel/plugin-transform-runtime": "^7.13.9",
-    "@babel/preset-env": "^7.13.9",
+    "@babel/core": "^7.13.10",
+    "@babel/plugin-transform-runtime": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
     "@mojs/player": "^1.0.0",
     "babel-loader": "^8.2.2",
     "coffee-loader": "^2.0.0",
     "coffeeify": "^3.0.1",
     "coffeescript": "^1.12.7",
     "coveralls": "^3.1.0",
-    "eslint": "^7.21.0",
+    "eslint": "^7.22.0",
     "eslint-webpack-plugin": "^2.5.2",
-    "jasmine": "^3.6.4",
-    "karma": "^6.1.1",
+    "jasmine": "^3.7.0",
+    "karma": "^6.3.0",
     "karma-babel-preprocessor": "^8.0.1",
     "karma-browserstack-launcher": "^1.6.0",
     "karma-chrome-launcher": "^3.1.0",
@@ -60,15 +60,15 @@
     "karma-coffee-preprocessor": "^1.0.1",
     "karma-coverage": "^2.0.3",
     "karma-jasmine": "^4.0.1",
-    "karma-summary-reporter": "^2.0.0",
+    "karma-summary-reporter": "^2.0.2",
     "puppeteer": "^8.0.0",
     "terser-webpack-plugin": "^5.1.1",
-    "webpack": "^5.24.4",
+    "webpack": "^5.28.0",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.9"
+    "@babel/runtime": "^7.13.10"
   }
 }
