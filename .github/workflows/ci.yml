@@ -39,7 +39,7 @@ jobs:
         run: npm run test
 
       - name: Send code coverage to Coveralls
-        uses: coverallsapp/github-action@v1.1.1
+        uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
