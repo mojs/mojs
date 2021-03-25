@@ -1,9 +1,6 @@
 import mojs from 'src/mojs.babel.js';
 import MojsPlayer from '@mojs/player';
 
-// attach mojs to the window object, this is needed by @mojs/player
-window.mojs = mojs;
-
 // get the current mojs version
 document.querySelector('.mojs-version').innerHTML += ' ' + mojs.revision;
 

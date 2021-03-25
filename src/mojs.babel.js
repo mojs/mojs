@@ -18,7 +18,7 @@ import Delta from 'delta/delta';
 import Deltas from 'delta/deltas';
 import Module from './module';
 
-export default {
+let mojs = {
   revision: build.revision,
   isDebug: build.mode !== 'production',
   helpers: h,
@@ -49,3 +49,9 @@ export default {
   Transit: Shape,
   Swirl: ShapeSwirl,
 };
+
+if (build.mode === 'development') {
+  (typeof window !== 'undefined') && (window.mojs = mojs);
+}
+
+export default mojs;
