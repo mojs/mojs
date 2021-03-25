@@ -11,11 +11,12 @@ module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
   entry: './src/mojs.babel.js',
   output: {
     filename: 'mo.umd.js',
-    library: 'mojs',
-    libraryExport: 'default',
-    libraryTarget: 'umd',
-    umdNamedDefine: true,
-    globalObject: 'window',
+    library: {
+      name: 'mojs',
+      type: 'umd',
+      export: 'default',
+      umdNamedDefine: true,
+    },
   },
   optimization: {
     minimizer: [
