@@ -50,8 +50,8 @@ let mojs = {
   Swirl: ShapeSwirl,
 };
 
-if (build.mode === 'development') {
-  (typeof window !== 'undefined') && (window.mojs = mojs);
+if (typeof window !== 'undefined') {
+  window.mojs = mojs;
 }
 
 export default mojs;
