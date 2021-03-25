@@ -15,6 +15,7 @@ module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
     libraryExport: 'default',
     libraryTarget: 'umd',
     umdNamedDefine: true,
+    globalObject: 'window',
   },
   optimization: {
     minimizer: [
