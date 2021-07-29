@@ -45,7 +45,7 @@
     "@babel/preset-env": "^7.14.8",
     "@mojs/player": "^1.0.1",
     "babel-loader": "^8.2.2",
-    "coffee-loader": "^2.0.0",
+    "coffee-loader": "^3.0.0",
     "coffeeify": "^3.0.1",
     "coffeescript": "^1.12.7",
     "coveralls": "^3.1.1",
