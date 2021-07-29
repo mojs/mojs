@@ -51,7 +51,7 @@
     "coveralls": "^3.1.1",
     "eslint": "^7.31.0",
     "eslint-webpack-plugin": "^2.5.4",
-    "jasmine": "^3.7.0",
+    "jasmine": "^3.8.0",
     "karma": "^6.3.4",
     "karma-babel-preprocessor": "^8.0.1",
     "karma-browserstack-launcher": "^1.6.0",
