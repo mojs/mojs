@@ -14,6 +14,7 @@ module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
       path.join(__dirname, '/dist'),
     ],
     watchContentBase: true,
+    hot: true,
     compress: true,
     port: 9000,
     open: true,
