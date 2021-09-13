@@ -9,14 +9,16 @@ module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
     filename: 'dev.js',
   },
   devServer: {
-    contentBase: [
-      path.join(__dirname, '/dev'),
-      path.join(__dirname, '/dist'),
-    ],
-    watchContentBase: true,
-    hot: true,
-    compress: true,
     port: 9000,
+    static: {
+      serveIndex: false,
+      directory: path.join(__dirname, 'dev'),
+    },
+    client: {
+      logging: 'none',
+      overlay: false,
+    },
     open: true,
+    historyApiFallback: true,
   },
 });
