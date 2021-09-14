@@ -60,7 +60,7 @@
     "karma-coffee-preprocessor": "^1.0.1",
     "karma-coverage": "^2.0.3",
     "karma-jasmine": "^4.0.1",
-    "karma-summary-reporter": "^2.0.2",
+    "karma-summary-reporter": "^3.0.0",
     "puppeteer": "^10.2.0",
     "terser-webpack-plugin": "^5.2.4",
     "webpack": "^5.52.1",
