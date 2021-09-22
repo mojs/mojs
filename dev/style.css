@@ -18,7 +18,7 @@ body {
   width: 100vw;
   height: 100vh;
   margin: 0;
-  font-family: 'Sailec';
+  font-family: 'Arial';
   color: #fff;
   background: var(--mojs-color);
   user-select: none;
