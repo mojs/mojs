@@ -1,6 +1,6 @@
 {
   "name": "@mojs/core",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "The motion graphics toolbelt for the web",
   "source": "src/mojs.babel.js",
   "main": "dist/mo.umd.js",
