@@ -1,0 +1,5 @@
+# Auto detect text files by default
+* text=auto
+
+# End of line as the UNIX convention (LF: Line Feed)
+* eol=lf
