@@ -114,3 +114,6 @@ Get technical informations, open an issue/pull request or join the (amazing) com
 Since 2019, mojs ecosystem is **maintained and developed** by:
 - [Xavier Foucrier](https://github.com/xavierfoucrier)
 - [Jonas Sandstedt](https://github.com/Sandstedt)
+
+## Contribute
+If you want to report a bug or request a new feature/improvement, please **read the project [contributors guidelines](.github/CONTRIBUTING.md) before**. Thanks for taking time to contribute.
