@@ -62,7 +62,7 @@ MoJS uses [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/) fo
 
 ### Setup
 
-Make sure you have a recent version of **NodeJS**. Actually v12.18.2 LTS works fine at the time of writing, but newer and a bit older will probably works fine too.
+Make sure your environment well fit the `package.json` **engines** field, which is, at the time of writing, aligned with **NodeJS 18** and **NPM 8**.
 
 Run `npm install` to get all dependencies and build tools to get ready!
 
