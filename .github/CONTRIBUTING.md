@@ -68,7 +68,7 @@ Run `npm install` to get all dependencies and build tools to get ready!
 
 ### Scripts
 
-- `npm run dev` - Start a `webpack-dev-server` and allow you to **develop new features** by seing them live in your browser. Source map is also enabled to allow easy bug fixes in development.
+- `npm run dev` - Start a `webpack-dev-server` and allow you to **develop new features** by seeing them live in your browser. Source map is also enabled to allow easy bug fixes in development.
 - `npm run lint` - Run `eslint` to lint the code and **prevent syntax errors** when implementing new code.
 - `npm run test` - Run all tests by creating a production-ready file, looking for **Karma tests** in the spec folder, and checking them against the `dist/mo.umd.js` file. Make sure to write new tests for all new code.
 - `npm run build` - Build a **production-ready** `mo.umd.js` file with webpack and put it in the `dist` folder.

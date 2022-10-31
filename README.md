@@ -36,7 +36,7 @@ new mojs.Html({
 
 ### Use with a CDN
 
-To rapidly **include the minified production file** in your webpage, load the latest build from your favorite CDN using a generic script markup:
+To rapidly **include the minified production file** in your web page, load the latest build from your favorite CDN using a generic script markup:
 
 ```html
 <!-- unpkg -->
