@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/mojs/mojs",
   "devDependencies": {
-    "@babel/core": "^7.16.12",
+    "@babel/core": "^7.19.6",
     "@babel/plugin-transform-runtime": "^7.16.10",
     "@babel/preset-env": "^7.16.11",
     "@mojs/player": "^1.0.1",
