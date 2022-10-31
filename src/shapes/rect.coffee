@@ -6,13 +6,13 @@ class Rect extends Bit
   # shape:   'rect'
   # ratio:   1.43
   _declareDefaults:->
-    super
+    super()
     this._defaults.tag = 'rect'
     this._defaults.rx  = 0
     this._defaults.ry  = 0
     # this._defaults.ratio = 1.43
   _draw:->
-    super
+    super()
     p = @_props
     radiusX = if p.radiusX? then p.radiusX else p.radius
     radiusY = if p.radiusY? then p.radiusY else p.radius

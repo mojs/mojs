@@ -32,9 +32,9 @@ sort = (a, b)->
 # @param  {Number} Progress to search for.
 # @return {Number} Nearest item index.
 getNearest = (array, progress)->
-  index = 0
-  (index = i; break if value.to > progress) for value, i in array
-  index
+  for value, i in array
+    if value.to > progress
+      return i
 # ---
 
 # Method to get the nearest to item to the progress.

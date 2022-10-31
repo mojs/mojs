@@ -4,12 +4,12 @@ Bit = require('./bit').default
 
 class Zigzag extends Bit
   _declareDefaults:->
-    super
+    super()
     @_defaults.tag    = 'path'
     @_defaults.points = 3
     # @_defaults.ratio = 1.43;
   _draw:->
-    super
+    super()
     p = this._props
     return if !@_props.points
 

@@ -5,10 +5,10 @@ Bit = require('./bit').default
 class Cross extends Bit
   # shape: 'path'
   _declareDefaults: ->
-    super
+    super()
     @_defaults.tag = 'path'
   _draw:->
-    super
+    super()
     p = @_props
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
