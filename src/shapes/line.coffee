@@ -4,7 +4,7 @@ Bit = require('./bit').default
 
 class Line extends Bit
   _declareDefaults:->
-    super
+    super()
     this._defaults.tag = 'line'
   _draw:->
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
@@ -14,6 +14,6 @@ class Line extends Bit
     @_setAttrIfChanged 'x2', x + radiusX
     @_setAttrIfChanged 'y1', y
     @_setAttrIfChanged 'y2', y
-    super
+    super()
 
 module.exports = Line
