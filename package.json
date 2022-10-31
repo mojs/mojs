@@ -58,7 +58,7 @@
     "karma-cli": "^2.0.0",
     "karma-coffee-preprocessor": "^1.0.1",
     "karma-coverage": "^2.2.0",
-    "karma-jasmine": "^4.0.1",
+    "karma-jasmine": "^4.0.2",
     "karma-summary-reporter": "^3.1.1",
     "puppeteer": "^13.1.1",
     "terser-webpack-plugin": "^5.3.1",
