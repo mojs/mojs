@@ -6,11 +6,11 @@ class Equal extends Bit
   # shape: 'path'
   # ratio: 1.43
   _declareDefaults:->
-    super
+    super()
     this._defaults.tag = 'path'
     this._defaults.points = 2
   _draw:->
-    super
+    super()
     p = @_props
     return if !@_props.points
 

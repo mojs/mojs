@@ -9,7 +9,7 @@ class Polygon extends Bit
     @overrides @ Bit
   ###
   _declareDefaults:->
-    super
+    super()
     this._defaults.tag    = 'path'
     this._defaults.points = 3
   ###
@@ -52,7 +52,7 @@ class Polygon extends Bit
       @_prevRadiusY = radiusY
 
       @el.setAttribute 'd', (d += 'z')
-    super
+    super()
 
   ###
     Method to get length of the shape.

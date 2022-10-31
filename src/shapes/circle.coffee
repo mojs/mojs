@@ -4,7 +4,7 @@ Bit = require('./bit').default
 
 class Circle extends Bit
   _declareDefaults: ->
-    super
+    super()
     @_defaults.shape = 'ellipse'
 
   _draw:->
@@ -17,7 +17,7 @@ class Circle extends Bit
     # @_setAttrIfChanged 'cx', @_props.width/2
     # @_setAttrIfChanged 'cy', @_props.height/2
     # @setAttrsIfChanged rx: rx, ry: ry, cx: @_props.x, cy: @_props.y
-    super
+    super()
   _getLength:->
     radiusX = if @_props.radiusX? then @_props.radiusX else @_props.radius
     radiusY = if @_props.radiusY? then @_props.radiusY else @_props.radius
