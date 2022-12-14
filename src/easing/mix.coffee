@@ -50,6 +50,10 @@ mix = (args...)->
 
   (progress)->
     index = getNearest(args, progress)
+
+    # return 1 if not defined
+    return 1 if typeof index is 'undefined'
+
     if index isnt -1
       value = args[index].value
       # return 1 if not defined
