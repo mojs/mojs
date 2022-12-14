@@ -40,7 +40,6 @@ describe 'Tunable ->', ->
     it 'should extend Thenable', ->
       rn = new Tunable
       expect(rn instanceof Thenable).toBe true
-  describe '_vars method ->', ->
 
   describe '_transformHistoryRecord method ->', ->
     # x : { 0 : 50 }  -> { 50: 0 }  -> { 0 : 50 }
