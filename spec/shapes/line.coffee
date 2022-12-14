@@ -49,9 +49,9 @@ describe 'Line', ->
       it 'should call super method', ->
         svg     = document.createElementNS?(ns, "svg")
         line     = new Line ctx: svg
-        spyOn(Line.__super__, '_draw')
+        spyOn(Line.prototype, '_draw')
         line._draw()
-        expect(Line.__super__._draw).toHaveBeenCalled()
+        expect(Line.prototype._draw).toHaveBeenCalled()
 
   describe 'getLength method', ->
     it 'should calculate total length of the path', ->
