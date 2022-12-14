@@ -55,9 +55,9 @@ describe 'Cross ->', ->
     it 'should call super method', ->
       # svg     = document.createElementNS?(ns, "svg")
       cross     = new Cross
-      spyOn(Cross.__super__, '_draw')
+      spyOn(Cross.prototype, '_draw')
       cross._draw()
-      expect(Cross.__super__._draw).toHaveBeenCalled()
+      expect(Cross.prototype._draw).toHaveBeenCalled()
 
     it 'should not set `d` attribute if nothing changed', ->
       cross = new Cross
