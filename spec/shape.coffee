@@ -365,14 +365,15 @@ describe 'Shape ->', ->
     it 'should set opacity regarding units', ->
       byte = new Byte opacity: .5, isShowStart: true
       expect(byte.el.style.opacity).toBe '0.5'
-    it 'should animate opacity', (dfr)->
-      byte = new Byte
-        opacity:    { 1: 0}
-        duration:   100
-        onComplete:->
-          expect(byte.el.style.opacity).toBe('0');
-          dfr()
-      byte.play()
+    it 'should animate opacity', ->
+      return new Promise (resolve) ->
+        byte = new Byte
+          opacity:    { 1: 0}
+          duration:   100
+          onComplete:->
+            expect(byte.el.style.opacity).toBe('0');
+            resolve()
+        byte.play()
 
   describe 'position set ->', ->
     describe 'x/y coordinates ->', ->
@@ -380,12 +381,14 @@ describe 'Shape ->', ->
         byte = new Byte left: 100, top: 50
         expect(byte.el.style.left).toBe '100px'
         expect(byte.el.style.top) .toBe '50px'
-      it 'should animate position', (dfr)->
-        byte = new Byte
-          left: {100: '200px'}
-          duration: 100
-          onComplete:-> expect(byte.el.style.left).toBe('200px'); dfr()
-        byte.play()
+      it 'should animate position', ->
+        return new Promise (resolve) ->
+          byte = new Byte
+            left: {100: '200px'}
+            duration: 100
+            onComplete:-> expect(byte.el.style.left).toBe('200px');
+            resolve()
+          byte.play()
       it 'should warn when x/y animated position and not foreign context',->
         spyOn console, 'warn'
         byte = new Byte left: {100: '200px'}
@@ -412,12 +415,14 @@ describe 'Shape ->', ->
         byte.play()
         expect(byte._deltas.left.start.unit).toBe '%'
         expect(byte._deltas.left.end.unit)  .toBe '%'
-      it 'should fallback to end units if units are different', (dfr)->
-        byte = new Byte
-          left: {'20%': '50px'}
-          duration: 200
-          onComplete:-> expect(byte.el.style.left).toBe('50px'); dfr()
-        byte.play()
+      it 'should fallback to end units if units are different', ->
+        return new Promise (resolve) ->
+          byte = new Byte
+            left: {'20%': '50px'}
+            duration: 200
+            onComplete:-> expect(byte.el.style.left).toBe('50px');
+            resolve()
+          byte.play()
       it 'should set position regarding units #2', ->
         byte = new Byte
           x: 100
@@ -431,47 +436,50 @@ describe 'Shape ->', ->
 
         expect(isNormal or isIE).toBe true
 
-      it 'should animate shift position', (dfr)->
-        byte = new Byte
-          x: {100: '200px'}
-          duration: 200
-          onComplete:->
-            s = byte.el.style
-            tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-            isTr  = tr is 'translate(200px, 0) rotate(0deg) scale(1, 1)'
-            isTr2 = tr is 'translate(200px, 0px) rotate(0deg) scale(1, 1)'
-            isTr3 = tr is 'translate(200px, 0px) rotate(0deg) scale(1)'
-            isTr4 = tr is 'translate(200px) rotate(0deg) scale(1)'
-            expect(isTr or isTr2 or isTr3 or isTr4).toBe true
-            dfr()
-        byte.play()
-      it 'should animate position regarding units #3', (dfr)->
-        byte = new Byte
-          x: {'20%': '50%'}
-          duration: 200
-          onComplete:->
-            s = byte.el.style
-            tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-            isTr  = tr is 'translate(50%, 0) rotate(0deg) scale(1, 1)'
-            isTr2 = tr is 'translate(50%, 0px) rotate(0deg) scale(1, 1)'
-            isTr3 = tr is 'translate(50%, 0px) rotate(0deg) scale(1)'
-            isTr4 = tr is 'translate(50%) rotate(0deg) scale(1)'
-            expect(isTr or isTr2 or isTr3 or isTr4).toBe true
-            dfr()
-        byte.play()
-      it 'should fallback to end units if units are differnt', (dfr)->
-        byte = new Byte
-          x: { '20%': '50px' }
-          y: { 0    : '50%'  }
-          duration: 200
-          onComplete:->
-            s = byte.el.style
-            tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-            isTr1 = tr is 'translate(50px, 50%) rotate(0deg) scale(1, 1)'
-            isTr2 = tr is 'translate(50px, 50%) rotate(0deg) scale(1)'
-            expect(isTr1 or isTr2).toBe true
-            dfr()
-        byte.play()
+      it 'should animate shift position', ->
+        return new Promise (resolve) ->
+          byte = new Byte
+            x: {100: '200px'}
+            duration: 200
+            onComplete:->
+              s = byte.el.style
+              tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+              isTr  = tr is 'translate(200px, 0) rotate(0deg) scale(1, 1)'
+              isTr2 = tr is 'translate(200px, 0px) rotate(0deg) scale(1, 1)'
+              isTr3 = tr is 'translate(200px, 0px) rotate(0deg) scale(1)'
+              isTr4 = tr is 'translate(200px) rotate(0deg) scale(1)'
+              expect(isTr or isTr2 or isTr3 or isTr4).toBe true
+              resolve()
+          byte.play()
+      it 'should animate position regarding units #3', ->
+        return new Promise (resolve) ->
+          byte = new Byte
+            x: {'20%': '50%'}
+            duration: 200
+            onComplete:->
+              s = byte.el.style
+              tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+              isTr  = tr is 'translate(50%, 0) rotate(0deg) scale(1, 1)'
+              isTr2 = tr is 'translate(50%, 0px) rotate(0deg) scale(1, 1)'
+              isTr3 = tr is 'translate(50%, 0px) rotate(0deg) scale(1)'
+              isTr4 = tr is 'translate(50%) rotate(0deg) scale(1)'
+              expect(isTr or isTr2 or isTr3 or isTr4).toBe true
+              resolve()
+          byte.play()
+      it 'should fallback to end units if units are differnt', ->
+        return new Promise (resolve) ->
+          byte = new Byte
+            x: { '20%': '50px' }
+            y: { 0    : '50%'  }
+            duration: 200
+            onComplete:->
+              s = byte.el.style
+              tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+              isTr1 = tr is 'translate(50px, 50%) rotate(0deg) scale(1, 1)'
+              isTr2 = tr is 'translate(50px, 50%) rotate(0deg) scale(1)'
+              expect(isTr1 or isTr2).toBe true
+              resolve()
+          byte.play()
 
   describe '_render method ->', ->
     it 'should call _createShape method', ->
