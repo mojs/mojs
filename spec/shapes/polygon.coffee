@@ -72,9 +72,9 @@ describe 'Polygon ->', ->
       expect(isD or isIE9D).toBe true
     it 'should call super method', ->
       polygon  = new Polygon
-      spyOn(Polygon.__super__, '_draw')
+      spyOn(Polygon.prototype, '_draw')
       polygon._draw()
-      expect(Polygon.__super__._draw).toHaveBeenCalled()
+      expect(Polygon.prototype._draw).toHaveBeenCalled()
 
     it 'should not set `d` attribute if nothing changed', ->
       polygon = new Polygon

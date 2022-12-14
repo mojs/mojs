@@ -43,9 +43,9 @@ describe 'Circle ->', ->
     it 'should call super method', ->
       svg     = document.createElementNS?(ns, "svg")
       circle  = new Circle ctx: svg
-      spyOn(Circle.__super__, '_draw')
+      spyOn(Circle.prototype, '_draw')
       circle._draw()
-      expect(Circle.__super__._draw).toHaveBeenCalled()
+      expect(Circle.prototype._draw).toHaveBeenCalled()
 
   describe 'getLength method', ->
     it 'should calculate total length of the path', ->
