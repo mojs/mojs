@@ -27,7 +27,7 @@ module.exports = (config) => {
       bs_safari_latest: {
         browser: 'safari',
         os: 'OS X',
-        os_version: 'Catalina',
+        os_version: 'Big Sur',
       },
       bs_iphone_latest: {
         device: 'iPhone 12',
