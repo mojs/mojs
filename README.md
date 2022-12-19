@@ -12,7 +12,7 @@ The library provides **built-in components** to start animating from scratch lik
 ## Install
 ### Use with a bundler
 
-Mojs is published on the **NPM registry** and **GPR registry**, so you can install it through the command line interpreter using your favorite package manager. This is the best way to install the library if you are comfortable with **javascript bundlers** like `webpack` or `rollup`.
+Mojs is published on the **NPM registry**, so you can install it through the command line interpreter using your favorite package manager. This is the best way to install the library if you are comfortable with **javascript bundlers** like `webpack` or `rollup`.
 
 ```sh
 # npm
