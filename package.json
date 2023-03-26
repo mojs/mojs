@@ -43,7 +43,7 @@
     "npm": "^9"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.0",
+    "@babel/core": "^7.21.3",
     "@babel/plugin-transform-runtime": "^7.21.0",
     "@babel/preset-env": "^7.20.2",
     "@mojs/player": "^1.0.1",
