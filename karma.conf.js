@@ -26,6 +26,7 @@ module.exports = (config) => {
       },
       bs_safari_latest: {
         browser: 'safari',
+        browser_version: '14.1',
         os: 'OS X',
         os_version: 'Big Sur',
       },
