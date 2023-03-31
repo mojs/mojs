@@ -127,6 +127,6 @@ module.exports = (config) => {
     autoWatch: true,
     browsers: browsers,
     singleRun: true,
-    concurrency: 5,
+    concurrency: 1,
   });
 };
