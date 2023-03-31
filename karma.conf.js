@@ -11,11 +11,13 @@ module.exports = (config) => {
     customLaunchers = {
       bs_chrome_latest: {
         browser: 'chrome',
+        browser_version: 'latest',
         os: 'Windows',
         os_version: '11',
       },
       bs_firefox_latest: {
         browser: 'firefox',
+        browser_version: 'latest',
         os: 'Windows',
         os_version: '11',
       },
@@ -33,6 +35,7 @@ module.exports = (config) => {
       },
       bs_iphone_latest: {
         device: 'iPhone 12',
+        browser_version: 'latest',
         os: 'iOS',
         os_version: '14',
       },
@@ -41,7 +44,6 @@ module.exports = (config) => {
     // define the base configuration for each launcher
     Object.keys(customLaunchers).map((key) => {
       customLaunchers[key].base = 'BrowserStack';
-      customLaunchers[key].browser_version = 'latest';
     });
 
     reporters = ['BrowserStack', 'summary', 'coverage'];
