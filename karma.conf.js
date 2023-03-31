@@ -12,17 +12,17 @@ module.exports = (config) => {
       bs_chrome_latest: {
         browser: 'chrome',
         os: 'Windows',
-        os_version: '10',
+        os_version: '11',
       },
       bs_firefox_latest: {
         browser: 'firefox',
         os: 'Windows',
-        os_version: '10',
+        os_version: '11',
       },
       bs_edge_latest: {
         browser: 'edge',
         os: 'Windows',
-        os_version: '10',
+        os_version: '11',
       },
       bs_safari_latest: {
         browser: 'safari',
