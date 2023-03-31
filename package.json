@@ -37,7 +37,7 @@
   "bugs": {
     "url": "https://github.com/mojs/mojs/issues"
   },
-  "homepage": "https://github.com/mojs/mojs",
+  "homepage": "https://mojs.github.io",
   "engines": {
     "node": "^18",
     "npm": "^9"
