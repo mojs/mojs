@@ -126,7 +126,7 @@ module.exports = (config) => {
       video: false,
       build: `@mojs/core ${bundle.version}`,
     },
-    captureTimeout: 60000,
+    captureTimeout: 240000,
     customLaunchers: customLaunchers,
     autoWatch: true,
     browsers: browsers,
