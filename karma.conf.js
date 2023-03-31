@@ -21,6 +21,7 @@ module.exports = (config) => {
       },
       bs_edge_latest: {
         browser: 'edge',
+        browser_version: '110.0',
         os: 'Windows',
         os_version: '11',
       },
