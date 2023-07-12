@@ -67,7 +67,7 @@
     "puppeteer": "^19.8.2",
     "stylelint-webpack-plugin": "^4.1.1",
     "terser-webpack-plugin": "^5.3.9",
-    "webpack": "^5.77.0",
+    "webpack": "^5.88.1",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.13.1",
     "webpack-merge": "^5.8.0"
