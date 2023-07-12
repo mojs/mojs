@@ -61,7 +61,7 @@
     "karma-chrome-launcher": "^3.2.0",
     "karma-cli": "^2.0.0",
     "karma-coffee-preprocessor": "^1.0.1",
-    "karma-coverage": "^2.2.0",
+    "karma-coverage": "^2.2.1",
     "karma-jasmine": "^5.1.0",
     "karma-summary-reporter": "^3.1.1",
     "puppeteer": "^19.8.2",
