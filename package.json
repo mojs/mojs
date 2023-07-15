@@ -39,7 +39,7 @@
   },
   "homepage": "https://mojs.github.io",
   "engines": {
-    "node": "^18",
+    "node": "^20",
     "npm": "^9"
   },
   "devDependencies": {
