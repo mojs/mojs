@@ -62,7 +62,7 @@ MoJS uses [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/) fo
 
 ### Setup
 
-Make sure your environment well fit the `package.json` **engines** field, which is, at the time of writing, aligned with **NodeJS 18** and **NPM 9**.
+Make sure your environment well fit the `package.json` **engines** field, which is, at the time of writing, aligned with **NodeJS 20** and **NPM 9**.
 
 Run `npm install` to get all dependencies and build tools to get ready!
 
