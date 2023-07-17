@@ -52,7 +52,7 @@
     "coffeeify": "^3.0.1",
     "coffeescript": "^2.7.0",
     "coveralls": "^3.1.1",
-    "eslint": "^8.44.0",
+    "eslint": "^8.45.0",
     "eslint-webpack-plugin": "^4.0.1",
     "jasmine": "^4.6.0",
     "karma": "^6.4.2",
