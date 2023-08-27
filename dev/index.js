@@ -34,9 +34,9 @@ const burst = new mojs.Burst({
   shape: 'circle',
   radius: { 0: 360 },
   duration: 2000,
-  children : {
+  children: {
     repeat: 999,
-    radius: { 30 : 5 },
+    radius: { 30: 5 },
     // 2.1)
     shape: 'cross',
     stroke: 'teal',
@@ -46,7 +46,7 @@ const burst = new mojs.Burst({
   },
   // 2.2)
   count: 20,
-}).play();
+})// .play();
 
 // 3)
 const circle = new mojs.Shape({
@@ -57,7 +57,7 @@ const circle = new mojs.Shape({
 const timeline = new mojs.Timeline({
   repeat: 999
 })
-.add( burst, circle )
+  .add(burst, circle)
 // .play();
 
 // 4) Implementing our animations...
@@ -68,7 +68,7 @@ const green = "#aded94";
 const magenta = "#bd81fb";
 const red = "#ee695a"
 
-const circlesInput  = [];
+const circlesInput = [];
 const circlesOutput = [];
 
 const arrayMethodsVisualizedTimeline = new mojs.Timeline({
@@ -88,73 +88,59 @@ const circleOptions = {
 }
 
 // PREPARE INPUT BALLS:
-for ( let i = 0; i < 4; i++ ){
+for (let i = 0; i < 4; i++) {
 
-  Object.assign(circleOptions, {
-    x: i * 38,
+  circlesInput.push(new mojs.Shape({
+    ...circleOptions,
+    x: i === 3 ? { [i * 38]: 300 } : i * 38,
     opacity: 1,
     fill: i === 4 ? green : orange,
-  })
-  if ( i === 3 ){
-    // console.log(circleOptions);
-    Object.assign(circleOptions, {
-      x: { [i * 38]: 300 },
-      opacity: 1,
-      fill: i === 4 ? green : orange,
-    })
-  }
-  circlesInput.push(new mojs.Shape(circleOptions))
+    attrs: [{
+      "data-index": i
+    }],
+  }))
 
 }
 
 // PREPARE OUTPUT BALLS:
-for ( let i = 0; i < 5; i++ ){
+for (let i = 0; i < 5; i++) {
 
-  if ( i === 4 ){
-
-    // console.log({ x: ( i * 38 ) + xDiff, y: ( i * 38 ) + xDiff })
+  if (i === 4) {
     continue;
-    Object.assign(circleOptions, {
-      x: { 0 : ( i * 38 ) + xDiff },
-      x: ( i * 38 ) + xDiff,
-      duration: 3000,
-      fill: green,
-    })
-
-  } else {
-
-    Object.assign(circleOptions, {
-      x: ( i * 38 ) + xDiff,
-      opacity: 1,
-      fill: i === 4 ? green : orange,
-    })
-
   }
 
-  circlesOutput.push(new mojs.Shape(circleOptions))
+  circlesOutput.push(new mojs.Shape({
+    ...circleOptions,
+    x: (i * 38) + xDiff,
+    opacity: 1,
+    fill: orange,
+    attrs: [{
+      "data-index": i
+    }]
+  }))
 
 }
 
 const pushBallInitial = new mojs.Shape({
   ...circleOptions,
-    x: 254,
-    duration: 1000,
-    opacity: { 1 : 0 },
-    fill: green,
-    onComplete: ()=>{
-      console.log("onComplete()", pushBallInitial, pushBallInitial.x)
-    }
+  x: 254,
+  duration: 1000,
+  fill: green,
+  onComplete: () => {
+    console.log("onComplete()", pushBallInitial, pushBallInitial.x)
+  }
 });
 
 const pushBall = new mojs.Shape({
   ...circleOptions,
-    x: { 254: 666 },
-    duration: 3000,
-    fill: green,
-    onComplete: ()=>{
-      pushBall.getProps().el.setAttribute("data-index", 4);
-    }
- })
+  x: { 254: 666 },
+  duration: 3000,
+  opacity: { 0: 1 },
+  fill: green,
+  onComplete: () => {
+    pushBall.getProps().el.setAttribute("data-index", 4);
+  }
+})
 
 const space4 = 0;
 const space5 = 0;
@@ -179,7 +165,7 @@ const rightBracket2 = new mojs.Html({
   el: "#right-bracket2",
   // x: 740,
   x: 702,
-  x: { 702 : 740},
+  x: { 702: 740 },
   y: 84,
   duration: 3000,
 })
@@ -198,7 +184,7 @@ const push = new mojs.Html({
 })
 
 arrayMethodsVisualizedTimeline
-.add(circlesInput, circlesOutput)
+  .add(circlesInput, circlesOutput)
 // .play()
 
 // PLAYER:
@@ -208,7 +194,7 @@ arrayMethodsVisualizedTimeline
 //   isPlaying: false
 // });
 
-document.body.addEventListener("click", ()=>{
+document.body.addEventListener("click", () => {
   pushBall.play()
   rightBracket2.play();
   pushBallInitial.play();
