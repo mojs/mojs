@@ -24,7 +24,6 @@ pre.code {
   border: 2px solid gray;
   display: none;
   width: 800px;
-  position: relative;
   margin: -2px 0 1rem 0 !important;
 }
 pre.code.active {
@@ -73,15 +72,16 @@ pre.code.active {
 .mojs-shape {
   /* border: 1px solid gray; */
 }
-.code-show, .demo-init {
+.code-show, .demo-init-wrapper {
   position: absolute;
   bottom: -2px;
   right: -2px;
 }
-.demo-init {
+.demo-init-wrapper {
   left: -2px;
+  display: flex;
 }
-.demo-init button,
+.demo-init-wrapper button,
 .code-show button {
   background: black;
   color: white;
@@ -92,8 +92,15 @@ pre.code.active {
   cursor: pointer;
   transition: all 250ms ease;
 }
-.demo-init button:hover,
+button.demo-init:hover,
 .code-show button:hover {
   background: yellowgreen;
+  color: black;
+}
+button.demo-reset  {
+  margin-left: -2px;
+}
+button.demo-reset:hover {
+  background: tomato;
   color: black;
 }

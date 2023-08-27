@@ -7,14 +7,18 @@ const magenta = "#bd81fb";
 const red     = "#ee695a"
 
 const parent             = document.getElementById("app");
+const demoContainer      = document.querySelector(".demo-container");
 const xDiff              = 536 - 22;
 const leftBracketX       = 22;
+const leftBracket2X      = 536;
 const leftBracketY       = 84;
 const leftMarbleX        = 64;
 const marbleRadius       = 16;
 const marbleWidth        = 38;
 const bracketPadding     = 14;
 const bracketRightMargin = 22;
+const rightArrowX        = 460;
+const rightArrowY        = 76;
 
 const circleOptions = {
   parent,
@@ -62,7 +66,7 @@ const arrayMethodsVisualizedTimeline = new mojs.Timeline({
 const circlesInput  = [];
 const circlesOutput = [];
 
-function getMarble({ fill = orange, x = 0, y = 0, opacity = 0, index = null } = {}){
+function getMarble({ fill = orange, x = 0, y = 0, opacity = 0, index = null, ...args } = {}){
 
   return new mojs.Shape({
     ...circleOptions,
@@ -70,6 +74,7 @@ function getMarble({ fill = orange, x = 0, y = 0, opacity = 0, index = null } = 
     opacity: 1,
     fill,
     attrs: typeof index === "number" ? [{ "data-index": index }] : null,
+    ...args
   })
 
 }
@@ -106,8 +111,7 @@ const pushBallInitial = new mojs.Shape({
   }
 });
 
-const pushBall = new mojs.Shape({
-  ...circleOptions,
+const pushBall = getMarble({
   x: { 254: 666 },
   duration: 3000,
   opacity: { 0: 1 },
@@ -115,14 +119,25 @@ const pushBall = new mojs.Shape({
   onComplete: () => {
     pushBall.getProps().el.setAttribute("data-index", 4);
   }
-})
+
+});
+
+const pushJS = `
+  const letters = [ "A", "B", "C", "D" ];
+  letters.push( "E" );
+
+  console.log( letters ); // [ "A", "B", "C", "D", "E" ];
+`
+demoContainer.querySelector("pre").insertAdjacentHTML(
+  "beforeend",
+  `<code class="language-javascript">${pushJS}</code>`
+);
 
 const leftBracket = new mojs.Html({
   el: leftBracketEl,
   x: leftBracketX,
   y: leftBracketY
 })
-console.log(leftBracketEl)
 const rightBracket = new mojs.Html({
   el: rightBracketEl,
   x: leftBracketX + ( 4 * marbleWidth ) + bracketPadding,
@@ -131,24 +146,26 @@ const rightBracket = new mojs.Html({
 })
 const leftBracket2 = new mojs.Html({
   el: leftBracketEl2,
-  x: 536,
-  y: 84
+  x: leftBracket2X,
+  y: leftBracketY
 })
+
+const initialRightBracket2X = leftBracket2X + ( 4 * marbleWidth ) + bracketPadding;
 const rightBracket2 = new mojs.Html({
   el: rightBracketEl2,
-  // x: 740,
-  x: 702,
-  x: { 702: 740 },
-  y: 84,
+  x: {
+    [initialRightBracket2X]:
+    initialRightBracket2X + marbleWidth
+  },
+  y: leftBracketY,
   duration: 3000,
 })
 
 const rightArrow = new mojs.Html({
   el: "#long-right-arrow",
-  // el: rightArrowEl,
   scale: 2,
-  x: 460,
-  y: 76,
+  x: rightArrowX,
+  y: rightArrowY,
   duration: 3000,
 })
 
