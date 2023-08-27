@@ -1,7 +1,7 @@
 {
   "name": "@mojs/core",
-  "version": "1.6.0",
-  "description": "The motion graphics toolbelt for the web",
+  "version": "2.6.0",
+  "description": "The motion graphics toolbelt for the web. Forked from: https://github.com/mojs/mojs",
   "source": "src/mojs.babel.js",
   "main": "dist/mo.umd.js",
   "browser": "dist/mo.umd.js",
@@ -32,6 +32,10 @@
     "email": "legomushroom@gmail.com",
     "url": "https://twitter.com/legomushroom",
     "github": "@legomushroom"
+  },
+  "co-author": {
+    "name": "Kostas Minaidis",
+    "github": "@kostasx"
   },
   "license": "MIT",
   "bugs": {

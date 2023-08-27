@@ -3,7 +3,7 @@ const { merge } = require('webpack-merge');
 const TerserPlugin = require('terser-webpack-plugin');
 
 // build preamble
-const preamble = `/*!\n  ${bundle.name} – ${bundle.description}\n  ${bundle.author.name} ${bundle.author.github} ${new Date().getFullYear()} ${bundle.license}\n  ${bundle.version}\n*/`;
+const preamble = `/*!\n  ${bundle.name} – ${bundle.description}\n  ${bundle.author.name} ${bundle.author.github} ${new Date().getFullYear()} ${bundle.license}\n  ${bundle.version}\n\n Fork author: ${bundle['co-author'].name} ${bundle['co-author'].github}\n*/`;
 
 module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
   mode: 'production',
