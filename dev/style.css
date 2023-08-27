@@ -12,7 +12,7 @@ h1 {
 a {
   color: hotpink;
 }
-#app {
+.demo-container main {
   box-sizing: border-box;
   border: 2px solid gray;
   height: 200px;
