@@ -125,3 +125,4 @@ If you want to report a bug or request a new feature/improvement, please **read 
 ### Added
 
 - Added `getProps` method to the `Shape` class
+- Added ability to add custom HTML attributes to `Shape` objects.
