@@ -27,6 +27,14 @@ const marbleOptions = {
   y: 0
 }
 
+function getBracket({ id, dir = "left", x = 0, y = 0, ...args }, parent ){
+
+  const bracketEl = addBracketElToParent({ dir, ...args }, parent );
+
+  return new mojs.Html({ el: bracketEl, x, y })
+
+}
+
 function addBracketElToParent({ id, dir = "left" }, parent ){
 
   const bracketEl = document.createElement("div");
@@ -110,11 +118,6 @@ array_push: {
   const parent             = demoContainer.querySelector("main");
   marbleOptions.parent     = parent;
 
-  const leftBracketEl   = addBracketElToParent({ id: "left-bracket" }, parent);
-  const rightBracketEl  = addBracketElToParent({ id: "right-bracket", dir: "right" }, parent);
-  const leftBracketEl2  = addBracketElToParent({ id: "left-bracket2" }, parent);
-  const rightBracketEl2 = addBracketElToParent({ id: "right-bracket2", dir: "right" }, parent);
-
   const rightArrowHTML = `<div class="char" id="long-right-arrow">&xrarr;</div>`
   parent.insertAdjacentHTML("afterbegin", rightArrowHTML)
 
@@ -161,33 +164,32 @@ array_push: {
     `<code class="language-javascript">${pushJS}</code>`
   );
 
-  const leftBracket = new mojs.Html({
-    el: leftBracketEl,
+  const leftBracket = getBracket({
     x: leftBracketX,
     y: leftBracketY
-  })
-  const rightBracket = new mojs.Html({
-    el: rightBracketEl,
+  }, parent );
+
+  const rightBracket = getBracket({
     x: leftBracketX + ( 4 * marbleWidth ) + bracketPadding,
-    y: leftBracketY,
-    duration: 3000,
-  })
-  const leftBracket2 = new mojs.Html({
-    el: leftBracketEl2,
+    y: leftBracketY, duration: 3000, dir: "right"
+  }, parent );
+
+  const leftBracket2 = getBracket({
     x: leftBracket2X,
     y: leftBracketY
-  })
+  }, parent );
 
   const initialRightBracket2X = leftBracket2X + ( 4 * marbleWidth ) + bracketPadding;
-  const rightBracket2 = new mojs.Html({
-    el: rightBracketEl2,
+
+  const rightBracket2 = getBracket({
+    dir: "right",
     x: {
       [initialRightBracket2X]:
       initialRightBracket2X + marbleWidth
     },
     y: leftBracketY,
     duration: 3000,
-  })
+  }, parent );
 
   const rightArrow = new mojs.Html({
     el: "#long-right-arrow",
