@@ -135,6 +135,9 @@ class Shape extends Tunable {
 
       // context for all the callbacks
       callbacksContext: this,
+
+      // Custom attributes
+      attrs: null,
     };
   }
 
@@ -210,6 +213,14 @@ class Shape extends Tunable {
 
       // set class on the `el`
       this.el.setAttribute('class', this._props.className);
+
+      // set custom attributes
+      if (this._props.attrs) {
+        this._props.attrs.forEach((attr) => {
+          const [key, value] = Object.entries(attr)[0];
+          this.el.setAttribute(key, value);
+        });
+      }
 
       // create shape module
       this._createShape();
