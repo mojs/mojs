@@ -54,7 +54,7 @@ pre.code.active {
   top: 0;
   left: 0;
 }
-.mojs-marble:after {
+.mojs-marble.indexed:after {
   content: attr(data-index);
   position: absolute;
   top: 0;
