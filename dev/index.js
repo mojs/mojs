@@ -1,33 +1,7 @@
 import mojs from 'src/mojs.babel.js';
 import MojsPlayer from '@mojs/player';
+// mojs.revision;
 
-// get the current mojs version
-document.querySelector('.mojs-version').innerHTML += ' ' + mojs.revision;
-
-// build the tween
-// const burst = new mojs.Burst({
-//   radius: { 1 : 200 },
-//   count: 20,
-//   children: {
-//     radius: 'rand(20, 10)',
-//     delay: 'rand(0, 500)',
-//     duration: 2000,
-//     opacity: 'rand(0.1, 1)'
-//   }
-// });
-
-// // build the timeline and add the tween
-// const timeline = new mojs.Timeline().add(
-//   burst
-// );
-
-// // build the player and add the timeline
-// new MojsPlayer({
-//   add: timeline,
-//   isSaveState: true,
-//   isPlaying: true,
-//   isRepeat: true
-// });
 
 // 2) Examples:
 const burst = new mojs.Burst({
@@ -185,20 +159,27 @@ const push = new mojs.Html({
 
 arrayMethodsVisualizedTimeline
   .add(circlesInput, circlesOutput)
-// .play()
 
-// PLAYER:
-// const mojsPlayer = new MojsPlayer({
-//   className: "mojs-player",
-//   add: arrayMethodsVisualizedTimeline,
-//   isPlaying: false
-// });
-
-document.body.addEventListener("click", () => {
+document.querySelector(".demo-init").addEventListener("click", () => {
   pushBall.play()
   rightBracket2.play();
   pushBallInitial.play();
-})
+});
+document.querySelector(".code-show").addEventListener("click", ()=>{
+  const downArrow = "&#8681;";
+  const upArrow = "&#8679;";
+  const preEl = document.querySelector("pre.code");
+  const arrow = document.querySelector("span.arrow");
+  const arrowText = document.querySelector("button span.text");
+  if ( preEl.classList.contains("active")){
+    arrow.innerHTML = downArrow;
+    arrowText.textContent = "Show Code";
+    return preEl.classList.remove("active");
+  }
+  arrowText.textContent = "Hide Code";
+  arrow.innerHTML = upArrow;
+  return preEl.classList.add("active");
+});
 
 // reverse()
 

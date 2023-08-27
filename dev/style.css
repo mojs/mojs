@@ -9,16 +9,26 @@ h1 {
   font-weight: 200;
   font-size: 2.2rem;
 }
-
 a {
   color: hotpink;
 }
-
 #app {
+  box-sizing: border-box;
   border: 2px solid gray;
   height: 200px;
   width: 800px;
   position: relative;
+}
+pre.code {
+  box-sizing: border-box;
+  border: 2px solid gray;
+  display: none;
+  width: 800px;
+  position: relative;
+  margin: -2px 0 1rem 0 !important;
+}
+pre.code.active {
+  display: inline-block;
 }
 .char {
   font-size: 32px;
@@ -40,7 +50,6 @@ a {
   width: 32px;
   display: inline-block;
 }
-
 .mojs-marble {
   position: absolute;
   top: 0;
@@ -53,15 +62,38 @@ a {
   left: 0;
   font-size: 1rem;
   font-weight: bold;
-  color: black;
+  color: rgba(0,0,0,0.7);
   line-height: 1rem;
   display: grid;
   place-items: center;
   width: 100%;
   height: 100%;
 }
-
 .char,
 .mojs-shape {
   /* border: 1px solid gray; */
+}
+.code-show, .demo-init {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+}
+.demo-init {
+  left: -2px;
+}
+.demo-init button,
+.code-show button {
+  background: black;
+  color: white;
+  border: none;
+  font-size: 1rem;
+  border: 2px solid gray;
+  padding: 0.5rem 2rem;
+  cursor: pointer;
+  transition: all 250ms ease;
+}
+.demo-init button:hover,
+.code-show button:hover {
+  background: yellowgreen;
+  color: black;
 }

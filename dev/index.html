@@ -1,40 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>mo · js [dev-server]</title>
-    <link rel="shortcut icon" href="favicon.ico">
-    <link type="text/css" rel="stylesheet" media="all" href="style.css">
-  </head>
-  <body>
 
-    <h1>
-      <a
-        target="_blank"
-        href="https://www.linkedin.com/feed/update/urn:li:activity:7100948062470062081/"
-        >Array Methods Visualized</a
-      >
-      <em>...&amp; animated</em>
-    </h1>
-    <div id="app">
-      <div class="char method" id="push">
-        .push(<span class="c-space"></span>)
-      </div>
-      <div class="char" id="left-bracket">[</div>
-      <div class="char" id="right-bracket">]</div>
-      <div class="char" id="left-bracket2">[</div>
-      <div class="char" id="right-bracket2">]</div>
-      <!-- HTML Entity: https://www.toptal.com/designers/htmlarrows/arrows/ -->
-      <div class="char" id="long-right-arrow">&xrarr;</div>
-      <div class="char" id="left-parens">(</div>
-      <div class="char" id="right-parens">)</div>
-      <div class="char" id="equal">=</div>
-      <div class="char" id="dot">.</div>
+<head>
+  <meta charset="utf-8">
+  <title>mo · js [dev-server]</title>
+  <link rel="shortcut icon" href="favicon.ico">
+  <link type="text/css" rel="stylesheet" media="all" href="style.css">
+  <!-- Syntax Highlight -->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-shades-of-purple.min.css"
+    integrity="sha512-HM2OlrR8saZI2M4q2qLhGTYpsV8Oh6ktoHraqnYws8D06R7T8a6zIXi/denZBRNxXGHAgpKbIQA3gbz9rQQuuQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js" integrity="sha512-aPubUkCu4Q3chwaw1x6FTyDrJacmoRlfsLQ5/mrQaPkBrjSU4o9Byt3h84t82mXJh2/GvA80LWkhAEks23DslA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+
+  <h1>
+    <a target="_blank" href="https://www.linkedin.com/feed/update/urn:li:activity:7100948062470062081/">Array Methods
+      Visualized</a>
+    <em>...&amp; animated</em>
+  </h1>
+  <div id="app">
+    <div class="char method" id="push">
+      .push(<span class="c-space"></span>)
     </div>
+    <div class="char" id="left-bracket">[</div>
+    <div class="char" id="right-bracket">]</div>
+    <div class="char" id="left-bracket2">[</div>
+    <div class="char" id="right-bracket2">]</div>
+    <!-- HTML Entity: https://www.toptal.com/designers/htmlarrows/arrows/ -->
+    <div class="char" id="long-right-arrow">&xrarr;</div>
+    <div class="char" id="left-parens">(</div>
+    <div class="char" id="right-parens">)</div>
+    <div class="char" id="equal">=</div>
+    <div class="char" id="dot">.</div>
+    <div class="demo-init">
+      <button>&#9658; Play</button>
+    </div>
+    <div class="code-show">
+      <button>
+        <span class="arrow">&#8679;</span>
+        <span class="text">Hide Code</span>
+      </button>
+    </div>
+  </div>
 
-    <img src="array.methods.visualized.jpeg" width="100%" />
+  <pre class="code active">
+    <code class="language-javascript">
+      const letters = [ "A", "B", "C", "D" ];
+      letters.push( "E" );
 
-    <div class="mojs-version">mo · js</div>
-    <script src="dev.js"></script>
-  </body>
+      console.log( letters ); // [ "A", "B", "C", "D", "E" ];
+    </code>
+  </pre>
+  <script>
+    // Prism.highlightAll();
+  </script>
+  <!-- <script>Prism.highlightAll();</script> -->
+
+  <img src="array.methods.visualized.jpeg" width="100%" />
+
+  <div class="mojs-version">mo · js</div>
+  <script src="dev.js"></script>
+</body>
+
 </html>
