@@ -117,3 +117,11 @@ Since 2019, mojs ecosystem is **maintained and developed** by:
 
 ## Contribute
 If you want to report a bug or request a new feature/improvement, please **read the project [contributors guidelines](.github/CONTRIBUTING.md) before**. Thanks for taking time to contribute.
+
+## Changelog
+
+## [2.6.0] - 27/08/2023
+
+### Added
+
+- Added `getProps` method to the `Shape` class

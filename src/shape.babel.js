@@ -629,6 +629,15 @@ class Shape extends Tunable {
     // draw el accroding to it's props
     this._drawEl();
   }
+
+  // CUSTOM METHODS:
+  /*
+    Method that return props
+    @public
+  */
+  getProps() {
+    return this._props;
+  }
 }
 
 export default Shape;
