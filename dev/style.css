@@ -1,46 +1,67 @@
-:root {
-  --mojs-color: #3A0839;
-}
-
-* {
-  box-sizing: inherit;
-}
-
-html {
-  box-sizing: border-box;
-}
-
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  font-family: 'Arial';
-  color: #fff;
-  background: var(--mojs-color);
-  user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background: #000;
+  color: #f0f0f0;
+  padding: 1rem;
+}
+h1 {
+  font-weight: 200;
+  font-size: 2.2rem;
 }
 
-.mojs-version {
-  position: fixed;
-  top: 40px;
-  left: 40px;
-  font-size: 25px;
-  color: #fff;
-  opacity: 0;
-  pointer-events: none;
-  animation: mojs-version 2s 1s ease forwards;
+a {
+  color: hotpink;
 }
 
-@keyframes mojs-version {
-  from {
-    opacity: 0;
-  }
+#app {
+  border: 2px solid gray;
+  height: 200px;
+  width: 800px;
+  position: relative;
+}
+.char {
+  font-size: 32px;
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 32px;
+  width: 32px;
+  text-align: center;
+  /* line-height: 32px; */
+  line-height: 26px; /* WTF? */
+}
+.method {
+  font-weight: 600;
+  width: auto;
+}
+.c-space {
+  width: 32px;
+  display: inline-block;
+}
 
-  to {
-    opacity: 0.2;
-  }
+.mojs-marble {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.mojs-marble:after {
+  content: attr(data-index);
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 1rem;
+  font-weight: bold;
+  color: black;
+  line-height: 1rem;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.char,
+.mojs-shape {
+  /* border: 1px solid gray; */
 }

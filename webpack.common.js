@@ -53,7 +53,7 @@ module.exports = (env) => ({
     }),
     new ESLintPlugin({
       cache: true,
-      fix: true,
+      fix: false,
     }),
   ],
 });

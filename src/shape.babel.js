@@ -636,7 +636,10 @@ class Shape extends Tunable {
     @public
   */
   getProps() {
-    return this._props;
+    return {
+      el: this.el,
+      ...this._props,
+    };
   }
 }
 
