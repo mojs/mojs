@@ -8,13 +8,26 @@ body {
 h1 {
   font-weight: 200;
   font-size: 2.2rem;
+  text-align: center;
 }
 a {
   color: hotpink;
 }
+.support {
+  text-align: center;
+  margin-top: 2rem;
+}
+.playground-container.show-inplace .demo-container.inplace {
+  display: block;
+}
+.playground-container.show-immutable .demo-container.immutable {
+  display: block;
+}
+
 .demo-container {
   width: 800px;
   margin: 0 auto 0.5rem auto;
+  display: none;
 }
 .demo-container main {
   box-sizing: border-box;
@@ -47,11 +60,14 @@ a {
   font-weight: bold;
   padding: 0.25rem 1rem;
   cursor: pointer;
-  transition: opacity 200ms ease;
-  opacity: 0.65;
-}
-.controls button:hover {
+  transition: all 200ms ease;
   opacity: 1;
+}
+.controls button#inplace:hover {
+  color: #6c190a;
+}
+.controls button#immutable:hover {
+  color: #395206;
 }
 .controls #inplace {
   background: tomato;
@@ -60,6 +76,9 @@ a {
 .controls #immutable {
   background: yellowgreen;
   margin-left: 1rem;
+}
+.controls button.inactive {
+  opacity: 0.3;
 }
 
 pre.code {

@@ -1,3 +1,4 @@
+// cSpell: ignore mojs inplace
 import mojs from 'src/mojs.babel.js';
 import MojsPlayer from '@mojs/player';
 
@@ -23,6 +24,16 @@ const bracketRightMargin = 22;
 const rightArrowX = 460;
 const rightArrowY = 76;
 
+const IN_PLACE = "IN_PLACE";
+const IMMUTABLE = "IMMUTABLE";
+const methods = {
+  push: { type: IN_PLACE },
+  pop: { type: IN_PLACE },
+  shift: { type: IN_PLACE },
+  unshift: { type: IN_PLACE },
+  map: { type: IMMUTABLE },
+}
+
 function uuid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -38,17 +49,6 @@ function initializeMethod({
   active = false,
   indexed = true
 }) {
-
-  const IN_PLACE = "IN_PLACE";
-  const IMMUTABLE = "IMMUTABLE";
-
-  const methods = {
-    push: { type: IN_PLACE },
-    pop: { type: IN_PLACE },
-    shift: { type: IN_PLACE },
-    unshift: { type: IN_PLACE },
-    map: { type: IMMUTABLE },
-  }
 
   const methodId = uuid();
 
@@ -696,3 +696,34 @@ array_unshift: {
 //>> EXAMPLE #9: flat()
 
 //>> EXAMPLE #10: slice(1,3)
+
+// FILTER METHODS BASED ON TYPE:
+const controls = document.querySelector(".controls");
+const playgroundContainer = document.querySelector(".playground-container");
+
+( playgroundContainer && controls ) && controls.addEventListener("click", e =>{
+
+  const type = e.target.id;
+
+  if ( type === "inplace" ){
+    if ( playgroundContainer.classList.contains("show-inplace" )){
+      e.target.classList.add("inactive");
+      playgroundContainer.classList.remove("show-inplace");
+    } else {
+      e.target.classList.remove("inactive");
+      playgroundContainer.classList.add("show-inplace");
+    }
+  }
+
+  if ( type === "immutable" ){
+    if ( playgroundContainer.classList.contains("show-immutable") ){
+      e.target.classList.add("inactive");
+      playgroundContainer.classList.remove("show-immutable")
+    } else {
+      e.target.classList.remove("inactive");
+      playgroundContainer.classList.add("show-immutable")
+    }
+  }
+
+
+})
