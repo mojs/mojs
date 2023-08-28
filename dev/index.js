@@ -32,6 +32,11 @@ const methods = {
   shift: { type: IN_PLACE },
   unshift: { type: IN_PLACE },
   map: { type: IMMUTABLE },
+  filter: { type: IMMUTABLE },
+}
+
+function getPosFromProps( props ){
+  return parseInt( props.x.split("px")[0] );
 }
 
 function uuid() {
@@ -208,6 +213,96 @@ function initializeMethod({
     getBracket,
     init
   }
+
+}
+
+//>> EXAMPLE #5: filter()
+array_filter: {
+
+  // MODIFY >>
+  const methodName = "filter";
+  const code = `
+    const years = [ 2021, 1999, 2004, 2023, 2001 ];
+    const lateYears = years.filter( value => value > 2020 );
+
+    console.log( lateYears ); // [ 2021, 2023 ];`
+  const methodSyntax = `.filter(<span class="c-space"></span>)`
+  // << MODIFY
+
+  const demoContainer = document.querySelector(`section#array-${methodName}`);
+
+  const { init, getBracket, getMarble, getMarblesFromInitialX } = initializeMethod({
+    el: demoContainer,
+    jsCode: code,
+    methodSyntax,
+    methodName,
+    active: false
+  });
+
+  // MODIFY:
+  const pushBallInitialX = 248;
+  const pushBallInitial = getMarble({
+    x: pushBallInitialX,
+    duration: 1000,
+    fill: GREEN
+  });
+
+  const arrayMethodsVisualizedTimeline = new mojs.Timeline({ repeat: 1 });
+  const inputMarbles = getMarblesFromInitialX({ count: 4, index: true, listOfColors: [ ORANGE, GREEN, GREEN, ORANGE ] });
+  const outputMarbles = getMarblesFromInitialX({ count: 2, index: true, xOffset: xDiff, fill: GREEN });
+
+  const leftBracket = getBracket({
+    x: leftBracketX,
+    y: leftBracketY
+  });
+
+  const rightBracket = getBracket({
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding,
+    y: leftBracketY,
+    duration: 3000,
+    dir: "right"
+  });
+
+  const leftBracket2 = getBracket({
+    x: leftBracket2X,
+    y: leftBracketY
+  });
+
+  const initialRightBracket2X = leftBracket2X + (2 * marbleWidth) + bracketPadding;
+
+  const rightBracket2 = getBracket({
+    dir: "right",
+    x: {
+      [initialRightBracket2X]:
+        initialRightBracket2X + marbleWidth
+    },
+    y: leftBracketY,
+    duration: 3000,
+  });
+
+  new mojs.Html({
+    el: `#${methodName}`,
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding + bracketRightMargin,
+    y: leftBracketY,
+    duration: 3000,
+  })
+
+  inputMarbles[3].tune( props =>{
+    const x = getPosFromProps(props);
+    console.log(x);
+    return {
+      x: { [x]: pushBallInitialX } // xDiff
+    }
+  }).then({
+    x: { [pushBallInitialX] : xDiff }
+  }).play();
+
+  arrayMethodsVisualizedTimeline
+    .add(inputMarbles, outputMarbles)
+
+  init(() => {
+
+  });
 
 }
 
@@ -682,8 +777,6 @@ array_unshift: {
   });
 
 }
-
-//>> EXAMPLE #4: shift()
 
 //>> EXAMPLE #5: filter()
 
