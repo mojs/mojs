@@ -436,12 +436,12 @@ array_shift: {
 
   // MODIFY:
   const code = `
-    const letters = [ "A", "B", "C", "D" ];
-    letters.pop();
+    const letters = [ "Z", "A", "B", "C" ];
+    letters.shift();
     console.log( letters ); // [ "A", "B", "C" ];
-    letters.pop();
-    letters.pop();
-    console.log( letters ); // [ "A" ];
+    letters.shift();
+    letters.shift();
+    console.log( letters ); // [ "C" ];
   `
   // MODIFY:
   const methodSyntax = `.shift()`
