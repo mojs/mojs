@@ -149,7 +149,16 @@ class Shape extends Tunable {
     @returns {Object} this.
   */
   tune(o) {
-    super.tune(o);
+
+    // Handle tune via callback function:
+    if (typeof o === 'function') {
+      super.tune(o({
+        el: this.el,
+        ...this._props,
+      }));
+    } else {
+      super.tune(o);
+    }
 
     // update shapeModule's size to the max in `then` chain
     this._getMaxSizeInChain();

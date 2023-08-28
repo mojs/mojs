@@ -12,6 +12,10 @@ h1 {
 a {
   color: hotpink;
 }
+.demo-container {
+  width: 800px;
+  margin: 0 auto 0.5rem auto;
+}
 .demo-container main {
   box-sizing: border-box;
   border: 2px solid gray;
@@ -19,6 +23,45 @@ a {
   width: 800px;
   position: relative;
 }
+.demo-container.inplace main {
+  border-top: 2px solid tomato;
+}
+.demo-container.immutable main {
+  border-top: 2px solid yellowgreen;
+}
+
+/* CONTROLS */
+.controls {
+  box-sizing: border-box;
+  margin: 0 auto;
+  border: 1px solid white;
+  padding: 0.5rem;
+  width: 800px;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+.controls button {
+  border: none;
+  color: 000;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.25rem 1rem;
+  cursor: pointer;
+  transition: opacity 200ms ease;
+  opacity: 0.65;
+}
+.controls button:hover {
+  opacity: 1;
+}
+.controls #inplace {
+  background: tomato;
+  margin-right: 1rem;
+}
+.controls #immutable {
+  background: yellowgreen;
+  margin-left: 1rem;
+}
+
 pre.code {
   box-sizing: border-box;
   border: 2px solid gray;
@@ -27,7 +70,7 @@ pre.code {
   margin: -2px 0 1rem 0 !important;
 }
 pre.code.active {
-  display: inline-block;
+  display: block;
 }
 .char {
   font-size: 32px;
@@ -49,7 +92,7 @@ pre.code.active {
   width: 32px;
   display: inline-block;
 }
-.mojs-marble {
+.mojs-burst, .mojs-marble {
   position: absolute;
   top: 0;
   left: 0;
@@ -67,10 +110,6 @@ pre.code.active {
   place-items: center;
   width: 100%;
   height: 100%;
-}
-.char,
-.mojs-shape {
-  /* border: 1px solid gray; */
 }
 .code-show, .demo-init-wrapper {
   position: absolute;
@@ -103,4 +142,8 @@ button.demo-reset  {
 button.demo-reset:hover {
   background: tomato;
   color: black;
+}
+
+.debug {
+  outline: 2px solid hotpink;
 }

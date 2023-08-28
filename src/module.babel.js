@@ -243,7 +243,7 @@ class Module {
   }
 
   /*
-    Method to tune new oprions to _o and _props object.
+    Method to tune new options to _o and _props object.
     @private
     @param {Object} Options object to tune to.
   */

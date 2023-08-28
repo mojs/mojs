@@ -1,34 +1,54 @@
 import mojs from 'src/mojs.babel.js';
 import MojsPlayer from '@mojs/player';
 
-const ORANGE  = "#f59d56";
-const GREEN   = "#aded94";
+// TODO: marbleOptions => Switch between "circle" & "rectangle"
+
+const ORANGE = "#f59d56";
+const GREEN = "#aded94";
 const MAGENTA = "#bd81fb";
-const RED     = "#ee695a"
+const RED = "#ee695a"
 
 const downArrow = "&#8681;";
-const upArrow   = "&#8679;";
+const upArrow = "&#8679;";
 
-const xDiff              = 536 - 22;
-const leftBracketX       = 22;
-const leftBracket2X      = 536;
-const leftBracketY       = 84;
-const leftMarbleX        = 64;
-const marbleRadius       = 16;
-const marbleWidth        = 38;
-const bracketPadding     = 14;
+const xDiff = 536 - 22;
+const leftBracketX = 22;
+const leftBracket2X = 536;
+const leftBracketY = 84;
+const leftMarbleX = 64;
+const marbleRadius = 16;
+const marbleWidth = 38;
+const bracketPadding = 14;
 const bracketRightMargin = 22;
-const rightArrowX        = 460;
-const rightArrowY        = 76;
+const rightArrowX = 460;
+const rightArrowY = 76;
 
 function uuid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
 }
 
-function initializeMethod({ el, jsCode, method, active = false, indexed = true }){
+function initializeMethod({
+  el,
+  jsCode,
+  methodSyntax,
+  methodName,
+  active = false,
+  indexed = true
+}) {
+
+  const IN_PLACE = "IN_PLACE";
+  const IMMUTABLE = "IMMUTABLE";
+
+  const methods = {
+    push: { type: IN_PLACE },
+    pop: { type: IN_PLACE },
+    shift: { type: IN_PLACE },
+    unshift: { type: IN_PLACE },
+    map: { type: IMMUTABLE },
+  }
 
   const methodId = uuid();
 
@@ -48,7 +68,13 @@ function initializeMethod({ el, jsCode, method, active = false, indexed = true }
     <pre class="code ${active ? "active" : ""}"></pre>
   `
 
-  el.setAttribute("class", "demo-container");
+  if (!methodName) {
+    throw new Error("ERROR: methodName not provided.")
+  }
+
+  const isImmutable = methods[methodName].type === IMMUTABLE;
+  const className = "demo-container " + (isImmutable ? "immutable" : "inplace");
+  el.setAttribute("class", className);
   el.style.position = "relative";
   el.insertAdjacentHTML(
     "afterbegin",
@@ -59,6 +85,7 @@ function initializeMethod({ el, jsCode, method, active = false, indexed = true }
 
   const marbleOptions = {
     parent,
+    shape: "circle",
     className: indexed ? "mojs-marble indexed" : "mojs-marble",
     radius: marbleRadius,
     isShowStart: true,
@@ -71,19 +98,25 @@ function initializeMethod({ el, jsCode, method, active = false, indexed = true }
 
   parent.insertAdjacentHTML("afterbegin", rightArrowHTML)
 
-  parent.insertAdjacentHTML("afterbegin", method);
+  parent.insertAdjacentHTML(
+    "afterbegin",
+    `<div class="char method" id="${methodName}">
+      ${methodSyntax}
+    </div>
+    `
+  );
 
   el.querySelector("pre").insertAdjacentHTML(
     "beforeend",
     `<code class="language-javascript">${jsCode}</code>`
   );
 
-  el.querySelector(`#code-show-${methodId}`).addEventListener("click", ()=>{
+  el.querySelector(`#code-show-${methodId}`).addEventListener("click", () => {
 
     const preEl = el.querySelector("pre.code");
     const arrow = el.querySelector("span.arrow");
     const arrowText = el.querySelector("button span.text");
-    if ( preEl.classList.contains("active")){
+    if (preEl.classList.contains("active")) {
       arrow.innerHTML = downArrow;
       arrowText.textContent = "Show Code";
       return preEl.classList.remove("active");
@@ -101,19 +134,19 @@ function initializeMethod({ el, jsCode, method, active = false, indexed = true }
     duration: 3000,
   })
 
-  function getBracket({ id, dir = "left", x = 0, y = 0, ...args } ){
+  function getBracket({ id, dir = "left", x = 0, y = 0, ...args }) {
 
-    const bracketEl = addBracketElToParent({ dir }, parent );
+    const bracketEl = addBracketElToParent({ dir }, parent);
 
     return new mojs.Html({ el: bracketEl, x, y, ...args })
 
   }
 
-  function addBracketElToParent({ id, dir = "left" } ){
+  function addBracketElToParent({ id, dir = "left" }) {
 
     const bracketEl = document.createElement("div");
     bracketEl.setAttribute("class", "char");
-    if ( id ) {
+    if (id) {
       bracketEl.setAttribute("id", id);
     }
     bracketEl.textContent = dir === "left" ? "[" : "]";
@@ -122,7 +155,7 @@ function initializeMethod({ el, jsCode, method, active = false, indexed = true }
 
   }
 
-  function getMarble({ fill = ORANGE, x = 0, y = 0, opacity = 0, index = null, ...args } = {}){
+  function getMarble({ fill = ORANGE, x = 0, y = 0, opacity = 0, index = null, ...args } = {}) {
 
     return new mojs.Shape({
       ...marbleOptions,
@@ -135,9 +168,9 @@ function initializeMethod({ el, jsCode, method, active = false, indexed = true }
 
   }
 
-  function getMarblesFromInitialX({ count = 0, x = 0, fill, index = false, xOffset = 0, listOfColors = [], ...args }){
+  function getMarblesFromInitialX({ count = 0, x = 0, fill, index = false, xOffset = 0, listOfColors = [], ...args }) {
 
-    if ( count === 0 ){
+    if (count === 0) {
       return [];
     }
 
@@ -160,12 +193,12 @@ function initializeMethod({ el, jsCode, method, active = false, indexed = true }
 
   let hasInitialized = false;
 
-  function init(fn){
-    if ( !hasInitialized ){
+  function init(fn) {
+    if (!hasInitialized) {
       hasInitialized = true;
       el
-      .querySelector(".demo-init")
-      .addEventListener("click",  fn, { once: true });
+        .querySelector(".demo-init")
+        .addEventListener("click", fn, { once: true });
     }
   }
 
@@ -188,7 +221,7 @@ array_push: {
     letters.push( "D" );
 
     console.log( letters ); // [ "A", "B", "C", "D" ];`
-  const method = `<div class="char method" id="${methodName}">.push(<span class="c-space"></span>)</div>`
+  const methodSyntax = `.push(<span class="c-space"></span>)`
   // << MODIFY
 
   const demoContainer = document.querySelector(`section#array-${methodName}`);
@@ -196,13 +229,14 @@ array_push: {
   const { init, getBracket, getMarble, getMarblesFromInitialX } = initializeMethod({
     el: demoContainer,
     jsCode: code,
-    method,
-    active: true
+    methodSyntax,
+    methodName,
+    active: false
   });
 
   const arrayMethodsVisualizedTimeline = new mojs.Timeline({ repeat: 1 });
-  const circlesInput = getMarblesFromInitialX({ count: 4, index: true });
-  const circlesOutput = getMarblesFromInitialX({ count: 4, index: true, xOffset: xDiff });
+  const inputMarbles = getMarblesFromInitialX({ count: 4, index: true });
+  const outputMarbles = getMarblesFromInitialX({ count: 4, index: true, xOffset: xDiff });
 
   // MODIFY:
   const pushBallInitial = getMarble({
@@ -229,7 +263,7 @@ array_push: {
   });
 
   const rightBracket = getBracket({
-    x: leftBracketX + ( 4 * marbleWidth ) + bracketPadding,
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding,
     y: leftBracketY,
     duration: 3000,
     dir: "right"
@@ -240,13 +274,13 @@ array_push: {
     y: leftBracketY
   });
 
-  const initialRightBracket2X = leftBracket2X + ( 4 * marbleWidth ) + bracketPadding;
+  const initialRightBracket2X = leftBracket2X + (4 * marbleWidth) + bracketPadding;
 
   const rightBracket2 = getBracket({
     dir: "right",
     x: {
       [initialRightBracket2X]:
-      initialRightBracket2X + marbleWidth
+        initialRightBracket2X + marbleWidth
     },
     y: leftBracketY,
     duration: 3000,
@@ -254,15 +288,15 @@ array_push: {
 
   new mojs.Html({
     el: `#${methodName}`,
-    x: leftBracketX + ( 4 * marbleWidth ) + bracketPadding + bracketRightMargin,
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding + bracketRightMargin,
     y: leftBracketY,
     duration: 3000,
   })
 
   arrayMethodsVisualizedTimeline
-  .add(circlesInput, circlesOutput)
+    .add(inputMarbles, outputMarbles)
 
-  init(()=>{
+  init(() => {
     pushBall.play()
     rightBracket2.play();
     pushBallInitial.play();
@@ -270,124 +304,7 @@ array_push: {
 
 }
 
-//>> EXAMPLE #2: unshift()
-array_unshift: {
-
-  // MODIFY >>
-  const methodName = "unshift";
-  const code = `
-    const letters = [ "B", "C", "D" ];
-    letters.unshift( "A" );
-
-    console.log( letters ); // [ "A", "B", "C", "D" ];
-  `
-  const method = `
-  <div class="char method" id="${methodName}">.unshift(<span class="c-space"></span>)</div>
-  `
-  // << MODIFY
-
-  const demoContainer = document.querySelector(`section#array-${methodName}`);
-
-  const { init, getBracket, getMarble, getMarblesFromInitialX } = initializeMethod({
-    el: demoContainer,
-    jsCode: code,
-    method,
-    indexed: false
-  });
-
-  const arrayMethodsVisualizedTimeline = new mojs.Timeline({ repeat: 1 });
-  const circlesInput = getMarblesFromInitialX({ count: 4, index: true });
-  const circlesOutput = getMarblesFromInitialX({
-    count: 4,
-    index: true,
-    xOffset: xDiff,
-    duration: 3000
-  });
-
-  // MODIFY:
-  const initialX = 283;
-  const pushBallInitial = getMarble({
-    x: initialX,
-    duration: 1000,
-    fill: GREEN
-  });
-
-  // MODIFY:
-  const pushBall = getMarble({
-    x: { [initialX] : xDiff },
-    duration: 3000,
-    opacity: { 0: 1 },
-    fill: GREEN,
-    onComplete: () => {
-      pushBall.getProps().el.setAttribute("data-index", 0);
-    }
-
-  })
-
-  const leftBracket = getBracket({
-    x: leftBracketX,
-    y: leftBracketY
-  });
-
-  const rightBracket = getBracket({
-    x: leftBracketX + ( 4 * marbleWidth ) + bracketPadding,
-    y: leftBracketY,
-    duration: 3000,
-    dir: "right"
-  });
-
-  const leftBracket2 = getBracket({
-    x: leftBracket2X,
-    y: leftBracketY
-  });
-
-  const initialRightBracket2X = leftBracket2X + ( 4 * marbleWidth ) + bracketPadding;
-
-  const rightBracket2 = getBracket({
-    dir: "right",
-    x: {
-      [initialRightBracket2X]:
-      initialRightBracket2X + marbleWidth
-    },
-    y: leftBracketY,
-    duration: 3000,
-  });
-
-  new mojs.Html({
-    el: `#${methodName}`,
-    x: leftBracketX + ( 4 * marbleWidth ) + bracketPadding + bracketRightMargin,
-    y: leftBracketY,
-    duration: 3000,
-  })
-
-  arrayMethodsVisualizedTimeline
-  .add(circlesInput, circlesOutput)
-
-  // MODIFY:
-  init(()=>{
-    pushBall.play()
-    rightBracket2.play();
-    pushBallInitial.play();
-
-    circlesOutput.forEach((c, i) =>{
-
-      const x = parseInt(c.getProps().x.split("px")[0])
-
-      c.tune({
-        x: { [x] : x + marbleWidth },
-        onComplete: ()=>{
-        c.getProps().el.setAttribute("data-index", i+1);
-      }});
-      c.play();
-
-    })
-
-
-  });
-
-}
-
-//>> EXAMPLE #3: pop()
+//>> EXAMPLE #2: pop()
 array_pop: {
 
   // MODIFY:
@@ -403,26 +320,25 @@ array_pop: {
     console.log( letters ); // [ "A" ];
   `
   // MODIFY:
-  const method = `
-  <div class="char method" id="${methodName}">.pop()</div>
-  `
+  const methodSyntax = `.pop()`
   // MODIFY:
   const demoContainer = document.querySelector(`section#array-${methodName}`);
 
   const { init, getBracket, getMarble, getMarblesFromInitialX } = initializeMethod({
     el: demoContainer,
     jsCode: code,
-    method
+    methodSyntax,
+    methodName
   });
 
   const arrayMethodsVisualizedTimeline = new mojs.Timeline({ repeat: 1 });
-  const listOfColors = [ ORANGE, MAGENTA, RED, GREEN ];
-  const circlesInput = getMarblesFromInitialX({
+  const listOfColors = [ORANGE, MAGENTA, RED, GREEN];
+  const inputMarbles = getMarblesFromInitialX({
     count: 4,
     index: true,
     listOfColors
   });
-  const circlesOutput = getMarblesFromInitialX({
+  const outputMarbles = getMarblesFromInitialX({
     count: 4,
     index: true,
     xOffset: xDiff,
@@ -436,7 +352,7 @@ array_pop: {
   });
 
   const rightBracket = getBracket({
-    x: leftBracketX + ( 4 * marbleWidth ) + bracketPadding,
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding,
     y: leftBracketY,
     duration: 3000,
     dir: "right"
@@ -447,13 +363,13 @@ array_pop: {
     y: leftBracketY
   });
 
-  const initialRightBracket2X = leftBracket2X + ( 4 * marbleWidth ) + bracketPadding;
+  const initialRightBracket2X = leftBracket2X + (4 * marbleWidth) + bracketPadding;
 
   const rightBracket2 = getBracket({
     dir: "right",
     x: {
       [initialRightBracket2X]:
-      initialRightBracket2X - marbleWidth
+        initialRightBracket2X - marbleWidth
     },
     y: leftBracketY,
     duration: 1500,
@@ -462,28 +378,28 @@ array_pop: {
   // MODIFY:
   new mojs.Html({
     el: `#${methodName}`,
-    x: leftBracketX + ( 4 * marbleWidth ) + bracketPadding + bracketRightMargin,
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding + bracketRightMargin,
     y: leftBracketY,
     duration: 3000,
   })
 
   arrayMethodsVisualizedTimeline
-  .add(circlesInput, circlesOutput);
+    .add(inputMarbles, outputMarbles);
 
   // MODIFY:
-  init(()=>{
+  init(() => {
 
-    const lastOutputMarble = circlesOutput[circlesOutput.length-1];
+    const lastOutputMarble = outputMarbles[outputMarbles.length - 1];
     const lastOutputMarbleX = parseInt(lastOutputMarble.getProps().x.split("px")[0]);
 
     const burst = new mojs.Burst({
       parent: demoContainer,
       className: "mojs-burst",
       shape: 'circle',
-      x: lastOutputMarbleX + 66,
-      y: leftBracketY + 17,
-      top: 0,
-      left: 0,
+      left: lastOutputMarbleX + 66,
+      top: leftBracketY + 17,
+      x: 0,
+      y: 0,
       radius: { 0: 120 },
       duration: 2000,
       children: {
@@ -509,6 +425,261 @@ array_pop: {
 
   });
 
+
+}
+
+//>> EXAMPLE #3: shift()
+array_shift: {
+
+  // MODIFY:
+  const methodName = "shift";
+
+  // MODIFY:
+  const code = `
+    const letters = [ "A", "B", "C", "D" ];
+    letters.pop();
+    console.log( letters ); // [ "A", "B", "C" ];
+    letters.pop();
+    letters.pop();
+    console.log( letters ); // [ "A" ];
+  `
+  // MODIFY:
+  const methodSyntax = `.shift()`
+  // MODIFY:
+  const demoContainer = document.querySelector(`section#array-${methodName}`);
+
+  const { init, getBracket, getMarble, getMarblesFromInitialX } = initializeMethod({
+    el: demoContainer,
+    jsCode: code,
+    methodSyntax,
+    methodName
+  });
+
+  const arrayMethodsVisualizedTimeline = new mojs.Timeline({ repeat: 1 });
+  const listOfColors = [ORANGE, MAGENTA, RED, GREEN];
+  const inputMarbles = getMarblesFromInitialX({
+    count: 4,
+    index: true,
+    listOfColors
+  });
+  const outputMarbles = getMarblesFromInitialX({
+    count: 4,
+    index: true,
+    xOffset: xDiff,
+    duration: 3000,
+    listOfColors
+  });
+
+  const leftBracket = getBracket({
+    x: leftBracketX,
+    y: leftBracketY
+  });
+
+  const rightBracket = getBracket({
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding,
+    y: leftBracketY,
+    duration: 3000,
+    dir: "right"
+  });
+
+  const leftBracket2 = getBracket({
+    x: leftBracket2X,
+    y: leftBracketY
+  });
+
+  const initialRightBracket2X = leftBracket2X + (4 * marbleWidth) + bracketPadding;
+
+  const rightBracket2 = getBracket({
+    dir: "right",
+    x: {
+      [initialRightBracket2X]:
+        initialRightBracket2X - marbleWidth
+    },
+    y: leftBracketY,
+    duration: 1500,
+  });
+
+  // MODIFY:
+  new mojs.Html({
+    el: `#${methodName}`,
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding + bracketRightMargin,
+    y: leftBracketY,
+    duration: 3000,
+  })
+
+  arrayMethodsVisualizedTimeline
+ .add(inputMarbles, outputMarbles);
+
+  // MODIFY:
+  init(() => {
+
+    const firstOutputMarble = outputMarbles[0];
+    const firstOutputMarbleX = parseInt(firstOutputMarble.getProps().x.split("px")[0]);
+
+    outputMarbles.slice(1).forEach((marble, idx) =>{
+
+      marble.tune((props)=>{
+        const x = parseInt(props.x.split("px")[0]);
+        return {
+          x: { [x]: x - marbleWidth },
+          duration: 1500,
+          onComplete: ()=>{
+            props.el.setAttribute("data-index", idx);
+          }
+        }
+      }).play();
+
+    });
+
+    const burst = new mojs.Burst({
+      parent: demoContainer,
+      className: "mojs-burst",
+      shape: 'circle',
+      left: firstOutputMarbleX + 66,
+      top: leftBracketY + 17,
+      x: 0,
+      y: 0,
+      radius: { 0: 120 },
+      duration: 2000,
+      children: {
+        repeat: 0,
+        radius: { 6: 2 },
+        shape: 'circle',
+        fill: ORANGE,
+        strokeWidth: { 1: 0 },
+        angle: { 360: 0 },
+        duration: 1000
+      },
+      count: 20,
+    });
+
+    firstOutputMarble.tune({
+      duration: 1000,
+      opacity: { 1: 0 }
+    });
+
+    firstOutputMarble.play();
+    burst.play();
+    rightBracket2.play();
+
+  });
+
+}
+
+//>> EXAMPLE #4: unshift()
+array_unshift: {
+
+  // MODIFY >>
+  const methodName = "unshift";
+  const code = `
+    const letters = [ "B", "C", "D" ];
+    letters.unshift( "A" );
+
+    console.log( letters ); // [ "A", "B", "C", "D" ];
+  `
+  const methodSyntax = `.unshift(<span class="c-space"></span>)`
+  // << MODIFY
+
+  const demoContainer = document.querySelector(`section#array-${methodName}`);
+
+  const { init, getBracket, getMarble, getMarblesFromInitialX } = initializeMethod({
+    el: demoContainer,
+    jsCode: code,
+    methodSyntax,
+    methodName,
+    indexed: false
+  });
+
+  const arrayMethodsVisualizedTimeline = new mojs.Timeline({ repeat: 1 });
+  const inputMarbles = getMarblesFromInitialX({ count: 4, index: true });
+  const outputMarbles = getMarblesFromInitialX({
+    count: 4,
+    index: true,
+    xOffset: xDiff,
+    duration: 3000
+  });
+
+  // MODIFY:
+  const initialX = 283;
+  const pushBallInitial = getMarble({
+    x: initialX,
+    duration: 1000,
+    fill: GREEN
+  });
+
+  // MODIFY:
+  const pushBall = getMarble({
+    x: { [initialX]: xDiff },
+    duration: 3000,
+    opacity: { 0: 1 },
+    fill: GREEN,
+    onComplete: () => {
+      pushBall.getProps().el.setAttribute("data-index", 0);
+    }
+
+  })
+
+  const leftBracket = getBracket({
+    x: leftBracketX,
+    y: leftBracketY
+  });
+
+  const rightBracket = getBracket({
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding,
+    y: leftBracketY,
+    duration: 3000,
+    dir: "right"
+  });
+
+  const leftBracket2 = getBracket({
+    x: leftBracket2X,
+    y: leftBracketY
+  });
+
+  const initialRightBracket2X = leftBracket2X + (4 * marbleWidth) + bracketPadding;
+
+  const rightBracket2 = getBracket({
+    dir: "right",
+    x: {
+      [initialRightBracket2X]:
+        initialRightBracket2X + marbleWidth
+    },
+    y: leftBracketY,
+    duration: 3000,
+  });
+
+  new mojs.Html({
+    el: `#${methodName}`,
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding + bracketRightMargin,
+    y: leftBracketY,
+    duration: 3000,
+  })
+
+  arrayMethodsVisualizedTimeline
+    .add(inputMarbles, outputMarbles)
+
+  // MODIFY:
+  init(() => {
+    pushBall.play()
+    rightBracket2.play();
+    pushBallInitial.play();
+
+    outputMarbles.forEach((c, i) => {
+
+      const x = parseInt(c.getProps().x.split("px")[0])
+
+      c.tune({
+        x: { [x]: x + marbleWidth },
+        onComplete: () => {
+          c.getProps().el.setAttribute("data-index", i + 1);
+        }
+      });
+      c.play();
+
+    })
+
+
+  });
 
 }
 
