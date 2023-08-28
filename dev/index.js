@@ -456,7 +456,7 @@ array_pop: {
       initialRightBracket2X - marbleWidth
     },
     y: leftBracketY,
-    duration: 3000,
+    duration: 1500,
   });
 
   // MODIFY:
@@ -468,7 +468,7 @@ array_pop: {
   })
 
   arrayMethodsVisualizedTimeline
-  .add(circlesInput, circlesOutput)
+  .add(circlesInput, circlesOutput);
 
   // MODIFY:
   init(()=>{
@@ -501,13 +501,14 @@ array_pop: {
     lastOutputMarble.tune({
       duration: 1000,
       opacity: { 1: 0 }
-    }).play();
+    });
 
+    lastOutputMarble.play();
     burst.play();
-
     rightBracket2.play();
 
   });
+
 
 }
 
