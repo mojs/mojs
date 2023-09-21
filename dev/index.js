@@ -35,8 +35,8 @@ const methods = {
   filter: { type: IMMUTABLE },
 }
 
-function getPosFromProps( props ){
-  return parseInt( props.x.split("px")[0] );
+function getPosFromProps(props) {
+  return parseInt(props.x.split("px")[0]);
 }
 
 function uuid() {
@@ -51,6 +51,7 @@ function initializeMethod({
   jsCode,
   methodSyntax,
   methodName,
+  creatorFunction,
   active = false,
   indexed = true
 }) {
@@ -61,7 +62,7 @@ function initializeMethod({
     <main>
       <div class="demo-init-wrapper">
         <button class="demo-init">&#9658; Play</button>
-        <button class="demo-reset" hidden>Reset</button>
+        <button class="demo-reset">Reset</button>
       </div>
       <div class="code-show" id="code-show-${methodId}">
         <button>
@@ -196,7 +197,7 @@ function initializeMethod({
 
   }
 
-  function getBurst({ delay = 0, left = 0, top = 0, x = 0, y = 0, fill = GREEN }){
+  function getBurst({ delay = 0, left = 0, top = 0, x = 0, y = 0, fill = GREEN }) {
 
     const burst = new mojs.Burst({
       parent: el,
@@ -233,6 +234,9 @@ function initializeMethod({
       el
         .querySelector(".demo-init")
         .addEventListener("click", fn, { once: true });
+      el
+        .querySelector(".demo-reset")
+        .addEventListener("click", creatorFunction, { once: true });
     }
   }
 
@@ -246,168 +250,24 @@ function initializeMethod({
 
 }
 
-//>> EXAMPLE #5: filter()
-array_filter: {
-
-  // MODIFY >>
-  const methodName = "filter";
-  const code = `
-    const years = [ 2021, 1999, 2004, 2023, 2001 ];
-    const lateYears = years.filter( value => value > 2020 );
-
-    console.log( lateYears ); // [ 2021, 2023 ];`
-  const methodSyntax = `.filter(<span class="c-space"></span>)`
-  // << MODIFY
-
-  const demoContainer = document.querySelector(`section#array-${methodName}`);
-
-  const { init, getBracket, getMarble, getMarblesFromInitialX, getBurst } = initializeMethod({
-    el: demoContainer,
-    jsCode: code,
-    methodSyntax,
-    methodName,
-    active: false
-  });
-
-  // MODIFY:
-  const pushBallInitialX = 248;
-  const pushBallInitial = getMarble({
-    x: pushBallInitialX,
-    duration: 1000,
-    fill: GREEN
-  });
-
-  const arrayMethodsVisualizedTimeline = new mojs.Timeline({ repeat: 1 });
-  const inputMarbles = getMarblesFromInitialX({
-    count: 4,
-    index: true,
-    listOfColors: [ ORANGE, GREEN, GREEN, ORANGE ]
-  });
-  const movingMarbles = getMarblesFromInitialX({
-    count: 4,
-    index: true,
-    listOfColors: [ ORANGE, GREEN, GREEN, ORANGE ]
-  });
-  // const outputMarbles = getMarblesFromInitialX({
-  //   count: 2,
-  //   index: true,
-  //   xOffset: xDiff,
-  //   fill: GREEN
-  // });
-
-  const leftBracket = getBracket({
-    x: leftBracketX,
-    y: leftBracketY
-  });
-
-  const rightBracket = getBracket({
-    x: leftBracketX + (4 * marbleWidth) + bracketPadding,
-    y: leftBracketY,
-    duration: 3000,
-    dir: "right"
-  });
-
-  const leftBracket2 = getBracket({
-    x: leftBracket2X,
-    y: leftBracketY
-  });
-
-  const initialRightBracket2X = leftBracket2X + (2 * marbleWidth) + bracketPadding - ( marbleWidth * 2 );
-
-  const rightBracket2 = getBracket({
-    dir: "right",
-    x: initialRightBracket2X,
-    y: leftBracketY,
-  });
-
-  new mojs.Html({
-    el: `#${methodName}`,
-    x: leftBracketX + (4 * marbleWidth) + bracketPadding + bracketRightMargin,
-    y: leftBracketY,
-    duration: 3000,
-  })
-
-  // console.log(outputMarbles[0].getProps().x); // 514px
-  // console.log(outputMarbles[1].getProps().x); // 552px
-
-  arrayMethodsVisualizedTimeline
-    // .add(inputMarbles, outputMarbles)
-
-  init(() => {
-
-    const burst = getBurst({ left: 314, fill: ORANGE }); // <= 314 <= Imprecise?
-    const { x } = movingMarbles[3].getProps();
-    const durationSpeed = 1000;
-
-    movingMarbles[0].tune( props =>{
-      const x = getPosFromProps(props);
-      return {
-        onComplete: ()=>{
-          burst.tune({
-            onComplete: function afterBurst(){
-
-              rightBracket2.then({
-                delay: 900,
-                duration: durationSpeed,
-                x: { [initialRightBracket2X] : initialRightBracket2X + marbleWidth }
-            }).play();
-
-              movingMarbles[1]
-              .tune( props =>{
-                const x = getPosFromProps(props);
-                return {
-                  onComplete: ()=>{
-
-                  },
-                  duration: durationSpeed,
-                  x: { [x]: pushBallInitialX }
-                }
-              })
-              .then({
-                duration: durationSpeed + 500,
-                x: { [pushBallInitialX]: 514 },
-                onComplete: function(){
-                }
-              })
-              .play();
-
-            }
-          }).play();
-        },
-        duration: durationSpeed,
-        x: { [x]: pushBallInitialX } // xDiff
-      }
-    })
-    .then({
-      delay: 150,
-      opacity: { 1: 0 }
-    })
-    .play();
-    // .then({
-    //   x: { [pushBallInitialX] : xDiff }
-    // }).play();
-
-
-  });
-
-}
-
 //>> EXAMPLE #1: push()
-array_push: {
+(function array_push() {
 
   // MODIFY >>
   const methodName = "push";
   const code = `
-    const letters = [ "A", "B", "C" ];
-    letters.push( "D" );
+      const letters = [ "A", "B", "C" ];
+      letters.push( "D" );
 
-    console.log( letters ); // [ "A", "B", "C", "D" ];`
+      console.log( letters ); // [ "A", "B", "C", "D" ];`
   const methodSyntax = `.push(<span class="c-space"></span>)`
   // << MODIFY
 
   const demoContainer = document.querySelector(`section#array-${methodName}`);
+  demoContainer.innerHTML = "";
 
   const { init, getBracket, getMarble, getMarblesFromInitialX } = initializeMethod({
+    creatorFunction: array_push,
     el: demoContainer,
     jsCode: code,
     methodSyntax,
@@ -483,29 +343,31 @@ array_push: {
     pushBallInitial.play();
   });
 
-}
+}());
 
 //>> EXAMPLE #2: pop()
-array_pop: {
+(function pop() {
 
   // MODIFY:
   const methodName = "pop";
 
   // MODIFY:
   const code = `
-    const letters = [ "A", "B", "C", "D" ];
-    letters.pop();
-    console.log( letters ); // [ "A", "B", "C" ];
-    letters.pop();
-    letters.pop();
-    console.log( letters ); // [ "A" ];
-  `
+      const letters = [ "A", "B", "C", "D" ];
+      letters.pop();
+      console.log( letters ); // [ "A", "B", "C" ];
+      letters.pop();
+      letters.pop();
+      console.log( letters ); // [ "A" ];
+    `
   // MODIFY:
   const methodSyntax = `.pop()`
   // MODIFY:
   const demoContainer = document.querySelector(`section#array-${methodName}`);
+  demoContainer.innerHTML = "";
 
   const { init, getBracket, getMarble, getMarblesFromInitialX } = initializeMethod({
+    creatorFunction: pop,
     el: demoContainer,
     jsCode: code,
     methodSyntax,
@@ -607,29 +469,33 @@ array_pop: {
   });
 
 
-}
+
+
+}());
 
 //>> EXAMPLE #3: shift()
-array_shift: {
+(function array_shift() {
 
   // MODIFY:
   const methodName = "shift";
 
   // MODIFY:
   const code = `
-    const letters = [ "Z", "A", "B", "C" ];
-    letters.shift();
-    console.log( letters ); // [ "A", "B", "C" ];
-    letters.shift();
-    letters.shift();
-    console.log( letters ); // [ "C" ];
-  `
+      const letters = [ "Z", "A", "B", "C" ];
+      letters.shift();
+      console.log( letters ); // [ "A", "B", "C" ];
+      letters.shift();
+      letters.shift();
+      console.log( letters ); // [ "C" ];
+    `
   // MODIFY:
   const methodSyntax = `.shift()`
   // MODIFY:
   const demoContainer = document.querySelector(`section#array-${methodName}`);
+  demoContainer.innerHTML = "";
 
   const { init, getBracket, getMarble, getMarblesFromInitialX } = initializeMethod({
+    creatorFunction: array_shift,
     el: demoContainer,
     jsCode: code,
     methodSyntax,
@@ -689,7 +555,7 @@ array_shift: {
   })
 
   arrayMethodsVisualizedTimeline
- .add(inputMarbles, outputMarbles);
+    .add(inputMarbles, outputMarbles);
 
   // MODIFY:
   init(() => {
@@ -697,14 +563,14 @@ array_shift: {
     const firstOutputMarble = outputMarbles[0];
     const firstOutputMarbleX = parseInt(firstOutputMarble.getProps().x.split("px")[0]);
 
-    outputMarbles.slice(1).forEach((marble, idx) =>{
+    outputMarbles.slice(1).forEach((marble, idx) => {
 
-      marble.tune((props)=>{
+      marble.tune((props) => {
         const x = parseInt(props.x.split("px")[0]);
         return {
           x: { [x]: x - marbleWidth },
           duration: 1500,
-          onComplete: ()=>{
+          onComplete: () => {
             props.el.setAttribute("data-index", idx);
           }
         }
@@ -745,25 +611,28 @@ array_shift: {
 
   });
 
-}
+
+}());
 
 //>> EXAMPLE #4: unshift()
-array_unshift: {
+(function unshift() {
 
   // MODIFY >>
   const methodName = "unshift";
   const code = `
-    const letters = [ "B", "C", "D" ];
-    letters.unshift( "A" );
+      const letters = [ "B", "C", "D" ];
+      letters.unshift( "A" );
 
-    console.log( letters ); // [ "A", "B", "C", "D" ];
-  `
+      console.log( letters ); // [ "A", "B", "C", "D" ];
+    `
   const methodSyntax = `.unshift(<span class="c-space"></span>)`
   // << MODIFY
 
   const demoContainer = document.querySelector(`section#array-${methodName}`);
+  demoContainer.innerHTML = "";
 
   const { init, getBracket, getMarble, getMarblesFromInitialX } = initializeMethod({
+    creatorFunction: unshift,
     el: demoContainer,
     jsCode: code,
     methodSyntax,
@@ -862,9 +731,208 @@ array_unshift: {
 
   });
 
-}
+
+
+}());
 
 //>> EXAMPLE #5: filter()
+(function array_filter() {
+
+  // MODIFY >>
+  const methodName = "filter";
+  const code = `
+      const years = [ 2021, 1999, 2004, 2023, 2001 ];
+      const lateYears = years.filter( value => value > 2020 );
+
+      console.log( lateYears ); // [ 2021, 2023 ];`
+  const methodSyntax = `.filter(<span class="c-space"></span>)`
+  // << MODIFY
+
+  const demoContainer = document.querySelector(`section#array-${methodName}`);
+  demoContainer.innerHTML = "";
+  const fadeOutOpacityLevel = 0.3;
+
+  const { init, getBracket, getMarble, getMarblesFromInitialX, getBurst } = initializeMethod({
+    creatorFunction: array_filter,
+    el: demoContainer,
+    jsCode: code,
+    methodSyntax,
+    methodName,
+    active: false
+  });
+
+  // MODIFY:
+  const pushBallInitialX = 248;
+  const pushBallInitial = getMarble({
+    x: pushBallInitialX,
+    duration: 1000,
+    fill: GREEN
+  });
+
+  const inputMarbles = getMarblesFromInitialX({
+    count: 4,
+    index: true,
+    listOfColors: [ORANGE, GREEN, GREEN, ORANGE]
+  });
+  const movingMarbles = getMarblesFromInitialX({
+    count: 4,
+    index: true,
+    listOfColors: [ORANGE, GREEN, GREEN, ORANGE]
+  });
+
+  const leftBracket = getBracket({
+    x: leftBracketX,
+    y: leftBracketY
+  });
+
+  const rightBracket = getBracket({
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding,
+    y: leftBracketY,
+    duration: 3000,
+    dir: "right"
+  });
+
+  const leftBracket2 = getBracket({
+    x: leftBracket2X,
+    y: leftBracketY
+  });
+
+  const initialRightBracket2X = leftBracket2X + (2 * marbleWidth) + bracketPadding - (marbleWidth * 2);
+
+  const rightBracket2 = getBracket({
+    dir: "right",
+    x: initialRightBracket2X,
+    y: leftBracketY,
+  });
+
+  new mojs.Html({
+    el: `#${methodName}`,
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding + bracketRightMargin,
+    y: leftBracketY,
+    duration: 3000,
+  })
+
+  // console.log(outputMarbles[0].getProps().x); // 514px
+  // console.log(outputMarbles[1].getProps().x); // 552px
+
+  init(() => {
+
+    const burst = getBurst({ left: 314, fill: ORANGE }); // <= 314 <= Imprecise?
+    const { x } = movingMarbles[3].getProps();
+    const durationSpeed = 1000;
+
+    const fourthMarble = movingMarbles[3].tune(props => {
+      const x = getPosFromProps(props);
+      return {
+        onComplete: () => {
+          burst.tune({
+            onComplete: function afterBurst() { }
+          }).play();
+        },
+        duration: durationSpeed,
+        x: { [x]: pushBallInitialX }
+      }
+    })
+      .then({
+        delay: 150,
+        opacity: { 1: 0 }
+      });
+
+    const thirdMarble = movingMarbles[2]
+      .tune(props => {
+        const x = getPosFromProps(props);
+
+        return {
+          onComplete: function afterThirdMarblePassesCallback() {
+            movingMarbles[2].getProps().el.setAttribute("data-index", 1);
+          },
+          duration: durationSpeed,
+          x: { [x]: pushBallInitialX }
+        }
+      })
+      .then({
+        duration: durationSpeed + 500,
+        x: { [pushBallInitialX]: 552 },
+        onComplete: function afterThirdMarble() {
+          inputMarbles[3].tune({
+            opacity: { [1]: fadeOutOpacityLevel }
+          }).play();
+          fourthMarble.play();
+        }
+      });
+
+    const secondMarble = movingMarbles[1]
+      .tune(props => {
+        const x = getPosFromProps(props);
+
+        return {
+          onComplete: function () {
+            movingMarbles[1].getProps().el.setAttribute("data-index", 0);
+          },
+          duration: durationSpeed,
+          x: { [x]: pushBallInitialX }
+        }
+      })
+      .then({
+        duration: durationSpeed + 500,
+        x: { [pushBallInitialX]: 514 },
+        onComplete: function afterSecondMarble() {
+          inputMarbles[2].tune({
+            opacity: { [1]: fadeOutOpacityLevel }
+          }).play();
+          thirdMarble.play();
+        }
+      });
+
+    const firstMarble = movingMarbles[0].tune(props => {
+      const x = getPosFromProps(props);
+
+      inputMarbles[0].tune({
+        opacity: { [1]: fadeOutOpacityLevel }
+      }).play();
+
+      return {
+        onComplete: () => {
+          burst.tune({
+            onComplete: function afterBurst() {
+
+              rightBracket2
+                .then({
+                  delay: 900,
+                  duration: durationSpeed,
+                  x: { [initialRightBracket2X]: initialRightBracket2X + marbleWidth }
+                })
+                .then({
+                  delay: 1800,
+                  duration: durationSpeed,
+                  x: { [initialRightBracket2X + marbleWidth]: initialRightBracket2X + (marbleWidth * 2) }
+                })
+                .play();
+
+              inputMarbles[1].tune({
+                opacity: { [1]: fadeOutOpacityLevel }
+              }).play();
+
+              secondMarble.play();
+
+            }
+          }).play();
+        },
+        duration: durationSpeed,
+        x: { [x]: pushBallInitialX }
+      }
+    })
+      .then({
+        delay: 150,
+        opacity: { 1: 0 }
+      });
+
+    firstMarble.play();
+
+  });
+
+
+}());
 
 //>> EXAMPLE #6: map()
 
@@ -880,12 +948,12 @@ array_unshift: {
 const controls = document.querySelector(".controls");
 const playgroundContainer = document.querySelector(".playground-container");
 
-( playgroundContainer && controls ) && controls.addEventListener("click", e =>{
+(playgroundContainer && controls) && controls.addEventListener("click", e => {
 
   const type = e.target.id;
 
-  if ( type === "inplace" ){
-    if ( playgroundContainer.classList.contains("show-inplace" )){
+  if (type === "inplace") {
+    if (playgroundContainer.classList.contains("show-inplace")) {
       e.target.classList.add("inactive");
       playgroundContainer.classList.remove("show-inplace");
     } else {
@@ -894,8 +962,8 @@ const playgroundContainer = document.querySelector(".playground-container");
     }
   }
 
-  if ( type === "immutable" ){
-    if ( playgroundContainer.classList.contains("show-immutable") ){
+  if (type === "immutable") {
+    if (playgroundContainer.classList.contains("show-immutable")) {
       e.target.classList.add("inactive");
       playgroundContainer.classList.remove("show-immutable")
     } else {
