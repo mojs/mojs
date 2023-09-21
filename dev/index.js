@@ -196,6 +196,35 @@ function initializeMethod({
 
   }
 
+  function getBurst({ delay = 0, left = 0, top = 0, x = 0, y = 0, fill = GREEN }){
+
+    const burst = new mojs.Burst({
+      parent: el,
+      className: "mojs-burst",
+      shape: 'circle',
+      left,
+      top: leftBracketY + 17,
+      x,
+      y,
+      radius: { 0: 120 },
+      duration: 2000,
+      children: {
+        delay,
+        repeat: 0,
+        radius: { 6: 2 },
+        shape: 'circle',
+        fill,
+        strokeWidth: { 1: 0 },
+        angle: { 360: 0 },
+        duration: 1000
+      },
+      count: 20,
+    });
+
+    return burst;
+
+  }
+
   let hasInitialized = false;
 
   function init(fn) {
@@ -209,6 +238,7 @@ function initializeMethod({
 
   return {
     getMarble,
+    getBurst,
     getMarblesFromInitialX,
     getBracket,
     init
@@ -231,7 +261,7 @@ array_filter: {
 
   const demoContainer = document.querySelector(`section#array-${methodName}`);
 
-  const { init, getBracket, getMarble, getMarblesFromInitialX } = initializeMethod({
+  const { init, getBracket, getMarble, getMarblesFromInitialX, getBurst } = initializeMethod({
     el: demoContainer,
     jsCode: code,
     methodSyntax,
@@ -248,8 +278,22 @@ array_filter: {
   });
 
   const arrayMethodsVisualizedTimeline = new mojs.Timeline({ repeat: 1 });
-  const inputMarbles = getMarblesFromInitialX({ count: 4, index: true, listOfColors: [ ORANGE, GREEN, GREEN, ORANGE ] });
-  const outputMarbles = getMarblesFromInitialX({ count: 2, index: true, xOffset: xDiff, fill: GREEN });
+  const inputMarbles = getMarblesFromInitialX({
+    count: 4,
+    index: true,
+    listOfColors: [ ORANGE, GREEN, GREEN, ORANGE ]
+  });
+  const movingMarbles = getMarblesFromInitialX({
+    count: 4,
+    index: true,
+    listOfColors: [ ORANGE, GREEN, GREEN, ORANGE ]
+  });
+  // const outputMarbles = getMarblesFromInitialX({
+  //   count: 2,
+  //   index: true,
+  //   xOffset: xDiff,
+  //   fill: GREEN
+  // });
 
   const leftBracket = getBracket({
     x: leftBracketX,
@@ -268,16 +312,12 @@ array_filter: {
     y: leftBracketY
   });
 
-  const initialRightBracket2X = leftBracket2X + (2 * marbleWidth) + bracketPadding;
+  const initialRightBracket2X = leftBracket2X + (2 * marbleWidth) + bracketPadding - ( marbleWidth * 2 );
 
   const rightBracket2 = getBracket({
     dir: "right",
-    x: {
-      [initialRightBracket2X]:
-        initialRightBracket2X + marbleWidth
-    },
+    x: initialRightBracket2X,
     y: leftBracketY,
-    duration: 3000,
   });
 
   new mojs.Html({
@@ -287,20 +327,66 @@ array_filter: {
     duration: 3000,
   })
 
-  inputMarbles[3].tune( props =>{
-    const x = getPosFromProps(props);
-    console.log(x);
-    return {
-      x: { [x]: pushBallInitialX } // xDiff
-    }
-  }).then({
-    x: { [pushBallInitialX] : xDiff }
-  }).play();
+  // console.log(outputMarbles[0].getProps().x); // 514px
+  // console.log(outputMarbles[1].getProps().x); // 552px
 
   arrayMethodsVisualizedTimeline
-    .add(inputMarbles, outputMarbles)
+    // .add(inputMarbles, outputMarbles)
 
   init(() => {
+
+    const burst = getBurst({ left: 314, fill: ORANGE }); // <= 314 <= Imprecise?
+    const { x } = movingMarbles[3].getProps();
+    const durationSpeed = 1000;
+
+    movingMarbles[0].tune( props =>{
+      const x = getPosFromProps(props);
+      return {
+        onComplete: ()=>{
+          burst.tune({
+            onComplete: function afterBurst(){
+
+              rightBracket2.then({
+                delay: 900,
+                duration: durationSpeed,
+                x: { [initialRightBracket2X] : initialRightBracket2X + marbleWidth }
+            }).play();
+
+              movingMarbles[1]
+              .tune( props =>{
+                const x = getPosFromProps(props);
+                return {
+                  onComplete: ()=>{
+
+                  },
+                  duration: durationSpeed,
+                  x: { [x]: pushBallInitialX }
+                }
+              })
+              .then({
+                duration: durationSpeed + 500,
+                x: { [pushBallInitialX]: 514 },
+                onComplete: function(){
+                }
+              })
+              .play();
+
+            }
+          }).play();
+        },
+        duration: durationSpeed,
+        x: { [x]: pushBallInitialX } // xDiff
+      }
+    })
+    .then({
+      delay: 150,
+      opacity: { 1: 0 }
+    })
+    .play();
+    // .then({
+    //   x: { [pushBallInitialX] : xDiff }
+    // }).play();
+
 
   });
 
