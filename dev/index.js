@@ -935,6 +935,200 @@ function initializeMethod({
 }());
 
 //>> EXAMPLE #6: map()
+(function array_map() {
+
+  // MODIFY >>
+  const methodName = "map";
+  const code = `
+      const strings = [ "abc", "def", "ghi" ];
+      const uppercaseStrings = strings.map( str => str.toUpperCase() );
+
+      console.log( uppercaseStrings ); // [ "ABC", "DEF", "GHI" ];`
+  const methodSyntax = `.map(<span class="c-space"></span>)`
+  // << MODIFY
+
+  const demoContainer = document.querySelector(`section#array-${methodName}`);
+  demoContainer.innerHTML = "";
+  const fadeOutOpacityLevel = 0.3;
+
+  const { init, getBracket, getMarble, getMarblesFromInitialX, getBurst } = initializeMethod({
+    creatorFunction: array_map,
+    el: demoContainer,
+    jsCode: code,
+    methodSyntax,
+    methodName,
+    active: false
+  });
+
+  // MODIFY:
+  const pushBallInitialX = 245;
+  const pushBallInitial = getMarble({
+    x: pushBallInitialX,
+    duration: 1000,
+    fill: GREEN
+  });
+
+  const inputMarbles = getMarblesFromInitialX({
+    count: 4,
+    index: true,
+    listOfColors: [ORANGE, ORANGE, ORANGE, ORANGE]
+  });
+  const movingMarbles = getMarblesFromInitialX({
+    count: 4,
+    index: true,
+    listOfColors: [ORANGE, ORANGE, ORANGE, ORANGE]
+  });
+
+  const leftBracket = getBracket({
+    x: leftBracketX,
+    y: leftBracketY
+  });
+
+  const rightBracket = getBracket({
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding,
+    y: leftBracketY,
+    duration: 3000,
+    dir: "right"
+  });
+
+  const leftBracket2 = getBracket({
+    x: leftBracket2X,
+    y: leftBracketY
+  });
+
+  const initialRightBracket2X = leftBracket2X + (2 * marbleWidth) + bracketPadding - (marbleWidth * 2);
+
+  const rightBracket2 = getBracket({
+    dir: "right",
+    x: initialRightBracket2X,
+    y: leftBracketY,
+  });
+
+  new mojs.Html({
+    el: `#${methodName}`,
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding + bracketRightMargin,
+    y: leftBracketY,
+    duration: 3000,
+  })
+
+  init(() => {
+
+    const burst = getBurst({ left: 314, fill: GREEN }); // <= 314 <= Imprecise?
+    const { x } = movingMarbles[3].getProps();
+    const durationSpeed = 1000;
+
+    const fourthMarble = movingMarbles[3].tune(props => {
+      const x = getPosFromProps(props);
+      return {
+        onComplete: () => {
+          burst.tune({
+            onComplete: function afterBurst() { }
+          }).play();
+        },
+        duration: durationSpeed,
+        x: { [x]: pushBallInitialX }
+      }
+    })
+      .then({
+        delay: 150,
+        opacity: { 1: 0 }
+      });
+
+    const thirdMarble = movingMarbles[2]
+      .tune(props => {
+        const x = getPosFromProps(props);
+
+        return {
+          onComplete: function afterThirdMarblePassesCallback() {
+            movingMarbles[2].getProps().el.setAttribute("data-index", 1);
+          },
+          duration: durationSpeed,
+          x: { [x]: pushBallInitialX }
+        }
+      })
+      .then({
+        duration: durationSpeed + 500,
+        x: { [pushBallInitialX]: 552 },
+        onComplete: function afterThirdMarble() {
+          inputMarbles[3].tune({
+            opacity: { [1]: fadeOutOpacityLevel }
+          }).play();
+          fourthMarble.play();
+        }
+      });
+
+    const secondMarble = movingMarbles[1]
+      .tune(props => {
+        const x = getPosFromProps(props);
+
+        return {
+          onComplete: function () {
+            movingMarbles[1].getProps().el.setAttribute("data-index", 0);
+          },
+          duration: durationSpeed,
+          x: { [x]: pushBallInitialX }
+        }
+      })
+      .then({
+        duration: durationSpeed + 500,
+        x: { [pushBallInitialX]: 514 },
+        onComplete: function afterSecondMarble() {
+          inputMarbles[2].tune({
+            opacity: { [1]: fadeOutOpacityLevel }
+          }).play();
+          thirdMarble.play();
+        }
+      });
+
+    const firstMarble = movingMarbles[0].tune(props => {
+      const x = getPosFromProps(props);
+
+      inputMarbles[0].tune({
+        opacity: { [1]: fadeOutOpacityLevel }
+      }).play();
+
+      return {
+        onComplete: () => {
+          burst.tune({
+            onComplete: function afterBurst() {
+
+              rightBracket2
+                .then({
+                  delay: 900,
+                  duration: durationSpeed,
+                  x: { [initialRightBracket2X]: initialRightBracket2X + marbleWidth }
+                })
+                .then({
+                  delay: 1800,
+                  duration: durationSpeed,
+                  x: { [initialRightBracket2X + marbleWidth]: initialRightBracket2X + (marbleWidth * 2) }
+                })
+                .play();
+
+              inputMarbles[1].tune({
+                opacity: { [1]: fadeOutOpacityLevel }
+              }).play();
+
+              secondMarble.play();
+
+            }
+          }).play();
+        },
+        duration: durationSpeed,
+        x: { [x]: pushBallInitialX }
+      }
+    })
+      .then({
+        delay: 150,
+        opacity: { 1: 0 }
+      });
+
+    firstMarble.play();
+
+  });
+
+
+}());
 
 //>> EXAMPLE #7: join("-")
 
