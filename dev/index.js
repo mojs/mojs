@@ -59,21 +59,44 @@ function initializeMethod({
 }) {
 
   const methodId = uuid();
+  const hashString = '#data=' + encodeURIComponent(
+    JSON.stringify({
+      code: jsCode
+      .split("\n")
+      .map( line =>{
+        return line.trimStart();
+      })
+      .join("\n")
+    })
+  );
 
   const html = `
     <main>
       <div class="demo-init-wrapper">
         <button class="demo-init">&#9658; Play</button>
         <button class="demo-reset">Reset</button>
+        <a class="mdn-docs" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/${methodName}" target="_blank">Docs<a/>
       </div>
       <div class="code-show" id="code-show-${methodId}">
-        <button>
+        <button class="code-show-btn">
           <span class="arrow">${active ? upArrow : downArrow}</span>
           <span class="text">${active ? "Hide Code" : "Show Code"}</span>
         </button>
+        <button class="js-playground-btn">
+          <span class="js-arrow">${downArrow}</span>
+          <span class="text">Practice</span>
+        </button>
       </div>
-    </main>
-    <pre class="code ${active ? "active" : ""}"></pre>
+      </main>
+      <pre class="code ${active ? "active" : ""}"></pre>
+      <iframe
+        class="js-playground"
+        width="800"
+        height="300"
+        loading="lazy"
+        frameborder="0"
+        src="//unpkg.com/javascript-playgrounds@^1.0.0/public/index.html${hashString}"
+      ></iframe>
   `
 
   if (!methodName) {
@@ -119,7 +142,7 @@ function initializeMethod({
     `<code class="language-javascript">${jsCode}</code>`
   );
 
-  el.querySelector(`#code-show-${methodId}`).addEventListener("click", () => {
+  el.querySelector(`#code-show-${methodId} .code-show-btn`).addEventListener("click", () => {
 
     const preEl = el.querySelector("pre.code");
     const arrow = el.querySelector("span.arrow");
@@ -130,6 +153,18 @@ function initializeMethod({
       return preEl.classList.remove("active");
     }
     arrowText.textContent = "Hide Code";
+    arrow.innerHTML = upArrow;
+    return preEl.classList.add("active");
+  });
+
+  el.querySelector(`#code-show-${methodId} .js-playground-btn`).addEventListener("click", () => {
+
+    const preEl = el.querySelector(".js-playground");
+    const arrow = el.querySelector(".js-arrow");
+    if (preEl.classList.contains("active")) {
+      arrow.innerHTML = downArrow;
+      return preEl.classList.remove("active");
+    }
     arrow.innerHTML = upArrow;
     return preEl.classList.add("active");
   });
@@ -208,7 +243,7 @@ function initializeMethod({
       left,
       top: leftBracketY + 17,
       x,
-      rotate:    { 0: rotate },
+      rotate: { 0: rotate },
       y,
       radius: { 0: radius },
       duration,

@@ -13,6 +13,10 @@ h1 {
 a {
   color: hotpink;
 }
+.details {
+  text-align: center;
+  padding: 1rem;
+}
 .support {
   text-align: center;
   margin-top: 2rem;
@@ -80,7 +84,12 @@ a {
 .controls button.inactive {
   opacity: 0.3;
 }
-
+.js-playground {
+  display: none;
+}
+.js-playground.active {
+  display: block;
+}
 pre.code {
   box-sizing: border-box;
   border: 2px solid gray;
@@ -139,6 +148,7 @@ pre.code.active {
   left: -2px;
   display: flex;
 }
+.mdn-docs,
 .demo-init-wrapper button,
 .code-show button {
   background: black;
@@ -149,6 +159,15 @@ pre.code.active {
   padding: 0.5rem 2rem;
   cursor: pointer;
   transition: all 250ms ease;
+  opacity: 0.2;
+}
+button.demo-init {
+  opacity: 0.8;
+}
+.mdn-docs:hover,
+.demo-init-wrapper button:hover,
+.code-show button:hover {
+  opacity: 1;
 }
 button.demo-init:hover,
 .code-show button:hover {
@@ -157,6 +176,16 @@ button.demo-init:hover,
 }
 button.demo-reset  {
   margin-left: -2px;
+}
+.mdn-docs  {
+  margin-left: -2px;
+  text-decoration: none;
+  color: white;
+  transition: all 250ms ease;
+}
+.mdn-docs:hover {
+  background-color: #8cb4ff;
+  color: black;
 }
 button.demo-reset:hover {
   background: tomato;
