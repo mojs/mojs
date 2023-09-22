@@ -34,7 +34,8 @@ const methods = {
   map: { type: IMMUTABLE },
   filter: { type: IMMUTABLE },
   slice: { type: IMMUTABLE },
-  concat: { type: IMMUTABLE }
+  concat: { type: IMMUTABLE },
+  join: { type: IMMUTABLE }
 }
 
 function getPosFromProps(props) {
@@ -198,6 +199,27 @@ function initializeMethod({
 
   }
 
+  function getQuote({ id, dir = "left", x = 0, y = 0, ...args }) {
+
+    const bracketEl = addQuoteElToParent({ dir }, parent);
+
+    return new mojs.Html({ el: bracketEl, x, y, ...args })
+
+  }
+
+  function addQuoteElToParent({ id, dir = "left" }) {
+
+    const bracketEl = document.createElement("div");
+    bracketEl.setAttribute("class", "char cursive");
+    if (id) {
+      bracketEl.setAttribute("id", id);
+    }
+    bracketEl.innerHTML = dir === "left" ? "&ldquo;" : "&rdquo;";
+    parent.appendChild(bracketEl);
+    return bracketEl;
+
+  }
+
   function getMarble({ fill = ORANGE, x = 0, y = 0, opacity = 0, index = null, ...args } = {}) {
 
     return new mojs.Shape({
@@ -279,6 +301,7 @@ function initializeMethod({
   }
 
   return {
+    getQuote,
     getMarble,
     getBurst,
     getMarblesFromInitialX,
@@ -1191,12 +1214,126 @@ function initializeMethod({
 }());
 
 //>> EXAMPLE #7: join("-")
+(function array_join() {
+
+  // MODIFY >>
+  const methodName = "join";
+  const code = `
+      const strings = [ "abc", "def", "ghi" ];
+      const uppercaseStrings = strings.map( str => str.toUpperCase() );
+
+      console.log( uppercaseStrings ); // [ "ABC", "DEF", "GHI" ];`
+  const methodSyntax = `.join(<span>"-"</span>)`
+  // << MODIFY
+
+  const demoContainer = document.querySelector(`section#array-${methodName}`);
+  demoContainer.innerHTML = "";
+  const fadeOutOpacityLevel = 0.3;
+
+  const { init, getBracket, getMarble, getMarblesFromInitialX, getQuote } = initializeMethod({
+    creatorFunction: array_join,
+    el: demoContainer,
+    jsCode: code,
+    methodSyntax,
+    methodName,
+    active: false
+  });
+
+  // MODIFY:
+
+  const inputMarbles = getMarblesFromInitialX({
+    count: 4,
+    index: true,
+    listOfColors: [ORANGE, MAGENTA, RED, GREEN]
+  });
+  const movingMarbles = getMarblesFromInitialX({
+    count: 4,
+    index: true,
+    listOfColors: [ORANGE, MAGENTA, RED, GREEN]
+  });
+
+  const leftBracket = getBracket({
+    x: leftBracketX,
+    y: leftBracketY
+  });
+
+  const rightBracket = getBracket({
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding,
+    y: leftBracketY,
+    duration: 3000,
+    dir: "right"
+  });
+
+  const leftBracket2 = getQuote({
+    x: leftBracket2X,
+    y: leftBracketY
+  });
+
+  const initialRightBracket2X = leftBracket2X + (2 * marbleWidth) + bracketPadding - 64;
+
+  const rightBracket2 = getQuote({
+    dir: "right",
+    x: initialRightBracket2X,
+    y: leftBracketY,
+  });
+
+  new mojs.Html({
+    el: `#${methodName}`,
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding + bracketRightMargin,
+    y: leftBracketY,
+    duration: 3000,
+  })
+
+  init(() => {
+
+    const { x } = movingMarbles[3].getProps();
+    const durationSpeed = 1000;
+
+    const firstMarble = movingMarbles[0]
+      .tune(props => {
+        const x = getPosFromProps(props);
+
+        inputMarbles[0].tune({
+          opacity: { [1]: fadeOutOpacityLevel }
+        }).play();
+
+        return {
+          onComplete: () => {
+            rightBracket2
+              .then({
+                delay: 0,
+                duration: durationSpeed,
+                x: { [initialRightBracket2X]: initialRightBracket2X - 8 + marbleWidth }
+              })
+              .play();
+
+          },
+          duration: durationSpeed,
+          x: { [x]: initialRightBracket2X - 8 - marbleWidth }
+        }
+      });
+
+    firstMarble.play();
+
+  });
+
+
+}());
 
 //>> EXAMPLE #8: concat()
+(function array_concat(){
+
+}());
 
 //>> EXAMPLE #9: flat()
+(function array_flat(){
+
+}());
 
 //>> EXAMPLE #10: slice(1,3)
+(function array_slice(){
+
+}());
 
 // FILTER METHODS BASED ON TYPE:
 const controls = document.querySelector(".controls");

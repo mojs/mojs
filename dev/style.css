@@ -15,7 +15,8 @@ a {
 }
 .details {
   text-align: center;
-  padding: 1rem;
+  width: 800px;
+  margin: 0 auto;
 }
 .support {
   text-align: center;
@@ -194,4 +195,8 @@ button.demo-reset:hover {
 
 .debug {
   outline: 2px solid hotpink;
+}
+.cursive {
+  font-family: initial;
+  font-size: 32px !important;
 }
