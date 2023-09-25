@@ -200,3 +200,14 @@ button.demo-reset:hover {
   font-family: initial;
   font-size: 32px !important;
 }
+.inline-block {
+  display: inline-block
+}
+#join-hyphen {
+  position: relative;
+}
+.join-hyphens {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
