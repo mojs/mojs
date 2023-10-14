@@ -1663,7 +1663,7 @@ function initializeMethod({
 
           console.log( sliced ); // [ "B", "C" ];
     `
-    const methodSyntax = `.slice(1,3)`
+    const methodSyntax = `.slice(<span contenteditable="true">1,3</span>)`
     // << MODIFY
 
     const demoContainer = document.querySelector(`section#array-${methodName}`);
