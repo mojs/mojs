@@ -1470,10 +1470,16 @@ function initializeMethod({
   // MODIFY >>
   const methodName = "flat";
   const code = `
-        const strings = [ "abc", "def", "ghi" ];
-        const uppercaseStrings = strings.map( str => str.toUpperCase() );
+        const unflatted = [ "A", "B", [ "a", "b" ] ];
+        const flat = unflatted.flat();
 
-        console.log( uppercaseStrings ); // [ "ABC", "DEF", "GHI" ];`
+        console.log( flat ); // [ "A", "B", "a", "b" ];
+
+        const deep = [ 1, 2, [ 3, 4, [ 5, 6 ] ] ];
+        const flatDeep = deep.flat(2);
+
+        console.log( flatDeep ); // [ 1, 2, 3, 4, 5, 6 ];
+  `
   const methodSyntax = `.flat(<span></span>)`
   // << MODIFY
 
