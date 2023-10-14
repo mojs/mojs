@@ -1784,12 +1784,25 @@ const demoContainers      = document.querySelectorAll(".demo-container");
 
 search.addEventListener("input", e =>{
 
+  let values = [ e.target.value ];
+
+  if ( e.target.value.includes(",") ){
+    values = e.target.value
+    .split(",")
+    .map( m => m.trim() )
+    .filter(Boolean);
+  }
+
   demoContainers.forEach( dc =>{
-    if (dc.id.indexOf(e.target.value) >  -1 ){
+
+    const isInSearch = values.some( v => dc.id.indexOf(v) > -1 );
+
+    if ( isInSearch ){
       dc.classList.remove("hidden");
     } else {
       dc.classList.add("hidden");
     }
+
   })
 
 });
