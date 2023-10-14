@@ -4,13 +4,13 @@ import MojsPlayer from '@mojs/player';
 
 // TODO: marbleOptions => Switch between "circle" & "rectangle"
 
-const ORANGE = "#f59d56";
-const GREEN = "#aded94";
+const ORANGE  = "#f59d56";
+const GREEN   = "#aded94";
 const MAGENTA = "#bd81fb";
-const RED = "#ee695a"
+const RED     = "#ee695a"
 
 const downArrow = "&#8681;";
-const upArrow = "&#8679;";
+const upArrow   = "&#8679;";
 
 const xDiff              = 536 - 22;
 const leftBracketX       = 22;
@@ -32,6 +32,7 @@ const methods = {
   pop: { type: IN_PLACE },
   shift: { type: IN_PLACE },
   unshift: { type: IN_PLACE },
+  slice: { type: IMMUTABLE },
   map: { type: IMMUTABLE },
   filter: { type: IMMUTABLE },
   flat: { type: IMMUTABLE },
@@ -1653,6 +1654,125 @@ function initializeMethod({
 
 //>> EXAMPLE #10: slice(1,3)
 (function array_slice() {
+
+    // MODIFY >>
+    const methodName = "slice";
+    const code = `
+          const toBeSliced = [ "A", "B", "C", "D" ];
+          const sliced = toBeSliced.slice(1,3);
+
+          console.log( sliced ); // [ "B", "C" ];
+    `
+    const methodSyntax = `.slice(1,3)`
+    // << MODIFY
+
+    const demoContainer = document.querySelector(`section#array-${methodName}`);
+    demoContainer.innerHTML = "";
+    const fadeOutOpacityLevel = 0.3;
+
+    const { init, getBracket, getMarble, getMarblesFromInitialX, getBurst } = initializeMethod({
+      creatorFunction: array_slice,
+      el: demoContainer,
+      jsCode: code,
+      methodSyntax,
+      methodName,
+      active: false
+    });
+
+    // MODIFY:
+    const inputMarbles = getMarblesFromInitialX({
+      count: 4,
+      index: true,
+      listOfColors: [ORANGE, MAGENTA, RED, GREEN]
+    });
+    const movingMarbles = getMarblesFromInitialX({
+      count: 4,
+      index: true,
+      listOfColors: [ORANGE, MAGENTA, RED, GREEN]
+    });
+
+    const leftBracket = getBracket({
+      x: leftBracketX,
+      y: leftBracketY
+    });
+
+    const rightBracket = getBracket({
+      x: leftBracketX + (4 * marbleWidth) + bracketPadding,
+      y: leftBracketY,
+      duration: 3000,
+      dir: "right"
+    });
+
+    const leftBracket2 = getBracket({
+      x: leftBracket2X,
+      y: leftBracketY
+    });
+
+    const initialRightBracket2X = leftBracket2X + (2 * marbleWidth) + bracketPadding - (marbleWidth * 2);
+
+    const rightBracket2 = getBracket({
+      dir: "right",
+      x: initialRightBracket2X,
+      y: leftBracketY,
+    });
+
+    new mojs.Html({
+      el: `#${methodName}`,
+      x: leftBracketX + (4 * marbleWidth) + bracketPadding + bracketRightMargin,
+      y: leftBracketY,
+      duration: 3000,
+    })
+
+    init(() => {
+
+      const { x } = inputMarbles[1].getProps();
+      const durationSpeed = 1000;
+
+      const secondMarble = movingMarbles[1]
+        .tune(props => {
+          const x = getPosFromProps(props);
+
+          inputMarbles[1].tune({
+            opacity: { [1]: fadeOutOpacityLevel }
+          }).play();
+
+          rightBracket2
+          .then({
+            delay: 0,
+            duration: durationSpeed,
+            x: { [initialRightBracket2X]: initialRightBracket2X + (marbleWidth * 2) }
+          })
+          .play();
+
+          return {
+            onComplete: function () {
+            },
+            duration: durationSpeed * 2,
+            x: { [x]: 476 + marbleWidth }
+          }
+        });
+
+      secondMarble.play();
+
+      const thirdMarble = movingMarbles[2]
+        .tune(props => {
+          const x = getPosFromProps(props);
+
+          inputMarbles[2].tune({
+            opacity: { [1]: fadeOutOpacityLevel }
+          }).play();
+
+          return {
+            onComplete: function () {
+            },
+            duration: durationSpeed * 2,
+            x: { [x]: 476 + ( marbleWidth * 2 ) }
+          }
+        });
+
+      thirdMarble.play();
+
+    });
 
 }());
 
