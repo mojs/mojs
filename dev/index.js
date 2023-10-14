@@ -12,17 +12,18 @@ const RED = "#ee695a"
 const downArrow = "&#8681;";
 const upArrow = "&#8679;";
 
-const xDiff = 536 - 22;
-const leftBracketX = 22;
-const leftBracket2X = 536;
-const leftBracketY = 84;
-const leftMarbleX = 64;
-const marbleRadius = 16;
-const marbleWidth = 38;
-const bracketPadding = 14;
+const xDiff              = 536 - 22;
+const leftBracketX       = 22;
+const leftBracket2X      = 536;
+const leftBracketY       = 84;
+const leftMarbleX        = 64;
+const marbleRadius       = 16;
+const marbleWidth        = 38;
+const bracketWidth       = 12;
+const bracketPadding     = 14;
 const bracketRightMargin = 22;
-const rightArrowX = 460;
-const rightArrowY = 76;
+const rightArrowX        = 460;
+const rightArrowY        = 76;
 
 const IN_PLACE = "IN_PLACE";
 const IMMUTABLE = "IMMUTABLE";
@@ -234,7 +235,7 @@ function initializeMethod({
 
   }
 
-  function getMarblesFromInitialX({ count = 0, x = 0, fill, index = false, xOffset = 0, indexOffset = 0, listOfColors = [], ...args }) {
+  function getMarblesFromInitialX({ count = 0, x = 0, fill, index = false, xOffset = 0, indexOffset = 0, listOfColors = [], bracketed = false, ...args }) {
 
     if (count === 0) {
       return [];
@@ -244,12 +245,29 @@ function initializeMethod({
 
     for (let i = 0; i < count; i++) {
 
+      const x = (i * marbleWidth) + xOffset + ( bracketed ? 12 : 0 );
+
       marbles.push(getMarble({
-        x: (i * marbleWidth) + xOffset,
+        x,
         fill: listOfColors.length && listOfColors[i] ? listOfColors[i] : fill,
         index: i + indexOffset,
         ...args
       }));
+
+    }
+
+    if ( bracketed ){
+
+      const leftBracket = getBracket({
+        x: (marbleWidth) + xOffset - 2,
+        y: leftBracketY
+      });
+
+      const rightBracket = getBracket({
+        x: (marbleWidth * 3 ) + xOffset + bracketWidth - 2,
+        y: leftBracketY,
+        dir: "right"
+      });
 
     }
 
@@ -1481,7 +1499,8 @@ function initializeMethod({
   const inputMarblesNested = getMarblesFromInitialX({
     count: 2,
     index: true,
-    xOffset: marbleWidth * 2,
+    bracketed: true,
+    xOffset: ( marbleWidth * 2 ),
     indexOffset: 2,
     listOfColors: [RED, GREEN]
   });
@@ -1493,7 +1512,7 @@ function initializeMethod({
   const movingMarblesNested = getMarblesFromInitialX({
     count: 2,
     index: true,
-    xOffset: marbleWidth * 2,
+    xOffset: ( marbleWidth * 2 ) + bracketWidth,
     indexOffset: 2,
     listOfColors: [RED, GREEN]
   });
@@ -1504,7 +1523,7 @@ function initializeMethod({
   });
 
   const rightBracket = getBracket({
-    x: leftBracketX + (4 * marbleWidth) + bracketPadding,
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding + ( bracketWidth * 2 ) + 2,
     y: leftBracketY,
     duration: 3000,
     dir: "right"
@@ -1525,7 +1544,7 @@ function initializeMethod({
 
   new mojs.Html({
     el: `#${methodName}`,
-    x: leftBracketX + (4 * marbleWidth) + bracketPadding + bracketRightMargin,
+    x: leftBracketX + (4 * marbleWidth) + bracketPadding + bracketRightMargin + ( bracketWidth * 2 ),
     y: leftBracketY,
     duration: 3000,
   })
@@ -1572,7 +1591,6 @@ function initializeMethod({
 
             thirdMarble.play();
           },
-          delay: 100,
           duration: durationSpeed,
           x: { [x]: 514 + marbleWidth }
         }
@@ -1633,8 +1651,22 @@ function initializeMethod({
 }());
 
 // FILTER METHODS BASED ON TYPE:
-const controls = document.querySelector(".controls");
+const controls            = document.querySelector(".controls");
 const playgroundContainer = document.querySelector(".playground-container");
+const search              = document.querySelector(".search");
+const demoContainers      = document.querySelectorAll(".demo-container");
+
+search.addEventListener("input", e =>{
+
+  demoContainers.forEach( dc =>{
+    if (dc.id.indexOf(e.target.value) >  -1 ){
+      dc.classList.remove("hidden");
+    } else {
+      dc.classList.add("hidden");
+    }
+  })
+
+});
 
 (playgroundContainer && controls) && controls.addEventListener("click", e => {
 
