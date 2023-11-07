@@ -19,8 +19,8 @@ class Thenable extends Tweenable {
     if ((o == null) || !Object.keys(o).length) { return 1; }
 
     // merge then options with the current ones
-    var prevRecord = this._history[this._history.length - 1],
-      merged = this._mergeThenOptions(prevRecord, o);
+    var prevRecord = this._history[this._history.length - 1];
+    var merged = this._mergeThenOptions(prevRecord, o);
 
     this._resetMergedFlags(merged);
 

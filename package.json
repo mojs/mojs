@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint \"**/*.js\"",
     "dev": "webpack serve --config webpack.dev.js --env mode=development",
-    "build": "webpack --config webpack.umd.js --progress --env mode=production",
+    "build": "webpack --config webpack.dev.js --progress --env mode=production",
     "pretest": "webpack --config webpack.umd.js --env mode=test",
     "test": "karma start"
   },

@@ -1,46 +1,273 @@
-:root {
-  --mojs-color: #3A0839;
-}
-
-* {
-  box-sizing: inherit;
-}
-
-html {
-  box-sizing: border-box;
-}
-
 body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background: #000;
+  color: #f0f0f0;
+  padding: 1rem;
+}
+
+h1 {
+  font-weight: 200;
+  font-size: 2.2rem;
+  text-align: center;
+}
+
+a {
+  color: hotpink;
+}
+
+.details {
+  text-align: center;
+  width: 800px;
+  margin: 0 auto;
+}
+
+.support {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.playground-container.show-inplace .demo-container.inplace {
+  display: block;
+}
+
+.playground-container.show-immutable .demo-container.immutable {
+  display: block;
+}
+
+.demo-container {
+  width: 800px;
+  margin: 0 auto 0.5rem auto;
+  display: none;
+}
+
+.demo-container main {
+  box-sizing: border-box;
+  border: 2px solid gray;
+  height: 200px;
+  width: 800px;
+  position: relative;
+}
+
+.demo-container.inplace main {
+  border-top: 2px solid tomato;
+}
+
+.demo-container.immutable main {
+  border-top: 2px solid yellowgreen;
+}
+
+/* CONTROLS */
+.controls {
+  box-sizing: border-box;
+  margin: 0 auto;
+  border: 1px solid white;
+  padding: 0.5rem;
+  width: 800px;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.controls button {
+  border: none;
+  color: 000;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.25rem 1rem;
+  cursor: pointer;
+  transition: all 200ms ease;
+  opacity: 1;
+}
+
+.controls button#inplace:hover {
+  color: #6c190a;
+}
+
+.controls button#immutable:hover {
+  color: #395206;
+}
+
+.controls #inplace {
+  background: tomato;
+  margin-right: 1rem;
+}
+
+.controls #immutable {
+  background: yellowgreen;
+  margin-left: 1rem;
+}
+
+.controls button.inactive {
+  opacity: 0.3;
+}
+
+.js-playground {
+  display: none;
+}
+
+.js-playground.active {
+  display: block;
+}
+
+pre.code {
+  box-sizing: border-box;
+  border: 2px solid gray;
+  display: none;
+  width: 800px;
+  margin: -2px 0 1rem 0 !important;
+}
+
+pre.code.active {
+  display: block;
+}
+
+.char {
+  font-size: 32px;
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 32px;
+  width: 32px;
+  text-align: center;
+  /* line-height: 32px; */
+  line-height: 26px;
+  /* WTF? */
+}
+
+.method {
+  font-weight: 600;
+  width: auto;
+}
+
+.c-space {
+  width: 32px;
+  display: inline-block;
+}
+
+.mojs-burst,
+.mojs-marble {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.mojs-marble.indexed:after {
+  content: attr(data-index);
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 1rem;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.7);
+  line-height: 1rem;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.code-show,
+.demo-init-wrapper {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+}
+
+.demo-init-wrapper {
+  left: -2px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  font-family: 'Arial';
-  color: #fff;
-  background: var(--mojs-color);
-  user-select: none;
 }
 
-.mojs-version {
-  position: fixed;
-  top: 40px;
-  left: 40px;
-  font-size: 25px;
-  color: #fff;
-  opacity: 0;
-  pointer-events: none;
-  animation: mojs-version 2s 1s ease forwards;
+.mdn-docs,
+.demo-init-wrapper button,
+.code-show button {
+  background: black;
+  color: white;
+  border: none;
+  font-size: 1rem;
+  border: 2px solid gray;
+  padding: 0.5rem 2rem;
+  cursor: pointer;
+  transition: all 250ms ease;
+  opacity: 0.2;
 }
 
-@keyframes mojs-version {
-  from {
-    opacity: 0;
-  }
+button.demo-init {
+  opacity: 0.8;
+}
 
-  to {
-    opacity: 0.2;
-  }
+.mdn-docs:hover,
+.demo-init-wrapper button:hover,
+.code-show button:hover {
+  opacity: 1;
+}
+
+button.demo-init:hover,
+.code-show button:hover {
+  background: yellowgreen;
+  color: black;
+}
+
+button.demo-reset {
+  margin-left: -2px;
+}
+
+.mdn-docs {
+  margin-left: -2px;
+  text-decoration: none;
+  color: white;
+  transition: all 250ms ease;
+}
+
+.mdn-docs:hover {
+  background-color: #8cb4ff;
+  color: black;
+}
+
+button.demo-reset:hover {
+  background: tomato;
+  color: black;
+}
+
+.debug {
+  outline: 2px solid hotpink;
+}
+
+.cursive {
+  font-family: initial;
+  font-size: 32px !important;
+}
+
+.inline-block {
+  display: inline-block
+}
+
+#join-hyphen {
+  position: relative;
+}
+
+.join-hyphens {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.search {
+  padding: 0 !important;
+}
+
+.search input {
+  width: 100%;
+  border: none;
+  font-size: 2rem;
+  padding: 0.5rem 1rem;
+  background: black;
+  color: antiquewhite;
+  font-weight: 200;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.hidden {
+  display: none !important;
 }
