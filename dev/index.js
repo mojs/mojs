@@ -1833,5 +1833,3 @@ search.addEventListener("input", e =>{
 
 
 })
-
-console.log("DEBUG!");
