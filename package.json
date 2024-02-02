@@ -65,7 +65,6 @@
     "karma-jasmine": "^5.1.0",
     "karma-summary-reporter": "^3.1.1",
     "puppeteer": "^21.11.0",
-    "stylelint-webpack-plugin": "^4.1.1",
     "terser-webpack-plugin": "^5.3.10",
     "webpack": "^5.90.1",
     "webpack-cli": "^5.1.4",
