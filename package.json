@@ -45,7 +45,7 @@
   "devDependencies": {
     "@babel/core": "^7.24.7",
     "@babel/plugin-transform-runtime": "^7.24.7",
-    "@babel/preset-env": "^7.24.5",
+    "@babel/preset-env": "^7.24.7",
     "@mojs/player": "^1.3.0",
     "babel-loader": "^9.1.3",
     "coffee-loader": "^4.0.0",
