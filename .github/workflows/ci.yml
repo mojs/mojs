@@ -1,6 +1,6 @@
 # Github workflow for Continuous Integration
 
-name: CI
+name: 🤖 continuous integration
 
 on:
   push:
@@ -13,20 +13,97 @@ on:
       - main
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+
+      - name: Restore dependencies
+        uses: actions/cache/restore@v4
+        id: cache
+        with:
+          path: node_modules
+          key: npm-dependencies-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
+
+      - name: Save dependencies
+        uses: actions/cache/save@v4
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          path: node_modules
+          key: npm-dependencies-${{ hashFiles('package-lock.json') }}
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Restore dependencies
+        uses: actions/cache/restore@v4
+        id: cache
+        with:
+          path: node_modules
+          key: npm-dependencies-${{ hashFiles('package-lock.json') }}
 
       - name: Lint code
         run: npm run lint
+
+  build:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Restore dependencies
+        uses: actions/cache/restore@v4
+        id: cache
+        with:
+          path: node_modules
+          key: npm-dependencies-${{ hashFiles('package-lock.json') }}
+
+      - name: Build the package
+        run: npm run build
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Restore dependencies
+        uses: actions/cache/restore@v4
+        id: cache
+        with:
+          path: node_modules
+          key: npm-dependencies-${{ hashFiles('package-lock.json') }}
 
       - name: Setup browser testing
         uses: browserstack/github-actions/setup-env@master
@@ -45,7 +122,7 @@ jobs:
       - name: Send code coverage to Coveralls
         uses: coverallsapp/github-action@master
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ github.token }}
 
       - name: Stop browser testing tunnel
         uses: 'browserstack/github-actions/setup-local@master'
