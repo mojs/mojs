@@ -53,7 +53,9 @@ module.exports = (config) => {
         base: 'ChromeHeadless',
         flags: [
           '--no-sandbox',
-          '--single-process',
+          '--disable-gpu',
+          '--disable-dev-shm-usage',
+          '--disable-software-rasterizer',
         ],
       },
     };
