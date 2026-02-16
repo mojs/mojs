@@ -61,7 +61,7 @@ class Delta {
     // if not chained - add the onRefresh callback
     // to refresh the tween when needed
     if (!this._o.isChained) {
-      o.callbackOverrides.onRefresh = function(isBefore, ep, p) {
+      o.callbackOverrides.onRefresh = function (isBefore, ep, p) {
         it._calcCurrentProps(ep, p);
       };
     }

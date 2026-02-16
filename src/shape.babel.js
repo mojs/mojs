@@ -548,22 +548,22 @@ class Shape extends Tunable {
 
     // specify control functions for the module
     obj.callbackOverrides = {
-      onUpdate: function(ep, p) { return it._setProgress(ep, p); },
-      onStart: function(isFwd) {
+      onUpdate: function (ep, p) { return it._setProgress(ep, p); },
+      onStart: function (isFwd) {
 
         // don't touch main `el` onStart in chained elements
         if (it._isChained) { return; }
         if (isFwd) { it._show(); }
         else { if (!p.isShowStart) { it._hide(); } }
       },
-      onComplete: function(isFwd) {
+      onComplete: function (isFwd) {
 
         // don't touch main `el` if not the last in `then` chain
         if (!it._isLastInChain()) { return; }
         if (isFwd) { if (!p.isShowEnd) { it._hide(); } }
         else { it._show(); }
       },
-      onRefresh: function(isBefore) {
+      onRefresh: function (isBefore) {
         p.isRefreshState && isBefore && it._refreshBefore();
       },
     };
