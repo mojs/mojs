@@ -441,7 +441,7 @@ class Html extends Thenable {
     o.callbackOverrides = {
       onUpdate: this._draw,
       onRefresh: (this._props.isRefreshState) ? this._draw : void 0,
-      onStart: function(isFwd) {
+      onStart: function (isFwd) {
 
         // don't touch main `el` onStart in chained elements
         if (it._isChained) { return; }
@@ -452,7 +452,7 @@ class Html extends Thenable {
         // hide if should be hidden at start
         else { if (!p.isShowStart) { it._hide(); } }
       },
-      onComplete: function(isFwd) {
+      onComplete: function (isFwd) {
 
         // don't touch main `el` if not the last in `then` chain
         if (it._isChained) { return; }
