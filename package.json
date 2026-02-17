@@ -41,7 +41,7 @@
   "homepage": "https://mojs.github.io",
   "engines": {
     "node": "^20",
-    "npm": "^10"
+    "npm": "^11"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
