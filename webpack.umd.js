@@ -1,11 +1,12 @@
-const bundle = require('./package.json');
-const { merge } = require('webpack-merge');
-const TerserPlugin = require('terser-webpack-plugin');
+import bundle from './package.json' with { type: 'json' };
+import common from './webpack.common.js';
+import { merge } from 'webpack-merge';
+import TerserPlugin from 'terser-webpack-plugin';
 
 // build preamble
 const preamble = `/*!\n  ${bundle.name} – ${bundle.description}\n  ${bundle.author.name} ${bundle.author.github} ${new Date().getFullYear()} ${bundle.license}\n  ${bundle.version}\n*/`;
 
-module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
+export default async (env) => merge(common(env), {
   mode: 'production',
   watch: false,
   entry: './src/mojs.babel.js',

@@ -1,7 +1,7 @@
-import h from './h';
+import h from 'src/h';
 import shapesMap from 'shapes/shapesMap';
-import Module from './module';
-import Tunable from './tunable';
+import Module from 'src/module';
+import Tunable from 'src/tunable';
 
 // TODO
 //  - refactor

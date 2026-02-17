@@ -1,7 +1,8 @@
-const path = require('path');
-const { merge } = require('webpack-merge');
+import path from 'node:path';
+import common from './webpack.common.js';
+import { merge } from 'webpack-merge';
 
-module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
+export default async (env) => merge(common(env), {
   mode: 'development',
   devtool: 'source-map',
   entry: './dev/index.js',
@@ -12,7 +13,7 @@ module.exports = (argv) => merge(require('./webpack.common.js')(argv), {
     port: 9000,
     static: {
       serveIndex: false,
-      directory: path.join(__dirname, 'dev'),
+      directory: path.resolve('dev'),
     },
     client: {
       logging: 'none',

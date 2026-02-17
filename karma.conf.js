@@ -1,7 +1,9 @@
-process.env.CHROME_BIN = require('puppeteer').executablePath();
-let bundle = require('./package.json');
+import puppeteer from 'puppeteer';
+import bundle from './package.json' with { type: 'json' };
 
-module.exports = (config) => {
+process.env.CHROME_BIN = puppeteer.executablePath();
+
+export default (config) => {
 
   // use appropriate reporter if running with GITHUB_ACTIONS
   let customLaunchers, reporters, browsers;
