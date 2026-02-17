@@ -1,4 +1,4 @@
-import h from './h';
+import h from 'src/h';
 import Tweenable from 'tween/tweenable';
 
 /*

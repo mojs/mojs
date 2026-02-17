@@ -1,4 +1,4 @@
-import h from './h';
+import h from 'src/h';
 
 /*
   Base class for module. Extends and parses defaults.

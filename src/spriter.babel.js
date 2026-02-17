@@ -1,4 +1,4 @@
-import h from './h';
+import h from 'src/h';
 import Tween from 'tween/tween';
 import Timeline from 'tween/timeline';
 

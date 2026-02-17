@@ -1,7 +1,7 @@
-import h from './h';
+import h from 'src/h';
 import Timeline from 'tween/timeline';
-import ShapeSwirl from './shape-swirl';
-import Tunable from './tunable';
+import ShapeSwirl from 'src/shape-swirl';
+import Tunable from 'src/tunable';
 
 class Burst extends Tunable {
 
