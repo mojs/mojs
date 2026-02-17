@@ -1,4 +1,4 @@
-import mojs from 'src/mojs.babel.js';
+import mojs from 'src/mojs';
 import MojsPlayer from '@mojs/player';
 
 // get the current mojs version

@@ -1,4 +1,4 @@
-import Bit from './bit';
+import Bit from 'shapes/bit';
 
 class Curve extends Bit {
 

@@ -1,59 +1,71 @@
-const bundle = require('./package.json');
-const path = require('path');
-const webpack = require('webpack');
-const ESLintPlugin = require('eslint-webpack-plugin');
+import bundle from './package.json' with { type: 'json' };
+import path from 'node:path';
+import webpack from 'webpack';
+import ESLintPlugin from 'eslint-webpack-plugin';
 
-module.exports = (env) => ({
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    clean: true,
-  },
-  resolve: {
-    extensions: [
-      '.js',
-      '.babel.js',
-      '.coffee',
-    ],
-    alias: {
-      root: __dirname,
-      src: 'root/src/',
-      delta: 'src/delta',
-      easing: 'src/easing',
-      shapes: 'src/shapes',
-      tween: 'src/tween',
-      vendor: 'src/vendor',
+export default (env) => {
+  return {
+    output: {
+      path: path.resolve('dist'),
+      clean: true,
     },
-  },
-  module: {
-    rules: [{
-      test: /\.(babel.js)$/,
-      exclude: /node_modules/,
-      use: {
-        loader: 'babel-loader',
-        options: {
-          cacheDirectory: true,
+    resolve: {
+      extensions: [
+        '.js',
+        '.babel.js',
+        '.coffee',
+      ],
+      alias: {
+        root: path.resolve(),
+        src: 'root/src/',
+        delta: 'src/delta',
+        easing: 'src/easing',
+        shapes: 'src/shapes',
+        tween: 'src/tween',
+        vendor: 'src/vendor',
+      },
+    },
+    module: {
+      rules: [{
+        test: /\.(babel.js)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            presets: [
+              [
+                '@babel/preset-env', {
+                  bugfixes: true,
+                },
+              ],
+            ],
+            plugins: [
+              '@babel/plugin-transform-runtime',
+            ],
+          },
         },
-      },
-    }, {
-      test: /\.coffee$/,
-      use: {
-        loader: 'coffee-loader',
-        options: {
-          bare: true,
+      }, {
+        test: /\.coffee$/,
+        use: {
+          loader: 'coffee-loader',
+          options: {
+            bare: true,
+          },
         },
-      },
-    }],
-  },
-  plugins: [
-    new webpack.DefinePlugin({
-      build: {
-        revision: `"${bundle.version}"`,
-        mode: `"${env.mode}"`,
-      },
-    }),
-    new ESLintPlugin({
-      cache: true,
-      fix: true,
-    }),
-  ],
-});
+      }],
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        build: {
+          revision: `"${bundle.version}"`,
+          mode: `"${env.mode}"`,
+        },
+      }),
+      new ESLintPlugin({
+        cache: true,
+        fix: true,
+      }),
+    ],
+  };
+};

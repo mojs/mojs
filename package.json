@@ -2,6 +2,7 @@
   "name": "@mojs/core",
   "version": "1.7.1",
   "description": "The motion graphics toolbelt for the web",
+  "type": "module",
   "source": "src/mojs.babel.js",
   "main": "dist/mo.umd.js",
   "browser": "dist/mo.umd.js",

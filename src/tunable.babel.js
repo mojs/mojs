@@ -1,5 +1,5 @@
-import h from './h';
-import Thenable from './thenable';
+import h from 'src/h';
+import Thenable from 'src/thenable';
 
 class Tuneable extends Thenable {
 

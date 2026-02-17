@@ -1,6 +1,6 @@
-import h from './h';
+import h from 'src/h';
 import Timeline from 'tween/timeline';
-import Tunable from './tunable';
+import Tunable from 'src/tunable';
 
 class Stagger extends Tunable {
   constructor(options, Module) {
