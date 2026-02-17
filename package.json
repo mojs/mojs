@@ -8,7 +8,7 @@
   "browser": "dist/mo.umd.js",
   "unpkg": "dist/mo.umd.js",
   "scripts": {
-    "lint": "eslint \"**/*.js\"",
+    "lint": "eslint .",
     "dev": "webpack serve --config webpack.dev.js --env mode=development",
     "build": "webpack --config webpack.umd.js --progress --env mode=production",
     "pretest": "webpack --config webpack.umd.js --env mode=test",
