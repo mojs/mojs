@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup NodeJS
         uses: actions/setup-node@v4
@@ -47,7 +47,7 @@ jobs:
     needs: setup
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup NodeJS
         uses: actions/setup-node@v4
@@ -69,7 +69,7 @@ jobs:
     needs: lint
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup NodeJS
         uses: actions/setup-node@v4
@@ -91,7 +91,7 @@ jobs:
     needs: build
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup NodeJS
         uses: actions/setup-node@v4
