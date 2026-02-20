@@ -25,13 +25,13 @@ export default (config) => {
       },
       bs_edge_latest: {
         browser: 'edge',
-        browser_version: '110.0',
+        browser_version: 'latest',
         os: 'Windows',
         os_version: '11',
       },
       bs_safari_latest: {
         browser: 'safari',
-        browser_version: '14.1',
+        browser_version: 'latest',
         os: 'OS X',
         os_version: 'Big Sur',
       },
