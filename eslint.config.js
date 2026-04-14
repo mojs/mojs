@@ -27,6 +27,7 @@ export default [
       'no-invalid-this': [
         'error',
       ],
+      'no-useless-assignment': 'off',
       'strict': [
         'error',
       ],
