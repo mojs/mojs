@@ -76,7 +76,7 @@
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.29.2"
+    "@babel/runtime": "^7.29.7"
   },
   "allowScripts": {
     "puppeteer@24.40.0": true
