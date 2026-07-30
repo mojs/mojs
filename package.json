@@ -79,6 +79,6 @@
     "@babel/runtime": "^7.29.7"
   },
   "allowScripts": {
-    "puppeteer@24.40.0": true
+    "puppeteer@24.43.1": true
   }
 }
