@@ -1,9 +1,10 @@
 import puppeteer from 'puppeteer';
 import bundle from './package.json' with { type: 'json' };
 
-process.env.CHROME_BIN = puppeteer.executablePath();
+export default async (config) => {
 
-export default (config) => {
+  // retrieve the chrome binary executable path
+  process.env.CHROME_BIN = await puppeteer.executablePath();
 
   // use appropriate reporter if running with GITHUB_ACTIONS
   let customLaunchers, reporters, browsers;
