@@ -70,7 +70,7 @@
     "karma-summary-reporter": "^4.0.1",
     "puppeteer": "^24.40.0",
     "terser-webpack-plugin": "^5.3.11",
-    "webpack": "^5.106.1",
+    "webpack": "^5.109.2",
     "webpack-cli": "^7.0.2",
     "webpack-dev-server": "^5.2.3",
     "webpack-merge": "^6.0.1"
