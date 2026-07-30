@@ -77,5 +77,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.29.2"
+  },
+  "allowScripts": {
+    "puppeteer@24.40.0": true
   }
 }
