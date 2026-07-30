@@ -72,7 +72,7 @@
     "terser-webpack-plugin": "^5.3.11",
     "webpack": "^5.109.2",
     "webpack-cli": "^7.2.2",
-    "webpack-dev-server": "^5.2.3",
+    "webpack-dev-server": "^5.2.6",
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
